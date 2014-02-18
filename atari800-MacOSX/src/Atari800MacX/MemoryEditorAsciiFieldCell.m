@@ -55,7 +55,7 @@
 		for (i=0;i < maxChar-length;i++)
 			blankString[i] = ' ';
 		blankString[i] = 0;
-		[text replaceCharactersInRange:r withString:[NSString stringWithCString:blankString]];
+		[text replaceCharactersInRange:r withString:[NSString stringWithCString:blankString encoding:NSASCIIStringEncoding]];
 		[text setSelectedRange:curRange];
 		}
 	/* discard any character exceeding the maximum length	*/

@@ -11,6 +11,7 @@
 
 extern SDL_Surface *MainScreen;
 extern SDL_Surface *MonitorGLScreen;
+extern SDL_Window *MainGLScreen;
 extern int OPENGL;
 extern int MONITOR_assemblerMode;
 extern int MonitorScreenID;
@@ -49,14 +50,14 @@ SDL_Surface *upimage;
 SDL_Surface *downimage;
 
 #define MONITOR_WIDTH 640
-#define MONITOR_HEIGHT 480
+#define MONITOR_HEIGHT 240
 
-int keyFunc (SDLKey key, Uint16 unicode)
+int keyFunc (SDL_Keycode key,  char *text)
 {
 	int i;
 	char *historyLine;
 	
-	if (unicode >=0x20 && unicode <= 0x7e) {
+	if (key == SDLK_UNKNOWN && *text >=0x20 && *text <= 0x7e) {
 		if (inputPos == 256) {
 			NSBeep();
 			return(0);
@@ -65,13 +66,13 @@ int keyFunc (SDLKey key, Uint16 unicode)
 			for (i=inputLen-1;i>=inputPos;i--)
 				inputBuffer[i+1] = inputBuffer[i];
 			}
-		inputBuffer[inputPos] = (char) unicode;
+		inputBuffer[inputPos] = *text;
 		inputLen++;
 		inputPos++;
 		terminal->AddPromptText(inputBuffer,inputLen,inputPos);
 		return(0);
 		}
-	else if (unicode == 0x7f) {
+	else if (key == SDLK_BACKSPACE) {
 		if (inputPos) {
 			for (i=inputPos;i<inputLen;i++)
 				inputBuffer[i] = inputBuffer[i+1];
@@ -81,7 +82,7 @@ int keyFunc (SDLKey key, Uint16 unicode)
 			}
 		return(0);
 		}
-	else if (unicode == 0xf728) {
+	else if (key == SDLK_DELETE) {
 		if (inputPos < inputLen) {
 			for (i=inputPos;i<inputLen;i++)
 				inputBuffer[i] = inputBuffer[i+1];
@@ -90,21 +91,21 @@ int keyFunc (SDLKey key, Uint16 unicode)
 			}
 		return(0);
 		}
-	else if (unicode == 0xf702) {
+	else if (key == SDLK_LEFT) {
 		if (inputPos) {
 			inputPos--;
 			terminal->AddPromptText(inputBuffer,inputLen,inputPos);
 			}
 		return(0);
 		}
-	else if (unicode == 0xf703) {
+	else if (key == SDLK_RIGHT) {
 		if (inputPos < inputLen) {
 			inputPos++;
 			terminal->AddPromptText(inputBuffer,inputLen,inputPos);
 			}
 		return(0);
 		}
-	else if (unicode == 0xf700) {
+	else if (key == SDLK_DOWN) {
 		historyLine = ControlManagerGetHistoryString(1);
 		if (historyLine == NULL)
 			return(0);
@@ -116,7 +117,7 @@ int keyFunc (SDLKey key, Uint16 unicode)
 			return(0);
 			}
 		}
-	else if (unicode == 0xf701) {
+	else if (key == SDLK_UP) {
 		historyLine = ControlManagerGetHistoryString(-1);
 		if (historyLine == NULL)
 			return(0);
@@ -128,7 +129,7 @@ int keyFunc (SDLKey key, Uint16 unicode)
 			return(0);
 			}
 		}
-	else if (unicode == 0x0d) {
+	else if (key == SDLK_RETURN) {
 		terminal->AddPromptText(inputBuffer,inputLen,inputLen);
 		terminal->AddText("\n");
 		inputBuffer[inputLen] = 0;
@@ -189,13 +190,13 @@ static void setSurfaceColors(SDL_Surface *surface,
 	SDL_Color colors[3]={{br,bg,bb,0},{fr,fg,fb,0}};
 	if (bg_opaque)
 	{
-	  SDL_SetColors(surface,colors,0,2);
+      SDL_SetPaletteColors(surface->format->palette, colors, 0, 2);
 	  SDL_SetColorKey(surface,0,0);
 	}
 	else
 	{
-	  SDL_SetColors(surface,&colors[1],1,1);
-	  SDL_SetColorKey(surface,SDL_SRCCOLORKEY,0);
+      SDL_SetPaletteColors(surface->format->palette, &colors[1],1,1);
+	  SDL_SetColorKey(surface,SDL_TRUE,0);
 	}
 }
 
@@ -204,7 +205,7 @@ static void initFullscreenGUI(SDL_Surface *display, int openGl)
 	SDL_Rect middle_rect;
 	Uint32 fg,bg;
 
-	fullscreenGUI = new GUI(display, MONITOR_WIDTH, MONITOR_HEIGHT, openGl, MainScreenID);
+ 	fullscreenGUI = new GUI(display, MONITOR_WIDTH, MONITOR_HEIGHT, openGl, MainScreenID, MainGLScreen);
 
 	fg = SDL_MapRGBA(display->format,fullForeRed,fullForeGreen,fullForeBlue,0);
 	bg = SDL_MapRGBA(display->format,fullBackRed,fullBackGreen,fullBackBlue,0);
@@ -215,17 +216,17 @@ static void initFullscreenGUI(SDL_Surface *display, int openGl)
 	downimage = GUI_LoadImage(arrow_w, arrow_h, arrow_pal, down_data);
 	setSurfaceColors(downimage,fullForeRed,fullForeGreen,fullForeBlue,1,fullBackRed,fullBackGreen,fullBackBlue);		
 	
-	terminal = new GUI_TermWin(0,0,MONITOR_WIDTH-upimage->w,MONITOR_HEIGHT,NULL,keyFunc,240);
+	terminal = new GUI_TermWin(0,0,MONITOR_WIDTH-upimage->w*2,MONITOR_HEIGHT,NULL,keyFunc,240);
 	fullscreenGUI->AddWidget(terminal);
 	
 	middle_rect.x = MONITOR_WIDTH-upimage->w;
 	middle_rect.y = upimage->h;
 	middle_rect.w = upimage->w;
 	middle_rect.h = MONITOR_HEIGHT-upimage->h-downimage->h;
-	scrollbar = new GUI_ScrollButtons(MONITOR_WIDTH-upimage->w,0, upimage, 
+	scrollbar = new GUI_ScrollButtons(MONITOR_WIDTH-upimage->w,0, upimage,
 									  middle_rect,
-									  MONITOR_WIDTH-downimage->w, MONITOR_HEIGHT-downimage->h, downimage, 
-									  SCROLLBAR_VERTICAL, 0.25, terminal);
+									  MONITOR_WIDTH-downimage->w, MONITOR_HEIGHT-downimage->h, downimage,
+									  SCROLLBAR_VERTICAL, 0.01, terminal);
 	SDL_FillRect(display, &middle_rect, fg);
 	middle_rect.x++; middle_rect.y++, middle_rect.w -= 2; middle_rect.h -= 2;
 	SDL_FillRect(display, &middle_rect, bg);
@@ -236,13 +237,13 @@ static void initFullscreenGUI(SDL_Surface *display, int openGl)
 	scrollbar->SetColoring(fullForeRed,fullForeGreen,fullForeBlue,1,fullBackRed,fullBackGreen,fullBackBlue);
 }
 
-static void initFullscreenCrashGUI(SDL_Surface *display, int openGl)
+static void initFullscreenCrashGUI(SDL_Surface *display, int openGl, SDL_Window *window)
 {
 	GUI_Area *area;
 	GUI_Button *button;
 	GUI_TermWin *textArea;
 
-	fullscreenCrashGUI = new GUI(display, MONITOR_WIDTH, MONITOR_HEIGHT, openGl, MainScreenID);
+	fullscreenCrashGUI = new GUI(display, MONITOR_WIDTH, MONITOR_HEIGHT, openGl, MainScreenID, window);
 
 	area = new GUI_Area(70, 140, 500, 150,fullBackRed,fullBackGreen,fullBackBlue, 
 						fullForeRed,fullForeGreen,fullForeBlue, 2,AREA_ANGULAR);
@@ -257,32 +258,32 @@ static void initFullscreenCrashGUI(SDL_Surface *display, int openGl)
 	fullscreenCrashGUI->AddWidget(textArea);	
 	textArea->SetColoring(fullForeRed,fullForeGreen,fullForeBlue,1,fullBackRed,fullBackGreen,fullBackBlue);
 	
-	button = new GUI_Button(NULL, 80, 230,120,15,"Quit Emulator",NULL,
+	button = new GUI_Button(NULL, 80, 230,120,15,(char *)"Quit Emulator",NULL,
 							BUTTON_TEXTALIGN_CENTER,0,
 							fullForeRed,fullForeGreen,fullForeBlue,fullBackRed,fullBackGreen,fullBackBlue,
 							Quit_ActiveProc,0);
 	fullscreenCrashGUI->AddWidget(button);
-	button = new GUI_Button(NULL, 220, 230,100,15,"Monitor",NULL,
+	button = new GUI_Button(NULL, 220, 230,100,15,(char *)"Monitor",NULL,
 							BUTTON_TEXTALIGN_CENTER,0,
 							fullForeRed,fullForeGreen,fullForeBlue,fullBackRed,fullBackGreen,fullBackBlue,
 							Monitor_ActiveProc,0);
 	fullscreenCrashGUI->AddWidget(button);
-	button = new GUI_Button(NULL, 340, 230,100,15,"ColdStart",NULL,
+	button = new GUI_Button(NULL, 340, 230,100,15,(char *)"ColdStart",NULL,
 							BUTTON_TEXTALIGN_CENTER,0,
 							fullForeRed,fullForeGreen,fullForeBlue,fullBackRed,fullBackGreen,fullBackBlue,
 							Coldstart_ActiveProc,0);
 	fullscreenCrashGUI->AddWidget(button);
-	button = new GUI_Button(NULL, 455, 230,100,15,"WarmStart",NULL,
+	button = new GUI_Button(NULL, 455, 230,100,15,(char *)"WarmStart",NULL,
 							BUTTON_TEXTALIGN_CENTER,0,
 							fullForeRed,fullForeGreen,fullForeBlue,fullBackRed,fullBackGreen,fullBackBlue,
 							Warmstart_ActiveProc,0);
 	fullscreenCrashGUI->AddWidget(button);
-	button = new GUI_Button(NULL, 145, 250,150,15,"Eject Cartridge",NULL,
+	button = new GUI_Button(NULL, 145, 250,150,15,(char *)"Eject Cartridge",NULL,
 							BUTTON_TEXTALIGN_CENTER,0,
 							fullForeRed,fullForeGreen,fullForeBlue,fullBackRed,fullBackGreen,fullBackBlue,
 							EjectCart_ActiveProc,0);
 	fullscreenCrashGUI->AddWidget(button);
-	button = new GUI_Button(NULL, 315, 250,150,15,"Eject Disk 1",NULL,
+	button = new GUI_Button(NULL, 315, 250,150,15,(char *)"Eject Disk 1",NULL,
 							BUTTON_TEXTALIGN_CENTER,0,
 							fullForeRed,fullForeGreen,fullForeBlue,fullBackRed,fullBackGreen,fullBackBlue,
 							EjectDisk_ActiveProc,0);
@@ -293,49 +294,30 @@ static void initFullscreenCrashGUI(SDL_Surface *display, int openGl)
 int FullscreenCrashGUIRun(void)
 {
 	if (fullscreenCrashGUI == NULL) {
-		crashGUIOpenGL = OPENGL;
-		if (OPENGL)
-			initFullscreenCrashGUI(MonitorGLScreen, 1);
-		else
-			initFullscreenCrashGUI(MainScreen, 0);		
-		}
-	else {
-		if (crashGUIOpenGL != OPENGL || fullscreenCrashColorsChanged) {
-			delete(fullscreenCrashGUI);
-			if (OPENGL)
-				initFullscreenCrashGUI(MonitorGLScreen, 1);
-			else
-				initFullscreenCrashGUI(MainScreen, 0);	
-			}
-		crashGUIOpenGL = OPENGL;
-		fullscreenCrashColorsChanged = 0;
+			initFullscreenCrashGUI(MonitorGLScreen, 1, MainGLScreen);
 		}
 		
 	/* Set the scaling for the monitor */
-	if (OPENGL) {
-		glMatrixMode(GL_PROJECTION);
-		glPushMatrix();
-		glLoadIdentity();
-		glOrtho(0.0, (GLdouble) MONITOR_WIDTH, (GLdouble) MONITOR_HEIGHT, 0.0, 0.0, 1.0);
-		glMatrixMode(GL_MODELVIEW);
-		glPushMatrix();
-		glLoadIdentity();
-		}
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity();
+    glOrtho(0.0, (GLdouble) MONITOR_WIDTH, (GLdouble) MONITOR_HEIGHT, 0.0, 0.0, 1.0);
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glLoadIdentity();
 
 	SDL_ShowCursor(SDL_ENABLE); // show mouse cursor 
 	fullscreenCrashGUI->Run();
 	SDL_ShowCursor(SDL_DISABLE); // show mouse cursor 
 	
 	/* Set the scaling for the normal Atari Screen */
-	if (OPENGL) {
-		glMatrixMode(GL_PROJECTION);
-		glPushMatrix();
-		glLoadIdentity();
-		glOrtho(0.0,(GLdouble) fullscreenWidth, (GLdouble) fullscreenHeight, 0.0, 0.0, 1.0);
-		glMatrixMode(GL_MODELVIEW);
-		glPushMatrix();
-		glLoadIdentity();
-		}
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity();
+    glOrtho(0.0,(GLdouble) fullscreenWidth, (GLdouble) fullscreenHeight, 0.0, 0.0, 1.0);
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glLoadIdentity();
 	
 	return(crashStatus);
 }
@@ -343,54 +325,34 @@ int FullscreenCrashGUIRun(void)
 int FullscreenGUIRun(void)
 {
 	if (fullscreenGUI == NULL) {
-		monitorGUIOpenGL = OPENGL;
-		if (OPENGL)
-			initFullscreenGUI(MonitorGLScreen, 1);
-		else
-			initFullscreenGUI(MainScreen, 0);		
-		}
-	else {
-		if (monitorGUIOpenGL != OPENGL || fullscreenGuiColorsChanged) {
-			delete(fullscreenGUI);
-			SDL_FreeSurface(upimage);
-			SDL_FreeSurface(downimage);
-			if (OPENGL)
-				initFullscreenGUI(MonitorGLScreen, 1);
-			else
-				initFullscreenGUI(MainScreen, 0);
-			}
-		monitorGUIOpenGL = OPENGL;
-		fullscreenGuiColorsChanged = 0;
+        initFullscreenGUI(MonitorGLScreen, 1);
 		}
 		
 	/* Set the scaling for the monitor */
-	if (OPENGL) {
-		glMatrixMode(GL_PROJECTION);
-		glPushMatrix();
-		glLoadIdentity();
-		glOrtho(0.0, (GLdouble) MONITOR_WIDTH, (GLdouble) MONITOR_HEIGHT, 0.0, 0.0, 1.0);
-		glMatrixMode(GL_MODELVIEW);
-		glPushMatrix();
-		glLoadIdentity();
-		}
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity();
+    glOrtho(0.0, (GLdouble) MONITOR_WIDTH, (GLdouble) MONITOR_HEIGHT, 0.0, 0.0, 1.0);
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glLoadIdentity();
 
 	MONITOR_monitorEnter();
 	terminal->AddText(">");
 	terminal->StartPrompt();
-	SDL_ShowCursor(SDL_ENABLE); // show mouse cursor 
+    SDL_SetRelativeMouseMode(SDL_FALSE);
 	fullscreenGUI->Run();
-	SDL_ShowCursor(SDL_DISABLE); // show mouse cursor 
-	
+    SDL_SetRelativeMouseMode(SDL_TRUE);
+
 	/* Set the scaling for the normal Atari Screen */
-	if (OPENGL) {
-		glMatrixMode(GL_PROJECTION);
-		glPushMatrix();
-		glLoadIdentity();
-		glOrtho(0.0,(GLdouble) fullscreenWidth, (GLdouble) fullscreenHeight, 0.0, 0.0, 1.0);
-		glMatrixMode(GL_MODELVIEW);
-		glPushMatrix();
-		glLoadIdentity();
-		}
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity();
+    glOrtho(0.0,(GLdouble) fullscreenWidth, (GLdouble) fullscreenHeight, 0.0, 0.0, 1.0);
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glLoadIdentity();
+
     if (monitorRetValue <= -1)
         return(1);
     else

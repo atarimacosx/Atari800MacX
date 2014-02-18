@@ -32,11 +32,12 @@
 #define WIDGET_ARRAYCHUNK	32
 
 
-GUI:: GUI(SDL_Surface *display, int w, int h, int openGLSurface, GLuint textureID)
+GUI:: GUI(SDL_Surface *display, int w, int h, int openGLSurface, GLuint textureID, SDL_Window *guiWindow)
 {
 	screen = display;
 	openGL = openGLSurface;
 	GLTextureID = textureID;
+    window = guiWindow;
 	numwidgets = 0;
 	maxwidgets = 0;
 	widgets = NULL;
@@ -117,14 +118,16 @@ GUI:: Display(void)
 		glEnd();
 
 		// Now show all changes made to the textures
-		SDL_GL_SwapBuffers();
+        SDL_GL_SwapWindow(window);
 
 		// Added this to work around problem in 10.4 where if OpenGL window was occluded, the frame rate
 		//   would drop to half normal (30fps). 
 		glFlush();
 		}
+#if 0 // TBD
 	else
 		SDL_UpdateRect(screen, 0, 0, 0, 0);
+#endif
 }
 
 /* Function to handle a GUI status */
@@ -162,6 +165,7 @@ GUI:: HandleEvent(const SDL_Event *event)
 		case SDL_MOUSEMOTION:
 		case SDL_MOUSEBUTTONDOWN:
 		case SDL_MOUSEBUTTONUP:
+        case SDL_TEXTINPUT:
 			/* Go through widgets, topmost first */
 			status = GUI_PASS;
 			for (i=numwidgets-1; (i>=0)&&(status==GUI_PASS); --i) {

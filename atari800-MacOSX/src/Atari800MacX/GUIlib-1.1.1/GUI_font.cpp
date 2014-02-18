@@ -68,8 +68,8 @@ GUI_Font::~GUI_Font()
 /* determine drawing style */
 void GUI_Font::SetTransparency(int on)
 {
-  if (transparent=on)  // single "=" is correct
-    SDL_SetColorKey(fontStore,SDL_SRCCOLORKEY,0);
+  if ((transparent=on))  // single "=" is correct
+    SDL_SetColorKey(fontStore,SDL_TRUE,0);
   else
     SDL_SetColorKey(fontStore,0,0);
 }
@@ -78,7 +78,7 @@ void GUI_Font::SetTransparency(int on)
 void GUI_Font::SetColoring(Uint8 fr, Uint8 fg, Uint8 fb, Uint8 br, Uint8 bg, Uint8 bb)
 {
   SDL_Color colors[3]={{br,bg,bb,0},{fr,fg,fb,0}};
-  SDL_SetColors(fontStore,colors,0,2);
+  SDL_SetPaletteColors(fontStore->format->palette, colors, 0, 2);
 }
 
 /* put the text onto the given surface using the preset mode and colors */
@@ -94,7 +94,7 @@ void GUI_Font::TextOut(SDL_Surface* context,int x, int y, char* text)
   dst.w = charw;
   dst.h = charh-1;
   i=0;
-  while (ch=text[i])  // single "=" is correct!
+  while ((ch=text[i]))  // single "=" is correct!
   {
     src.x = (ch%16)*charw;
     src.y = (ch/16)*charh;

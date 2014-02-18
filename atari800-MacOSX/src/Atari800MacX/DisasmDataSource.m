@@ -44,27 +44,27 @@ extern unsigned short show_instruction_string(char*buff, unsigned short  pc, int
 	
 	breakpointImage = [NSImage alloc];
     strcpy(filename, "Contents/Resources/Breakpoint.png");    
-	[breakpointImage initWithContentsOfFile:[NSString stringWithCString:filename]];
+	[breakpointImage initWithContentsOfFile:[NSString stringWithCString:filename encoding:NSASCIIStringEncoding]];
 	[breakpointImage retain];
 	
 	breakpointCurrentLineImage = [NSImage alloc];
     strcpy(filename, "Contents/Resources/BreakpointCurrentLine.png");    
-	[breakpointCurrentLineImage initWithContentsOfFile:[NSString stringWithCString:filename]];
+	[breakpointCurrentLineImage initWithContentsOfFile:[NSString stringWithCString:filename encoding:NSASCIIStringEncoding]];
 	[breakpointCurrentLineImage retain];
 	
 	currentLineImage = [NSImage alloc];
     strcpy(filename, "Contents/Resources/CurrentLine.png");    
-	[currentLineImage initWithContentsOfFile:[NSString stringWithCString:filename]];
+	[currentLineImage initWithContentsOfFile:[NSString stringWithCString:filename encoding:NSASCIIStringEncoding]];
 	[currentLineImage retain];
 	
 	disabledBreakpointImage = [NSImage alloc];
     strcpy(filename, "Contents/Resources/DisabledBreakpoint.png");    
-	[disabledBreakpointImage initWithContentsOfFile:[NSString stringWithCString:filename]];
+	[disabledBreakpointImage initWithContentsOfFile:[NSString stringWithCString:filename encoding:NSASCIIStringEncoding]];
 	[disabledBreakpointImage retain];
 	
 	disabledBreakpointCurrentLineImage = [NSImage alloc];
     strcpy(filename, "Contents/Resources/DisabledBreakpointCurrentLine.png");    
-	[disabledBreakpointCurrentLineImage initWithContentsOfFile:[NSString stringWithCString:filename]];
+	[disabledBreakpointCurrentLineImage initWithContentsOfFile:[NSString stringWithCString:filename encoding:NSASCIIStringEncoding]];
 	[disabledBreakpointCurrentLineImage retain];
 	
 	instructions = nil;
@@ -170,12 +170,12 @@ extern unsigned short show_instruction_string(char*buff, unsigned short  pc, int
 		currentAddress = show_instruction_string(buffer, currentAddress, 30);
 		if (thisRowPC) {
 			[instructions addObject:[[NSAttributedString alloc] 
-									 initWithString:[NSString stringWithCString:buffer]
+									 initWithString:[NSString stringWithCString:buffer encoding:NSASCIIStringEncoding]
 									 attributes:pcColorBackgroundDict]];
 			[flags addObject:[NSNumber numberWithInt:(FLAG_PC | breakbits)]];
 		}
 		else {
-			[instructions addObject:[NSString stringWithCString:buffer]];
+			[instructions addObject:[NSString stringWithCString:buffer encoding:NSASCIIStringEncoding]];
 			[flags addObject:[NSNumber numberWithInt:breakbits]];
 		}
 		row++;

@@ -143,7 +143,7 @@ static Atari825Simulator *sharedInstance = nil;
 }
 
 - (id)init {
-	float aFontMatrix [6];
+	double aFontMatrix [6];
 	
     if (sharedInstance) {
 		[self dealloc];
@@ -157,52 +157,52 @@ static Atari825Simulator *sharedInstance = nil;
 	aFontMatrix [3] = 12.0;
 	
 	aFontMatrix [0] = 12.0;
-	styles[STYLE_PICA] = [NSFont fontWithName : @"Courier" matrix : aFontMatrix];
+    styles[STYLE_PICA] = [[NSFont fontWithName : @"Courier" size : 12.0] retain];
 	
 	aFontMatrix [0] = 80.0/11.0;
-	styles[STYLE_COMPRESSED] = [NSFont fontWithName : @"Courier" matrix : aFontMatrix];
+	styles[STYLE_COMPRESSED] = [[NSFont fontWithName : @"Courier" matrix : aFontMatrix] retain];
 
 	aFontMatrix [0] = 12.0;	
-	styles[STYLE_PROPORTIONAL+0] = [NSFont fontWithName : @"Helvetica" matrix : aFontMatrix];
+	styles[STYLE_PROPORTIONAL+0] = [[NSFont fontWithName : @"Helvetica" matrix : aFontMatrix] retain];
 	
 	aFontMatrix [0] = 9.95;	
-	styles[STYLE_PROPORTIONAL+1] = [NSFont fontWithName : @"Helvetica" matrix : aFontMatrix];
+	styles[STYLE_PROPORTIONAL+1] = [[NSFont fontWithName : @"Helvetica" matrix : aFontMatrix] retain];
 	
 	aFontMatrix [0] = 9.85;	
-	styles[STYLE_PROPORTIONAL+2] = [NSFont fontWithName : @"Helvetica" matrix : aFontMatrix];
+	styles[STYLE_PROPORTIONAL+2] = [[NSFont fontWithName : @"Helvetica" matrix : aFontMatrix] retain];
 	
 	aFontMatrix [0] = 8.63;	
-	styles[STYLE_PROPORTIONAL+3] = [NSFont fontWithName : @"Helvetica" matrix : aFontMatrix];
+	styles[STYLE_PROPORTIONAL+3] = [[NSFont fontWithName : @"Helvetica" matrix : aFontMatrix] retain];
 	
 	aFontMatrix [0] = 8.55;	
-	styles[STYLE_PROPORTIONAL+4] = [NSFont fontWithName : @"Helvetica" matrix : aFontMatrix];
+	styles[STYLE_PROPORTIONAL+4] = [[NSFont fontWithName : @"Helvetica" matrix : aFontMatrix] retain];
 	
 	aFontMatrix [0] = 6.55;	
-	styles[STYLE_PROPORTIONAL+5] = [NSFont fontWithName : @"Helvetica" matrix : aFontMatrix];
+	styles[STYLE_PROPORTIONAL+5] = [[NSFont fontWithName : @"Helvetica" matrix : aFontMatrix] retain];
 	
 	aFontMatrix [0] = 24.0;
-	styles[STYLE_EXPANDED_PICA] = [NSFont fontWithName : @"Courier" matrix : aFontMatrix];
+	styles[STYLE_EXPANDED_PICA] = [[NSFont fontWithName : @"Courier" matrix : aFontMatrix] retain];
 	
 	aFontMatrix [0] = 160.0/11.0;
-	styles[STYLE_EXPANDED_COMPRESSED] = [NSFont fontWithName : @"Courier" matrix : aFontMatrix];
+	styles[STYLE_EXPANDED_COMPRESSED] = [[NSFont fontWithName : @"Courier" matrix : aFontMatrix] retain];
 	
 	aFontMatrix [0] = 24.0;	
-	styles[STYLE_EXPANDED_PROPORTIONAL] = [NSFont fontWithName : @"Helvetica" matrix : aFontMatrix];
+	styles[STYLE_EXPANDED_PROPORTIONAL] = [[NSFont fontWithName : @"Helvetica" matrix : aFontMatrix] retain];
 			
 	aFontMatrix [0] = 2*9.95;	
-	styles[STYLE_EXPANDED_PROPORTIONAL+1] = [NSFont fontWithName : @"Helvetica" matrix : aFontMatrix];
+	styles[STYLE_EXPANDED_PROPORTIONAL+1] = [[NSFont fontWithName : @"Helvetica" matrix : aFontMatrix] retain];
 			
 	aFontMatrix [0] = 2*9.85;	
-	styles[STYLE_EXPANDED_PROPORTIONAL+2] = [NSFont fontWithName : @"Helvetica" matrix : aFontMatrix];
+	styles[STYLE_EXPANDED_PROPORTIONAL+2] = [[NSFont fontWithName : @"Helvetica" matrix : aFontMatrix] retain];
 			
 	aFontMatrix [0] = 2*8.63;	
-	styles[STYLE_EXPANDED_PROPORTIONAL+3] = [NSFont fontWithName : @"Helvetica" matrix : aFontMatrix];
+	styles[STYLE_EXPANDED_PROPORTIONAL+3] = [[NSFont fontWithName : @"Helvetica" matrix : aFontMatrix] retain];
 			
 	aFontMatrix [0] = 2*8.55;	
-	styles[STYLE_EXPANDED_PROPORTIONAL+4] = [NSFont fontWithName : @"Helvetica" matrix : aFontMatrix];
+	styles[STYLE_EXPANDED_PROPORTIONAL+4] = [[NSFont fontWithName : @"Helvetica" matrix : aFontMatrix] retain];
 			
 	aFontMatrix [0] = 2*6.55;	
-	styles[STYLE_EXPANDED_PROPORTIONAL+5] = [NSFont fontWithName : @"Helvetica" matrix : aFontMatrix];
+	styles[STYLE_EXPANDED_PROPORTIONAL+5] = [[NSFont fontWithName : @"Helvetica" matrix : aFontMatrix] retain];
 			
 	printBuffer = [[PrintableString alloc] init];
 	[printBuffer retain];

@@ -36,6 +36,7 @@ extern OSErr 	CPSEnableForegroundOperation( CPSProcessSerNum *psn, UInt32 _arg2,
 extern OSErr	CPSSetFrontProcess( CPSProcessSerNum *psn);
 
 #endif /* SDL_USE_CPS */
+extern int PLATFORM_Exit(int run_monitor);
 
 static int    gArgc;
 static char  **gArgv;
@@ -45,7 +46,6 @@ static char startupFile[FILENAME_MAX];
 static char startupDir[FILENAME_MAX];
 
 extern void PauseAudio(int pause);
-extern void HideCursorIfMouseGrabbed(void);
 extern int dontMuteAudio;
 extern int requestPrefsChange;
 extern int configurationChanged;
@@ -150,6 +150,10 @@ int SDLMainIsActive() {
     exit(status);
 }
 
+- (void) applicationWillTerminate: (NSNotification *) note
+{
+    PLATFORM_Exit(FALSE);
+ }
 /*------------------------------------------------------------------------------
 *  application openFile - Open a file dragged to the application.
 *-----------------------------------------------------------------------------*/
@@ -212,7 +216,6 @@ int SDLMainIsActive() {
 {
 	if (!dontMuteAudio)
 		PauseAudio(0);
-    HideCursorIfMouseGrabbed();
 }
 
 
@@ -324,7 +327,7 @@ int main (int argc, char **argv)
        directories are set correctly */
     [Preferences setWorkingDirectory:gArgv[0]];
 
-    [SDLApplication poseAsClass:[NSApplication class]];
+    //[SDLApplication poseAsClass:[NSApplication class]];
     NSApplicationMain (argc, (const char **) argv);
     return 0;
 }

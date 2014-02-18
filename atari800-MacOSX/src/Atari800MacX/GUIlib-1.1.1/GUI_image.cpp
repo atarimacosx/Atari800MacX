@@ -34,7 +34,7 @@ GUI_Image:: GUI_Image(int x, int y, char *file)
 
 	picture = SDL_LoadBMP(file);
 	if ( picture == NULL ) {
-		SetError("Couldn't load %s: %s", file, SDL_GetError());
+		SetError((char *)"Couldn't load %s: %s", file, SDL_GetError());
 		return;
 	}
 //*****	GUI_Image(x, y, picture, 1); ***ERROR*** another constructor****

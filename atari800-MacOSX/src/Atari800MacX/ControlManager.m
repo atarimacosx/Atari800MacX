@@ -20,6 +20,7 @@
 #import "monitor.h"
 #import "SDL.h"
 #import "cpu.h"
+#import "ui.h"
 #import <stdarg.h>
 
 
@@ -46,6 +47,7 @@ extern int requestKeyjoyEnableChange;
 extern int requestCX85EnableChange;
 extern int requestMachineTypeChange;
 extern int requestPBIExpansionChange;
+extern int requestMonitor;
 extern int requestQuit;
 extern int speed_limit;
 extern char saveFilename[FILENAME_MAX];
@@ -62,6 +64,8 @@ extern int selectFunctionPressed;
 extern int optionFunctionPressed;
 extern int FULLSCREEN;
 extern int MONITOR_break_run_to_here;
+extern int UI_alt_function;
+extern int requestFullScreenUI;
 
 /* Functions which provide an interface for C code to call this object's shared Instance functions */
 void SetControlManagerLimit(int limit) {
@@ -171,7 +175,7 @@ char *ControlManagerGetHistoryString(int direction)
 	if (historyString == nil)
 		return(NULL);
 	else {
-		[historyString getCString:buffer maxLength:255];
+		[historyString getCString:buffer maxLength:255 encoding:NSASCIIStringEncoding];
 		return(buffer);
 		}
 }
@@ -180,7 +184,7 @@ void ControlManagerAddToHistory(char *string)
 {
 	NSString *historyString;
 	
-	historyString = [NSString stringWithCString:string];
+	historyString = [NSString stringWithCString:string encoding:NSASCIIStringEncoding];
 	[[ControlManager sharedInstance] addToHistory:historyString];
 	[historyString release];
 }
@@ -215,19 +219,10 @@ static int monitorRunFirstTime = 1;
         [super init];
         sharedInstance = self;
         if (!errorTextField) {
-			if ([[Preferences sharedInstance] getBrushed]) {
-				if (![NSBundle loadNibNamed:@"ControlManagerBrushed" owner:self])  {
-					NSLog(@"Failed to load ControlManager.nib");
-					NSBeep();
-					return nil;
-				}
-			}
-			else {
 				if (![NSBundle loadNibNamed:@"ControlManager" owner:self])  {
 					NSLog(@"Failed to load ControlManager.nib");
 					NSBeep();
 					return nil;
-                }
 			}
             }
 	[[errorTextField window] setExcludedFromWindowsMenu:YES];
@@ -281,7 +276,7 @@ static int monitorRunFirstTime = 1;
 	// Create and hook us up to our data sources
 	monitorMemoryDataSource = [[MemoryEditorDataSource alloc] init];
 	[monitorMemoryDataSource setOwner:self];
-	[monitorMemoryTableView setDataSource:monitorMemoryDataSource];
+	[monitorMemoryTableView setDataSource: (id <NSComboBoxDataSource>)monitorMemoryDataSource];
 	cols = [monitorMemoryTableView tableColumns];
 	for (i=0;i<[cols count];i++) {
 		[[[cols objectAtIndex:i] dataCell] setFont:[NSFont fontWithName:@"Monaco" size:10.0]];
@@ -289,26 +284,26 @@ static int monitorRunFirstTime = 1;
 	
 	monitorDisasmDataSource = [[DisasmDataSource alloc] init];
 	[monitorDisasmDataSource setOwner:self];
-	[monitorDisasmTableView setDataSource:monitorDisasmDataSource];
+	[monitorDisasmTableView setDataSource:(id <NSComboBoxDataSource>)monitorDisasmDataSource];
 	cols = [monitorDisasmTableView tableColumns];
 	[[[cols objectAtIndex:1] dataCell] setFont:[NSFont fontWithName:@"Monaco" size:10.0]];
 	[[BreakpointsController sharedInstance] setDisasmDataSource:monitorDisasmDataSource];
 	
 	breakpointDataSource = [[BreakpointDataSource alloc] init];
 	[breakpointDataSource setOwner:self];
-	[monitorBreakpointTableView setDataSource:breakpointDataSource];
+	[monitorBreakpointTableView setDataSource:(id <NSComboBoxDataSource>)breakpointDataSource];
 	[monitorBreakpointTableView setTarget:monitorBreakpointTableView];
-	[monitorBreakpointTableView setDoubleAction:(SEL) @selector(editBreakpoint:)];
+	[monitorBreakpointTableView setDoubleAction: @selector(editBreakpoint:)];
 	[[BreakpointsController sharedInstance] setBreakpointDataSource:breakpointDataSource];
 	
 	breakpointEditorDataSource = [[BreakpointEditorDataSource alloc] init];
 	[breakpointEditorDataSource setOwner:self];
-	[monitorBreakpointEditorTableView setDataSource:breakpointEditorDataSource];
+	[monitorBreakpointEditorTableView setDataSource:(id <NSComboBoxDataSource>)breakpointEditorDataSource];
 	[[BreakpointsController sharedInstance] setBreakpointEditorDataSource:breakpointEditorDataSource];
 	
 	monitorStackDataSource = [[StackDataSource alloc] init];
 	[monitorStackDataSource setOwner:self];
-	[monitorStackTableView setDataSource:monitorStackDataSource];
+	[monitorStackTableView setDataSource:(id <NSComboBoxDataSource>)monitorStackDataSource];
 	cols = [monitorStackTableView tableColumns];
 	for (i=0;i<[cols count];i++) {
 		[[[cols objectAtIndex:i] dataCell] setFont:[NSFont fontWithName:@"Monaco" size:10.0]];
@@ -316,7 +311,7 @@ static int monitorRunFirstTime = 1;
 	
 	monitorLabelDataSource = [[LabelDataSource alloc] init];
 	[monitorLabelDataSource setOwner:self];
-	[monitorLabelTableView setDataSource:monitorLabelDataSource];
+	[monitorLabelTableView setDataSource:(id <NSComboBoxDataSource>)monitorLabelDataSource];
 	[monitorLabelTableView setDelegate:monitorLabelDataSource];
 	cols = [monitorLabelTableView tableColumns];
 	for (i=0;i<[cols count];i++) {
@@ -325,7 +320,7 @@ static int monitorRunFirstTime = 1;
 	
 	monitorPiaDataSource = [[PiaDataSource alloc] init];
 	[monitorPiaDataSource setOwner:self];
-	[monitorPiaTableView setDataSource:monitorPiaDataSource];
+	[monitorPiaTableView setDataSource:(id <NSComboBoxDataSource>)monitorPiaDataSource];
 	cols = [monitorPiaTableView tableColumns];
 	for (i=0;i<[cols count];i++) {
 		[[[cols objectAtIndex:i] dataCell] setFont:[NSFont fontWithName:@"Monaco" size:10.0]];
@@ -333,7 +328,7 @@ static int monitorRunFirstTime = 1;
 	
 	monitorPokeyDataSource = [[PokeyDataSource alloc] init];
 	[monitorPokeyDataSource setOwner:self];
-	[monitorPokeyTableView setDataSource:monitorPokeyDataSource];
+	[monitorPokeyTableView setDataSource:(id <NSComboBoxDataSource>)monitorPokeyDataSource];
 	cols = [monitorPokeyTableView tableColumns];
 	for (i=0;i<[cols count];i++) {
 		[[[cols objectAtIndex:i] dataCell] setFont:[NSFont fontWithName:@"Monaco" size:10.0]];
@@ -341,7 +336,7 @@ static int monitorRunFirstTime = 1;
 	
 	monitorAnticDataSource = [[AnticDataSource alloc] init];
 	[monitorAnticDataSource setOwner:self];
-	[monitorAnticTableView setDataSource:monitorAnticDataSource];
+	[monitorAnticTableView setDataSource:(id <NSComboBoxDataSource>)monitorAnticDataSource];
 	cols = [monitorAnticTableView tableColumns];
 	for (i=0;i<[cols count];i++) {
 		[[[cols objectAtIndex:i] dataCell] setFont:[NSFont fontWithName:@"Monaco" size:10.0]];
@@ -349,7 +344,7 @@ static int monitorRunFirstTime = 1;
 	
 	monitorGtiaDataSource = [[GtiaDataSource alloc] init];
 	[monitorGtiaDataSource setOwner:self];
-	[monitorGtiaTableView setDataSource:monitorGtiaDataSource];
+	[monitorGtiaTableView setDataSource:(id <NSComboBoxDataSource>)monitorGtiaDataSource];
 	cols = [monitorGtiaTableView tableColumns];
 	for (i=0;i<[cols count];i++) {
 		[[[cols objectAtIndex:i] dataCell] setFont:[NSFont fontWithName:@"Monaco" size:10.0]];
@@ -357,7 +352,7 @@ static int monitorRunFirstTime = 1;
 	
 	monitorWatchDataSource = [[WatchDataSource alloc] init];
 	[monitorWatchDataSource setOwner:self];
-	[monitorWatchTableView setDataSource:monitorWatchDataSource];
+	[monitorWatchTableView setDataSource:(id <NSComboBoxDataSource>)monitorWatchDataSource];
 	cols = [monitorWatchTableView tableColumns];
 	for (i=0;i<[cols count];i++) {
 		[[[cols objectAtIndex:i] dataCell] setFont:[NSFont fontWithName:@"Monaco" size:10.0]];
@@ -584,10 +579,16 @@ static int monitorRunFirstTime = 1;
 {
     NSString *filename;
     
+    if (FULLSCREEN) {
+        UI_alt_function = UI_MENU_LOADSTATE;
+        requestFullScreenUI = 1;
+        return;
+    }
+    
     PauseAudio(1);
-    filename = [self browseFileInDirectory:[NSString stringWithCString:atari_state_dir]];
+    filename = [self browseFileInDirectory:[NSString stringWithCString:atari_state_dir encoding:NSASCIIStringEncoding]];
     if (filename != nil) {
-        [filename getCString:loadFilename];
+        [filename getCString:loadFilename maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
         requestLoadState = 1;
     }
 	[[MediaManager sharedInstance] updateInfo];
@@ -601,7 +602,7 @@ static int monitorRunFirstTime = 1;
 - (void)loadStateFile:(NSString *)filename
 {
     if (filename != nil) {
-        [filename getCString:loadFilename];
+        [filename getCString:loadFilename maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
         requestLoadState = 1;
     }
 }
@@ -625,10 +626,16 @@ static int monitorRunFirstTime = 1;
 {
     NSString *filename;
     
+    if (FULLSCREEN) {
+        UI_alt_function = UI_MENU_SAVESTATE;
+        requestFullScreenUI = 1;
+        return;
+    }
+    
     PauseAudio(1);
-    filename = [self saveFileInDirectory:[NSString stringWithCString:atari_state_dir]:@"a8s"];
+    filename = [self saveFileInDirectory:[NSString stringWithCString:atari_state_dir encoding:NSASCIIStringEncoding]:@"a8s"];
     if (filename != nil) {
-        [filename getCString:saveFilename];
+        [filename getCString:saveFilename maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
         requestSaveState = 1;
     }
     [[KeyMapper sharedInstance] releaseCmdKeys:@"s"];
@@ -666,8 +673,8 @@ static int monitorRunFirstTime = 1;
  *-----------------------------------------------------------------------------*/
 - (void)error2:(char *)error1:(char *)error2;
 {
-	[dualErrorTextField1 setStringValue:[NSString stringWithCString:error1]];
-	[dualErrorTextField2 setStringValue:[NSString stringWithCString:error2]];
+	[dualErrorTextField1 setStringValue:[NSString stringWithCString:error1 encoding:NSASCIIStringEncoding]];
+	[dualErrorTextField2 setStringValue:[NSString stringWithCString:error2 encoding:NSASCIIStringEncoding]];
     [NSApp runModalForWindow:[dualErrorTextField1 window]];
 }
 
@@ -757,7 +764,7 @@ static int monitorRunFirstTime = 1;
     NSPoint point;
     
     event1 = [NSEvent keyEventWithType:NSKeyUp location:point modifierFlags:0
-                    timestamp:nil windowNumber:0 context:nil characters:@" "
+                    timestamp:0.0 windowNumber:0 context:nil characters:@" "
                     charactersIgnoringModifiers:@" " isARepeat:NO keyCode:keyCode];
     [NSApp postEvent:event1 atStart:NO];
 }
@@ -774,7 +781,7 @@ static int monitorRunFirstTime = 1;
    
     line = [monitorInputField stringValue];
 	[self addToHistory:line];
-    [line getCString:input];
+    [line getCString:input maxLength:255 encoding:NSASCIIStringEncoding];
     
     monitorCharCount = 0;
     [self monitorPrint:input];
@@ -882,7 +889,7 @@ static int monitorRunFirstTime = 1;
     NSString *stringObj;
 
     theEnd=NSMakeRange([[messageOutputView string] length],0);
-    stringObj = [[NSString alloc] initWithCString:printString];
+    stringObj = [[NSString alloc] initWithCString:printString encoding:NSASCIIStringEncoding];
     [messageOutputView replaceCharactersInRange:theEnd withString:stringObj]; // append new string to the end
     theEnd.location += strlen(printString); // the end has moved
 	[stringObj autorelease];
@@ -905,11 +912,7 @@ static int monitorRunFirstTime = 1;
 *-----------------------------------------------------------------------------*/
 - (IBAction)monitorMenuRun:(id)sender
 {
-    int retValue;
-    
-    retValue = [self monitorRun];
-    if (retValue == 0) 
-        requestQuit = 1;
+    requestMonitor = 1;
 }
 
 /*------------------------------------------------------------------------------
@@ -935,7 +938,7 @@ static int monitorRunFirstTime = 1;
     [self monitorPrint:"> "];
 	[self updateMonitorGUI];
     theEnd=NSMakeRange([[monitorOutputView string] length],0);
-    stringObj = [[NSString alloc] initWithCString:monitorOutput];
+    stringObj = [[NSString alloc] initWithCString:monitorOutput encoding:NSASCIIStringEncoding];
     [monitorOutputView replaceCharactersInRange:theEnd withString:stringObj]; // append new string to the end
     theEnd.location += monitorCharCount; // the end has moved
     [monitorOutputView scrollRangeToVisible:theEnd];
@@ -945,7 +948,7 @@ static int monitorRunFirstTime = 1;
         retValue = [NSApp runModalForWindow:[monitorInputField window]];
         theEnd=NSMakeRange([[monitorOutputView string] length],0);
 		[stringObj release];
-        stringObj = [[NSString alloc] initWithCString:monitorOutput];
+        stringObj = [[NSString alloc] initWithCString:monitorOutput encoding:NSASCIIStringEncoding];
         [monitorOutputView replaceCharactersInRange:theEnd withString:stringObj]; // append new string to the end
         theEnd.location += monitorCharCount; // the end has moved
         [monitorOutputView scrollRangeToVisible:theEnd];
@@ -1171,7 +1174,7 @@ static int monitorRunFirstTime = 1;
 - (IBAction) monitorCPURegChanged:(id)sender
 {
 	char fieldStr[10];
-	[[sender stringValue] getCString:fieldStr];
+	[[sender stringValue] getCString:fieldStr maxLength:9 encoding:NSASCIIStringEncoding];
 	
 	switch([sender tag]) {
 		case 0:
@@ -1420,9 +1423,9 @@ static int monitorRunFirstTime = 1;
 {	
 	NSString *filename;
     
-    filename = [self browseFileInDirectory:[NSString stringWithCString:atari_exe_dir]];
+    filename = [self browseFileInDirectory:[NSString stringWithCString:atari_exe_dir encoding:NSASCIIStringEncoding]];
     if (filename != nil) {
-        [filename getCString:loadFilename];
+        [filename getCString:loadFilename maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
 		load_user_labels(loadFilename);
 		[self monitorSetLabelsDirty];
 		[self updateMonitorGUILabels];

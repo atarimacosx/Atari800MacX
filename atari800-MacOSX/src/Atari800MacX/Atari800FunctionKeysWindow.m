@@ -30,4 +30,9 @@ extern int functionKeysWindowOpen;
 	return YES;
 }
 
+- (BOOL)canBecomeKeyWindow
+{
+    return NO;
+}
+
 @end

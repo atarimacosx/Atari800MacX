@@ -10,7 +10,7 @@
 /* Fundamental declarations ---------------------------------------------- */
 
 #ifdef MACOSX
-#define Atari800_TITLE  "Atari800MacX Emulator, Version 4.0"
+#define Atari800_TITLE  "Atari800MacX Emulator, Version 5.0"
 #define Atari800BASE_TITLE  "Atari 800 Emulator, Version 2.0.3"
 #else
 #define Atari800_TITLE  "Atari 800 Emulator, Version 2.0.3"

@@ -110,7 +110,9 @@ static void scale2x(void* void_dst, unsigned dst_slice, const void* void_src, un
 	const unsigned char* src = (unsigned char*)void_src;
 	unsigned count;
 
-	assert(height >= 2);
+	//assert(height >= 2);
+    if (height < 2)
+        return;
 
 	count = height;
 

@@ -200,6 +200,86 @@
 			<key>Content</key>
 			<dict>
 				<key>PBXProjectModuleGUID</key>
+				<string>2DCD84E714AEBB0B009F4F7F</string>
+				<key>PBXProjectModuleLabel</key>
+				<string>Atari800Window.m</string>
+				<key>PBXSplitModuleInNavigatorKey</key>
+				<dict>
+					<key>Split0</key>
+					<dict>
+						<key>PBXProjectModuleGUID</key>
+						<string>2DCD84E814AEBB0B009F4F7F</string>
+						<key>PBXProjectModuleLabel</key>
+						<string>Atari800Window.m</string>
+						<key>_historyCapacity</key>
+						<integer>0</integer>
+						<key>bookmark</key>
+						<string>2D7BDA6514AFFDB30043CEB6</string>
+						<key>history</key>
+						<array>
+							<string>2DCD852214AF817A009F4F7F</string>
+						</array>
+					</dict>
+					<key>SplitCount</key>
+					<string>1</string>
+				</dict>
+				<key>StatusBarVisibility</key>
+				<true/>
+			</dict>
+			<key>Geometry</key>
+			<dict>
+				<key>Frame</key>
+				<string>{{0, 20}, {826, 681}}</string>
+				<key>PBXModuleWindowStatusBarHidden2</key>
+				<false/>
+				<key>RubberWindowFrame</key>
+				<string>149 56 826 722 0 0 1280 778 </string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Content</key>
+			<dict>
+				<key>PBXProjectModuleGUID</key>
+				<string>2DCD84EA14AEBB0B009F4F7F</string>
+				<key>PBXProjectModuleLabel</key>
+				<string>atari_mac_sdl.c</string>
+				<key>PBXSplitModuleInNavigatorKey</key>
+				<dict>
+					<key>Split0</key>
+					<dict>
+						<key>PBXProjectModuleGUID</key>
+						<string>2DCD84EB14AEBB0B009F4F7F</string>
+						<key>PBXProjectModuleLabel</key>
+						<string>atari_mac_sdl.c</string>
+						<key>_historyCapacity</key>
+						<integer>0</integer>
+						<key>bookmark</key>
+						<string>2D7BDA6614AFFDB30043CEB6</string>
+						<key>history</key>
+						<array>
+							<string>2DCD852314AF817A009F4F7F</string>
+						</array>
+					</dict>
+					<key>SplitCount</key>
+					<string>1</string>
+				</dict>
+				<key>StatusBarVisibility</key>
+				<true/>
+			</dict>
+			<key>Geometry</key>
+			<dict>
+				<key>Frame</key>
+				<string>{{0, 20}, {1052, 681}}</string>
+				<key>PBXModuleWindowStatusBarHidden2</key>
+				<false/>
+				<key>RubberWindowFrame</key>
+				<string>228 56 1052 722 0 0 1280 778 </string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Content</key>
+			<dict>
+				<key>PBXProjectModuleGUID</key>
 				<string>2D430ABC13FB71FF00EECB65</string>
 				<key>PBXProjectModuleLabel</key>
 				<string>preferences_c.c</string>
@@ -214,10 +294,10 @@
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>2DADACE914089E9300AA8BA4</string>
+						<string>2D7BDA6714AFFDB30043CEB6</string>
 						<key>history</key>
 						<array>
-							<string>2DE7AB1314088E120086DD02</string>
+							<string>2DCD852414AF817A009F4F7F</string>
 						</array>
 					</dict>
 					<key>SplitCount</key>
@@ -254,10 +334,10 @@
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>2DADACEA14089E9300AA8BA4</string>
+						<string>2D7BDA6814AFFDB30043CEB6</string>
 						<key>history</key>
 						<array>
-							<string>2DE7AB1414088E120086DD02</string>
+							<string>2DCD852514AF817A009F4F7F</string>
 						</array>
 					</dict>
 					<key>SplitCount</key>
@@ -308,8 +388,6 @@
 			<key>Layout</key>
 			<array>
 				<dict>
-					<key>BecomeActive</key>
-					<true/>
 					<key>ContentConfiguration</key>
 					<dict>
 						<key>PBXBottomSmartGroupGIDs</key>
@@ -345,18 +423,20 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateExpansionKey</key>
 							<array>
 								<string>29B97314FDCFA39411CA2CEA</string>
+								<string>080E96DDFE201D6D7F000001</string>
 								<string>19C28FACFE9D520D11CA2CBB</string>
 								<string>1C37FBAC04509CD000000102</string>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>2</integer>
+									<integer>14</integer>
+									<integer>1</integer>
 									<integer>0</integer>
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
-							<string>{{0, 0}, {252, 664}}</string>
+							<string>{{0, 0}, {252, 663}}</string>
 						</dict>
 						<key>PBXTopSmartGroupGIDs</key>
 						<array/>
@@ -368,14 +448,14 @@
 					<key>GeometryConfiguration</key>
 					<dict>
 						<key>Frame</key>
-						<string>{{0, 0}, {269, 682}}</string>
+						<string>{{0, 0}, {269, 681}}</string>
 						<key>GroupTreeTableConfiguration</key>
 						<array>
 							<string>MainColumn</string>
 							<real>252</real>
 						</array>
 						<key>RubberWindowFrame</key>
-						<string>85 55 1132 723 0 0 1280 778 </string>
+						<string>85 56 1132 722 0 0 1280 778 </string>
 					</dict>
 					<key>Module</key>
 					<string>PBXSmartGroupTreeModule</string>
@@ -391,7 +471,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>1CE0B20306471E060097A5F4</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>cartridge.c</string>
+								<string>Atari800Window.m</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
@@ -399,11 +479,11 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>1CE0B20406471E060097A5F4</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>cartridge.c</string>
+										<string>Atari800Window.m</string>
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>2DADACE614089E9300AA8BA4</string>
+										<string>2D7BDA6414AFFDB30043CEB6</string>
 										<key>history</key>
 										<array>
 											<string>2D04E25A0C6405A900FCB70F</string>
@@ -589,7 +669,6 @@
 											<string>2D96EB0A1223729B00EFDC62</string>
 											<string>2D8391761229AD6C0067496A</string>
 											<string>2D83918D1229AE410067496A</string>
-											<string>2D611A6012343EC3001A5D2F</string>
 											<string>2D290F9C12348434004E9CF8</string>
 											<string>2D290F9D12348434004E9CF8</string>
 											<string>2D6ACD4C12FE472400B05012</string>
@@ -607,8 +686,6 @@
 											<string>2D94F3D31384AE9B002F0F88</string>
 											<string>2D4309EC13FB58BA00EECB65</string>
 											<string>2D430A6713FB5E9600EECB65</string>
-											<string>2D430A6813FB5E9600EECB65</string>
-											<string>2D430AB113FB71FF00EECB65</string>
 											<string>2D430AB213FB71FF00EECB65</string>
 											<string>2D430AB313FB71FF00EECB65</string>
 											<string>2DD25EE513FC940A00954995</string>
@@ -616,7 +693,10 @@
 											<string>2DE7AAE714087FBB0086DD02</string>
 											<string>2DE7AB0D14088E120086DD02</string>
 											<string>2DADACE514089E9300AA8BA4</string>
-											<string>2DE7AB0E14088E120086DD02</string>
+											<string>2D10FE4D14AC14E5002146DF</string>
+											<string>2D10FE4E14AC14E5002146DF</string>
+											<string>2DCD84E214AEBB0B009F4F7F</string>
+											<string>2DCD852114AF817A009F4F7F</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -628,16 +708,18 @@
 							<key>GeometryConfiguration</key>
 							<dict>
 								<key>Frame</key>
-								<string>{{0, 0}, {858, 362}}</string>
+								<string>{{0, 0}, {858, 321}}</string>
 								<key>RubberWindowFrame</key>
-								<string>85 55 1132 723 0 0 1280 778 </string>
+								<string>85 56 1132 722 0 0 1280 778 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
 							<key>Proportion</key>
-							<string>362pt</string>
+							<string>321pt</string>
 						</dict>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -648,14 +730,14 @@
 							<key>GeometryConfiguration</key>
 							<dict>
 								<key>Frame</key>
-								<string>{{0, 367}, {858, 315}}</string>
+								<string>{{0, 326}, {858, 355}}</string>
 								<key>RubberWindowFrame</key>
-								<string>85 55 1132 723 0 0 1280 778 </string>
+								<string>85 56 1132 722 0 0 1280 778 </string>
 							</dict>
 							<key>Module</key>
 							<string>XCDetailModule</string>
 							<key>Proportion</key>
-							<string>315pt</string>
+							<string>355pt</string>
 						</dict>
 					</array>
 					<key>Proportion</key>
@@ -674,9 +756,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>2DADACE714089E9300AA8BA4</string>
+				<string>2D7BDA5D14AFFDB30043CEB6</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>2DADACE814089E9300AA8BA4</string>
+				<string>2D7BDA5E14AFFDB30043CEB6</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -810,17 +892,15 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>2DADACF314089E9300AA8BA4</string>
-		<string>2DADACF414089E9300AA8BA4</string>
-		<string>1C78EAAD065D492600B07095</string>
-		<string>1CD10A99069EF8BA00B06720</string>
 		<string>2D8B93550D63EC2B0070298D</string>
 		<string>2D430A6D13FB5E9600EECB65</string>
 		<string>2D430ABC13FB71FF00EECB65</string>
+		<string>2DCD84EA14AEBB0B009F4F7F</string>
+		<string>2DCD84E714AEBB0B009F4F7F</string>
 		<string>/Users/markg/Atari800MacX/atari800-MacOSX-4.3/src/Atari800MacX/Atari800MacX.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
-	<string>85 55 1132 723 0 0 1280 778 </string>
+	<string>85 56 1132 722 0 0 1280 778 </string>
 	<key>WindowToolsV3</key>
 	<array>
 		<dict>
@@ -897,7 +977,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>2D8B93550D63EC2B0070298D</string>
-				<string>2DADACEB14089E9300AA8BA4</string>
+				<string>2D7BDA6314AFFDB30043CEB6</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
@@ -1017,13 +1097,13 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1CD10A99069EF8BA00B06720</string>
-				<string>2DADACEC14089E9300AA8BA4</string>
+				<string>2DCD84F014AEBB0B009F4F7F</string>
 				<string>1C162984064C10D400B95A72</string>
-				<string>2DADACED14089E9300AA8BA4</string>
-				<string>2DADACEE14089E9300AA8BA4</string>
-				<string>2DADACEF14089E9300AA8BA4</string>
-				<string>2DADACF014089E9300AA8BA4</string>
-				<string>2DADACF114089E9300AA8BA4</string>
+				<string>2DCD84F114AEBB0B009F4F7F</string>
+				<string>2DCD84F214AEBB0B009F4F7F</string>
+				<string>2DCD84F314AEBB0B009F4F7F</string>
+				<string>2DCD84F414AEBB0B009F4F7F</string>
+				<string>2DCD84F514AEBB0B009F4F7F</string>
 			</array>
 			<key>ToolbarConfiguration</key>
 			<string>xcode.toolbar.config.debugV3</string>
@@ -1055,7 +1135,7 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>1CDD528C0622207200134675</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>atari.c</string>
+										<string>atari_mac_sdl.c</string>
 										<key>StatusBarVisibility</key>
 										<true/>
 									</dict>
@@ -1113,8 +1193,8 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C530D57069F1CE1000CFCEE</string>
-				<string>2DE7AACE14087A3F0086DD02</string>
-				<string>2DE7AACF14087A3F0086DD02</string>
+				<string>2DCD84F614AEBB0B009F4F7F</string>
+				<string>2DCD84F714AEBB0B009F4F7F</string>
 				<string>1CDD528C0622207200134675</string>
 				<string>1CD0528E0623707200166675</string>
 			</array>
@@ -1179,7 +1259,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C78EAAD065D492600B07095</string>
-				<string>2DADACF214089E9300AA8BA4</string>
+				<string>2DCD84F814AEBB0B009F4F7F</string>
 				<string>1C78EAAC065D492600B07095</string>
 			</array>
 			<key>ToolbarConfiguration</key>

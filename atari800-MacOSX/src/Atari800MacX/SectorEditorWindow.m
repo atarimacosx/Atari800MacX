@@ -30,19 +30,10 @@ static SectorEditorWindow *sharedInstance = nil;
         sharedInstance = self;
         /* load the nib and all the windows */
         if (!sectorTableView) {
-			if ([[Preferences sharedInstance] getBrushed]) {
-				if (![NSBundle loadNibNamed:@"SectorEditorWindowBrushed" owner:self])  {
-					NSLog(@"Failed to load SectorEditorWindowBrushed.nib");
-					NSBeep();
-					return nil;
-                }
-			}
-			else {
 				if (![NSBundle loadNibNamed:@"SectorEditorWindow" owner:self])  {
 					NSLog(@"Failed to load SectorEditorWindow.nib");
 					NSBeep();
 					return nil;
-                }
 			}
             }
 	[[sectorTableView window] setExcludedFromWindowsMenu:YES];
@@ -51,7 +42,7 @@ static SectorEditorWindow *sharedInstance = nil;
 	// Create and hook us up to our data source
 	sectorDataSource = [[SectorEditorDataSource alloc] init];
 	[sectorDataSource setOwner:self];
-	[sectorTableView setDataSource:sectorDataSource];
+	[sectorTableView setDataSource:(id <NSComboBoxDataSource>)sectorDataSource];
 	// Set the font sizes
 	[[headerTableColumn dataCell] setFont:[NSFont fontWithName:@"Helvetica-Bold" size:14]];
 	[[asciiTableColumn headerCell] setFont:[NSFont fontWithName:@"Helvetica-Bold" size:14]];
@@ -90,7 +81,7 @@ static SectorEditorWindow *sharedInstance = nil;
 	[[c15TableColumn dataCell] setFont:[NSFont fontWithName:@"Courier" size:14]];
 	fieldEditor = (NSTextView *) [[self window] fieldEditor:YES forObject:nil];
 	[fieldEditor setAllowsUndo:NO];
-	[[self window] setDelegate:self];
+	[[self window] setDelegate:(id <NSWindowDelegate>)self];
 		
 	}
 	
@@ -119,8 +110,8 @@ static SectorEditorWindow *sharedInstance = nil;
 	NSString *title;
 
 	// Call the Atr library with the filename that is passed in to mount the disk
-	[filename getCString:cfilename];
-	if (status = AtrMount(cfilename ,&dosType, &readWrite, &writeProtect,&diskinfo))
+	[filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+	if ((status = AtrMount(cfilename ,&dosType, &readWrite, &writeProtect,&diskinfo)))
         {
 		// If it fails, unmount the disk
 		AtrUnmount(diskinfo);

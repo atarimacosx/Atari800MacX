@@ -36,10 +36,7 @@ static NSMutableArray *printArray;
 		[self dealloc];
     } else {
         sharedInstance = self;	
-		if ([[Preferences sharedInstance] getBrushed]) 
-			[super initWithWindowNibName:@"PrintOutputBrushed" owner:self];
-		else
-			[super initWithWindowNibName:@"PrintOutput" owner:self];
+        [super initWithWindowNibName:@"PrintOutput" owner:self];
         /* load the reset confirm nib  */
         if (!mResetConfirmButton) {
 			if ([[Preferences sharedInstance] getBrushed]) { 
@@ -292,7 +289,7 @@ static NSMutableArray *printArray;
     
     savePanel = [NSSavePanel savePanel];
     [savePanel setRequiredFileType:@"pdf"];
-	directory = [NSString stringWithCString:atari_print_dir];
+	directory = [NSString stringWithCString:atari_print_dir encoding:NSASCIIStringEncoding];
     
     if ([savePanel runModalForDirectory:directory file:nil] == NSOKButton)
 		{
@@ -316,7 +313,8 @@ static NSMutableArray *printArray;
 	
 		printOp = [NSPrintOperation printOperationWithView:ourPrinterView 
 									printInfo:printInfo];
-		[printOp setShowPanels:NO];
+        [printOp setShowsPrintPanel:NO];
+        [printOp setShowsProgressPanel:NO];
 		[printOp runOperation];
 		
 		[printArray removeAllObjects];

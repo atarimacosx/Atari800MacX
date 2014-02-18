@@ -42,7 +42,7 @@ extern char atari_image_dir[FILENAME_MAX];
 char *Find_TIFF_name(void)
 {
 	int tiff_no = -1;
-	static char filename[20];
+	static char filename[FILENAME_MAX];
 	FILE *fp;
 
 	while (++tiff_no < 1000) {

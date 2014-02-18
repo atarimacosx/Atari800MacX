@@ -36,7 +36,7 @@ class GUI_TermWin : public GUI_Scrollable {
 public:
 	/* The font surface should be a 16x16 character pixmap */
 	GUI_TermWin(int x, int y, int w, int h, SDL_Surface *font = NULL,
-			int (*KeyProc)(SDLKey key, Uint16 unicode) = NULL, int scrollback = 0);
+			int (*KeyProc)(SDL_Keycode key, char *text) = NULL, int scrollback = 0);
 	~GUI_TermWin();
 
 	/* Show the text window */
@@ -49,8 +49,8 @@ public:
 	virtual void Range(int &first, int &last);
 
 	/* Handle keyboard input */
-	virtual GUI_status KeyDown(SDL_keysym key);
-	virtual GUI_status KeyUp(SDL_keysym key);
+    virtual GUI_status KeyDown(SDL_Keysym key);
+    virtual GUI_status TextInput(char *text);
 
 	/* Function to add text to the visible buffer */
 	virtual void AddText(const char *text, int len);
@@ -97,11 +97,11 @@ protected:
 	int translated;	/* Whether or not UNICODE translation was enabled */
 
 	/* The keyboard handling function */
-	int (*keyproc)(SDLKey key, Uint16 unicode);
+	int (*keyproc)(SDL_Keycode key, char *text);
 
 	/* The last key that was pressed, along with key repeat time */
-	SDLKey repeat_key;
-	Uint16 repeat_unicode;
+	SDL_Scancode repeat_key;
+	SDL_Keycode repeat_unicode;
 	Uint32 repeat_next;
 
 	/* Flag -- whether or not we need to redisplay ourselves */

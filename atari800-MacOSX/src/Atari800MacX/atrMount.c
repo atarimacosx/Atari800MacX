@@ -227,8 +227,8 @@ static int AtrDiskType(AtrDiskInfo *info)
         return -1;
 
 	/* TBD - MDG - Need to add other changes for SpartDos format 2.1 */
-    if (( buffer1[7] == 0x80 ) && ((buffer1[32] == 0x20 )) ||
-								   (buffer1[32] == 0x21 ))
+    if (( buffer1[7] == 0x80 ) && ((buffer1[32] == 0x20 ) ||
+								   (buffer1[32] == 0x21 )))
         return(DOS_SPARTA2);
     /*  Check for AtariDos 2.0 and compatibles */
     else {
@@ -693,7 +693,7 @@ static int AtrSeekSector(AtrDiskInfo *info, int sector)
 
 	SizeOfSector(info, sector, &size, (ULONG*)&offset);
 	fseek(info->atr_file, 0L, SEEK_END);
-	if (offset < 0 || offset > ftell(info->atr_file)) {
+	if (offset > ftell(info->atr_file)) {
 		}
 	else
 		fseek(info->atr_file, offset, SEEK_SET);

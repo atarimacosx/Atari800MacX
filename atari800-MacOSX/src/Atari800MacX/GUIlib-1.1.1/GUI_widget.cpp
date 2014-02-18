@@ -169,7 +169,7 @@ void GUI_Widget::Redraw(void)
   if (status==WIDGET_VISIBLE)
   {
     Display();
-    SDL_UpdateRects(screen,1,&area);
+    // TBD SDL_UpdateRects(screen,1,&area);
   }
 }
 
@@ -186,14 +186,19 @@ GUI_Widget:: Idle(void)
    These are called by the default HandleEvent function.
 */
 GUI_status
-GUI_Widget:: KeyDown(SDL_keysym key)
+GUI_Widget:: KeyDown(SDL_Keysym key)
 {
 	return(GUI_PASS);
 }
 GUI_status
-GUI_Widget:: KeyUp(SDL_keysym key)
+GUI_Widget:: KeyUp(SDL_Keysym key)
 {
 	return(GUI_PASS);
+}
+GUI_status
+GUI_Widget:: TextInput(char *text)
+{
+    return(GUI_PASS);
 }
 GUI_status
 GUI_Widget:: MouseDown(int x, int y, int button)
@@ -226,6 +231,11 @@ GUI_Widget:: HandleEvent(const SDL_Event *event)
 			return(KeyUp(event->key.keysym));
 		}
 		break;
+        case SDL_TEXTINPUT: {
+            char *t = (char *) &event->text.text;
+            return(TextInput(t));
+        }
+        break;
 		case SDL_MOUSEBUTTONDOWN: {
 			int x, y, button;
 			x = event->button.x;

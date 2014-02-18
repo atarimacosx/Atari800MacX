@@ -11,9 +11,9 @@
 #import "Atari825Simulator.h"
 #import "Atari1020Simulator.h"
 #import "EpsonFx80Simulator.h"
+#import "preferences_c.h"
 
 /* Keys in the dictionary... */
-#define BrushedSteel @"BrushedSteel"   
 #define FullScreen @"FullScreen"
 #define OpenGl @"OpenGl"
 #define LockFullscreenSize @"LockFullscreenSize"
@@ -249,7 +249,6 @@
 #define MAX_MODEMS				8
 
 @interface Preferences : NSObject {
-	IBOutlet id brushedSteelButton;
     IBOutlet id prefTabView;
     IBOutlet id a5200RomFileField;
     IBOutlet id adjustPaletteButton;
@@ -277,7 +276,13 @@
     IBOutlet id lockFullscreenSizeButton;
     IBOutlet id fullscreenMonitorButton;
 	IBOutlet id fullscreenForegroundPot;
+    IBOutlet id fullscreenForegroundRed;
+    IBOutlet id fullscreenForegroundGreen;
+    IBOutlet id fullscreenForegroundBlue;
 	IBOutlet id fullscreenBackgroundPot;
+    IBOutlet id fullscreenBackgroundRed;
+    IBOutlet id fullscreenBackgroundGreen;
+    IBOutlet id fullscreenBackgroundBlue;
     IBOutlet id scaleFactorMatrix;
 	IBOutlet id scaleModeMatrix;
 	IBOutlet id ledStatusButton;
@@ -310,10 +315,18 @@
 	IBOutlet id atari1020FormLengthStepper;
 	IBOutlet id atari1020AutoLinefeedButton;
 	IBOutlet id atari1020AutoPageAdjustButton;
-	IBOutlet id atari1020Pen1Pot;
-	IBOutlet id atari1020Pen2Pot;
-	IBOutlet id atari1020Pen3Pot;
-	IBOutlet id atari1020Pen4Pot;
+    IBOutlet id atari1020Pen1Red;
+    IBOutlet id atari1020Pen1Green;
+    IBOutlet id atari1020Pen1Blue;
+    IBOutlet id atari1020Pen2Red;
+    IBOutlet id atari1020Pen2Green;
+    IBOutlet id atari1020Pen2Blue;
+    IBOutlet id atari1020Pen3Red;
+    IBOutlet id atari1020Pen3Green;
+    IBOutlet id atari1020Pen3Blue;
+    IBOutlet id atari1020Pen4Red;
+    IBOutlet id atari1020Pen4Green;
+    IBOutlet id atari1020Pen4Blue;
 	IBOutlet id epsonCharSetPulldown;
 	IBOutlet id epsonPrintPitchPulldown;
 	IBOutlet id epsonPrintWeightPulldown;

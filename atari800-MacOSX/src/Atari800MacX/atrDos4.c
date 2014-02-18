@@ -660,7 +660,7 @@ static int AtrDos4ReadFAT(AtrDiskInfo *info, UWORD *freeBlocks)
 	int sectorSize = AtrSectorSize(info);
 	int fatSectors = (dinfo->fatSize + sectorSize - 1)/ sectorSize;
 
-    memset(dinfo->fat,0,sizeof(dinfo->fat));
+    memset(dinfo->fat,0,sectorSize*fatSectors);
     
     for (i=0;i<fatSectors;i++) {
         stat = AtrReadSector(info, dinfo->fatSector+i, dinfo->fat + sectorSize*i);

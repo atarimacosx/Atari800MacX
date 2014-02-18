@@ -80,7 +80,7 @@ static PasteManager *sharedInstance = nil;
 	NSArray *types = [NSArray arrayWithObjects:
 					  NSStringPboardType, nil];
 	[pb declareTypes:types owner:self];
-	[pb setString:[NSString stringWithCString:string] forType:NSStringPboardType];
+	[pb setString:[NSString stringWithCString:string encoding:NSASCIIStringEncoding] forType:NSStringPboardType];
 }
 
 @end

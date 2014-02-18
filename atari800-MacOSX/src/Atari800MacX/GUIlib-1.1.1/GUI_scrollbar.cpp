@@ -114,7 +114,7 @@ GUI_status
 GUI_ScrollBar:: MouseDown(int x, int y, int button)
 {
 	GUI_status status;
-
+    
 	/* Don't do anything if we're not linked to a widget */
 	if ( target == NULL ) {
 		return(GUI_PASS);

@@ -686,7 +686,7 @@ void CPU_GO(int limit)
 #endif
 			
 #ifdef MACOSX		
-		if (MONITOR_break_addr == GET_PC() && MONITOR_break_active || ANTIC_break_ypos == ANTIC_ypos) {
+		if ((MONITOR_break_addr == GET_PC() && MONITOR_break_active) || ANTIC_break_ypos == ANTIC_ypos) {
 #else
 		if (MONITOR_break_addr == GET_PC() || ANTIC_break_ypos == ANTIC_ypos) {
 #endif

@@ -295,7 +295,7 @@ static void DiskManagement(void)
 		switch (dsknum) {
 		case 8:
 #ifdef MACOSX
-			if (UI_driver->fGetSaveFilename(set_filename, atari_diskset_dir, 1)) {
+			if (UI_driver->fGetSaveFilename(set_filename, &atari_diskset_dir, 1)) {
 #else				
 			if (UI_driver->fGetSaveFilename(set_filename, UI_saved_files_dir, UI_n_saved_files_dir)) {
 #endif				
@@ -312,7 +312,7 @@ static void DiskManagement(void)
 			break;
 		case 9:
 #ifdef MACOSX
-			if (UI_driver->fGetLoadFilename(set_filename, atari_diskset_dir, 1)) {
+			if (UI_driver->fGetLoadFilename(set_filename, &atari_diskset_dir, 1)) {
 #else
 			if (UI_driver->fGetLoadFilename(set_filename, UI_saved_files_dir, UI_n_saved_files_dir)) {
 #endif				
@@ -610,7 +610,8 @@ static void CartManagement(void)
 		switch (option) {
 		case 0:
 #ifdef MACOSX
-			if (UI_driver->fGetLoadFilename(cart_filename, atari_rom_dir, 1)) {
+            // TBD Test this with &atari
+			if (UI_driver->fGetLoadFilename(cart_filename, &atari_rom_dir, 1)) {
 #else				
 			if (UI_driver->fGetLoadFilename(cart_filename, UI_atari_files_dir, UI_n_atari_files_dir)) {
 #endif				
@@ -648,7 +649,7 @@ static void CartManagement(void)
 				fclose(f);
 
 #ifdef MACOSX				
-				if (!UI_driver->fGetSaveFilename(cart_filename, atari_rom_dir, 1))
+				if (!UI_driver->fGetSaveFilename(cart_filename, &atari_rom_dir, 1))
 #else				
 				if (!UI_driver->fGetSaveFilename(cart_filename, UI_atari_files_dir, UI_n_atari_files_dir))
 #endif					
@@ -687,7 +688,7 @@ static void CartManagement(void)
 			break;
 		case 1:
 #ifdef MACOSX
-			if (UI_driver->fGetLoadFilename(cart_filename, atari_rom_dir, 1)) {
+			if (UI_driver->fGetLoadFilename(cart_filename, &atari_rom_dir, 1)) {
 #else				
 			if (UI_driver->fGetLoadFilename(cart_filename, UI_atari_files_dir, UI_n_atari_files_dir)) {
 #endif				
@@ -714,7 +715,7 @@ static void CartManagement(void)
 				fclose(f);
 
 #ifdef MACOSX
-				if (!UI_driver->fGetSaveFilename(cart_filename, atari_rom_dir, 1))
+				if (!UI_driver->fGetSaveFilename(cart_filename, &atari_rom_dir, 1))
 #else				
 				if (!UI_driver->fGetSaveFilename(cart_filename, UI_atari_files_dir, UI_n_atari_files_dir))
 #endif					
@@ -733,7 +734,7 @@ static void CartManagement(void)
 			break;
 		case 2:
 #ifdef MACOSX
-			if (UI_driver->fGetLoadFilename(cart_filename, atari_rom_dir, 1)) {
+			if (UI_driver->fGetLoadFilename(cart_filename, &atari_rom_dir, 1)) {
 #else
 			if (UI_driver->fGetLoadFilename(cart_filename, UI_atari_files_dir, UI_n_atari_files_dir)) {
 #endif				
@@ -779,7 +780,7 @@ static void CartManagement(void)
 			return;
 		case 4:
 #ifdef MACOSX
-			if (UI_driver->fGetLoadFilename(cart_filename, atari_rom_dir, 1)) {
+			if (UI_driver->fGetLoadFilename(cart_filename, &atari_rom_dir, 1)) {
 #else
 			if (UI_driver->fGetLoadFilename(cart_filename, UI_atari_files_dir, UI_n_atari_files_dir)) {
 #endif				
@@ -879,7 +880,7 @@ static void LoadTape(void)
 {
 	static char filename[FILENAME_MAX] = "";
 #ifdef MACOSX
-	if (UI_driver->fGetLoadFilename(filename, atari_cass_dir, 1)) {
+	if (UI_driver->fGetLoadFilename(filename, &atari_cass_dir, 1)) {
 #else
 	if (UI_driver->fGetLoadFilename(filename, UI_atari_files_dir, UI_n_atari_files_dir)) {
 #endif		
@@ -1264,7 +1265,7 @@ static char config_filename[FILENAME_MAX] = "";
 static void SaveState(void)
 {
 #ifdef MACOSX
-	if (UI_driver->fGetSaveFilename(state_filename, atari_state_dir, 1)) {
+	if (UI_driver->fGetSaveFilename(state_filename, &atari_state_dir, 1)) {
 #else
 	if (UI_driver->fGetSaveFilename(state_filename, UI_saved_files_dir, UI_n_saved_files_dir)) {
 #endif		
@@ -1286,7 +1287,7 @@ static void SaveState(void)
 static void LoadState(void)
 {
 #ifdef MACOSX
-	if (UI_driver->fGetLoadFilename(state_filename, atari_state_dir, 1)) {
+	if (UI_driver->fGetLoadFilename(state_filename, &atari_state_dir, 1)) {
 #else
 	if (UI_driver->fGetLoadFilename(state_filename, UI_saved_files_dir, UI_n_saved_files_dir)) {
 #endif		
@@ -1303,7 +1304,7 @@ static void LoadState(void)
 #ifdef MACOSX
 static void SaveConfig(void)
 {
-	if (UI_driver->fGetSaveFilename(config_filename, atari_config_dir, 1)) {
+	if (UI_driver->fGetSaveFilename(config_filename, &atari_config_dir, 1)) {
 		UI_driver->fMessage("Please wait while saving...", 0);
 		PreferencesSaveConfigurationUI(config_filename);
 	}
@@ -1311,7 +1312,7 @@ static void SaveConfig(void)
 
 static void LoadConfig(void)
 {
-	if (UI_driver->fGetLoadFilename(config_filename, atari_config_dir, 1)) {
+	if (UI_driver->fGetLoadFilename(config_filename, &atari_config_dir, 1)) {
 		UI_driver->fMessage("Please wait while loading...", 0);
 		PreferencesLoadConfigurationUI(config_filename);
 	}
@@ -1748,12 +1749,12 @@ static void Screenshot(int interlaced)
 static void AboutEmulator(void)
 {
 	UI_driver->fInfoScreen("About the Emulator",
-		"Atari800MacOSX Version 4.0 based on\0"						   
+		"Atari800MacOSX Version 5.0 based on\0"						   
 		Atari800BASE_TITLE "\0"
 		"Copyright (c) 1995-1998 David Firth\0"
 		"and\0"
 		"(c)1998-2009 Atari800 Development Team\0"
-		"and (c)2002-2009 Mark Grebe\0"
+		"and (c)2002-2019 Mark Grebe\0"
 		"See CREDITS file for details.\0"
 		"http://atarimac.com/\0"
 		"http://atari800.atari.org/\0"

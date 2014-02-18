@@ -3,7 +3,7 @@
    Macintosh OS X SDL port of Atari800
    Mark Grebe <atarimac@kc.rr.com>
 */
-#import "AboutBox.h";
+#import "AboutBox.h"
 #import "ControlManager.h"
 
 static int boxDisplayed = FALSE;

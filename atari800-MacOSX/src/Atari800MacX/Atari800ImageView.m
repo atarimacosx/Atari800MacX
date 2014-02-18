@@ -53,7 +53,7 @@ static char fileToCopy[FILENAME_MAX];
 
 		if (SIO_drive_status[tag] == SIO_READ_ONLY || SIO_drive_status[tag] == SIO_READ_WRITE) {
 			// Write data to the pasteboard
-			NSArray *fileList = [NSArray arrayWithObjects:[NSString stringWithCString:SIO_filename[tag]], nil];
+			NSArray *fileList = [NSArray arrayWithObjects:[NSString stringWithCString:SIO_filename[tag] encoding:NSASCIIStringEncoding], nil];
 			NSPasteboard *pboard = [NSPasteboard pasteboardWithName:NSDragPboard];
 			[pboard declareTypes:[NSArray arrayWithObject:NSFilenamesPboardType]
 				owner:nil];
@@ -105,7 +105,7 @@ static char fileToCopy[FILENAME_MAX];
 			[[MediaManager sharedInstance] diskRemoveKey:(driveNo + 1)];
 		else
 			[[MediaManager sharedInstance] 
-				diskNoInsertFile:[NSString stringWithCString:fileToCopy]:driveNo];
+				diskNoInsertFile:[NSString stringWithCString:fileToCopy encoding:NSASCIIStringEncoding]:driveNo];
 		}
 	else if (operation & NSDragOperationMove)
 		{
@@ -152,7 +152,7 @@ static char fileToCopy[FILENAME_MAX];
 					[suffix isEqualToString:@"dcm"] ||
 					[suffix isEqualToString:@"DCM"]) ||
 					[[files objectAtIndex:0] 
-						isEqualToString:[NSString stringWithCString:SIO_filename[[self tag]]]])
+						isEqualToString:[NSString stringWithCString:SIO_filename[[self tag]] encoding:NSASCIIStringEncoding]])
 					return NSDragOperationNone;
 			if ([self tag] == 8)
 				if (!([suffix isEqualToString:@"cas"] ||

@@ -38,7 +38,7 @@
 
 	if ([[aTableColumn identifier] isEqual:@"RowHeader"]) {
 		sprintf(cellNum,"%02X",rowIndex*16);
-		rowStr = [NSString stringWithCString:cellNum];
+		rowStr = [NSString stringWithCString:cellNum encoding:NSASCIIStringEncoding];
 		return(rowStr);
 		}
 	else if ([[aTableColumn identifier] isEqual:@"ASCII"]) {
@@ -53,14 +53,14 @@
 				asciiBuffer[i] = '.';
 			} 
 		asciiBuffer[16] = 0;
-		rowStr = [NSString stringWithCString:asciiBuffer];
+		rowStr = [NSString stringWithCString:asciiBuffer encoding:NSASCIIStringEncoding];
 		return(rowStr);
 		}
 	else {
 		int colNum = [[aTableColumn identifier] intValue];
 
 		sprintf(cellNum,"%02X",sectorBuffer[rowIndex*16+colNum]);
-		rowStr = [NSString stringWithCString:cellNum];
+		rowStr = [NSString stringWithCString:cellNum encoding:NSASCIIStringEncoding];
 		return(rowStr);
 		}
 	}
@@ -77,10 +77,10 @@
 	NSString *cellStr = (NSString *) anObject;
 	int i;
 
-	[cellStr getCString:cellCStr];
+	[cellStr getCString:cellCStr maxLength:16 encoding:NSASCIIStringEncoding];
 	for (i=strlen(cellCStr);i<16;i++)
 		cellCStr[i] = ' ';
-	cellCStr[17] = 0;
+	cellCStr[16] = 0;
 	
 	if ([[aTableColumn identifier] isEqual:@"ASCII"]) {
 		int start = rowIndex*16;

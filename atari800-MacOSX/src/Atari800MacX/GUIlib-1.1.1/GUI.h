@@ -36,7 +36,7 @@
 class GUI {
 
 public:
-	GUI(SDL_Surface *display, int w, int h, int openGLSurface, GLuint textureID);
+	GUI(SDL_Surface *display, int w, int h, int openGLSurface, GLuint textureID, SDL_Window *guiWindow);
 	~GUI();
 
 	/* Add a widget to the GUI.
@@ -69,9 +69,12 @@ public:
 	void Run(GUI_IdleProc idle = NULL, int once = 0, int multitaskfriendly = 0);
 
 protected:
-	/* The display surface */
-	SDL_Surface *screen;
-
+    /* The display surface */
+    SDL_Surface *screen;
+    
+    /* The display window */
+    SDL_Window *window;
+    
 	/* Pointers for an array of widgets */
 	int maxwidgets;
 	int numwidgets;

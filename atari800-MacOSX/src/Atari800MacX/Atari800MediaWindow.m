@@ -37,5 +37,10 @@ extern int mediaStatusWindowOpen;
 	return YES;
 }
 
+- (BOOL)canBecomeKeyWindow
+{
+    return NO;
+}
+
 @end
 

@@ -94,7 +94,7 @@ static NSMutableArray *editorArray = nil;
 	   }
 	   
 	[directoryDataSource setOwner:self];
-	[directoryTableView setDataSource:directoryDataSource];
+	[directoryTableView setDataSource:(id <NSComboBoxDataSource>)directoryDataSource];
 	[directoryTableView setDoubleAction:@selector(diskImageDoubleClick:)];
 #ifndef OSX_10_1_COMPAT	
 	[directoryTableView registerForDraggedTypes:[NSArray arrayWithObjects:
@@ -105,7 +105,7 @@ static NSMutableArray *editorArray = nil;
 #endif			
 	[[directoryTableColumn headerCell] setFont:[NSFont fontWithName:@"Courier" size:12]];
 	[[directoryTableColumn dataCell] setFont:[NSFont fontWithName:@"Monaco" size:12]];
-	[[self window] setDelegate:self];
+	[[self window] setDelegate:(id <NSWindowDelegate>)self];
 	[self diskImageOpenDone];
 	
 	[self diskImageEnableButtons];
@@ -461,7 +461,7 @@ static NSMutableArray *editorArray = nil;
 	int index = [diskImageDirPulldown indexOfSelectedItem];
 	int count = [diskImageDirPulldown numberOfItems] - 1 - index;
 	
-	if (index = 0)
+	if (index == 0)
 		[directoryDataSource changeDirectoryUp:-1];
 	else
 		[directoryDataSource changeDirectoryUp:count];
@@ -520,7 +520,7 @@ static NSMutableArray *editorArray = nil;
 	NSString *size;
 	
 	sprintf(sizeStr,"%.1f Kilobytes",(((float) free)/1024));
-	size = [NSString stringWithCString:sizeStr];
+	size = [NSString stringWithCString:sizeStr encoding:NSASCIIStringEncoding];
 	[diskImageFreeSectorsField setStringValue:size];
 }
 

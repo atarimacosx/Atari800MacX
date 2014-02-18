@@ -36,7 +36,7 @@
 	if (([self isRowSelected:row] == NO) && 
 		!(flags & NSShiftKeyMask) &&
 		!(flags & NSCommandKeyMask))
-		[self selectRow:row byExtendingSelection:NO];
+        [self selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
 	/* Call the normal mouseDown processing */	
 	[super mouseDown:theEvent];
 }

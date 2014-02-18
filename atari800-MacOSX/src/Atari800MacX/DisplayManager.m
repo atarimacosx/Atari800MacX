@@ -28,6 +28,9 @@ extern int requestScreenshot;
 extern int ANTIC_artif_mode;
 extern int requestArtifChange;
 extern int PLATFORM_xep80;
+extern int requestPaste;
+extern int requestCopy;
+extern int requestSelectAll;
 
 /* Functions which provide an interface for C code to call this object's shared Instance functions */
 void SetDisplayManagerDoubleSize(int scale) {
@@ -366,6 +369,28 @@ static DisplayManager *sharedInstance = nil;
 	requestArtifChange = 1;
 }
 
+/*------------------------------------------------------------------------------
+ *  paste - Starts Paste from Mac to Atari
+ *-----------------------------------------------------------------------------*/
+- (void) paste:(id) sender
+{
+    requestPaste = 1;
+}
 
+/*------------------------------------------------------------------------------
+ *  selectAll - Starts selectAll from Mac to Atari
+ *-----------------------------------------------------------------------------*/
+- (void) selectAll:(id) sender
+{
+    requestSelectAll = 1;
+}
+
+/*------------------------------------------------------------------------------
+ *  copy - Starts copy from Mac to Atari
+ *-----------------------------------------------------------------------------*/
+- (void) copy:(id) sender
+{
+    requestCopy = 1;
+}
 
 @end

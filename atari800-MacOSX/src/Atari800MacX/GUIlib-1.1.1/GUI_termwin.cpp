@@ -35,7 +35,7 @@
 #define KEYREPEAT_TIME	100		/* Repeat every 100 ms */
 
 GUI_TermWin:: GUI_TermWin(int x, int y, int w, int h, SDL_Surface *Font,
-				int (*KeyProc)(SDLKey key, Uint16 unicode), int scrollback)
+				int (*KeyProc)(SDL_Keycode key, char *text), int scrollback)
  : GUI_Scrollable(NULL, x, y, w, h)
 {
 	/* The font surface should be a 16x16 character pixmap */
@@ -59,11 +59,11 @@ GUI_TermWin:: GUI_TermWin(int x, int y, int w, int h, SDL_Surface *Font,
 
 	/* Set the user-defined keyboard handler */
 	keyproc = KeyProc;
-	repeat_key = SDLK_UNKNOWN;
+	repeat_key = SDL_SCANCODE_UNKNOWN;
 	repeat_unicode = 0;
 
 	/* Set key event translation on */
-	translated = SDL_EnableUNICODE(1);
+	// TBD translated = SDL_EnableUNICODE(1);
 }
 
 GUI_TermWin:: ~GUI_TermWin()
@@ -71,7 +71,7 @@ GUI_TermWin:: ~GUI_TermWin()
 	delete[] vscreen;
 
 	/* Reset key event translation */
-	SDL_EnableUNICODE(translated);
+	// TBD SDL_EnableUNICODE(translated);
 }
 
 void
@@ -133,31 +133,47 @@ GUI_TermWin:: Range(int &first, int &last)
 }
 
 GUI_status
-GUI_TermWin:: KeyDown(SDL_keysym key)
+GUI_TermWin:: KeyDown(SDL_Keysym key)
 {
-	GUI_status status;
-	int keystat;
+    GUI_status status;
+    int keystat;
 
-	status = GUI_PASS;
-	if ( keyproc ) {
-		keystat = keyproc(key.sym, key.unicode);
-		if (keystat) 
-			status = GUI_QUIT;
-		else {
-			repeat_key = key.sym;
-			repeat_unicode = key.unicode;
-			repeat_next = SDL_GetTicks()+5*KEYREPEAT_TIME;
-			status = GUI_YUM;
-		}
-	}
-	return(status);
+    status = GUI_PASS;
+    if (key.sym == SDLK_BACKSPACE ||
+        key.sym == SDLK_DELETE    ||
+        key.sym == SDLK_LEFT      ||
+        key.sym == SDLK_RIGHT     ||
+        key.sym == SDLK_DOWN      ||
+        key.sym == SDLK_UP        ||
+        key.sym == SDLK_RETURN) {
+            keystat = keyproc(key.sym, NULL);
+            if (keystat)
+                status = GUI_QUIT;
+            else {
+                status = GUI_YUM;
+            }
+    }
+    return(status);
 }
 
 GUI_status
-GUI_TermWin:: KeyUp(SDL_keysym key)
+GUI_TermWin:: TextInput(char *text)
 {
-	repeat_key = SDLK_UNKNOWN;
-	return(GUI_PASS);
+    GUI_status status;
+    int keystat;
+    
+    status = GUI_PASS;
+    if (strlen(text) != 1)
+        return(status);
+    if ( keyproc ) {
+        keystat = keyproc(SDLK_UNKNOWN, text);
+        if (keystat)
+            status = GUI_QUIT;
+        else {
+            status = GUI_YUM;
+        }
+    }
+    return(status);
 }
 
 void
@@ -293,14 +309,6 @@ GUI_TermWin:: Idle(void)
 
 	status = GUI_PASS;
 
-	/* Perform any necessary key repeat */
-	if ( repeat_key && keyproc ) {
-		if ( repeat_next <= SDL_GetTicks() ) {
-			keyproc(repeat_key, repeat_unicode);
-			repeat_next = SDL_GetTicks()+KEYREPEAT_TIME;
-		}
-	}
-
 	/* Check to see if display contents have changed */
 	if ( changed ) {
 		status = GUI_REDRAW;
@@ -316,13 +324,13 @@ void GUI_TermWin::SetColoring(Uint8 fr,Uint8 fg,Uint8 fb, int bg_opaque,
 	SDL_Color colors[3]={{br,bg,bb,0},{fr,fg,fb,0}};
 	if (bg_opaque)
 	{
-	  SDL_SetColors(font,colors,0,2);
+      SDL_SetPaletteColors(font->format->palette, colors, 0, 2);
 	  SDL_SetColorKey(font,0,0);
 	}
 	else
 	{
-	  SDL_SetColors(font,&colors[1],1,1);
-	  SDL_SetColorKey(font,SDL_SRCCOLORKEY,0);
+      SDL_SetPaletteColors(font->format->palette, &colors[1],1,1);
+	  SDL_SetColorKey(font,SDL_TRUE,0);
 	}
 	cursor_color = SDL_MapRGBA(screen->format,fr,fg,fb,0);
 }

@@ -151,7 +151,7 @@ GUI_Button::GUI_Button(void *data, int x, int y, int w, int h, char *text,
   if (is_checkable &&(checkmarks==NULL))
   {
     checkmarks=GUI_LoadImage(checker_w,checker_h,checker_pal,checker_data);
-    SDL_SetColorKey(checkmarks,SDL_SRCCOLORKEY,0);
+    SDL_SetColorKey(checkmarks,SDL_TRUE,0);
   }
   ChangeTextButton(-1,-1,-1,-1,text,alignment);
 
@@ -334,8 +334,8 @@ SDL_Surface* GUI_Button::CreateTextButtonImage(int style, char *text, int alignm
 {
   SDL_Rect fillrect;
   int th,tw,ty,tx=0;
-  SDL_Surface *img=SDL_AllocSurface(SDL_SWSURFACE,area.w,area.h,
-				    16,31 << 11,63 << 5,31,0);
+  SDL_Surface *img = NULL; // TBD =SDL_AllocSurface(SDL_SWSURFACE,area.w,area.h,
+                    // TBD 16,31 << 11,63 << 5,31,0);
   Uint32 color1=SDL_MapRGB(img->format,BL_R,BL_G,BL_B);
   Uint32 color2=SDL_MapRGB(img->format,BS_R,BS_G,BS_B);
   Uint32 color3=SDL_MapRGB(img->format,BF_R,BF_G,BF_B);

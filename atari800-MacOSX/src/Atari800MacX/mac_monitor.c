@@ -1263,7 +1263,7 @@ int MONITOR_monitorCmd(char *input)
 			{
 				file = get_token(NULL);
 				if (file) {
-					if (MONITOR_trace_file = fopen(file,"w"))
+					if ((MONITOR_trace_file = fopen(file,"w")))
 						MONITOR_tron = TRUE;
 					else {
 						mon_printf("Error opening trace file %s\n", file);

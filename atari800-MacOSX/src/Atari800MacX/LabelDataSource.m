@@ -52,7 +52,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 		l = [sortedLabels objectAtIndex:([sortedLabels count] - 1 - rowIndex)];
 	
 	if ([[aTableColumn identifier] isEqual:@"L"]) {
-		return([NSString stringWithCString:[l labelName]]);
+		return([NSString stringWithCString:[l labelName] encoding:NSASCIIStringEncoding]);
     } else if ([[aTableColumn identifier] isEqual:@"V"]) {
 		return([NSString stringWithFormat:@"%04X",[l addr]]);
 	} else if ([[aTableColumn identifier] isEqual:@"B"]) {
@@ -164,13 +164,13 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 	if (sortedLabels != nil)
 		[sortedLabels release];
 	if ([currentColumnId isEqual:@"L"]) {
-		sortedLabels = [labels sortedArrayUsingSelector:(SEL) @selector(compareLabels:)];
+		sortedLabels = [labels sortedArrayUsingSelector:@selector(compareLabels:)];
 	} else if ([currentColumnId isEqual:@"V"]) {
-		sortedLabels = [labels sortedArrayUsingSelector:(SEL) @selector(compareValues:)];
+		sortedLabels = [labels sortedArrayUsingSelector:@selector(compareValues:)];
 	} else if ([currentColumnId isEqual:@"B"]) {
-		sortedLabels = [labels sortedArrayUsingSelector:(SEL) @selector(compareBuiltins:)];
+		sortedLabels = [labels sortedArrayUsingSelector:@selector(compareBuiltins:)];
 	} else if ([currentColumnId isEqual:@"R"]) {
-		sortedLabels = [labels sortedArrayUsingSelector:(SEL) @selector(compareReadWrites:)];
+		sortedLabels = [labels sortedArrayUsingSelector:@selector(compareReadWrites:)];
 	}
 	[sortedLabels retain];
 }

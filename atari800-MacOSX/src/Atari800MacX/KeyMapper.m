@@ -20,7 +20,7 @@ static KeyMapper *sharedInstance = nil;
     Uint32 state;
     UInt32 value;
     int i;
-    int world = SDLK_WORLD_0;
+    int world = 128; // TBD SDLK_WORLD_0;
 
     if (sharedInstance) {
 	    [self dealloc];
@@ -82,12 +82,12 @@ static KeyMapper *sharedInstance = nil;
 	keyCode = [self getQuartzKey:charCode];
     
     event1 = [NSEvent keyEventWithType:NSKeyUp location:point modifierFlags:0
-                    timestamp:nil windowNumber:0 context:nil characters:character
+                    timestamp:0.0 windowNumber:0 context:nil characters:character
                     charactersIgnoringModifiers:character isARepeat:NO keyCode:keyCode];
     [NSApp postEvent:event1 atStart:NO];
     
     event2 = [NSEvent keyEventWithType:NSFlagsChanged location:point modifierFlags:0
-                    timestamp:nil windowNumber:0 context:nil characters:nil
+                    timestamp:0.0 windowNumber:0 context:nil characters:nil
                     charactersIgnoringModifiers:nil isARepeat:NO keyCode:0];
     [NSApp postEvent:event2 atStart:NO];
 	

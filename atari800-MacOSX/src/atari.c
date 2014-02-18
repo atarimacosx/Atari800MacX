@@ -146,7 +146,6 @@ int Atari800_nframes = 0;
 int Atari800_refresh_rate = 1;
 int Atari800_collisions_in_skipped_frames = FALSE;
 
-static double frametime = 0.1;
 #ifdef MACOSX
 double deltatime;
 #endif

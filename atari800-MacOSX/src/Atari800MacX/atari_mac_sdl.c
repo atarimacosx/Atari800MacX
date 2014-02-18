@@ -30,6 +30,7 @@
 
 #include <SDL.h>
 #include <SDL_opengl.h>
+#include <SDL_syswm.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -140,6 +141,7 @@ int pauseEmulator = 0;
 int requestDoubleSizeChange = 0;
 int requestWidthModeChange = 0;
 int requestFullScreenChange = 0;
+int requestFullScreenUI = 0;
 int requestXEP80Change = 0;
 int requestGrabMouse = 0;
 int requestScreenshot = 0;
@@ -227,9 +229,8 @@ extern void SDLMainSelectAll(void);
 extern void SDLMainCopy(void);
 extern void SDLMainPaste(void);
 extern void AboutBoxScroll(void);
-extern void Atari800WindowCreate(int width, int height);
+extern void Atari800WindowCreate(NSWindow *window);
 extern void Atari800OriginSet(void);
-extern void Atari800WindowResize(int width, int height);
 extern void Atari800WindowCenter(void);
 extern void Atari800WindowDisplay(void);
 extern void Atari800OriginSave(void);
@@ -326,33 +327,31 @@ void ProcessCopySelection(int *first_row, int *last_row, int selectAll);
 // joystick emulation - Future enhancement will allow user to set these in 
 //   Preferences.
 
-int SDL_TRIG_0 = SDLK_LCTRL;
-int SDL_TRIG_0_B = SDLK_KP0;
-int SDL_TRIG_0_R = SDLK_RCTRL;
-int SDL_TRIG_0_B_R = SDLK_KP0;
-int SDL_JOY_0_LEFT = SDLK_KP4;
-int SDL_JOY_0_RIGHT = SDLK_KP6;
-int SDL_JOY_0_DOWN = SDLK_KP2;
-int SDL_JOY_0_UP = SDLK_KP8;
-int SDL_JOY_0_LEFTUP = SDLK_KP7;
-int SDL_JOY_0_RIGHTUP = SDLK_KP9;
-int SDL_JOY_0_LEFTDOWN = SDLK_KP1;
-int SDL_JOY_0_RIGHTDOWN = SDLK_KP3;
+int SDL_TRIG_0 = SDL_SCANCODE_LCTRL;
+int SDL_TRIG_0_B = SDL_SCANCODE_KP_0;
+int SDL_TRIG_0_R = SDL_SCANCODE_RCTRL;
+int SDL_TRIG_0_B_R = SDL_SCANCODE_KP_0;
+int SDL_JOY_0_LEFT = SDL_SCANCODE_KP_4;
+int SDL_JOY_0_RIGHT = SDL_SCANCODE_KP_6;
+int SDL_JOY_0_DOWN = SDL_SCANCODE_KP_2;
+int SDL_JOY_0_UP = SDL_SCANCODE_KP_8;
+int SDL_JOY_0_LEFTUP = SDL_SCANCODE_KP_7;
+int SDL_JOY_0_RIGHTUP = SDL_SCANCODE_KP_9;
+int SDL_JOY_0_LEFTDOWN = SDL_SCANCODE_KP_1;
+int SDL_JOY_0_RIGHTDOWN = SDL_SCANCODE_KP_3;
 
-int SDL_TRIG_1 = SDLK_TAB;
-int SDL_TRIG_1_B = SDLK_LSHIFT;
-int SDL_TRIG_1_R = SDLK_TAB;
-int SDL_TRIG_1_B_R = SDLK_RSHIFT;
-int SDL_JOY_1_LEFT = SDLK_a;
-int SDL_JOY_1_RIGHT = SDLK_d;
-int SDL_JOY_1_DOWN = SDLK_x;
-int SDL_JOY_1_UP = SDLK_w;
-int SDL_JOY_1_LEFTUP = SDLK_q;
-int SDL_JOY_1_RIGHTUP = SDLK_e;
-int SDL_JOY_1_LEFTDOWN = SDLK_z;
-int SDL_JOY_1_RIGHTDOWN = SDLK_c;
-
-int SDL_IsJoyKey[SDLK_LAST];  // Array to determine if keypress is for joystick.
+int SDL_TRIG_1 = SDL_SCANCODE_TAB;
+int SDL_TRIG_1_B = SDL_SCANCODE_LSHIFT;
+int SDL_TRIG_1_R = SDL_SCANCODE_TAB;
+int SDL_TRIG_1_B_R = SDL_SCANCODE_RSHIFT;
+int SDL_JOY_1_LEFT = SDL_SCANCODE_A;
+int SDL_JOY_1_RIGHT = SDL_SCANCODE_D;
+int SDL_JOY_1_DOWN = SDL_SCANCODE_X;
+int SDL_JOY_1_UP = SDL_SCANCODE_W;
+int SDL_JOY_1_LEFTUP = SDL_SCANCODE_Q;
+int SDL_JOY_1_RIGHTUP = SDL_SCANCODE_E;
+int SDL_JOY_1_LEFTDOWN = SDL_SCANCODE_Z;
+int SDL_JOY_1_RIGHTDOWN = SDL_SCANCODE_X;
 
 int keyjoyEnable = TRUE;
 
@@ -361,6 +360,7 @@ SDL_Joystick *joystick0 = NULL;
 SDL_Joystick *joystick1 = NULL;
 SDL_Joystick *joystick2 = NULL;
 SDL_Joystick *joystick3 = NULL;
+SDL_Joystick *joysticks[4];
 int joystick0_nbuttons, joystick1_nbuttons;
 int joystick2_nbuttons, joystick3_nbuttons;
 int joystick0_nsticks, joystick0_nhats;
@@ -501,8 +501,9 @@ static int callbacktick = 0;
 // video
 Uint8 *scaledScreen;
 SDL_Surface *MainScreen = NULL;
-SDL_Surface *MainGLScreen = NULL;
+SDL_Window *MainGLScreen = NULL;
 SDL_Surface *MonitorGLScreen = NULL;
+SDL_GLContext glcontext = NULL;
 GLuint MainScreenID;
 GLuint MonitorScreenID = 0;
 GLfloat texCoord[4];
@@ -543,6 +544,76 @@ static int soundStartupDelay = 44; // No audio for first 44 SDL sound loads unti
 	                           // gets going.......This eliminates the startup
 							   // "click"....
 
+/* Hasktable implementation */
+struct node{
+    int key;
+    int val;
+    struct node *next;
+};
+struct table{
+    int size;
+    struct node **list;
+};
+struct table *createTable(int size){
+    struct table *t = (struct table*)malloc(sizeof(struct table));
+    t->size = size;
+    t->list = (struct node**)malloc(sizeof(struct node*)*size);
+    int i;
+    for(i=0;i<size;i++)
+        t->list[i] = NULL;
+    return t;
+}
+void deleteTable(struct table *t){
+    int i;
+    struct node *n;
+    struct node *next;
+    for (i=0;i<t->size;i++){
+        n = t->list[i];
+        while(n) {
+            next = n->next;
+            free(n);
+            n = next;
+        }
+    }
+    free(t->list);
+    free(t);
+}
+int hashCode(struct table *t,int key){
+    if(key<0)
+        return -(key%t->size);
+    return key%t->size;
+}
+void insert(struct table *t,int key,int val){
+    int pos = hashCode(t,key);
+    struct node *list = t->list[pos];
+    struct node *newNode = (struct node*)malloc(sizeof(struct node));
+    struct node *temp = list;
+    while(temp){
+        if(temp->key==key){
+            temp->val = val;
+            return;
+        }
+        temp = temp->next;
+    }
+    newNode->key = key;
+    newNode->val = val;
+    newNode->next = list;
+    t->list[pos] = newNode;
+}
+int lookup(struct table *t,int key){
+    int pos = hashCode(t,key);
+    struct node *list = t->list[pos];
+    struct node *temp = list;
+    while(temp){
+        if(temp->key==key){
+            return temp->val;
+        }
+        temp = temp->next;
+    }
+    return -1;
+}
+
+struct table *SDL_IsJoyKeyTable = NULL;
 
 #ifdef SYNCHRONIZED_SOUND
 /* returns a factor (1.0 by default) to adjust the speed of the emulation
@@ -651,7 +722,7 @@ void Sound_Update(void)
 *-----------------------------------------------------------------------------*/
 static void SetPalette()
 {
-    SDL_SetPalette(MainScreen, SDL_LOGPAL | SDL_PHYSPAL, colors, 0, 256);
+    SDL_SetPaletteColors(MainScreen->format->palette, colors, 0, 256);
 }
 
 /*------------------------------------------------------------------------------
@@ -662,10 +733,11 @@ void CalcPalette()
 {
     int i, rgb;
     Uint32 c,c32;
-	static SDL_PixelFormat Format32 = {NULL,32,4,0,0,0,8,16,8,0,0,
-										0xff0000,0x00ff00,0x0000ff,0x000000,
-										0,255};
-	
+    //static SDL_PixelFormat Format32 = {NULL,32,4,0,0,0,8,16,8,0,0,
+	//									0xff0000,0x00ff00,0x0000ff,0x000000,
+	//									0,255};
+    SDL_PixelFormat* Format32 = SDL_AllocFormat(SDL_PIXELFORMAT_RGB888);
+
     for (i = 0; i < 256; i++) {
          rgb = colortable[i];
          colors[i].r = (rgb & 0x00ff0000) >> 16;
@@ -674,18 +746,18 @@ void CalcPalette()
         }
 
     for (i = 0; i < 256; i++) {
-        c = SDL_MapRGB(MainScreen->format, colors[i].r, colors[i].g,
-                       colors[i].b);
+        c = SDL_MapRGBA(MainScreen->format, colors[i].r, colors[i].g,
+                        colors[i].b,255);
         switch (MainScreen->format->BitsPerPixel) {
             case 16:
                 Palette16[i] = (Uint16) c;
 				// We always need Pallette32 for screenshots on the Mac
-				c32 = SDL_MapRGB(&Format32, colors[i].r, colors[i].g,
-                       colors[i].b);
-                Palette32[i] = (Uint32) c32 | 0xFF000000; // Opaque 
+				c32 = SDL_MapRGBA(Format32, colors[i].r, colors[i].g,
+                                  colors[i].b, 255);
+                Palette32[i] = c32; // Opaque
                 break;
             case 32:
-                Palette32[i] = (Uint32) c | 0xFF000000; // Opaque 
+                Palette32[i] = c; // Opaque
                 break;
             }
         }
@@ -713,181 +785,201 @@ void SetVideoMode(int w, int h, int bpp)
 
     if (FULLSCREEN) {
         wasFullscreen = 1;
-		if (OPENGL) {
-			Uint32 texture_w, texture_h;
-			Uint32 delta_w, delta_h;
-			
-			// Setup for Double Buffered
-			SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
-			
-			// Create window, as old one is destroyed by SDL
-			MainGLScreen = SDL_SetVideoMode(w, h, 0, SDL_OPENGL | SDL_FULLSCREEN);
-			glPushAttrib(GL_ENABLE_BIT);
+        Uint32 texture_w, texture_h;
+        
+        // Setup for Double Buffered
+        SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
+    
+        // Get rid of old GL context
+        if (glcontext)
+            SDL_GL_DeleteContext(glcontext);
+    
+        // Delete the old window, if it exists
+        if (MainGLScreen)
+            SDL_DestroyWindow(MainGLScreen);
+    
+        Log_print("Going Fullscreen at %d %d",w,h);
+        // Create new window
+        MainGLScreen = SDL_CreateWindow(windowCaption,
+                                        SDL_WINDOWPOS_CENTERED,
+                                        SDL_WINDOWPOS_CENTERED,
+                                        w, h, SDL_WINDOW_FULLSCREEN | SDL_WINDOW_OPENGL);
+        glcontext = SDL_GL_CreateContext(MainGLScreen);
 
-			// Center the image horizontally and vertically
-			delta_w = (MainGLScreen->w-w)/2;
-			delta_h = (MainGLScreen->h-h)/2;
-			glViewport(delta_w,delta_h,w,h);
+        // Save Mac Window for later use
+        SDL_SysWMinfo wmInfo;
+        SDL_VERSION(&wmInfo.version);
+        SDL_GetWindowWMInfo(MainGLScreen, &wmInfo);
+        Atari800WindowCreate(wmInfo.info.cocoa.window);
 
-			// Load a 1:1 projection
-			glMatrixMode(GL_PROJECTION);
-			glPushMatrix();
-			glLoadIdentity();
+        glPushAttrib(GL_ENABLE_BIT);
 
-			// Set the HW Scaling for OPENGL properly
-			if ((SCALE_MODE == NORMAL_SCALE || SCALE_MODE == SCANLINE_SCALE) && lockFullscreenSize) {
-				w /= 2;
-				h /= 2;
-				}
-			else if ((SCALE_MODE == NORMAL_SCALE || SCALE_MODE == SCANLINE_SCALE) && DOUBLESIZE)
-				{
-				w /= scaleFactor;
-				h /= scaleFactor;
-				}
-			/* Save the values in case we need to go back to them after entering the monitor */
-			fullscreenWidth = w;
-			fullscreenHeight = h;
-			glOrtho(0.0, (GLdouble) w, (GLdouble) h, 0.0, 0.0, 1.0);
-			glMatrixMode(GL_MODELVIEW);
-			glPushMatrix();
-			glLoadIdentity();
+        // Center the image horizontally and vertically
+        glViewport(0,0,w,h);
 
-			// Delete the old textures
-			if(MainScreen)
-				SDL_FreeSurface(MainScreen);
-			glDeleteTextures(1, &MainScreenID);
+        // Load a 1:1 projection
+        glMatrixMode(GL_PROJECTION);
+        glPushMatrix();
+        glLoadIdentity();
 
-			// Setup to create the new texture
-			texture_w = power_of_two(w);
-			texture_h = power_of_two(h);
-			texCoord[0] = 0.0f;
-			texCoord[1] = 0.0f;
-			texCoord[2] = (GLfloat) w / texture_w;
-			texCoord[3] = (GLfloat) h / texture_h;
+        // Set the HW Scaling for OPENGL properly
+        if ((SCALE_MODE == NORMAL_SCALE || SCALE_MODE == SCANLINE_SCALE || SCALE_MODE == SMOOTH_SCALE) && lockFullscreenSize) {
+            w = w / 2;
+            h = h / 2;
+            }
+        else if ((SCALE_MODE == NORMAL_SCALE || SCALE_MODE == SCANLINE_SCALE || SCALE_MODE == SMOOTH_SCALE) && DOUBLESIZE)
+            {
+            w /= scaleFactor;
+            h /= scaleFactor;
+            }
+        /* Save the values in case we need to go back to them after entering the monitor */
+        Log_print("Going Fullscreen at %d %d",w,h);
 
-			// Create the SDL texture
-			MainScreen = SDL_CreateRGBSurface(SDL_SWSURFACE, texture_w, texture_h, 16,
-							0x0000F800, 0x000007E0, 0x0000001F, 0x00000000);
+        fullscreenWidth = w;
+        fullscreenHeight = h;
+        glOrtho(0.0, (GLdouble) w, (GLdouble) h, 0.0, 0.0, 1.0);
+        glMatrixMode(GL_MODELVIEW);
+        glPushMatrix();
+        glLoadIdentity();
 
-			// Create the OPENGL Texture
-			glGenTextures(1, &MainScreenID);
-			glBindTexture(GL_TEXTURE_2D, MainScreenID);
-			if (!MonitorScreenID);
-				glGenTextures(1, &MonitorScreenID);
+        // Delete the old textures
+        if(MainScreen)
+            SDL_FreeSurface(MainScreen);
+        glDeleteTextures(1, &MainScreenID);
 
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        // Setup to create the new texture
+        texture_w = power_of_two(w);
+        texture_h = power_of_two(h);
+        texCoord[0] = 0.0f;
+        texCoord[1] = 0.0f;
+        texCoord[2] = (GLfloat) w / texture_w;
+        texCoord[3] = (GLfloat) h / texture_h;
 
-			// Set the proper flags
-			glDisable(GL_DEPTH_TEST);
-			glDisable(GL_CULL_FACE);
-			glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
-			glEnable(GL_TEXTURE_2D);
-			glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
-			
-			// Make sure the screens are cleared to black
-			glClear(GL_COLOR_BUFFER_BIT);
-			SDL_GL_SwapBuffers();
-			glClear(GL_COLOR_BUFFER_BIT);
-			wasOpenGl = TRUE;
-			}
-		else {
-			MainScreen = SDL_SetVideoMode(w, h, bpp, SDL_FULLSCREEN | SDL_ANYFORMAT);
-			wasOpenGl = FALSE;
-			}
+        // Create the SDL texture
+        MainScreen = SDL_CreateRGBSurface(0, texture_w, texture_h, 16,
+                        0x0000F800, 0x000007E0, 0x0000001F, 0x00000000);
+
+        // Create the OPENGL Texture
+        glGenTextures(1, &MainScreenID);
+        glBindTexture(GL_TEXTURE_2D, MainScreenID);
+        if (!MonitorScreenID) {
+            glGenTextures(1, &MonitorScreenID);
+        }
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+        // Set the proper flags
+        glDisable(GL_DEPTH_TEST);
+        glDisable(GL_CULL_FACE);
+        glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
+        glEnable(GL_TEXTURE_2D);
+        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+        
+        // Make sure the screens are cleared to black
+        glClear(GL_COLOR_BUFFER_BIT);
+        SDL_GL_SwapWindow(MainGLScreen);
+        glClear(GL_COLOR_BUFFER_BIT);
+        wasOpenGl = TRUE;
         }
     else {
-		if (OPENGL) {
-			Uint32 texture_w, texture_h;
-			// Setup for Double Buffered
-			SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
+        Uint32 texture_w, texture_h;
+        // Setup for Double Buffered
+        SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
+        
+        // Get rid of old GL context
+        if (glcontext)
+            SDL_GL_DeleteContext(glcontext);
+        
+        // Delete the old window, if it exists
+        if (MainGLScreen) {
+            if (!wasFullscreen)
+                Atari800OriginSave();
+            SDL_DestroyWindow(MainGLScreen);
+        }
+        
+        MainGLScreen = SDL_CreateWindow(windowCaption,
+                                        SDL_WINDOWPOS_UNDEFINED,
+                                        SDL_WINDOWPOS_UNDEFINED,
+                                        w, h, SDL_WINDOW_OPENGL);
+        glcontext = SDL_GL_CreateContext(MainGLScreen);
+        
+        // Save Mac Window for later use
+        SDL_SysWMinfo wmInfo;
+        SDL_VERSION(&wmInfo.version);
+        SDL_GetWindowWMInfo(MainGLScreen, &wmInfo);
+        Atari800WindowCreate(wmInfo.info.cocoa.window);
+
+        glPushAttrib(GL_ENABLE_BIT);
+
+        // Center the image horizontally and vertically
+        glViewport(0,0,w,h);
+
+        // Load a 1:1 projection
+        glMatrixMode(GL_PROJECTION);
+        glPushMatrix();
+        glLoadIdentity();
+
+        // Set the HW Scaling for OPENGL properly
+        if ((SCALE_MODE == NORMAL_SCALE || SCALE_MODE == SCANLINE_SCALE || SCALE_MODE == SMOOTH_SCALE) && DOUBLESIZE) {
+            w /= scaleFactor;
+            h /= scaleFactor;
+            }
+        glOrtho(0.0, (GLdouble) w, (GLdouble) h, 0.0, 0.0, 1.0);
+        glMatrixMode(GL_MODELVIEW);
+        glPushMatrix();
+        glLoadIdentity();
+
+        // Delete the old textures
+        if(MainScreen)
+            SDL_FreeSurface(MainScreen);
+        glDeleteTextures(1, &MainScreenID);
+
+        // Setup to create the new texture
+        texture_w = power_of_two(w);
+        texture_h = power_of_two(h);
+        texCoord[0] = 0.0f;
+        texCoord[1] = 0.0f;
+        texCoord[2] = (GLfloat) w / texture_w;
+        texCoord[3] = (GLfloat) h / texture_h;
+
+        // Create the SDL texture
+        MainScreen = SDL_CreateRGBSurface(0, texture_w, texture_h, 16,
+                        0x0000F800, 0x000007E0, 0x0000001F, 0x00000000);
+
+        // Create the OPENGL Texture
+        glGenTextures(1, &MainScreenID);
+        glBindTexture(GL_TEXTURE_2D, MainScreenID);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+        // Set the proper flags
+        glDisable(GL_DEPTH_TEST);
+        glDisable(GL_CULL_FACE);
+        glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
+        glEnable(GL_TEXTURE_2D);
+        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+        
+        // Make sure the screens are cleared to black
+        glClear(GL_COLOR_BUFFER_BIT);
+        SDL_GL_SwapWindow(MainGLScreen);
+        glClear(GL_COLOR_BUFFER_BIT);
+        wasOpenGl = TRUE;
 			
-			// Create window, as old one is destroyed by SDL
-			Atari800WindowCreate(w,h);	
-			MainGLScreen = SDL_SetVideoMode(w, h, 0, SDL_OPENGL);
-			
-			glPushAttrib(GL_ENABLE_BIT);
-
-			// Center the image horizontally and vertically
-			glViewport(0,0,w,h);
-
-			// Load a 1:1 projection
-			glMatrixMode(GL_PROJECTION);
-			glPushMatrix();
-			glLoadIdentity();
-
-			// Set the HW Scaling for OPENGL properly
-			if ((SCALE_MODE == NORMAL_SCALE || SCALE_MODE == SCANLINE_SCALE) && DOUBLESIZE) {
-				w /= scaleFactor;
-				h /= scaleFactor;
-				}
-			glOrtho(0.0, (GLdouble) w, (GLdouble) h, 0.0, 0.0, 1.0);
-			glMatrixMode(GL_MODELVIEW);
-			glPushMatrix();
-			glLoadIdentity();
-
-			// Delete the old textures
-			if(MainScreen)
-				SDL_FreeSurface(MainScreen);
-			glDeleteTextures(1, &MainScreenID);
-
-			// Setup to create the new texture
-			texture_w = power_of_two(w);
-			texture_h = power_of_two(h);
-			texCoord[0] = 0.0f;
-			texCoord[1] = 0.0f;
-			texCoord[2] = (GLfloat) w / texture_w;
-			texCoord[3] = (GLfloat) h / texture_h;
-
-			// Create the SDL texture
-			MainScreen = SDL_CreateRGBSurface(SDL_SWSURFACE, texture_w, texture_h, 16,
-							0x0000F800, 0x000007E0, 0x0000001F, 0x00000000);
-
-			// Create the OPENGL Texture
-			glGenTextures(1, &MainScreenID);
-			glBindTexture(GL_TEXTURE_2D, MainScreenID);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-
-			// Set the proper flags
-			glDisable(GL_DEPTH_TEST);
-			glDisable(GL_CULL_FACE);
-			glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
-			glEnable(GL_TEXTURE_2D);
-			glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
-			
-			// Make sure the screens are cleared to black
-			glClear(GL_COLOR_BUFFER_BIT);
-			SDL_GL_SwapBuffers();
-			glClear(GL_COLOR_BUFFER_BIT);
-			wasOpenGl = TRUE;
-			}
-		else {
-			if (wasOpenGl)
-				Atari800WindowCreate(w,h); // Recreate window as it was distroyed
-			else
-				Atari800WindowResize(w,h); // Resize previously created window
-			MainScreen = SDL_SetVideoMode(w, h, bpp, SDL_ANYFORMAT);
-			wasOpenGl = FALSE;
-			}
-			
-        if (wasFullscreen) {
+        if (!FULLSCREEN && wasFullscreen) {
             wasFullscreen = 0;
+            usleep(1000000); // Wait for Sceen redraw so new SDL Window is open
 			if (mediaStatusWindowOpen)
 				MediaManagerStatusWindowShow();
 			if (functionKeysWindowOpen)
 				ControlManagerFunctionKeysWindowShow();
-			Atari800OriginRestore();
-            Atari800WindowDisplay(); // First time after Fullscreen, make sure
-                                     //  menu bar gets drawn properly.
             }
-		else
-			Atari800OriginRestore();
-        SDL_WM_SetCaption(windowCaption,NULL);
+        if (!FULLSCREEN)
+            Atari800OriginRestore();
         }
 
     PauseAudio(0);
@@ -971,18 +1063,13 @@ void SetNewVideoMode(int w, int h, int bpp)
         else
             SetVideoMode(w, h, bpp);
 
-		if (OPENGL)
-			SDL_ATARI_BPP = MainGLScreen->format->BitsPerPixel;
-		else
-			SDL_ATARI_BPP = MainScreen->format->BitsPerPixel;
+        SDL_ATARI_BPP = 32;
 
         if (bpp == 0) {
             Log_print("detected %ibpp", SDL_ATARI_BPP);
-			if (OPENGL) {
-				Log_print("OPENGL Vendor  : %s",glGetString(GL_VENDOR));
-				Log_print("OPENGL Renderer: %s",glGetString(GL_RENDERER));
-				Log_print("OPENGL Version : %s\n",glGetString(GL_VERSION));
-				}
+            Log_print("OPENGL Vendor  : %s",glGetString(GL_VENDOR));
+            Log_print("OPENGL Renderer: %s",glGetString(GL_RENDERER));
+            Log_print("OPENGL Version : %s\n",glGetString(GL_VERSION));
 				
 
         if ((SDL_ATARI_BPP != 8) && (SDL_ATARI_BPP != 16)
@@ -996,40 +1083,19 @@ void SetNewVideoMode(int w, int h, int bpp)
     SetPalette();
     
     if (GRAB_MOUSE || FULLSCREEN)
-        SDL_WM_GrabInput(SDL_GRAB_ON);
+        SDL_SetRelativeMouseMode(SDL_TRUE);
     else
-        SDL_WM_GrabInput(SDL_GRAB_OFF);
-
-    if ( FULLSCREEN || GRAB_MOUSE)
-        SDL_ShowCursor(SDL_DISABLE);    // hide mouse cursor 
-    else
-        SDL_ShowCursor(SDL_ENABLE); // show mouse cursor 
-        
-    if (FULLSCREEN)
-        SDL_WarpMouse(MainScreen->w/2,MainScreen->h/2);
+        SDL_SetRelativeMouseMode(SDL_FALSE);
+    
+    if (FULLSCREEN) {
+        int win_x, win_y;
+        SDL_GetWindowSize(MainGLScreen, &win_x, &win_y);
+        SDL_WarpMouseInWindow(MainGLScreen, win_x/2, win_y/2);
+    }
         
     /* Clear the alternate page, so the first redraw is entire screen */
     if (Screen_atari_b)
         memset(Screen_atari_b, 0, (Screen_HEIGHT * Screen_WIDTH));
-}
-
-/*------------------------------------------------------------------------------
-*  HideCursorIfMouseGrabbed - Used by main app, to hide cursor when app is
-*    unhidden, as SDL shows the cursor automatically.
-*-----------------------------------------------------------------------------*/
-void HideCursorIfMouseGrabbed(void)
-{
-   if (GRAB_MOUSE)
-   {
-        /* Toggle the grab mouse off, then back on, as just turning it on 
-           and disabling the cursor doesn't hide the cursor....Looks like
-           an SDL bug. */
-        SDL_WM_GrabInput(SDL_GRAB_OFF);
-        SDL_ShowCursor(SDL_ENABLE);     
-        SDL_WM_GrabInput(SDL_GRAB_ON);
-        SDL_ShowCursor(SDL_DISABLE);     
-   }
-
 }
 
 /*------------------------------------------------------------------------------
@@ -1044,15 +1110,6 @@ void SwitchFullscreen()
         UpdateMediaManagerInfo();
         SetSoundManagerStereo(POKEYSND_stereo_enabled);
         SetSoundManagerRecording(SndSave_IsSoundFileOpen());
-        // Recreate the window, as fullscreen mode will have destroyed it.
-		if (!OPENGL)
-			Atari800WindowCreate(our_width, our_height);
-		// For some reason, we need to do this twice when coming out of 
-		//  fullscreen, as top and bottom of screen do not get drawn if we 
-		//  don't. Really needs to be debugged, but unable to find cause
-		//  since modifiying to our own window class for drag and drop.
-		//SetNewVideoMode(our_width, our_height,
-        //                MainScreen->format->BitsPerPixel);
         }
     SetNewVideoMode(our_width, our_height,
                     MainScreen->format->BitsPerPixel);
@@ -1068,7 +1125,7 @@ void PLATFORM_SwitchXep80(void)
 	Atari_DisplayScreen((UBYTE *) Screen_atari);
 	CreateWindowCaption();
 	if (!FULLSCREEN)
-		SDL_WM_SetCaption(windowCaption,NULL);
+        SDL_SetWindowTitle(MainGLScreen, windowCaption);
 	copyStatus = COPY_IDLE;
 }
 
@@ -1116,7 +1173,7 @@ void SwitchShowFps()
 {
     Screen_show_atari_speed = 1 - Screen_show_atari_speed;
     if (!Screen_show_atari_speed && !FULLSCREEN)
-        SDL_WM_SetCaption(windowCaption,NULL);
+        SDL_SetWindowTitle(MainGLScreen, windowCaption);
     SetDisplayManagerFps(Screen_show_atari_speed);
 }
 
@@ -1129,15 +1186,9 @@ void SwitchGrabMouse()
 {
     GRAB_MOUSE = 1 - GRAB_MOUSE;
     if (GRAB_MOUSE) {
-       if (!FULLSCREEN)
-          SDL_ShowCursor(SDL_DISABLE);    // hide mouse cursor 
-          SDL_WM_GrabInput(SDL_GRAB_ON);
-          }
+        SDL_SetRelativeMouseMode(SDL_TRUE);          }
     else {
-        if (!FULLSCREEN)
-            SDL_ShowCursor(SDL_ENABLE); // show mouse cursor 
-        SDL_WM_GrabInput(SDL_GRAB_OFF);
-        }
+        SDL_SetRelativeMouseMode(SDL_FALSE);         }
 }
 
 /*------------------------------------------------------------------------------
@@ -1180,6 +1231,7 @@ void PauseAudio(int pause)
 
 static void SoundCallback(void *userdata, Uint8 *stream, int len)
 {
+    SDL_memset(stream, 0, len);
 #ifndef SYNCHRONIZED_SOUND
 	int sndn = (sound_bits == 8 ? len : len/2);
 	/* in mono, sndn is the number of samples (8 or 16 bit) */
@@ -1354,2063 +1406,2172 @@ void MacCapsLockStateReset(void)
 }
 
 /*------------------------------------------------------------------------------
-*  Atari_Keyboard_US - This function is called once per main loop to handle 
-*    keyboard input.  It handles keys like the original SDL version,  with 
-*    no access to the built in Mac handling of international keyboards.
-*-----------------------------------------------------------------------------*/
+ *  Atari_Keyboard_US - This function is called once per main loop to handle
+ *    keyboard input.  It handles keys like the original SDL version,  with
+ *    no access to the built in Mac handling of international keyboards.
+ *-----------------------------------------------------------------------------*/
 int Atari_Keyboard_US(void)
 {
     static int lastkey = SDLK_UNKNOWN, key_pressed = 0;
     SDL_Event event;
     int key_option = 0;
-	static int key_was_pressed = 0;
+    static int key_was_pressed = 0;
+    char* dropped_filedir;
 
-	/* Check for presses in function keys window */
+    /* Check for presses in function keys window */
     INPUT_key_consol = INPUT_CONSOL_NONE;
     if (optionFunctionPressed) {
         INPUT_key_consol &= (~INPUT_CONSOL_OPTION);
-		optionFunctionPressed--;
-		}
+        optionFunctionPressed--;
+    }
     if (selectFunctionPressed) {
         INPUT_key_consol &= (~INPUT_CONSOL_SELECT);
-		selectFunctionPressed--;
-		}
+        selectFunctionPressed--;
+    }
     if (startFunctionPressed) {
         INPUT_key_consol &= (~INPUT_CONSOL_START);
-		startFunctionPressed--;
-		}
+        startFunctionPressed--;
+    }
     if (breakFunctionPressed) {
-		breakFunctionPressed = 0;
+        breakFunctionPressed = 0;
         return AKEY_BREAK;
-		}
+    }
 
-	if (pasteState != PASTE_IDLE) {
-		if (SDL_PollEvent(&event)) {
-			if (event.type == SDL_KEYDOWN)
-				pasteState = PASTE_END;		
-		}
-		
-		if (key_was_pressed) {
-			key_was_pressed--;
-			if (!key_was_pressed && (pasteState == PASTE_DONE)) {
-				pasteState = PASTE_IDLE;
-			}
-			key_pressed = 0;
-		}
-		else {
-			unsigned short lastkeyuni;
-			
-			if (pasteState == PASTE_START) {
-				copyStatus = COPY_IDLE;
-				pasteState = PASTE_IN_PROG;
-				if (capsLockState == CAPS_UPPER || capsLockState == CAPS_GRAPHICS) {
-						capsLockState = CAPS_LOWER;
-						key_was_pressed = PASTE_KEY_DELAY;
-						return(AKEY_CAPSTOGGLE);
-				}
-			}
-			
-			if (pasteState == PASTE_END) {
-				pasteState = PASTE_IDLE;
-				if (capsLockPrePasteState == CAPS_UPPER) {
-					pasteState = PASTE_DONE;
-					capsLockState = CAPS_UPPER;
-					key_was_pressed = PASTE_KEY_DELAY;						
-					return(AKEY_CAPSLOCK);
-				}
-				else if (capsLockPrePasteState == CAPS_GRAPHICS) {
-					pasteState = PASTE_DONE;
-					capsLockState = CAPS_GRAPHICS;
-					CONTROL = AKEY_CTRL;
-					key_was_pressed = PASTE_KEY_DELAY;						
-					return(AKEY_CAPSTOGGLE);
-				}
-				else {
-					pasteState = PASTE_IDLE;
-					return(AKEY_NONE);
-				}
-			}
-			
-			if (!PasteManagerGetChar(&lastkeyuni)) {
-				pasteState = PASTE_END;
-			}
-			
-			if (lastkeyuni >= 'A' && lastkeyuni <= 'Z') {
-				INPUT_key_shift = 1;
-				lastkey = lastkeyuni + 0x20;
-				}
-			else if (lastkeyuni == 0x0a) {
-				INPUT_key_shift = 0;
-				lastkey = 0xd;
-			}
-			else {
-				switch (lastkeyuni) {
-					case SDLK_EXCLAIM:
-						INPUT_key_shift = 1;
-						lastkey = SDLK_1;
-						break;
-					case SDLK_AT:
-						INPUT_key_shift = 1;
-						lastkey = SDLK_2;
-						break;
-					case SDLK_HASH:
-						INPUT_key_shift = 1;
-						lastkey = SDLK_3;
-						break;
-					case SDLK_DOLLAR:
-						INPUT_key_shift = 1;
-						lastkey = SDLK_4;
-						break;
-					case 0x25:
-						INPUT_key_shift = 1;
-						lastkey = SDLK_5;
-						break;
-					case SDLK_CARET:
-						INPUT_key_shift = 1;
-						lastkey = SDLK_6;
-						break;
-					case SDLK_AMPERSAND:
-						INPUT_key_shift = 1;
-						lastkey = SDLK_7;
-						break;
-					case SDLK_ASTERISK:
-						INPUT_key_shift = 1;
-						lastkey = SDLK_8;
-						break;
-					case SDLK_LEFTPAREN:
-						INPUT_key_shift = 1;
-						lastkey = SDLK_9;
-						break;
-					case SDLK_RIGHTPAREN:
-						INPUT_key_shift = 1;
-						lastkey = SDLK_0;
-						break;
-					case SDLK_UNDERSCORE:
-						INPUT_key_shift = 1;
-						lastkey = SDLK_MINUS;
-						break;
-					case SDLK_PLUS:
-						INPUT_key_shift = 1;
-						lastkey = SDLK_EQUALS;
-						break;						
-					case 0x7c:
-						INPUT_key_shift = 1;
-						lastkey = SDLK_BACKSLASH;
-						break;
-					case SDLK_QUOTEDBL:
-						INPUT_key_shift = 1;
-						lastkey = SDLK_QUOTE;
-						break;
-					case SDLK_COLON:
-						INPUT_key_shift = 1;
-						lastkey = SDLK_SEMICOLON;
-						break;
-					case SDLK_LESS:
-						INPUT_key_shift = 1;
-						lastkey = SDLK_COMMA;
-						break;
-					case SDLK_GREATER:
-						INPUT_key_shift = 1;
-						lastkey = SDLK_PERIOD;
-						break;
-					case SDLK_QUESTION:
-						INPUT_key_shift = 1;
-						lastkey = SDLK_SLASH;
-						break;
-					default:
-						INPUT_key_shift = 0;
-						lastkey = lastkeyuni;
-				}
-			}
-			kbhits[SDLK_LMETA] = 0;
-			key_option = 0;
-			key_pressed = 1;
-			if (lastkey == SDLK_RETURN) {
-				key_was_pressed = 10*PASTE_KEY_DELAY;
-			} else
-				key_was_pressed = PASTE_KEY_DELAY;
-			}
-	}
-	else {
-		/* Poll for SDL events.  All we want here are Keydown and Keyup events,
-		 and the quit event. */
-		if (SDL_PollEvent(&event)) {
-			switch (event.type) {
-				case SDL_KEYDOWN:
-					if (!SDLMainIsActive())
-						return AKEY_NONE;
-					lastkey = event.key.keysym.sym;
-					key_pressed = 1;
-					break;
-				case SDL_KEYUP:
-					if (!SDLMainIsActive())
-						return AKEY_NONE;
-					lastkey = event.key.keysym.sym;
-					key_pressed = 0;
-					if (lastkey == SDLK_CAPSLOCK)
-						key_pressed = 1;
-					break;
-				case SDL_QUIT:
-					return AKEY_EXIT;
-					break;
-				default:
-					return AKEY_NONE;
+    if (requestFullScreenUI) {
+        requestFullScreenUI = 0;
+        return AKEY_UI;
+    }
+    
+    if (pasteState != PASTE_IDLE) {
+        if (SDL_PollEvent(&event)) {
+            if (event.type == SDL_KEYDOWN)
+                pasteState = PASTE_END;
+        }
+        
+        if (key_was_pressed) {
+            key_was_pressed--;
+            if (!key_was_pressed && (pasteState == PASTE_DONE)) {
+                pasteState = PASTE_IDLE;
+            }
+            key_pressed = 0;
+        }
+        else {
+            unsigned short lastkeyuni;
+            
+            if (pasteState == PASTE_START) {
+                copyStatus = COPY_IDLE;
+                pasteState = PASTE_IN_PROG;
+                if (capsLockState == CAPS_UPPER || capsLockState == CAPS_GRAPHICS) {
+                    capsLockState = CAPS_LOWER;
+                    key_was_pressed = PASTE_KEY_DELAY;
+                    return(AKEY_CAPSTOGGLE);
+                }
+            }
+            
+            if (pasteState == PASTE_END) {
+                pasteState = PASTE_IDLE;
+                if (capsLockPrePasteState == CAPS_UPPER) {
+                    pasteState = PASTE_DONE;
+                    capsLockState = CAPS_UPPER;
+                    key_was_pressed = PASTE_KEY_DELAY;
+                    return(AKEY_CAPSLOCK);
+                }
+                else if (capsLockPrePasteState == CAPS_GRAPHICS) {
+                    pasteState = PASTE_DONE;
+                    capsLockState = CAPS_GRAPHICS;
+                    CONTROL = AKEY_CTRL;
+                    key_was_pressed = PASTE_KEY_DELAY;
+                    return(AKEY_CAPSTOGGLE);
+                }
+                else {
+                    pasteState = PASTE_IDLE;
+                    return(AKEY_NONE);
+                }
+            }
+            
+            if (!PasteManagerGetChar(&lastkeyuni)) {
+                pasteState = PASTE_END;
+            }
+            
+            if (lastkeyuni >= 'A' && lastkeyuni <= 'Z') {
+                INPUT_key_shift = 1;
+                lastkey = lastkeyuni + 0x20;
+            }
+            else if (lastkeyuni == 0x0a) {
+                INPUT_key_shift = 0;
+                lastkey = 0xd;
+            }
+            else {
+                switch (lastkeyuni) {
+                    case SDLK_EXCLAIM:
+                        INPUT_key_shift = 1;
+                        lastkey = SDLK_1;
+                        break;
+                    case SDLK_AT:
+                        INPUT_key_shift = 1;
+                        lastkey = SDLK_2;
+                        break;
+                    case SDLK_HASH:
+                        INPUT_key_shift = 1;
+                        lastkey = SDLK_3;
+                        break;
+                    case SDLK_DOLLAR:
+                        INPUT_key_shift = 1;
+                        lastkey = SDLK_4;
+                        break;
+                    case 0x25:
+                        INPUT_key_shift = 1;
+                        lastkey = SDLK_5;
+                        break;
+                    case SDLK_CARET:
+                        INPUT_key_shift = 1;
+                        lastkey = SDLK_6;
+                        break;
+                    case SDLK_AMPERSAND:
+                        INPUT_key_shift = 1;
+                        lastkey = SDLK_7;
+                        break;
+                    case SDLK_ASTERISK:
+                        INPUT_key_shift = 1;
+                        lastkey = SDLK_8;
+                        break;
+                    case SDLK_LEFTPAREN:
+                        INPUT_key_shift = 1;
+                        lastkey = SDLK_9;
+                        break;
+                    case SDLK_RIGHTPAREN:
+                        INPUT_key_shift = 1;
+                        lastkey = SDLK_0;
+                        break;
+                    case SDLK_UNDERSCORE:
+                        INPUT_key_shift = 1;
+                        lastkey = SDLK_MINUS;
+                        break;
+                    case SDLK_PLUS:
+                        INPUT_key_shift = 1;
+                        lastkey = SDLK_EQUALS;
+                        break;
+                    case 0x7c:
+                        INPUT_key_shift = 1;
+                        lastkey = SDLK_BACKSLASH;
+                        break;
+                    case SDLK_QUOTEDBL:
+                        INPUT_key_shift = 1;
+                        lastkey = SDLK_QUOTE;
+                        break;
+                    case SDLK_COLON:
+                        INPUT_key_shift = 1;
+                        lastkey = SDLK_SEMICOLON;
+                        break;
+                    case SDLK_LESS:
+                        INPUT_key_shift = 1;
+                        lastkey = SDLK_COMMA;
+                        break;
+                    case SDLK_GREATER:
+                        INPUT_key_shift = 1;
+                        lastkey = SDLK_PERIOD;
+                        break;
+                    case SDLK_QUESTION:
+                        INPUT_key_shift = 1;
+                        lastkey = SDLK_SLASH;
+                        break;
+                    default:
+                        INPUT_key_shift = 0;
+                        lastkey = lastkeyuni;
+                }
+            }
+            kbhits[SDL_SCANCODE_LGUI] = 0;
+            key_option = 0;
+            key_pressed = 1;
+            if (lastkey == SDLK_RETURN) {
+                key_was_pressed = 10*PASTE_KEY_DELAY;
+            } else
+                key_was_pressed = PASTE_KEY_DELAY;
+        }
+    }
+    else {
+        /* Poll for SDL events.  All we want here are Keydown and Keyup events,
+         and the quit event. */
+        if (SDL_PollEvent(&event)) {
+            switch (event.type) {
+                case SDL_KEYDOWN:
+                    if (!SDLMainIsActive())
+                        return AKEY_NONE;
+                    lastkey = event.key.keysym.sym;
+                    key_pressed = 1;
+                    break;
+                case SDL_KEYUP:
+                    if (!SDLMainIsActive())
+                        return AKEY_NONE;
+                    lastkey = event.key.keysym.sym;
+                    key_pressed = 0;
+                    if (lastkey == SDLK_CAPSLOCK)
+                        key_pressed = 1;
+                    break;
+                case SDL_QUIT:
+                    return AKEY_EXIT;
+                    break;
+
+                default:
+                    return AKEY_NONE;
             }
         }
-		kbhits = SDL_GetKeyState(NULL);
-		
-		if (kbhits == NULL) {
-			Log_print("oops, kbhits is NULL!");
-			Log_flushlog();
-			exit(-1);
-		}
-		
-		/*  Determine if the shift key is pressed */
-		if ((kbhits[SDLK_LSHIFT]) || (kbhits[SDLK_RSHIFT]))
-			INPUT_key_shift = 1;
-		else
-			INPUT_key_shift = 0;
-		
-		/* Determine if the control key is pressed */
-		if ((kbhits[SDLK_LCTRL]) || (kbhits[SDLK_RCTRL]))
-			CONTROL = AKEY_CTRL;
-		else
-			CONTROL = 0;
-		
-		/* Determine if the option key is pressed */
-		if ((kbhits[SDLK_LALT]) || (kbhits[SDLK_RALT]))
-			key_option = 1;
-		else
-			key_option = 0;
-		
-		if (key_pressed) {
-			if (!kbhits[SDLK_LMETA])
-				copyStatus = COPY_IDLE;
-			else if (lastkey != SDLK_LMETA && lastkey != SDLK_c)
-				copyStatus = COPY_IDLE;
-		}
-	}
-
-	/* If the Option key is pressed, do the 1200 Function keys, and
-	 also provide alernatives to the insert/del/home/end/pgup/pgdn
-	 keys, since Apple in their infinite wisdom removed these keys
-	 from their latest keyboards */
-	if (kbhits[SDLK_LALT] && !kbhits[SDLK_LMETA]) {
+        kbhits = (Uint8 *) SDL_GetKeyboardState(NULL);
+        
+        if (kbhits == NULL) {
+            Log_print("oops, kbhits is NULL!");
+            Log_flushlog();
+            exit(-1);
+        }
+        
+        /*  Determine if the shift key is pressed */
+        if ((kbhits[SDL_SCANCODE_LSHIFT]) || (kbhits[SDL_SCANCODE_RSHIFT]))
+            INPUT_key_shift = 1;
+        else
+            INPUT_key_shift = 0;
+        
+        /* Determine if the control key is pressed */
+        if ((kbhits[SDL_SCANCODE_LCTRL]) || (kbhits[SDL_SCANCODE_RCTRL]))
+            CONTROL = AKEY_CTRL;
+        else
+            CONTROL = 0;
+        
+        /* Determine if the option key is pressed */
+        if ((kbhits[SDL_SCANCODE_LALT]) || (kbhits[SDL_SCANCODE_RALT]))
+            key_option = 1;
+        else
+            key_option = 0;
+        
+        if (key_pressed) {
+            if (!kbhits[SDL_SCANCODE_LGUI])
+                copyStatus = COPY_IDLE;
+            else if (lastkey != SDL_SCANCODE_LGUI && lastkey != SDLK_c)
+                copyStatus = COPY_IDLE;
+        }
+    }
+    
+    /* If the Option key is pressed, do the 1200 Function keys, and
+     also provide alernatives to the insert/del/home/end/pgup/pgdn
+     keys, since Apple in their infinite wisdom removed these keys
+     from their latest keyboards */
+    if (kbhits[SDL_SCANCODE_LALT] && !kbhits[SDL_SCANCODE_LGUI]) {
         if (key_pressed) {
             switch(lastkey) {
-				case SDLK_F1:
-					if (INPUT_key_shift)
-						return AKEY_F1 | AKEY_SHFT;
-					else
-						return AKEY_F1;
-				case SDLK_F2:
-					if (INPUT_key_shift)
-						return AKEY_F2 | AKEY_SHFT;
-					else
-						return AKEY_F2;
-				case SDLK_F3:
-					if (INPUT_key_shift)
-						return AKEY_F3 | AKEY_SHFT;
-					else
-						return AKEY_F3;
-				case SDLK_F4:
-					if (INPUT_key_shift)
-						return AKEY_F4 | AKEY_SHFT;
-					else
-						return AKEY_F4;
-				case SDLK_F5: // INSERT
-					if (INPUT_key_shift)
-						return AKEY_INSERT_LINE;
-					else
-						return AKEY_INSERT_CHAR;
-				case SDLK_F6: // DELETE
-					if (INPUT_key_shift)
-						return AKEY_DELETE_LINE;
-					else
-						return AKEY_DELETE_CHAR;
-				case SDLK_F7: // HOME
-					return AKEY_CLEAR;
-				case SDLK_F8: // END
-					if (INPUT_key_shift)
-						return AKEY_ATARI | AKEY_SHFT;
-					else
-						return AKEY_ATARI;
-				case SDLK_F9: // PAGEUP
-					capsLockState = CAPS_UPPER;
-					return AKEY_CAPSLOCK;
-				case SDLK_F10: // PAGEDOWN
-					return AKEY_HELP;
-					
-			}
-		}
-        key_pressed = 0;
-	}
-	
-    /*  If the command key is pressed, in fullscreen, execute the 
-        emulators built-in UI, otherwise, do the command key equivelents
-        here.  The reason for this, is due to the SDL lib construction,
-        all key events go to the SDL app, so the menus don't handle them
-        directly */
-    UI_alt_function = -1;
-    if (kbhits[SDLK_LMETA]) {
-        if (key_pressed) {
-            switch(lastkey) {
-            case SDLK_f:
-            case SDLK_RETURN:
-                SwitchFullscreen();
-                break;
-			case SDLK_x:
-				if (INPUT_key_shift && XEP80_enabled) {
-					PLATFORM_SwitchXep80();
-   				    SetDisplayManagerXEP80Mode(XEP80_enabled, XEP80_port, PLATFORM_xep80);
-					MediaManagerXEP80Mode(XEP80_enabled, PLATFORM_xep80);
-					}
-				break;
-            case SDLK_COMMA:
-				if (!FULLSCREEN)
-					RunPreferences();
-                break;
-            case SDLK_k:
-                SwitchShowFps();
-                break;
-            case SDLK_r:
-                if (FULLSCREEN)
-                    UI_alt_function = UI_MENU_RUN;
-                else 
-                    MediaManagerLoadExe();
-                break;
-            case SDLK_y:
-                if (FULLSCREEN)
-                    UI_alt_function = UI_MENU_SYSTEM;
-                break;
-            case SDLK_u:
-                if (FULLSCREEN)
-                    UI_alt_function = UI_MENU_SOUND;
-                else 
-                    SoundManagerStereoDo();
-                break;
-			case SDLK_RIGHTBRACKET:
-				SoundManagerIncreaseVolume();
-				break;
-			case SDLK_LEFTBRACKET:
-				SoundManagerDecreaseVolume();
-				break;
-			case SDLK_p:
-                ControlManagerPauseEmulator();
-                break;
-            case SDLK_t:
-                if (FULLSCREEN)
-                    UI_alt_function = UI_MENU_SOUND_RECORDING;
-                else 
-                    SoundManagerRecordingDo();
-                break;
-            case SDLK_a:
-				if (FULLSCREEN) 
-					UI_alt_function = UI_MENU_ABOUT;
-				else
-                    SDLMainSelectAll();
-                break;
-            case SDLK_s:
-                if (FULLSCREEN)
-                    UI_alt_function = UI_MENU_SAVESTATE;
-                else {
-					if (INPUT_key_shift)
-						PreferencesSaveConfiguration();
-					else
-						ControlManagerSaveState();
-				}
-                break;
-            case SDLK_d:
-                if (FULLSCREEN)
-                    UI_alt_function = UI_MENU_DISK;
-                else 
-                    MediaManagerRunDiskManagement();
-                break;
-            case SDLK_e:
-                if (!FULLSCREEN) {
-					if (INPUT_key_shift)
-						MediaManagerRunSectorEditor();
-					else
-						MediaManagerRunDiskEditor();
-					}
-                break;
-            case SDLK_n:
-                if (!FULLSCREEN)
-                    MediaManagerShowCreatePanel();
-                break;
-            case SDLK_w:
-                if (!FULLSCREEN)
-                    SDLMainCloseWindow();
-                break;
-            case SDLK_l:
-				if (FULLSCREEN) {
-					if (INPUT_key_shift)
-						UI_alt_function = UI_MENU_LOADCFG;
-					else
-						UI_alt_function = UI_MENU_LOADSTATE;
-				}
-				else {
-					if (INPUT_key_shift)
-						PreferencesLoadConfiguration();
-					else
-						ControlManagerLoadState();
-					}
-                break;
-            case SDLK_o:
-                if (FULLSCREEN)
-                    UI_alt_function = UI_MENU_CARTRIDGE;
-                else {
+                case SDLK_F1:
                     if (INPUT_key_shift)
-                        MediaManagerRemoveCartridge();
+                        return AKEY_F1 | AKEY_SHFT;
                     else
-                        MediaManagerInsertCartridge();
-                    }
-                break;
-			case SDLK_BACKSLASH:
-				return AKEY_PBI_BB_MENU;
-            case SDLK_1:
-            case SDLK_2:
-            case SDLK_3:
-            case SDLK_4:
-            case SDLK_5:
-            case SDLK_6:
-            case SDLK_7:
-            case SDLK_8:
-               if (!FULLSCREEN) {
-                    if (CONTROL)
-                        MediaManagerRemoveDisk(lastkey - SDLK_1 + 1);
-					else if (key_option & (lastkey <= SDLK_4))
-						SwitchDoubleSize(lastkey - SDLK_1 + 1);
-					else if (key_option & (lastkey <= SDLK_7))
-						requestWidthModeChange = (lastkey - SDLK_5 + 1);
-					else if (key_option & (lastkey == SDLK_8)) {
-						requestScaleModeChange = 1;
-						}
+                        return AKEY_F1;
+                case SDLK_F2:
+                    if (INPUT_key_shift)
+                        return AKEY_F2 | AKEY_SHFT;
                     else
-                        MediaManagerInsertDisk(lastkey - SDLK_1 + 1);
-                    }
-				else if (key_option & (lastkey == SDLK_8))
-					requestScaleModeChange = 1;
-                break;
-            case SDLK_0:
-                if (!FULLSCREEN)
-                    if (CONTROL)
-                        MediaManagerRemoveDisk(0);
-				if (key_option)
-					requestScaleModeChange = 3;
-                break;
-            case SDLK_9:
-				if (key_option)
-					requestScaleModeChange = 2;
-                break;
-            case SDLK_q:
-                return AKEY_EXIT;
-                break;
-            case SDLK_h:
-                ControlManagerHideApp();
-                break;
-            case SDLK_m:
-                ControlManagerMiniturize();
-                break;
-            case SDLK_j:
-                keyjoyEnable = !keyjoyEnable;
-				SetControlManagerKeyjoyEnable(keyjoyEnable);
-                break;
-            case SDLK_SLASH:
-                if (INPUT_key_shift)
-                    ControlManagerShowHelp();
-                break;
-			case SDLK_v:
-				if (!INPUT_key_shift) {
-					if (FULLSCREEN) {	
-						if (PasteManagerStartPaste())
-							pasteState = PASTE_START;
-						capsLockPrePasteState = capsLockState;
-					}
-				else
-					SDLMainPaste();
-				}
-				break;
-			case SDLK_c:
-				if (!FULLSCREEN)
-					SDLMainCopy();
-				break;
+                        return AKEY_F2;
+                case SDLK_F3:
+                    if (INPUT_key_shift)
+                        return AKEY_F3 | AKEY_SHFT;
+                    else
+                        return AKEY_F3;
+                case SDLK_F4:
+                    if (INPUT_key_shift)
+                        return AKEY_F4 | AKEY_SHFT;
+                    else
+                        return AKEY_F4;
+                case SDLK_F5: // INSERT
+                    if (INPUT_key_shift)
+                        return AKEY_INSERT_LINE;
+                    else
+                        return AKEY_INSERT_CHAR;
+                case SDLK_F6: // DELETE
+                    if (INPUT_key_shift)
+                        return AKEY_DELETE_LINE;
+                    else
+                        return AKEY_DELETE_CHAR;
+                case SDLK_F7: // HOME
+                    return AKEY_CLEAR;
+                case SDLK_F8: // END
+                    if (INPUT_key_shift)
+                        return AKEY_ATARI | AKEY_SHFT;
+                    else
+                        return AKEY_ATARI;
+                case SDLK_F9: // PAGEUP
+                    capsLockState = CAPS_UPPER;
+                    return AKEY_CAPSLOCK;
+                case SDLK_F10: // PAGEDOWN
+                    return AKEY_HELP;
+                    
             }
         }
-
+        key_pressed = 0;
+    }
+    
+    /*  If the command key is pressed, in fullscreen, execute the
+     emulators built-in UI, otherwise, do the command key equivelents
+     here.  The reason for this, is due to the SDL lib construction,
+     all key events go to the SDL app, so the menus don't handle them
+     directly */
+    UI_alt_function = -1;
+    if (kbhits[SDL_SCANCODE_LGUI]) {
+        if (key_pressed) {
+            switch(lastkey) {
+                case SDLK_f:
+                case SDLK_RETURN:
+                    requestFullScreenChange = 1;
+                    break;
+                case SDLK_x:
+                    if (INPUT_key_shift && XEP80_enabled) {
+                        PLATFORM_SwitchXep80();
+                        SetDisplayManagerXEP80Mode(XEP80_enabled, XEP80_port, PLATFORM_xep80);
+                        MediaManagerXEP80Mode(XEP80_enabled, PLATFORM_xep80);
+                    }
+                    break;
+                case SDLK_COMMA:
+                    if (!FULLSCREEN)
+                        RunPreferences();
+                    break;
+                case SDLK_k:
+                    SwitchShowFps();
+                    break;
+                case SDLK_r:
+                    if (FULLSCREEN)
+                        UI_alt_function = UI_MENU_RUN;
+                    else
+                        MediaManagerLoadExe();
+                    break;
+                case SDLK_y:
+                    if (FULLSCREEN)
+                        UI_alt_function = UI_MENU_SYSTEM;
+                    break;
+                case SDLK_u:
+                    if (FULLSCREEN)
+                        UI_alt_function = UI_MENU_SOUND;
+                    else
+                        SoundManagerStereoDo();
+                    break;
+                case SDLK_RIGHTBRACKET:
+                    SoundManagerIncreaseVolume();
+                    break;
+                case SDLK_LEFTBRACKET:
+                    SoundManagerDecreaseVolume();
+                    break;
+                case SDLK_p:
+                    ControlManagerPauseEmulator();
+                    break;
+                case SDLK_t:
+                    if (FULLSCREEN)
+                        UI_alt_function = UI_MENU_SOUND_RECORDING;
+                    else
+                        SoundManagerRecordingDo();
+                    break;
+                case SDLK_a:
+                    if (FULLSCREEN)
+                        UI_alt_function = UI_MENU_ABOUT;
+                    else
+                        requestSelectAll = 1; //SDLMainSelectAll();
+                    break;
+                case SDLK_s:
+                    if (FULLSCREEN)
+                        UI_alt_function = UI_MENU_SAVESTATE;
+                    else {
+                        if (INPUT_key_shift)
+                            PreferencesSaveConfiguration();
+                        else
+                            ControlManagerSaveState();
+                    }
+                    break;
+                case SDLK_d:
+                    if (FULLSCREEN)
+                        UI_alt_function = UI_MENU_DISK;
+                    else
+                        MediaManagerRunDiskManagement();
+                    break;
+                case SDLK_e:
+                    if (!FULLSCREEN) {
+                        if (INPUT_key_shift)
+                            MediaManagerRunSectorEditor();
+                        else
+                            MediaManagerRunDiskEditor();
+                    }
+                    break;
+                case SDLK_n:
+                    if (!FULLSCREEN)
+                        MediaManagerShowCreatePanel();
+                    break;
+                case SDLK_w:
+                    if (!FULLSCREEN)
+                        SDLMainCloseWindow();
+                    break;
+                case SDLK_l:
+                    if (FULLSCREEN) {
+                        if (INPUT_key_shift)
+                            UI_alt_function = UI_MENU_LOADCFG;
+                        else
+                            UI_alt_function = UI_MENU_LOADSTATE;
+                    }
+                    else {
+                        if (INPUT_key_shift)
+                            PreferencesLoadConfiguration();
+                        else
+                            ControlManagerLoadState();
+                    }
+                    break;
+                case SDLK_o:
+                    if (FULLSCREEN)
+                        UI_alt_function = UI_MENU_CARTRIDGE;
+                    else {
+                        if (INPUT_key_shift)
+                            MediaManagerRemoveCartridge();
+                        else
+                            MediaManagerInsertCartridge();
+                    }
+                    break;
+                case SDLK_BACKSLASH:
+                    return AKEY_PBI_BB_MENU;
+                case SDLK_1:
+                case SDLK_2:
+                case SDLK_3:
+                case SDLK_4:
+                case SDLK_5:
+                case SDLK_6:
+                case SDLK_7:
+                case SDLK_8:
+                    if (!FULLSCREEN) {
+                        if (CONTROL)
+                            MediaManagerRemoveDisk(lastkey - SDLK_1 + 1);
+                        else if (key_option & (lastkey <= SDLK_4))
+                            SwitchDoubleSize(lastkey - SDLK_1 + 1);
+                        else if (key_option & (lastkey <= SDLK_7))
+                            requestWidthModeChange = (lastkey - SDLK_5 + 1);
+                        else if (key_option & (lastkey == SDLK_8)) {
+                            requestScaleModeChange = 1;
+                        }
+                        else
+                            MediaManagerInsertDisk(lastkey - SDLK_1 + 1);
+                    }
+                    else if (key_option & (lastkey == SDLK_8))
+                        requestScaleModeChange = 1;
+                    break;
+                case SDLK_0:
+                    if (!FULLSCREEN)
+                        if (CONTROL)
+                            MediaManagerRemoveDisk(0);
+                    if (key_option)
+                        requestScaleModeChange = 3;
+                    break;
+                case SDLK_9:
+                    if (key_option)
+                        requestScaleModeChange = 2;
+                    break;
+                case SDLK_q:
+                    return AKEY_EXIT;
+                    break;
+                case SDLK_h:
+                    ControlManagerHideApp();
+                    break;
+                case SDLK_m:
+                    ControlManagerMiniturize();
+                    break;
+                case SDLK_j:
+                    keyjoyEnable = !keyjoyEnable;
+                    SetControlManagerKeyjoyEnable(keyjoyEnable);
+                    break;
+                case SDLK_SLASH:
+                    if (INPUT_key_shift)
+                        ControlManagerShowHelp();
+                    break;
+                case SDLK_v:
+                    if (!INPUT_key_shift) {
+                            if (PasteManagerStartPaste())
+                                pasteState = PASTE_START;
+                            capsLockPrePasteState = capsLockState;
+                    }
+                    break;
+                case SDLK_c:
+                    requestCopy = 1;
+                    //if (!FULLSCREEN)
+                    //    SDLMainCopy();
+                    break;
+            }
+        }
+        
         key_pressed = 0;
         if (UI_alt_function != -1)
             return AKEY_UI;
         else
             return AKEY_NONE;
     }
-
-
+    
+    
     /* Handle the Atari Console Keys */
-    if (kbhits[SDLK_F2] && !kbhits[SDLK_LMETA])
+    if (kbhits[SDL_SCANCODE_F2] && !kbhits[SDL_SCANCODE_LGUI])
         INPUT_key_consol &= (~INPUT_CONSOL_OPTION);
-    if (kbhits[SDLK_F3] && !kbhits[SDLK_LMETA])
+    if (kbhits[SDL_SCANCODE_F3] && !kbhits[SDL_SCANCODE_LGUI])
         INPUT_key_consol &= (~INPUT_CONSOL_SELECT);
-    if (kbhits[SDLK_F4] && !kbhits[SDLK_LMETA])
+    if (kbhits[SDL_SCANCODE_F4] && !kbhits[SDL_SCANCODE_LGUI])
         INPUT_key_consol &= (~INPUT_CONSOL_START);
-
+    
     if (key_pressed == 0) {
         return AKEY_NONE;
-        }
-	/* Handle the key translations for ctrl&shft numerics */
-	if (INPUT_key_shift && CONTROL) {
+    }
+    /* Handle the key translations for ctrl&shft numerics */
+    if (INPUT_key_shift && CONTROL) {
         switch (lastkey) {
-			case SDLK_COMMA:
-				return(AKEY_COMMA | AKEY_SHFT);
-			case SDLK_PERIOD:
-				return(AKEY_FULLSTOP | AKEY_SHFT);
-			case SDLK_SLASH:
-				return(AKEY_SLASH | AKEY_SHFT);
-			case SDLK_0:
-				return(AKEY_0 | AKEY_SHFT);
-			case SDLK_1:
-				return(AKEY_1 | AKEY_SHFT);
-			case SDLK_2:
-				return(AKEY_2 | AKEY_SHFT);
-			case SDLK_3:
-				return(AKEY_3 | AKEY_SHFT);
-			case SDLK_4:
-				return(AKEY_4 | AKEY_SHFT);
-			case SDLK_5:
-				return(AKEY_5 | AKEY_SHFT);
-			case SDLK_6:
-				return(AKEY_6 | AKEY_SHFT);
-			case SDLK_7:
-				return(AKEY_7 | AKEY_SHFT);
-			case SDLK_8:
-				return(AKEY_8 | AKEY_SHFT);
-			case SDLK_9:
-				return(AKEY_9 | AKEY_SHFT);
-		}
-	}
-
+            case SDLK_COMMA:
+                return(AKEY_COMMA | AKEY_SHFT);
+            case SDLK_PERIOD:
+                return(AKEY_FULLSTOP | AKEY_SHFT);
+            case SDLK_SLASH:
+                return(AKEY_SLASH | AKEY_SHFT);
+            case SDLK_0:
+                return(AKEY_0 | AKEY_SHFT);
+            case SDLK_1:
+                return(AKEY_1 | AKEY_SHFT);
+            case SDLK_2:
+                return(AKEY_2 | AKEY_SHFT);
+            case SDLK_3:
+                return(AKEY_3 | AKEY_SHFT);
+            case SDLK_4:
+                return(AKEY_4 | AKEY_SHFT);
+            case SDLK_5:
+                return(AKEY_5 | AKEY_SHFT);
+            case SDLK_6:
+                return(AKEY_6 | AKEY_SHFT);
+            case SDLK_7:
+                return(AKEY_7 | AKEY_SHFT);
+            case SDLK_8:
+                return(AKEY_8 | AKEY_SHFT);
+            case SDLK_9:
+                return(AKEY_9 | AKEY_SHFT);
+        }
+    }
+    
     /* Handle the key translation for shifted characters */
     if (INPUT_key_shift)
         switch (lastkey) {
-        case SDLK_a:
-            return AKEY_A;
-        case SDLK_b:
-            return AKEY_B;
-        case SDLK_c:
-            return AKEY_C;
-        case SDLK_d:
-            return AKEY_D;
-        case SDLK_e:
-            return AKEY_E;
-        case SDLK_f:
-            return AKEY_F;
-        case SDLK_g:
-            return AKEY_G;
-        case SDLK_h:
-            return AKEY_H;
-        case SDLK_i:
-            return AKEY_I;
-        case SDLK_j:
-            return AKEY_J;
-        case SDLK_k:
-            return AKEY_K;
-        case SDLK_l:
-            return AKEY_L;
-        case SDLK_m:
-            return AKEY_M;
-        case SDLK_n:
-            return AKEY_N;
-        case SDLK_o:
-            return AKEY_O;
-        case SDLK_p:
-            return AKEY_P;
-        case SDLK_q:
-            return AKEY_Q;
-        case SDLK_r:
-            return AKEY_R;
-        case SDLK_s:
-            return AKEY_S;
-        case SDLK_t:
-            return AKEY_T;
-        case SDLK_u:
-            return AKEY_U;
-        case SDLK_v:
-            return AKEY_V;
-        case SDLK_w:
-            return AKEY_W;
-        case SDLK_x:
-            return AKEY_X;
-        case SDLK_y:
-            return AKEY_Y;
-        case SDLK_z:
-            return AKEY_Z;
-        case SDLK_SEMICOLON:
-            return AKEY_COLON;
-        case SDLK_F5:
-            return AKEY_COLDSTART;
-        case SDLK_1:
-            return AKEY_EXCLAMATION;
-        case SDLK_2:
-            return AKEY_AT;
-        case SDLK_3:
-            return AKEY_HASH;
-        case SDLK_4:
-            return AKEY_DOLLAR;
-        case SDLK_5:
-            return AKEY_PERCENT;
-        case SDLK_6:
-            return AKEY_CARET;
-        case SDLK_7:
-            return AKEY_AMPERSAND;
-        case SDLK_8:
-            return AKEY_ASTERISK;
-        case SDLK_9:
-            return AKEY_PARENLEFT;
-        case SDLK_0:
-            return AKEY_PARENRIGHT;
-        case SDLK_EQUALS:
-            return AKEY_PLUS;
-        case SDLK_MINUS:
-            return AKEY_UNDERSCORE;
-        case SDLK_QUOTE:
-            return AKEY_DBLQUOTE;
-        case SDLK_SLASH:
-            return AKEY_QUESTION;
-        case SDLK_COMMA:
-            return AKEY_LESS;
-        case SDLK_PERIOD:
-            return AKEY_GREATER;
-        case SDLK_BACKSLASH:
-            return AKEY_BAR;
-        case SDLK_INSERT:
-            return AKEY_INSERT_LINE;
-		case SDLK_HOME:
-			return AKEY_CLEAR;
-        case SDLK_CAPSLOCK:
-            key_pressed = 0;
-			lastkey = SDLK_UNKNOWN;
-			capsLockState = CAPS_UPPER;
-            return AKEY_CAPSLOCK;
+            case SDLK_a:
+                return AKEY_A;
+            case SDLK_b:
+                return AKEY_B;
+            case SDLK_c:
+                return AKEY_C;
+            case SDLK_d:
+                return AKEY_D;
+            case SDLK_e:
+                return AKEY_E;
+            case SDLK_f:
+                return AKEY_F;
+            case SDLK_g:
+                return AKEY_G;
+            case SDLK_h:
+                return AKEY_H;
+            case SDLK_i:
+                return AKEY_I;
+            case SDLK_j:
+                return AKEY_J;
+            case SDLK_k:
+                return AKEY_K;
+            case SDLK_l:
+                return AKEY_L;
+            case SDLK_m:
+                return AKEY_M;
+            case SDLK_n:
+                return AKEY_N;
+            case SDLK_o:
+                return AKEY_O;
+            case SDLK_p:
+                return AKEY_P;
+            case SDLK_q:
+                return AKEY_Q;
+            case SDLK_r:
+                return AKEY_R;
+            case SDLK_s:
+                return AKEY_S;
+            case SDLK_t:
+                return AKEY_T;
+            case SDLK_u:
+                return AKEY_U;
+            case SDLK_v:
+                return AKEY_V;
+            case SDLK_w:
+                return AKEY_W;
+            case SDLK_x:
+                return AKEY_X;
+            case SDLK_y:
+                return AKEY_Y;
+            case SDLK_z:
+                return AKEY_Z;
+            case SDLK_SEMICOLON:
+                return AKEY_COLON;
+            case SDLK_F5:
+                return AKEY_COLDSTART;
+            case SDLK_1:
+                return AKEY_EXCLAMATION;
+            case SDLK_2:
+                return AKEY_AT;
+            case SDLK_3:
+                return AKEY_HASH;
+            case SDLK_4:
+                return AKEY_DOLLAR;
+            case SDLK_5:
+                return AKEY_PERCENT;
+            case SDLK_6:
+                return AKEY_CARET;
+            case SDLK_7:
+                return AKEY_AMPERSAND;
+            case SDLK_8:
+                return AKEY_ASTERISK;
+            case SDLK_9:
+                return AKEY_PARENLEFT;
+            case SDLK_0:
+                return AKEY_PARENRIGHT;
+            case SDLK_EQUALS:
+                return AKEY_PLUS;
+            case SDLK_MINUS:
+                return AKEY_UNDERSCORE;
+            case SDLK_QUOTE:
+                return AKEY_DBLQUOTE;
+            case SDLK_SLASH:
+                return AKEY_QUESTION;
+            case SDLK_COMMA:
+                return AKEY_LESS;
+            case SDLK_PERIOD:
+                return AKEY_GREATER;
+            case SDLK_BACKSLASH:
+                return AKEY_BAR;
+            case SDLK_INSERT:
+                return AKEY_INSERT_LINE;
+            case SDLK_HOME:
+                return AKEY_CLEAR;
+            case SDLK_CAPSLOCK:
+                key_pressed = 0;
+                lastkey = SDLK_UNKNOWN;
+                capsLockState = CAPS_UPPER;
+                return AKEY_CAPSLOCK;
         }
-    /* Handle the key translation for non-shifted characters 
-       First check to make sure it isn't an emulated joystick key,
-       since if it is, it should be ignored.  */
+    /* Handle the key translation for non-shifted characters
+     First check to make sure it isn't an emulated joystick key,
+     since if it is, it should be ignored.  */
     else {
-        if (SDL_IsJoyKey[lastkey] && keyjoyEnable && !key_option && !UI_is_active && 
-			(pasteState == PASTE_IDLE))
+        if ((lookup(SDL_IsJoyKeyTable, lastkey) == 1) && keyjoyEnable && !key_option && !UI_is_active &&
+            (pasteState == PASTE_IDLE))
             return AKEY_NONE;
         if (Atari800_machine_type == Atari800_MACHINE_5200)
-            {
+        {
             if ((INPUT_key_consol & INPUT_CONSOL_START) == 0)
                 return(AKEY_5200_START);
-
+            
             switch(lastkey) {
-            case SDLK_p:
-                return(AKEY_5200_PAUSE);	/* pause */
-            case SDLK_r:
-                return(AKEY_5200_RESET);	/* reset (5200 has no warmstart) */
-            case SDLK_0:
-            case SDLK_KP0:
-                return(AKEY_5200_0);		/* controller numpad keys (0-9) */
-            case SDLK_1:
-            case SDLK_KP1:
-                return(AKEY_5200_1);
-            case SDLK_2:
-            case SDLK_KP2:
-                return(AKEY_5200_2);
-            case SDLK_3:
-            case SDLK_KP3:
-                return(AKEY_5200_3);
-            case SDLK_4:
-            case SDLK_KP4:
-                return(AKEY_5200_4);
-            case SDLK_5:
-            case SDLK_KP5:
-                return(AKEY_5200_5);
-            case SDLK_6:
-            case SDLK_KP6:
-                return(AKEY_5200_6);
-            case SDLK_7:
-            case SDLK_KP7:
-                return(AKEY_5200_7);
-            case SDLK_8:
-            case SDLK_KP8:
-                return(AKEY_5200_8);
-            case SDLK_9:
-            case SDLK_KP9:
-                return(AKEY_5200_9);
-            case SDLK_MINUS:
-            case SDLK_KP_MINUS:
-                return(AKEY_5200_HASH);	/* # key on 5200 controller */
-            case SDLK_ASTERISK:
-            case SDLK_KP_MULTIPLY:
-                return(AKEY_5200_ASTERISK);	/* * key on 5200 controller */
-            case SDLK_F9:
-            case SDLK_F8:
-            case SDLK_F13:
-            case SDLK_F6:
-            case SDLK_F1:
-            case SDLK_F5:
-            case SDLK_LEFT:
-            case SDLK_RIGHT:
-            case SDLK_UP:
-            case SDLK_DOWN:
-            case SDLK_ESCAPE:
-            case SDLK_TAB:
-            case SDLK_RETURN:
-                break;
-            default:
-                return AKEY_NONE;
-                }
+                case SDLK_p:
+                    return(AKEY_5200_PAUSE);    /* pause */
+                case SDLK_r:
+                    return(AKEY_5200_RESET);    /* reset (5200 has no warmstart) */
+                case SDLK_0:
+                case SDLK_KP_0:
+                    return(AKEY_5200_0);        /* controller numpad keys (0-9) */
+                case SDLK_1:
+                case SDLK_KP_1:
+                    return(AKEY_5200_1);
+                case SDLK_2:
+                case SDLK_KP_2:
+                    return(AKEY_5200_2);
+                case SDLK_3:
+                case SDLK_KP_3:
+                    return(AKEY_5200_3);
+                case SDLK_4:
+                case SDLK_KP_4:
+                    return(AKEY_5200_4);
+                case SDLK_5:
+                case SDLK_KP_5:
+                    return(AKEY_5200_5);
+                case SDLK_6:
+                case SDLK_KP_6:
+                    return(AKEY_5200_6);
+                case SDLK_7:
+                case SDLK_KP_7:
+                    return(AKEY_5200_7);
+                case SDLK_8:
+                case SDLK_KP_8:
+                    return(AKEY_5200_8);
+                case SDLK_9:
+                case SDLK_KP_9:
+                    return(AKEY_5200_9);
+                case SDLK_MINUS:
+                case SDLK_KP_MINUS:
+                    return(AKEY_5200_HASH);    /* # key on 5200 controller */
+                case SDLK_ASTERISK:
+                case SDLK_KP_MULTIPLY:
+                    return(AKEY_5200_ASTERISK);    /* * key on 5200 controller */
+                case SDLK_F9:
+                case SDLK_F8:
+                case SDLK_F13:
+                case SDLK_F6:
+                case SDLK_F1:
+                case SDLK_F5:
+                case SDLK_LEFT:
+                case SDLK_RIGHT:
+                case SDLK_UP:
+                case SDLK_DOWN:
+                case SDLK_ESCAPE:
+                case SDLK_TAB:
+                case SDLK_RETURN:
+                    break;
+                default:
+                    return AKEY_NONE;
             }
-        switch (lastkey) {
-        case SDLK_a:
-            return AKEY_a;
-        case SDLK_b:
-            return AKEY_b;
-        case SDLK_c:
-            return AKEY_c;
-        case SDLK_d:
-            return AKEY_d;
-        case SDLK_e:
-            return AKEY_e;
-        case SDLK_f:
-            return AKEY_f;
-        case SDLK_g:
-            return AKEY_g;
-        case SDLK_h:
-            return AKEY_h;
-        case SDLK_i:
-            return AKEY_i;
-        case SDLK_j:
-            return AKEY_j;
-        case SDLK_k:
-            return AKEY_k;
-        case SDLK_l:
-            return AKEY_l;
-        case SDLK_m:
-            return AKEY_m;
-        case SDLK_n:
-            return AKEY_n;
-        case SDLK_o:
-            return AKEY_o;
-        case SDLK_p:
-            return AKEY_p;
-        case SDLK_q:
-            return AKEY_q;
-        case SDLK_r:
-            return AKEY_r;
-        case SDLK_s:
-            return AKEY_s;
-        case SDLK_t:
-            return AKEY_t;
-        case SDLK_u:
-            return AKEY_u;
-        case SDLK_v:
-            return AKEY_v;
-        case SDLK_w:
-            return AKEY_w;
-        case SDLK_x:
-            return AKEY_x;
-        case SDLK_y:
-            return AKEY_y;
-        case SDLK_z:
-            return AKEY_z;
-        case SDLK_SEMICOLON:
-            return AKEY_SEMICOLON;
-        case SDLK_F5:
-            return AKEY_WARMSTART;
-        case SDLK_0:
-            return AKEY_0;
-        case SDLK_1:
-            return AKEY_1;
-        case SDLK_2:
-            return AKEY_2;
-        case SDLK_3:
-            return AKEY_3;
-        case SDLK_4:
-            return AKEY_4;
-        case SDLK_5:
-            return AKEY_5;
-        case SDLK_6:
-            return AKEY_6;
-        case SDLK_7:
-            return AKEY_7;
-        case SDLK_8:
-            return AKEY_8;
-        case SDLK_9:
-            return AKEY_9;
-        case SDLK_COMMA:
-            return AKEY_COMMA;
-        case SDLK_PERIOD:
-            return AKEY_FULLSTOP;
-        case SDLK_EQUALS:
-            return AKEY_EQUAL;
-        case SDLK_MINUS:
-            return AKEY_MINUS;
-        case SDLK_QUOTE:
-            return AKEY_QUOTE;
-        case SDLK_SLASH:
-            return AKEY_SLASH;
-        case SDLK_BACKSLASH:
-            return AKEY_BACKSLASH;
-        case SDLK_LEFTBRACKET:
-            return AKEY_BRACKETLEFT;
-        case SDLK_RIGHTBRACKET:
-            return AKEY_BRACKETRIGHT;
-        case SDLK_F7:
-            key_pressed = 0;
-            requestLimitChange=1;
-            return AKEY_NONE;
-        case SDLK_F8:
-            key_pressed = 0;
-            requestMonitor = TRUE;
-            if (!Atari800_Exit(TRUE)) 
-                return AKEY_EXIT;
-            else
-                return AKEY_NONE;
-        case SDLK_F13:
-            key_pressed = 0;
-            return AKEY_SCREENSHOT;
-        case SDLK_F6:
-            if (!FULLSCREEN)
-                 SwitchGrabMouse();
-            key_pressed = 0;
-            return AKEY_NONE;
-        case SDLK_INSERT:
-            return AKEY_INSERT_CHAR;
-        case SDLK_CAPSLOCK:
-            key_pressed = 0;
-			lastkey = SDLK_UNKNOWN;
-			if (CONTROL) {
-				capsLockState = CAPS_GRAPHICS;
-				}
-			else if (Atari800_machine_type == Atari800_MACHINE_XLXE) {
-				if (capsLockState == CAPS_UPPER)
-					capsLockState = CAPS_LOWER;
-				else
-					capsLockState = CAPS_UPPER;
-			}
-			else
-				capsLockState = CAPS_LOWER;
-            return AKEY_CAPSTOGGLE;
         }
-	}
-	if (INPUT_cx85) switch (lastkey) {
-		case SDLK_KP1:
-			return AKEY_CX85_1;
-		case SDLK_KP2:
-			return AKEY_CX85_2;
-		case SDLK_KP3:
-			return AKEY_CX85_3;
-		case SDLK_KP4:
-			return AKEY_CX85_4;
-		case SDLK_KP5:
-			return AKEY_CX85_5;
-		case SDLK_KP6:
-			return AKEY_CX85_6;
-		case SDLK_KP7:
-			return AKEY_CX85_7;
-		case SDLK_KP8:
-			return AKEY_CX85_8;
-		case SDLK_KP9:
-			return AKEY_CX85_9;
-		case SDLK_KP0:
-			return AKEY_CX85_0;
-		case SDLK_KP_PERIOD:
-			return AKEY_CX85_PERIOD;
-		case SDLK_KP_MINUS:
-			return AKEY_CX85_MINUS;
-		case SDLK_KP_ENTER:
-			return AKEY_CX85_PLUS_ENTER;
-		case SDLK_KP_DIVIDE:
-			return (CONTROL ? AKEY_CX85_ESCAPE : AKEY_CX85_NO);
-		case SDLK_KP_MULTIPLY:
-			return AKEY_CX85_DELETE;
-		case SDLK_KP_PLUS:
-			return AKEY_CX85_YES;
-	}
-	
-    /* Handle the key translation for special characters 
-       First check to make sure it isn't an emulated joystick key,
-       since if it is, it should be ignored.  */ 
-	if (SDL_IsJoyKey[lastkey] && keyjoyEnable && !key_option && !UI_is_active && 
-					(pasteState == PASTE_IDLE))
+        switch (lastkey) {
+            case SDLK_a:
+                return AKEY_a;
+            case SDLK_b:
+                return AKEY_b;
+            case SDLK_c:
+                return AKEY_c;
+            case SDLK_d:
+                return AKEY_d;
+            case SDLK_e:
+                return AKEY_e;
+            case SDLK_f:
+                return AKEY_f;
+            case SDLK_g:
+                return AKEY_g;
+            case SDLK_h:
+                return AKEY_h;
+            case SDLK_i:
+                return AKEY_i;
+            case SDLK_j:
+                return AKEY_j;
+            case SDLK_k:
+                return AKEY_k;
+            case SDLK_l:
+                return AKEY_l;
+            case SDLK_m:
+                return AKEY_m;
+            case SDLK_n:
+                return AKEY_n;
+            case SDLK_o:
+                return AKEY_o;
+            case SDLK_p:
+                return AKEY_p;
+            case SDLK_q:
+                return AKEY_q;
+            case SDLK_r:
+                return AKEY_r;
+            case SDLK_s:
+                return AKEY_s;
+            case SDLK_t:
+                return AKEY_t;
+            case SDLK_u:
+                return AKEY_u;
+            case SDLK_v:
+                return AKEY_v;
+            case SDLK_w:
+                return AKEY_w;
+            case SDLK_x:
+                return AKEY_x;
+            case SDLK_y:
+                return AKEY_y;
+            case SDLK_z:
+                return AKEY_z;
+            case SDLK_SEMICOLON:
+                return AKEY_SEMICOLON;
+            case SDLK_F5:
+                return AKEY_WARMSTART;
+            case SDLK_0:
+                return AKEY_0;
+            case SDLK_1:
+                return AKEY_1;
+            case SDLK_2:
+                return AKEY_2;
+            case SDLK_3:
+                return AKEY_3;
+            case SDLK_4:
+                return AKEY_4;
+            case SDLK_5:
+                return AKEY_5;
+            case SDLK_6:
+                return AKEY_6;
+            case SDLK_7:
+                return AKEY_7;
+            case SDLK_8:
+                return AKEY_8;
+            case SDLK_9:
+                return AKEY_9;
+            case SDLK_COMMA:
+                return AKEY_COMMA;
+            case SDLK_PERIOD:
+                return AKEY_FULLSTOP;
+            case SDLK_EQUALS:
+                return AKEY_EQUAL;
+            case SDLK_MINUS:
+                return AKEY_MINUS;
+            case SDLK_QUOTE:
+                return AKEY_QUOTE;
+            case SDLK_SLASH:
+                return AKEY_SLASH;
+            case SDLK_BACKSLASH:
+                return AKEY_BACKSLASH;
+            case SDLK_LEFTBRACKET:
+                return AKEY_BRACKETLEFT;
+            case SDLK_RIGHTBRACKET:
+                return AKEY_BRACKETRIGHT;
+            case SDLK_F7:
+                key_pressed = 0;
+                requestLimitChange=1;
+                return AKEY_NONE;
+            case SDLK_F8:
+                key_pressed = 0;
+                requestMonitor = TRUE;
+                return AKEY_NONE;
+            case SDLK_F13:
+                key_pressed = 0;
+                return AKEY_SCREENSHOT;
+            case SDLK_F6:
+                if (!FULLSCREEN)
+                    SwitchGrabMouse();
+                key_pressed = 0;
+                return AKEY_NONE;
+            case SDLK_INSERT:
+                return AKEY_INSERT_CHAR;
+            case SDLK_CAPSLOCK:
+                key_pressed = 0;
+                lastkey = SDLK_UNKNOWN;
+                if (CONTROL) {
+                    capsLockState = CAPS_GRAPHICS;
+                }
+                else if (Atari800_machine_type == Atari800_MACHINE_XLXE) {
+                    if (capsLockState == CAPS_UPPER)
+                        capsLockState = CAPS_LOWER;
+                    else
+                        capsLockState = CAPS_UPPER;
+                }
+                else
+                    capsLockState = CAPS_LOWER;
+                return AKEY_CAPSTOGGLE;
+        }
+    }
+    if (INPUT_cx85) switch (lastkey) {
+        case SDLK_KP_1:
+            return AKEY_CX85_1;
+        case SDLK_KP_2:
+            return AKEY_CX85_2;
+        case SDLK_KP_3:
+            return AKEY_CX85_3;
+        case SDLK_KP_4:
+            return AKEY_CX85_4;
+        case SDLK_KP_5:
+            return AKEY_CX85_5;
+        case SDLK_KP_6:
+            return AKEY_CX85_6;
+        case SDLK_KP_7:
+            return AKEY_CX85_7;
+        case SDLK_KP_8:
+            return AKEY_CX85_8;
+        case SDLK_KP_9:
+            return AKEY_CX85_9;
+        case SDLK_KP_0:
+            return AKEY_CX85_0;
+        case SDLK_KP_PERIOD:
+            return AKEY_CX85_PERIOD;
+        case SDLK_KP_MINUS:
+            return AKEY_CX85_MINUS;
+        case SDLK_KP_ENTER:
+            return AKEY_CX85_PLUS_ENTER;
+        case SDLK_KP_DIVIDE:
+            return (CONTROL ? AKEY_CX85_ESCAPE : AKEY_CX85_NO);
+        case SDLK_KP_MULTIPLY:
+            return AKEY_CX85_DELETE;
+        case SDLK_KP_PLUS:
+            return AKEY_CX85_YES;
+    }
+    
+    /* Handle the key translation for special characters
+     First check to make sure it isn't an emulated joystick key,
+     since if it is, it should be ignored.  */
+    if ((lookup(SDL_IsJoyKeyTable, lastkey) == 1) && keyjoyEnable && !key_option && !UI_is_active &&
+        (pasteState == PASTE_IDLE))
         return AKEY_NONE;
     switch (lastkey) {
-    case SDLK_END:
-		if (INPUT_key_shift)
-			return AKEY_ATARI | AKEY_SHFT;
-		else
-			return AKEY_ATARI;
-    case SDLK_PAGEDOWN:
-		if (INPUT_key_shift)
-			return AKEY_HELP | AKEY_SHFT;
-		else
-			return AKEY_HELP;
-	case SDLK_PAGEUP:
-		capsLockState = CAPS_UPPER;
-        return AKEY_CAPSLOCK;
-    case SDLK_HOME:
-		if (CONTROL)
-			return AKEY_LESS;
-		else
-			return AKEY_CLEAR;
-    case SDLK_PAUSE:
-    case SDLK_BACKQUOTE:
-        return AKEY_BREAK;
-    case SDLK_F15:
-		if (INPUT_key_shift)
-			return AKEY_BREAK;
-    case SDLK_CAPSLOCK:
-		if (INPUT_key_shift) {
-			capsLockState = CAPS_UPPER;
+        case SDLK_END:
+            if (INPUT_key_shift)
+                return AKEY_ATARI | AKEY_SHFT;
+            else
+                return AKEY_ATARI;
+        case SDLK_PAGEDOWN:
+            if (INPUT_key_shift)
+                return AKEY_HELP | AKEY_SHFT;
+            else
+                return AKEY_HELP;
+        case SDLK_PAGEUP:
+            capsLockState = CAPS_UPPER;
             return AKEY_CAPSLOCK;
-		}
-        else {
-			if (CONTROL) {
-				capsLockState = CAPS_GRAPHICS;
-			}
-			else if (Atari800_machine_type == Atari800_MACHINE_XLXE) {
-				if (capsLockState == CAPS_UPPER)
-					capsLockState = CAPS_LOWER;
-				else
-					capsLockState = CAPS_UPPER;
-			} 
-			else
-				capsLockState = CAPS_LOWER;
-            return AKEY_CAPSTOGGLE;
-		}
-    case SDLK_SPACE:
-        if (INPUT_key_shift)
-            return AKEY_SPACE | AKEY_SHFT;
-        else
-            return AKEY_SPACE;
-    case SDLK_BACKSPACE:
-        if (INPUT_key_shift)
-            return AKEY_BACKSPACE | AKEY_SHFT;
-        else
-            return AKEY_BACKSPACE;
-    case SDLK_RETURN:
-        if (INPUT_key_shift)
-            return AKEY_RETURN | AKEY_SHFT;
-        else 
-            return AKEY_RETURN;
-    case SDLK_F9:
-		printf("%d\n",FullscreenCrashGUIRun());
-        return AKEY_EXIT;
-    case SDLK_F1:
-		return AKEY_UI;
-	case SDLK_LEFT:
-		if (useAtariCursorKeys == USE_ATARI_CURSOR_ARROW_ONLY && !UI_is_active) {
-			if (INPUT_key_shift)
-				return AKEY_PLUS | AKEY_SHFT;
-			else 
-				return AKEY_PLUS;
-		} else if (useAtariCursorKeys == USE_ATARI_CURSOR_FX && !UI_is_active) {
-			if (INPUT_key_shift)
-				return AKEY_F3 | AKEY_SHFT;
-			else
-				return AKEY_F3;			
-		} else {
-			if (INPUT_key_shift && CONTROL)
-				return AKEY_PLUS | AKEY_SHFT;
-			else
-				return AKEY_LEFT;
-		}
-	case SDLK_RIGHT:
-		if (useAtariCursorKeys == USE_ATARI_CURSOR_ARROW_ONLY && !UI_is_active) {
-			if (INPUT_key_shift)
-				return AKEY_ASTERISK | AKEY_SHFT;
-			else 
-				return AKEY_ASTERISK;
-		} else if (useAtariCursorKeys == USE_ATARI_CURSOR_FX && !UI_is_active) {
-			if (INPUT_key_shift)
-				return AKEY_F4 | AKEY_SHFT;
-			else
-				return AKEY_F4;			
-		} else {
-			if (INPUT_key_shift && CONTROL)
-				return AKEY_ASTERISK | AKEY_SHFT;
-			else 
-				return AKEY_RIGHT;
-		}
-	case SDLK_UP:
-		if (useAtariCursorKeys == USE_ATARI_CURSOR_ARROW_ONLY && !UI_is_active) {
-			if (INPUT_key_shift)
-				return AKEY_MINUS | AKEY_SHFT;
-			else 
-				return AKEY_MINUS;
-		} else if (useAtariCursorKeys == USE_ATARI_CURSOR_FX && !UI_is_active) {
-			if (INPUT_key_shift)
-				return AKEY_F1 | AKEY_SHFT;
-			else
-				return AKEY_F1;			
-		} else {
-			if (INPUT_key_shift && CONTROL)
-				return AKEY_MINUS | AKEY_SHFT;
-			else 
-				return AKEY_UP;
-		}
-	case SDLK_DOWN:
-		if (useAtariCursorKeys == USE_ATARI_CURSOR_ARROW_ONLY && !UI_is_active) {
-			if (INPUT_key_shift)
-				return AKEY_EQUAL | AKEY_SHFT;
-			else 
-				return AKEY_EQUAL;
-		} else if (useAtariCursorKeys == USE_ATARI_CURSOR_FX && !UI_is_active) {
-			if (INPUT_key_shift)
-				return AKEY_F2 | AKEY_SHFT;
-			else
-				return AKEY_F2;			
-		} else {
-			if (INPUT_key_shift && CONTROL)
-				return AKEY_EQUAL | AKEY_SHFT;
-			else 
-				return AKEY_DOWN;
-		}
-	case SDLK_ESCAPE:
-		if (INPUT_key_shift)
-			return AKEY_ESCAPE | AKEY_SHFT;
-		else
-			return AKEY_ESCAPE;
-    case SDLK_TAB:
-        if (INPUT_key_shift)
-            return AKEY_SETTAB;
-        else if (CONTROL)
-            return AKEY_CLRTAB;
-        else
-            return AKEY_TAB;
-    case SDLK_DELETE:
-        if (INPUT_key_shift)
-            return AKEY_DELETE_LINE;
-        else
-            return AKEY_DELETE_CHAR;
-    case SDLK_INSERT:
-        if (INPUT_key_shift)
-            return AKEY_INSERT_LINE;
-        else
-            return AKEY_INSERT_CHAR;
+        case SDLK_HOME:
+            if (CONTROL)
+                return AKEY_LESS;
+            else
+                return AKEY_CLEAR;
+        case SDLK_PAUSE:
+        case SDLK_BACKQUOTE:
+            return AKEY_BREAK;
+        case SDLK_F15:
+            if (INPUT_key_shift)
+                return AKEY_BREAK;
+        case SDLK_CAPSLOCK:
+            if (INPUT_key_shift) {
+                capsLockState = CAPS_UPPER;
+                return AKEY_CAPSLOCK;
+            }
+            else {
+                if (CONTROL) {
+                    capsLockState = CAPS_GRAPHICS;
+                }
+                else if (Atari800_machine_type == Atari800_MACHINE_XLXE) {
+                    if (capsLockState == CAPS_UPPER)
+                        capsLockState = CAPS_LOWER;
+                    else
+                        capsLockState = CAPS_UPPER;
+                }
+                else
+                    capsLockState = CAPS_LOWER;
+                return AKEY_CAPSTOGGLE;
+            }
+        case SDLK_SPACE:
+            if (INPUT_key_shift)
+                return AKEY_SPACE | AKEY_SHFT;
+            else
+                return AKEY_SPACE;
+        case SDLK_BACKSPACE:
+            if (INPUT_key_shift)
+                return AKEY_BACKSPACE | AKEY_SHFT;
+            else
+                return AKEY_BACKSPACE;
+        case SDLK_RETURN:
+            if (INPUT_key_shift)
+                return AKEY_RETURN | AKEY_SHFT;
+            else
+                return AKEY_RETURN;
+        case SDLK_F9:
+            printf("%d\n",FullscreenCrashGUIRun());
+            return AKEY_EXIT;
+        case SDLK_F1:
+            return AKEY_UI;
+        case SDLK_LEFT:
+            if (useAtariCursorKeys == USE_ATARI_CURSOR_ARROW_ONLY && !UI_is_active) {
+                if (INPUT_key_shift)
+                    return AKEY_PLUS | AKEY_SHFT;
+                else
+                    return AKEY_PLUS;
+            } else if (useAtariCursorKeys == USE_ATARI_CURSOR_FX && !UI_is_active) {
+                if (INPUT_key_shift)
+                    return AKEY_F3 | AKEY_SHFT;
+                else
+                    return AKEY_F3;
+            } else {
+                if (INPUT_key_shift && CONTROL)
+                    return AKEY_PLUS | AKEY_SHFT;
+                else
+                    return AKEY_LEFT;
+            }
+        case SDLK_RIGHT:
+            if (useAtariCursorKeys == USE_ATARI_CURSOR_ARROW_ONLY && !UI_is_active) {
+                if (INPUT_key_shift)
+                    return AKEY_ASTERISK | AKEY_SHFT;
+                else
+                    return AKEY_ASTERISK;
+            } else if (useAtariCursorKeys == USE_ATARI_CURSOR_FX && !UI_is_active) {
+                if (INPUT_key_shift)
+                    return AKEY_F4 | AKEY_SHFT;
+                else
+                    return AKEY_F4;
+            } else {
+                if (INPUT_key_shift && CONTROL)
+                    return AKEY_ASTERISK | AKEY_SHFT;
+                else
+                    return AKEY_RIGHT;
+            }
+        case SDLK_UP:
+            if (useAtariCursorKeys == USE_ATARI_CURSOR_ARROW_ONLY && !UI_is_active) {
+                if (INPUT_key_shift)
+                    return AKEY_MINUS | AKEY_SHFT;
+                else
+                    return AKEY_MINUS;
+            } else if (useAtariCursorKeys == USE_ATARI_CURSOR_FX && !UI_is_active) {
+                if (INPUT_key_shift)
+                    return AKEY_F1 | AKEY_SHFT;
+                else
+                    return AKEY_F1;
+            } else {
+                if (INPUT_key_shift && CONTROL)
+                    return AKEY_MINUS | AKEY_SHFT;
+                else
+                    return AKEY_UP;
+            }
+        case SDLK_DOWN:
+            if (useAtariCursorKeys == USE_ATARI_CURSOR_ARROW_ONLY && !UI_is_active) {
+                if (INPUT_key_shift)
+                    return AKEY_EQUAL | AKEY_SHFT;
+                else
+                    return AKEY_EQUAL;
+            } else if (useAtariCursorKeys == USE_ATARI_CURSOR_FX && !UI_is_active) {
+                if (INPUT_key_shift)
+                    return AKEY_F2 | AKEY_SHFT;
+                else
+                    return AKEY_F2;
+            } else {
+                if (INPUT_key_shift && CONTROL)
+                    return AKEY_EQUAL | AKEY_SHFT;
+                else
+                    return AKEY_DOWN;
+            }
+        case SDLK_ESCAPE:
+            if (INPUT_key_shift)
+                return AKEY_ESCAPE | AKEY_SHFT;
+            else
+                return AKEY_ESCAPE;
+        case SDLK_TAB:
+            if (INPUT_key_shift)
+                return AKEY_SETTAB;
+            else if (CONTROL)
+                return AKEY_CLRTAB;
+            else
+                return AKEY_TAB;
+        case SDLK_DELETE:
+            if (INPUT_key_shift)
+                return AKEY_DELETE_LINE;
+            else
+                return AKEY_DELETE_CHAR;
+        case SDLK_INSERT:
+            if (INPUT_key_shift)
+                return AKEY_INSERT_LINE;
+            else
+                return AKEY_INSERT_CHAR;
     }
     return AKEY_NONE;
 }
 
+static int Atari_International_Char_To_Key(char ch)
+{
+    static int ch_to_key[] = {
+        AKEY_SPACE, AKEY_EXCLAMATION, AKEY_DBLQUOTE, AKEY_HASH,
+        AKEY_DOLLAR, AKEY_PERCENT, AKEY_AMPERSAND, AKEY_QUOTE,
+        AKEY_PARENLEFT, AKEY_PARENRIGHT, AKEY_ASTERISK, AKEY_PLUS,
+        AKEY_COMMA, AKEY_MINUS, AKEY_FULLSTOP, AKEY_SLASH,
+        AKEY_0, AKEY_1, AKEY_2, AKEY_3,
+        AKEY_4, AKEY_5, AKEY_6, AKEY_7,
+        AKEY_8, AKEY_9, AKEY_COLON, AKEY_SEMICOLON,
+        AKEY_LESS, AKEY_EQUAL, AKEY_GREATER, AKEY_QUESTION,
+        AKEY_AT, AKEY_A, AKEY_B, AKEY_C,
+        AKEY_D, AKEY_E, AKEY_F, AKEY_G,
+        AKEY_H, AKEY_I, AKEY_J, AKEY_K,
+        AKEY_L, AKEY_M, AKEY_N, AKEY_O,
+        AKEY_P, AKEY_Q, AKEY_R, AKEY_S,
+        AKEY_T, AKEY_U, AKEY_V, AKEY_W,
+        AKEY_X, AKEY_Y, AKEY_Z, AKEY_BRACKETLEFT,
+        AKEY_BACKSLASH, AKEY_BRACKETRIGHT, AKEY_CARET, AKEY_UNDERSCORE,
+        AKEY_BREAK, AKEY_a, AKEY_b, AKEY_c,
+        AKEY_d, AKEY_e, AKEY_f, AKEY_g,
+        AKEY_h, AKEY_i, AKEY_j, AKEY_k,
+        AKEY_l, AKEY_m, AKEY_n, AKEY_o,
+        AKEY_p, AKEY_q, AKEY_r, AKEY_s,
+        AKEY_t, AKEY_u, AKEY_v, AKEY_w,
+        AKEY_x, AKEY_y, AKEY_z, AKEY_NONE,
+        AKEY_BAR, AKEY_NONE, AKEY_NONE
+    };
+    if (ch < 32 || ch > 126)
+        return AKEY_NONE;
+    else
+        return ch_to_key[ch-32];
+}
+
+static int Atari_International_Good_Key(int key) {
+    int i;
+    static int good_keys[32] = {
+    SDLK_CAPSLOCK, SDLK_F1, SDLK_F2, SDLK_F3,
+    SDLK_F4, SDLK_F5, SDLK_F6, SDLK_F7,
+    SDLK_F8, SDLK_F9, SDLK_F10, SDLK_F11,
+    SDLK_F12, SDLK_F13, SDLK_F14, SDLK_F15,
+    SDLK_RETURN, SDLK_INSERT, SDLK_DELETE, SDLK_END,
+    SDLK_HOME, SDLK_PAGEUP, SDLK_PAGEDOWN, SDLK_LEFT,
+    SDLK_RIGHT, SDLK_UP, SDLK_DOWN, SDLK_ESCAPE,
+    SDLK_TAB, SDLK_RETURN, SDLK_BACKSPACE, SDLK_DELETE
+    };
+    
+    for (i = 0; i<32; i++)
+        if (key == good_keys[i])
+            return TRUE;
+    return FALSE;
+    }
+
 /*------------------------------------------------------------------------------
-*  Atari_Keyboard_International - This function is called once per main loop to 
-*    handle keyboard input.  It uses the built in Mac ability to translate
-*    international keypresses.
-*-----------------------------------------------------------------------------*/
+ *  Atari_Keyboard_International - This function is called once per main loop to handle
+ *    keyboard input.  It handles keys like the original SDL version,  with
+ *    no access to the built in Mac handling of international keyboards.
+ *-----------------------------------------------------------------------------*/
 int Atari_Keyboard_International(void)
 {
     static int lastkey = SDLK_UNKNOWN, key_pressed = 0;
-	static int lastkeyuni = AKEY_NONE;
-	int lastkey_joy;
     SDL_Event event;
     int key_option = 0;
-	int shiftKey;
-	static int key_was_pressed = 0;
+    static int key_was_pressed = 0;
+    char *text_input;
+    int text_key = AKEY_NONE;
 
-	/* Check for presses in function keys window */
+    /* Check for presses in function keys window */
     INPUT_key_consol = INPUT_CONSOL_NONE;
     if (optionFunctionPressed) {
         INPUT_key_consol &= (~INPUT_CONSOL_OPTION);
-		optionFunctionPressed--;
-		}
+        optionFunctionPressed--;
+    }
     if (selectFunctionPressed) {
         INPUT_key_consol &= (~INPUT_CONSOL_SELECT);
-		selectFunctionPressed--;
-		}
+        selectFunctionPressed--;
+    }
     if (startFunctionPressed) {
         INPUT_key_consol &= (~INPUT_CONSOL_START);
-		startFunctionPressed--;
-		}
+        startFunctionPressed--;
+    }
     if (breakFunctionPressed) {
-		breakFunctionPressed = 0;
+        breakFunctionPressed = 0;
         return AKEY_BREAK;
-		}
-
-	if (pasteState != PASTE_IDLE) {
-		if (SDL_PollEvent(&event)) {
-			if (event.type == SDL_KEYDOWN)
-				pasteState = PASTE_END;		
-		}
-		
-		if (key_was_pressed) {
-			key_was_pressed--;
-			if (!key_was_pressed && (pasteState == PASTE_DONE)) {
-				pasteState = PASTE_IDLE;
-				}
-			key_pressed = 0;
-			}
-		else {
-			unsigned short pasteKey;
-			
-			if (pasteState == PASTE_START) {
-				copyStatus = COPY_IDLE;
-				pasteState = PASTE_IN_PROG;
-				if (capsLockState == CAPS_UPPER || capsLockState == CAPS_GRAPHICS) {
-					capsLockState = CAPS_LOWER;
-					key_was_pressed = PASTE_KEY_DELAY;	
-					return(AKEY_CAPSTOGGLE);
-					}
-				}
-				
-			if (pasteState == PASTE_END) {
-				pasteState = PASTE_IDLE;
-				if (capsLockPrePasteState == CAPS_UPPER) {
-					pasteState = PASTE_DONE;
-					capsLockState = CAPS_UPPER;
-					key_was_pressed = PASTE_KEY_DELAY;						
-					return(AKEY_CAPSLOCK);
-				}
-				else if (capsLockPrePasteState == CAPS_GRAPHICS) {
-					pasteState = PASTE_DONE;
-					capsLockState = CAPS_GRAPHICS;
-					CONTROL = AKEY_CTRL;
-					key_was_pressed = PASTE_KEY_DELAY;						
-					return(AKEY_CAPSTOGGLE);
-				}
-				else {
-					pasteState = PASTE_IDLE;
-					return(AKEY_NONE);
-					}
-				}
-				
-			if (!PasteManagerGetChar(&pasteKey)) {
-				pasteState = PASTE_END;
-			}
-			lastkeyuni = pasteKey;
-			
-			lastkey = AKEY_NONE;
-			kbhits[SDLK_LMETA] = 0;
-			key_option = 0;
-			key_pressed = 1;
-			key_was_pressed = PASTE_KEY_DELAY;
-
-			if (lastkeyuni == 0xa || lastkeyuni == 0xd) {
-				key_was_pressed = 10*PASTE_KEY_DELAY;
-				return AKEY_RETURN;
-			}
-			if (lastkeyuni == 0x9)
-				return AKEY_TAB;
-			if (lastkeyuni == ' ')
-				return AKEY_SPACE;
-			}
-			if (lastkeyuni >= 'A' && lastkeyuni <= 'Z') {
-				INPUT_key_shift = 1;
-				lastkey = lastkeyuni + 0x20;
-			}
-			else
-				INPUT_key_shift = 0;
-		}
-	else {
-    	/* Poll for SDL events.  All we want here are Keydown and Keyup events,
-       	and the quit event. */
+    }
+    
+    if (requestFullScreenUI) {
+        requestFullScreenUI = 0;
+        return AKEY_UI;
+    }
+    
+    if (pasteState != PASTE_IDLE) {
         if (SDL_PollEvent(&event)) {
-        	switch (event.type) {
-           	    case SDL_KEYDOWN:
-					if (!SDLMainIsActive())
-						return AKEY_NONE;
-  	                lastkey = event.key.keysym.sym;
-					lastkeyuni = event.key.keysym.unicode;
-        	        key_pressed = 1;
-            	    break;
-	            case SDL_KEYUP:
-					if (!SDLMainIsActive())
-						return AKEY_NONE;
-    	            lastkey = event.key.keysym.sym;
-					lastkeyuni = event.key.keysym.unicode;
-            	    key_pressed = 0;
-                	if (lastkey == SDLK_CAPSLOCK)
-                    	key_pressed = 1;
-	                break;
-    	        case SDL_QUIT:
-        	        return AKEY_EXIT;
-            	    break;
-				default:
-					return AKEY_NONE;
-	            }
-			}
-	    kbhits = SDL_GetKeyState(NULL);
-
-    	if (kbhits == NULL) {
-        	Log_print("oops, kbhits is NULL!");
-	        Log_flushlog();
-    	    exit(-1);
-	    }
-		
-		/* Handle the control keys in international mapping */
-		if (lastkeyuni >= 1 && lastkeyuni <= 26) 
-			lastkeyuni += 96;
-		
-	    /*  Determine if the shift key is pressed */
-    	if ((kbhits[SDLK_LSHIFT]) || (kbhits[SDLK_RSHIFT]))
-        	INPUT_key_shift = 1;
-	    else
-    	    INPUT_key_shift = 0;
-
- 	    /* Determine if the control key is pressed */
- 	    if ((kbhits[SDLK_LCTRL]) || (kbhits[SDLK_RCTRL]))
- 	        CONTROL = AKEY_CTRL;
-	    else
-	        CONTROL = 0;
-
-	    /* Determine if the option key is pressed */
-	    if ((kbhits[SDLK_LALT]) || (kbhits[SDLK_RALT]))
-	        key_option = 1;
-	    else
-	        key_option = 0;
-	
-		/* Handle control and shift for alpha characters */
-		if (lastkeyuni>=0x61 && lastkeyuni<=0x7a)
-		    {
-			if (INPUT_key_shift && CONTROL)
-				lastkeyuni -= 0x20;
-			}
-		
-		/* Handle control and shift for numerics */
-		if (lastkey >= SDLK_0 && lastkey <= SDLK_9 && CONTROL && INPUT_key_shift && lastkeyuni == 0) {
-			switch(lastkey) {
-				case SDLK_0:
-					return(AKEY_0 | AKEY_SHFT);
-				case SDLK_1:
-					return(AKEY_1 | AKEY_SHFT);
-				case SDLK_2:
-					return(AKEY_2 | AKEY_SHFT);
-				case SDLK_3:
-					return(AKEY_3 | AKEY_SHFT);
-				case SDLK_4:
-					return(AKEY_4 | AKEY_SHFT);
-				case SDLK_5:
-					return(AKEY_5 | AKEY_SHFT);
-				case SDLK_6:
-					return(AKEY_6 | AKEY_SHFT);
-				case SDLK_7:
-					return(AKEY_7 | AKEY_SHFT);
-				case SDLK_8:
-					return(AKEY_8 | AKEY_SHFT);
-				case SDLK_9:
-					return(AKEY_9 | AKEY_SHFT);
-			}
-		}
-		
-		if (key_pressed) {
-			if (!kbhits[SDLK_LMETA])
-				copyStatus = COPY_IDLE;
-			else if (lastkey != SDLK_LMETA && lastkey != SDLK_c)
-				copyStatus = COPY_IDLE;
-			}
-		}
-		
-	/* If the Option key is pressed, do the 1200 Function keys, and
-	   also provide alernatives to the insert/del/home/end/pgup/pgdn
-	   keys, since Apple in their infinite wisdom removed these keys
-	   from their latest keyboards */
-	if (kbhits[SDLK_LALT] && !kbhits[SDLK_LMETA]) {
+            if (event.type == SDL_KEYDOWN)
+                pasteState = PASTE_END;
+        }
+        
+        if (key_was_pressed) {
+            key_was_pressed--;
+            if (!key_was_pressed && (pasteState == PASTE_DONE)) {
+                pasteState = PASTE_IDLE;
+            }
+            key_pressed = 0;
+        }
+        else {
+            unsigned short lastkeyuni;
+            
+            if (pasteState == PASTE_START) {
+                copyStatus = COPY_IDLE;
+                pasteState = PASTE_IN_PROG;
+                if (capsLockState == CAPS_UPPER || capsLockState == CAPS_GRAPHICS) {
+                    capsLockState = CAPS_LOWER;
+                    key_was_pressed = PASTE_KEY_DELAY;
+                    return(AKEY_CAPSTOGGLE);
+                }
+            }
+            
+            if (pasteState == PASTE_END) {
+                pasteState = PASTE_IDLE;
+                if (capsLockPrePasteState == CAPS_UPPER) {
+                    pasteState = PASTE_DONE;
+                    capsLockState = CAPS_UPPER;
+                    key_was_pressed = PASTE_KEY_DELAY;
+                    return(AKEY_CAPSLOCK);
+                }
+                else if (capsLockPrePasteState == CAPS_GRAPHICS) {
+                    pasteState = PASTE_DONE;
+                    capsLockState = CAPS_GRAPHICS;
+                    CONTROL = AKEY_CTRL;
+                    key_was_pressed = PASTE_KEY_DELAY;
+                    return(AKEY_CAPSTOGGLE);
+                }
+                else {
+                    pasteState = PASTE_IDLE;
+                    return(AKEY_NONE);
+                }
+            }
+            
+            if (!PasteManagerGetChar(&lastkeyuni)) {
+                pasteState = PASTE_END;
+            }
+            
+            if (lastkeyuni >= 'A' && lastkeyuni <= 'Z') {
+                INPUT_key_shift = 1;
+                lastkey = lastkeyuni + 0x20;
+            }
+            else if (lastkeyuni == 0x0a) {
+                INPUT_key_shift = 0;
+                lastkey = 0xd;
+            }
+            else {
+                switch (lastkeyuni) {
+                    case SDLK_EXCLAIM:
+                        INPUT_key_shift = 1;
+                        lastkey = SDLK_1;
+                        break;
+                    case SDLK_AT:
+                        INPUT_key_shift = 1;
+                        lastkey = SDLK_2;
+                        break;
+                    case SDLK_HASH:
+                        INPUT_key_shift = 1;
+                        lastkey = SDLK_3;
+                        break;
+                    case SDLK_DOLLAR:
+                        INPUT_key_shift = 1;
+                        lastkey = SDLK_4;
+                        break;
+                    case 0x25:
+                        INPUT_key_shift = 1;
+                        lastkey = SDLK_5;
+                        break;
+                    case SDLK_CARET:
+                        INPUT_key_shift = 1;
+                        lastkey = SDLK_6;
+                        break;
+                    case SDLK_AMPERSAND:
+                        INPUT_key_shift = 1;
+                        lastkey = SDLK_7;
+                        break;
+                    case SDLK_ASTERISK:
+                        INPUT_key_shift = 1;
+                        lastkey = SDLK_8;
+                        break;
+                    case SDLK_LEFTPAREN:
+                        INPUT_key_shift = 1;
+                        lastkey = SDLK_9;
+                        break;
+                    case SDLK_RIGHTPAREN:
+                        INPUT_key_shift = 1;
+                        lastkey = SDLK_0;
+                        break;
+                    case SDLK_UNDERSCORE:
+                        INPUT_key_shift = 1;
+                        lastkey = SDLK_MINUS;
+                        break;
+                    case SDLK_PLUS:
+                        INPUT_key_shift = 1;
+                        lastkey = SDLK_EQUALS;
+                        break;
+                    case 0x7c:
+                        INPUT_key_shift = 1;
+                        lastkey = SDLK_BACKSLASH;
+                        break;
+                    case SDLK_QUOTEDBL:
+                        INPUT_key_shift = 1;
+                        lastkey = SDLK_QUOTE;
+                        break;
+                    case SDLK_COLON:
+                        INPUT_key_shift = 1;
+                        lastkey = SDLK_SEMICOLON;
+                        break;
+                    case SDLK_LESS:
+                        INPUT_key_shift = 1;
+                        lastkey = SDLK_COMMA;
+                        break;
+                    case SDLK_GREATER:
+                        INPUT_key_shift = 1;
+                        lastkey = SDLK_PERIOD;
+                        break;
+                    case SDLK_QUESTION:
+                        INPUT_key_shift = 1;
+                        lastkey = SDLK_SLASH;
+                        break;
+                    default:
+                        INPUT_key_shift = 0;
+                        lastkey = lastkeyuni;
+                }
+            }
+            kbhits[SDL_SCANCODE_LGUI] = 0;
+            key_option = 0;
+            key_pressed = 1;
+            if (lastkey == SDLK_RETURN) {
+                key_was_pressed = 10*PASTE_KEY_DELAY;
+            } else
+                key_was_pressed = PASTE_KEY_DELAY;
+        }
+    }
+    else {
+        /* Poll for SDL events.  All we want here are Keydown and Keyup events,
+         and the quit event. */
+        if (SDL_PollEvent(&event)) {
+            switch (event.type) {
+                case SDL_TEXTINPUT:
+                    kbhits = (Uint8 *) SDL_GetKeyboardState(NULL);
+                    text_input = event.text.text;
+                    switch(strlen(text_input)) {
+                        case 0:
+                        default:
+                            return AKEY_NONE;
+                        case 1:
+                            //lastkey = SDLK_UNKNOWN;
+                            text_key = Atari_International_Char_To_Key(text_input[0]);
+                            if (text_key != AKEY_NONE) {
+                                 key_pressed = 1;
+                            }
+                            return text_key;
+                    }
+                    break;
+                case SDL_KEYDOWN:
+                    kbhits = (Uint8 *) SDL_GetKeyboardState(NULL);
+                    if (!SDLMainIsActive())
+                        return AKEY_NONE;
+                    lastkey = event.key.keysym.sym;
+                    if (kbhits[SDL_SCANCODE_LGUI] ||
+                        kbhits[SDL_SCANCODE_RCTRL] ||
+                        kbhits[SDL_SCANCODE_LCTRL] ||
+                        Atari_International_Good_Key(lastkey)) {
+                        key_pressed = 1;
+                    }
+                    else if (event.key.repeat) {
+                        return text_key;
+                    }
+                    else {
+                        key_pressed = 0;
+                        return AKEY_NONE;
+                    }
+                    break;
+                case SDL_KEYUP:
+                    kbhits = (Uint8 *) SDL_GetKeyboardState(NULL);
+                    if (!SDLMainIsActive())
+                        return AKEY_NONE;
+                    lastkey = event.key.keysym.sym;
+                    key_pressed = 0;
+                    if (!Atari_International_Good_Key(lastkey))
+                        return AKEY_NONE;
+                    if (lastkey == SDLK_CAPSLOCK)
+                        key_pressed = 1;
+                    break;
+                case SDL_QUIT:
+                    return AKEY_EXIT;
+                    break;
+                default:
+                    return AKEY_NONE;
+            }
+        }
+        
+        if (kbhits == NULL) {
+            Log_print("oops, kbhits is NULL!");
+            Log_flushlog();
+            exit(-1);
+        }
+        
+        /*  Determine if the shift key is pressed */
+        if ((kbhits[SDL_SCANCODE_LSHIFT]) || (kbhits[SDL_SCANCODE_RSHIFT]))
+            INPUT_key_shift = 1;
+        else
+            INPUT_key_shift = 0;
+        
+        /* Determine if the control key is pressed */
+        if ((kbhits[SDL_SCANCODE_LCTRL]) || (kbhits[SDL_SCANCODE_RCTRL]))
+            CONTROL = AKEY_CTRL;
+        else
+            CONTROL = 0;
+        
+        /* Determine if the option key is pressed */
+        if ((kbhits[SDL_SCANCODE_LALT]) || (kbhits[SDL_SCANCODE_RALT]))
+            key_option = 1;
+        else
+            key_option = 0;
+        
+        if (key_pressed) {
+            if (!kbhits[SDL_SCANCODE_LGUI])
+                copyStatus = COPY_IDLE;
+            else if (lastkey != SDL_SCANCODE_LGUI && lastkey != SDLK_c)
+                copyStatus = COPY_IDLE;
+        }
+    }
+    
+    /* If the Option key is pressed, do the 1200 Function keys, and
+     also provide alernatives to the insert/del/home/end/pgup/pgdn
+     keys, since Apple in their infinite wisdom removed these keys
+     from their latest keyboards */
+    if (kbhits[SDL_SCANCODE_LALT] && !kbhits[SDL_SCANCODE_LGUI]) {
         if (key_pressed) {
             switch(lastkey) {
-				case SDLK_F1:
-					if (INPUT_key_shift)
-						return AKEY_F1 | AKEY_SHFT;
-					else
-						return AKEY_F1;
-				case SDLK_F2:
-					if (INPUT_key_shift)
-						return AKEY_F2 | AKEY_SHFT;
-					else
-						return AKEY_F2;
-				case SDLK_F3:
-					if (INPUT_key_shift)
-						return AKEY_F3 | AKEY_SHFT;
-					else
-						return AKEY_F3;
-				case SDLK_F4:
-					if (INPUT_key_shift)
-						return AKEY_F4 | AKEY_SHFT;
-					else
-						return AKEY_F4;
-				case SDLK_F5: // INSERT
-					if (INPUT_key_shift)
-						return AKEY_INSERT_LINE;
-					else
-						return AKEY_INSERT_CHAR;
-				case SDLK_F6: // DELETE
-					if (INPUT_key_shift)
-						return AKEY_DELETE_LINE;
-					else
-						return AKEY_DELETE_CHAR;
-				case SDLK_F7: // HOME
-					return AKEY_CLEAR;
-				case SDLK_F8: // END
-					if (INPUT_key_shift)
-						return AKEY_ATARI | AKEY_SHFT;
-					else
-						return AKEY_ATARI;
-				case SDLK_F9: // PAGEUP
-					capsLockState = CAPS_UPPER;
-					return AKEY_CAPSLOCK;
-				case SDLK_F10: // PAGEDOWN
-					return AKEY_HELP;					
-			}
-		}
-	}
-
-    /*  If the command key is pressed, in fullscreen, execute the 
-        emulators built-in UI, otherwise, do the command key equivelents
-        here.  The reason for this, is due to the SDL lib construction,
-        all key events go to the SDL app, so the menus don't handle them
-        directly */
-    UI_alt_function = -1;
-    if (kbhits[SDLK_LMETA]) {
-        if (key_pressed) {
-			int cmdkey;
-
-			if (key_option)
-				cmdkey = lastkey;
-			else
-				cmdkey = lastkeyuni;
-			
-			if (cmdkey >= 'A' && cmdkey <= 'Z')
-				cmdkey += 0x20;
-			if (lastkey == SDLK_RETURN)
-				cmdkey = SDLK_RETURN;
-            switch(cmdkey) {
-            case SDLK_f:
-			case SDLK_RETURN:
-                SwitchFullscreen();
-                break;
-			case SDLK_x:
-				if (INPUT_key_shift && XEP80_enabled) {
-					PLATFORM_SwitchXep80();
-   				    SetDisplayManagerXEP80Mode(XEP80_enabled, XEP80_port, PLATFORM_xep80);
-					MediaManagerXEP80Mode(XEP80_enabled, PLATFORM_xep80);
-					}
-				break;
-            case SDLK_COMMA:
-				if (!FULLSCREEN)
-					RunPreferences();
-                break;
-            case SDLK_k:
-                SwitchShowFps();
-                break;
-            case SDLK_r:
-                if (FULLSCREEN)
-                    UI_alt_function = UI_MENU_RUN;
-                else 
-                    MediaManagerLoadExe();
-                break;
-            case SDLK_y:
-                if (FULLSCREEN)
-                    UI_alt_function = UI_MENU_SYSTEM;
-                break;
-            case SDLK_u:
-                if (FULLSCREEN)
-                    UI_alt_function = UI_MENU_SOUND;
-                else 
-                    SoundManagerStereoDo();
-                break;
-			case SDLK_RIGHTBRACKET:
-				SoundManagerIncreaseVolume();
-				break;
-			case SDLK_LEFTBRACKET:
-				SoundManagerDecreaseVolume();
-				break;
-			case SDLK_p:
-                ControlManagerPauseEmulator();
-                break;
-            case SDLK_t:
-                if (FULLSCREEN)
-                    UI_alt_function = UI_MENU_SOUND_RECORDING;
-                else 
-                    SoundManagerRecordingDo();
-                break;
-            case SDLK_a:
-				if (FULLSCREEN) 
-					UI_alt_function = UI_MENU_ABOUT;
-				else
-					SDLMainSelectAll();
-				break;
-			case SDLK_s:
-				if (FULLSCREEN)
-					UI_alt_function = UI_MENU_SAVESTATE;
-				else {
-					if (INPUT_key_shift)
-						PreferencesSaveConfiguration();
-					else
-						ControlManagerSaveState();
-				}
-				break;
-			case SDLK_d:
-                if (FULLSCREEN)
-                    UI_alt_function = UI_MENU_DISK;
-                else 
-                    MediaManagerRunDiskManagement();
-                break;
-            case SDLK_e:
-                if (!FULLSCREEN) {
-					if (INPUT_key_shift)
-						MediaManagerRunSectorEditor();
-					else
-						MediaManagerRunDiskEditor();
-					}
-                break;
-            case SDLK_n:
-                if (!FULLSCREEN)
-                    MediaManagerShowCreatePanel();
-                break;
-            case SDLK_w:
-                if (!FULLSCREEN)
-                    SDLMainCloseWindow();
-                break;
-			case SDLK_l:
-				if (FULLSCREEN) {
-					if (INPUT_key_shift)
-						UI_alt_function = UI_MENU_LOADCFG;
-					else
-						UI_alt_function = UI_MENU_LOADSTATE;
-				}
-				else {
-					if (INPUT_key_shift)
-						PreferencesLoadConfiguration();
-					else
-						ControlManagerLoadState();
-				}
-				break;
-			case SDLK_o:
-                if (FULLSCREEN)
-                    UI_alt_function = UI_MENU_CARTRIDGE;
-                else {
+                case SDLK_F1:
                     if (INPUT_key_shift)
-                        MediaManagerRemoveCartridge();
+                        return AKEY_F1 | AKEY_SHFT;
                     else
-                        MediaManagerInsertCartridge();
-                    }
-                break;
-			case SDLK_BACKSLASH:
-				return AKEY_PBI_BB_MENU;
-            case SDLK_1:
-            case SDLK_2:
-            case SDLK_3:
-            case SDLK_4:
-            case SDLK_5:
-            case SDLK_6:
-            case SDLK_7:
-            case SDLK_8:
-               if (!FULLSCREEN) {
-                    if (CONTROL)
-                        MediaManagerRemoveDisk(lastkey - SDLK_1 + 1);
-					else if (key_option & (lastkey <= SDLK_4))
-						SwitchDoubleSize(lastkey - SDLK_1 + 1);
-					else if (key_option & (lastkey <= SDLK_7))
-						requestWidthModeChange = (lastkey - SDLK_5 + 1);
-					else if (key_option & (lastkey == SDLK_8)) {
-						requestScaleModeChange = 1;
-						}
+                        return AKEY_F1;
+                case SDLK_F2:
+                    if (INPUT_key_shift)
+                        return AKEY_F2 | AKEY_SHFT;
                     else
-                        MediaManagerInsertDisk(lastkey - SDLK_1 + 1);
-                    }
-				else if (key_option & (lastkey == SDLK_8))
-					requestScaleModeChange = 1;
-                break;
-            case SDLK_0:
-                if (!FULLSCREEN)
-                    if (CONTROL)
-                        MediaManagerRemoveDisk(0);
-				if (key_option)
-					requestScaleModeChange = 3;
-                break;
-            case SDLK_9:
-				if (key_option)
-					requestScaleModeChange = 2;
-                break;
-            case SDLK_q:
-                return AKEY_EXIT;
-                break;
-            case SDLK_h:
-                ControlManagerHideApp();
-                break;
-            case SDLK_m:
-                ControlManagerMiniturize();
-                break;
-            case SDLK_j:
-                keyjoyEnable = !keyjoyEnable;
-				SetControlManagerKeyjoyEnable(keyjoyEnable);
-                break;
-            case SDLK_SLASH:
-                if (INPUT_key_shift)
-                    ControlManagerShowHelp();
-                break;
- 			case SDLK_v:
-				if (!INPUT_key_shift) {
-					if (FULLSCREEN) {	
-						if (PasteManagerStartPaste())
-							pasteState = PASTE_START;
-						capsLockPrePasteState = capsLockState;
-					}
-					else
-						SDLMainPaste();
-				}
-				break;
-			case SDLK_c:
-				if (!FULLSCREEN)
-					SDLMainCopy();
-				break;
-			}
+                        return AKEY_F2;
+                case SDLK_F3:
+                    if (INPUT_key_shift)
+                        return AKEY_F3 | AKEY_SHFT;
+                    else
+                        return AKEY_F3;
+                case SDLK_F4:
+                    if (INPUT_key_shift)
+                        return AKEY_F4 | AKEY_SHFT;
+                    else
+                        return AKEY_F4;
+                case SDLK_F5: // INSERT
+                    if (INPUT_key_shift)
+                        return AKEY_INSERT_LINE;
+                    else
+                        return AKEY_INSERT_CHAR;
+                case SDLK_F6: // DELETE
+                    if (INPUT_key_shift)
+                        return AKEY_DELETE_LINE;
+                    else
+                        return AKEY_DELETE_CHAR;
+                case SDLK_F7: // HOME
+                    return AKEY_CLEAR;
+                case SDLK_F8: // END
+                    if (INPUT_key_shift)
+                        return AKEY_ATARI | AKEY_SHFT;
+                    else
+                        return AKEY_ATARI;
+                case SDLK_F9: // PAGEUP
+                    capsLockState = CAPS_UPPER;
+                    return AKEY_CAPSLOCK;
+                case SDLK_F10: // PAGEDOWN
+                    return AKEY_HELP;
+                    
+            }
         }
-
+        key_pressed = 0;
+    }
+    
+    /*  If the command key is pressed, in fullscreen, execute the
+     emulators built-in UI, otherwise, do the command key equivelents
+     here.  The reason for this, is due to the SDL lib construction,
+     all key events go to the SDL app, so the menus don't handle them
+     directly */
+    UI_alt_function = -1;
+    if (kbhits[SDL_SCANCODE_LGUI]) {
+        if (key_pressed) {
+            switch(lastkey) {
+                case SDLK_f:
+                case SDLK_RETURN:
+                    requestFullScreenChange = 1;
+                    break;
+                case SDLK_x:
+                    if (INPUT_key_shift && XEP80_enabled) {
+                        PLATFORM_SwitchXep80();
+                        SetDisplayManagerXEP80Mode(XEP80_enabled, XEP80_port, PLATFORM_xep80);
+                        MediaManagerXEP80Mode(XEP80_enabled, PLATFORM_xep80);
+                    }
+                    break;
+                case SDLK_COMMA:
+                    if (!FULLSCREEN)
+                        RunPreferences();
+                    break;
+                case SDLK_k:
+                    SwitchShowFps();
+                    break;
+                case SDLK_r:
+                    if (FULLSCREEN)
+                        UI_alt_function = UI_MENU_RUN;
+                    else
+                        MediaManagerLoadExe();
+                    break;
+                case SDLK_y:
+                    if (FULLSCREEN)
+                        UI_alt_function = UI_MENU_SYSTEM;
+                    break;
+                case SDLK_u:
+                    if (FULLSCREEN)
+                        UI_alt_function = UI_MENU_SOUND;
+                    else
+                        SoundManagerStereoDo();
+                    break;
+                case SDLK_RIGHTBRACKET:
+                    SoundManagerIncreaseVolume();
+                    break;
+                case SDLK_LEFTBRACKET:
+                    SoundManagerDecreaseVolume();
+                    break;
+                case SDLK_p:
+                    ControlManagerPauseEmulator();
+                    break;
+                case SDLK_t:
+                    if (FULLSCREEN)
+                        UI_alt_function = UI_MENU_SOUND_RECORDING;
+                    else
+                        SoundManagerRecordingDo();
+                    break;
+                case SDLK_a:
+                    if (FULLSCREEN)
+                        UI_alt_function = UI_MENU_ABOUT;
+                    else
+                        requestSelectAll = 1; //SDLMainSelectAll();
+                    break;
+                case SDLK_s:
+                    if (FULLSCREEN)
+                        UI_alt_function = UI_MENU_SAVESTATE;
+                    else {
+                        if (INPUT_key_shift)
+                            PreferencesSaveConfiguration();
+                        else
+                            ControlManagerSaveState();
+                    }
+                    break;
+                case SDLK_d:
+                    if (FULLSCREEN)
+                        UI_alt_function = UI_MENU_DISK;
+                    else
+                        MediaManagerRunDiskManagement();
+                    break;
+                case SDLK_e:
+                    if (!FULLSCREEN) {
+                        if (INPUT_key_shift)
+                            MediaManagerRunSectorEditor();
+                        else
+                            MediaManagerRunDiskEditor();
+                    }
+                    break;
+                case SDLK_n:
+                    if (!FULLSCREEN)
+                        MediaManagerShowCreatePanel();
+                    break;
+                case SDLK_w:
+                    if (!FULLSCREEN)
+                        SDLMainCloseWindow();
+                    break;
+                case SDLK_l:
+                    if (FULLSCREEN) {
+                        if (INPUT_key_shift)
+                            UI_alt_function = UI_MENU_LOADCFG;
+                        else
+                            UI_alt_function = UI_MENU_LOADSTATE;
+                    }
+                    else {
+                        if (INPUT_key_shift)
+                            PreferencesLoadConfiguration();
+                        else
+                            ControlManagerLoadState();
+                    }
+                    break;
+                case SDLK_o:
+                    if (FULLSCREEN)
+                        UI_alt_function = UI_MENU_CARTRIDGE;
+                    else {
+                        if (INPUT_key_shift)
+                            MediaManagerRemoveCartridge();
+                        else
+                            MediaManagerInsertCartridge();
+                    }
+                    break;
+                case SDLK_BACKSLASH:
+                    return AKEY_PBI_BB_MENU;
+                case SDLK_1:
+                case SDLK_2:
+                case SDLK_3:
+                case SDLK_4:
+                case SDLK_5:
+                case SDLK_6:
+                case SDLK_7:
+                case SDLK_8:
+                    if (!FULLSCREEN) {
+                        if (CONTROL)
+                            MediaManagerRemoveDisk(lastkey - SDLK_1 + 1);
+                        else if (key_option & (lastkey <= SDLK_4))
+                            SwitchDoubleSize(lastkey - SDLK_1 + 1);
+                        else if (key_option & (lastkey <= SDLK_7))
+                            requestWidthModeChange = (lastkey - SDLK_5 + 1);
+                        else if (key_option & (lastkey == SDLK_8)) {
+                            requestScaleModeChange = 1;
+                        }
+                        else
+                            MediaManagerInsertDisk(lastkey - SDLK_1 + 1);
+                    }
+                    else if (key_option & (lastkey == SDLK_8))
+                        requestScaleModeChange = 1;
+                    break;
+                case SDLK_0:
+                    if (!FULLSCREEN)
+                        if (CONTROL)
+                            MediaManagerRemoveDisk(0);
+                    if (key_option)
+                        requestScaleModeChange = 3;
+                    break;
+                case SDLK_9:
+                    if (key_option)
+                        requestScaleModeChange = 2;
+                    break;
+                case SDLK_q:
+                    return AKEY_EXIT;
+                    break;
+                case SDLK_h:
+                    ControlManagerHideApp();
+                    break;
+                case SDLK_m:
+                    ControlManagerMiniturize();
+                    break;
+                case SDLK_j:
+                    keyjoyEnable = !keyjoyEnable;
+                    SetControlManagerKeyjoyEnable(keyjoyEnable);
+                    break;
+                case SDLK_SLASH:
+                    if (INPUT_key_shift)
+                        ControlManagerShowHelp();
+                    break;
+                case SDLK_v:
+                    if (!INPUT_key_shift) {
+                        if (PasteManagerStartPaste())
+                            pasteState = PASTE_START;
+                        capsLockPrePasteState = capsLockState;
+                    }
+                    break;
+                case SDLK_c:
+                    requestCopy = 1;
+                    //if (!FULLSCREEN)
+                    //    SDLMainCopy();
+                    break;
+            }
+        }
+        
         key_pressed = 0;
         if (UI_alt_function != -1)
             return AKEY_UI;
         else
             return AKEY_NONE;
     }
-
-
+    
+    
     /* Handle the Atari Console Keys */
-    if (kbhits[SDLK_F2] && !kbhits[SDLK_LMETA])
+    if (kbhits[SDL_SCANCODE_F2] && !kbhits[SDL_SCANCODE_LGUI])
         INPUT_key_consol &= (~INPUT_CONSOL_OPTION);
-    if (kbhits[SDLK_F3] && !kbhits[SDLK_LMETA])
+    if (kbhits[SDL_SCANCODE_F3] && !kbhits[SDL_SCANCODE_LGUI])
         INPUT_key_consol &= (~INPUT_CONSOL_SELECT);
-    if (kbhits[SDLK_F4] && !kbhits[SDLK_LMETA])
+    if (kbhits[SDL_SCANCODE_F4] && !kbhits[SDL_SCANCODE_LGUI])
         INPUT_key_consol &= (~INPUT_CONSOL_START);
-
+    
     if (key_pressed == 0) {
         return AKEY_NONE;
+    }
+    /* Handle the key translations for ctrl&shft numerics */
+    if (INPUT_key_shift && CONTROL) {
+        switch (lastkey) {
+            case SDLK_COMMA:
+                return(AKEY_COMMA | AKEY_SHFT);
+            case SDLK_PERIOD:
+                return(AKEY_FULLSTOP | AKEY_SHFT);
+            case SDLK_SLASH:
+                return(AKEY_SLASH | AKEY_SHFT);
+            case SDLK_0:
+                return(AKEY_0 | AKEY_SHFT);
+            case SDLK_1:
+                return(AKEY_1 | AKEY_SHFT);
+            case SDLK_2:
+                return(AKEY_2 | AKEY_SHFT);
+            case SDLK_3:
+                return(AKEY_3 | AKEY_SHFT);
+            case SDLK_4:
+                return(AKEY_4 | AKEY_SHFT);
+            case SDLK_5:
+                return(AKEY_5 | AKEY_SHFT);
+            case SDLK_6:
+                return(AKEY_6 | AKEY_SHFT);
+            case SDLK_7:
+                return(AKEY_7 | AKEY_SHFT);
+            case SDLK_8:
+                return(AKEY_8 | AKEY_SHFT);
+            case SDLK_9:
+                return(AKEY_9 | AKEY_SHFT);
         }
-
+    }
+    
     /* Handle the key translation for shifted characters */
     if (INPUT_key_shift)
         switch (lastkey) {
-        case SDLK_F5:
-            return AKEY_COLDSTART;
-        case SDLK_INSERT:
-            return AKEY_INSERT_LINE;
-		case SDLK_HOME:
-			return AKEY_CLEAR;
-        case SDLK_CAPSLOCK:
-            key_pressed = 0;
-			lastkey = SDLK_UNKNOWN;
-			capsLockState = CAPS_UPPER;
-			return AKEY_CAPSLOCK;
+            case SDLK_a:
+                return AKEY_A;
+            case SDLK_b:
+                return AKEY_B;
+            case SDLK_c:
+                return AKEY_C;
+            case SDLK_d:
+                return AKEY_D;
+            case SDLK_e:
+                return AKEY_E;
+            case SDLK_f:
+                return AKEY_F;
+            case SDLK_g:
+                return AKEY_G;
+            case SDLK_h:
+                return AKEY_H;
+            case SDLK_i:
+                return AKEY_I;
+            case SDLK_j:
+                return AKEY_J;
+            case SDLK_k:
+                return AKEY_K;
+            case SDLK_l:
+                return AKEY_L;
+            case SDLK_m:
+                return AKEY_M;
+            case SDLK_n:
+                return AKEY_N;
+            case SDLK_o:
+                return AKEY_O;
+            case SDLK_p:
+                return AKEY_P;
+            case SDLK_q:
+                return AKEY_Q;
+            case SDLK_r:
+                return AKEY_R;
+            case SDLK_s:
+                return AKEY_S;
+            case SDLK_t:
+                return AKEY_T;
+            case SDLK_u:
+                return AKEY_U;
+            case SDLK_v:
+                return AKEY_V;
+            case SDLK_w:
+                return AKEY_W;
+            case SDLK_x:
+                return AKEY_X;
+            case SDLK_y:
+                return AKEY_Y;
+            case SDLK_z:
+                return AKEY_Z;
+            case SDLK_SEMICOLON:
+                return AKEY_COLON;
+            case SDLK_F5:
+                return AKEY_COLDSTART;
+            case SDLK_1:
+                return AKEY_EXCLAMATION;
+            case SDLK_2:
+                return AKEY_AT;
+            case SDLK_3:
+                return AKEY_HASH;
+            case SDLK_4:
+                return AKEY_DOLLAR;
+            case SDLK_5:
+                return AKEY_PERCENT;
+            case SDLK_6:
+                return AKEY_CARET;
+            case SDLK_7:
+                return AKEY_AMPERSAND;
+            case SDLK_8:
+                return AKEY_ASTERISK;
+            case SDLK_9:
+                return AKEY_PARENLEFT;
+            case SDLK_0:
+                return AKEY_PARENRIGHT;
+            case SDLK_EQUALS:
+                return AKEY_PLUS;
+            case SDLK_MINUS:
+                return AKEY_UNDERSCORE;
+            case SDLK_QUOTE:
+                return AKEY_DBLQUOTE;
+            case SDLK_SLASH:
+                return AKEY_QUESTION;
+            case SDLK_COMMA:
+                return AKEY_LESS;
+            case SDLK_PERIOD:
+                return AKEY_GREATER;
+            case SDLK_BACKSLASH:
+                return AKEY_BAR;
+            case SDLK_INSERT:
+                return AKEY_INSERT_LINE;
+            case SDLK_HOME:
+                return AKEY_CLEAR;
+            case SDLK_CAPSLOCK:
+                key_pressed = 0;
+                lastkey = SDLK_UNKNOWN;
+                capsLockState = CAPS_UPPER;
+                return AKEY_CAPSLOCK;
         }
-    /* Handle the key translation for non-shifted characters 
-       First check to make sure it isn't an emulated joystick key,
-       since if it is, it should be ignored.  */
+    /* Handle the key translation for non-shifted characters
+     First check to make sure it isn't an emulated joystick key,
+     since if it is, it should be ignored.  */
     else {
-		if (lastkeyuni > 0xFF || lastkey > 0xFF || lastkey == 8 || lastkey == 9 || lastkey == 13)
-			lastkey_joy = lastkey;
-		else 
-			lastkey_joy = lastkeyuni;
-		if (SDL_IsJoyKey[lastkey_joy] && keyjoyEnable && !key_option  && !UI_is_active && 
-				(pasteState == PASTE_IDLE))
-			return AKEY_NONE;
+        if ((lookup(SDL_IsJoyKeyTable, lastkey) == 1) && keyjoyEnable && !key_option && !UI_is_active &&
+            (pasteState == PASTE_IDLE))
+            return AKEY_NONE;
         if (Atari800_machine_type == Atari800_MACHINE_5200)
-            {
+        {
             if ((INPUT_key_consol & INPUT_CONSOL_START) == 0)
                 return(AKEY_5200_START);
-
+            
             switch(lastkey) {
-            case SDLK_p:
-                return(AKEY_5200_PAUSE);	/* pause */
-            case SDLK_r:
-                return(AKEY_5200_RESET);	/* reset (5200 has no warmstart) */
-            case SDLK_0:
-            case SDLK_KP0:
-                return(AKEY_5200_0);		/* controller numpad keys (0-9) */
-            case SDLK_1:
-            case SDLK_KP1:
-                return(AKEY_5200_1);
-            case SDLK_2:
-            case SDLK_KP2:
-                return(AKEY_5200_2);
-            case SDLK_3:
-            case SDLK_KP3:
-                return(AKEY_5200_3);
-            case SDLK_4:
-            case SDLK_KP4:
-                return(AKEY_5200_4);
-            case SDLK_5:
-            case SDLK_KP5:
-                return(AKEY_5200_5);
-            case SDLK_6:
-            case SDLK_KP6:
-                return(AKEY_5200_6);
-            case SDLK_7:
-            case SDLK_KP7:
-                return(AKEY_5200_7);
-            case SDLK_8:
-            case SDLK_KP8:
-                return(AKEY_5200_8);
-            case SDLK_9:
-            case SDLK_KP9:
-                return(AKEY_5200_9);
-            case SDLK_MINUS:
-            case SDLK_KP_MINUS:
-                return(AKEY_5200_HASH);	/* # key on 5200 controller */
-            case SDLK_ASTERISK:
-            case SDLK_KP_MULTIPLY:
-                return(AKEY_5200_ASTERISK);	/* * key on 5200 controller */
-            case SDLK_F9:
-            case SDLK_F8:
-            case SDLK_F13:
-            case SDLK_F6:
-            case SDLK_F1:
-            case SDLK_F5:
-            case SDLK_LEFT:
-            case SDLK_RIGHT:
-            case SDLK_UP:
-            case SDLK_DOWN:
-            case SDLK_ESCAPE:
-            case SDLK_TAB:
-            case SDLK_RETURN:
-                break;
-            default:
-                return AKEY_NONE;
-                }
+                case SDLK_p:
+                    return(AKEY_5200_PAUSE);    /* pause */
+                case SDLK_r:
+                    return(AKEY_5200_RESET);    /* reset (5200 has no warmstart) */
+                case SDLK_0:
+                case SDLK_KP_0:
+                    return(AKEY_5200_0);        /* controller numpad keys (0-9) */
+                case SDLK_1:
+                case SDLK_KP_1:
+                    return(AKEY_5200_1);
+                case SDLK_2:
+                case SDLK_KP_2:
+                    return(AKEY_5200_2);
+                case SDLK_3:
+                case SDLK_KP_3:
+                    return(AKEY_5200_3);
+                case SDLK_4:
+                case SDLK_KP_4:
+                    return(AKEY_5200_4);
+                case SDLK_5:
+                case SDLK_KP_5:
+                    return(AKEY_5200_5);
+                case SDLK_6:
+                case SDLK_KP_6:
+                    return(AKEY_5200_6);
+                case SDLK_7:
+                case SDLK_KP_7:
+                    return(AKEY_5200_7);
+                case SDLK_8:
+                case SDLK_KP_8:
+                    return(AKEY_5200_8);
+                case SDLK_9:
+                case SDLK_KP_9:
+                    return(AKEY_5200_9);
+                case SDLK_MINUS:
+                case SDLK_KP_MINUS:
+                    return(AKEY_5200_HASH);    /* # key on 5200 controller */
+                case SDLK_ASTERISK:
+                case SDLK_KP_MULTIPLY:
+                    return(AKEY_5200_ASTERISK);    /* * key on 5200 controller */
+                case SDLK_F9:
+                case SDLK_F8:
+                case SDLK_F13:
+                case SDLK_F6:
+                case SDLK_F1:
+                case SDLK_F5:
+                case SDLK_LEFT:
+                case SDLK_RIGHT:
+                case SDLK_UP:
+                case SDLK_DOWN:
+                case SDLK_ESCAPE:
+                case SDLK_TAB:
+                case SDLK_RETURN:
+                    break;
+                default:
+                    return AKEY_NONE;
             }
-        switch (lastkey) {
-        case SDLK_F5:
-            return AKEY_WARMSTART;
-        case SDLK_F7:
-            key_pressed = 0;
-            requestLimitChange=1;
-            return AKEY_NONE;
-        case SDLK_F8:
-            key_pressed = 0;
-            requestMonitor = TRUE;
-            if (!Atari800_Exit(TRUE)) 
-                return AKEY_EXIT;
-            else
-                return AKEY_NONE;
-        case SDLK_F13:
-            key_pressed = 0;
-            return AKEY_SCREENSHOT;
-        case SDLK_F6:
-            if (!FULLSCREEN)
-                 SwitchGrabMouse();
-            key_pressed = 0;
-            return AKEY_NONE;
-        case SDLK_INSERT:
-            return AKEY_INSERT_CHAR;
-        case SDLK_CAPSLOCK:
-            key_pressed = 0;
-			lastkey = SDLK_UNKNOWN;
-			if (CONTROL) {
-				capsLockState = CAPS_GRAPHICS;
-			}
-			else if (Atari800_machine_type == Atari800_MACHINE_XLXE) {
-				if (capsLockState == CAPS_UPPER)
-					capsLockState = CAPS_LOWER;
-				else
-					capsLockState = CAPS_UPPER;
-			} 
-			else
-				capsLockState = CAPS_LOWER;
-			return AKEY_CAPSTOGGLE;
-			}
         }
-	if (INPUT_cx85) switch (lastkey) {
-		case SDLK_KP1:
-			return AKEY_CX85_1;
-		case SDLK_KP2:
-			return AKEY_CX85_2;
-		case SDLK_KP3:
-			return AKEY_CX85_3;
-		case SDLK_KP4:
-			return AKEY_CX85_4;
-		case SDLK_KP5:
-			return AKEY_CX85_5;
-		case SDLK_KP6:
-			return AKEY_CX85_6;
-		case SDLK_KP7:
-			return AKEY_CX85_7;
-		case SDLK_KP8:
-			return AKEY_CX85_8;
-		case SDLK_KP9:
-			return AKEY_CX85_9;
-		case SDLK_KP0:
-			return AKEY_CX85_0;
-		case SDLK_KP_PERIOD:
-			return AKEY_CX85_PERIOD;
-		case SDLK_KP_MINUS:
-			return AKEY_CX85_MINUS;
-		case SDLK_KP_ENTER:
-			return AKEY_CX85_PLUS_ENTER;
-		case SDLK_KP_DIVIDE:
-			return (CONTROL ? AKEY_CX85_ESCAPE : AKEY_CX85_NO);
-		case SDLK_KP_MULTIPLY:
-			return AKEY_CX85_DELETE;
-		case SDLK_KP_PLUS:
-			return AKEY_CX85_YES;
-	}
-	
-    /* Handle the key translation for special characters 
-       First check to make sure it isn't an emulated joystick key,
-       since if it is, it should be ignored.  */ 
-	if (lastkeyuni > 0xFF || lastkey > 0xFF)
-		lastkey_joy = lastkey;
-	else 
-		lastkey_joy = lastkeyuni;
-	if (SDL_IsJoyKey[lastkey_joy] && keyjoyEnable && !key_option  && !UI_is_active && 
-			(pasteState == PASTE_IDLE))
-		return AKEY_NONE;
-    switch (lastkey) {
-    case SDLK_END:
-		if (INPUT_key_shift)
-			return AKEY_ATARI | AKEY_SHFT;
-		else
-			return AKEY_ATARI;
-    case SDLK_PAGEDOWN:
-		if (INPUT_key_shift)
-			return AKEY_HELP | AKEY_SHFT;
-		else
-			return AKEY_HELP;
-    case SDLK_PAGEUP:
-		capsLockState = CAPS_UPPER;
-        return AKEY_CAPSLOCK;
-    case SDLK_HOME:
-		if (CONTROL)
-			return AKEY_LESS;
-		else
-			return AKEY_CLEAR;
-	case SDLK_PAUSE:
-        return AKEY_BREAK;
-    case SDLK_F15:
-		if (INPUT_key_shift)
-			return AKEY_BREAK;
-    case SDLK_CAPSLOCK:
-		if (INPUT_key_shift) {
-			capsLockState = CAPS_UPPER;
-            return AKEY_CAPSLOCK;
-		}
-        else {
-			if (CONTROL) {
-				capsLockState = CAPS_GRAPHICS;
-			}
-			else if (Atari800_machine_type == Atari800_MACHINE_XLXE) {
-				if (capsLockState == CAPS_UPPER)
-					capsLockState = CAPS_LOWER;
-				else
-					capsLockState = CAPS_UPPER;
-			} 
-			else
-				capsLockState = CAPS_LOWER;
-            return AKEY_CAPSTOGGLE;
-		}
-    case SDLK_SPACE:
-        if (INPUT_key_shift)
-            return AKEY_SPACE | AKEY_SHFT;
-        else
-            return AKEY_SPACE;
-    case SDLK_BACKSPACE:
-        if (INPUT_key_shift)
-            return AKEY_BACKSPACE | AKEY_SHFT;
-        else
-            return AKEY_BACKSPACE;
-    case SDLK_RETURN:
-        if (INPUT_key_shift)
-            return AKEY_RETURN | AKEY_SHFT;
-        else 
-            return AKEY_RETURN;
-	case SDLK_F9:
-        return AKEY_EXIT;
-    case SDLK_F1:
-		return AKEY_UI;
-	case SDLK_LEFT:
-		if (useAtariCursorKeys == USE_ATARI_CURSOR_ARROW_ONLY && !UI_is_active) {
-			if (INPUT_key_shift)
-				return AKEY_PLUS | AKEY_SHFT;
-			else 
-				return AKEY_PLUS;
-		} else if (useAtariCursorKeys == USE_ATARI_CURSOR_FX && !UI_is_active) {
-			if (INPUT_key_shift)
-				return AKEY_F3 | AKEY_SHFT;
-			else
-				return AKEY_F3;			
-		} else {
-			if (INPUT_key_shift && CONTROL)
-				return AKEY_PLUS | AKEY_SHFT;
-			else
-				return AKEY_LEFT;
-		}
-	case SDLK_RIGHT:
-		if (useAtariCursorKeys == USE_ATARI_CURSOR_ARROW_ONLY && !UI_is_active) {
-			if (INPUT_key_shift)
-				return AKEY_ASTERISK | AKEY_SHFT;
-			else 
-				return AKEY_ASTERISK;
-		} else if (useAtariCursorKeys == USE_ATARI_CURSOR_FX && !UI_is_active) {
-			if (INPUT_key_shift)
-				return AKEY_F4 | AKEY_SHFT;
-			else
-				return AKEY_F4;			
-		} else {
-			if (INPUT_key_shift && CONTROL)
-				return AKEY_ASTERISK | AKEY_SHFT;
-			else 
-				return AKEY_RIGHT;
-		}
-	case SDLK_UP:
-		if (useAtariCursorKeys == USE_ATARI_CURSOR_ARROW_ONLY && !UI_is_active) {
-			if (INPUT_key_shift)
-				return AKEY_MINUS | AKEY_SHFT;
-			else 
-				return AKEY_MINUS;
-		} else if (useAtariCursorKeys == USE_ATARI_CURSOR_FX && !UI_is_active) {
-			if (INPUT_key_shift)
-				return AKEY_F1 | AKEY_SHFT;
-			else
-				return AKEY_F1;			
-		} else {
-			if (INPUT_key_shift && CONTROL)
-				return AKEY_MINUS | AKEY_SHFT;
-			else 
-				return AKEY_UP;
-		}
-	case SDLK_DOWN:
-		if (useAtariCursorKeys == USE_ATARI_CURSOR_ARROW_ONLY && !UI_is_active) {
-			if (INPUT_key_shift)
-				return AKEY_EQUAL | AKEY_SHFT;
-			else 
-				return AKEY_EQUAL;
-		} else if (useAtariCursorKeys == USE_ATARI_CURSOR_FX && !UI_is_active) {
-			if (INPUT_key_shift)
-				return AKEY_F2 | AKEY_SHFT;
-			else
-				return AKEY_F2;			
-		} else {
-			if (INPUT_key_shift && CONTROL)
-				return AKEY_EQUAL | AKEY_SHFT;
-			else 
-				return AKEY_DOWN;
-		}
-	case SDLK_ESCAPE:
-		if (INPUT_key_shift)
-			return AKEY_ESCAPE | AKEY_SHFT;
-		else
-			return AKEY_ESCAPE;
-	case SDLK_TAB:
-		if (INPUT_key_shift)
-			return AKEY_SETTAB;
-		else if (CONTROL)
-			return AKEY_CLRTAB;
-		else
-			return AKEY_TAB;
-	case SDLK_DELETE:
-        if (INPUT_key_shift)
-            return AKEY_DELETE_LINE;
-        else
-            return AKEY_DELETE_CHAR;
-    case SDLK_INSERT:
-        if (INPUT_key_shift)
-            return AKEY_INSERT_LINE;
-        else
-            return AKEY_INSERT_CHAR;
+        switch (lastkey) {
+            case SDLK_a:
+                return AKEY_a;
+            case SDLK_b:
+                return AKEY_b;
+            case SDLK_c:
+                return AKEY_c;
+            case SDLK_d:
+                return AKEY_d;
+            case SDLK_e:
+                return AKEY_e;
+            case SDLK_f:
+                return AKEY_f;
+            case SDLK_g:
+                return AKEY_g;
+            case SDLK_h:
+                return AKEY_h;
+            case SDLK_i:
+                return AKEY_i;
+            case SDLK_j:
+                return AKEY_j;
+            case SDLK_k:
+                return AKEY_k;
+            case SDLK_l:
+                return AKEY_l;
+            case SDLK_m:
+                return AKEY_m;
+            case SDLK_n:
+                return AKEY_n;
+            case SDLK_o:
+                return AKEY_o;
+            case SDLK_p:
+                return AKEY_p;
+            case SDLK_q:
+                return AKEY_q;
+            case SDLK_r:
+                return AKEY_r;
+            case SDLK_s:
+                return AKEY_s;
+            case SDLK_t:
+                return AKEY_t;
+            case SDLK_u:
+                return AKEY_u;
+            case SDLK_v:
+                return AKEY_v;
+            case SDLK_w:
+                return AKEY_w;
+            case SDLK_x:
+                return AKEY_x;
+            case SDLK_y:
+                return AKEY_y;
+            case SDLK_z:
+                return AKEY_z;
+            case SDLK_SEMICOLON:
+                return AKEY_SEMICOLON;
+            case SDLK_F5:
+                return AKEY_WARMSTART;
+            case SDLK_0:
+                return AKEY_0;
+            case SDLK_1:
+                return AKEY_1;
+            case SDLK_2:
+                return AKEY_2;
+            case SDLK_3:
+                return AKEY_3;
+            case SDLK_4:
+                return AKEY_4;
+            case SDLK_5:
+                return AKEY_5;
+            case SDLK_6:
+                return AKEY_6;
+            case SDLK_7:
+                return AKEY_7;
+            case SDLK_8:
+                return AKEY_8;
+            case SDLK_9:
+                return AKEY_9;
+            case SDLK_COMMA:
+                return AKEY_COMMA;
+            case SDLK_PERIOD:
+                return AKEY_FULLSTOP;
+            case SDLK_EQUALS:
+                return AKEY_EQUAL;
+            case SDLK_MINUS:
+                return AKEY_MINUS;
+            case SDLK_QUOTE:
+                return AKEY_QUOTE;
+            case SDLK_SLASH:
+                return AKEY_SLASH;
+            case SDLK_BACKSLASH:
+                return AKEY_BACKSLASH;
+            case SDLK_LEFTBRACKET:
+                return AKEY_BRACKETLEFT;
+            case SDLK_RIGHTBRACKET:
+                return AKEY_BRACKETRIGHT;
+            case SDLK_F7:
+                key_pressed = 0;
+                requestLimitChange=1;
+                return AKEY_NONE;
+            case SDLK_F8:
+                key_pressed = 0;
+                requestMonitor = TRUE;
+                return AKEY_NONE;
+            case SDLK_F13:
+                key_pressed = 0;
+                return AKEY_SCREENSHOT;
+            case SDLK_F6:
+                if (!FULLSCREEN)
+                    SwitchGrabMouse();
+                key_pressed = 0;
+                return AKEY_NONE;
+            case SDLK_INSERT:
+                return AKEY_INSERT_CHAR;
+            case SDLK_CAPSLOCK:
+                key_pressed = 0;
+                lastkey = SDLK_UNKNOWN;
+                if (CONTROL) {
+                    capsLockState = CAPS_GRAPHICS;
+                }
+                else if (Atari800_machine_type == Atari800_MACHINE_XLXE) {
+                    if (capsLockState == CAPS_UPPER)
+                        capsLockState = CAPS_LOWER;
+                    else
+                        capsLockState = CAPS_UPPER;
+                }
+                else
+                    capsLockState = CAPS_LOWER;
+                return AKEY_CAPSTOGGLE;
+        }
     }
-	
-	if (INPUT_key_shift)
-		shiftKey = AKEY_SHFT;
-	else
-		shiftKey = 0;
-	
-	/* Handle some of the control-option-shift characters, such as caret on the German keyboard
-	   We need to remove the control key pressed indication, as it's not a control key for the
-	   atari, but one for the Mac to get the special character */
-	if (CONTROL && INPUT_key_shift && kbhits[SDLK_LALT])
-		CONTROL=0;
-
-	/* Finally, handle the keys which may be internationally mapped */
-	switch(lastkeyuni)
-	{
-        case SDLK_a:
-            return AKEY_a | shiftKey;
-        case SDLK_b:
-            return AKEY_b | shiftKey;
-        case SDLK_c:
-            return AKEY_c | shiftKey;
-        case SDLK_d:
-            return AKEY_d | shiftKey;
-        case SDLK_e:
-            return AKEY_e | shiftKey;
-        case SDLK_f:
-            return AKEY_f | shiftKey;
-        case SDLK_g:
-            return AKEY_g | shiftKey;
-        case SDLK_h:
-            return AKEY_h | shiftKey;
-        case SDLK_i:
-            return AKEY_i | shiftKey;
-        case SDLK_j:
-            return AKEY_j | shiftKey;
-        case SDLK_k:
-            return AKEY_k | shiftKey;
-        case SDLK_l:
-            return AKEY_l | shiftKey;
-        case SDLK_m:
-            return AKEY_m | shiftKey;
-        case SDLK_n:
-            return AKEY_n | shiftKey;
-        case SDLK_o:
-            return AKEY_o | shiftKey;
-        case SDLK_p:
-            return AKEY_p | shiftKey;
-        case SDLK_q:
-            return AKEY_q | shiftKey;
-        case SDLK_r:
-            return AKEY_r | shiftKey;
-        case SDLK_s:
-            return AKEY_s | shiftKey;
-        case SDLK_t:
-            return AKEY_t | shiftKey;
-        case SDLK_u:
-            return AKEY_u | shiftKey;
-        case SDLK_v:
-            return AKEY_v | shiftKey;
-        case SDLK_w:
-            return AKEY_w | shiftKey;
-        case SDLK_x:
-            return AKEY_x | shiftKey;
-        case SDLK_y:
-            return AKEY_y | shiftKey;
-        case SDLK_z:
-            return AKEY_z | shiftKey;
-        case SDLK_SEMICOLON:
-            return AKEY_SEMICOLON;
-        case SDLK_F5:
-            return AKEY_WARMSTART;
-        case SDLK_0:
-            return AKEY_0;
-        case SDLK_1:
-            return AKEY_1;
-        case SDLK_2:
-            return AKEY_2;
-        case SDLK_3:
-            return AKEY_3;
-        case SDLK_4:
-            return AKEY_4;
-        case SDLK_5:
-            return AKEY_5;
-        case SDLK_6:
-            return AKEY_6;
-        case SDLK_7:
-            return AKEY_7;
-        case SDLK_8:
-            return AKEY_8;
-        case SDLK_9:
-            return AKEY_9;
-        case SDLK_COMMA:
-            return AKEY_COMMA | shiftKey;
-        case SDLK_PERIOD:
-            return AKEY_FULLSTOP  | shiftKey;
-        case SDLK_EQUALS:
-            return AKEY_EQUAL;
-        case SDLK_MINUS:
-            return AKEY_MINUS;
-        case SDLK_QUOTE:
-            return AKEY_QUOTE;
-        case SDLK_SLASH:
-            return AKEY_SLASH;
-        case SDLK_BACKSLASH:
-            return AKEY_BACKSLASH;
-        case SDLK_LEFTBRACKET:
-            return AKEY_BRACKETLEFT;
-        case SDLK_RIGHTBRACKET:
-            return AKEY_BRACKETRIGHT;
-	/* Shifted characters */
-		case SDLK_a - 32:
-            return AKEY_a | shiftKey;
-        case SDLK_b - 32:
-            return AKEY_b | shiftKey;
-        case SDLK_c - 32:
-            return AKEY_c | shiftKey;
-        case SDLK_d - 32:
-            return AKEY_d | shiftKey;
-        case SDLK_e - 32:
-            return AKEY_e | shiftKey;
-        case SDLK_f - 32:
-            return AKEY_f | shiftKey;
-        case SDLK_g - 32:
-            return AKEY_g | shiftKey;
-        case SDLK_h - 32:
-            return AKEY_h | shiftKey;
-        case SDLK_i - 32:
-            return AKEY_i | shiftKey;
-        case SDLK_j - 32:
-            return AKEY_j | shiftKey;
-        case SDLK_k - 32:
-            return AKEY_k | shiftKey;
-        case SDLK_l - 32:
-            return AKEY_l | shiftKey;
-        case SDLK_m - 32:
-            return AKEY_m | shiftKey;
-        case SDLK_n - 32:
-            return AKEY_n | shiftKey;
-        case SDLK_o - 32:
-            return AKEY_o | shiftKey;
-        case SDLK_p - 32:
-            return AKEY_p | shiftKey;
-        case SDLK_q - 32:
-            return AKEY_q | shiftKey;
-        case SDLK_r - 32:
-            return AKEY_r | shiftKey;
-        case SDLK_s - 32:
-            return AKEY_s | shiftKey;
-        case SDLK_t - 32:
-            return AKEY_t | shiftKey;
-        case SDLK_u - 32:
-            return AKEY_u | shiftKey;
-        case SDLK_v - 32:
-            return AKEY_v | shiftKey;
-        case SDLK_w - 32:
-            return AKEY_w | shiftKey;
-        case SDLK_x - 32:
-            return AKEY_x | shiftKey;
-        case SDLK_y - 32:
-            return AKEY_y | shiftKey;
-        case SDLK_z - 32:
-            return AKEY_z | shiftKey;
-		case SDLK_ESCAPE:
-			return AKEY_ESCAPE | shiftKey;
-        case SDLK_COLON:
-            return AKEY_COLON;
-        case SDLK_EXCLAIM:
-            return AKEY_EXCLAMATION;
-        case SDLK_AT:
-            return AKEY_AT;
-        case SDLK_HASH:
-            return AKEY_HASH;
-        case SDLK_DOLLAR:
-            return AKEY_DOLLAR;
-        case 37:
-            return AKEY_PERCENT;
-        case SDLK_CARET:
-            return AKEY_CARET;
-        case SDLK_AMPERSAND:
-            return AKEY_AMPERSAND;
-        case SDLK_ASTERISK:
-            return AKEY_ASTERISK;
-        case SDLK_LEFTPAREN:
-            return AKEY_PARENLEFT;
-        case SDLK_RIGHTPAREN:
-            return AKEY_PARENRIGHT;
-        case SDLK_PLUS:
-            return AKEY_PLUS;
-        case SDLK_UNDERSCORE:
-            return AKEY_UNDERSCORE;
-        case SDLK_QUOTEDBL:
-            return AKEY_DBLQUOTE;
-        case SDLK_QUESTION:
-            return AKEY_QUESTION;
-        case SDLK_LESS:
-            return AKEY_LESS;
-        case SDLK_GREATER:
-            return AKEY_GREATER;
-        case 124:
-            return AKEY_BAR;
-		case SDLK_BACKQUOTE:
-		case SDLK_WORLD_20: /* Accept either accent for break */
-			return AKEY_BREAK;
-	}
+    if (INPUT_cx85) switch (lastkey) {
+        case SDLK_KP_1:
+            return AKEY_CX85_1;
+        case SDLK_KP_2:
+            return AKEY_CX85_2;
+        case SDLK_KP_3:
+            return AKEY_CX85_3;
+        case SDLK_KP_4:
+            return AKEY_CX85_4;
+        case SDLK_KP_5:
+            return AKEY_CX85_5;
+        case SDLK_KP_6:
+            return AKEY_CX85_6;
+        case SDLK_KP_7:
+            return AKEY_CX85_7;
+        case SDLK_KP_8:
+            return AKEY_CX85_8;
+        case SDLK_KP_9:
+            return AKEY_CX85_9;
+        case SDLK_KP_0:
+            return AKEY_CX85_0;
+        case SDLK_KP_PERIOD:
+            return AKEY_CX85_PERIOD;
+        case SDLK_KP_MINUS:
+            return AKEY_CX85_MINUS;
+        case SDLK_KP_ENTER:
+            return AKEY_CX85_PLUS_ENTER;
+        case SDLK_KP_DIVIDE:
+            return (CONTROL ? AKEY_CX85_ESCAPE : AKEY_CX85_NO);
+        case SDLK_KP_MULTIPLY:
+            return AKEY_CX85_DELETE;
+        case SDLK_KP_PLUS:
+            return AKEY_CX85_YES;
+    }
+    
+    /* Handle the key translation for special characters
+     First check to make sure it isn't an emulated joystick key,
+     since if it is, it should be ignored.  */
+    if ((lookup(SDL_IsJoyKeyTable, lastkey) == 1) && keyjoyEnable && !key_option && !UI_is_active &&
+        (pasteState == PASTE_IDLE))
+        return AKEY_NONE;
+    switch (lastkey) {
+        case SDLK_END:
+            if (INPUT_key_shift)
+                return AKEY_ATARI | AKEY_SHFT;
+            else
+                return AKEY_ATARI;
+        case SDLK_PAGEDOWN:
+            if (INPUT_key_shift)
+                return AKEY_HELP | AKEY_SHFT;
+            else
+                return AKEY_HELP;
+        case SDLK_PAGEUP:
+            capsLockState = CAPS_UPPER;
+            return AKEY_CAPSLOCK;
+        case SDLK_HOME:
+            if (CONTROL)
+                return AKEY_LESS;
+            else
+                return AKEY_CLEAR;
+        case SDLK_PAUSE:
+        case SDLK_BACKQUOTE:
+            return AKEY_BREAK;
+        case SDLK_F15:
+            if (INPUT_key_shift)
+                return AKEY_BREAK;
+        case SDLK_CAPSLOCK:
+            if (INPUT_key_shift) {
+                capsLockState = CAPS_UPPER;
+                return AKEY_CAPSLOCK;
+            }
+            else {
+                if (CONTROL) {
+                    capsLockState = CAPS_GRAPHICS;
+                }
+                else if (Atari800_machine_type == Atari800_MACHINE_XLXE) {
+                    if (capsLockState == CAPS_UPPER)
+                        capsLockState = CAPS_LOWER;
+                    else
+                        capsLockState = CAPS_UPPER;
+                }
+                else
+                    capsLockState = CAPS_LOWER;
+                return AKEY_CAPSTOGGLE;
+            }
+        case SDLK_SPACE:
+            if (INPUT_key_shift)
+                return AKEY_SPACE | AKEY_SHFT;
+            else
+                return AKEY_SPACE;
+        case SDLK_BACKSPACE:
+            if (INPUT_key_shift)
+                return AKEY_BACKSPACE | AKEY_SHFT;
+            else
+                return AKEY_BACKSPACE;
+        case SDLK_RETURN:
+            if (INPUT_key_shift)
+                return AKEY_RETURN | AKEY_SHFT;
+            else
+                return AKEY_RETURN;
+        case SDLK_F9:
+            printf("%d\n",FullscreenCrashGUIRun());
+            return AKEY_EXIT;
+        case SDLK_F1:
+            return AKEY_UI;
+        case SDLK_LEFT:
+            if (useAtariCursorKeys == USE_ATARI_CURSOR_ARROW_ONLY && !UI_is_active) {
+                if (INPUT_key_shift)
+                    return AKEY_PLUS | AKEY_SHFT;
+                else
+                    return AKEY_PLUS;
+            } else if (useAtariCursorKeys == USE_ATARI_CURSOR_FX && !UI_is_active) {
+                if (INPUT_key_shift)
+                    return AKEY_F3 | AKEY_SHFT;
+                else
+                    return AKEY_F3;
+            } else {
+                if (INPUT_key_shift && CONTROL)
+                    return AKEY_PLUS | AKEY_SHFT;
+                else
+                    return AKEY_LEFT;
+            }
+        case SDLK_RIGHT:
+            if (useAtariCursorKeys == USE_ATARI_CURSOR_ARROW_ONLY && !UI_is_active) {
+                if (INPUT_key_shift)
+                    return AKEY_ASTERISK | AKEY_SHFT;
+                else
+                    return AKEY_ASTERISK;
+            } else if (useAtariCursorKeys == USE_ATARI_CURSOR_FX && !UI_is_active) {
+                if (INPUT_key_shift)
+                    return AKEY_F4 | AKEY_SHFT;
+                else
+                    return AKEY_F4;
+            } else {
+                if (INPUT_key_shift && CONTROL)
+                    return AKEY_ASTERISK | AKEY_SHFT;
+                else
+                    return AKEY_RIGHT;
+            }
+        case SDLK_UP:
+            if (useAtariCursorKeys == USE_ATARI_CURSOR_ARROW_ONLY && !UI_is_active) {
+                if (INPUT_key_shift)
+                    return AKEY_MINUS | AKEY_SHFT;
+                else
+                    return AKEY_MINUS;
+            } else if (useAtariCursorKeys == USE_ATARI_CURSOR_FX && !UI_is_active) {
+                if (INPUT_key_shift)
+                    return AKEY_F1 | AKEY_SHFT;
+                else
+                    return AKEY_F1;
+            } else {
+                if (INPUT_key_shift && CONTROL)
+                    return AKEY_MINUS | AKEY_SHFT;
+                else
+                    return AKEY_UP;
+            }
+        case SDLK_DOWN:
+            if (useAtariCursorKeys == USE_ATARI_CURSOR_ARROW_ONLY && !UI_is_active) {
+                if (INPUT_key_shift)
+                    return AKEY_EQUAL | AKEY_SHFT;
+                else
+                    return AKEY_EQUAL;
+            } else if (useAtariCursorKeys == USE_ATARI_CURSOR_FX && !UI_is_active) {
+                if (INPUT_key_shift)
+                    return AKEY_F2 | AKEY_SHFT;
+                else
+                    return AKEY_F2;
+            } else {
+                if (INPUT_key_shift && CONTROL)
+                    return AKEY_EQUAL | AKEY_SHFT;
+                else
+                    return AKEY_DOWN;
+            }
+        case SDLK_ESCAPE:
+            if (INPUT_key_shift)
+                return AKEY_ESCAPE | AKEY_SHFT;
+            else
+                return AKEY_ESCAPE;
+        case SDLK_TAB:
+            if (INPUT_key_shift)
+                return AKEY_SETTAB;
+            else if (CONTROL)
+                return AKEY_CLRTAB;
+            else
+                return AKEY_TAB;
+        case SDLK_DELETE:
+            if (INPUT_key_shift)
+                return AKEY_DELETE_LINE;
+            else
+                return AKEY_DELETE_CHAR;
+        case SDLK_INSERT:
+            if (INPUT_key_shift)
+                return AKEY_INSERT_LINE;
+            else
+                return AKEY_INSERT_CHAR;
+    }
     return AKEY_NONE;
 }
 
@@ -3578,9 +3739,13 @@ void Check_SDL_Joysticks()
 void Open_SDL_Joysticks()
 {
     joystick0 = SDL_JoystickOpen(0);
+    joysticks[0] = joystick0;
     joystick1 = SDL_JoystickOpen(1);
+    joysticks[1] = joystick1;
     joystick2 = SDL_JoystickOpen(2);
+    joysticks[2] = joystick2;
     joystick3 = SDL_JoystickOpen(3);
+    joysticks[3] = joystick3;
     Check_SDL_Joysticks();
 }
 
@@ -3636,8 +3801,9 @@ void Init_SDL_Joykeys()
     int keypadJoystick = FALSE;
     int userDefJoystick = FALSE;
 
-    for (i=0;i<SDLK_LAST;i++)
-        SDL_IsJoyKey[i] = 0;
+    if (SDL_IsJoyKeyTable)
+        deleteTable(SDL_IsJoyKeyTable);
+    SDL_IsJoyKeyTable = createTable(256);
     
     /*  Check to see if any of the joystick ports use the Keypad as joystick */
     for (i=0;i<NUM_JOYSTICKS;i++)
@@ -3651,34 +3817,34 @@ void Init_SDL_Joykeys()
      
     /* If used as a joystick, set the keypad keys as emulated */               
     if (keypadJoystick) {
-        SDL_IsJoyKey[SDL_TRIG_0] = 1;
-        SDL_IsJoyKey[SDL_TRIG_0_B] = 1;
-        SDL_IsJoyKey[SDL_TRIG_0_R] = 1;
-        SDL_IsJoyKey[SDL_TRIG_0_B_R] = 1;
-        SDL_IsJoyKey[SDL_JOY_0_LEFT] = 1;
-        SDL_IsJoyKey[SDL_JOY_0_RIGHT] = 1;
-        SDL_IsJoyKey[SDL_JOY_0_DOWN] = 1;
-        SDL_IsJoyKey[SDL_JOY_0_UP] = 1;
-        SDL_IsJoyKey[SDL_JOY_0_LEFTUP] = 1;
-        SDL_IsJoyKey[SDL_JOY_0_RIGHTUP] = 1;
-        SDL_IsJoyKey[SDL_JOY_0_LEFTDOWN] = 1;
-        SDL_IsJoyKey[SDL_JOY_0_RIGHTDOWN] = 1;
+        insert(SDL_IsJoyKeyTable, SDL_GetKeyFromScancode(SDL_TRIG_0), 1);
+        insert(SDL_IsJoyKeyTable, SDL_GetKeyFromScancode(SDL_TRIG_0_B), 1);
+        insert(SDL_IsJoyKeyTable, SDL_GetKeyFromScancode(SDL_TRIG_0_R), 1);
+        insert(SDL_IsJoyKeyTable, SDL_GetKeyFromScancode(SDL_TRIG_0_B_R), 1);
+        insert(SDL_IsJoyKeyTable, SDL_GetKeyFromScancode(SDL_JOY_0_LEFT), 1);
+        insert(SDL_IsJoyKeyTable, SDL_GetKeyFromScancode(SDL_JOY_0_RIGHT), 1);
+        insert(SDL_IsJoyKeyTable, SDL_GetKeyFromScancode(SDL_JOY_0_DOWN), 1);
+        insert(SDL_IsJoyKeyTable, SDL_GetKeyFromScancode(SDL_JOY_0_UP), 1);
+        insert(SDL_IsJoyKeyTable, SDL_GetKeyFromScancode(SDL_JOY_0_LEFTUP), 1);
+        insert(SDL_IsJoyKeyTable, SDL_GetKeyFromScancode(SDL_JOY_0_RIGHTUP), 1);
+        insert(SDL_IsJoyKeyTable, SDL_GetKeyFromScancode(SDL_JOY_0_LEFTDOWN), 1);
+        insert(SDL_IsJoyKeyTable, SDL_GetKeyFromScancode(SDL_JOY_0_RIGHTDOWN), 1);
     }
 
     /* If used as a joystick, set the user defined keys as emulated */               
     if (userDefJoystick) {
-        SDL_IsJoyKey[SDL_TRIG_1] = 1;
-        SDL_IsJoyKey[SDL_TRIG_1_B] = 1;
-        SDL_IsJoyKey[SDL_TRIG_1_R] = 1;
-        SDL_IsJoyKey[SDL_TRIG_1_B_R] = 1;
-        SDL_IsJoyKey[SDL_JOY_1_LEFT] = 1;
-        SDL_IsJoyKey[SDL_JOY_1_RIGHT] = 1;
-        SDL_IsJoyKey[SDL_JOY_1_DOWN] = 1;
-        SDL_IsJoyKey[SDL_JOY_1_UP] = 1;
-        SDL_IsJoyKey[SDL_JOY_1_LEFTUP] = 1;
-        SDL_IsJoyKey[SDL_JOY_1_RIGHTUP] = 1;
-        SDL_IsJoyKey[SDL_JOY_1_LEFTDOWN] = 1;
-        SDL_IsJoyKey[SDL_JOY_1_RIGHTDOWN] = 1;
+        insert(SDL_IsJoyKeyTable, SDL_GetKeyFromScancode(SDL_TRIG_1), 1);
+        insert(SDL_IsJoyKeyTable, SDL_GetKeyFromScancode(SDL_TRIG_1_B), 1);
+        insert(SDL_IsJoyKeyTable, SDL_GetKeyFromScancode(SDL_TRIG_1_R), 1);
+        insert(SDL_IsJoyKeyTable, SDL_GetKeyFromScancode(SDL_TRIG_1_B_R), 1);
+        insert(SDL_IsJoyKeyTable, SDL_GetKeyFromScancode(SDL_JOY_1_LEFT), 1);
+        insert(SDL_IsJoyKeyTable, SDL_GetKeyFromScancode(SDL_JOY_1_RIGHT), 1);
+        insert(SDL_IsJoyKeyTable, SDL_GetKeyFromScancode(SDL_JOY_1_DOWN), 1);
+        insert(SDL_IsJoyKeyTable, SDL_GetKeyFromScancode(SDL_JOY_1_UP), 1);
+        insert(SDL_IsJoyKeyTable, SDL_GetKeyFromScancode(SDL_JOY_1_LEFTUP), 1);
+        insert(SDL_IsJoyKeyTable, SDL_GetKeyFromScancode(SDL_JOY_1_RIGHTUP), 1);
+        insert(SDL_IsJoyKeyTable, SDL_GetKeyFromScancode(SDL_JOY_1_LEFTDOWN), 1);
+        insert(SDL_IsJoyKeyTable, SDL_GetKeyFromScancode(SDL_JOY_1_RIGHTDOWN), 1);
     }
 }
 
@@ -3754,7 +3920,7 @@ void PLATFORM_Initialise(int *argc, char *argv[])
     i = SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_AUDIO;
     if (SDL_Init(i) != 0) {
         Log_print("SDL_Init FAILED");
-        Log_print(SDL_GetError());
+        Log_print((char *) SDL_GetError());
         Log_flushlog();
         exit(-1);
     }
@@ -3765,13 +3931,12 @@ void PLATFORM_Initialise(int *argc, char *argv[])
     if (help_only)
         return;     /* return before changing the gfx mode */
     
-	if (!OPENGL)
-		Atari800WindowCreate(our_width, our_height); // Create the initial window
-    SetNewVideoMode(our_width, our_height, our_bpp); 
-	Atari800OriginSet();
+    SetNewVideoMode(our_width, our_height, our_bpp);
+	if (!FULLSCREEN)
+        Atari800OriginSet();
     CalcPalette();
     SetPalette();
-
+    
     if (no_joystick == 0)
         Init_Joysticks(argc, argv);
 }
@@ -3792,9 +3957,9 @@ int PLATFORM_Exit(int run_monitor)
 				// Need to bring us back from Fullscreen 
 				SwitchFullscreen();
             }
-        if (requestMonitor || !CPU_cim_encountered) { 
+        if (requestMonitor || !CPU_cim_encountered) {
             /* run the monitor....*/ 
-			if (FULLSCREEN && FULLSCREEN_MONITOR) { 
+            if (FULLSCREEN && FULLSCREEN_MONITOR) {
 				restart = FullscreenGUIRun();
 				memset(Screen_atari, 0, (Screen_HEIGHT * Screen_WIDTH));
 				memset(Screen_atari_b, 0, (Screen_HEIGHT * Screen_WIDTH));
@@ -4465,7 +4630,7 @@ void DisplayWith2xScalingSmooth16bpp(Uint8 * screen, int jumped, int width,
 
 	scale(2, scaledScreen, screen_width*2, screen, 
 		  screen_width, 1, screen_width, last_row - first_row + 1);
-		  
+    
     pitch4 = MainScreen->pitch / 4;
     start32 = (Uint32 *) MainScreen->pixels + (first_row * pitch4 * 2);
 
@@ -5401,7 +5566,6 @@ void Atari_DisplayScreen(UBYTE * screen)
     int first_row = 0;
     int last_row = Screen_HEIGHT - 1;
     ULONG *line_start1, *line_start2;
-    SDL_Rect dirty_rect;
     static int xep80Frame = 0;
 	
     if (FULLSCREEN && lockFullscreenSize) {
@@ -5477,265 +5641,64 @@ void Atari_DisplayScreen(UBYTE * screen)
 			}
 		}
 	else
-		full_display--;  // TBD MDG
+		full_display--;
 		
-    if (OPENGL) {
-		if (FULLSCREEN && lockFullscreenSize) {
-			if (SCALE_MODE==NORMAL_SCALE || SCALE_MODE == SCANLINE_SCALE)
-				DisplayWithoutScaling16bpp(screen, jumped, width, first_row, last_row);
-			else
-				DisplayWith2xScalingSmooth16bpp(screen, jumped, width, first_row, last_row);
-			}
-		else {
-			if (SCALE_MODE==NORMAL_SCALE || SCALE_MODE == SCANLINE_SCALE || !DOUBLESIZE)
-				DisplayWithoutScaling16bpp(screen, jumped, width, first_row, last_row);
-			else {
-				if (scaleFactor == 2)
-					DisplayWith2xScalingSmooth16bpp(screen, jumped, width, first_row, last_row);
-				else if (scaleFactor == 3)
-					DisplayWith3xScalingSmooth16bpp(screen, jumped, width, first_row, last_row);
-				else 
-					DisplayWith4xScalingSmooth16bpp(screen, jumped, width, first_row, last_row);
-				}
-			}
-		}
-	else
-	{
-    SDL_LockSurface(MainScreen);
     if (FULLSCREEN && lockFullscreenSize) {
-        switch (MainScreen->format->BitsPerPixel) {
-            case 8:
-				if (SCALE_MODE == SCANLINE_SCALE)
-					DisplayWith2xScalingScanline8bpp(screen, jumped, width, first_row, last_row);
-				else if (SCALE_MODE == NORMAL_SCALE)
-					DisplayWith2xScaling8bpp(screen, jumped, width, first_row, last_row);
-				else
-					DisplayWith2xScalingSmooth8bpp(screen, jumped, width, first_row, last_row);
-                break;
-            case 16:
-				if (SCALE_MODE == SCANLINE_SCALE)
-					DisplayWith2xScalingScanline16bpp(screen, jumped, width, first_row, last_row);
-				else if (SCALE_MODE == NORMAL_SCALE)
-					DisplayWith2xScaling16bpp(screen, jumped, width, first_row, last_row);
-				else
-					DisplayWith2xScalingSmooth16bpp(screen, jumped, width, first_row, last_row);
-                break;
-            case 32:
-				if (SCALE_MODE == SCANLINE_SCALE)
-					DisplayWith2xScalingScanline32bpp(screen, jumped, width, first_row, last_row);
-				else if (SCALE_MODE == NORMAL_SCALE)
-					DisplayWith2xScaling32bpp(screen, jumped, width, first_row, last_row);
-				else
-					DisplayWith2xScalingSmooth32bpp(screen, jumped, width, first_row, last_row);
-                break;
-            default:
-                Log_print("unsupported color depth %i",
-                       MainScreen->format->BitsPerPixel);
-                Log_print
-                    ("please set SDL_ATARI_BPP to 8 or 16 and recompile atari_sdl");
-                Log_flushlog();
-                exit(-1);
-            }
+        DisplayWithoutScaling16bpp(screen, jumped, width, first_row, last_row);
         }
-    else if (DOUBLESIZE)
-    {
-        switch (MainScreen->format->BitsPerPixel) {
-            case 8:
-                if (scaleFactor == 2) {
-					if (SCALE_MODE == SCANLINE_SCALE)
-						DisplayWith2xScalingScanline8bpp(screen, jumped, width, first_row, last_row);
-					else if (SCALE_MODE == NORMAL_SCALE)
-						DisplayWith2xScaling8bpp(screen, jumped, width, first_row, last_row);
-					else
-						DisplayWith2xScalingSmooth8bpp(screen, jumped, width, first_row, last_row);
-					}
-                else if (scaleFactor == 3) {
-					if (SCALE_MODE == SCANLINE_SCALE)
-						DisplayWith3xScalingScanline8bpp(screen, jumped, width, first_row, last_row);
-					else if (SCALE_MODE == NORMAL_SCALE)
-						DisplayWith3xScaling8bpp(screen, jumped, width, first_row, last_row);
-					else
-						DisplayWith3xScalingSmooth8bpp(screen, jumped, width, first_row, last_row);
-					}
-                else {
-					if (SCALE_MODE == SCANLINE_SCALE)
-						DisplayWith4xScalingScanline8bpp(screen, jumped, width, first_row, last_row);
-					else if (SCALE_MODE == NORMAL_SCALE)
-						DisplayWith4xScaling8bpp(screen, jumped, width, first_row, last_row);
-					else
-						DisplayWith4xScalingSmooth8bpp(screen, jumped, width, first_row, last_row);
-					}
-                break;
-            case 16:
-                if (scaleFactor == 2) {
-					if (SCALE_MODE == SCANLINE_SCALE)
-						DisplayWith2xScalingScanline16bpp(screen, jumped, width, first_row, last_row);
-					else if (SCALE_MODE == NORMAL_SCALE)
-						DisplayWith2xScaling16bpp(screen, jumped, width, first_row, last_row);
-					else
-						DisplayWith2xScalingSmooth16bpp(screen, jumped, width, first_row, last_row);
-					}
-                else if (scaleFactor == 3) {
-					if (SCALE_MODE == SCANLINE_SCALE)
-						DisplayWith3xScalingScanline16bpp(screen, jumped, width, first_row, last_row);
-					else if (SCALE_MODE == NORMAL_SCALE)
-						DisplayWith3xScaling16bpp(screen, jumped, width, first_row, last_row);
-					else
-						DisplayWith3xScalingSmooth16bpp(screen, jumped, width, first_row, last_row);
-					}
-                else {
-					if (SCALE_MODE == SCANLINE_SCALE)
-						DisplayWith4xScalingScanline16bpp(screen, jumped, width, first_row, last_row);
-					else if (SCALE_MODE == NORMAL_SCALE)
-						DisplayWith4xScaling16bpp(screen, jumped, width, first_row, last_row);
-					else
-						DisplayWith4xScalingSmooth16bpp(screen, jumped, width, first_row, last_row);
-					}
-                break;
-            case 32:
-                if (scaleFactor == 2) {
-					if (SCALE_MODE == SCANLINE_SCALE)
-						DisplayWith2xScalingScanline32bpp(screen, jumped, width, first_row, last_row);
-					else if (SCALE_MODE == NORMAL_SCALE)
-						DisplayWith2xScaling32bpp(screen, jumped, width, first_row, last_row);
-					else
-						DisplayWith2xScalingSmooth32bpp(screen, jumped, width, first_row, last_row);
-					}
-                else if (scaleFactor == 3) {
-					if (SCALE_MODE == SCANLINE_SCALE)
-						DisplayWith3xScalingScanline32bpp(screen, jumped, width, first_row, last_row);
-					else if (SCALE_MODE == NORMAL_SCALE)
-						DisplayWith3xScaling32bpp(screen, jumped, width, first_row, last_row);
-					else
-						DisplayWith3xScalingSmooth32bpp(screen, jumped, width, first_row, last_row);
-					}
-                else {
-					if (SCALE_MODE == SCANLINE_SCALE)
-						DisplayWith4xScalingScanline32bpp(screen, jumped, width, first_row, last_row);
-					else if (SCALE_MODE == NORMAL_SCALE)
-						DisplayWith4xScaling32bpp(screen, jumped, width, first_row, last_row);
-					else
-						DisplayWith4xScalingSmooth32bpp(screen, jumped, width, first_row, last_row);
-					}
-                break;
-            default:
-                Log_print("unsupported color depth %i",
-                       MainScreen->format->BitsPerPixel);
-                Log_print
-                    ("please set SDL_ATARI_BPP to 8 or 16 and recompile atari_sdl");
-                Log_flushlog();
-                exit(-1);
-            }
-    }
-    else
-    {
-        switch (MainScreen->format->BitsPerPixel) {
-            case 8:
-                DisplayWithoutScaling8bpp(screen, jumped, width, first_row, last_row);
-                break;
-            case 16:
-                DisplayWithoutScaling16bpp(screen, jumped, width, first_row, last_row);
-                break;
-            case 32:
-                DisplayWithoutScaling32bpp(screen, jumped, width, first_row, last_row);
-                break;
-            default:
-                Log_print("unsupported color depth %i",
-                       MainScreen->format->BitsPerPixel);
-                Log_print
-                    ("please set SDL_ATARI_BPP to 8 or 16 and recompile atari_sdl");
-                Log_flushlog();
-                exit(-1);
-            }
-    }
-    SDL_UnlockSurface(MainScreen);
-	}
+    else {
+        DisplayWithoutScaling16bpp(screen, jumped, width, first_row, last_row);
+        }
 
-	// If not in mouse emulation or Fullscreen, check for copy selection
+    // If not in mouse emulation or Fullscreen, check for copy selection
 	if (!FULLSCREEN && INPUT_mouse_mode == INPUT_MOUSE_OFF)
 		ProcessCopySelection(&first_row, &last_row, requestSelectAll);
 	requestSelectAll = 0;
 	
-	if (OPENGL) {
-		Uint32 scaledWidth, scaledHeight;
-		int screen_height = (PLATFORM_xep80 ? XEP80_SCRN_HEIGHT : Screen_HEIGHT);
-		int screen_width = (PLATFORM_xep80 ? XEP80_SCRN_WIDTH : Screen_WIDTH);
-		
-	    if (FULLSCREEN && lockFullscreenSize && SCALE_MODE == SMOOTH_SCALE) {
-			scaledWidth = width*2;
-			scaledHeight = screen_height*2;
-			}
-		else if (FULLSCREEN && lockFullscreenSize) {
-			scaledWidth = width;
-			scaledHeight = screen_height;
-			}
-		else if (DOUBLESIZE && SCALE_MODE == SMOOTH_SCALE) {
-			scaledWidth = width*scaleFactor;
-			scaledHeight = screen_height*scaleFactor;
-			}
-		else {
-			scaledWidth = width;
-			scaledHeight = screen_height;
-			}
-			
-		glBindTexture(GL_TEXTURE_2D, MainScreenID);
-		glEnable(GL_TEXTURE_2D);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, MainScreen->w, MainScreen->h, 0, GL_RGB, GL_UNSIGNED_SHORT_5_6_5,
-						MainScreen->pixels);
-		glBegin(GL_QUADS);
-		glTexCoord2f(texCoord[0], texCoord[1]); glVertex2i(0, 0);
-		glTexCoord2f(texCoord[2], texCoord[1]); glVertex2i(scaledWidth, 0);
-		glTexCoord2f(texCoord[2], texCoord[3]); glVertex2i(scaledWidth,scaledHeight);
-		glTexCoord2f(texCoord[0], texCoord[3]); glVertex2i(0, scaledHeight);
-		glEnd();
+    Uint32 scaledWidth, scaledHeight;
+    int screen_height = (PLATFORM_xep80 ? XEP80_SCRN_HEIGHT : Screen_HEIGHT);
+    int screen_width = (PLATFORM_xep80 ? XEP80_SCRN_WIDTH : Screen_WIDTH);
+    
+    scaledWidth = width;
+    scaledHeight = screen_height;
+    
+    glBindTexture(GL_TEXTURE_2D, MainScreenID);
+    glEnable(GL_TEXTURE_2D);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, MainScreen->w, MainScreen->h, 0, GL_RGB, GL_UNSIGNED_SHORT_5_6_5,
+                    MainScreen->pixels);
+    glBegin(GL_QUADS);
+    glTexCoord2f(texCoord[0], texCoord[1]); glVertex2i(0, 0);
+    glTexCoord2f(texCoord[2], texCoord[1]); glVertex2i(scaledWidth, 0);
+    glTexCoord2f(texCoord[2], texCoord[3]); glVertex2i(scaledWidth,scaledHeight);
+    glTexCoord2f(texCoord[0], texCoord[3]); glVertex2i(0, scaledHeight);
+    glEnd();
 
-		// Add the scanlines if we are in that mode
-		if (SCALE_MODE == SCANLINE_SCALE && DOUBLESIZE)
-			{
-			int rows = 0;
-			GLfloat yscanlineStart;
-			
-			if (scaleFactor == 2)
-				yscanlineStart = 0.5;
-			else if (scaleFactor == 3)
-				yscanlineStart = 2.0/3.0;
-			else 
-				yscanlineStart = 0.25;
+    // Add the scanlines if we are in that mode
+    if (SCALE_MODE == SCANLINE_SCALE && DOUBLESIZE)
+        {
+        int rows = 0;
+        GLfloat yscanlineStart;
+        
+        if (scaleFactor == 2)
+            yscanlineStart = 0.5;
+        else if (scaleFactor == 3)
+            yscanlineStart = 2.0/3.0;
+        else
+            yscanlineStart = 0.25;
 
-			glColor3ub(255,255,255);
-		
-			for (rows = 0; rows < screen_height; rows ++)
-				glRectf(0.0,rows+yscanlineStart,screen_width*1.0,rows+1.0);
-			}
-			
-		// Now show all changes made to the textures
-		SDL_GL_SwapBuffers();
+        glColor3ub(255,255,255);
+    
+        for (rows = 0; rows < screen_height; rows ++)
+            glRectf(0.0,rows+yscanlineStart,screen_width*1.0,rows+1.0);
+        }
+    
+    // Now show all changes made to the textures
+    SDL_GL_SwapWindow(MainGLScreen);
 
-		// Added this to work around problem in 10.4 where if OpenGL window was occluded, the frame rate
-		//   would drop to half normal (30fps). 
-		glFlush();
+    // Added this to work around problem in 10.4 where if OpenGL window was occluded, the frame rate
+    //   would drop to half normal (30fps).
+    glFlush();
 
-		}
-	else {
-		/* Update the dirty part of the screen */
-		dirty_rect.x = 0;
-		if (FULLSCREEN && lockFullscreenSize) {
-			dirty_rect.w = width*2;
-			dirty_rect.h = (last_row - first_row + 1)*2;
-			dirty_rect.y = first_row*2;
-			}
-		else if (DOUBLESIZE) {
-			dirty_rect.w = width*scaleFactor;
-			dirty_rect.h = (last_row - first_row + 1)*scaleFactor;
-			dirty_rect.y = first_row*scaleFactor;
-			}
-		else {
-			dirty_rect.w = width;
-			dirty_rect.h = last_row - first_row + 1;
-			dirty_rect.y = first_row;
-			}
-		SDL_UpdateRects(MainScreen, 1, &dirty_rect); 
-		}
 }
 
 // two empty functions, needed by input.c and platform.h
@@ -5894,6 +5857,17 @@ int get_SDL_hat_state(SDL_Joystick *joystick, int hatNum)
         }
 
     return(astick);
+}
+
+int SDL_JoystickIndex(SDL_Joystick *joystick)
+{
+    int i;
+    
+    for (i=0;i<4;i++) {
+        if (joysticks[i] == joystick)
+            return i;
+    }
+    return 0;
 }
 
 /*------------------------------------------------------------------------------
@@ -6890,7 +6864,8 @@ void CountFPS()
 				strcpy(title,windowCaption);
 				sprintf(count," - %3d fps",shortframes);
 				strcat(title,count);
-				SDL_WM_SetCaption(title,NULL);
+                SDL_SetWindowTitle(MainGLScreen, title);
+
 				}
             shortframes = 0;
 			}
@@ -7037,7 +7012,7 @@ void ProcessMacMenus()
         Atari800_InitialiseMachine();
 		Atari800_Coldstart();
         CreateWindowCaption();
-        SDL_WM_SetCaption(windowCaption,NULL);
+        SDL_SetWindowTitle(MainGLScreen, windowCaption);
         Atari_DisplayScreen((UBYTE *) Screen_atari);
 		requestMachineTypeChange = 0;
 		SetControlManagerMachineType(Atari800_machine_type, MEMORY_ram_size);
@@ -7105,7 +7080,7 @@ void ProcessMacMenus()
         }
     if (requestCaptionChange) {
         CreateWindowCaption();
-        SDL_WM_SetCaption(windowCaption,NULL);
+        SDL_SetWindowTitle(MainGLScreen, windowCaption);
 		SetControlManagerMachineType(Atari800_machine_type, MEMORY_ram_size);
         requestCaptionChange = 0;
         }
@@ -7156,6 +7131,11 @@ void ProcessMacMenus()
 		}
 		requestCopy = 0;
 		}
+    if (requestMonitor)
+        {
+        if (!Atari800_Exit(TRUE))
+            requestQuit = TRUE;
+        }
 }
 
 /*------------------------------------------------------------------------------
@@ -7186,7 +7166,7 @@ void ProcessMacPrefsChange()
         if (showfpsChanged)
             {
 			if (!Screen_show_atari_speed && !FULLSCREEN)
-				SDL_WM_SetCaption(windowCaption,NULL);
+                SDL_SetWindowTitle(MainGLScreen, windowCaption);
 			SetDisplayManagerFps(Screen_show_atari_speed);
             }
 		if (scaleModeChanged)
@@ -7226,8 +7206,8 @@ void ProcessMacPrefsChange()
             memset(Screen_atari_b, 0, (Screen_HEIGHT * Screen_WIDTH));
             Atari800_InitialiseMachine();
             CreateWindowCaption();
-            SDL_WM_SetCaption(windowCaption,NULL);
-            if (Atari800_machine_type == Atari800_MACHINE_5200) 
+            SDL_SetWindowTitle(MainGLScreen, windowCaption);
+            if (Atari800_machine_type == Atari800_MACHINE_5200)
                 Atari_DisplayScreen((UBYTE *) Screen_atari_b);
             }
         if (patchFlagsChanged)
@@ -7319,7 +7299,6 @@ void ProcessMacPrefsChange()
 #endif			 
 		screenSwitchEnabled = TRUE;
 		}
-	SDL_EnableUNICODE(enable_international);
 
     requestPrefsChange = 0;
 	}
@@ -7527,7 +7506,8 @@ void DrawSelectionRectangle(int orig_x, int orig_y, int copy_x, int copy_y)
 	else
 		scale = scaleFactor;		
 	
-	if (OPENGL &&(SCALE_MODE==NORMAL_SCALE || SCALE_MODE == SCANLINE_SCALE)) {
+	if (SCALE_MODE==NORMAL_SCALE || SCALE_MODE == SCANLINE_SCALE ||
+        SCALE_MODE==SMOOTH_SCALE) {
 		register int pitch2;
 		register Uint16 *start16;
 		
@@ -7561,120 +7541,6 @@ void DrawSelectionRectangle(int orig_x, int orig_y, int copy_x, int copy_y)
 			}
 		}
 	}
-	else if (MainScreen->format->BitsPerPixel == 8) {
-		register int pitch;
-		register Uint8 *start8;
-
-		SDL_LockSurface(MainScreen);
-		
-		pitch = MainScreen->pitch;
-		
-		for (y=orig_y;y < orig_y+scale;y++) {
-			start8 = (Uint8 *) MainScreen->pixels + 
-						(y * pitch) + orig_x;
-			for (i=0;i<(copy_x-orig_x+scale);i++,start8++)
-				*start8 ^= 0xFF;
-		}
-		if (copy_y > orig_y) {
-			for (y=copy_y;y < copy_y+scale;y++) {
-				start8 = (Uint8 *) MainScreen->pixels + 
-						(y * pitch) + orig_x;
-				for (i=0;i<(copy_x-orig_x+scale);i++,start8++)
-					*start8 ^= 0xFF;
-			}
-		}
-		for (y=orig_y+scale;y < copy_y;y++) {
-			start8 = (Uint8 *) MainScreen->pixels + 
-				(y * pitch) + orig_x;
-			for (i=0;i<scale;i++)
-				*start8++ ^= 0xFF;
-		}
-		if (copy_x > orig_x) {
-			for (y=orig_y+scale;y < copy_y;y++) {
-				start8 = (Uint8 *) MainScreen->pixels + 
-					(y * pitch) + copy_x;
-				for (i=0;i<scale;i++)
-					*start8++ ^= 0xFF;
-			}
-		}
-		SDL_UnlockSurface(MainScreen);		
-	}
-	else if (MainScreen->format->BitsPerPixel == 16) {
-		register int pitch2;
-		register Uint16 *start16;
-		
-		SDL_LockSurface(MainScreen);
-
-		pitch2 = MainScreen->pitch / 2;
-		
-		for (y=orig_y;y < orig_y+scale;y++) {
-			start16 = (Uint16 *) MainScreen->pixels + 
-					(y * pitch2) + orig_x;
-			for (i=0;i<(copy_x-orig_x+scale);i++,start16++)
-				*start16 ^= 0xFFFF;
-		}
-		if (copy_y > orig_y) {
-			for (y=copy_y;y < copy_y+scale;y++) {
-				start16 = (Uint16 *) MainScreen->pixels + 
-					(y * pitch2) + orig_x;
-				for (i=0;i<(copy_x-orig_x+scale);i++,start16++)
-					*start16 ^= 0xFFFF;
-			}
-		}
-		for (y=orig_y+scale;y < copy_y;y++) {
-			start16 = (Uint16 *) MainScreen->pixels + 
-				(y * pitch2) + orig_x;
-			for (i=0;i<scale;i++)
-				*start16++ ^= 0xFFFF;
-		}
-		if (copy_x > orig_x) {
-			for (y=orig_y+scale;y < copy_y;y++) {
-				start16 = (Uint16 *) MainScreen->pixels + 
-					(y * pitch2) + copy_x;
-				for (i=0;i<scale;i++)
-					*start16++ ^= 0xFFFF;
-			}
-		}
-		SDL_UnlockSurface(MainScreen);		
-	}
-	else if (MainScreen->format->BitsPerPixel == 32) {
-		register int pitch4;
-		register Uint32 *start32;
-		
-		SDL_LockSurface(MainScreen);
-
-		pitch4 = MainScreen->pitch / 4;
-		
-		for (y=orig_y;y<orig_y+scale;y++) {
-			start32 = (Uint32 *) MainScreen->pixels + 
-						(y * pitch4) + orig_x;
-			for (i=0;i<(copy_x-orig_x+scale);i++,start32++)
-				*start32 ^= 0xFFFFFFFF;
-		}
-		if (copy_y > orig_y) {
-			for (y=copy_y;y<copy_y+scale;y++) {
-				start32 = (Uint32 *) MainScreen->pixels + 
-							(y * pitch4) + orig_x;
-				for (i=0;i<(copy_x-orig_x+scale);i++,start32++)
-					*start32 ^= 0xFFFFFFFF;
-			}
-		}
-		for (y=orig_y+scale;y < copy_y;y++) {
-			start32 = (Uint32 *) MainScreen->pixels + 
-				(y * pitch4) + orig_x;
-			for (i=0;i<scale;i++)
-				*start32++ ^= 0xFFFFFFFF;
-		}
-		if (copy_x > orig_x) {
-			for (y=orig_y+scale;y < copy_y;y++) {
-				start32 = (Uint32 *) MainScreen->pixels + 
-					(y * pitch4) + copy_x;
-				for (i=0;i<scale;i++)
-					*start32++ ^= 0xFFFFFFFF;
-			}
-		}
-		SDL_UnlockSurface(MainScreen);		
-	}
 }
 
 void ProcessCopySelection(int *first_row, int *last_row, int selectAll)
@@ -7694,18 +7560,15 @@ void ProcessCopySelection(int *first_row, int *last_row, int selectAll)
 	if (selectAll) {
 		orig_x = 0;
 		orig_y = 0;
-		if (OPENGL) {
-			copy_x = MainGLScreen->w - 1;
-			copy_y = MainGLScreen->h - 1;
-		} else {
-			copy_x = MainScreen->w - 1;
-			copy_y = MainScreen->h - 1;
-		}
+        int win_x, win_y;
+        SDL_GetWindowSize(MainGLScreen, &win_x, &win_y);
+        copy_x = win_x - 1;
+        copy_y = win_y - 1;
 	} else {
 		if (Atari800IsKeyWindow()) {
 			mouse = SDL_GetMouseState(&copy_x, &copy_y);
 			if ((copyStatus == COPY_IDLE) &&
-				(mouse & SDL_BUTTON(1) == 0)) {
+				((mouse & SDL_BUTTON(1)) == 0)) {
 				return;		
 				}
 			}
@@ -7791,7 +7654,7 @@ int IsCopyDefined(void)
 /*------------------------------------------------------------------------------
 * main - main function of emulator with main execution loop.
 *-----------------------------------------------------------------------------*/
-int main(int argc, char **argv)
+int SDL_main(int argc, char **argv)
 {
     int keycode;
     int done = 0;
@@ -7802,8 +7665,9 @@ int main(int argc, char **argv)
     POKEYSND_stereo_enabled = FALSE; /* Turn this off here....otherwise games only come
                              from one channel...you only want this for demos mainly
                              anyway */
-	const SDL_version* v = SDL_Linked_Version();
-	Log_print("SDL Version: %u.%u.%u", v->major, v->minor, v->patch);							 
+    SDL_version v;
+	SDL_GetVersion(&v);
+	Log_print("SDL Version: %u.%u.%u", v.major, v.minor, v.patch);
 	SDLMainActivate();
 	
     scaledScreen = malloc((XEP80_SCRN_WIDTH*4)*(XEP80_SCRN_HEIGHT*4));
@@ -7819,8 +7683,8 @@ int main(int argc, char **argv)
         return 3;
 
     CreateWindowCaption();
-    SDL_WM_SetCaption(windowCaption,NULL);
-    
+    SDL_SetWindowTitle(MainGLScreen, windowCaption);
+
     if (useBuiltinPalette) {
         Colours_Generate(paletteBlack, paletteWhite, paletteIntensity, paletteColorShift);
         Colours_Format(paletteBlack, paletteWhite, paletteIntensity);
@@ -7890,10 +7754,10 @@ int main(int argc, char **argv)
 	Atari800MakeKeyWindow();
 
     /* First time thru, get the keystate since we will be doing joysticks first */
-    kbhits = SDL_GetKeyState(NULL);
+    int numKbstate;
+    kbhits = (Uint8 *) SDL_GetKeyboardState(&numKbstate);
 	
 	chdir("../");
-	SDL_EnableUNICODE(enable_international);
 
     while (!done) {
         /* Handle joysticks and paddles */
@@ -8178,7 +8042,7 @@ void HidDeviceAdded(void *refCon, io_iterator_t iterator)
     io_service_t                usbDevice;
 	static int					first = TRUE;
 
-    while (usbDevice = IOIteratorNext(iterator))
+    while ((usbDevice = IOIteratorNext(iterator)))
     {
 	} 
 	
@@ -8198,7 +8062,7 @@ void HidDeviceRemoved(void *refCon, io_iterator_t iterator)
     io_service_t                usbDevice;
 	static int					first = TRUE;
 
-    while (usbDevice = IOIteratorNext(iterator))
+    while ((usbDevice = IOIteratorNext(iterator)))
     {
 	}
 	
@@ -8227,7 +8091,7 @@ int Setup_HID_Notifications(void)
     result = IOMasterPort(MACH_PORT_NULL, &masterPort);
     if (result || !masterPort)
     {
-        printf("ERR: Couldn’t create a master I/O Kit port(%08x)\n", result);
+        printf("ERR: Couldn't create a master I/O Kit port(%08x)\n", result);
         return -1;
     }
 
@@ -8235,7 +8099,7 @@ int Setup_HID_Notifications(void)
     matchingDict = IOServiceMatching(kIOUSBDeviceClassName);
     if (!matchingDict)
     {
-        printf("Couldn’t create a USB matching dictionary\n");
+        printf("Couldn't create a USB matching dictionary\n");
         mach_port_deallocate(mach_task_self(), masterPort);
         return -1;
     }
@@ -8252,7 +8116,7 @@ int Setup_HID_Notifications(void)
                                      kCFNumberSInt32Type, &usbSubClass));
 
     //To set up asynchronous notifications, create a notification port and 
-    //add its run loop event source to the program’s run loop
+    //add its run loop event source to the program?s run loop
     gNotifyPort = IONotificationPortCreate(masterPort);
     runLoopSource = IONotificationPortGetRunLoopSource(gNotifyPort);
     CFRunLoopAddSource(CFRunLoopGetCurrent(), runLoopSource, 

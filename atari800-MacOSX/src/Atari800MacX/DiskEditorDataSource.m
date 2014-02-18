@@ -108,7 +108,7 @@ static int idCounter = 0;
                          fileList[rowIndex].sectors);
          }
 	
-	return([NSString stringWithCString:dirEntry]);
+	return([NSString stringWithCString:dirEntry encoding:NSASCIIStringEncoding]);
 	}
 	
 -(int) numberOfRowsInTableView:(NSTableView *)aTableView
@@ -127,8 +127,8 @@ static int idCounter = 0;
 	int status = 0;
 	char cfilename[FILENAME_MAX];
 	
-	[filename getCString:cfilename];
-	if (status = AtrMount(cfilename ,&dosType, &readWrite, &writeProtect,&diskinfo))
+	[filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+	if ((status = AtrMount(cfilename ,&dosType, &readWrite, &writeProtect,&diskinfo)))
         {
 		AtrUnmount(diskinfo);
 		mounted = 0;
@@ -226,7 +226,7 @@ static int idCounter = 0;
 	char cstring[FILENAME_MAX];
 	int status;
 	
-	[filename getCString:cstring];
+	[filename getCString:cstring maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
 	
 	status = AtrImportFile(diskinfo, cstring, lfConvert);
 	
@@ -251,7 +251,7 @@ static int idCounter = 0;
 	
 	if (![self isDirectory:index]) {
 		[self getFilename:index:fileName];
-		[dirName getCString:cname];
+		[dirName getCString:cname maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
 		strcat(cname,"/");
 		strcat(cname, fileName);
 	
@@ -277,7 +277,7 @@ static int idCounter = 0;
 	
 	if (status == 0) {
 		[owner 
-			diskImageMenuAdd:[NSString stringWithCString:dirName]];
+			diskImageMenuAdd:[NSString stringWithCString:dirName encoding:NSASCIIStringEncoding]];
         status = AtrGetDir(diskinfo, &fileCount, fileList, &freeBytes);
 		}
 
@@ -411,7 +411,7 @@ static int idCounter = 0;
 	char cName[FILENAME_MAX];
 	char dirName[13];
 	
-	[newName getCString:cName];
+	[newName getCString:cName maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
 	
 	if ([self isDirectory:index])
 		if (strlen(cName) > 8)
@@ -451,7 +451,7 @@ static int idCounter = 0;
 	int status;
 	char cName[FILENAME_MAX];
 	
-	[name getCString:cName];
+	[name getCString:cName maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
 	if (strlen(cName) > 8)
 		cName[8] = 0;
 		
@@ -714,7 +714,7 @@ static int idCounter = 0;
 		imageLocation.origin = dragPosition;
 		imageLocation.size = NSMakeSize(32,32);
 		sprintf(myIdStr,"id%04d",idCounter++);
-		myId = [NSString stringWithCString:myIdStr];
+		myId = [NSString stringWithCString:myIdStr encoding:NSASCIIStringEncoding];
 		if (!(floor(NSAppKitVersionNumber) <= 663)) { 
 			[tableView dragPromisedFilesOfTypes:[NSArray arrayWithObjects:@"txt",myId,nil]
 					fromRect:imageLocation
@@ -745,7 +745,7 @@ static int idCounter = 0;
 							@"/private/tmp":0];
 			[self getFilename:[[dragRows objectAtIndex:i] intValue]:fileName];
 			[filenames addObject:
-					[@"/tmp/" stringByAppendingString:[NSString stringWithCString:fileName]]];
+					[@"/tmp/" stringByAppendingString:[NSString stringWithCString:fileName encoding:NSASCIIStringEncoding]]];
 			}
 		return(filenames);
 		}

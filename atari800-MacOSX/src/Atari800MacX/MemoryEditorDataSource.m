@@ -52,11 +52,11 @@
 	char cellNum[10];
 	NSMutableAttributedString *rowStr;
 
-	rowStr = [NSAttributedString alloc];
+	rowStr = [NSMutableAttributedString alloc];
 
 	if ([[aTableColumn identifier] isEqual:@"RowHeader"]) {
 		sprintf(cellNum,"%04X",rowIndex*16+address);
-		rowStr = [[NSAttributedString alloc] initWithString:[NSString stringWithCString:cellNum] attributes:blackDataDict];
+		rowStr = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithCString:cellNum encoding:NSASCIIStringEncoding] attributes:blackDataDict];
 		return(rowStr);
 		}
 	else if ([[aTableColumn identifier] isEqual:@"ASCII"]) {
@@ -73,7 +73,7 @@
 				asciiBuffer[i] = '.';
 			} 
 		asciiBuffer[16] = 0;
-		rowStr = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithCString:asciiBuffer] attributes:blackDataDict];
+		rowStr = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithCString:asciiBuffer encoding:NSASCIIStringEncoding] attributes:blackDataDict];
 		theRange.length = 1;
 		for (i=0;i<16;i++) {
 			if (oldMemoryBuffer[start+i] != currMemoryBuffer[start+i]) {
@@ -95,7 +95,7 @@
 			colorDict = blackDataDict;
 		else
 			colorDict = redDataDict;
-		rowStr = [[NSAttributedString alloc] initWithString:[NSString stringWithCString:cellNum] attributes:colorDict];
+		rowStr = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithCString:cellNum encoding:NSASCIIStringEncoding] attributes:colorDict];
 		return(rowStr);
 		}
 	}
@@ -131,7 +131,7 @@
 		unsigned char newValue;
 		int colNum = [[aTableColumn identifier] intValue];
 		
-		[cellStr getCString:cellCStr];
+		[cellStr getCString:cellCStr maxLength:16 encoding:NSASCIIStringEncoding];
 		newValue = strtol(cellCStr,NULL,16);
 		MEMORY_PutByte(rowIndex*16+colNum+address, (UBYTE) newValue);
 		newValue = MEMORY_GetByte(rowIndex*16+colNum+address);

@@ -9,7 +9,6 @@
 */
 #import <Cocoa/Cocoa.h>
 #import <SDL.h>
-#import "preferences_c.h"
 #import "Preferences.h"
 #import "MediaManager.h"
 #import "ControlManager.h"
@@ -27,6 +26,8 @@
 #import <mach/mach.h>
 
 #define QZ_COMMA		0x2B
+#define UI_MENU_SAVECFG          30
+#define UI_MENU_LOADCFG          31
 
 extern SDL_Joystick *joystick0, *joystick1;
 extern SDL_Joystick *joystick2, *joystick3;
@@ -45,6 +46,9 @@ extern void Reinit_Joysticks(void);
 extern ATARI825_PREF prefs825;
 extern ATARI1020_PREF prefs1020;
 extern EPSON_PREF prefsEpson;
+extern int FULLSCREEN;
+extern int UI_alt_function;
+extern int requestFullScreenUI;
 
 extern char atari_config_dir[FILENAME_MAX];
 
@@ -76,6 +80,7 @@ static int axlonBankMasks[] = {3,7,15,31,63,127,255,0};
 static int mosaicBankMaxs[] = {3,19,35,0};
 
 void RunPreferences() {
+
     [[Preferences sharedInstance] showPanel:[Preferences sharedInstance]];
     [[KeyMapper sharedInstance] releaseCmdKeys:@","];
 }
@@ -195,9 +200,8 @@ static NSDictionary *defaultValues() {
                 [NSNumber numberWithInt:224], WhiteLevel, 
                 [NSNumber numberWithInt:100], Intensity, 
                 [NSNumber numberWithInt:40], ColorShift, 
-                [NSString stringWithCString:paletteStr], PaletteFile, 
+                [NSString stringWithCString:paletteStr encoding:NSASCIIStringEncoding], PaletteFile, 
                 [NSNumber numberWithBool:NO], ShowFPS,
-                [NSNumber numberWithBool:NO], BrushedSteel,
 				[NSNumber numberWithBool:YES], LedStatus,
 				[NSNumber numberWithBool:YES], LedSector, 
 				[NSNumber numberWithBool:YES], LedStatusMedia,
@@ -282,26 +286,26 @@ static NSDictionary *defaultValues() {
                 [NSNumber numberWithBool:NO], EnableInternational, 
                 [NSNumber numberWithBool:NO], EnableMultijoy, 
                 [NSNumber numberWithBool:NO], IgnoreHeaderWriteprotect,
-                [NSString stringWithCString:imageDirStr], ImageDir, 
-                [NSString stringWithCString:printDirStr], PrintDir, 
-                [NSString stringWithCString:hardDiskDir1Str], HardDiskDir1, 
-                [NSString stringWithCString:hardDiskDir2Str], HardDiskDir2, 
-                [NSString stringWithCString:hardDiskDir3Str], HardDiskDir3, 
-                [NSString stringWithCString:hardDiskDir4Str], HardDiskDir4, 
+                [NSString stringWithCString:imageDirStr encoding:NSASCIIStringEncoding], ImageDir, 
+                [NSString stringWithCString:printDirStr encoding:NSASCIIStringEncoding], PrintDir, 
+                [NSString stringWithCString:hardDiskDir1Str encoding:NSASCIIStringEncoding], HardDiskDir1, 
+                [NSString stringWithCString:hardDiskDir2Str encoding:NSASCIIStringEncoding], HardDiskDir2, 
+                [NSString stringWithCString:hardDiskDir3Str encoding:NSASCIIStringEncoding], HardDiskDir3, 
+                [NSString stringWithCString:hardDiskDir4Str encoding:NSASCIIStringEncoding], HardDiskDir4, 
                 [NSNumber numberWithBool:YES], HardDrivesReadOnly, 
                 [NSString stringWithString:@"H1:>DOS;>DOS"],HPath,
-                [NSString stringWithCString:osARomFileStr], OsARomFile, 
-                [NSString stringWithCString:osBRomFileStr], OsBRomFile, 
-                [NSString stringWithCString:xlRomFileStr], XlRomFile, 
-                [NSString stringWithCString:basicRomFileStr], BasicRomFile, 
-                [NSString stringWithCString:a5200RomFileStr], A5200RomFile, 
-                [NSString stringWithCString:diskImageDirStr], DiskImageDir, 
-                [NSString stringWithCString:diskSetDirStr], DiskSetDir, 
-                [NSString stringWithCString:cartImageDirStr], CartImageDir, 
-                [NSString stringWithCString:cassImageDirStr], CassImageDir, 
-                [NSString stringWithCString:exeFileDirStr], ExeFileDir, 
-                [NSString stringWithCString:savedStateDirStr], SavedStateDir, 
-                [NSString stringWithCString:configDirStr], ConfigDir, 
+                [NSString stringWithCString:osARomFileStr encoding:NSASCIIStringEncoding], OsARomFile, 
+                [NSString stringWithCString:osBRomFileStr encoding:NSASCIIStringEncoding], OsBRomFile, 
+                [NSString stringWithCString:xlRomFileStr encoding:NSASCIIStringEncoding], XlRomFile, 
+                [NSString stringWithCString:basicRomFileStr encoding:NSASCIIStringEncoding], BasicRomFile, 
+                [NSString stringWithCString:a5200RomFileStr encoding:NSASCIIStringEncoding], A5200RomFile, 
+                [NSString stringWithCString:diskImageDirStr encoding:NSASCIIStringEncoding], DiskImageDir, 
+                [NSString stringWithCString:diskSetDirStr encoding:NSASCIIStringEncoding], DiskSetDir, 
+                [NSString stringWithCString:cartImageDirStr encoding:NSASCIIStringEncoding], CartImageDir, 
+                [NSString stringWithCString:cassImageDirStr encoding:NSASCIIStringEncoding], CassImageDir, 
+                [NSString stringWithCString:exeFileDirStr encoding:NSASCIIStringEncoding], ExeFileDir, 
+                [NSString stringWithCString:savedStateDirStr encoding:NSASCIIStringEncoding], SavedStateDir, 
+                [NSString stringWithCString:configDirStr encoding:NSASCIIStringEncoding], ConfigDir, 
                 [NSString stringWithString:@""], D1File, 
                 [NSString stringWithString:@""], D2File, 
                 [NSString stringWithString:@""], D3File, 
@@ -555,15 +559,9 @@ static Preferences *sharedInstance = nil;
 * preferences - Method to return current brushed steel state.
 *-----------------------------------------------------------------------------*/
 - (int)getBrushed {
-	SInt32 MacVersion;
-    // Get the OS Version
-	Gestalt(gestaltSystemVersion, &MacVersion);
-	
-	// If we are running 10.2.x or less, we can't load the brushed NIBs
-	if (MacVersion < 0x1030)
-		return 0;
-	else
-		return [[curValues objectForKey:BrushedSteel] intValue];;
+    // Starting in version 5.0 of Atari800MacX, we no longer support
+    // brushed metal.
+    return 0;
 }
 
 /*------------------------------------------------------------------------------
@@ -573,7 +571,9 @@ static Preferences *sharedInstance = nil;
     NSMutableArray *configArray;
     int i,numberGamepadConfigs;
     int currNumConfigs;
-    
+  
+    if (FULLSCREEN)
+        return;
 	/* Transfer the changed prefs values back from emulator */
 	savePrefs();
 	[self commitDisplayedValues];
@@ -584,19 +584,10 @@ static Preferences *sharedInstance = nil;
     PauseAudio(1);
 
     if (!prefTabView) {
-		if ([[Preferences sharedInstance] getBrushed]) {
-			if (![NSBundle loadNibNamed:@"PreferencesBrushed" owner:self])  {
-				NSLog(@"Failed to load PreferencesBrushed.nib");
-				NSBeep();
-				return;
-			}
-		}
-		else {
 			if (![NSBundle loadNibNamed:@"Preferences" owner:self])  {
 				NSLog(@"Failed to load Preferences.nib");
 				NSBeep();
 				return;
-			}
 		}
 	[[prefTabView window] setExcludedFromWindowsMenu:YES];
 	[[prefTabView window] setMenu:nil];
@@ -679,23 +670,22 @@ static Preferences *sharedInstance = nil;
 	int i,j,foundMatch;
 	NSColor *pen1, *pen2, *pen3, *pen4, *fore, *back;
 	NSString *portName;
+    float foreRed, foreGreen, foreBlue, foreAlpha;
+    float backRed, backGreen, backBlue, backAlpha;
 
     if (!prefTabView) return;	/* UI hasn't been loaded... */
 
     [fullScreenMatrix selectCellWithTag:[[displayedValues objectForKey:FullScreen] boolValue] ? 1 : 0];
     [openglMatrix selectCellWithTag:[[displayedValues objectForKey:OpenGl] boolValue] ? 1 : 0];
+    [openglMatrix setEnabled:NO];
     [lockFullscreenSizeButton setState:[[displayedValues objectForKey:LockFullscreenSize] boolValue] ? NSOnState : NSOffState];
     [fullscreenMonitorButton setState:[[displayedValues objectForKey:FullscreenMonitor] boolValue] ? NSOnState : NSOffState];
-	fore = [NSColor colorWithCalibratedRed:[[displayedValues objectForKey:FullscreenForeRed] floatValue] 
-						green:[[displayedValues objectForKey:FullscreenForeGreen] floatValue] 
-						blue:[[displayedValues objectForKey:FullscreenForeBlue] floatValue]
-						alpha:[[displayedValues objectForKey:FullscreenForeAlpha] floatValue]];
-	[fullscreenForegroundPot setColor:fore];
-	back = [NSColor colorWithCalibratedRed:[[displayedValues objectForKey:FullscreenBackRed] floatValue] 
-						green:[[displayedValues objectForKey:FullscreenBackGreen] floatValue] 
-						blue:[[displayedValues objectForKey:FullscreenBackBlue] floatValue]
-						alpha:[[displayedValues objectForKey:FullscreenBackAlpha] floatValue]];
-	[fullscreenBackgroundPot setColor:back];
+    [fullscreenForegroundRed setIntValue:[[displayedValues objectForKey:FullscreenForeRed] floatValue]*255];
+    [fullscreenForegroundGreen setIntValue:[[displayedValues objectForKey:FullscreenForeGreen] floatValue]*255];
+    [fullscreenForegroundBlue setIntValue:[[displayedValues objectForKey:FullscreenForeBlue] floatValue]*255];
+    [fullscreenBackgroundRed setIntValue:[[displayedValues objectForKey:FullscreenBackRed] floatValue]*255];
+    [fullscreenBackgroundGreen setIntValue:[[displayedValues objectForKey:FullscreenBackGreen] floatValue]*255];
+    [fullscreenBackgroundBlue setIntValue:[[displayedValues objectForKey:FullscreenBackBlue] floatValue]*255];
 	if ([[displayedValues objectForKey:DoubleSize] boolValue] == 0)
 		[scaleFactorMatrix  selectCellWithTag:0];
 	else
@@ -716,7 +706,6 @@ static Preferences *sharedInstance = nil;
     [externalPaletteButton setState:[[displayedValues objectForKey:UseBuiltinPalette] boolValue] ? NSOffState : NSOnState];
     [adjustPaletteButton setState:[[displayedValues objectForKey:AdjustPalette] boolValue] ? NSOnState : NSOffState];
     [fpsButton setState:[[displayedValues objectForKey:ShowFPS] boolValue] ? NSOnState : NSOffState];
-    [brushedSteelButton setState:[[displayedValues objectForKey:BrushedSteel] boolValue] ? NSOnState : NSOffState];
     [ledStatusButton setState:[[displayedValues objectForKey:LedStatus] boolValue] ? NSOnState : NSOffState];
     [ledSectorButton setState:[[displayedValues objectForKey:LedSector] boolValue] ? NSOnState : NSOffState];
     [ledStatusMediaButton setState:[[displayedValues objectForKey:LedStatusMedia] boolValue] ? NSOnState : NSOffState];
@@ -927,26 +916,18 @@ static Preferences *sharedInstance = nil;
 	[atari1020FormLengthStepper setIntValue:[[displayedValues objectForKey:Atari1020FormLength] intValue]];
 	[atari1020AutoLinefeedButton setState:[[displayedValues objectForKey:Atari1020AutoLinefeed] boolValue] ? NSOnState : NSOffState];
 	[atari1020AutoPageAdjustButton setState:[[displayedValues objectForKey:Atari1020AutoPageAdjust] boolValue] ? NSOnState : NSOffState];
-	pen1 = [NSColor colorWithCalibratedRed:[[displayedValues objectForKey:Atari1020Pen1Red] floatValue] 
-						green:[[displayedValues objectForKey:Atari1020Pen1Green] floatValue] 
-						blue:[[displayedValues objectForKey:Atari1020Pen1Blue] floatValue]
-						alpha:[[displayedValues objectForKey:Atari1020Pen1Alpha] floatValue]];
-	[atari1020Pen1Pot setColor:pen1];
-	pen2 = [NSColor colorWithCalibratedRed:[[displayedValues objectForKey:Atari1020Pen2Red] floatValue] 
-						green:[[displayedValues objectForKey:Atari1020Pen2Green] floatValue] 
-						blue:[[displayedValues objectForKey:Atari1020Pen2Blue] floatValue]
-						alpha:[[displayedValues objectForKey:Atari1020Pen2Alpha] floatValue]];
-	[atari1020Pen2Pot setColor:pen2];
-	pen3 = [NSColor colorWithCalibratedRed:[[displayedValues objectForKey:Atari1020Pen3Red] floatValue] 
-						green:[[displayedValues objectForKey:Atari1020Pen3Green] floatValue] 
-						blue:[[displayedValues objectForKey:Atari1020Pen3Blue] floatValue]
-						alpha:[[displayedValues objectForKey:Atari1020Pen3Alpha] floatValue]];
-	[atari1020Pen3Pot setColor:pen3];
-	pen4 = [NSColor colorWithCalibratedRed:[[displayedValues objectForKey:Atari1020Pen4Red] floatValue] 
-						green:[[displayedValues objectForKey:Atari1020Pen4Green] floatValue] 
-						blue:[[displayedValues objectForKey:Atari1020Pen4Blue] floatValue]
-						alpha:[[displayedValues objectForKey:Atari1020Pen4Alpha] floatValue]];
-	[atari1020Pen4Pot setColor:pen4];
+    [atari1020Pen1Red setIntValue:[[displayedValues objectForKey:Atari1020Pen1Red] floatValue]*255];
+    [atari1020Pen1Green setIntValue:[[displayedValues objectForKey:Atari1020Pen1Green] floatValue]*255];
+    [atari1020Pen1Blue setIntValue:[[displayedValues objectForKey:Atari1020Pen1Blue] floatValue]*255];
+    [atari1020Pen2Red setIntValue:[[displayedValues objectForKey:Atari1020Pen2Red] floatValue]*255];
+    [atari1020Pen2Green setIntValue:[[displayedValues objectForKey:Atari1020Pen2Green] floatValue]*255];
+    [atari1020Pen2Blue setIntValue:[[displayedValues objectForKey:Atari1020Pen2Blue] floatValue]*255];
+    [atari1020Pen3Red setIntValue:[[displayedValues objectForKey:Atari1020Pen3Red] floatValue]*255];
+    [atari1020Pen3Green setIntValue:[[displayedValues objectForKey:Atari1020Pen3Green] floatValue]*255];
+    [atari1020Pen3Blue setIntValue:[[displayedValues objectForKey:Atari1020Pen3Blue] floatValue]*255];
+    [atari1020Pen4Red setIntValue:[[displayedValues objectForKey:Atari1020Pen4Red] floatValue]*255];
+    [atari1020Pen4Green setIntValue:[[displayedValues objectForKey:Atari1020Pen4Green] floatValue]*255];
+    [atari1020Pen4Blue setIntValue:[[displayedValues objectForKey:Atari1020Pen4Blue] floatValue]*255];
 	[epsonCharSetPulldown selectItemAtIndex:[[displayedValues objectForKey:EpsonCharSet] intValue]];
 	[epsonPrintPitchPulldown selectItemAtIndex:[[displayedValues objectForKey:EpsonPrintPitch] intValue]];
 	[epsonPrintWeightPulldown selectItemAtIndex:[[displayedValues objectForKey:EpsonPrintWeight] intValue]];
@@ -1439,28 +1420,39 @@ static Preferences *sharedInstance = nil;
     if ([lockFullscreenSizeButton state] == NSOnState) {
         [displayedValues setObject:yes forKey:LockFullscreenSize];
 		[fullscreenMonitorButton setEnabled:YES];
-		[fullscreenForegroundPot setEnabled:YES];
-		[fullscreenBackgroundPot setEnabled:YES];
+        [fullscreenForegroundRed setEnabled:YES];
+        [fullscreenForegroundGreen setEnabled:YES];
+        [fullscreenForegroundBlue setEnabled:YES];
+        [fullscreenBackgroundRed setEnabled:YES];
+        [fullscreenBackgroundBlue setEnabled:YES];
+        [fullscreenBackgroundGreen setEnabled:YES];
 		}
     else {
         [displayedValues setObject:no forKey:LockFullscreenSize];
-		[fullscreenMonitorButton setState:NSOffState];
-		[fullscreenMonitorButton setEnabled:NO];
-		[fullscreenForegroundPot setEnabled:NO];
-		[fullscreenBackgroundPot setEnabled:NO];
+ 		[fullscreenMonitorButton setEnabled:NO];
+        [fullscreenForegroundRed setEnabled:NO];
+        [fullscreenForegroundGreen setEnabled:NO];
+        [fullscreenForegroundBlue setEnabled:NO];
+        [fullscreenBackgroundRed setEnabled:NO];
+        [fullscreenBackgroundGreen setEnabled:NO];
+        [fullscreenBackgroundBlue setEnabled:NO];
 		}
     if ([fullscreenMonitorButton state] == NSOnState)
         [displayedValues setObject:yes forKey:FullscreenMonitor];
     else
         [displayedValues setObject:no forKey:FullscreenMonitor];
-	penColor = [fullscreenForegroundPot color];
-	[penColor getRed:&penRed green:&penGreen blue:&penBlue alpha:&penAlpha];
+    penRed = ((float) [fullscreenForegroundRed intValue])/255.0;
+    penGreen = ((float) [fullscreenForegroundGreen intValue])/255.0;
+    penBlue = ((float) [fullscreenForegroundBlue intValue])/255.0;
+    penAlpha = 0.0;
 	[displayedValues setObject:[NSNumber numberWithFloat:penRed] forKey:FullscreenForeRed];
 	[displayedValues setObject:[NSNumber numberWithFloat:penBlue] forKey:FullscreenForeBlue];
 	[displayedValues setObject:[NSNumber numberWithFloat:penGreen] forKey:FullscreenForeGreen];
 	[displayedValues setObject:[NSNumber numberWithFloat:penAlpha] forKey:FullscreenForeAlpha];
-	penColor = [fullscreenBackgroundPot color];
-	[penColor getRed:&penRed green:&penGreen blue:&penBlue alpha:&penAlpha];
+    penRed = ((float) [fullscreenBackgroundRed intValue])/255.0;
+    penGreen = ((float) [fullscreenBackgroundGreen intValue])/255.0;
+    penBlue = ((float) [fullscreenBackgroundBlue intValue])/255.0;
+    penAlpha = 0.0;
 	[displayedValues setObject:[NSNumber numberWithFloat:penRed] forKey:FullscreenBackRed];
 	[displayedValues setObject:[NSNumber numberWithFloat:penBlue] forKey:FullscreenBackBlue];
 	[displayedValues setObject:[NSNumber numberWithFloat:penGreen] forKey:FullscreenBackGreen];
@@ -1601,10 +1593,6 @@ static Preferences *sharedInstance = nil;
         [displayedValues setObject:yes forKey:ShowFPS];
     else
         [displayedValues setObject:no forKey:ShowFPS];
-    if ([brushedSteelButton state] == NSOnState)
-        [displayedValues setObject:yes forKey:BrushedSteel];
-    else
-        [displayedValues setObject:no forKey:BrushedSteel];
     if ([ledSectorButton state] == NSOnState)
         [displayedValues setObject:yes forKey:LedSector];
     else
@@ -1680,10 +1668,18 @@ static Preferences *sharedInstance = nil;
         [atari1020FormLengthStepper setEnabled:YES];
         [atari1020AutoLinefeedButton setEnabled:YES];
         [atari1020AutoPageAdjustButton setEnabled:YES];
-        [atari1020Pen1Pot setEnabled:YES];
-        [atari1020Pen2Pot setEnabled:YES];
-        [atari1020Pen3Pot setEnabled:YES];
-        [atari1020Pen4Pot setEnabled:YES];
+        [atari1020Pen1Red setEnabled:YES];
+        [atari1020Pen1Green setEnabled:YES];
+        [atari1020Pen1Blue setEnabled:YES];
+        [atari1020Pen2Red setEnabled:YES];
+        [atari1020Pen2Green setEnabled:YES];
+        [atari1020Pen2Blue setEnabled:YES];
+        [atari1020Pen3Red setEnabled:YES];
+        [atari1020Pen3Green setEnabled:YES];
+        [atari1020Pen3Blue setEnabled:YES];
+        [atari1020Pen4Red setEnabled:YES];
+        [atari1020Pen4Green setEnabled:YES];
+        [atari1020Pen4Blue setEnabled:YES];
         [epsonCharSetPulldown setEnabled:YES];
         [epsonPrintPitchPulldown setEnabled:YES];
         [epsonPrintWeightPulldown setEnabled:YES];
@@ -1706,10 +1702,18 @@ static Preferences *sharedInstance = nil;
         [atari1020FormLengthStepper setEnabled:NO];
         [atari1020AutoLinefeedButton setEnabled:NO];
         [atari1020AutoPageAdjustButton setEnabled:NO];
-        [atari1020Pen1Pot setEnabled:NO];
-        [atari1020Pen2Pot setEnabled:NO];
-        [atari1020Pen3Pot setEnabled:NO];
-        [atari1020Pen4Pot setEnabled:NO];
+        [atari1020Pen1Red setEnabled:NO];
+        [atari1020Pen1Green setEnabled:NO];
+        [atari1020Pen1Blue setEnabled:NO];
+        [atari1020Pen2Red setEnabled:NO];
+        [atari1020Pen2Green setEnabled:NO];
+        [atari1020Pen2Blue setEnabled:NO];
+        [atari1020Pen3Red setEnabled:NO];
+        [atari1020Pen3Green setEnabled:NO];
+        [atari1020Pen3Blue setEnabled:NO];
+        [atari1020Pen4Red setEnabled:NO];
+        [atari1020Pen4Green setEnabled:NO];
+        [atari1020Pen4Blue setEnabled:NO];
         [epsonCharSetPulldown setEnabled:NO];
         [epsonPrintPitchPulldown setEnabled:NO];
         [epsonPrintWeightPulldown setEnabled:NO];
@@ -1783,31 +1787,31 @@ static Preferences *sharedInstance = nil;
             [displayedValues setObject:one forKey:Atari1020PrintWidth];
             break;
 		}
-	penColor = [atari1020Pen1Pot color];
-	[penColor getRed:&penRed green:&penGreen blue:&penBlue alpha:&penAlpha];
-	[displayedValues setObject:[NSNumber numberWithFloat:penRed] forKey:Atari1020Pen1Red];
-	[displayedValues setObject:[NSNumber numberWithFloat:penBlue] forKey:Atari1020Pen1Blue];
-	[displayedValues setObject:[NSNumber numberWithFloat:penGreen] forKey:Atari1020Pen1Green];
-	[displayedValues setObject:[NSNumber numberWithFloat:penAlpha] forKey:Atari1020Pen1Alpha];
-	penColor = [atari1020Pen2Pot color];
-	[penColor getRed:&penRed green:&penGreen blue:&penBlue alpha:&penAlpha];
-	[displayedValues setObject:[NSNumber numberWithFloat:penRed] forKey:Atari1020Pen2Red];
-	[displayedValues setObject:[NSNumber numberWithFloat:penBlue] forKey:Atari1020Pen2Blue];
-	[displayedValues setObject:[NSNumber numberWithFloat:penGreen] forKey:Atari1020Pen2Green];
-	[displayedValues setObject:[NSNumber numberWithFloat:penAlpha] forKey:Atari1020Pen2Alpha];
-	penColor = [atari1020Pen3Pot color];
-	[penColor getRed:&penRed green:&penGreen blue:&penBlue alpha:&penAlpha];
-	[displayedValues setObject:[NSNumber numberWithFloat:penRed] forKey:Atari1020Pen3Red];
-	[displayedValues setObject:[NSNumber numberWithFloat:penBlue] forKey:Atari1020Pen3Blue];
-	[displayedValues setObject:[NSNumber numberWithFloat:penGreen] forKey:Atari1020Pen3Green];
-	[displayedValues setObject:[NSNumber numberWithFloat:penAlpha] forKey:Atari1020Pen3Alpha];
-	penColor = [atari1020Pen4Pot color];
-	[penColor getRed:&penRed green:&penGreen blue:&penBlue alpha:&penAlpha];
-	[displayedValues setObject:[NSNumber numberWithFloat:penRed] forKey:Atari1020Pen4Red];
-	[displayedValues setObject:[NSNumber numberWithFloat:penBlue] forKey:Atari1020Pen4Blue];
-	[displayedValues setObject:[NSNumber numberWithFloat:penGreen] forKey:Atari1020Pen4Green];
-	[displayedValues setObject:[NSNumber numberWithFloat:penAlpha] forKey:Atari1020Pen4Alpha];
-	
+    penRed = ((float) [atari1020Pen1Red intValue])/255.0;
+    penGreen = ((float) [atari1020Pen1Green intValue])/255.0;
+    penBlue = ((float) [atari1020Pen1Blue intValue])/255.0;
+    [displayedValues setObject:[NSNumber numberWithFloat:penRed] forKey:Atari1020Pen1Red];
+    [displayedValues setObject:[NSNumber numberWithFloat:penBlue] forKey:Atari1020Pen1Blue];
+    [displayedValues setObject:[NSNumber numberWithFloat:penGreen] forKey:Atari1020Pen1Green];
+    penRed = ((float) [atari1020Pen2Red intValue])/255.0;
+    penGreen = ((float) [atari1020Pen2Green intValue])/255.0;
+    penBlue = ((float) [atari1020Pen2Blue intValue])/255.0;
+    [displayedValues setObject:[NSNumber numberWithFloat:penRed] forKey:Atari1020Pen2Red];
+    [displayedValues setObject:[NSNumber numberWithFloat:penBlue] forKey:Atari1020Pen2Blue];
+    [displayedValues setObject:[NSNumber numberWithFloat:penGreen] forKey:Atari1020Pen2Green];
+    penRed = ((float) [atari1020Pen3Red intValue])/255.0;
+    penGreen = ((float) [atari1020Pen3Green intValue])/255.0;
+    penBlue = ((float) [atari1020Pen3Blue intValue])/255.0;
+    [displayedValues setObject:[NSNumber numberWithFloat:penRed] forKey:Atari1020Pen3Red];
+    [displayedValues setObject:[NSNumber numberWithFloat:penBlue] forKey:Atari1020Pen3Blue];
+    [displayedValues setObject:[NSNumber numberWithFloat:penGreen] forKey:Atari1020Pen3Green];
+    penRed = ((float) [atari1020Pen4Red intValue])/255.0;
+    penGreen = ((float) [atari1020Pen4Green intValue])/255.0;
+    penBlue = ((float) [atari1020Pen4Blue intValue])/255.0;
+    [displayedValues setObject:[NSNumber numberWithFloat:penRed] forKey:Atari1020Pen4Red];
+    [displayedValues setObject:[NSNumber numberWithFloat:penBlue] forKey:Atari1020Pen4Blue];
+    [displayedValues setObject:[NSNumber numberWithFloat:penGreen] forKey:Atari1020Pen4Green];
+
     switch([epsonCharSetPulldown indexOfSelectedItem]) {
         case 0:
 		default:
@@ -1908,7 +1912,7 @@ static Preferences *sharedInstance = nil;
 		[displayedValues setObject:@"" forKey:RPatchSerialPort];
 	else
 		[displayedValues 
-			setObject:[NSString stringWithCString:bsdPaths[[rPatchSerialPulldown indexOfSelectedItem]-1]] 
+			setObject:[NSString stringWithCString:bsdPaths[[rPatchSerialPulldown indexOfSelectedItem]-1] encoding:NSASCIIStringEncoding] 
 			forKey:RPatchSerialPort];
 
     switch([useAtariCursorKeysPulldown indexOfSelectedItem]) {
@@ -2673,7 +2677,7 @@ static Preferences *sharedInstance = nil;
 - (void)browsePalette:(id)sender {
     NSString *filename, *dir;
     
-    dir = [[NSString alloc] initWithCString:paletteDir];
+    dir = [[NSString alloc] initWithCString:paletteDir encoding:NSASCIIStringEncoding];
     filename = [self browseFileInDirectory:dir];
     if (filename != nil) {
         [paletteField setStringValue:filename];
@@ -2749,7 +2753,7 @@ static Preferences *sharedInstance = nil;
 - (void)browseOsARom:(id)sender {
     NSString *filename, *dir;
     
-    dir = [[NSString alloc] initWithCString:osromsDir];
+    dir = [[NSString alloc] initWithCString:osromsDir encoding:NSASCIIStringEncoding];
     filename = [self browseFileInDirectory:dir];
     if (filename != nil) {
         [osARomFileField setStringValue:filename];
@@ -2761,7 +2765,7 @@ static Preferences *sharedInstance = nil;
 - (void)browseOsBRom:(id)sender {
     NSString *filename, *dir;
     
-    dir = [[NSString alloc] initWithCString:osromsDir];
+    dir = [[NSString alloc] initWithCString:osromsDir encoding:NSASCIIStringEncoding];
     filename = [self browseFileInDirectory:dir];
     if (filename != nil) {
         [osBRomFileField setStringValue:filename];
@@ -2773,7 +2777,7 @@ static Preferences *sharedInstance = nil;
 - (void)browseXlRom:(id)sender {
     NSString *filename, *dir;
     
-    dir = [[NSString alloc] initWithCString:osromsDir];
+    dir = [[NSString alloc] initWithCString:osromsDir encoding:NSASCIIStringEncoding];
     filename = [self browseFileInDirectory:dir];
     if (filename != nil) {
         [xlRomFileField setStringValue:filename];
@@ -2785,7 +2789,7 @@ static Preferences *sharedInstance = nil;
 - (void)browseBasicRom:(id)sender {
     NSString *filename, *dir;
     
-    dir = [[NSString alloc] initWithCString:osromsDir];
+    dir = [[NSString alloc] initWithCString:osromsDir encoding:NSASCIIStringEncoding];
     filename = [self browseFileInDirectory:dir];
     if (filename != nil) {
         [basicRomFileField setStringValue:filename];
@@ -2797,7 +2801,7 @@ static Preferences *sharedInstance = nil;
 - (void)browse5200Rom:(id)sender {
     NSString *filename, *dir;
     
-    dir = [[NSString alloc] initWithCString:osromsDir];
+    dir = [[NSString alloc] initWithCString:osromsDir encoding:NSASCIIStringEncoding];
     filename = [self browseFileInDirectory:dir];
     if (filename != nil) {
         [a5200RomFileField setStringValue:filename];
@@ -2809,7 +2813,7 @@ static Preferences *sharedInstance = nil;
 - (void)browseMioRom:(id)sender {
     NSString *filename, *dir;
     
-    dir = [[NSString alloc] initWithCString:osromsDir];
+    dir = [[NSString alloc] initWithCString:osromsDir encoding:NSASCIIStringEncoding];
     filename = [self browseFileInDirectory:dir];
     if (filename != nil) {
         [mioRomFileField setStringValue:filename];
@@ -2821,7 +2825,7 @@ static Preferences *sharedInstance = nil;
 - (void)browseBlackBoxRom:(id)sender {
     NSString *filename, *dir;
     
-    dir = [[NSString alloc] initWithCString:osromsDir];
+    dir = [[NSString alloc] initWithCString:osromsDir encoding:NSASCIIStringEncoding];
     filename = [self browseFileInDirectory:dir];
     if (filename != nil) {
         [blackBoxRomFileField setStringValue:filename];
@@ -2833,7 +2837,7 @@ static Preferences *sharedInstance = nil;
 - (void)browseBlackBoxScsiDiskFile:(id)sender {
     NSString *filename, *dir;
     
-    dir = [[NSString alloc] initWithCString:diskImageDirStr];
+    dir = [[NSString alloc] initWithCString:diskImageDirStr encoding:NSASCIIStringEncoding];
     filename = [self browseFileInDirectory:dir];
     if (filename != nil) {
         [blackBoxScsiDiskFileField setStringValue:filename];
@@ -2845,7 +2849,7 @@ static Preferences *sharedInstance = nil;
 - (void)browseMioScsiDiskFile:(id)sender {
     NSString *filename, *dir;
     
-    dir = [[NSString alloc] initWithCString:diskImageDirStr];
+    dir = [[NSString alloc] initWithCString:diskImageDirStr encoding:NSASCIIStringEncoding];
     filename = [self browseFileInDirectory:dir];
     if (filename != nil) {
         [mioScsiDiskFileField setStringValue:filename];
@@ -3577,7 +3581,7 @@ static Preferences *sharedInstance = nil;
 	
 	if ((strcmp(disk_filename[0],"Off") != 0) && (strcmp(disk_filename[0],"Empty") != 0)) {
 		[displayedValues setObject:yes forKey:D1FileEnabled];
-		[displayedValues setObject:[NSString stringWithCString:disk_filename[0]] forKey:D1File];
+		[displayedValues setObject:[NSString stringWithCString:disk_filename[0] encoding:NSASCIIStringEncoding] forKey:D1File];
 		}
 	else {
 		[displayedValues setObject:no forKey:D1FileEnabled];
@@ -3585,7 +3589,7 @@ static Preferences *sharedInstance = nil;
 		}
 	if ((strcmp(disk_filename[1],"Off") != 0) && (strcmp(disk_filename[1],"Empty") != 0)) {
 		[displayedValues setObject:yes forKey:D2FileEnabled];
-		[displayedValues setObject:[NSString stringWithCString:disk_filename[1]] forKey:D2File];
+		[displayedValues setObject:[NSString stringWithCString:disk_filename[1] encoding:NSASCIIStringEncoding] forKey:D2File];
 		}
 	else {
 		[displayedValues setObject:no forKey:D2FileEnabled];
@@ -3593,7 +3597,7 @@ static Preferences *sharedInstance = nil;
 		}
 	if ((strcmp(disk_filename[2],"Off") != 0) && (strcmp(disk_filename[2],"Empty") != 0)) {
 		[displayedValues setObject:yes forKey:D3FileEnabled];
-		[displayedValues setObject:[NSString stringWithCString:disk_filename[2]] forKey:D3File];
+		[displayedValues setObject:[NSString stringWithCString:disk_filename[2] encoding:NSASCIIStringEncoding] forKey:D3File];
 		}
 	else {
 		[displayedValues setObject:no forKey:D3FileEnabled];
@@ -3601,7 +3605,7 @@ static Preferences *sharedInstance = nil;
 		}
 	if ((strcmp(disk_filename[3],"Off") != 0) && (strcmp(disk_filename[3],"Empty") != 0)) {
 		[displayedValues setObject:yes forKey:D4FileEnabled];
-		[displayedValues setObject:[NSString stringWithCString:disk_filename[3]] forKey:D4File];
+		[displayedValues setObject:[NSString stringWithCString:disk_filename[3] encoding:NSASCIIStringEncoding] forKey:D4File];
 		}
 	else {
 		[displayedValues setObject:no forKey:D4FileEnabled];
@@ -3609,7 +3613,7 @@ static Preferences *sharedInstance = nil;
 		}
 	if ((strcmp(disk_filename[4],"Off") != 0) && (strcmp(disk_filename[4],"Empty") != 0)) {
 		[displayedValues setObject:yes forKey:D5FileEnabled];
-		[displayedValues setObject:[NSString stringWithCString:disk_filename[4]] forKey:D5File];
+		[displayedValues setObject:[NSString stringWithCString:disk_filename[4] encoding:NSASCIIStringEncoding] forKey:D5File];
 		}
 	else {
 		[displayedValues setObject:no forKey:D5FileEnabled];
@@ -3617,7 +3621,7 @@ static Preferences *sharedInstance = nil;
 		}
 	if ((strcmp(disk_filename[5],"Off") != 0) && (strcmp(disk_filename[5],"Empty") != 0)) {
 		[displayedValues setObject:yes forKey:D6FileEnabled];
-		[displayedValues setObject:[NSString stringWithCString:disk_filename[5]] forKey:D6File];
+		[displayedValues setObject:[NSString stringWithCString:disk_filename[5] encoding:NSASCIIStringEncoding] forKey:D6File];
 		}
 	else {
 		[displayedValues setObject:no forKey:D6FileEnabled];
@@ -3625,7 +3629,7 @@ static Preferences *sharedInstance = nil;
 		}
 	if ((strcmp(disk_filename[6],"Off") != 0) && (strcmp(disk_filename[6],"Empty") != 0)) {
 		[displayedValues setObject:yes forKey:D7FileEnabled];
-		[displayedValues setObject:[NSString stringWithCString:disk_filename[6]] forKey:D7File];
+		[displayedValues setObject:[NSString stringWithCString:disk_filename[6] encoding:NSASCIIStringEncoding] forKey:D7File];
 		}
 	else {
 		[displayedValues setObject:no forKey:D7FileEnabled];
@@ -3633,7 +3637,7 @@ static Preferences *sharedInstance = nil;
 		}
 	if ((strcmp(disk_filename[7],"Off") != 0) && (strcmp(disk_filename[7],"Empty") != 0)) {
 		[displayedValues setObject:yes forKey:D8FileEnabled];
-		[displayedValues setObject:[NSString stringWithCString:disk_filename[7]] forKey:D8File];
+		[displayedValues setObject:[NSString stringWithCString:disk_filename[7] encoding:NSASCIIStringEncoding] forKey:D8File];
 		}
 	else {
 		[displayedValues setObject:no forKey:D8FileEnabled];
@@ -3641,7 +3645,7 @@ static Preferences *sharedInstance = nil;
 		}
 	if ((strcmp(cassette_filename, "None") != 0) && (strlen(cassette_filename) != 0)) {
 		[displayedValues setObject:yes forKey:CassFileEnabled];
-		[displayedValues setObject:[NSString stringWithCString:cassette_filename] forKey:CassFile];
+		[displayedValues setObject:[NSString stringWithCString:cassette_filename encoding:NSASCIIStringEncoding] forKey:CassFile];
 		}
 	else {
 		[displayedValues setObject:no forKey:CassFileEnabled];
@@ -3649,7 +3653,7 @@ static Preferences *sharedInstance = nil;
 		}
 	if (strlen(cart_filename) != 0) {
 		[displayedValues setObject:yes forKey:CartFileEnabled];
-		[displayedValues setObject:[NSString stringWithCString:cart_filename] forKey:CartFile];
+		[displayedValues setObject:[NSString stringWithCString:cart_filename encoding:NSASCIIStringEncoding] forKey:CartFile];
 		}
 	else {
 		[displayedValues setObject:no forKey:CartFileEnabled];
@@ -3657,7 +3661,7 @@ static Preferences *sharedInstance = nil;
 		}
 	if (strlen(cart2_filename) != 0) {
 		[displayedValues setObject:yes forKey:Cart2FileEnabled];
-		[displayedValues setObject:[NSString stringWithCString:cart2_filename] forKey:Cart2File];
+		[displayedValues setObject:[NSString stringWithCString:cart2_filename encoding:NSASCIIStringEncoding] forKey:Cart2File];
 		}
 	else {
 		[displayedValues setObject:no forKey:Cart2FileEnabled];
@@ -4091,7 +4095,9 @@ static Preferences *sharedInstance = nil;
         [gamepadNumHatsField setStringValue:@"0"];
         }
     else {
-        [gamepadNameField setStringValue:[NSString stringWithCString:SDL_JoystickName(SDL_JoystickIndex(joystick))]];
+        [gamepadNameField setStringValue:[NSString stringWithCString:SDL_JoystickName(joystick)
+                                          
+                                                            encoding:NSASCIIStringEncoding]];
         [gamepadNumButtonsField setIntValue:numButtons];
         [gamepadNumSticksField setIntValue:numSticks];
         [gamepadNumHatsField setIntValue:numHats];
@@ -4110,6 +4116,7 @@ static Preferences *sharedInstance = nil;
 - (void)identifyTest:(id)sender {
     int numButtons;
     SDL_Joystick *joystick;
+    SDL_Event event;
     int i;
     int state;
 
@@ -4129,7 +4136,6 @@ static Preferences *sharedInstance = nil;
         joystick = joystick3;
         numButtons = joystick3_nbuttons;
         }
-
 
     SDL_JoystickUpdate();
     for (i=0;i<numButtons;i++) {
@@ -4493,7 +4499,7 @@ static Preferences *sharedInstance = nil;
 		
 	[modems removeAllObjects];
 	for (i=0;i<modemCount;i++) {
-		[modems addObject:[NSString stringWithCString:modemNames[i]]];
+		[modems addObject:[NSString stringWithCString:modemNames[i] encoding:NSASCIIStringEncoding]];
 	}
 }
 	
@@ -4556,7 +4562,6 @@ static Preferences *sharedInstance = nil;
     getIntDefault(ColorShift);
     getBoolDefault(AdjustPalette);
     getBoolDefault(ShowFPS);
-    getBoolDefault(BrushedSteel);
     getBoolDefault(LedStatus);
     getBoolDefault(LedSector);
     getBoolDefault(LedStatusMedia);
@@ -4821,7 +4826,6 @@ static Preferences *sharedInstance = nil;
     setIntDefault(ColorShift);
     setBoolDefault(AdjustPalette);
     setBoolDefault(ShowFPS);
-    setBoolDefault(BrushedSteel);
     setBoolDefault(LedStatus);
     setBoolDefault(LedSector);
     setBoolDefault(LedStatusMedia);
@@ -5067,7 +5071,6 @@ static Preferences *sharedInstance = nil;
     setConfig(ColorShift);
     setConfig(AdjustPalette);
     setConfig(ShowFPS);
-    setConfig(BrushedSteel);
     setConfig(LedStatus);
     setConfig(LedSector);
     setConfig(LedStatusMedia);
@@ -5272,7 +5275,7 @@ static Preferences *sharedInstance = nil;
 		[xmlData writeToFile:filename atomically:YES];
 	}
 	else {
-		NSLog(error);
+		NSLog(@"%@",error);
 		[error release];
 	}
 }
@@ -5280,7 +5283,13 @@ static Preferences *sharedInstance = nil;
 - (void)saveConfiguration:(id)sender {
 	NSString *filename;
 	
-	filename = [self saveFileInDirectory:[NSString stringWithCString:atari_config_dir]:@"a8c"];
+    if (FULLSCREEN) {
+        UI_alt_function = UI_MENU_SAVECFG;
+        requestFullScreenUI = 1;
+        return;
+    }
+    
+	filename = [self saveFileInDirectory:[NSString stringWithCString:atari_config_dir  encoding:NSASCIIStringEncoding]:@"a8c"];
 	if (filename != nil)
 		[self saveConfigurationData:filename];
     [[KeyMapper sharedInstance] releaseCmdKeys:@"s"];
@@ -5297,7 +5306,7 @@ static Preferences *sharedInstance = nil;
 	/* Transfer the changed prefs values back from emulator */
 	savePrefs();
 	[self commitDisplayedValues];
-	[self saveConfigurationData:[NSString stringWithCString:filename]];
+	[self saveConfigurationData:[NSString stringWithCString:filename encoding:NSASCIIStringEncoding]];
 }
 
 #define getConfig(name) \
@@ -5307,12 +5316,18 @@ static Preferences *sharedInstance = nil;
 - (int)loadConfiguration:(id)sender {
     NSString *filename;
 	NSOpenPanel *openPanel;
-	
+
+    if (FULLSCREEN) {
+        UI_alt_function = UI_MENU_LOADCFG;
+        requestFullScreenUI = 1;
+        return 0;
+    }
+
 	openPanel = [NSOpenPanel openPanel];
 	[openPanel setCanChooseDirectories:NO];
 	[openPanel setCanChooseFiles:YES];
 			
-	if ([openPanel runModalForDirectory:[NSString stringWithCString:atari_config_dir] file:nil 
+	if ([openPanel runModalForDirectory:[NSString stringWithCString:atari_config_dir encoding:NSASCIIStringEncoding] file:nil 
 								  types:[NSArray arrayWithObjects:@"a8c",@"A8C",nil]] != NSOKButton) { 
 		[[KeyMapper sharedInstance] releaseCmdKeys:@"l"];
         return 0;
@@ -5347,7 +5362,7 @@ static Preferences *sharedInstance = nil;
 	[self commitDisplayedValues];
 	
 	/* Load the config file */
-	[self loadConfigFile:[NSString stringWithCString:filename]];
+	[self loadConfigFile:[NSString stringWithCString:filename encoding:NSASCIIStringEncoding]];
 	
 	/* Transfer the prefs back to the emulator */
     [self transferValuesToEmulator];
@@ -5373,7 +5388,7 @@ static Preferences *sharedInstance = nil;
 										 format:&format
 										 errorDescription:&error];
 	if(!configDict){
-		NSLog(error);
+		NSLog(@"%@",error);
 		[error release];
 		return;
 	}
@@ -5408,7 +5423,6 @@ static Preferences *sharedInstance = nil;
     getConfig(ColorShift);
     getConfig(AdjustPalette);
     getConfig(ShowFPS);
-    getConfig(BrushedSteel);
     getConfig(LedStatus);
     getConfig(LedSector);
     getConfig(LedStatusMedia);
