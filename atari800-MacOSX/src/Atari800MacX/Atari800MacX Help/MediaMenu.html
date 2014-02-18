@@ -1,0 +1,793 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+
+
+
+
+
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <title>Media Menu</title>
+  <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+</head>
+
+
+<body>
+
+
+
+
+
+
+<table border="0" cellpadding="2" cellspacing="2" width="100%">
+
+
+
+
+
+
+  <tbody>
+
+
+
+
+
+
+    <tr>
+
+
+
+
+
+
+      <td valign="top" width="20%"><img src="fuji.gif" alt="" height="90" width="123"> <br>
+
+
+
+
+
+
+      </td>
+
+
+
+
+
+
+      <td valign="top"><b><font size="+3">Atari800MacX Help<br>
+
+
+
+
+
+
+Menus<br>
+
+
+
+
+
+
+Media Menu<br>
+
+
+
+
+
+
+      </font></b><br>
+
+
+
+
+
+
+      </td>
+
+
+
+
+
+
+    </tr>
+
+
+
+
+
+
+  
+  
+  
+  
+  
+  
+  </tbody>
+</table>
+
+
+
+
+
+
+<br>
+
+
+
+
+
+
+<img src="MediaMenu.jpg" title="" alt="" style="width: 255px; height: 380px;"><br>
+
+
+
+
+
+
+<br>
+
+
+
+
+
+
+<br>
+
+
+
+
+
+
+The Media menu on the Atari800MacX emulator allows you to insert and
+remove digital media into the emulator, the same way you would on a
+real Atari. &nbsp;It
+has the following menu selections:<br>
+
+
+
+
+
+
+<br>
+
+
+
+
+
+
+<b><u>Drive Management (cmd-D)</u><br>
+
+
+
+
+
+
+</b>
+<blockquote>This menu item supplies access to a full Disk Drive
+Management window which allows you to insert and remove disks in all 8
+disk drives, as
+well as manage the status of the emulated drives. &nbsp;Details on it's
+operation
+can be found <a href="DriveManagement.html">here</a>. <br>
+
+
+
+
+
+
+</blockquote>
+
+
+
+
+
+
+<b><u>Insert Floppy (cmd-1 through cmd-8)</u><br>
+
+
+
+
+
+
+</b>
+<blockquote>This sub-menu allows you to insert an image file into any
+of the
+8 emulated disk drives. &nbsp;A .atr, .dcm, or .xfd file may also be
+loaded
+into the emulator by double-clicking it in the finder, or dragging it
+to
+the Atari800MacX Icon.<br>
+
+
+
+
+
+
+</blockquote>
+
+
+
+
+
+
+<b><u>Remove Floppy (ctrl-cmd-1 through ctrl-cmd-8, and ctrl-cmd-0)</u><br>
+
+
+
+
+
+
+</b>
+<blockquote>This sub-menu allows you to remove a image file from one of
+the emulated disk drives, or you may empty all of the drives at once.<br>
+
+
+
+
+
+
+</blockquote>
+
+
+
+
+
+
+<b><u>Rotate Floppies<br>
+
+
+
+
+
+
+</u></b>
+<blockquote>This menu item rotates the current inserted floppies among
+the drives.&nbsp; This may be useful for playing multiple disk games.<br>
+
+
+
+</blockquote>
+
+
+
+<u><b>New Floppy Image<br>
+
+
+
+
+
+</b></u>
+<blockquote>This item will display a new window which you may use to
+create a new disk image. &nbsp;This new image will be saved in .atr
+format.<br>
+
+
+
+
+
+  <br>
+
+
+
+
+
+In the Create Disk Image window,&nbsp; you may choose a format of a
+disk. Note that not all formats are supported by all Atari DOSes. There
+are three standard formats:<br>
+
+
+
+
+
+  
+  
+  
+  
+  
+  <ul>
+
+
+
+    <li>Single density (40 tracks * 18 sectors/track * 128 bytes/sector
+= 90 KB)</li>
+
+
+
+    <li>Medium density (40 tracks * 26 sectors/track * 128 bytes/sector
+= 130 KB)</li>
+
+
+
+    <li>Double density (40 tracks * 18 sectors/track * 256 bytes/sector
+= 180 KB)</li>
+
+
+
+  
+  
+  
+  </ul>
+
+
+
+
+
+You can also select any other format, by clicking Custom and setting
+Number of sectors and Bytes per sector. Please make sure your Atari DOS
+supports this format, otherwise the image will be unusable.<br>
+
+
+
+
+
+  <br>
+
+
+
+
+
+If 256 bytes per sector are selected, you can choose between 128 and
+256 Bytes in boot sectors. Physically, boot sectors (first three
+sectors on
+a disk) are also 256 bytes long, but only 128 are transmitted between
+the
+Atari and a disk drive (upper halves of sectors are not used). There
+are
+disk images with 128 bytes in boot sectors and disk images with 256
+bytes
+in boot sectors. The Atari800 emulator supports both, but other
+emulators
+don't. Except some special cases, we recommend 128 for ATR images.<br>
+
+
+
+
+
+  <br>
+
+
+
+
+
+If the "Insert New Disk image into drive" checkbox is checked, the
+created image will be mounted on the specified drive.<br>
+
+
+
+
+
+</blockquote>
+
+
+
+
+
+
+
+<u><b>New Cassette&nbsp;Image<br>
+
+
+
+
+
+</b></u>
+<blockquote>This item will create a new cassette file in the .cas
+format. &nbsp;You will be prompted for the name of the new file, and
+then it will be created and inserted into the cassette player.<br>
+
+
+
+</blockquote>
+
+
+
+<b><u>Edit an .atr Disk Image<br>
+
+
+
+
+
+
+</u></b>
+<blockquote>This menu item allows you to edit a Atari floppy disk image
+in the .atr format.&nbsp; For more details on the editor, see the help
+page on the <a href="DiskEditor.html">Disk Editor</a>.<br>
+
+
+
+
+
+
+</blockquote>
+
+
+
+
+
+
+<b><u>Sector Edit an .atr Disk Image<br>
+
+
+
+
+
+
+</u></b>
+<blockquote>This menu item allows you to edit a Atari floppy disk image
+in the .atr format.&nbsp; For more details on the editor, see the help
+page on the <a href="SectorEditor.html">Sector Editor</a>.<br>
+
+
+
+
+
+
+</blockquote>
+
+
+
+
+
+
+<b><u>Disk Image Conversions Submenu<br>
+
+
+
+
+
+
+</u></b>
+<blockquote>This menu item allows you to convert between the various
+types of Atari disk image formats.&nbsp; You may convert .atr images to
+.xfd, .dcm, or .scp types.&nbsp; You may also convert .xfd, .dcm, and
+.scp images to .atr.<br>
+
+
+
+
+
+
+</blockquote>
+
+
+
+
+
+
+<b><u>Insert Cartridge (cmd-C) </u><br>
+
+
+
+
+
+
+</b>
+<blockquote>This menu item allows you to insert a cartridge into the
+emulator. &nbsp;If it is a raw ROM dump of the cartridge, you will need
+to select the cartridge type from the displayed dialogue. &nbsp;If it
+is a .car file, then this step will not be necessary. &nbsp;A .car,
+.rom, or .bin file may also
+be loaded into the emulator by double-clicking it in the finder, or
+dragging
+it to the Atari800MacX Icon.<br>
+
+
+
+
+
+
+</blockquote>
+
+
+
+
+
+
+<b><u>Remove Cartridge (shift-cmd-C)</u><br>
+
+
+
+
+
+
+</b>
+<blockquote>This menu item allows you to remove an inserted cartridge
+from the emulator.<br>
+
+
+
+
+
+
+</blockquote>
+
+
+
+
+
+
+<b><u>Insert SDX Piggyback Cartridge </u><br>
+
+
+
+
+
+
+</b>
+<blockquote>This menu item allows you to insert a second cartridge into the
+emulator, if the first cartridge is a SpartaDosX cartridge. &nbsp;If it is a raw ROM dump of the cartridge, you will need
+to select the cartridge type from the displayed dialogue. &nbsp;If it
+is a .car file, then this step will not be necessary.&nbsp;<br>
+
+
+
+
+
+
+</blockquote>
+
+
+
+
+
+
+<b><u>Remove SDX Piggyback Cartridge </u><br>
+</b>
+<blockquote>This menu item allows you to remove an&nbsp;inserted piggyback cartridge
+from the emulator.<br>
+
+
+
+
+
+
+</blockquote>
+
+
+
+
+
+
+<b><u>Create .car From ROM File</u><br>
+
+
+
+
+
+
+</b>
+<blockquote>This menu item allows you to convert a .car Cartridge file
+into
+a raw ROM dump, removing the cartridge type information.<br>
+
+
+
+
+
+
+</blockquote>
+
+
+
+
+
+
+<b><u>Create ROM File from .car</u><br>
+
+
+
+
+
+
+</b>
+<blockquote>This menu item allows you to convert a raw ROM dump of a
+cartridge
+into a .car format file, which contains the cartridge type information,
+which
+will allow you to not have to specify this when you insert the
+cartridge.<br>
+
+
+
+
+
+
+</blockquote>
+
+
+
+
+
+
+<b><u>Insert Cassette</u><br>
+
+
+
+
+
+
+</b>
+<blockquote>This menu items allows &nbsp;you to insert a cassette image
+file
+(.cas) into the emulator. The emulator
+supports reading and writing from/to
+cassette
+images. &nbsp;A .cas file may also be loaded into the emulator by
+double-clicking
+it in the finder, or dragging it to the Atari800MacX Icon. &nbsp;Once
+the cassette is started by holding start during reboot, or by using the
+CLOAD/CSAVE basic call, you must press the space bar to continue
+loading/saving the file.<br>
+
+
+
+
+
+
+</blockquote>
+
+
+
+
+
+
+<b><u>Remove Cassette</u><br>
+
+
+
+
+
+
+</b>
+<blockquote>This menu item allows you to remove an inserted cassette
+from the emulator.</blockquote>
+
+
+
+
+
+
+<b><u>Rewind Cassette</u><br>
+
+
+
+
+
+
+</b>
+<blockquote>This menu item allows you to rewind the cassette inserted
+into
+the emulator, moving the current read pointer back to the first block.<br>
+
+
+
+
+
+
+</blockquote>
+
+
+
+
+
+
+<b><u>Load Executable File</u><br>
+
+
+
+
+
+
+</b>
+<blockquote>This menu item allows you to directly load an Atari
+executable
+file into the emulator, with using a DOS file system. &nbsp;This
+executable
+binary will exist as a file in the Macintosh environment, not on a disk
+image.
+&nbsp;A .XEX file may also be loaded into the emulator by
+double-clicking
+it in the finder, or dragging it to the Atari800MacX Icon.<br>
+
+
+
+
+
+
+</blockquote>
+
+
+
+
+
+
+<b><u>Select Printer</u><br>
+
+
+
+
+
+
+</b>
+<blockquote>This sub-menu item allows you to&nbsp;allows you to chose
+which printer emulation you are using. &nbsp;You may choose the Text
+Printer, Atari 825, Atari 1020, or Epson FX-80.
+&nbsp;The sub-menu also has an option to reset the printer, which is
+equivalent
+to turning the printer off and on. &nbsp;For more info on Printer
+Emulation, see the <a href="PrinterEmulation.html">Printer Emulation</a> help page. &nbsp;For setting the printer options, see the <a href="PrinterTab.html">Printer Tab</a> in Preferences.<br>
+
+
+
+
+
+
+</blockquote>
+
+
+
+
+
+
+<b><u>Preview Printer Output</u><br>
+
+
+
+
+
+
+</b>
+<blockquote>This menu item&nbsp;is used to view
+what the current printer output looks like. &nbsp;It is active for every
+printer emulation except the Text Printer. 
+</blockquote>
+
+
+
+
+
+
+<b><u>Show Media Status Window</u><br>
+
+
+
+
+
+
+</b>
+<blockquote>This menu item allows to display the Media Status Window if
+it has been closed.&nbsp; For more information on this window, see the <a href="MediaStatus.html">Media Status Window</a> help page.<br>
+
+
+
+
+
+
+</blockquote>
+
+
+
+
+
+
+<br>
+
+
+
+
+
+
+</body>
+</html>

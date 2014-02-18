@@ -1,0 +1,1349 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+
+
+  
+                                            
+  
+  
+  
+  <title>File Types</title><meta http-equiv="content-type" content="text/html; charset=ISO-8859-1"></head>
+
+<body>
+
+
+      
+<table border="0" cellpadding="2" cellspacing="2" width="100%">
+
+
+       <tbody>
+
+
+         <tr>
+
+
+           <td valign="top" width="20%"><img src="fuji.gif" alt="" height="90" width="123">
+           <br>
+
+
+           </td>
+
+
+           <td valign="top"><b><font size="+3">Atari800MacX Help<br>
+
+
+           <br>
+
+
+    Supported File Types<br>
+
+
+           </font></b><br>
+
+
+           </td>
+
+
+         </tr>
+
+
+                 
+  
+  </tbody> 
+</table>
+
+
+     <br>
+
+
+     <br>
+
+
+    The Atari800MacX emulator supports the file types listed below. &nbsp;Each
+  of these file types may be double clicked or dragged onto the Atari800MacX
+  icon. &nbsp;If they are double clicked, and the emulator is not running,
+ it will be started. &nbsp;<br>
+
+
+    <br>
+
+
+    If it is a disk image file, it will be loaded into the first disk drive,
+  and the computer reset. &nbsp;Cartridge files will be inserted into the
+Atari.  Cassette images will be placed into the Atari Cassette drive. &nbsp;Executable
+  binary files will be loaded into the Atari and run. &nbsp;Saved State files
+  will restore the Atari to a known state. &nbsp;(Note: If you want to double
+  click a state file to start the emulator, you should have set the required
+  Boot Media in the preferences pane before quitting, and media are not saved
+  in the state file by the Emulator Core at this time.)<br>
+
+
+    <br>
+
+
+    <u><b>Disk Images:</b></u><br>
+
+
+    
+<blockquote>&nbsp;&nbsp;&nbsp; The emulator supports ATR, DCM, and XFD images.
+  &nbsp;The emulator only creates ATR images. &nbsp;Valid extensions are
+.atr,   .ATR, .dcm,.DCM, .xfd, .XFD, .atz, .ATZ, .xfz, .XFZ . (The last four
+are  zipped images).<br>
+
+
+    </blockquote>
+
+
+    <b><u>Cassette Images:</u></b><br>
+
+
+     
+<blockquote>&nbsp;&nbsp;&nbsp; The emulator supports CAS images. &nbsp;The
+  file extension is .cas or .CAS.<br>
+
+
+     </blockquote>
+
+
+    <b><u>State Files:</u></b><br>
+
+
+       
+<blockquote>&nbsp;&nbsp;&nbsp; The emulator supports A8S state files. &nbsp;Note
+  this format is not guaranteed to not change between versions of the Atari
+  800 Emulation core. &nbsp;Therefore, states saved with one version of the
+  emulator may not be loadable in another. &nbsp;The file extension is .a8s
+  or .A8S.<br>
+
+
+     </blockquote>
+
+
+     <b><u>Configuration Files:</u></b><br>
+
+
+       
+<blockquote>&nbsp;&nbsp;&nbsp; The emulator supports configuration
+files, which allow you to set up configurations for any of the
+selectable options in the emulator, and then load that configuration
+with a few clicks. &nbsp;The format of these files is standard Apple
+preferences XML, and more can be learned about the files on the <a href="ConfigurationFiles.html">Configuration Files</a> page.. &nbsp;The file extension is .a8c
+  or .A8C.<br>
+
+
+     </blockquote>
+
+
+     <b><u>Color Palette Files:</u></b><br>
+
+
+       
+<blockquote>&nbsp;&nbsp;&nbsp; The emulator supports ACT color palette files. 
+ACT files are standard palette files of 256 RGB colors. Each color is defined 
+by a byte of Red, followed by a byte of Green, followed by a byte of Blue. 
+An ACT file must be 256*3=768 bytes long. &nbsp;The file extension is .act
+  or .ACT.<br>
+
+
+     </blockquote>
+
+
+     <b><u>Executable Binary Files:</u></b><br>
+
+
+       
+<blockquote>&nbsp;&nbsp;&nbsp; The emulator supports XEX Atari executables
+  state files. &nbsp;This is a standard Atari binary, just renamed on the
+Macintosh  disk to either a .xex or .XEX extension.<br>
+
+
+    </blockquote>
+
+
+    <b><u>Cartridge Images:</u></b><br>
+
+
+      
+<blockquote>&nbsp;&nbsp;&nbsp; The emulator supports both raw ROM dump images
+  (ROM and BIN) and the CART format. &nbsp;The CART format and types are
+explained   below. &nbsp;The valid file extensions are .rom, .ROM, .bin,
+.BIN, .car,  and .CAR.<br>
+
+
+     </blockquote>
+
+
+    
+<blockquote>The advantage of using CART files is that you don't have to select
+  the cartridge type, because it is stored inside the file.<br>
+
+
+      <br>
+
+
+    The CART format has been introduced in Atari800 0.8.0, when there were
+ only  4 supported cartridge types. The format has not changed, only new
+typeshave   been added.<br>
+
+
+      <br>
+
+
+    The format is:<br>
+
+
+    &nbsp;first 4 bytes containing 'C' 'A' 'R' 'T'.<br>
+
+
+    &nbsp;next 4 bytes containing cartridge type in MSB format (see the table
+  below).<br>
+
+
+    &nbsp;next 4 bytes containing cartridge checksum in MSB format (ROM only).<br>
+
+
+    &nbsp;next 4 bytes are currently unused (zero).<br>
+
+
+    &nbsp;followed immediately with the ROM data: 4, 8, 16, 32, 40, 64 or 
+128  kilobytes.<br>
+
+
+      <br>
+
+
+    The recommended file name extension for CART files is CAR.<br>
+
+
+      <br>
+
+
+    Currently supported cartridge types:<br>
+
+
+      <br>
+
+
+      +---+-----------+------+----------------------------------------------------------------+<br>
+| Id &nbsp;|&nbsp; Machine&nbsp; | Size |
+Name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp;
+&nbsp; |<br>
+
+
+    |-----------------------+-------------------------------------------------------------------+<br>
+|&nbsp; 1 &nbsp;| 800/XL/XE |&nbsp;&nbsp;&nbsp; 8 | Standard 8 KB
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;
+|<br>
+|&nbsp; 2 &nbsp;| 800/XL/XE |&nbsp;&nbsp; 16 | Standard 16 KB
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;|<br>
+|&nbsp; 3 &nbsp;| 800/XL/XE |&nbsp;&nbsp; 16 | OSS '034M' 16 KB
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp;|<br>
+|&nbsp; 4 &nbsp;|&nbsp;&nbsp; 5200&nbsp;&nbsp;&nbsp; &nbsp; &nbsp;
+&nbsp;
+|&nbsp;&nbsp; 32 | Standard 32 KB 5200
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp;|<br>
+|&nbsp; 5 &nbsp;| 800/XL/XE |&nbsp;&nbsp; 32 | DB 32 KB
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;|<br>
+|&nbsp; 6 &nbsp;|&nbsp;&nbsp; 5200&nbsp;&nbsp;&nbsp; &nbsp; &nbsp;
+&nbsp;
+|&nbsp;&nbsp; 16 | Two chip 16 KB 5200
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp; &nbsp; &nbsp; |<br>
+
+
+    |&nbsp; 7 &nbsp;|&nbsp;&nbsp; 5200&nbsp;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;
+|&nbsp;&nbsp; 40 | Bounty  Bob Strikes Back 40 KB 5200 cartridge |<br>
+|&nbsp; 8 &nbsp;| 800/XL/XE |&nbsp;&nbsp; 64 | 64 KB Williams
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;|<br>
+|&nbsp; 9&nbsp; | 800/XL/XE |&nbsp;&nbsp; 64 | Express 64 KB
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;|<br>
+| 10 | 800/XL/XE |&nbsp;&nbsp; 64 | Diamond 64 KB
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;|<br>
+| 11 | 800/XL/XE |&nbsp;&nbsp; 64 | SpartaDos X 64 KB
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp;|<br>
+| 12 | 800/XL/XE |&nbsp;&nbsp; 32 | XEGS 32 KB
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |<br>
+| 13 | 800/XL/XE |&nbsp;&nbsp; 64 | XEGS 64 KB
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |<br>
+| 14 | 800/XL/XE |&nbsp; 128 | XEGS 128 KB
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; |<br>
+| 15 | 800/XL/XE |&nbsp;&nbsp; 16 | OSS 'M091' 16 KB
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp; &nbsp; &nbsp; |<br>
+| 16 |&nbsp;&nbsp; 5200&nbsp;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;
+|&nbsp;&nbsp;
+16 | One chip 16 KB 5200
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp; &nbsp; &nbsp;|<br>
+| 17 | 800/XL/XE |&nbsp; 128 | Atrax 128 KB
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |<br>
+
+| 18 | 800/XL/XE |&nbsp;&nbsp; 40 | Bounty Bob Strikes Back 40 KB
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+|<br>
+| 19 |&nbsp;&nbsp; 5200&nbsp;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;
+|&nbsp;&nbsp;&nbsp;
+8 | Standard 8 KB 5200
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp;|<br>
+| 20 |&nbsp;&nbsp; 5200&nbsp;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;
+|&nbsp;&nbsp;&nbsp;
+4 | Standard 4 KB 5200
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp;|<br>
+| 21 |&nbsp;&nbsp;&nbsp; 800&nbsp;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp;|&nbsp;&nbsp;&nbsp;
+8 | Right slot 8 KB
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |<br>
+| 22 | 800/XL/XE |&nbsp;&nbsp; 32 | 32 KB Williams
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |<br>
+| 23 | 800/XL/XE |&nbsp; 256 | XEGS 256 KB
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp;|<br>
+| 24 | 800/XL/XE |&nbsp; 512 | XEGS 512 KB
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp;|<br>
+| 25 | 800/XL/XE | 1024 | XEGS 1 MB
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+|<br>
+| 26 | 800/XL/XE |&nbsp;&nbsp; 16 | MegaCart 16 KB
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; |<br>
+
+| 27 | 800/XL/XE |&nbsp;&nbsp; 32 | MegaCart 32 KB
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+|<br>
+| 28 | 800/XL/XE |&nbsp;&nbsp; 64 | MegaCart 64 KB
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp; |<br>
+
+| 29 | 800/XL/XE |&nbsp; 128 | MegaCart 128 KB
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |<br>
+
+| 30 | 800/XL/XE |&nbsp; 256 | MegaCart 256 KB
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp; |<br>
+
+| 31 | 800/XL/XE |&nbsp; 512 | MegaCart 512 KB
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp; |<br>
+| 32 | 800/XL/XE | 1024 | MegaCart 1 MB
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp; |<br>
+
+
+| 33 | 800/XL/XE |&nbsp;&nbsp; 32 | Switchable XEGS 32 KB cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |<br>
+
+
+| 34 | 800/XL/XE |&nbsp;&nbsp; 64 | Switchable XEGS 64 KB cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |<br>
+
+
+| 35 | 800/XL/XE |&nbsp; 128 | Switchable XEGS 128 KB cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |<br>
+
+
+| 36 | 800/XL/XE |&nbsp; 256 | Switchable XEGS 256 KB cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |<br>
+
+| 37 | 800/XL/XE |&nbsp; 512 | Switchable XEGS 512 KB
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+|<br>
+
+| 38 | 800/XL/XE | 1024 | Switchable XEGS 1 MB
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+|<br>
+| 39 | 800/XL/XE |&nbsp;&nbsp;&nbsp; 8 &nbsp; | Phoenix 8 KB
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;|<br>
+| 40 | 800/XL/XE |&nbsp;&nbsp; 16 &nbsp;| Blizzard 16 KB
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;|<br>
+
+| 41 | 800/XL/XE |&nbsp; 128 | Atarimax 128 KB Flash
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp; |<br>
+| 42 | 800/XL/XE | 1024 | Atarimax 1 MB Flash
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;|<br>
+
++---+---------------+------+----------------------------------------------------------+<br>
+
+
+  <br>
+
+
+    Id is the cartridge type code stored in the CART file.<br>
+
+
+      <br>
+
+
+    Machine indicates if the cartridge is for Atari 8-bit Home Computers
+(400/800   and XL/XE) or the Atari 5200 Game System.<br>
+
+
+      <br>
+
+
+    Size is length of image in kilobytes.<br>
+
+
+      <br>
+
+
+    Below are descriptions of all types. For bank-switched cartridges bank
+ A  stands for the first bank in the image, bank B is the second, etc.<br>
+
+
+      <br>
+
+
+    +---------------------------------------------------------------------------+<br>
+| Type 1: Standard 8 KB
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<br>
+
+
+    +---------------------------------------------------------------------------+<br>
+
+
+      <br>
+
+
+    &nbsp;Standard 8 KB cartridge, that occupies 8 KB of address space between
+  $A000 and $BFFF.<br>
+
+
+      <br>
+
+
+    +---------------------------------------------------------------------------+<br>
+| Type 2: Standard 16 KB
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<br>
+
+
+    +---------------------------------------------------------------------------+<br>
+
+
+      <br>
+
+
+    &nbsp;Standard 16 KB cartridge, that occupies 16 KB of address space
+between   $8000 and $BFFF.<br>
+
+
+      <br>
+
+
+    +---------------------------------------------------------------------------+<br>
+| Type 3: OSS '034M' 16 KB
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<br>
+
+
+    +---------------------------------------------------------------------------+<br>
+
+
+      <br>
+
+
+    &nbsp;There are two types of OSS cartridges. Both are 16 KB and occupy
+ 8  KB of address space between $A000 and $BFFF. The cartridge memory is
+divided   into 4 banks, 4 KB each. One bank ('main') is always mapped to
+$B000-$BFFF.   The other 3 banks are mapped to $A000-$AFFF. The current bank
+is selected   by accessing a byte in $D500-$D5FF. Only 4 lowest bits of address
+are significant.<br>
+
+
+      <br>
+
+
+    &nbsp;The '034M' scheme is the more complicated one.<br>
+
+
+    &nbsp;The main bank is D. An access to:<br>
+
+
+    &nbsp;$D5x0 or $D5x1 selects bank A.<br>
+
+
+    &nbsp;$D5x3 or $D5x7 selects bank B.<br>
+
+
+    &nbsp;$D5x4 or $D5x5 selects bank C.<br>
+
+
+    &nbsp;$D5x2 or $D5x6 is not useful. It disables ROM (there're $FF bytes 
+ in $A000-$AFFF).<br>
+
+
+    &nbsp;$D5x8-$D5xF disables whole cartridge (enables computer's memory 
+in  address space between $A000 and $BFFF).<br>
+
+
+      <br>
+
+
+    +---------------------------------------------------------------------------+<br>
+| Type 4: Standard 32 KB 5200
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<br>
+
+
+    +---------------------------------------------------------------------------+<br>
+
+
+      <br>
+
+
+    &nbsp;Standard 32 KB cartridge for Atari 5200, that occupies 32 KB of 
+address  space between $4000 and $BFFF.<br>
+
+
+      <br>
+
+
+    +---------------------------------------------------------------------------+<br>
+| Type 5: DB 32 KB
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<br>
+
+
+    +---------------------------------------------------------------------------+<br>
+
+
+      <br>
+
+
+    &nbsp;A 32 KB bank-switched cartridge. There are 4 banks. Bank D is mapped
+  to $A000-$BFFF. Bank in $8000-$9FFF is selected by an access to $D500-$D5FF.
+  Two lowest bits of address select bank A, B, C or D.<br>
+
+
+      <br>
+
+
+    +---------------------------------------------------------------------------+<br>
+| Type 6: Two chip 16 KB 5200
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<br>
+
+
+    +---------------------------------------------------------------------------+<br>
+
+
+      <br>
+
+
+    &nbsp;In Atari 5200 there's 32 KB of address space reserved for the cartridge
+  ($4000-$BFFF). A two chip 16 KB cartridge is mapped that way:<br>
+
+
+    &nbsp;- First 8 KB are mapped into lower 16 KB. Since an address line 
+is  not&nbsp; connected, $4000-$5FFF and $6000-$7FFF contain same data, which
+  is first half of the cartridge image.<br>
+
+
+    &nbsp;- Similarly, second 8 KB are mapped into upper 16 KB.<br>
+
+
+      <br>
+
+
+    +---------------------------------------------------------------------------+<br>
+| Type 7: Bounty Bob Strikes Back 40 KB 5200
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<br>
+
+
+    +---------------------------------------------------------------------------+<br>
+
+
+      <br>
+
+
+    &nbsp;The cartridge with "Bounty Bob Strikes Back" game uses very strange<br>
+
+
+    &nbsp;bank switching method:<br>
+
+
+    &nbsp;- Four 4 KB banks (A,B,C,D) are mapped into $4000-$4FFF. An access
+  to $4FF6&nbsp; selects bank A, $4FF7 - bank B, $4FF8 - bank C, $4FF9 -
+bank   D.<br>
+
+
+    &nbsp;- Four 4 KB banks (E,F,G,H) are mapped into $5000-$5FFF. An access
+  to $5FF6&nbsp; selects bank E, $5FF7 - bank F, $5FF8 - bank G, $5FF9 -
+bank   H.<br>
+
+
+    &nbsp;- The remaining 8 KB is mapped to upper 16 KB of cartridge address
+  space in Atari 5200. That is, $8000-$9FFF and $A000-$BFFF contain same
+data.<br>
+
+
+      <br>
+
+
+    +---------------------------------------------------------------------------+<br>
+| Type 8: 64 KB Williams
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<br>
+
+
+    +---------------------------------------------------------------------------+<br>
+
+
+      <br>
+
+
+    &nbsp;The cartridge has 8 banks mapped to $A000-$BFFF. An access to $D500 
+ selects bank A, $D501 - bank B, etc. An access to $D508-$D50F disables the 
+ cartridge.<br>
+
+
+      <br>
+
+
+    +---------------------------------------------------------------------------+<br>
+| Type 9: Express 64 KB
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<br>
+
+
+    +---------------------------------------------------------------------------+<br>
+
+
+      <br>
+
+
+    &nbsp;The cartridge has 8 banks mapped to $A000-$BFFF. An access to $D577 
+ selects bank A, $D576 - bank B, etc. An access to $D578-$D57F disables the 
+ cartridge.<br>
+
+
+      <br>
+
+
+    +---------------------------------------------------------------------------+<br>
+| Type 10: Diamond 64 KB
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<br>
+
+
+    +---------------------------------------------------------------------------+<br>
+
+
+      <br>
+
+
+    &nbsp;The cartidge has 8 banks mapped to $A000-$BFFF. An access to $D5D7 
+ selects bank A, $D5D6 - bank B, etc. An access to $D5D8-$D5DF disables the 
+ cartridge.<br>
+
+
+      <br>
+
+
+    +---------------------------------------------------------------------------+<br>
+| Type 11: SpartaDOS X 64 KB
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<br>
+
+
+    +---------------------------------------------------------------------------+<br>
+
+
+      <br>
+
+
+    &nbsp;The cartidge has 8 banks mapped to $A000-$BFFF. An access to $D5E7 
+ selects bank A, $D5E6 - bank B, etc. An access to $D5E8-$D5EF disables the 
+ cartridge.<br>
+
+
+      <br>
+
+
+    +---------------------------------------------------------------------------+<br>
+| Type 12: XEGS 32 KB
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<br>
+
+
+    +---------------------------------------------------------------------------+<br>
+
+
+      <br>
+
+
+    &nbsp;This bank-switched cartridge occupies 16 KB of address space between
+  $8000 and $BFFF. The cartridge memory is divided into 4 banks, 8 KB each.
+  Bank D (the last one) is always mapped to $A000-BFFF. Two lowest bits of
+ a byte written to $D500-$D5FF select the bank mapped to $8000-$BFFF.<br>
+
+
+      <br>
+
+
+    +---------------------------------------------------------------------------+<br>
+| Type 13: XEGS 64 KB
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<br>
+
+
+    +---------------------------------------------------------------------------+<br>
+
+
+      <br>
+
+
+    &nbsp;This bank-switched cartridge occupies 16 KB of address space between
+  $8000 and $BFFF. The cartridge memory is divided into 8 banks, 8 KB each.
+  Bank H (the last one) is always mapped to $A000-BFFF. Three lowest bits
+of  a byte written to $D500-$D5FF select the bank mapped to $8000-$BFFF.<br>
+
+
+      <br>
+
+
+    +---------------------------------------------------------------------------+<br>
+| Type 14: XEGS 128 KB
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<br>
+
+
+    +---------------------------------------------------------------------------+<br>
+
+
+      <br>
+
+
+    &nbsp;This bank-switched cartridge occupies 16 KB of address space between
+  $8000 and $BFFF. The cartridge memory is divided into 16 banks, 8 KB each.
+  Bank P (the last one) is always mapped to $A000-BFFF. Four lowest bits
+of   a byte written to $D500-$D5FF select the bank mapped to $8000-$BFFF.<br>
+
+
+      <br>
+
+
+    +---------------------------------------------------------------------------+<br>
+| Type 15: OSS 'M091' 16 KB
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<br>
+
+
+    +---------------------------------------------------------------------------+<br>
+
+
+      <br>
+
+
+    &nbsp;This is the simpler one of OSS schemes. It uses only A0 and A3
+address   lines:<br>
+
+
+    &nbsp;A3=0, A0=0 - $A000-$AFFF: bank B, $B000-$BFFF: bank A<br>
+
+
+    &nbsp;A3=0, A0=1 - $A000-$AFFF: bank D, $B000-$BFFF: bank A<br>
+
+
+    &nbsp;A3=1, A0=0 - disable cartridge<br>
+
+
+    &nbsp;A3=1, A0=1 - $A000-$AFFF: bank C, $B000-$BFFF: bank A<br>
+
+
+      <br>
+
+
+    +---------------------------------------------------------------------------+<br>
+| Type 16: One chip 16 KB 5200
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<br>
+
+
+    +---------------------------------------------------------------------------+<br>
+
+
+      <br>
+
+
+    &nbsp;16 KB cartridge for Atari 5200, that occupies 16 KB of address
+space   between $8000 and $BFFF.<br>
+
+
+      <br>
+
+
+    +---------------------------------------------------------------------------+<br>
+| Type 17: Atrax 128 KB
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<br>
+
+
+    +---------------------------------------------------------------------------+<br>
+
+
+      <br>
+
+
+    &nbsp;This bank-switched cartridge occupies 8 KB of address space between
+  $A000 and $BFFF. The cartridge memory is divided into 16 banks, 8 KB each.
+  If a byte written to $D500-$D5FF has highest bit set, the cartridge is
+disabled.   Otherwise four lowest bits select the bank mapped to $A000-$BFFF.<br>
+
+
+      <br>
+
+
+    +---------------------------------------------------------------------------+<br>
+| Type 18: Bounty Bob Strikes Back 40 KB
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<br>
+
+
+    +---------------------------------------------------------------------------+<br>
+
+
+      <br>
+
+
+    &nbsp;The cartridge with "Bounty Bob Strikes Back" game uses very strange
+  bank switching method:<br>
+
+
+    &nbsp;- Four 4 KB banks (A,B,C,D) are mapped into $8000-$8FFF. An access
+  to $8FF6&nbsp; selects bank A, $8FF7 - bank B, $8FF8 - bank C, $8FF9 -
+bank   D.<br>
+
+
+    &nbsp;- Four 4 KB banks (E,F,G,H) are mapped into $9000-$9FFF. An access
+  to $9FF6&nbsp; selects bank E, $9FF7 - bank F, $9FF8 - bank G, $9FF9 -
+bank   H.<br>
+
+
+    &nbsp;- The remaining 8 KB is mapped to $A000-$BFFF.<br>
+
+
+      <br>
+
+
+    +---------------------------------------------------------------------------+<br>
+| Type 19: Standard 8 KB 5200
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<br>
+
+
+    +---------------------------------------------------------------------------+<br>
+
+
+      <br>
+
+
+    &nbsp;Standard 8 KB cartridge for Atari 5200, mapped into $8000-$9FFF 
+and  $A000-$BFFF.<br>
+
+
+      <br>
+
+
+    +---------------------------------------------------------------------------+<br>
+| Type 20: Standard 4 KB 5200
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<br>
+
+
+    +---------------------------------------------------------------------------+<br>
+
+
+      <br>
+
+
+    &nbsp;Standard 4 KB cartridge for Atari 5200, mapped into $8000-$8FFF,
+ $9000-$9FFF,  $A000-$AFFF and $B000-$BFFF.<br>
+
+
+      <br>
+
+
+    +---------------------------------------------------------------------------+<br>
+| Type 21: Right slot 8 KB
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<br>
+
+
+    +---------------------------------------------------------------------------+<br>
+
+
+      <br>
+
+
+    &nbsp;8 KB cartridge for Atari 800, mapped into $8000-$9FFF. Atari 800
+ was  the only 8-bit Atari with a Right Cartridge slot, in addition to the
+ Left  Cartridge slot as present on all 8-bit Ataris.<br>
+
+
+      <br>
+
+
+    +---------------------------------------------------------------------------+<br>
+| Type 22: 32 KB Williams
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<br>
+
+
+    +---------------------------------------------------------------------------+<br>
+
+
+      <br>
+
+
+    &nbsp;The cartidge has 4 banks mapped to $A000-$BFFF. An access to $D500 
+ selects bank A, $D501 - bank B, etc. An access to $D508-$D50F disables the 
+ cartridge.<br>
+
+
+      <br>
+
+
+    +---------------------------------------------------------------------------+<br>
+| Type 23: XEGS 256 KB
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<br>
+
+
+    +---------------------------------------------------------------------------+<br>
+
+
+      <br>
+
+
+    &nbsp;This bank-switched cartridge occupies 16 KB of address space between
+  $8000 and $BFFF. The cartridge memory is divided into 32 banks, 8 KB each.
+  The last bank is always mapped to $A000-BFFF. Five lowest bits of a byte
+ written to $D500-$D5FF select the bank mapped to $8000-$BFFF.<br>
+
+
+      <br>
+
+
+    +---------------------------------------------------------------------------+<br>
+| Type 24: XEGS 512 KB
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<br>
+
+
+    +---------------------------------------------------------------------------+<br>
+
+
+      <br>
+
+
+    &nbsp;This bank-switched cartridge occupies 16 KB of address space between
+  $8000 and $BFFF. The cartridge memory is divided into 64 banks, 8 KB each.
+  The last bank is always mapped to $A000-BFFF. Six lowest bits of a byte
+written  to $D500-$D5FF select the bank mapped to $8000-$BFFF.<br>
+
+
+      <br>
+
+
+      +---------------------------------------------------------------------------+<br>
+| Type 25: XEGS 1 MB
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+|<br>
+
+
++---------------------------------------------------------------------------+<br>
+
+
+  <br>
+
+
+&nbsp;This bank-switched cartridge occupies 16 KB of address space between
+$8000 and $BFFF. The cartridge memory is divided into 128 banks, 8 KB each.
+The last bank is always mapped to $A000-BFFF. Seven lowest bits of<br>
+
+
+&nbsp;a byte written to $D500-$D5FF select the bank mapped to $8000-$BFFF.<br>
+
+
+  <br>
+
+
++---------------------------------------------------------------------------+<br>
+| Type 26: MegaCart 16 KB
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+|<br>
+
+
++---------------------------------------------------------------------------+<br>
+
+
+  <br>
+
+
+&nbsp;A 16 KB cartridge, that occupies 16 KB of address space between $8000
+and $BFFF, and can be disabled by writing a byte with bit 7 set to $D500-$D5FF.<br>
+
+
+  <br>
+
+
++---------------------------------------------------------------------------+<br>
+| Type 27: MegaCart 32 KB
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+|<br>
+
+
++---------------------------------------------------------------------------+<br>
+
+
+  <br>
+
+
+&nbsp;A bank-switched cartridge that occupies 16 KB of address space between
+$8000 and $BFFF. It is controlled by a byte written to $D500-$D5FF. Bit 0
+selects one of two available banks, bit 7 disables the cartridge.<br>
+
+
+  <br>
+
+
++---------------------------------------------------------------------------+<br>
+| Type 28: MegaCart 64 KB
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+|<br>
+
+
++---------------------------------------------------------------------------+<br>
+
+
+  <br>
+
+
+&nbsp;A bank-switched cartridge that occupies 16 KB of address space between
+$8000 and $BFFF. It is controlled by a byte written to $D500-$D5FF. Bits
+0 and 1 select one of four available banks, bit 7 disables the cartridge.<br>
+
+
+  <br>
+
+
++---------------------------------------------------------------------------+<br>
+| Type 29: MegaCart 128 KB
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+|<br>
+
+
++---------------------------------------------------------------------------+<br>
+
+
+  <br>
+
+
+&nbsp;A bank-switched cartridge that occupies 16 KB of address space between
+$8000 and $BFFF. It is controlled by a byte written to $D500-$D5FF. Bits
+0,1,2 select one of 8 available banks, bit 7 disables the cartridge.<br>
+
+
+  <br>
+
+
++---------------------------------------------------------------------------+<br>
+| Type 30: MegaCart 256 KB
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+|<br>
+
+
++---------------------------------------------------------------------------+<br>
+
+
+  <br>
+
+
+&nbsp;A bank-switched cartridge that occupies 16 KB of address space between
+$8000 and $BFFF. It is controlled by a byte written to $D500-$D5FF. Four
+lowest bits select one of 16 available banks, bit 7 disables the cartridge.<br>
+
+
+  <br>
+
+
++---------------------------------------------------------------------------+<br>
+| Type 31: MegaCart 512 KB
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+|<br>
+
+
++---------------------------------------------------------------------------+<br>
+
+
+  <br>
+
+
+&nbsp;A bank-switched cartridge that occupies 16 KB of address space between
+$8000 and $BFFF. It is controlled by a byte written to $D500-$D5FF. Five
+lowest bits select one of 32 available banks, bit 7 disables the cartridge.<br>
+
+
+  <br>
+
+
++---------------------------------------------------------------------------+<br>
+| Type 32: MegaCart 1 MB
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+|<br>
+
+
++---------------------------------------------------------------------------+<br>
+
+
+  <br>
+
+
+&nbsp;A bank-switched cartridge that occupies 16 KB of address space between
+$8000 and $BFFF. It is controlled by a byte written to $D500-$D5FF. Six lowest
+bits select one of 64 available banks, bit 7 disables the cartridge.<br>
+
+
+  <br>
+
+
++---------------------------------------------------------------------------+<br>
+| Type 33: Switchable XEGS 32 KB
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+|<br>
+
+
++---------------------------------------------------------------------------+<br>
+
+
+  <br>
+
+
+&nbsp;This bank-switched cartridge occupies 16 KB of address space between
+$8000 and $BFFF. The cartridge memory is divided into 4 banks, 8 KB each.
+Bank D (the last one) is always mapped to $A000-BFFF. Two lowest bits of<br>
+
+
+&nbsp;a byte written to $D500-$D5FF select the bank mapped to $8000-$BFFF,
+bit 7 disables the cartridge.<br>
+
+
+  <br>
+
+
++---------------------------------------------------------------------------+<br>
+| Type 34: Switchable XEGS 64 KB
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+|<br>
+
+
++---------------------------------------------------------------------------+<br>
+
+
+  <br>
+
+
+&nbsp;This bank-switched cartridge occupies 16 KB of address space between
+$8000 and $BFFF. The cartridge memory is divided into 8 banks, 8 KB each.
+Bank H (the last one) is always mapped to $A000-BFFF. Three lowest bits of
+a byte written to $D500-$D5FF select the bank mapped to $8000-$BFFF, bit
+7 disables the cartridge.<br>
+
+
+  <br>
+
+
++---------------------------------------------------------------------------+<br>
+| Type 35: Switchable XEGS 128 KB
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+|<br>
+
+
++---------------------------------------------------------------------------+<br>
+
+
+  <br>
+
+
+&nbsp;This bank-switched cartridge occupies 16 KB of address space between
+$8000 and $BFFF. The cartridge memory is divided into 16 banks, 8 KB each.
+Bank P (the last one) is always mapped to $A000-BFFF. Four lowest bits of
+a byte written to $D500-$D5FF select the bank mapped to $8000-$BFFF, bit
+7 disables the cartridge.<br>
+
+
+  <br>
+
+
++---------------------------------------------------------------------------+<br>
+| Type 36: Switchable XEGS 256 KB
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+|<br>
+
+
++---------------------------------------------------------------------------+<br>
+
+
+  <br>
+
+
+&nbsp;This bank-switched cartridge occupies 16 KB of address space between
+$8000 and $BFFF. The cartridge memory is divided into 32 banks, 8 KB each.
+The last bank is always mapped to $A000-BFFF. Five lowest bits of a byte
+written to $D500-$D5FF select the bank mapped to $8000-$BFFF, bit 7 disables
+the cartridge.<br>
+
+
+  <br>
+
+
++---------------------------------------------------------------------------+<br>
+| Type 37: Switchable XEGS 512 KB
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+|<br>
+
+
++---------------------------------------------------------------------------+<br>
+
+
+  <br>
+
+
+&nbsp;This bank-switched cartridge occupies 16 KB of address space between
+$8000 and $BFFF. The cartridge memory is divided into 64 banks, 8 KB each.
+The last bank is always mapped to $A000-BFFF. Six lowest bits of a byte written
+to $D500-$D5FF select the bank mapped to $8000-$BFFF, bit 7 disables the
+cartridge.<br>
+
+
+  <br>
+
++---------------------------------------------------------------------------+<br>
+| Type 38: Switchable XEGS 1 MB
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+|<br>
+
++---------------------------------------------------------------------------+<br>
+
+  <br>
+
+&nbsp;This bank-switched cartridge occupies 16 KB of address space
+between $8000&nbsp;and $BFFF. The cartridge memory is divided into 128
+banks, 8 KB each.&nbsp;The last bank is always mapped to $A000-$BFFF.
+Seven lowest bits of&nbsp;a byte written to $D500-$D5FF select the bank
+mapped to $8000-$BFFF,&nbsp; bit 7 disables the cartridge.<br>
+
+  <br>
+
++---------------------------------------------------------------------------+<br>
+| Type 39: Phoenix 8 KB
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+|<br>
+
++---------------------------------------------------------------------------+<br>
+
+  <br>
+
+&nbsp;An 8 KB cartridge, that occupies 8 KB of address space between
+$A000&nbsp;and $BFFF, and can be disabled by an access to $D500-$D5FF.<br>
+
+  <br>
+
++---------------------------------------------------------------------------+<br>
+| Type 40: Blizzard 16 KB
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+|<br>
+
++---------------------------------------------------------------------------+<br>
+
+  <br>
+
+&nbsp;A 16 KB cartridge, that occupies 16 KB of address space between
+$8000&nbsp;and $BFFF, and can be disabled by an access to $D500-$D5FF.<br>
+
+  <br>
+
++---------------------------------------------------------------------------+<br>
+| Type 41: Atarimax 128 KB Flash
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+|<br>
+
++---------------------------------------------------------------------------+<br>
+
+  <br>
+
+&nbsp;This bank-switched cartridge occupies 8 KB of address space
+between $A000&nbsp;and $BFFF. The cartridge memory is divided into 16
+banks, 8 KB each.&nbsp;The 4 lowest bits of the address written to
+$D500-$D50F select the bank&nbsp;mapped to $A000-$BFFF. Writing to
+$D510-$D51F disables the cartridge&nbsp;and any write to $D520-$D5FF is
+ignored.<br>
+
+  <br>
+
++---------------------------------------------------------------------------+<br>
+| Type 42: Atarimax 1 MB Flash
+cartridge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<br>
+
++---------------------------------------------------------------------------+<br>
+
+  <br>
+
+&nbsp;This bank-switched cartridge occupies 8 KB of address space
+between $A000&nbsp;and $BFFF. The cartridge memory is divided into 128
+banks, 8 KB each.&nbsp;The seven lowest bits of the address written to
+$D500-$D57F select the bank&nbsp;mapped to $A000-$BFFF, bit 7 disables
+the cartridge.<br>
+
+  <br>
+
+
+    </blockquote>
+
+
+    <br>
+
+
+   <br>
+
+
+  <br>
+
+
+ <br>
+
+
+</body></html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>Sector Editor</title>
+
+
+  <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+
+</head>
+
+
+<body>
+
+<table border="0" cellpadding="2" cellspacing="2" width="100%">
+
+  <tbody>
+
+    <tr>
+
+      <td valign="top" width="20%"><img src="fuji.gif" alt="" height="90" width="123">
+      <br>
+
+      </td>
+
+      <td valign="top"><b><font size="+3">Atari800MacX
+Help<br>
+
+Sector Editor<br>
+
+      </font></b><br>
+
+      </td>
+
+    </tr>
+
+  </tbody>
+</table>
+
+<br>
+
+<br>
+The Sector Editor on the Atari800MacX emulator allows you to edit a
+ATR disk image at the byte level, sector by sector. &nbsp;You may
+only open one sector editor at a time, and it runs modally when you do.
+&nbsp;You may not open a ATR image in the sector editor that is
+already open by the Disk Image editor. &nbsp;You can open an image
+that is mounted in the emulator drive, but be
+very careful if you do, as the two processes may corrupt the image.
+&nbsp;The emualtor should not be accessing the image when you
+change it. &nbsp;The sector editor will handle both single and double
+density images, displaying the proper number of bytes per sector for
+each (128 or 256). &nbsp;Note even a double density desk only has 128
+bytes per sector for the first 3 sectors, the boot sectors.<br>
+
+<br>
+
+<img src="SectorEditor.jpg" alt="Sector Editor Window" style="width: 725px; height: 420px;"><br>
+
+<br>
+
+The Sector Editor has the following elements:<br>
+<br>
+
+<b><u>Byte Editing Table<br>
+
+</u></b><br>
+
+<div style="margin-left: 40px;">This table allows you to edit each hex
+byte in the sector that is displayed. &nbsp;The row and column numbers
+are displayed in bold, and the editable bytes in normal text. &nbsp;You
+may edit a byte by double clicking on it, as long as the image is not
+read only or protected by the header write protect bit. &nbsp;(If an
+image is a read only file on the Mac, it will be noted as such in the
+editor window title.) &nbsp;You can also edit the ASCII representation
+of the hex bytes on the right hand side of the table. &nbsp;Editing one
+representation will change the other automatically.<br>
+<br>
+</div>
+<b><u>Sector Number to Edit<br>
+
+</u></b><br>
+
+<div style="margin-left: 40px;">You can change the sector being edited
+by pressing the sector stepper by the sector number either up or down,
+or by pressing the Go To Sector.... button, which will display a sheet
+where you enter the number. &nbsp;The number must be between 1 and the
+number of sectors in the disk, which is displayed between the two
+controls. &nbsp;If the sector you are currently editing has not been saved,
+it will prompt you if you want to discard the changes and move to the
+new sector anyway.<br>
+</div>
+<br>
+
+<b><u>Saving and Reverting<br>
+
+</u></b><br>
+
+<div style="margin-left: 40px;">You can save your editing changes to a
+sector by pressing the Save button (or Cmd-S). &nbsp;You can discard the
+changes and revert to the sector on disk by pressing the Revert button.
+&nbsp;These buttons are only active when the sector data has been changed.<br>
+</div>
+<br>
+
+<b><u>Done with editing<br>
+
+</u></b><br>
+
+<div style="margin-left: 40px;">You can exit the editor by pressing the done button. &nbsp;If the sector you are currently editing has not been saved,
+it will prompt you if you want to discard the changes and exit the editor anyway.</div>
+<br>
+
+<b><u>Header Write Protect Bit Set In Image<br>
+
+</u></b><br>
+
+<div style="margin-left: 40px;">
+This checkbox displays the state of the Write Protect bit in the header
+of the ATR image.&nbsp; You may change it by clicking on the
+checkbox.&nbsp; Normally, if this is set, it will prevent the
+emulator
+and other programs from writing to the image.&nbsp; However, don't
+confuse this with the permissions on the file image in the MacOSX
+operating system, as they are separate.<br>
+
+</div>
+
+<br>
+
+<b><u><br>
+
+</u></b>
+</body>
+</html>

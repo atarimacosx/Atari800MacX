@@ -1,0 +1,343 @@
+Up-to-date list of accepted command line parameters
+===================================================
+
+Usage:
+atari800 [options] [disk1 ... disk8]
+
+where:
+disk1 ... disk8 are file names of the disk images mounted to Atari drives 1-8
+(the first file is mounted to the drive 1, next one to the drive 2, etc.).
+Supported types of disk images are: ATR, XFD and DCM. If the emulator has been
+compiled with ZLIB support, additionally ATR.GZ and XFD.GZ are supported.
+
+Options
+-------
+
+-help                 Display list of options and terminate
+-v                    Display version number and terminate
+-verbose              Display framerate when exiting
+
+-configure            Update configuration file (this is default
+                      if the configuration file has not been found)
+-config <filename>    Use specified configuration file instead of default
+-osa_rom <filename>   Use specified OS/A ROM image
+-osb_rom <filename>   Use specified OS/B ROM image
+-xlxe_rom <filename>  Use specified XL/XE OS ROM image
+-5200_rom <filename>  Use specified 5200 OS ROM image
+-basic_rom <filename> Use specified Atari BASIC ROM image
+
+-atari                Emulate Atari 800
+-xl                   Emulate Atari 800 XL
+-xe                   Emulate Atari 130 XE
+-320xe                Emulate Atari 320 XE (Compy Shop)
+-rambo                Emulate Atari 320 XE (Rambo)
+-5200                 Emulate Atari 5200
+-emuos                Use EmuOS
+
+-a                    Use OS/A for Atari 800
+-b                    Use OS/B for Atari 800
+-c                    Enable RAM between 0xc000 and 0xcfff in Atari 800
+
+-pal                  Emulate PAL TV mode
+-ntsc                 Emulate NTSC TV mode
+
+-nobasic              Turn off Atari BASIC ROM
+-basic                Turn on Atari BASIC ROM
+
+-cart <filename>      Insert cartridge (CART or raw format)
+
+-run <filename>       Run Atari executable file (EXE, COM, XEX)
+
+-tape <filename>      Attach cassette image (CAS format or raw file)
+-boottape <filename>  Attach cassette image and boot it
+
+-nopatch              Don't patch SIO routine in OS
+-nopatchall           Don't patch OS at all, H: and P: devices won't work
+-H1 <path>            Set path for H1: device
+-H2 <path>            Set path for H2: device
+-H3 <path>            Set path for H3: device
+-H4 <path>            Set path for H4: device
+-hdreadonly <onoff>   Enable (1) or disable (0) read-only mode for H: device
+-devbug               Put debugging messages for H: and P: devices in log file
+
+-rtime <onoff>        Enable (1) or disable (0) R-Time 8 emulation
+
+-mouse off            Do not use mouse
+-mouse pad            Emulate paddles
+-mouse touch          Emulate Atari Touch Tablet
+-mouse koala          Emulate Koala Pad
+-mouse pen            Emulate Light Pen
+-mouse gun            Emulate Light Gun
+-mouse amiga          Emulate Amiga mouse
+-mouse st             Emulate Atari ST mouse
+-mouse trak           Emulate Atari Trak-Ball
+-mouse joy            Emulate joystick using mouse
+-mouseport <num>      Set mouse port 1-4 (default 1)
+-mousespeed <num>     Set mouse speed 1-9 (default 3)
+
+-refresh <rate>       Set screen refresh rate
+-artif <mode>         Set artifacting mode 0-4 (0 = disable)
+-palette <filename>   Read Atari colors from ACT file
+-black <num>          Set black level 0-255
+-while <num>          Set white level 0-255
+-colors <num>         Set color intensity
+-colshift <num>       Set color shift
+-realpal              Use palette created by Zdenek Eisenhammer
+-oldpal               Use old Atari800 palette
+-foxpal               Use palette created by Piotr Fusik
+
+-sound                Enable sound
+-nosound              Disable sound
+-dsprate <freq>       Set mixing frequency (Hz)
+-snddelay <time>      Set sound delay (milliseconds)
+
+Curses version options
+----------------------
+-left                 Use columns 0 to 39
+-central              Use columns 20 to 59
+-right                Use columns 40 to 79
+-wide1                Use columns 0 to 79 (spaces between characters)
+-wide2                Use columns 0 to 79 (as above but normal/reverse spaces)
+
+Falcon version options
+----------------------
+
+-interlace <x>        Generate Falcon screen only every x frame
+-videl                Direct VIDEL programming (Falcon/VGA only)
+-double               Double the screen size on NOVA
+-delta                Delta screen output (differences only)
+
+-joyswap              Swap joysticks
+
+SVGALIB version options
+-----------------------
+
+-interlace            Generate screen with interlace
+
+DOS/VGA version options
+-----------------------
+
+-interlace            Generate screen with interlace
+-video <mode>         0=320x200, 1=320x240, 2=320x480 interlaced with black
+                      lines, 3=320x480 interlaced with darker lines
+-novesa               Do not use VESA 2 video modes
+-vretrace             Use vertical retrace control
+
+-LPTjoy1              Read joystick connected to LPT1
+-LPTjoy2              Read joystick connected to LPT2
+-LPTjoy3              Read joystick connected to LPT3
+-joyswap              Swap joysticks
+
+-keyboard 0           PC keyboard layout
+-keyboard 1           Atari keyboard layout
+
+X11 options
+-----------
+
+-small                Single size window
+-large                Double size window
+-huge                 Triple size window
+-clip_x <n>           Left offset for clipping
+-clip_y <n>           Top offset for clipping
+-clip_width           Width of the clipping area
+-clip_height          Height of the clipping area
+-private_cmap         Use private colormap
+
+-fps                  Show framerate
+-sio                  Show SIO monitor
+-x11bug               Enable debug code in atari_x11.c
+
+-keypad               Keypad mode
+
+SDL version options
+-------------------
+
+-nojoystick 	      joysticks will not be initialized
+-joy0 </dev/lp0>      define the device for LPTjoy
+-joy1 </dev/lp1>      --""-- only when LPTjoy support compiled in
+-rotate90             useful for devices with 240x320 screen (hanhelds)
+-width x              set mode width
+-height y             set mode height
+-bpp b                set mode bits per pixel
+-fullscreen           start in fullscreen mode
+-windowed             start in windowed mode
+
+Keyboard + Joystick & Paddle Controllers
+========================================
+
+Unlike PC Xformer, I have not tried to emulate the exact keyboard layout,
+instead, I have tried to make your native keyboard work as normal.
+
+Note: The function keys will eventually be changed to a more logical
+      order.
+
+X11 Keyboard + Joystick & Paddle Controllers
+============================================
+
+F1	Built in User Interface
+F2	Option
+F3	Select
+F4	Start
+F5	Warm Reset
+Shft+F5	Cold Reset
+F6	Toggle RAM/ROM between 0x8000 and 0xbfff (PIL Mode)
+F7	Break Key
+F8	---
+F9	Exit Emulator
+F10	---
+F11	Vertical Positioning: Scroll Screen Downwards
+F12	Vertical Positioning: Scroll Screen Upwards
+
+ALT	Atari Key (Either ALT Key will work)
+
+Joystick 0 is operated by the mouse position relative to the center of the
+screen. The mouse button acts as the trigger.
+
+Paddle 0 is operated by moving the mouse pointer across the window.
+
+SVGALIB Keyboard + Joystick & Paddle Controllers
+================================================
+
+F1	Built in User Interface
+F2	Option
+F3	Select
+F4	Start
+F5	Warm Reset
+Shft+F5	Cold Reset
+F6	Toggle RAM/ROM between 0x8000 and 0xbfff (PIL Mode)
+F7	Break Key
+F8	Enter monitor
+F9	Exit Emulator
+F10	Save Screenshot (+Shift=interlaced screenshot)
+F11	Joystick Autofire On/Off
+F12	---
+
+`	This character replaces the CAPS lock key because I have not
+	found a way of detecting it. A future solution maybe to
+	automatically issue a CAPS lock key when a transition is
+	made between lower and upper case keys. i.e. If svgalib
+	return 'a' followed by 'A' it could send 'a' 'CAPS' 'A' to
+	the Atari.
+
+The CTRL+SHIFT keyboard combinations are implemented using the left
+ALT key.
+
+Joystick 0 is operated by the numeric keypad (make sure that the numeric
+keypad has been enabled).
+
+	7 8 9
+	 \|/
+	4 5 6
+	 /|\
+	1 2 3
+
+	And 0 is the fire key.
+
+At the moment it is not possible to use a Paddle with the SVGALIB version.
+
+CURSES Keyboard + Joystick & Paddle Controllers
+===============================================
+
+F1	Built in User Interface
+F2	Option
+F3	Select
+F4	Start
+F5	Warm Reset
+F6	Toggle RAM/ROM between 0x8000 and 0xbfff (PIL Mode)
+F7	Break Key
+F8	Cold Reset
+F9	Exit Emulator
+F10	---
+F11	---
+F12	---
+
+Some control have special meaning within curses and should not be used.
+
+	Avoid Control + C, J, M, Q, S and Z
+
+The remaining control characters can be typed. Control characters are
+displayed on the screen with the associated upper case character in bold.
+
+No Joystick or Paddle support in this version.
+
+AMIGA Keyboard + Joystick & Paddle Controllers
+==============================================
+
+Please look into the supplied Atari800.guide
+
+BASIC Keyboard + Joystick & Paddle Controllers
+==============================================
+
+No Frills text. Upper and Lower case letters, 0-9, !"$% etc.
+No Reset, Option, Select, Start, etc.
+No Joystick or Paddle support in this version.
+
+DOS VGA Keyboard + Joystick & Paddle Controllers
+================================================
+
+F1	Built in User Interface
+F2	Option Key
+F3	Select Key
+F4	Start Key
+F5	Warm Reset
+Shft+F5	Cold Reset
+F6	PIL Mode (Atari800) / Help Key (XL/XE)
+F7	Switch between Emulated joysticks mode and Normal keyboard
+F8	Enter monitor
+F9	EXIT Emulator
+F10	Save Screenshot (+Shift=interlaced screenshot)
+
+Control-C terminates the program; to type Control-c, type ALT-c instead.
+` is used as the Atari-Invers key
+
+Joysticks can be either real one connected to game port, or old 8-bit
+digital CX-40 joysticks connected to parallel port or keyboard joysticks
+(try out JOYCFG.EXE).
+ 
+At the moment it is not possible to use a Paddle with this version.
+
+Falcon Keyboard + Joystick & Paddle Controllers
+===============================================
+
+F1	Built in User Interface
+F2	Option
+F3	Select
+F4	Start
+F5	Warm Reset
+Shft+F5	Cold Reset
+F6	Toggle RAM/ROM between 0x8000 and 0xbfff (PIL Mode)
+F7	Break Key
+F8	Enter monitor
+F9	EXIT Emulator
+Help	HELP key (800XL/130XE)
+
+Joystick 0 is operated by the numeric keypad (make sure that the numeric
+keypad has been enabled).
+ 
+        7 8 9
+         \|/
+        4 5 6
+         /|\
+        1 2 3
+ 
+        And 0 is the fire key.
+ 
+At the moment it is not possible to use a Paddle with this version.
+
+SDL port keys and options
+=========================
+
+-joy0 <pathname>      Select LPTjoy0 device; ex.:
+                      $ atari800 -joy0 /dev/lp0 ...
+-joy1 <pathname>      Select LPTjoy1 device
+
+LALT+f - switching FULLSCREEN (probably doesn't work in Windows)
+LALT+g - switching WIDTH_MODE (so you can set 320x240)
+LALT+b - switching BLACK-AND-WHITE (feel to power of BW monitor!)
+LALT+j - swapping _keyboard_emulated_ joysticks
+LALT+e - switching bpp (for debug only, will be removed soon)
+
+To redefine keys for joystick emulation you must modify SDL_TRIG_* and
+SDL_JOY_* in atari_sdl.c, then recompile Atari800. In source you can also turn
+off sound or change defaults (FULLSCREEN, BW, SWAP_JOYSTICKS, WIDTH_MODE).
+

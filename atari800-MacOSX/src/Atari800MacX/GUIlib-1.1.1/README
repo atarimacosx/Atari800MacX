@@ -1,0 +1,29 @@
+
+This is a very simple GUI framework, for use with SDL.
+It is very flexible, but is by no means a complete windowing system.
+Feel free to improve it!! :)
+
+It contains a C++ GUI class with a very rudimentary C interface,
+and a set of useful widget classes.
+
+File:		Contents:
+--------------- ----------------------------------------------------
+GUI.h		The C++ GUI container class
+GUI_C.h		The C interface to the GUI objects
+GUI_status.h	Type definitions shared between C and C++
+GUI_widget.h	The widget base class
+GUI_generic.h	The most generic widget, for use with C interface
+GUI_area.h	A simple colored rectangle widget
+GUI_image.h	A simple static image widget
+GUI_button.h	A simple image button widget
+GUI_scrollbar.h	A simple scrollbar/scrollbutton widget
+GUI_termwin.h	A simple dumb terminal widget
+GUI_widgets.h	A header to get all of the library widgets
+GUI_output.h	Some simple C functions for popup messages
+GUI_loadimage.h	Functions to load C image headers for GUI programs
+genimage.c	A program to generate a C image from a BMP file
+
+keyboard.cc	A simple program to test keyboard layouts under SDL
+hello.cc	An example of using the C++ GUI library
+hello_C.c	An example of using the C interface and GUI_output.h
+okay.c		An program to pop up quick "OK" message boxes

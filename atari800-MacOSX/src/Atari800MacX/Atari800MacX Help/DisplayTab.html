@@ -1,0 +1,542 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+
+
+
+
+  
+  
+  
+  
+  
+  
+  
+  
+  <title>Display Tab</title>
+  <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+</head>
+
+
+<body>
+
+
+
+
+<table border="0" cellpadding="2" cellspacing="2" width="100%">
+
+
+
+
+  <tbody>
+
+
+
+
+    <tr>
+
+
+
+
+      <td valign="top" width="20%"><img src="fuji.gif" alt="" height="90" width="123"> <br>
+
+
+
+
+      </td>
+
+
+
+
+      <td valign="top"><b><font size="+3">Atari800MacX Help<br>
+
+
+
+
+Preferences Window<br>
+
+
+
+
+Display Tab<br>
+
+
+
+
+      </font></b><br>
+
+
+
+
+      </td>
+
+
+
+
+    </tr>
+
+
+
+
+  
+  
+  
+  
+  </tbody>
+</table>
+
+
+
+
+<br>
+
+
+
+
+<br>
+
+
+
+
+The Display Tab is the heart of the graphics control of the
+emulator.&nbsp; <br>
+
+
+
+
+<img src="DisplayTab.jpg" title="" alt="" style="width: 752px; height: 515px;"><br>
+
+
+
+
+<br>
+
+
+
+
+From here you can change the:<br>
+
+
+
+
+<br>
+
+
+
+
+<b><u>Display Size</u><br>
+
+
+
+
+</b><br>
+
+
+
+
+&nbsp;&nbsp;<b>&nbsp; Display Mode:</b>
+<blockquote>These radio buttons allow you to choose to display the
+emulator in a standard Aqua window, or to use the entire screen for
+displaying the emulator. &nbsp;When in full screen mode, normally you
+will want to check the Fullscreen Always 640x480 item.&nbsp; This will
+lock the display to a fixed size.&nbsp; If this item is unchecked, then
+the Scale Factor and Display Width parameters below still apply.&nbsp;
+The emulator will attempt to find a suitable mode.&nbsp; Note, not all
+modes will work with all display adapters.&nbsp; If the emulator
+suddenly quits when changing to full screen, the Scale Factor and Scale
+Mode were not compatible with your graphics card and fullscreen.&nbsp;
+You can also change
+the Display Mode setting from the <a href="DisplayMenu.html">Display
+Menu.</a><br>
+
+
+
+
+</blockquote>
+
+
+
+
+&nbsp;&nbsp;<b>&nbsp; Renderer:</b>
+<blockquote>These radio buttons allow you to which renderer
+Atari800MacX uses to display the screen.&nbsp; OpenGL requires a video
+card that supports OpenGL, but will be much faster at scaling the
+screen to larger sizes than the Software mode.&nbsp; However, OpenGL is
+slower at the Smooth scaling than the Software renderer.&nbsp; OpenGL
+is also more efficient in OSX 10.4 and high, where Apple has implemented
+something called "coalesced updates".&nbsp; If you are having speed or
+graphics problems on your particular machine, you may want to try the
+other renderer from what you are currently using.&nbsp; The default
+value in Atari800MacX 3.0 and higher is OpenGL.<br>
+
+
+
+
+</blockquote>
+
+
+
+
+
+&nbsp;&nbsp;&nbsp; <b>Scale Factor:</b>
+<blockquote>These radio buttons allow you to choose between the standard
+Atari Screen Size where one Atari pixel is mapped to one Macintosh
+pixel, 2xAtari Screen size (one Atari pixel is mapped to
+four, 2x2,Macintosh pixels), 3x Atari Screen size (one Atari pixel is
+mapped to nine, 3x3,Macintosh pixels),&nbsp; or 4x Atari Screen size
+(one Atari pixel is mapped to sixteen, 4x4,Macintosh pixels).&nbsp;
+&nbsp; You can also change this setting from
+the <a href="DisplayMenu.html">Display Menu.</a> &nbsp;Note, on slower
+Macs,
+you may want to change your video depth to Thousands of Colors to
+achieve
+full frame rate when using more than 1x mode. &nbsp;(Don't change this
+while
+running the emulator!!!).<br>
+
+
+
+
+</blockquote>
+
+
+
+
+&nbsp; &nbsp; <b>Display Width:</b>
+<blockquote>These radio buttons allow you to choose between narrow,
+default, and full widths of the Atari screen. &nbsp;These correspond to
+320x240, 336x240, and 384x240 respectively when in 1x Scale Factor
+mode.&nbsp; You can also change
+this setting from the <a href="DisplayMenu.html">Display Menu.</a><br>
+
+
+
+
+</blockquote>
+
+
+
+
+
+
+&nbsp; &nbsp; <span style="font-weight: bold;">Use Fullscreen Monitor</span><b>:</b>
+<blockquote>This check box allows you to select the Debug Monitor to
+run in Fullscreen. Without this item checked, if the Debug Monitor runs
+(by pressing F8), or the Emulated machine crashes, and the
+unrecoverable error dialog runs, the emulator will leave Fullscreen and
+display the monitor or crash dialog in a window. &nbsp;With this item
+checked, the monitor will appear in fullscreen. &nbsp;You can also
+select the foreground and background colors for the monitor text.
+&nbsp;Note, you can currently only use the Fullscreen if you also
+select the Fullscreen Always 640x480 Item.&nbsp;&nbsp;<a href="DisplayMenu.html"></a><br>
+
+
+
+
+</blockquote>
+
+
+
+
+<b><u>Show Frames Per Second In Window Title</u></b><br>
+
+
+
+
+<b> </b>
+<blockquote>This checkbox lets you choose to display the Frames Per
+Second (FPS) that the emulator is running at the moment. &nbsp;This can
+be used to check that your Macintosh is fast enough to run the Atari at
+full speed. &nbsp;It should indicate 50fps for PAL, and 60fps for NTSC.
+&nbsp;FPS Display is not available in Fullscreen mode. &nbsp;However,
+since Fullscreen mode always runs in 256 colors, speed is usually not
+an issue. &nbsp;You can also change this setting from the <a href="DisplayMenu.html">Display
+Menu.</a><br>
+
+
+
+
+  <br>
+
+
+
+
+</blockquote>
+
+
+
+
+<b><u>Brushed Metal Appearance</u></b><br>
+
+
+
+
+<b> </b>
+<blockquote>This checkbox lets you choose it the windows in the
+emulator use the Standard Aqua appearance, or if they use the Brushed
+Metal appearance, ala Safari or iTunes.&nbsp; The emulator must be
+restarted after a change in this setting for it to take full effect.
+&nbsp;Note, you must be using OSX 10.3 or higher to used the Brushed
+Metal Appearance.<br>
+
+
+
+
+</blockquote>
+
+
+
+
+<b><u>TV Mode</u><br>
+
+
+
+
+</b>
+<blockquote>These radio buttons allow you to choose to the refresh rate
+of the emulator, either NTSC (60 frames per second) or PAL (50 frames
+per
+second).<br>
+
+
+
+
+</blockquote>
+
+
+
+
+<br>
+
+
+
+
+<b><u>Refresh Ratio</u><br>
+
+
+
+
+</b>
+<blockquote>This pull down allows you to choose how often to redraw the
+simulated Atari screen. &nbsp;You can choose to do it every Atari frame,
+or every
+2nd, 3rd, or 4th one. &nbsp;On very slow Macs, this could be used to
+bring
+the frame rate up to full speed (50 or 60 frames per second).&nbsp; The
+checkbox then lets you determine if player/missile collisions are
+detected in the frames that are skipped.&nbsp; By default, they are.<br>
+
+
+
+
+</blockquote>
+
+
+
+
+<br>
+
+
+
+
+<b><u>Artifacting Mode</u><br>
+
+
+
+
+</b>
+<blockquote>This pull down allows you to choose how the emulator
+simulates Artifacting, which occurred when the original Atari used a TV
+for displaying its video. &nbsp;Some games depended on the colors these
+Artifacting effects produced.<br>
+
+
+
+
+  <br>
+
+
+
+
+</blockquote>
+
+
+
+
+<b><u>Use New Artifacting</u><br>
+
+
+
+
+</b>
+<blockquote>This checkbox allows you to choose if the new Artifacting
+method released in Atari800MacX 3.3 should be used.
+&nbsp;It&nbsp;produces much clearer text, and correctly varies
+luminance and displays player missile graphics in artifacted mode.<br>
+
+  <br>
+
+
+
+
+</blockquote>
+
+
+
+
+<b><u>Color Palette</u><br>
+
+
+
+
+</b>
+<blockquote>These options allow the user to customize the colors used
+by the
+Macintosh to Emulate the Atari's color palette. 8-bit Atari machines
+have
+256 colors, and the emulator can either generate a palette, or use a
+pre-generated
+palette stored in a file. &nbsp;By default, it uses the real.act file
+stored
+in the Palettes folder in the application directory. &nbsp;<br>
+
+
+
+
+  <br>
+
+
+
+
+If the "Use Palette from File" checkbox is checked, then you can choose
+the palette file with the Choose.. button. &nbsp;If you wish, you may
+then
+also check the "Adjust File Palette" checkbox to adjust the Black
+Level,
+White Level, and Intensity parameters described below. &nbsp;These
+adjustments do not affect the file itself.<br>
+
+
+
+
+  <br>
+
+
+
+
+If the "Use Palette from File" checkbox is not checked, then the
+emulator will generate a palette using the values you enter for the
+following 4 parameters:<br>
+
+
+
+
+</blockquote>
+
+
+
+
+<blockquote>
+  
+  
+  
+  
+  <ul>
+
+
+
+
+    <li><b>Black level</b> adjusts brightness of Atari colors 0, 16,
+32, etc. (darkest ones),</li>
+
+
+
+
+    <li><b>White level</b> adjusts brightness of Atari colors 15, 31,
+47, etc. (lightest ones),</li>
+
+
+
+
+    <li><b>Intensity</b> adjusts saturation of all colors,</li>
+
+
+
+
+    <li><b>Color shift</b> adjusts hues to be used for Atari colors
+16-255 (0-15 are always gray). A hue is used for colors 16-31, next one
+for colors 32-47, etc.</li>
+
+
+
+
+  
+  
+  
+  
+  </ul>
+
+
+
+
+</blockquote>
+
+
+
+
+<blockquote>Each parameter must be an integer within range 0-255.<br>
+
+
+
+
+</blockquote>
+
+
+
+
+<b><u>Disk Leds<br>
+
+
+
+
+<br>
+
+
+
+
+</u></b>
+<div style="margin-left: 40px;">These options allow the user to chose
+if disk activity indicators are shown in the Atari Emulator window
+(lower right corner) and in the Media Status Window (Driver Status
+LED's and sector numbers on drive doors).<br>
+
+
+
+
+</div>
+
+
+
+
+<br>
+
+
+
+
+<br>
+
+
+
+
+<br>
+
+
+
+
+<br>
+
+
+
+
+</body>
+</html>

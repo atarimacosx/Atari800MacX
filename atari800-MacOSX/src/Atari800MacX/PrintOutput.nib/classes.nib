@@ -1,0 +1,59 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {
+                onChangePen = id; 
+                onConfigurePrinter = id; 
+                onContinue = id; 
+                onDelete = id; 
+                onResetPrinter = id; 
+                onRevSkipLine = id; 
+                onSaveAs = id; 
+                onSelectPrinter = id; 
+                onSkipLine = id; 
+                onSkipPage = id; 
+                resetConfirmNo = id; 
+                resetConfirmYes = id; 
+                showPrinterOutput = id; 
+            }; 
+            CLASS = PrintOutputController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                mContinueButton = NSButton; 
+                mDeleteButton = NSButton; 
+                mMainScrollView = NSScrollView; 
+                mPenChangeButton = id; 
+                mResetConfirmButton = id; 
+                mSaveAsButton = NSButton; 
+            }; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {
+            ACTIONS = {
+                onAutoLF = id; 
+                onContinue = id; 
+                onDelete = id; 
+                onHexMode = id; 
+                onResetPrinter = id; 
+                onSaveAs = id; 
+                onSkipLine = id; 
+                onSkipPage = id; 
+                onUse8thBit = id; 
+            }; 
+            CLASS = VIIPrintOutputController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                mAutoLFItem = NSMenuItem; 
+                mContinueButton = NSButton; 
+                mDeleteButton = NSButton; 
+                mHexModeItem = NSMenuItem; 
+                mMainScrollView = NSScrollView; 
+                mSaveAsButton = NSButton; 
+                mUse8thBitItem = NSMenuItem; 
+            }; 
+            SUPERCLASS = NSWindowController; 
+        }
+    ); 
+    IBVersion = 1; 
+}

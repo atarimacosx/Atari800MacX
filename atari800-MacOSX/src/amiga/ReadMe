@@ -1,0 +1,79 @@
+Short:     V2.4 of the Atari 8-bit emulator
+Uploader:  mail@sebastianbauer.info (Sebastian Bauer)
+Author:    mail@sebastianbauer.info (Sebastian Bauer), Atari800 Emulator Development Team
+Type:      misc/emu
+Kurz:      V2.4 des Atari 8-bit Emulator
+Requires:  OS4
+Version:   2.4
+
+This is the Amiga port of the Atari800 Emulator. It requires at
+least OS4 (e.g. the prerelease CD).
+
+Install
+~~~~~~~
+Extract the archive and copy the resulting Atari800 drawer
+anywhere you like. Later, copy the ROM Files into the ROMs
+directory. Those ROMs can be extracted from an old XFormer
+Archive. See http://atari800.sourceforge.net for details.
+From there you find also the information how to obtain the
+source code which is released under the GPL.
+
+History
+~~~~~~~
+Version 2.4 (16.3.2005)
+ - matches version 1.3.6 of original sources
+
+Version 2.3 (29.12.2004)
+ - matches version 1.3.4 of original sources
+ 
+Version 2.2 (8.10.2004)
+ - the workbench window is now an appwindow. Drop in a file to
+   boot/run its contents
+ - tries to start a given workbench argument
+ - added an iconify option (menu entry and title gadget)
+
+Version 2.1 (24.09.2004)
+ - major changes within the Amiga front end, including
+    o) ported to OS4, requires PPC processor
+    o) dropped MUI GUI, GUI is now menu driven
+    o) dropped overlay support for now
+    o) Atari joystick can be mapped to the keyboard
+    o) sound fixes
+ - matches 1.3.3 of original sources
+
+Version 1.2 (15.10.2000)
+ - compiled the latest source
+ - a special 68060 version has been added
+
+Version 1.1 (12.06.2000)
+ - console keys and sound should work better now
+
+Version 1.0 (31.05.2000)
+ - initial public release
+
+How can you reach me?
+~~~~~~~~~~~~~~~~~~~~~
+My e-mail address is:
+  mail@sebastianbauer.info
+
+Address:
+  Sebastian Bauer
+  Neustädter Str. 50
+  07768 Kahla
+  Germany
+
+Visit my homepage at
+  http://www.sebastianbauer.info/
+
+Here you can find the latest version of the Atari800 emulator for
+Amiga but also other things for Amiga, for example SimpleFind3,
+SimpleHTML, SimplePac and the Freeciv Port.
+
+Also look at the offical Atari800 Emulator homepage at
+  http://atari800.sourceforce.net/
+         __
+        / /
+   __  / /   Only Amiga makes it possible...
+   \ \/ /
+    \__/
+

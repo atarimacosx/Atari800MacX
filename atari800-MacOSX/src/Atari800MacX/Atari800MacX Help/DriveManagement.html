@@ -1,0 +1,360 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+
+
+
+  
+  
+  
+  
+  
+  
+  <title>Drive Management Window</title>
+  <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+</head>
+
+
+<body>
+
+
+
+<table border="0" cellpadding="2" cellspacing="2" width="100%">
+
+
+
+  <tbody>
+
+
+
+    <tr>
+
+
+
+      <td valign="top" width="20%"><img src="fuji.gif" alt="" height="90" width="123"> <br>
+
+
+
+      </td>
+
+
+
+      <td valign="top"><b><font size="+3">Atari800MacX Help<br>
+
+
+
+Menus<br>
+
+
+
+Drive Management Window<br>
+
+
+
+      </font></b><br>
+
+
+
+      </td>
+
+
+
+    </tr>
+
+
+
+  
+  
+  
+  </tbody>
+</table>
+
+
+
+<br>
+
+
+
+<br>
+The Drive Management window allows the user to easily see what floppy
+disk images are in each drive. &nbsp;You may also select a new image by
+simply clicking on the button with the drive number in it, or pressing
+command and the number of the drive, i.e. command-1 for D1:.<br>
+
+
+
+<br>
+
+
+
+<u><b>Drive Status</b></u><br>
+
+
+
+<br>
+
+
+
+<blockquote>Each Disk drive can have one of four states:<br>
+
+
+
+  
+  
+  
+  <ul>
+
+
+
+    <li>Off - This disk drive has the power turned off.</li>
+
+
+
+    <li>Empty - The power is on to the drive, but it has no disk.</li>
+
+
+
+    <li>Read Only - A disk is inserted, but has write protect switch on,
+so that you may only read from the disk.</li>
+
+
+
+    <li>R/W - A disk is inserted, and can be either read from or
+written to.</li>
+
+
+
+  
+  
+  
+  </ul>
+
+
+
+The Read Only and R/W status of the drive may be set after a disk is
+inserted.<br>
+
+
+
+</blockquote>
+
+
+
+<b><u>Eject All<br>
+
+
+
+<br>
+
+
+
+</u></b>
+<blockquote>This button allows the user to eject all 8 disks from the
+drive with one action. &nbsp;It has a keyboard shortcut of command-E.<br>
+
+
+
+</blockquote>
+
+
+
+<div align="center"><a href="ControlMenu.html"></a><br>
+
+
+
+</div>
+
+
+
+<b><u>Save Disk Set Button<br>
+
+
+
+<br>
+
+
+
+</u></b>
+<blockquote>This button allows the user to save the names of the disk
+images
+that are currently in the drives to a file, to be loaded later.
+&nbsp;The
+file that the set is save in has an extension of ".set", and it is a
+human
+readable text file, containing the paths of the image files, or "Empty"
+or
+"Off" for a drive that has no disk. &nbsp;It has a keyboard shortcut of command-S.
+
+
+</blockquote>
+
+
+
+<b><u>Load Disk Set Button<br>
+
+
+
+<br>
+
+
+
+</u></b>
+<blockquote>This button allows the user to load a disk set saved
+earlier
+with the Save Disk Set Button. &nbsp;The user is allowed to browse for
+the
+set file, displaying files ending in ".set". &nbsp;The emulator then
+loads
+the disk images specified in the file into the corresponding drives.
+&nbsp;If
+a drive in the set file is "Empty" or "Off", no changes are made to the
+drive.
+&nbsp; This allows the user to load multiple disk sets sequentially. &nbsp;It has a keyboard shortcut of command-L.
+
+
+</blockquote>
+
+
+
+<b><u>Rotate Floppies Button<br>
+
+
+
+</u></b>
+<blockquote>This button rotates the current inserted floppies among the
+drives.&nbsp; This may be useful for playing multiple disk games. &nbsp;It has a keyboard shortcut of command-R.
+
+
+</blockquote>
+
+
+
+<u><b>New Disk Image Button<br>
+
+
+
+<br>
+
+
+
+</b></u>
+<blockquote>This button will display a new window which you may use to
+create a new disk image. &nbsp;This new image will be saved in .atr
+format. It has a keyboard shortcut of command-N.<br>
+
+
+
+  <br>
+
+
+
+In the Create Disk Image window,&nbsp; you may choose a format of a
+disk. Note that not all formats are supported by all Atari DOSes. There
+are three standard formats:<br>
+
+
+
+  
+  
+  
+  <ul>
+
+
+
+    <li>Single density (40 tracks * 18 sectors/track * 128 bytes/sector
+= 90 KB)</li>
+
+
+
+    <li>Medium density (40 tracks * 26 sectors/track * 128 bytes/sector
+= 130 KB)</li>
+
+
+
+    <li>Double density (40 tracks * 18 sectors/track * 256 bytes/sector
+= 180 KB)</li>
+
+
+
+  
+  
+  
+  </ul>
+
+
+
+You can also select any other format, by clicking Custom and setting
+Number of sectors and Bytes per sector. Please make sure your Atari DOS
+supports this format, otherwise the image will be unusable.<br>
+
+
+
+  <br>
+
+
+
+If 256 bytes per sector are selected, you can choose between 128 and
+256 Bytes in boot sectors. Physically, boot sectors (first three
+sectors on
+a disk) are also 256 bytes long, but only 128 are transmitted between
+the
+Atari and a disk drive (upper halves of sectors are not used). There
+are
+disk images with 128 bytes in boot sectors and disk images with 256
+bytes
+in boot sectors. The Atari800 emulator supports both, but other
+emulators
+don't. Except some special cases, we recommend 128 for ATR images.<br>
+
+
+
+  <br>
+
+
+
+If the "Insert New Disk image into drive" checkbox is checked, the
+created image will be mounted on the specified drive.<br>
+
+
+
+  <br>
+
+
+
+</blockquote>
+
+
+
+<b><u>Swap&nbsp;Disks Checkboxes<br>
+
+
+
+</u></b>
+<blockquote>These checkboxes allow you to swap&nbsp;disks in the two
+drives which are
+checked. &nbsp;Only
+two drives may be checked at the same time, and as soon as the second
+box is checked, the swap occurs. &nbsp;These boxes have keyboard
+shortcuts of the number key of the drive, i.e. 1 for D1:.<br>
+  <br>
+
+
+
+</blockquote>
+
+
+
+<br>
+
+
+
+<br>
+
+
+
+<br>
+
+
+
+</body>
+</html>

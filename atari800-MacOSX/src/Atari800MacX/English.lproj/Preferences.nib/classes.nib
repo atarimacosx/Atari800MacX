@@ -1,0 +1,39 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {
+                changePlainTextFont = id; 
+                changeRichTextFont = id; 
+                miscChanged = id; 
+                ok = id; 
+                revert = id; 
+                revertToDefault = id; 
+                showPanel = id; 
+            }; 
+            CLASS = Preferences; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                addExtensionToNewPlainTextFilesButton = id; 
+                checkSpellingAsYouTypeButton = id; 
+                deleteBackupButton = id; 
+                ignoreHTMLButton = id; 
+                ignoreRichTextButton = id; 
+                myOutlet = id; 
+                overwriteReadOnlyFilesButton = id; 
+                plainTextEncodingForReadPopup = id; 
+                plainTextEncodingForWritePopup = id; 
+                plainTextFontNameField = id; 
+                richTextFontNameField = id; 
+                richTextMatrix = id; 
+                saveFilesWritableButton = id; 
+                showPageBreaksButton = id; 
+                tabWidthField = id; 
+                windowHeightField = id; 
+                windowWidthField = id; 
+            }; 
+            SUPERCLASS = NSObject; 
+        }
+    ); 
+    IBVersion = 1; 
+}

@@ -1,0 +1,65 @@
+1.1.0:
+Rainer Loritz <rloritz@gwdg.de> - Wed Apr  5 21:17:58 PDT 2000
+- fixed bug in GUI_Image: First constructor called second one, both called
+inherited constructors -> messed up. No more.
+
+- added GUI_Button feature: One may specify a second image for a real click and
+release look and feel which is also reacting when moving the pointer off the
+button.
+
+- added another GUI_Button feature: With Disable() and Enable() one can
+tell a button to be clickable or not. It is then appropiately displayed.
+
+- modified GUI event behaviour: Before, GUI ran with full CPU workload even
+without given an idle procedure. Now it uses the idle-friendly WaitEvent if
+such a flag is given to the Run procedure. The calls to widget-idle
+procedures are sacrificed in this case :-(.
+
+- added GUI_Area feature: With another constructor one may specify a
+frame color and thickness for the edge of the area.
+
+- added GUI_Area feature: With an optional parameter a shape of the area can
+be determined. So far either a rectangular or an elliptic (adjusted to area)
+shape is possible.
+
+- added GUI_TermWin feature: With "SetColoring" one can specify a foreground
+and a background color where the background can be left transparent.
+
+- new GUI_Font object: Given either a BMP name or surface (or nothing), it
+represents a font with possibilities to plot colored text in opaque or
+transparent mode.
+
+- added GUI_button features: An additional constructor provides a way to
+specify a text from which a 3D or 2D  button is generated (in gray colours).
+A new option allows to determine the text alignment.
+
+- added GUI_widget function: Redraw() redisplays ONLY the widget because
+complete GUI_REDRAW consumes much time.
+*** HERE I FOUND AN DOCUM. ERROR: the comments say the surface will be locked
+*** before a call to Display(). This is not true and it should be in no case,
+*** because otherwise inside Display() there wouldn't be allowed any SDL
+*** graphics functions as FillRect etc.
+
+- new GUI_Menu object: Pulldown menus in SDL! Very straightforward menu design,
+but may be a complicated way of internal coding. The GUI_Menu is using the
+GUI_Submenu and GUI_Menuitem classes to control the menu behaviour. It's all
+quite up and down design, but it works. The programmer has contact only with
+GUI_Menu and MUST NOT add the GUI_Submenu/items to the GUI himself.
+Everything is managed by GUI_Menu.
+
+- new button feature: check marks. Originally thought for menus, but should
+work generally.
+
+TO DO:	- menu memory management is bad
+	- graphical functions for ellipse and boundary fill
+	- (improved keyboard functions as input focus, tab order etc.)
+
+TOUCHED FILES:	GUI_image.cpp, GUI_widget.h/cpp, GUI_button.h/cpp,
+		GUI_output.h, GUI.cpp, GUI_area.h/cpp, GUI_TermWin.h/cpp,
+		hello.cpp
+
+NEW FILES:	GUI_font.h/cpp, GUI_menu.h/cpp
+
+1.0.1:
+Sam Lantinga - Wed Apr  5 21:12:17 PDT 2000
+ * Ported GUIlib to MacOS
