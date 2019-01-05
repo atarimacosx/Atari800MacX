@@ -666,6 +666,7 @@ DQ
                     </textField>
                 </subviews>
             </view>
+            <point key="canvasLocation" x="172" y="132"/>
         </window>
         <window title="Create Disk Image" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="370" userLabel="NewDisk">
             <windowStyleMask key="styleMask" titled="YES"/>

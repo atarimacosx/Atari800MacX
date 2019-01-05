@@ -13,8 +13,8 @@
 -(id) init
 {
 	address = 0;
-	black = [NSColor blackColor];
-	white = [NSColor whiteColor];
+	black = [NSColor labelColor];
+	white = [NSColor textBackgroundColor];
 	red = [NSColor redColor];
 	blackDataDict =[NSDictionary dictionaryWithObjectsAndKeys:
 					black, NSForegroundColorAttributeName,

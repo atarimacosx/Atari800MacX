@@ -36,7 +36,10 @@
 	NSColor *grey = [NSColor grayColor];
 	float offset = [controller getPrintOffset];
 	
-	// Draw each of the elements in the print array 
+    [[NSColor whiteColor] setFill];
+    NSRectFill(rect);
+    
+    // Draw each of the elements in the print array
 	[black set];
 	for (i=0;i<count;i++)
 		{

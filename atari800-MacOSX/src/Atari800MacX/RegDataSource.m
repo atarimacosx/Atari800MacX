@@ -18,7 +18,7 @@
 	[super init];
 	
 	// init colors
-	black = [NSColor blackColor];
+	black = [NSColor labelColor];
 	red = [NSColor redColor];
 	blackDict =[NSDictionary dictionaryWithObjectsAndKeys:
 				black, NSForegroundColorAttributeName,

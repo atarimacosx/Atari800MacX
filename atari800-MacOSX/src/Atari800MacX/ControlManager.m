@@ -233,6 +233,7 @@ static int monitorRunFirstTime = 1;
 
 	attribs = [[NSDictionary alloc] initWithObjectsAndKeys:
                    [NSFont fontWithName:@"Monaco" size:10.0], NSFontAttributeName,
+                   [NSColor labelColor], NSForegroundColorAttributeName,
                    nil]; 
     [monitorOutputView setTypingAttributes:attribs];
     [messageOutputView setTypingAttributes:attribs];
@@ -248,7 +249,7 @@ static int monitorRunFirstTime = 1;
     }
 	
 	// init colors
-	black = [NSColor blackColor];
+	black = [NSColor labelColor];
 	red = [NSColor redColor];
 	blackDict =[NSDictionary dictionaryWithObjectsAndKeys:
 				black, NSForegroundColorAttributeName,
