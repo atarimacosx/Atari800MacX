@@ -176,20 +176,20 @@ static NSDictionary *defaultValues() {
                 [NSNumber numberWithBool:YES], OpenGl, 
                 [NSNumber numberWithBool:YES], LockFullscreenSize, 
                 [NSNumber numberWithBool:YES], FullscreenMonitor, 
-				[NSNumber numberWithFloat:0.0],FullscreenForeRed,
-				[NSNumber numberWithFloat:0.0],FullscreenForeBlue,
-				[NSNumber numberWithFloat:0.8],FullscreenForeGreen,
-				[NSNumber numberWithFloat:1.0],FullscreenForeAlpha,
-				[NSNumber numberWithFloat:0.0],FullscreenBackRed,
-				[NSNumber numberWithFloat:0.0],FullscreenBackBlue,
-				[NSNumber numberWithFloat:0.0],FullscreenBackGreen,
-				[NSNumber numberWithFloat:1.0],FullscreenBackAlpha,
+                [NSNumber numberWithFloat:0.0],FullscreenForeRed,
+                [NSNumber numberWithFloat:0.0],FullscreenForeBlue,
+                [NSNumber numberWithFloat:0.8],FullscreenForeGreen,
+                [NSNumber numberWithFloat:1.0],FullscreenForeAlpha,
+                [NSNumber numberWithFloat:0.0],FullscreenBackRed,
+                [NSNumber numberWithFloat:0.0],FullscreenBackBlue,
+                [NSNumber numberWithFloat:0.0],FullscreenBackGreen,
+                [NSNumber numberWithFloat:1.0],FullscreenBackAlpha,
                 [NSNumber numberWithBool:NO], DoubleSize, 
                 [NSNumber numberWithInt:0], ScaleMode, 
                 [NSNumber numberWithInt:2], ScaleFactor, 
                 [NSNumber numberWithInt:1], WidthMode, 
                 [NSNumber numberWithInt:0], TvMode, 
-				[NSNumber numberWithFloat:1.0], EmulationSpeed,
+                [NSNumber numberWithFloat:1.0], EmulationSpeed,
                 [NSNumber numberWithInt:1], RefreshRatio, 
                 [NSNumber numberWithInt:1], SpriteCollisions, 
                 [NSNumber numberWithInt:0], ArtifactingMode, 
@@ -202,71 +202,71 @@ static NSDictionary *defaultValues() {
                 [NSNumber numberWithInt:40], ColorShift, 
                 [NSString stringWithCString:paletteStr encoding:NSASCIIStringEncoding], PaletteFile, 
                 [NSNumber numberWithBool:NO], ShowFPS,
-				[NSNumber numberWithBool:YES], LedStatus,
-				[NSNumber numberWithBool:YES], LedSector, 
-				[NSNumber numberWithBool:YES], LedStatusMedia,
-				[NSNumber numberWithBool:YES], LedSectorMedia,
-				[NSNumber numberWithBool:NO], XEP80Enabled,
-				[NSNumber numberWithInt:0], XEP80Port,
-				[NSNumber numberWithBool:NO], XEP80, 
-				[NSNumber numberWithInt:15], XEP80OnColor,
-				[NSNumber numberWithInt:0], XEP80OffColor,
+                [NSNumber numberWithBool:YES], LedStatus,
+                [NSNumber numberWithBool:YES], LedSector,
+                [NSNumber numberWithBool:YES], LedStatusMedia,
+                [NSNumber numberWithBool:YES], LedSectorMedia,
+                [NSNumber numberWithBool:NO], XEP80Enabled,
+                [NSNumber numberWithInt:0], XEP80Port,
+                [NSNumber numberWithBool:NO], XEP80,
+                [NSNumber numberWithInt:15], XEP80OnColor,
+                [NSNumber numberWithInt:0], XEP80OffColor,
                 [NSNumber numberWithInt:4], AtariType, 
                 [NSNumber numberWithInt:-1], AtariTypeVer4, 
                 [NSNumber numberWithInt:7], AtariSwitchType, 
                 [NSNumber numberWithInt:-1], AtariSwitchTypeVer4, 
-				[NSNumber numberWithInt:7],AxlonBankMask,
-				[NSNumber numberWithInt:3],MosaicMaxBank,
-				[NSNumber numberWithBool:NO],MioEnabled,
-				[NSNumber numberWithBool:NO],BlackBoxEnabled,
-				[NSString stringWithString:@""],MioRomFile,
-				[NSString stringWithString:@""],BlackBoxRomFile,
-				[NSString stringWithString:@""],BlackBoxScsiDiskFile,
-				[NSString stringWithString:@""],MioScsiDiskFile,
+                [NSNumber numberWithInt:7],AxlonBankMask,
+                [NSNumber numberWithInt:3],MosaicMaxBank,
+                [NSNumber numberWithBool:NO],MioEnabled,
+                [NSNumber numberWithBool:NO],BlackBoxEnabled,
+                @"",MioRomFile,
+                @"",BlackBoxRomFile,
+                @"",BlackBoxScsiDiskFile,
+                @"",MioScsiDiskFile,
                 [NSNumber numberWithBool:YES], DisableBasic, 
                 [NSNumber numberWithBool:NO], DisableAllBasic, 
                 [NSNumber numberWithBool:YES], EnableSioPatch, 
                 [NSNumber numberWithBool:YES], EnableHPatch,
                 [NSNumber numberWithBool:NO], EnableDPatch,
-				[NSNumber numberWithInt:0], UseAtariCursorKeys,
-                [NSString stringWithString:@"open %s"],PrintCommand,
-				[NSNumber numberWithInt:0],PrinterType,
-				[NSNumber numberWithInt:0],Atari825CharSet,
-				[NSNumber numberWithInt:11],Atari825FormLength,
-				[NSNumber numberWithBool:YES],Atari825AutoLinefeed,
-				[NSNumber numberWithInt:0],Atari1020PrintWidth,
-				[NSNumber numberWithInt:11],Atari1020FormLength,
-				[NSNumber numberWithBool:YES],Atari1020AutoLinefeed,
-				[NSNumber numberWithBool:YES],Atari1020AutoPageAdjust,
-				[NSNumber numberWithFloat:0.0],Atari1020Pen1Red,
-				[NSNumber numberWithFloat:0.0],Atari1020Pen1Blue,
-				[NSNumber numberWithFloat:0.0],Atari1020Pen1Green,
-				[NSNumber numberWithFloat:1.0],Atari1020Pen1Alpha,
-				[NSNumber numberWithFloat:0.0],Atari1020Pen2Red,
-				[NSNumber numberWithFloat:1.0],Atari1020Pen2Blue,
-				[NSNumber numberWithFloat:0.0],Atari1020Pen2Green,
-				[NSNumber numberWithFloat:1.0],Atari1020Pen2Alpha,
-				[NSNumber numberWithFloat:0.0],Atari1020Pen3Red,
-				[NSNumber numberWithFloat:0.0],Atari1020Pen3Blue,
-				[NSNumber numberWithFloat:1.0],Atari1020Pen3Green,
-				[NSNumber numberWithFloat:1.0],Atari1020Pen3Alpha,
-				[NSNumber numberWithFloat:1.0],Atari1020Pen4Red,
-				[NSNumber numberWithFloat:0.0],Atari1020Pen4Blue,
-				[NSNumber numberWithFloat:0.0],Atari1020Pen4Green,
-				[NSNumber numberWithFloat:1.0],Atari1020Pen4Alpha,
-				[NSNumber numberWithInt:0],EpsonCharSet,
-				[NSNumber numberWithInt:0],EpsonPrintPitch,
-				[NSNumber numberWithInt:0],EpsonPrintWeight,
-				[NSNumber numberWithInt:11],EpsonFormLength,
-				[NSNumber numberWithBool:YES],EpsonAutoLinefeed,
-				[NSNumber numberWithInt:NO],EpsonPrintSlashedZeros,
-				[NSNumber numberWithInt:NO],EpsonAutoSkip,
-				[NSNumber numberWithInt:NO],EpsonSplitSkip,
+                [NSNumber numberWithInt:0], UseAtariCursorKeys,
+                @"open %s",PrintCommand,
+                [NSNumber numberWithInt:0],PrinterType,
+                [NSNumber numberWithInt:0],Atari825CharSet,
+                [NSNumber numberWithInt:11],Atari825FormLength,
+                [NSNumber numberWithBool:YES],Atari825AutoLinefeed,
+                [NSNumber numberWithInt:0],Atari1020PrintWidth,
+                [NSNumber numberWithInt:11],Atari1020FormLength,
+                [NSNumber numberWithBool:YES],Atari1020AutoLinefeed,
+                [NSNumber numberWithBool:YES],Atari1020AutoPageAdjust,
+                [NSNumber numberWithFloat:0.0],Atari1020Pen1Red,
+                [NSNumber numberWithFloat:0.0],Atari1020Pen1Blue,
+                [NSNumber numberWithFloat:0.0],Atari1020Pen1Green,
+                [NSNumber numberWithFloat:1.0],Atari1020Pen1Alpha,
+                [NSNumber numberWithFloat:0.0],Atari1020Pen2Red,
+                [NSNumber numberWithFloat:1.0],Atari1020Pen2Blue,
+                [NSNumber numberWithFloat:0.0],Atari1020Pen2Green,
+                [NSNumber numberWithFloat:1.0],Atari1020Pen2Alpha,
+                [NSNumber numberWithFloat:0.0],Atari1020Pen3Red,
+                [NSNumber numberWithFloat:0.0],Atari1020Pen3Blue,
+                [NSNumber numberWithFloat:1.0],Atari1020Pen3Green,
+                [NSNumber numberWithFloat:1.0],Atari1020Pen3Alpha,
+                [NSNumber numberWithFloat:1.0],Atari1020Pen4Red,
+                [NSNumber numberWithFloat:0.0],Atari1020Pen4Blue,
+                [NSNumber numberWithFloat:0.0],Atari1020Pen4Green,
+                [NSNumber numberWithFloat:1.0],Atari1020Pen4Alpha,
+                [NSNumber numberWithInt:0],EpsonCharSet,
+                [NSNumber numberWithInt:0],EpsonPrintPitch,
+                [NSNumber numberWithInt:0],EpsonPrintWeight,
+                [NSNumber numberWithInt:11],EpsonFormLength,
+                [NSNumber numberWithBool:YES],EpsonAutoLinefeed,
+                [NSNumber numberWithInt:NO],EpsonPrintSlashedZeros,
+                [NSNumber numberWithInt:NO],EpsonAutoSkip,
+                [NSNumber numberWithInt:NO],EpsonSplitSkip,
                 [NSNumber numberWithBool:YES], EnablePPatch,
                 [NSNumber numberWithBool:NO], EnableRPatch, 
                 [NSNumber numberWithInt:8888], RPatchPort,
                 [NSNumber numberWithBool:NO], RPatchSerialEnabled,
-				[NSString stringWithString:@""], RPatchSerialPort,
+                @"", RPatchSerialPort,
                 [NSNumber numberWithBool:NO], BootFromCassette, 
                 [NSNumber numberWithBool:YES], SpeedLimit, 
                 [NSNumber numberWithBool:YES], EnableSound, 
@@ -293,7 +293,7 @@ static NSDictionary *defaultValues() {
                 [NSString stringWithCString:hardDiskDir3Str encoding:NSASCIIStringEncoding], HardDiskDir3, 
                 [NSString stringWithCString:hardDiskDir4Str encoding:NSASCIIStringEncoding], HardDiskDir4, 
                 [NSNumber numberWithBool:YES], HardDrivesReadOnly, 
-                [NSString stringWithString:@"H1:>DOS;>DOS"],HPath,
+                @"H1:>DOS;>DOS",HPath,
                 [NSString stringWithCString:osARomFileStr encoding:NSASCIIStringEncoding], OsARomFile, 
                 [NSString stringWithCString:osBRomFileStr encoding:NSASCIIStringEncoding], OsBRomFile, 
                 [NSString stringWithCString:xlRomFileStr encoding:NSASCIIStringEncoding], XlRomFile, 
@@ -306,18 +306,18 @@ static NSDictionary *defaultValues() {
                 [NSString stringWithCString:exeFileDirStr encoding:NSASCIIStringEncoding], ExeFileDir, 
                 [NSString stringWithCString:savedStateDirStr encoding:NSASCIIStringEncoding], SavedStateDir, 
                 [NSString stringWithCString:configDirStr encoding:NSASCIIStringEncoding], ConfigDir, 
-                [NSString stringWithString:@""], D1File, 
-                [NSString stringWithString:@""], D2File, 
-                [NSString stringWithString:@""], D3File, 
-                [NSString stringWithString:@""], D4File, 
-                [NSString stringWithString:@""], D5File, 
-                [NSString stringWithString:@""], D6File, 
-                [NSString stringWithString:@""], D7File, 
-                [NSString stringWithString:@""], D8File, 
-                [NSString stringWithString:@""], CartFile, 
-                [NSString stringWithString:@""], Cart2File, 
-                [NSString stringWithString:@""], ExeFile, 
-                [NSString stringWithString:@""], CassFile, 
+                @"", D1File,
+                @"", D2File,
+                @"", D3File,
+                @"", D4File,
+                @"", D5File,
+                @"", D6File,
+                @"", D7File,
+                @"", D8File,
+                @"", CartFile,
+                @"", Cart2File,
+                @"", ExeFile,
+                @"", CassFile,
                 [NSNumber numberWithBool:NO], D1FileEnabled, 
                 [NSNumber numberWithBool:NO], D2FileEnabled, 
                 [NSNumber numberWithBool:NO], D3FileEnabled, 
@@ -349,30 +349,30 @@ static NSDictionary *defaultValues() {
                 [NSNumber numberWithInt:0], MouseHOffset, 
                 [NSNumber numberWithInt:0], MouseVOffset, 
                 [NSNumber numberWithInt:10], MouseInertia, 
-                [NSString stringWithString:StandardConfigString], GamepadConfigCurrent, 
-                [NSString stringWithString:StandardConfigString], Gamepad1ConfigCurrent, 
-                [NSString stringWithString:StandardConfigString], Gamepad2ConfigCurrent, 
-                [NSString stringWithString:StandardConfigString], Gamepad3ConfigCurrent, 
-                [NSString stringWithString:StandardConfigString], Gamepad4ConfigCurrent, 
+                StandardConfigString, GamepadConfigCurrent,
+                StandardConfigString, Gamepad1ConfigCurrent,
+                StandardConfigString, Gamepad2ConfigCurrent,
+                StandardConfigString, Gamepad3ConfigCurrent,
+                StandardConfigString, Gamepad4ConfigCurrent,
                 [NSMutableArray arrayWithObjects:nil],GamepadConfigArray,
                 [NSMutableArray arrayWithObjects:[NSNumber numberWithInt:0], [NSNumber numberWithInt:0],
-                    [NSNumber numberWithInt:0],[NSNumber numberWithInt:0],[NSNumber numberWithInt:0],
-                    [NSNumber numberWithInt:0],[NSNumber numberWithInt:0],[NSNumber numberWithInt:0],
-                    [NSNumber numberWithInt:0],[NSNumber numberWithInt:0],[NSNumber numberWithInt:0],
-                    [NSNumber numberWithInt:0],[NSNumber numberWithInt:0],[NSNumber numberWithInt:0],
-                    [NSNumber numberWithInt:0],[NSNumber numberWithInt:0],[NSNumber numberWithInt:0],
-                    [NSNumber numberWithInt:0],[NSNumber numberWithInt:0],[NSNumber numberWithInt:0],
-                    [NSNumber numberWithInt:0],[NSNumber numberWithInt:0],[NSNumber numberWithInt:0],
-                    [NSNumber numberWithInt:0],nil], ButtonAssignment,
+                [NSNumber numberWithInt:0],[NSNumber numberWithInt:0],[NSNumber numberWithInt:0],
+                [NSNumber numberWithInt:0],[NSNumber numberWithInt:0],[NSNumber numberWithInt:0],
+                [NSNumber numberWithInt:0],[NSNumber numberWithInt:0],[NSNumber numberWithInt:0],
+                [NSNumber numberWithInt:0],[NSNumber numberWithInt:0],[NSNumber numberWithInt:0],
+                [NSNumber numberWithInt:0],[NSNumber numberWithInt:0],[NSNumber numberWithInt:0],
+                [NSNumber numberWithInt:0],[NSNumber numberWithInt:0],[NSNumber numberWithInt:0],
+                [NSNumber numberWithInt:0],[NSNumber numberWithInt:0],[NSNumber numberWithInt:0],
+                [NSNumber numberWithInt:0],nil], ButtonAssignment,
                 [NSMutableArray arrayWithObjects:[NSNumber numberWithInt:0], [NSNumber numberWithInt:0],
-                    [NSNumber numberWithInt:0],[NSNumber numberWithInt:0],[NSNumber numberWithInt:0],
-                    [NSNumber numberWithInt:0],[NSNumber numberWithInt:0],[NSNumber numberWithInt:0],
-                    [NSNumber numberWithInt:0],[NSNumber numberWithInt:0],[NSNumber numberWithInt:0],
-                    [NSNumber numberWithInt:0],[NSNumber numberWithInt:0],[NSNumber numberWithInt:0],
-                    [NSNumber numberWithInt:0],[NSNumber numberWithInt:0],[NSNumber numberWithInt:0],
-                    [NSNumber numberWithInt:0],[NSNumber numberWithInt:0],[NSNumber numberWithInt:0],
-                    [NSNumber numberWithInt:0],[NSNumber numberWithInt:0],[NSNumber numberWithInt:0],
-                    [NSNumber numberWithInt:0],nil], Button5200Assignment,
+                [NSNumber numberWithInt:0],[NSNumber numberWithInt:0],[NSNumber numberWithInt:0],
+                [NSNumber numberWithInt:0],[NSNumber numberWithInt:0],[NSNumber numberWithInt:0],
+                [NSNumber numberWithInt:0],[NSNumber numberWithInt:0],[NSNumber numberWithInt:0],
+                [NSNumber numberWithInt:0],[NSNumber numberWithInt:0],[NSNumber numberWithInt:0],
+                [NSNumber numberWithInt:0],[NSNumber numberWithInt:0],[NSNumber numberWithInt:0],
+                [NSNumber numberWithInt:0],[NSNumber numberWithInt:0],[NSNumber numberWithInt:0],
+                [NSNumber numberWithInt:0],[NSNumber numberWithInt:0],[NSNumber numberWithInt:0],
+                [NSNumber numberWithInt:0],nil], Button5200Assignment,
                 [NSNumber numberWithInt:0], Joystick1Type,
                 [NSNumber numberWithInt:0], Joystick2Type,
                 [NSNumber numberWithInt:0], Joystick3Type,
@@ -406,21 +406,21 @@ static NSDictionary *defaultValues() {
                 [NSNumber numberWithInt:62], PadJoyAltFire,
                 [NSNumber numberWithBool:YES], MediaStatusDisplayed, 
                 [NSNumber numberWithBool:NO], FunctionKeysDisplayed, 
-				[NSNumber numberWithInt:0], MediaStatusX,
-				[NSNumber numberWithInt:0], MediaStatusY,
-				[NSNumber numberWithInt:0], MessagesX,
-				[NSNumber numberWithInt:0], MessagesY,
-				[NSNumber numberWithInt:0], MonitorX,
-				[NSNumber numberWithInt:0], MonitorY,
-				[NSNumber numberWithBool:NO], MonitorGUIVisable,
-				[NSNumber numberWithInt:0], FunctionKeysX,
-				[NSNumber numberWithInt:0], FunctionKeysY,
-				[NSNumber numberWithInt:59999], ApplicationWindowX,
-				[NSNumber numberWithInt:59999], ApplicationWindowY,
-				[NSNumber numberWithBool:NO], SaveCurrentMedia,
-				[NSNumber numberWithBool:YES], ClearCurrentMedia,
-				[NSNumber numberWithBool:YES], KeyjoyEnable,
-		nil];
+                [NSNumber numberWithInt:0], MediaStatusX,
+                [NSNumber numberWithInt:0], MediaStatusY,
+                [NSNumber numberWithInt:0], MessagesX,
+                [NSNumber numberWithInt:0], MessagesY,
+                [NSNumber numberWithInt:0], MonitorX,
+                [NSNumber numberWithInt:0], MonitorY,
+                [NSNumber numberWithBool:NO], MonitorGUIVisable,
+                [NSNumber numberWithInt:0], FunctionKeysX,
+                [NSNumber numberWithInt:0], FunctionKeysY,
+                [NSNumber numberWithInt:59999], ApplicationWindowX,
+                [NSNumber numberWithInt:59999], ApplicationWindowY,
+                [NSNumber numberWithBool:NO], SaveCurrentMedia,
+                [NSNumber numberWithBool:YES], ClearCurrentMedia,
+                [NSNumber numberWithBool:YES], KeyjoyEnable,
+                nil];
     }
     return dict;
 }
@@ -667,11 +667,11 @@ static Preferences *sharedInstance = nil;
 *-----------------------------------------------------------------------------*/
 - (void)updateUI {
     int index;
-	int i,j,foundMatch;
-	NSColor *pen1, *pen2, *pen3, *pen4, *fore, *back;
-	NSString *portName;
-    float foreRed, foreGreen, foreBlue, foreAlpha;
-    float backRed, backGreen, backBlue, backAlpha;
+    int i,j,foundMatch;
+    NSColor *pen1, *pen2, *pen3, *pen4, *fore;
+    NSString *portName;
+    float foreRed, foreGreen, foreBlue;
+    float backRed, backGreen, backBlue;
 
     if (!prefTabView) return;	/* UI hasn't been loaded... */
 
@@ -727,15 +727,16 @@ static Preferences *sharedInstance = nil;
 	portName = [displayedValues objectForKey:RPatchSerialPort];	
 	if ([[displayedValues objectForKey:RPatchSerialEnabled] boolValue] == YES) {
 		[rPatchSerialMatrix selectCellWithTag:0];
-		}
+  }
 	else {
 		[rPatchSerialMatrix selectCellWithTag:1];
-		}
+  }
 	
 	[rPatchSerialPulldown removeAllItems];
 	[rPatchSerialPulldown addItemWithTitle:@"No Connection"];
-	if ([portName isEqual:@""])
+  if ([portName isEqual:@""]) {
 		[rPatchSerialPulldown selectItemAtIndex:0];
+  }
 	for (j=0;j<[modems count];j++) {
 		NSString *modem = [modems objectAtIndex:j];
 		NSString *portSubName;
@@ -1370,12 +1371,11 @@ static Preferences *sharedInstance = nil;
 *-----------------------------------------------------------------------------*/
 - (void)miscChanged:(id)sender {
     int anInt;
-	double aFloat;
+    double aFloat;
     int mouseCount = 0;
     int firstMouse = 0;
-	NSColor *penColor;
-	float penRed, penBlue, penGreen, penAlpha;
-	int type, typever4;
+    float penRed, penBlue, penGreen, penAlpha;
+    int type, typever4;
     
     static NSNumber *yes = nil;
     static NSNumber *no = nil;
@@ -3195,165 +3195,165 @@ static Preferences *sharedInstance = nil;
 #else
 	prefs->enable16BitSound = [[curValues objectForKey:Enable16BitSound] intValue];
 #endif
-    prefs->enableConsoleSound = [[curValues objectForKey:EnableConsoleSound] intValue]; 
-    prefs->enableSerioSound = [[curValues objectForKey:EnableSerioSound] intValue]; 
-    prefs->dontMuteAudio = [[curValues objectForKey:DontMuteAudio] intValue]; 
-    prefs->enableInternational = [[curValues objectForKey:EnableInternational] intValue]; 
-    prefs->enableMultijoy = [[curValues objectForKey:EnableMultijoy] intValue]; 
-    prefs->ignoreHeaderWriteprotect = [[curValues objectForKey:IgnoreHeaderWriteprotect] intValue];
+  prefs->enableConsoleSound = [[curValues objectForKey:EnableConsoleSound] intValue];
+  prefs->enableSerioSound = [[curValues objectForKey:EnableSerioSound] intValue];
+  prefs->dontMuteAudio = [[curValues objectForKey:DontMuteAudio] intValue];
+  prefs->enableInternational = [[curValues objectForKey:EnableInternational] intValue];
+  prefs->enableMultijoy = [[curValues objectForKey:EnableMultijoy] intValue];
+  prefs->ignoreHeaderWriteprotect = [[curValues objectForKey:IgnoreHeaderWriteprotect] intValue];
 	prefs->axlonBankMask =  [[curValues objectForKey:AxlonBankMask] intValue];
 	prefs->mosaicMaxBank =  [[curValues objectForKey:MosaicMaxBank] intValue];
 	prefs->blackBoxEnabled = [[curValues objectForKey:BlackBoxEnabled] intValue];
 	prefs->mioEnabled = [[curValues objectForKey:MioEnabled] intValue];
-	[[curValues objectForKey:BlackBoxRomFile] getCString:prefs->blackBoxRomFile];
-	[[curValues objectForKey:MioRomFile] getCString:prefs->mioRomFile];
-	[[curValues objectForKey:BlackBoxScsiDiskFile] getCString:prefs->blackBoxScsiDiskFile];
-	[[curValues objectForKey:MioScsiDiskFile] getCString:prefs->mioScsiDiskFile];
-    [[curValues objectForKey:ImageDir] getCString:prefs->imageDir]; 
-    [[curValues objectForKey:PrintDir] getCString:prefs->printDir]; 
-    [[curValues objectForKey:HardDiskDir1] getCString:prefs->hardDiskDir[0]]; 
-    [[curValues objectForKey:HardDiskDir2] getCString:prefs->hardDiskDir[1]]; 
-    [[curValues objectForKey:HardDiskDir3] getCString:prefs->hardDiskDir[2]]; 
-    [[curValues objectForKey:HardDiskDir4] getCString:prefs->hardDiskDir[3]]; 
-    prefs->hardDrivesReadOnly = [[curValues objectForKey:HardDrivesReadOnly] intValue];
-    [[curValues objectForKey:HPath] getCString:prefs->hPath]; 
-    [[curValues objectForKey:OsARomFile] getCString:prefs->osARomFile]; 
-    [[curValues objectForKey:OsBRomFile] getCString:prefs->osBRomFile]; 
-    [[curValues objectForKey:XlRomFile] getCString:prefs->xlRomFile]; 
-    [[curValues objectForKey:BasicRomFile] getCString:prefs->basicRomFile]; 
-    [[curValues objectForKey:A5200RomFile] getCString:prefs->a5200RomFile]; 
-    [[curValues objectForKey:DiskImageDir] getCString:prefs->diskImageDir]; 
-    [[curValues objectForKey:DiskSetDir] getCString:prefs->diskSetDir]; 
-    [[curValues objectForKey:CartImageDir] getCString:prefs->cartImageDir]; 
-    [[curValues objectForKey:CassImageDir] getCString:prefs->cassImageDir]; 
-    [[curValues objectForKey:ExeFileDir] getCString:prefs->exeFileDir]; 
-    [[curValues objectForKey:SavedStateDir] getCString:prefs->savedStateDir];
-    [[curValues objectForKey:ConfigDir] getCString:prefs->configDir];
-    [[curValues objectForKey:D1File] getCString:prefs->dFile[0]];
-    [[curValues objectForKey:D2File] getCString:prefs->dFile[1]];
-    [[curValues objectForKey:D3File] getCString:prefs->dFile[2]];
-    [[curValues objectForKey:D4File] getCString:prefs->dFile[3]];
-    [[curValues objectForKey:D5File] getCString:prefs->dFile[4]];
-    [[curValues objectForKey:D6File] getCString:prefs->dFile[5]];
-    [[curValues objectForKey:D7File] getCString:prefs->dFile[6]];
-    [[curValues objectForKey:D8File] getCString:prefs->dFile[7]];
-    [[curValues objectForKey:CartFile] getCString:prefs->cartFile];
-    [[curValues objectForKey:Cart2File] getCString:prefs->cart2File];
-    [[curValues objectForKey:ExeFile] getCString:prefs->exeFile];
-    [[curValues objectForKey:CassFile] getCString:prefs->cassFile];
-    prefs->saveCurrentMedia = [[curValues objectForKey:SaveCurrentMedia] intValue]; 
-    prefs->clearCurrentMedia = [[curValues objectForKey:ClearCurrentMedia] intValue]; 
-    prefs->dFileEnabled[0] = [[curValues objectForKey:D1FileEnabled] intValue]; 
-    prefs->dFileEnabled[1] = [[curValues objectForKey:D2FileEnabled] intValue]; 
-    prefs->dFileEnabled[2] = [[curValues objectForKey:D3FileEnabled] intValue]; 
-    prefs->dFileEnabled[3] = [[curValues objectForKey:D4FileEnabled] intValue]; 
-    prefs->dFileEnabled[4] = [[curValues objectForKey:D5FileEnabled] intValue]; 
-    prefs->dFileEnabled[5] = [[curValues objectForKey:D6FileEnabled] intValue]; 
-    prefs->dFileEnabled[6] = [[curValues objectForKey:D7FileEnabled] intValue]; 
-    prefs->dFileEnabled[7] = [[curValues objectForKey:D8FileEnabled] intValue]; 
-    prefs->cartFileEnabled = [[curValues objectForKey:CartFileEnabled] intValue]; 
-    prefs->cart2FileEnabled = [[curValues objectForKey:Cart2FileEnabled] intValue]; 
-    prefs->exeFileEnabled = [[curValues objectForKey:ExeFileEnabled] intValue]; 
-    prefs->cassFileEnabled = [[curValues objectForKey:CassFileEnabled] intValue]; 
-    prefs->keyjoyEnable = [[curValues objectForKey:KeyjoyEnable] intValue]; 
-    prefs->joystickMode[0] = [[curValues objectForKey:Joystick1Mode] intValue]; 
-    prefs->joystickMode[1] = [[curValues objectForKey:Joystick2Mode] intValue]; 
-    prefs->joystickMode[2] = [[curValues objectForKey:Joystick3Mode] intValue]; 
-    prefs->joystickMode[3] = [[curValues objectForKey:Joystick4Mode] intValue]; 
-    prefs->joystickAutofire[0] = [[curValues objectForKey:Joystick1Autofire] intValue]; 
-    prefs->joystickAutofire[1] = [[curValues objectForKey:Joystick2Autofire] intValue]; 
-    prefs->joystickAutofire[2] = [[curValues objectForKey:Joystick3Autofire] intValue]; 
-    prefs->joystickAutofire[3] = [[curValues objectForKey:Joystick4Autofire] intValue];
-    prefs->mouseDevice = [[curValues objectForKey:MouseDevice] intValue];
-    prefs->mouseSpeed = [[curValues objectForKey:MouseSpeed] intValue];
-    prefs->mouseMinVal = [[curValues objectForKey:MouseMinVal] intValue];
-    prefs->mouseMaxVal = [[curValues objectForKey:MouseMaxVal] intValue];
-    prefs->mouseHOffset = [[curValues objectForKey:MouseHOffset] intValue];
-    prefs->mouseVOffset = [[curValues objectForKey:MouseVOffset] intValue];
-    prefs->mouseInertia = [[curValues objectForKey:MouseInertia] intValue];
-    prefs->joystick1Type = [[curValues objectForKey:Joystick1Type] intValue];
-    prefs->joystick2Type = [[curValues objectForKey:Joystick2Type] intValue];
-    prefs->joystick3Type = [[curValues objectForKey:Joystick3Type] intValue];
-    prefs->joystick4Type = [[curValues objectForKey:Joystick4Type] intValue];
-	if ([[curValues objectForKey:Joystick1MultiMode] boolValue] == NO)
-		prefs->joystick1Num = [[curValues objectForKey:Joystick1Num] intValue];
-	else
-		prefs->joystick1Num = 9999;
-	if ([[curValues objectForKey:Joystick2MultiMode] boolValue] == NO)
-		prefs->joystick2Num = [[curValues objectForKey:Joystick2Num] intValue];
-	else
-		prefs->joystick2Num = 9999;
-	if ([[curValues objectForKey:Joystick3MultiMode] boolValue] == NO)
-		prefs->joystick3Num = [[curValues objectForKey:Joystick3Num] intValue];
-	else
-		prefs->joystick3Num = 9999;
-	if ([[curValues objectForKey:Joystick4MultiMode] boolValue] == NO)
-		prefs->joystick4Num = [[curValues objectForKey:Joystick4Num] intValue];
-	else
-		prefs->joystick4Num = 9999;
+  [[curValues objectForKey:BlackBoxRomFile] getCString:prefs->blackBoxRomFile maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+	[[curValues objectForKey:MioRomFile] getCString:prefs->mioRomFile maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+	[[curValues objectForKey:BlackBoxScsiDiskFile] getCString:prefs->blackBoxScsiDiskFile maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+	[[curValues objectForKey:MioScsiDiskFile] getCString:prefs->mioScsiDiskFile maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+  [[curValues objectForKey:ImageDir] getCString:prefs->imageDir maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+  [[curValues objectForKey:PrintDir] getCString:prefs->printDir maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+  [[curValues objectForKey:HardDiskDir1] getCString:prefs->hardDiskDir[0] maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+  [[curValues objectForKey:HardDiskDir2] getCString:prefs->hardDiskDir[1] maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+  [[curValues objectForKey:HardDiskDir3] getCString:prefs->hardDiskDir[2] maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+  [[curValues objectForKey:HardDiskDir4] getCString:prefs->hardDiskDir[3] maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+  prefs->hardDrivesReadOnly = [[curValues objectForKey:HardDrivesReadOnly] intValue];
+  [[curValues objectForKey:HPath] getCString:prefs->hPath maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+  [[curValues objectForKey:OsARomFile] getCString:prefs->osARomFile maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+  [[curValues objectForKey:OsBRomFile] getCString:prefs->osBRomFile maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+  [[curValues objectForKey:XlRomFile] getCString:prefs->xlRomFile maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+  [[curValues objectForKey:BasicRomFile] getCString:prefs->basicRomFile maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+  [[curValues objectForKey:A5200RomFile] getCString:prefs->a5200RomFile maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+  [[curValues objectForKey:DiskImageDir] getCString:prefs->diskImageDir maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+  [[curValues objectForKey:DiskSetDir] getCString:prefs->diskSetDir maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+  [[curValues objectForKey:CartImageDir] getCString:prefs->cartImageDir maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+  [[curValues objectForKey:CassImageDir] getCString:prefs->cassImageDir maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+  [[curValues objectForKey:ExeFileDir] getCString:prefs->exeFileDir maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+  [[curValues objectForKey:SavedStateDir] getCString:prefs->savedStateDir maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+  [[curValues objectForKey:ConfigDir] getCString:prefs->configDir maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+  [[curValues objectForKey:D1File] getCString:prefs->dFile[0] maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+  [[curValues objectForKey:D2File] getCString:prefs->dFile[1] maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+  [[curValues objectForKey:D3File] getCString:prefs->dFile[2] maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+  [[curValues objectForKey:D4File] getCString:prefs->dFile[3] maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+  [[curValues objectForKey:D5File] getCString:prefs->dFile[4] maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+  [[curValues objectForKey:D6File] getCString:prefs->dFile[5] maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+  [[curValues objectForKey:D7File] getCString:prefs->dFile[6] maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+  [[curValues objectForKey:D8File] getCString:prefs->dFile[7] maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+  [[curValues objectForKey:CartFile] getCString:prefs->cartFile maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+  [[curValues objectForKey:Cart2File] getCString:prefs->cart2File maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+  [[curValues objectForKey:ExeFile] getCString:prefs->exeFile maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+  [[curValues objectForKey:CassFile] getCString:prefs->cassFile maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+  prefs->saveCurrentMedia = [[curValues objectForKey:SaveCurrentMedia] intValue];
+  prefs->clearCurrentMedia = [[curValues objectForKey:ClearCurrentMedia] intValue];
+  prefs->dFileEnabled[0] = [[curValues objectForKey:D1FileEnabled] intValue];
+  prefs->dFileEnabled[1] = [[curValues objectForKey:D2FileEnabled] intValue];
+  prefs->dFileEnabled[2] = [[curValues objectForKey:D3FileEnabled] intValue];
+  prefs->dFileEnabled[3] = [[curValues objectForKey:D4FileEnabled] intValue];
+  prefs->dFileEnabled[4] = [[curValues objectForKey:D5FileEnabled] intValue];
+  prefs->dFileEnabled[5] = [[curValues objectForKey:D6FileEnabled] intValue];
+  prefs->dFileEnabled[6] = [[curValues objectForKey:D7FileEnabled] intValue];
+  prefs->dFileEnabled[7] = [[curValues objectForKey:D8FileEnabled] intValue];
+  prefs->cartFileEnabled = [[curValues objectForKey:CartFileEnabled] intValue];
+  prefs->cart2FileEnabled = [[curValues objectForKey:Cart2FileEnabled] intValue];
+  prefs->exeFileEnabled = [[curValues objectForKey:ExeFileEnabled] intValue];
+  prefs->cassFileEnabled = [[curValues objectForKey:CassFileEnabled] intValue];
+  prefs->keyjoyEnable = [[curValues objectForKey:KeyjoyEnable] intValue];
+  prefs->joystickMode[0] = [[curValues objectForKey:Joystick1Mode] intValue];
+  prefs->joystickMode[1] = [[curValues objectForKey:Joystick2Mode] intValue];
+  prefs->joystickMode[2] = [[curValues objectForKey:Joystick3Mode] intValue];
+  prefs->joystickMode[3] = [[curValues objectForKey:Joystick4Mode] intValue];
+  prefs->joystickAutofire[0] = [[curValues objectForKey:Joystick1Autofire] intValue];
+  prefs->joystickAutofire[1] = [[curValues objectForKey:Joystick2Autofire] intValue];
+  prefs->joystickAutofire[2] = [[curValues objectForKey:Joystick3Autofire] intValue];
+  prefs->joystickAutofire[3] = [[curValues objectForKey:Joystick4Autofire] intValue];
+  prefs->mouseDevice = [[curValues objectForKey:MouseDevice] intValue];
+  prefs->mouseSpeed = [[curValues objectForKey:MouseSpeed] intValue];
+  prefs->mouseMinVal = [[curValues objectForKey:MouseMinVal] intValue];
+  prefs->mouseMaxVal = [[curValues objectForKey:MouseMaxVal] intValue];
+  prefs->mouseHOffset = [[curValues objectForKey:MouseHOffset] intValue];
+  prefs->mouseVOffset = [[curValues objectForKey:MouseVOffset] intValue];
+  prefs->mouseInertia = [[curValues objectForKey:MouseInertia] intValue];
+  prefs->joystick1Type = [[curValues objectForKey:Joystick1Type] intValue];
+  prefs->joystick2Type = [[curValues objectForKey:Joystick2Type] intValue];
+  prefs->joystick3Type = [[curValues objectForKey:Joystick3Type] intValue];
+  prefs->joystick4Type = [[curValues objectForKey:Joystick4Type] intValue];
+  if ([[curValues objectForKey:Joystick1MultiMode] boolValue] == NO)
+    prefs->joystick1Num = [[curValues objectForKey:Joystick1Num] intValue];
+  else
+    prefs->joystick1Num = 9999;
+  if ([[curValues objectForKey:Joystick2MultiMode] boolValue] == NO)
+    prefs->joystick2Num = [[curValues objectForKey:Joystick2Num] intValue];
+  else
+    prefs->joystick2Num = 9999;
+  if ([[curValues objectForKey:Joystick3MultiMode] boolValue] == NO)
+    prefs->joystick3Num = [[curValues objectForKey:Joystick3Num] intValue];
+  else
+    prefs->joystick3Num = 9999;
+  if ([[curValues objectForKey:Joystick4MultiMode] boolValue] == NO)
+    prefs->joystick4Num = [[curValues objectForKey:Joystick4Num] intValue];
+  else
+    prefs->joystick4Num = 9999;
     prefs->paddlesXAxisOnly = [[curValues objectForKey:PaddlesXAxisOnly] intValue];
-	prefs->cx85enabled = [[curValues objectForKey:CX85Enabled] intValue];
-	prefs->cx85port = [[curValues objectForKey:CX85Port] intValue];
+  prefs->cx85enabled = [[curValues objectForKey:CX85Enabled] intValue];
+  prefs->cx85port = [[curValues objectForKey:CX85Port] intValue];
 
-    for (i=0;i<4;i++) {
-        switch(i) {
-            case 0:
-                configString = [curValues objectForKey:Gamepad1ConfigCurrent];
-                break;
-            case 1:
-                configString = [curValues objectForKey:Gamepad2ConfigCurrent];
-                break;
-            case 2:
-                configString = [curValues objectForKey:Gamepad3ConfigCurrent];
-                break;
-            case 3:
-                configString = [curValues objectForKey:Gamepad4ConfigCurrent];
-                break;
-            }
-        
-        if ([configString isEqual:StandardConfigString]) {
-            for (j=0;j<24;j++) {
-                prefs->buttonAssignment[i][j] = 0;
-                prefs->button5200Assignment[i][j] = 0;
-                }
-            }
-        else {
-            buttonKey = [ButtonAssignmentPrefix stringByAppendingString:configString];
-            button5200Key = [Button5200AssignmentPrefix stringByAppendingString:configString];
-            
-            for (j=0;j<24;j++) {
-                prefs->buttonAssignment[i][j] = 
-                    [[[[NSUserDefaults standardUserDefaults] objectForKey:buttonKey] objectAtIndex:j] intValue];
-                prefs->button5200Assignment[i][j] = 
-                    [[[[NSUserDefaults standardUserDefaults] objectForKey:button5200Key] objectAtIndex:j] intValue];
-                }
-            }
-        }
-        
-    prefs->leftJoyUp = [[curValues objectForKey:LeftJoyUp] intValue];
-    prefs->leftJoyDown = [[curValues objectForKey:LeftJoyDown] intValue];
-    prefs->leftJoyLeft = [[curValues objectForKey:LeftJoyLeft] intValue];
-    prefs->leftJoyRight = [[curValues objectForKey:LeftJoyRight] intValue];
-    prefs->leftJoyUpLeft = [[curValues objectForKey:LeftJoyUpLeft] intValue];
-    prefs->leftJoyUpRight = [[curValues objectForKey:LeftJoyUpRight] intValue];
-    prefs->leftJoyDownLeft = [[curValues objectForKey:LeftJoyDownLeft] intValue];
-    prefs->leftJoyDownRight = [[curValues objectForKey:LeftJoyDownRight] intValue];
-    prefs->leftJoyFire = [[curValues objectForKey:LeftJoyFire] intValue];
-    prefs->leftJoyAltFire = [[curValues objectForKey:LeftJoyAltFire] intValue];
-    prefs->padJoyUp = [[curValues objectForKey:PadJoyUp] intValue];
-    prefs->padJoyDown = [[curValues objectForKey:PadJoyDown] intValue];
-    prefs->padJoyLeft = [[curValues objectForKey:PadJoyLeft] intValue];
-    prefs->padJoyRight = [[curValues objectForKey:PadJoyRight] intValue];
-    prefs->padJoyUpLeft = [[curValues objectForKey:PadJoyUpLeft] intValue];
-    prefs->padJoyUpRight = [[curValues objectForKey:PadJoyUpRight] intValue];
-    prefs->padJoyDownLeft = [[curValues objectForKey:PadJoyDownLeft] intValue];
-    prefs->padJoyDownRight = [[curValues objectForKey:PadJoyDownRight] intValue];
-    prefs->padJoyFire = [[curValues objectForKey:PadJoyFire] intValue];
-    prefs->padJoyAltFire = [[curValues objectForKey:PadJoyAltFire] intValue];
-    prefs->mediaStatusDisplayed = [[curValues objectForKey:MediaStatusDisplayed] intValue];
-    prefs->functionKeysDisplayed = [[curValues objectForKey:FunctionKeysDisplayed] intValue];
-	prefs->currPrinter =  [[curValues objectForKey:PrinterType] intValue];
+  for (i=0;i<4;i++) {
+    switch(i) {
+      case 0:
+          configString = [curValues objectForKey:Gamepad1ConfigCurrent];
+          break;
+      case 1:
+          configString = [curValues objectForKey:Gamepad2ConfigCurrent];
+          break;
+      case 2:
+          configString = [curValues objectForKey:Gamepad3ConfigCurrent];
+          break;
+      case 3:
+          configString = [curValues objectForKey:Gamepad4ConfigCurrent];
+          break;
     }
+  
+    if ([configString isEqual:StandardConfigString]) {
+      for (j=0;j<24;j++) {
+          prefs->buttonAssignment[i][j] = 0;
+          prefs->button5200Assignment[i][j] = 0;
+          }
+      }
+    else {
+      buttonKey = [ButtonAssignmentPrefix stringByAppendingString:configString];
+      button5200Key = [Button5200AssignmentPrefix stringByAppendingString:configString];
+    
+      for (j=0;j<24;j++) {
+          prefs->buttonAssignment[i][j] =
+              [[[[NSUserDefaults standardUserDefaults] objectForKey:buttonKey] objectAtIndex:j] intValue];
+          prefs->button5200Assignment[i][j] =
+              [[[[NSUserDefaults standardUserDefaults] objectForKey:button5200Key] objectAtIndex:j] intValue];
+          }
+      }
+  }
+        
+  prefs->leftJoyUp = [[curValues objectForKey:LeftJoyUp] intValue];
+  prefs->leftJoyDown = [[curValues objectForKey:LeftJoyDown] intValue];
+  prefs->leftJoyLeft = [[curValues objectForKey:LeftJoyLeft] intValue];
+  prefs->leftJoyRight = [[curValues objectForKey:LeftJoyRight] intValue];
+  prefs->leftJoyUpLeft = [[curValues objectForKey:LeftJoyUpLeft] intValue];
+  prefs->leftJoyUpRight = [[curValues objectForKey:LeftJoyUpRight] intValue];
+  prefs->leftJoyDownLeft = [[curValues objectForKey:LeftJoyDownLeft] intValue];
+  prefs->leftJoyDownRight = [[curValues objectForKey:LeftJoyDownRight] intValue];
+  prefs->leftJoyFire = [[curValues objectForKey:LeftJoyFire] intValue];
+  prefs->leftJoyAltFire = [[curValues objectForKey:LeftJoyAltFire] intValue];
+  prefs->padJoyUp = [[curValues objectForKey:PadJoyUp] intValue];
+  prefs->padJoyDown = [[curValues objectForKey:PadJoyDown] intValue];
+  prefs->padJoyLeft = [[curValues objectForKey:PadJoyLeft] intValue];
+  prefs->padJoyRight = [[curValues objectForKey:PadJoyRight] intValue];
+  prefs->padJoyUpLeft = [[curValues objectForKey:PadJoyUpLeft] intValue];
+  prefs->padJoyUpRight = [[curValues objectForKey:PadJoyUpRight] intValue];
+  prefs->padJoyDownLeft = [[curValues objectForKey:PadJoyDownLeft] intValue];
+  prefs->padJoyDownRight = [[curValues objectForKey:PadJoyDownRight] intValue];
+  prefs->padJoyFire = [[curValues objectForKey:PadJoyFire] intValue];
+  prefs->padJoyAltFire = [[curValues objectForKey:PadJoyAltFire] intValue];
+  prefs->mediaStatusDisplayed = [[curValues objectForKey:MediaStatusDisplayed] intValue];
+  prefs->functionKeysDisplayed = [[curValues objectForKey:FunctionKeysDisplayed] intValue];
+	prefs->currPrinter =  [[curValues objectForKey:PrinterType] intValue];
+}
 
 /*------------------------------------------------------------------------------
 *  transferValuesFromEmulator - This method transfers preference values back
