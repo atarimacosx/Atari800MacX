@@ -1920,7 +1920,7 @@
                                             <tabViewItems>
                                                 <tabViewItem label="Text" identifier="1" id="4001">
                                                     <view key="view" id="3999">
-                                                        <rect key="frame" x="10" y="33" width="742" height="256"/>
+                                                        <rect key="frame" x="10" y="7" width="736" height="272"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <subviews>
                                                             <textField verticalHuggingPriority="750" id="4081">
@@ -5119,7 +5119,7 @@ DQ
                     <button verticalHuggingPriority="750" imageHugsTitle="YES" id="10021">
                         <rect key="frame" x="267" y="6" width="151" height="32"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="push" title="Save Confiuration" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="13156">
+                        <buttonCell key="cell" type="push" title="Save Configuration" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="13156">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
@@ -5130,7 +5130,7 @@ DQ
                     <button verticalHuggingPriority="750" imageHugsTitle="YES" id="10023">
                         <rect key="frame" x="413" y="6" width="153" height="32"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="push" title="Load Confiuration" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="13157">
+                        <buttonCell key="cell" type="push" title="Load Configuration" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="13157">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
