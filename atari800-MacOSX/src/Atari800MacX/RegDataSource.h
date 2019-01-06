@@ -16,7 +16,8 @@ typedef struct reg_s {
 @interface RegDataSource : NSObject {
 	id owner;
 	NSColor *black;
-	NSColor *red;
+    NSColor *red;
+    NSColor *white;
 	NSDictionary *blackDict;
 	NSDictionary *redDict;
 	NSMutableArray *nameStrings;

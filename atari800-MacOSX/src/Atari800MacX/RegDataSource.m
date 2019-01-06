@@ -20,12 +20,14 @@
 	// init colors
 	black = [NSColor labelColor];
 	red = [NSColor redColor];
+    white = [NSColor whiteColor];
 	blackDict =[NSDictionary dictionaryWithObjectsAndKeys:
 				black, NSForegroundColorAttributeName,
 				nil];
 	[blackDict retain];
 	redDict =[NSDictionary dictionaryWithObjectsAndKeys:
 			  red, NSForegroundColorAttributeName,
+              white, NSBackgroundColorAttributeName,
 			  nil];
 	[redDict retain];
 	

@@ -13,7 +13,7 @@
 -(id) init
 {
 	address = 0;
-	black = [NSColor labelColor];
+	black = [NSColor textColor];
 	white = [NSColor textBackgroundColor];
 	red = [NSColor redColor];
 	blackDataDict =[NSDictionary dictionaryWithObjectsAndKeys:
@@ -27,6 +27,7 @@
 	[inverseDataDict retain];
 	redDataDict =[NSDictionary dictionaryWithObjectsAndKeys:
 				  red, NSForegroundColorAttributeName,
+                  [NSColor whiteColor], NSBackgroundColorAttributeName,
 				  nil];	
 	[redDataDict retain];
 	memset(backgroudBuffer,0,128);

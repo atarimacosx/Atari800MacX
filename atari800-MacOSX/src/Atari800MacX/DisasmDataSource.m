@@ -23,12 +23,13 @@ extern unsigned short show_instruction_string(char*buff, unsigned short  pc, int
 	char filename[FILENAME_MAX];
 
 	address = 0;
-	black = [NSColor blackColor];
+	black = [NSColor labelColor];
 	red = [NSColor redColor];
-	pcColor = [NSColor colorWithDeviceRed:0.694 
-					  green:0.761 
-					  blue:0.976 
-					  alpha:1.0];
+    pcColor = [NSColor selectedTextBackgroundColor];
+    //[NSColor colorWithDeviceRed:0.694
+	//				  green:0.761
+	//				  blue:0.976
+	//				  alpha:1.0];
 	blackDataDict =[NSDictionary dictionaryWithObjectsAndKeys:
 					black, NSForegroundColorAttributeName,
 					nil];

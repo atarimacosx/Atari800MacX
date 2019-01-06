@@ -285,9 +285,9 @@ NSImage *disketteImage;
 	[lockImage initWithContentsOfFile:[NSString stringWithCString:filename encoding:NSASCIIStringEncoding]];
 	
 	lockoffImage = [NSImage alloc];
-    strcpy(filename, "Contents/Resources/lockoff.tiff");    
-	[lockoffImage initWithContentsOfFile:[NSString stringWithCString:filename encoding:NSASCIIStringEncoding]];
-	
+    [lockoffImage initWithSize: NSMakeSize(11.0,14.0)];
+    [lockoffImage setBackgroundColor:[NSColor textBackgroundColor]];
+
 	epsonImage = [NSImage alloc];
     strcpy(filename, "Contents/Resources/epson.tiff");    
 	[epsonImage initWithContentsOfFile:[NSString stringWithCString:filename encoding:NSASCIIStringEncoding]];

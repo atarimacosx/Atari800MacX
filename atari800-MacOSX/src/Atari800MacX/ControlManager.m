@@ -251,14 +251,16 @@ static int monitorRunFirstTime = 1;
 	// init colors
 	black = [NSColor labelColor];
 	red = [NSColor redColor];
-	blackDict =[NSDictionary dictionaryWithObjectsAndKeys:
+    white = [NSColor whiteColor];
+	blackDict =[[NSDictionary dictionaryWithObjectsAndKeys:
 				black, NSForegroundColorAttributeName,
 				[NSFont labelFontOfSize:[NSFont smallSystemFontSize]],NSFontAttributeName,
-				nil];
-	redDict =[NSDictionary dictionaryWithObjectsAndKeys:
+				nil] retain];
+	redDict =[[NSDictionary dictionaryWithObjectsAndKeys:
 			    [NSFont labelFontOfSize:[NSFont smallSystemFontSize]],NSFontAttributeName,
 				red, NSForegroundColorAttributeName,
-				nil];
+                white, NSBackgroundColorAttributeName,
+				nil] retain];
 	blackNString = [[NSAttributedString alloc] initWithString:@"N" attributes:blackDict];
 	redNString = [[NSAttributedString alloc] initWithString:@"N" attributes:redDict];
 	blackVString = [[NSAttributedString alloc] initWithString:@"V" attributes:blackDict];
@@ -1521,18 +1523,12 @@ static int monitorRunFirstTime = 1;
 		old_regS = CPU_regS;
 		old_regP = CPU_regP;
 	}
-	[monitorPCRegField setStringValue:[self hexStringFromShort:CPU_regPC]];
-	[self colorFromShort:monitorPCRegField:CPU_regPC:old_regPC];
-	[monitorARegField setStringValue:[self hexStringFromByte:CPU_regA]];
-	[self colorFromByte:monitorARegField:CPU_regA:old_regA];
-	[monitorXRegField setStringValue:[self hexStringFromByte:CPU_regX]];
-	[self colorFromByte:monitorXRegField:CPU_regX:old_regX];
-	[monitorYRegField setStringValue:[self hexStringFromByte:CPU_regY]];
-	[self colorFromByte:monitorYRegField:CPU_regY:old_regY];
-	[monitorSRegField setStringValue:[self hexStringFromByte:CPU_regS]];
-	[self colorFromByte:monitorSRegField:CPU_regS:old_regS];
-	[monitorPRegField setStringValue:[self hexStringFromByte:CPU_regP]];
-	[self colorFromByte:monitorPRegField:CPU_regP:old_regP];
+    [monitorPCRegField setAttributedStringValue:[self colorFromShort:CPU_regPC:old_regPC]];
+    [monitorARegField setAttributedStringValue:[self colorFromByte:CPU_regA:old_regA]];
+    [monitorXRegField setAttributedStringValue:[self colorFromByte:CPU_regX:old_regX]];
+    [monitorYRegField setAttributedStringValue:[self colorFromByte:CPU_regY:old_regY]];
+    [monitorSRegField setAttributedStringValue:[self colorFromByte:CPU_regS:old_regS]];
+    [monitorPRegField setAttributedStringValue:[self colorFromByte:CPU_regP:old_regP]];
 	[self setRegFlag:monitorNFlagCheckBox:old_regP:0x80];
 	[self setRegFlag:monitorVFlagCheckBox:old_regP:0x40];
 	[self setRegFlag:monitorBFlagCheckBox:old_regP:0x10];
@@ -1658,23 +1654,25 @@ static int monitorRunFirstTime = 1;
 
 - (NSString *) hexStringFromShort:(unsigned short)a
 {
-	return([NSString stringWithFormat:@"%04X",a]);
+	return([[NSString stringWithFormat:@"%04X",a] retain]);
 }
 
-- (void) colorFromShort:(IBOutlet id)outlet:(unsigned short)a:(unsigned short)old_a
+- (NSAttributedString *) colorFromShort:(unsigned short)a:(unsigned short)old_a
 {
+    NSAttributedString *s;
 	if (a == old_a)
-		[outlet setTextColor:black];
-	else
-		[outlet setTextColor:red];
+        s = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%04X",a] attributes:blackDict];
+    else
+        s = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%04X",a] attributes:redDict];
+    return s;
 }
 
-- (void) colorFromByte:(IBOutlet id)outlet:(unsigned char)b:(unsigned char)old_b
+- (NSAttributedString *) colorFromByte:(unsigned char)b:(unsigned char)old_b
 {
 	if (b == old_b)
-		[outlet setTextColor:black];
-	else
-		[outlet setTextColor:red];
+        return [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%04X",b] attributes:blackDict];
+    else
+        return [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%04X",b] attributes:redDict];
 }
 
 - (NSString *) hexStringFromByte:(unsigned char)b

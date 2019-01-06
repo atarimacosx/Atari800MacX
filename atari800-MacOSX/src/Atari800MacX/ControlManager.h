@@ -31,6 +31,7 @@
     int historyLine;
 	NSColor *black;
 	NSColor *red;
+    NSColor *white;
 	NSDictionary *blackDict;
 	NSDictionary *redDict;
 	NSAttributedString *redNString;
@@ -224,8 +225,8 @@
 - (IBAction)selectPressed:(id)sender;
 - (IBAction)functionKeyWindowShow:(id)sender;
 - (NSString *) hexStringFromShort:(unsigned short)a;
-- (void) colorFromShort:(IBOutlet id)outlet:(unsigned short)a:(unsigned short)old_a;
+- (NSMutableAttributedString *) colorFromShort:(unsigned short)a:(unsigned short)old_a;
 - (NSString *) hexStringFromByte:(unsigned char)b;
-- (void) colorFromByte:(IBOutlet id)outlet:(unsigned char)b:(unsigned char)old_b;
+- (NSAttributedString *) colorFromByte:(unsigned char)b:(unsigned char)old_b;
 - (void) setRegFlag:(IBOutlet id)outlet:(unsigned char)old_reg:(unsigned char)mask;
 @end
