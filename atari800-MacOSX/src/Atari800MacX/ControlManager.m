@@ -62,6 +62,7 @@ extern int breakFunctionPressed;
 extern int startFunctionPressed;
 extern int selectFunctionPressed;
 extern int optionFunctionPressed;
+extern int inverseFunctionPressed;
 extern int FULLSCREEN;
 extern int MONITOR_break_run_to_here;
 extern int UI_alt_function;
@@ -1080,6 +1081,15 @@ static int monitorRunFirstTime = 1;
 - (IBAction)breakPressed:(id)sender
 {
 	breakFunctionPressed = FUNCTION_KEY_PRESS_DURATION;
+}
+
+/*------------------------------------------------------------------------------
+ *  inversePressed - Handle the user pressing the start button in the function
+ *     keys window.  We want to hold it down for Duration frames.
+ *-----------------------------------------------------------------------------*/
+- (IBAction)inversePressed:(id)sender
+{
+    inverseFunctionPressed = FUNCTION_KEY_PRESS_DURATION;
 }
 
 /*------------------------------------------------------------------------------

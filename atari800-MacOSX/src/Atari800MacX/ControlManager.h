@@ -223,6 +223,7 @@
 - (IBAction)startPressed:(id)sender;
 - (IBAction)optionPressed:(id)sender;
 - (IBAction)selectPressed:(id)sender;
+- (IBAction)inversePressed:(id)sender;
 - (IBAction)functionKeyWindowShow:(id)sender;
 - (NSString *) hexStringFromShort:(unsigned short)a;
 - (NSMutableAttributedString *) colorFromShort:(unsigned short)a:(unsigned short)old_a;

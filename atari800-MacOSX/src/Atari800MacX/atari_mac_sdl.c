@@ -413,6 +413,7 @@ int breakFunctionPressed = 0;
 int startFunctionPressed = 0;
 int selectFunctionPressed = 0;
 int optionFunctionPressed = 0;
+int inverseFunctionPressed = 0;
 
 /* Mouse and joystick related stuff from Input.c */
 int INPUT_key_code = AKEY_NONE;
@@ -1437,6 +1438,11 @@ int Atari_Keyboard_US(void)
         return AKEY_BREAK;
     }
 
+    if (inverseFunctionPressed) {
+        inverseFunctionPressed = 0;
+        return AKEY_ATARI;
+    }
+    
     if (requestFullScreenUI) {
         requestFullScreenUI = 0;
         return AKEY_UI;
@@ -2532,6 +2538,11 @@ int Atari_Keyboard_International(void)
     if (breakFunctionPressed) {
         breakFunctionPressed = 0;
         return AKEY_BREAK;
+    }
+    
+    if (inverseFunctionPressed) {
+        inverseFunctionPressed = 0;
+        return AKEY_ATARI;
     }
     
     if (requestFullScreenUI) {
