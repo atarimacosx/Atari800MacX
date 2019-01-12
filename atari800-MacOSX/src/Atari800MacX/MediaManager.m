@@ -244,70 +244,26 @@ NSImage *disketteImage;
 	[[cart1024KMatrix window] setMenu:nil];
 	[[d1DiskImageView window] setExcludedFromWindowsMenu:NO];
 	
-	off810Image = [NSImage alloc];
-    strcpy(filename, "Contents/Resources/atari810off.tiff");    
-	[off810Image initWithContentsOfFile:[NSString stringWithCString:filename encoding:NSASCIIStringEncoding]];
-	
-	empty810Image = [NSImage alloc];
-    strcpy(filename, "Contents/Resources/atari810empty.tiff");    
-	[empty810Image initWithContentsOfFile:[NSString stringWithCString:filename encoding:NSASCIIStringEncoding]];
-	
-	closed810Image = [NSImage alloc];
-    strcpy(filename, "Contents/Resources/atari810closed.tiff");    
-	[closed810Image initWithContentsOfFile:[NSString stringWithCString:filename encoding:NSASCIIStringEncoding]];
-
-	read810Image = [NSImage alloc];
-    strcpy(filename, "Contents/Resources/atari810read.tiff");    
-	[read810Image initWithContentsOfFile:[NSString stringWithCString:filename encoding:NSASCIIStringEncoding]];
-	
-	write810Image = [NSImage alloc];
-    strcpy(filename, "Contents/Resources/atari810write.tiff");    
-	[write810Image initWithContentsOfFile:[NSString stringWithCString:filename encoding:NSASCIIStringEncoding]];
-	
-	on410Image = [NSImage alloc];
-    strcpy(filename, "Contents/Resources/cassetteon.tiff");    
-	[on410Image initWithContentsOfFile:[NSString stringWithCString:filename encoding:NSASCIIStringEncoding]];
-	
-	off410Image = [NSImage alloc];
-    strcpy(filename, "Contents/Resources/cassetteoff.tiff");    
-	[off410Image initWithContentsOfFile:[NSString stringWithCString:filename encoding:NSASCIIStringEncoding]];
-	
-	onCartImage = [NSImage alloc];
-    strcpy(filename, "Contents/Resources/cartridgeon.tiff");    
-	[onCartImage initWithContentsOfFile:[NSString stringWithCString:filename encoding:NSASCIIStringEncoding]];
-	
-	offCartImage = [NSImage alloc];
-    strcpy(filename, "Contents/Resources/cartridgeoff.tiff");    
-	[offCartImage initWithContentsOfFile:[NSString stringWithCString:filename encoding:NSASCIIStringEncoding]];
-	
-	lockImage = [NSImage alloc];
-    strcpy(filename, "Contents/Resources/lock.tiff");    
-	[lockImage initWithContentsOfFile:[NSString stringWithCString:filename encoding:NSASCIIStringEncoding]];
+    off810Image = [NSImage imageNamed:@"atari810off"];
+    empty810Image = [NSImage imageNamed:@"atari810emtpy"];
+    closed810Image = [NSImage imageNamed:@"atari810closed"];
+    read810Image = [NSImage imageNamed:@"atari810read"];
+    write810Image = [NSImage imageNamed:@"atari810write"];
+    on410Image = [NSImage imageNamed:@"cassetteon"];
+    off410Image = [NSImage imageNamed:@"cassetteoff"];
+	onCartImage = [NSImage imageNamed:@"cartridgeon"];
+    offCartImage = [NSImage imageNamed:@"cartridgeoff"];
+    lockImage = [NSImage imageNamed:@"lock"];
 	
 	lockoffImage = [NSImage alloc];
     [lockoffImage initWithSize: NSMakeSize(11.0,14.0)];
     [lockoffImage setBackgroundColor:[NSColor textBackgroundColor]];
 
-	epsonImage = [NSImage alloc];
-    strcpy(filename, "Contents/Resources/epson.tiff");    
-	[epsonImage initWithContentsOfFile:[NSString stringWithCString:filename encoding:NSASCIIStringEncoding]];
-		
-	atari825Image = [NSImage alloc];
-    strcpy(filename, "Contents/Resources/atari825.tiff");    
-	[atari825Image initWithContentsOfFile:[NSString stringWithCString:filename encoding:NSASCIIStringEncoding]];
-		
-	atari1020Image = [NSImage alloc];
-    strcpy(filename, "Contents/Resources/atari1020.tiff");    
-	[atari1020Image initWithContentsOfFile:[NSString stringWithCString:filename encoding:NSASCIIStringEncoding]];
-
-	textImage = [NSImage alloc];
-    strcpy(filename, "Contents/Resources/text.tiff");    
-	[textImage initWithContentsOfFile:[NSString stringWithCString:filename encoding:NSASCIIStringEncoding]];
-		
-	disketteImage = [NSImage alloc];
-    strcpy(filename, "Contents/Resources/diskette.tiff");    
-	[disketteImage initWithContentsOfFile:[NSString stringWithCString:filename encoding:NSASCIIStringEncoding]];
-		
+    epsonImage = [NSImage imageNamed:@"epson"];
+    atari825Image = [NSImage imageNamed:@"atari825"];		
+    atari1020Image = [NSImage imageNamed:@"atari1020"];
+    textImage = [NSImage imageNamed:@"text"];
+    disketteImage = [NSImage imageNamed:@"diskette"];
 	}
 	
     return sharedInstance;

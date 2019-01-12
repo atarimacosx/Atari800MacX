@@ -9,14 +9,14 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "DisplayManager.m"
-            timestampString = "568083765.729339"
+            filePath = "atari_mac_sdl.c"
+            timestampString = "568748638.183254"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "393"
-            endingLineNumber = "393"
-            landmarkName = "DisplayManager"
-            landmarkType = "3">
+            startingLineNumber = "2752"
+            endingLineNumber = "2752"
+            landmarkName = "Atari_Keyboard_International"
+            landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

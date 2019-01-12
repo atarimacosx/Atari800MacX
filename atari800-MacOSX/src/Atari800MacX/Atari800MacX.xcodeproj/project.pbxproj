@@ -22,7 +22,6 @@
 		2D0326F510856DB400983A3E /* PokeyDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D0326F310856DB400983A3E /* PokeyDataSource.m */; };
 		2D037E351001124F0045DB8E /* PastePanel.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D037E331001124F0045DB8E /* PastePanel.h */; };
 		2D037E361001124F0045DB8E /* PastePanel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D037E341001124F0045DB8E /* PastePanel.m */; };
-		2D04E2810C640BB100FCB70F /* diskette.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 2D04E2800C640BB100FCB70F /* diskette.tiff */; };
 		2D0BA11A107D6EF000DEF450 /* LabelDataSource.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D0BA118107D6EF000DEF450 /* LabelDataSource.h */; };
 		2D0BA11B107D6EF000DEF450 /* LabelDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D0BA119107D6EF000DEF450 /* LabelDataSource.m */; };
 		2D0BA125107D724600DEF450 /* Label.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D0BA123107D724600DEF450 /* Label.h */; };
@@ -73,6 +72,34 @@
 		2D587369106A85EA002428EF /* WordTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D587367106A85EA002428EF /* WordTextField.m */; };
 		2D66DBF70F538D0200F882D6 /* cfg.c in Sources */ = {isa = PBXBuildFile; fileRef = 2D66DBF60F538D0200F882D6 /* cfg.c */; };
 		2D70069D0F55F9F80092DA70 /* mac_monitor.c in Sources */ = {isa = PBXBuildFile; fileRef = 2D70069C0F55F9F80092DA70 /* mac_monitor.c */; };
+		2D76730B21EA791E00D99B0E /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2D76730A21EA791E00D99B0E /* Media.xcassets */; };
+		2D76730E21EA7F9A00D99B0E /* atari810off.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D76730C21EA7F9A00D99B0E /* atari810off.png */; };
+		2D76730F21EA7F9A00D99B0E /* atari810off_dark.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D76730D21EA7F9A00D99B0E /* atari810off_dark.png */; };
+		2D76731221EA846800D99B0E /* atari810emtpy_dark.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D76731021EA846800D99B0E /* atari810emtpy_dark.png */; };
+		2D76731321EA846800D99B0E /* atari810emtpy.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D76731121EA846800D99B0E /* atari810emtpy.png */; };
+		2D76731621EA870800D99B0E /* atari810closed_dark.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D76731421EA870700D99B0E /* atari810closed_dark.png */; };
+		2D76731721EA870800D99B0E /* atari810closed.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D76731521EA870700D99B0E /* atari810closed.png */; };
+		2D76731A21EA87F800D99B0E /* atari810read.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D76731821EA87F700D99B0E /* atari810read.png */; };
+		2D76731B21EA87F800D99B0E /* atari810read_dark.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D76731921EA87F700D99B0E /* atari810read_dark.png */; };
+		2D76731E21EA882000D99B0E /* atari810write_dark.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D76731C21EA882000D99B0E /* atari810write_dark.png */; };
+		2D76731F21EA882000D99B0E /* atari810write.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D76731D21EA882000D99B0E /* atari810write.png */; };
+		2D76732221EA8A3900D99B0E /* lock_dark.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D76732021EA8A3800D99B0E /* lock_dark.png */; };
+		2D76732321EA8A3900D99B0E /* lock.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D76732121EA8A3900D99B0E /* lock.png */; };
+		2D76732621EA8B7A00D99B0E /* atari825_dark.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D76732421EA8B7900D99B0E /* atari825_dark.png */; };
+		2D76732721EA8B7A00D99B0E /* atari825.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D76732521EA8B7900D99B0E /* atari825.png */; };
+		2D76732A21EA8C1400D99B0E /* atari1020_dark.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D76732821EA8C1400D99B0E /* atari1020_dark.png */; };
+		2D76732B21EA8C1400D99B0E /* atari1020.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D76732921EA8C1400D99B0E /* atari1020.png */; };
+		2D76732E21EA8C9E00D99B0E /* epson_dark.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D76732C21EA8C9E00D99B0E /* epson_dark.png */; };
+		2D76732F21EA8C9E00D99B0E /* epson.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D76732D21EA8C9E00D99B0E /* epson.png */; };
+		2D76733321EA8D8F00D99B0E /* text_dark.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D76733121EA8D8E00D99B0E /* text_dark.png */; };
+		2D76733521EA8DF700D99B0E /* text.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D76733421EA8DF600D99B0E /* text.png */; };
+		2D76733721EA920000D99B0E /* cassetteoff.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D76733621EA920000D99B0E /* cassetteoff.png */; };
+		2D76733921EA921100D99B0E /* cassetteoff_dark.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D76733821EA921100D99B0E /* cassetteoff_dark.png */; };
+		2D76733C21EA922600D99B0E /* cassetteon.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D76733A21EA922600D99B0E /* cassetteon.png */; };
+		2D76733D21EA922600D99B0E /* cassetteon_dark.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D76733B21EA922600D99B0E /* cassetteon_dark.png */; };
+		2D76733F21EA934B00D99B0E /* cartridgeoff.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D76733E21EA934A00D99B0E /* cartridgeoff.png */; };
+		2D76734121EA935F00D99B0E /* cartridgeon.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D76734021EA935E00D99B0E /* cartridgeon.png */; };
+		2D76734321EA98D100D99B0E /* diskette.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D76734221EA98D100D99B0E /* diskette.png */; };
 		2D82CFFD100591880014FE90 /* PasteWindowPanel.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D82CFFC100591880014FE90 /* PasteWindowPanel.h */; };
 		2D9627A9106C3CC00081F384 /* Breakpoint.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D9627A8106C3CC00081F384 /* Breakpoint.png */; };
 		2D9627AB106C3CD90081F384 /* CurrentLine.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D9627AA106C3CD90081F384 /* CurrentLine.png */; };
@@ -180,25 +207,10 @@
 		2DAEDB5009B69AED005FF181 /* Atari800MacX Help in Resources */ = {isa = PBXBuildFile; fileRef = F5176916034BFE7501A8C8B4 /* Atari800MacX Help */; };
 		2DAEDB5109B69AED005FF181 /* doc.icns in Resources */ = {isa = PBXBuildFile; fileRef = F507FF78034EB78801A8C8B4 /* doc.icns */; };
 		2DAEDB5209B69AED005FF181 /* Updater.esud in Resources */ = {isa = PBXBuildFile; fileRef = 2D60C39503BFE68F00A8C8B4 /* Updater.esud */; };
-		2DAEDB5309B69AED005FF181 /* atari810emtpy.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 2DF9DDD405A9359700E0BC93 /* atari810emtpy.tiff */; };
-		2DAEDB5409B69AED005FF181 /* atari810closed.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 2D7F4EBE05ABB1CA001F05E0 /* atari810closed.tiff */; };
-		2DAEDB5509B69AED005FF181 /* atari810off.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 2D7F4EC205ABB2D3001F05E0 /* atari810off.tiff */; };
-		2DAEDB5609B69AED005FF181 /* atari810read.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 2DBC745F05AD0AC6004925CD /* atari810read.tiff */; };
-		2DAEDB5709B69AED005FF181 /* atari810write.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 2DBC746005AD0AC6004925CD /* atari810write.tiff */; };
-		2DAEDB5809B69AED005FF181 /* cartridgeoff.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 2D7DD84405AE5659000B96EF /* cartridgeoff.tiff */; };
-		2DAEDB5909B69AED005FF181 /* cartridgeon.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 2D7DD84505AE5659000B96EF /* cartridgeon.tiff */; };
-		2DAEDB5A09B69AED005FF181 /* cassetteoff.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 2D7DD85805AE6BBE000B96EF /* cassetteoff.tiff */; };
-		2DAEDB5B09B69AED005FF181 /* cassetteon.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 2D7DD85905AE6BBE000B96EF /* cassetteon.tiff */; };
-		2DAEDB5C09B69AED005FF181 /* lock.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 2D3AAA2205B901C700A42EAC /* lock.tiff */; };
-		2DAEDB5D09B69AED005FF181 /* lockoff.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 2DE45FD905C9FEFE00CB32D2 /* lockoff.tiff */; };
 		2DAEDB5E09B69AED005FF181 /* DiskEditorWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = 2D8F5044060E110700C950A4 /* DiskEditorWindow.nib */; };
 		2DAEDB5F09B69AED005FF181 /* AboutBox.nib in Resources */ = {isa = PBXBuildFile; fileRef = 2D8B1E42061D036E00B0AA56 /* AboutBox.nib */; };
 		2DAEDB6009B69AED005FF181 /* Credits.html in Resources */ = {isa = PBXBuildFile; fileRef = 2D8AFFF6061DBB6E00EC63CC /* Credits.html */; };
 		2DAEDB6509B69AED005FF181 /* PrintOutput.nib in Resources */ = {isa = PBXBuildFile; fileRef = 2DAB84FE07E39B9800599B16 /* PrintOutput.nib */; };
-		2DAEDB6609B69AED005FF181 /* epson.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 2D9F6F420831B028003FEEAE /* epson.tiff */; };
-		2DAEDB6709B69AED005FF181 /* atari1020.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 2D9F6F5C0831B2D2003FEEAE /* atari1020.tiff */; };
-		2DAEDB6809B69AED005FF181 /* atari825.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 2D9F6F600831B2E2003FEEAE /* atari825.tiff */; };
-		2DAEDB6909B69AED005FF181 /* text.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 2D35E7260831BB81002C46BF /* text.tiff */; };
 		2DAEDB6A09B69AED005FF181 /* PrintOutputConfirm.nib in Resources */ = {isa = PBXBuildFile; fileRef = 2DA416410844552E00EA7648 /* PrintOutputConfirm.nib */; };
 		2DAEDB6D09B69AED005FF181 /* SectorEditorWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = 2D35913B08DDE9F10041824D /* SectorEditorWindow.nib */; };
 		2DAEDB7009B69AED005FF181 /* SDLMain.m in Sources */ = {isa = PBXBuildFile; fileRef = F5A47A9E01A0483001D3D55B /* SDLMain.m */; };
@@ -396,7 +408,6 @@
 		2D0326F310856DB400983A3E /* PokeyDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PokeyDataSource.m; sourceTree = SOURCE_ROOT; };
 		2D037E331001124F0045DB8E /* PastePanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PastePanel.h; sourceTree = "<group>"; };
 		2D037E341001124F0045DB8E /* PastePanel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PastePanel.m; sourceTree = "<group>"; };
-		2D04E2800C640BB100FCB70F /* diskette.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = diskette.tiff; sourceTree = SOURCE_ROOT; };
 		2D068AA908DD1DAD001D855E /* SectorEditorByteFieldCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SectorEditorByteFieldCell.h; sourceTree = "<group>"; };
 		2D068AAA08DD1DAD001D855E /* SectorEditorByteFieldCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SectorEditorByteFieldCell.m; sourceTree = "<group>"; };
 		2D068AEF08DD2FA0001D855E /* SectorEditorDataSource.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SectorEditorDataSource.h; sourceTree = SOURCE_ROOT; };
@@ -444,10 +455,8 @@
 		2D35913B08DDE9F10041824D /* SectorEditorWindow.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = SectorEditorWindow.nib; sourceTree = "<group>"; };
 		2D35920108DE2E760041824D /* SectorEditorAsciiFieldCell.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SectorEditorAsciiFieldCell.h; sourceTree = SOURCE_ROOT; };
 		2D35920208DE2E760041824D /* SectorEditorAsciiFieldCell.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SectorEditorAsciiFieldCell.m; sourceTree = SOURCE_ROOT; };
-		2D35E7260831BB81002C46BF /* text.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = text.tiff; sourceTree = SOURCE_ROOT; };
 		2D3A8F7A0CB3087200A18A29 /* xep80.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = xep80.c; path = ../xep80.c; sourceTree = SOURCE_ROOT; };
 		2D3A8F7B0CB3087200A18A29 /* xep80.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = xep80.h; path = ../xep80.h; sourceTree = SOURCE_ROOT; };
-		2D3AAA2205B901C700A42EAC /* lock.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = lock.tiff; sourceTree = SOURCE_ROOT; };
 		2D3D18A7052BD6E600A8C8B4 /* mzpokeysnd.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = mzpokeysnd.c; path = ../mzpokeysnd.c; sourceTree = SOURCE_ROOT; };
 		2D3D18A8052BD6E600A8C8B4 /* mzpokeysnd.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = mzpokeysnd.h; path = ../mzpokeysnd.h; sourceTree = SOURCE_ROOT; };
 		2D3D18A9052BD6E600A8C8B4 /* pokey_resample.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = pokey_resample.c; path = ../pokey_resample.c; sourceTree = SOURCE_ROOT; };
@@ -507,12 +516,34 @@
 		2D68BC170607F3E800BB94D6 /* Atari800TableView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = Atari800TableView.h; sourceTree = SOURCE_ROOT; };
 		2D68BC180607F3E800BB94D6 /* Atari800TableView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = Atari800TableView.m; sourceTree = SOURCE_ROOT; };
 		2D70069C0F55F9F80092DA70 /* mac_monitor.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = mac_monitor.c; sourceTree = SOURCE_ROOT; };
-		2D7DD84405AE5659000B96EF /* cartridgeoff.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = cartridgeoff.tiff; sourceTree = SOURCE_ROOT; };
-		2D7DD84505AE5659000B96EF /* cartridgeon.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = cartridgeon.tiff; sourceTree = SOURCE_ROOT; };
-		2D7DD85805AE6BBE000B96EF /* cassetteoff.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = cassetteoff.tiff; sourceTree = SOURCE_ROOT; };
-		2D7DD85905AE6BBE000B96EF /* cassetteon.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = cassetteon.tiff; sourceTree = SOURCE_ROOT; };
-		2D7F4EBE05ABB1CA001F05E0 /* atari810closed.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = atari810closed.tiff; sourceTree = SOURCE_ROOT; };
-		2D7F4EC205ABB2D3001F05E0 /* atari810off.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = atari810off.tiff; sourceTree = SOURCE_ROOT; };
+		2D76730A21EA791E00D99B0E /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
+		2D76730C21EA7F9A00D99B0E /* atari810off.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = atari810off.png; sourceTree = "<group>"; };
+		2D76730D21EA7F9A00D99B0E /* atari810off_dark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = atari810off_dark.png; sourceTree = "<group>"; };
+		2D76731021EA846800D99B0E /* atari810emtpy_dark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = atari810emtpy_dark.png; sourceTree = "<group>"; };
+		2D76731121EA846800D99B0E /* atari810emtpy.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = atari810emtpy.png; sourceTree = "<group>"; };
+		2D76731421EA870700D99B0E /* atari810closed_dark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = atari810closed_dark.png; sourceTree = "<group>"; };
+		2D76731521EA870700D99B0E /* atari810closed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = atari810closed.png; sourceTree = "<group>"; };
+		2D76731821EA87F700D99B0E /* atari810read.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = atari810read.png; sourceTree = "<group>"; };
+		2D76731921EA87F700D99B0E /* atari810read_dark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = atari810read_dark.png; sourceTree = "<group>"; };
+		2D76731C21EA882000D99B0E /* atari810write_dark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = atari810write_dark.png; sourceTree = "<group>"; };
+		2D76731D21EA882000D99B0E /* atari810write.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = atari810write.png; sourceTree = "<group>"; };
+		2D76732021EA8A3800D99B0E /* lock_dark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lock_dark.png; sourceTree = "<group>"; };
+		2D76732121EA8A3900D99B0E /* lock.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lock.png; sourceTree = "<group>"; };
+		2D76732421EA8B7900D99B0E /* atari825_dark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = atari825_dark.png; sourceTree = "<group>"; };
+		2D76732521EA8B7900D99B0E /* atari825.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = atari825.png; sourceTree = "<group>"; };
+		2D76732821EA8C1400D99B0E /* atari1020_dark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = atari1020_dark.png; sourceTree = "<group>"; };
+		2D76732921EA8C1400D99B0E /* atari1020.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = atari1020.png; sourceTree = "<group>"; };
+		2D76732C21EA8C9E00D99B0E /* epson_dark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = epson_dark.png; sourceTree = "<group>"; };
+		2D76732D21EA8C9E00D99B0E /* epson.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = epson.png; sourceTree = "<group>"; };
+		2D76733121EA8D8E00D99B0E /* text_dark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = text_dark.png; sourceTree = "<group>"; };
+		2D76733421EA8DF600D99B0E /* text.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = text.png; sourceTree = "<group>"; };
+		2D76733621EA920000D99B0E /* cassetteoff.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cassetteoff.png; sourceTree = "<group>"; };
+		2D76733821EA921100D99B0E /* cassetteoff_dark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cassetteoff_dark.png; sourceTree = "<group>"; };
+		2D76733A21EA922600D99B0E /* cassetteon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cassetteon.png; sourceTree = "<group>"; };
+		2D76733B21EA922600D99B0E /* cassetteon_dark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cassetteon_dark.png; sourceTree = "<group>"; };
+		2D76733E21EA934A00D99B0E /* cartridgeoff.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cartridgeoff.png; sourceTree = "<group>"; };
+		2D76734021EA935E00D99B0E /* cartridgeon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cartridgeon.png; sourceTree = "<group>"; };
+		2D76734221EA98D100D99B0E /* diskette.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = diskette.png; sourceTree = "<group>"; };
 		2D8155210656C27C0090BE8F /* ataritiff.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = ataritiff.m; sourceTree = SOURCE_ROOT; };
 		2D81557B0656CE400090BE8F /* ataritiff.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ataritiff.h; sourceTree = SOURCE_ROOT; };
 		2D82CFFC100591880014FE90 /* PasteWindowPanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PasteWindowPanel.h; sourceTree = "<group>"; };
@@ -540,9 +571,6 @@
 		2D9863E407BED49700596C6B /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
 		2D9B7BBF07F618C80059298E /* PrintableGraphics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrintableGraphics.h; sourceTree = "<group>"; };
 		2D9B7BC007F618C80059298E /* PrintableGraphics.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PrintableGraphics.m; sourceTree = "<group>"; };
-		2D9F6F420831B028003FEEAE /* epson.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = epson.tiff; sourceTree = SOURCE_ROOT; };
-		2D9F6F5C0831B2D2003FEEAE /* atari1020.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = atari1020.tiff; sourceTree = SOURCE_ROOT; };
-		2D9F6F600831B2E2003FEEAE /* atari825.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = atari825.tiff; sourceTree = SOURCE_ROOT; };
 		2DA416410844552E00EA7648 /* PrintOutputConfirm.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = PrintOutputConfirm.nib; sourceTree = SOURCE_ROOT; };
 		2DA440AF08D8B68E0026A9A5 /* arrows.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = arrows.h; path = "GUIlib-1.1.1/arrows.h"; sourceTree = SOURCE_ROOT; };
 		2DA5816209C5F38700331696 /* devices.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = devices.c; path = ../devices.c; sourceTree = SOURCE_ROOT; };
@@ -572,8 +600,6 @@
 		2DBBC0990FDC448800FD54E5 /* PasteManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PasteManager.h; sourceTree = SOURCE_ROOT; };
 		2DBBC09A0FDC448800FD54E5 /* PasteManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PasteManager.m; sourceTree = SOURCE_ROOT; };
 		2DBC742B05AD0334004925CD /* Atari800Window.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = Atari800Window.m; sourceTree = "<group>"; };
-		2DBC745F05AD0AC6004925CD /* atari810read.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = atari810read.tiff; sourceTree = SOURCE_ROOT; };
-		2DBC746005AD0AC6004925CD /* atari810write.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = atari810write.tiff; sourceTree = SOURCE_ROOT; };
 		2DBCFAFE07E4F381003CF9C7 /* PrinterView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrinterView.h; sourceTree = "<group>"; };
 		2DBCFAFF07E4F381003CF9C7 /* PrinterView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PrinterView.m; sourceTree = "<group>"; };
 		2DC051AD106962C600B9657B /* MemoryEditorAsciiFieldCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MemoryEditorAsciiFieldCell.h; sourceTree = SOURCE_ROOT; };
@@ -601,7 +627,6 @@
 		2DE2D1EB106EA23D0049A8A1 /* DisabledBreakpointCurrentLine.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = DisabledBreakpointCurrentLine.png; sourceTree = SOURCE_ROOT; };
 		2DE2D3A9106F04A90049A8A1 /* BreakpointsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BreakpointsController.h; sourceTree = "<group>"; };
 		2DE2D3AA106F04A90049A8A1 /* BreakpointsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BreakpointsController.m; sourceTree = "<group>"; };
-		2DE45FD905C9FEFE00CB32D2 /* lockoff.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = lockoff.tiff; sourceTree = SOURCE_ROOT; };
 		2DE646A80531083200A8C8B4 /* mac_colours.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = mac_colours.c; sourceTree = SOURCE_ROOT; };
 		2DE646A90531083200A8C8B4 /* mac_colours.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = mac_colours.h; sourceTree = SOURCE_ROOT; };
 		2DE8B9FD07ECCF75001E5BDE /* EpsonFX80Simulator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EpsonFX80Simulator.h; sourceTree = "<group>"; };
@@ -621,7 +646,6 @@
 		2DF9719706154A9F00330603 /* atrDos3.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = atrDos3.h; sourceTree = SOURCE_ROOT; };
 		2DF9719806154A9F00330603 /* atrDos4.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = atrDos4.c; sourceTree = SOURCE_ROOT; };
 		2DF9719906154A9F00330603 /* atrDos4.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = atrDos4.h; sourceTree = SOURCE_ROOT; };
-		2DF9DDD405A9359700E0BC93 /* atari810emtpy.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = atari810emtpy.tiff; sourceTree = SOURCE_ROOT; };
 		2DFB2BC808A99F86004EF21F /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
 		2DFF9C7504008D8200A8C8B4 /* cycle_map.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = cycle_map.c; path = ../cycle_map.c; sourceTree = SOURCE_ROOT; };
 		2DFF9C7604008D8200A8C8B4 /* cycle_map.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = cycle_map.h; path = ../cycle_map.h; sourceTree = SOURCE_ROOT; };
@@ -983,22 +1007,33 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				2D9F6F5C0831B2D2003FEEAE /* atari1020.tiff */,
-				2D7F4EBE05ABB1CA001F05E0 /* atari810closed.tiff */,
-				2DF9DDD405A9359700E0BC93 /* atari810emtpy.tiff */,
-				2D7F4EC205ABB2D3001F05E0 /* atari810off.tiff */,
-				2DBC745F05AD0AC6004925CD /* atari810read.tiff */,
-				2DBC746005AD0AC6004925CD /* atari810write.tiff */,
-				2D9F6F600831B2E2003FEEAE /* atari825.tiff */,
-				2D7DD85805AE6BBE000B96EF /* cassetteoff.tiff */,
-				2D7DD85905AE6BBE000B96EF /* cassetteon.tiff */,
-				2D7DD84405AE5659000B96EF /* cartridgeoff.tiff */,
-				2D7DD84505AE5659000B96EF /* cartridgeon.tiff */,
-				2D04E2800C640BB100FCB70F /* diskette.tiff */,
-				2D9F6F420831B028003FEEAE /* epson.tiff */,
-				2D3AAA2205B901C700A42EAC /* lock.tiff */,
-				2DE45FD905C9FEFE00CB32D2 /* lockoff.tiff */,
-				2D35E7260831BB81002C46BF /* text.tiff */,
+				2D76732821EA8C1400D99B0E /* atari1020_dark.png */,
+				2D76732921EA8C1400D99B0E /* atari1020.png */,
+				2D76731421EA870700D99B0E /* atari810closed_dark.png */,
+				2D76731521EA870700D99B0E /* atari810closed.png */,
+				2D76731021EA846800D99B0E /* atari810emtpy_dark.png */,
+				2D76731121EA846800D99B0E /* atari810emtpy.png */,
+				2D76730D21EA7F9A00D99B0E /* atari810off_dark.png */,
+				2D76730C21EA7F9A00D99B0E /* atari810off.png */,
+				2D76731921EA87F700D99B0E /* atari810read_dark.png */,
+				2D76731821EA87F700D99B0E /* atari810read.png */,
+				2D76731C21EA882000D99B0E /* atari810write_dark.png */,
+				2D76731D21EA882000D99B0E /* atari810write.png */,
+				2D76732421EA8B7900D99B0E /* atari825_dark.png */,
+				2D76732521EA8B7900D99B0E /* atari825.png */,
+				2D76733821EA921100D99B0E /* cassetteoff_dark.png */,
+				2D76733621EA920000D99B0E /* cassetteoff.png */,
+				2D76733B21EA922600D99B0E /* cassetteon_dark.png */,
+				2D76733A21EA922600D99B0E /* cassetteon.png */,
+				2D76733E21EA934A00D99B0E /* cartridgeoff.png */,
+				2D76734021EA935E00D99B0E /* cartridgeon.png */,
+				2D76734221EA98D100D99B0E /* diskette.png */,
+				2D76732C21EA8C9E00D99B0E /* epson_dark.png */,
+				2D76732D21EA8C9E00D99B0E /* epson.png */,
+				2D76732021EA8A3800D99B0E /* lock_dark.png */,
+				2D76732121EA8A3900D99B0E /* lock.png */,
+				2D76733421EA8DF600D99B0E /* text.png */,
+				2D76733121EA8D8E00D99B0E /* text_dark.png */,
 				2D9627A8106C3CC00081F384 /* Breakpoint.png */,
 				2D9627CA106C43700081F384 /* BreakpointCurrentLine.png */,
 				2D9627AA106C3CD90081F384 /* CurrentLine.png */,
@@ -1008,6 +1043,7 @@
 				F507FF78034EB78801A8C8B4 /* doc.icns */,
 				F5C68C3D032B1E4501A8C8B4 /* Fuji.icns */,
 				2D8AFFF6061DBB6E00EC63CC /* Credits.html */,
+				2D76730A21EA791E00D99B0E /* Media.xcassets */,
 				2D8B1E42061D036E00B0AA56 /* AboutBox.nib */,
 				F565ED130340F40001A8C8B4 /* ControlManager.nib */,
 				2D8F5044060E110700C950A4 /* DiskEditorWindow.nib */,
@@ -1304,41 +1340,53 @@
 			buildActionMask = 2147483647;
 			files = (
 				2DAEDB4A09B69AED005FF181 /* InfoPlist.strings in Resources */,
+				2D76733F21EA934B00D99B0E /* cartridgeoff.png in Resources */,
+				2D76734321EA98D100D99B0E /* diskette.png in Resources */,
 				2DAEDB4B09B69AED005FF181 /* Fuji.icns in Resources */,
 				2DAEDB4C09B69AED005FF181 /* SDLMain.nib in Resources */,
 				2DAEDB4D09B69AED005FF181 /* Preferences.nib in Resources */,
 				2DAEDB4E09B69AED005FF181 /* MediaManager.nib in Resources */,
 				2DAEDB4F09B69AED005FF181 /* ControlManager.nib in Resources */,
+				2D76733C21EA922600D99B0E /* cassetteon.png in Resources */,
+				2D76733521EA8DF700D99B0E /* text.png in Resources */,
 				2DAEDB5009B69AED005FF181 /* Atari800MacX Help in Resources */,
 				2DAEDB5109B69AED005FF181 /* doc.icns in Resources */,
 				2DAEDB5209B69AED005FF181 /* Updater.esud in Resources */,
-				2DAEDB5309B69AED005FF181 /* atari810emtpy.tiff in Resources */,
-				2DAEDB5409B69AED005FF181 /* atari810closed.tiff in Resources */,
-				2DAEDB5509B69AED005FF181 /* atari810off.tiff in Resources */,
-				2DAEDB5609B69AED005FF181 /* atari810read.tiff in Resources */,
-				2DAEDB5709B69AED005FF181 /* atari810write.tiff in Resources */,
-				2DAEDB5809B69AED005FF181 /* cartridgeoff.tiff in Resources */,
-				2DAEDB5909B69AED005FF181 /* cartridgeon.tiff in Resources */,
-				2DAEDB5A09B69AED005FF181 /* cassetteoff.tiff in Resources */,
-				2DAEDB5B09B69AED005FF181 /* cassetteon.tiff in Resources */,
-				2DAEDB5C09B69AED005FF181 /* lock.tiff in Resources */,
-				2DAEDB5D09B69AED005FF181 /* lockoff.tiff in Resources */,
+				2D76731621EA870800D99B0E /* atari810closed_dark.png in Resources */,
+				2D76733D21EA922600D99B0E /* cassetteon_dark.png in Resources */,
+				2D76732621EA8B7A00D99B0E /* atari825_dark.png in Resources */,
+				2D76732A21EA8C1400D99B0E /* atari1020_dark.png in Resources */,
+				2D76732321EA8A3900D99B0E /* lock.png in Resources */,
+				2D76732F21EA8C9E00D99B0E /* epson.png in Resources */,
+				2D76731721EA870800D99B0E /* atari810closed.png in Resources */,
 				2DAEDB5E09B69AED005FF181 /* DiskEditorWindow.nib in Resources */,
+				2D76732721EA8B7A00D99B0E /* atari825.png in Resources */,
+				2D76733321EA8D8F00D99B0E /* text_dark.png in Resources */,
 				2DAEDB5F09B69AED005FF181 /* AboutBox.nib in Resources */,
+				2D76731221EA846800D99B0E /* atari810emtpy_dark.png in Resources */,
+				2D76733721EA920000D99B0E /* cassetteoff.png in Resources */,
+				2D76731F21EA882000D99B0E /* atari810write.png in Resources */,
 				2DAEDB6009B69AED005FF181 /* Credits.html in Resources */,
 				2DAEDB6509B69AED005FF181 /* PrintOutput.nib in Resources */,
-				2DAEDB6609B69AED005FF181 /* epson.tiff in Resources */,
-				2DAEDB6709B69AED005FF181 /* atari1020.tiff in Resources */,
-				2DAEDB6809B69AED005FF181 /* atari825.tiff in Resources */,
-				2DAEDB6909B69AED005FF181 /* text.tiff in Resources */,
+				2D76730E21EA7F9A00D99B0E /* atari810off.png in Resources */,
+				2D76734121EA935F00D99B0E /* cartridgeon.png in Resources */,
+				2D76732B21EA8C1400D99B0E /* atari1020.png in Resources */,
+				2D76733921EA921100D99B0E /* cassetteoff_dark.png in Resources */,
+				2D76731E21EA882000D99B0E /* atari810write_dark.png in Resources */,
+				2D76730B21EA791E00D99B0E /* Media.xcassets in Resources */,
+				2D76731B21EA87F800D99B0E /* atari810read_dark.png in Resources */,
+				2D76731321EA846800D99B0E /* atari810emtpy.png in Resources */,
 				2DAEDB6A09B69AED005FF181 /* PrintOutputConfirm.nib in Resources */,
 				2DAEDB6D09B69AED005FF181 /* SectorEditorWindow.nib in Resources */,
-				2D04E2810C640BB100FCB70F /* diskette.tiff in Resources */,
 				2D54B79310684FD800892FE1 /* go.png in Resources */,
 				2D9627A9106C3CC00081F384 /* Breakpoint.png in Resources */,
 				2D9627AB106C3CD90081F384 /* CurrentLine.png in Resources */,
+				2D76732E21EA8C9E00D99B0E /* epson_dark.png in Resources */,
+				2D76732221EA8A3900D99B0E /* lock_dark.png in Resources */,
 				2D9627CB106C43700081F384 /* BreakpointCurrentLine.png in Resources */,
+				2D76730F21EA7F9A00D99B0E /* atari810off_dark.png in Resources */,
 				2DE2D1EC106EA23D0049A8A1 /* DisabledBreakpoint.png in Resources */,
+				2D76731A21EA87F800D99B0E /* atari810read.png in Resources */,
 				2DE2D1ED106EA23D0049A8A1 /* DisabledBreakpointCurrentLine.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -340,6 +340,7 @@
                     </button>
                 </subviews>
             </view>
+            <point key="canvasLocation" x="84" y="398"/>
         </window>
         <drawer preferredEdge="minY" id="144" userLabel="Drawer">
             <size key="contentSize" width="300" height="387"/>
