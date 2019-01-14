@@ -7,14 +7,13 @@
     },
     {
       "idiom" : "universal",
-      "filename" : "atari810emtpy_dark.png",
+      "scale" : "1x",
       "appearances" : [
         {
           "appearance" : "luminosity",
           "value" : "dark"
         }
-      ],
-      "scale" : "1x"
+      ]
     },
     {
       "idiom" : "universal",
