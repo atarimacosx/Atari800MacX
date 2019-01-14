@@ -74,29 +74,18 @@
 		2D70069D0F55F9F80092DA70 /* mac_monitor.c in Sources */ = {isa = PBXBuildFile; fileRef = 2D70069C0F55F9F80092DA70 /* mac_monitor.c */; };
 		2D76730B21EA791E00D99B0E /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2D76730A21EA791E00D99B0E /* Media.xcassets */; };
 		2D76730E21EA7F9A00D99B0E /* atari810off.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D76730C21EA7F9A00D99B0E /* atari810off.png */; };
-		2D76730F21EA7F9A00D99B0E /* atari810off_dark.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D76730D21EA7F9A00D99B0E /* atari810off_dark.png */; };
-		2D76731221EA846800D99B0E /* atari810emtpy_dark.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D76731021EA846800D99B0E /* atari810emtpy_dark.png */; };
 		2D76731321EA846800D99B0E /* atari810emtpy.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D76731121EA846800D99B0E /* atari810emtpy.png */; };
-		2D76731621EA870800D99B0E /* atari810closed_dark.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D76731421EA870700D99B0E /* atari810closed_dark.png */; };
 		2D76731721EA870800D99B0E /* atari810closed.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D76731521EA870700D99B0E /* atari810closed.png */; };
 		2D76731A21EA87F800D99B0E /* atari810read.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D76731821EA87F700D99B0E /* atari810read.png */; };
-		2D76731B21EA87F800D99B0E /* atari810read_dark.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D76731921EA87F700D99B0E /* atari810read_dark.png */; };
-		2D76731E21EA882000D99B0E /* atari810write_dark.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D76731C21EA882000D99B0E /* atari810write_dark.png */; };
 		2D76731F21EA882000D99B0E /* atari810write.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D76731D21EA882000D99B0E /* atari810write.png */; };
-		2D76732221EA8A3900D99B0E /* lock_dark.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D76732021EA8A3800D99B0E /* lock_dark.png */; };
-		2D76732321EA8A3900D99B0E /* lock.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D76732121EA8A3900D99B0E /* lock.png */; };
-		2D76732621EA8B7A00D99B0E /* atari825_dark.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D76732421EA8B7900D99B0E /* atari825_dark.png */; };
+		2D76732321EA8A3900D99B0E /* lock_dark.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D76732121EA8A3900D99B0E /* lock_dark.png */; };
 		2D76732721EA8B7A00D99B0E /* atari825.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D76732521EA8B7900D99B0E /* atari825.png */; };
-		2D76732A21EA8C1400D99B0E /* atari1020_dark.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D76732821EA8C1400D99B0E /* atari1020_dark.png */; };
 		2D76732B21EA8C1400D99B0E /* atari1020.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D76732921EA8C1400D99B0E /* atari1020.png */; };
-		2D76732E21EA8C9E00D99B0E /* epson_dark.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D76732C21EA8C9E00D99B0E /* epson_dark.png */; };
 		2D76732F21EA8C9E00D99B0E /* epson.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D76732D21EA8C9E00D99B0E /* epson.png */; };
 		2D76733321EA8D8F00D99B0E /* text_dark.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D76733121EA8D8E00D99B0E /* text_dark.png */; };
 		2D76733521EA8DF700D99B0E /* text.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D76733421EA8DF600D99B0E /* text.png */; };
 		2D76733721EA920000D99B0E /* cassetteoff.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D76733621EA920000D99B0E /* cassetteoff.png */; };
-		2D76733921EA921100D99B0E /* cassetteoff_dark.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D76733821EA921100D99B0E /* cassetteoff_dark.png */; };
 		2D76733C21EA922600D99B0E /* cassetteon.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D76733A21EA922600D99B0E /* cassetteon.png */; };
-		2D76733D21EA922600D99B0E /* cassetteon_dark.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D76733B21EA922600D99B0E /* cassetteon_dark.png */; };
 		2D76733F21EA934B00D99B0E /* cartridgeoff.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D76733E21EA934A00D99B0E /* cartridgeoff.png */; };
 		2D76734121EA935F00D99B0E /* cartridgeon.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D76734021EA935E00D99B0E /* cartridgeon.png */; };
 		2D76734321EA98D100D99B0E /* diskette.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D76734221EA98D100D99B0E /* diskette.png */; };
@@ -327,6 +316,7 @@
 		2DEF29230FDCBE6E00660E07 /* PasteWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = 2DEF29210FDCBE6E00660E07 /* PasteWindow.h */; };
 		2DEF29240FDCBE6E00660E07 /* PasteWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DEF29220FDCBE6E00660E07 /* PasteWindow.m */; };
 		2DF39C950A07024E00206A1B /* statesav.c in Sources */ = {isa = PBXBuildFile; fileRef = 2DF39C940A07024E00206A1B /* statesav.c */; };
+		77A5A9D521EC3B440098C3A5 /* lock.png in Resources */ = {isa = PBXBuildFile; fileRef = 77A5A9D421EC3B430098C3A5 /* lock.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -518,29 +508,18 @@
 		2D70069C0F55F9F80092DA70 /* mac_monitor.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = mac_monitor.c; sourceTree = SOURCE_ROOT; };
 		2D76730A21EA791E00D99B0E /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
 		2D76730C21EA7F9A00D99B0E /* atari810off.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = atari810off.png; sourceTree = "<group>"; };
-		2D76730D21EA7F9A00D99B0E /* atari810off_dark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = atari810off_dark.png; sourceTree = "<group>"; };
-		2D76731021EA846800D99B0E /* atari810emtpy_dark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = atari810emtpy_dark.png; sourceTree = "<group>"; };
 		2D76731121EA846800D99B0E /* atari810emtpy.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = atari810emtpy.png; sourceTree = "<group>"; };
-		2D76731421EA870700D99B0E /* atari810closed_dark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = atari810closed_dark.png; sourceTree = "<group>"; };
 		2D76731521EA870700D99B0E /* atari810closed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = atari810closed.png; sourceTree = "<group>"; };
 		2D76731821EA87F700D99B0E /* atari810read.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = atari810read.png; sourceTree = "<group>"; };
-		2D76731921EA87F700D99B0E /* atari810read_dark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = atari810read_dark.png; sourceTree = "<group>"; };
-		2D76731C21EA882000D99B0E /* atari810write_dark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = atari810write_dark.png; sourceTree = "<group>"; };
 		2D76731D21EA882000D99B0E /* atari810write.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = atari810write.png; sourceTree = "<group>"; };
-		2D76732021EA8A3800D99B0E /* lock_dark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lock_dark.png; sourceTree = "<group>"; };
-		2D76732121EA8A3900D99B0E /* lock.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lock.png; sourceTree = "<group>"; };
-		2D76732421EA8B7900D99B0E /* atari825_dark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = atari825_dark.png; sourceTree = "<group>"; };
+		2D76732121EA8A3900D99B0E /* lock_dark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lock_dark.png; sourceTree = "<group>"; };
 		2D76732521EA8B7900D99B0E /* atari825.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = atari825.png; sourceTree = "<group>"; };
-		2D76732821EA8C1400D99B0E /* atari1020_dark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = atari1020_dark.png; sourceTree = "<group>"; };
 		2D76732921EA8C1400D99B0E /* atari1020.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = atari1020.png; sourceTree = "<group>"; };
-		2D76732C21EA8C9E00D99B0E /* epson_dark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = epson_dark.png; sourceTree = "<group>"; };
 		2D76732D21EA8C9E00D99B0E /* epson.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = epson.png; sourceTree = "<group>"; };
 		2D76733121EA8D8E00D99B0E /* text_dark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = text_dark.png; sourceTree = "<group>"; };
 		2D76733421EA8DF600D99B0E /* text.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = text.png; sourceTree = "<group>"; };
 		2D76733621EA920000D99B0E /* cassetteoff.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cassetteoff.png; sourceTree = "<group>"; };
-		2D76733821EA921100D99B0E /* cassetteoff_dark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cassetteoff_dark.png; sourceTree = "<group>"; };
 		2D76733A21EA922600D99B0E /* cassetteon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cassetteon.png; sourceTree = "<group>"; };
-		2D76733B21EA922600D99B0E /* cassetteon_dark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cassetteon_dark.png; sourceTree = "<group>"; };
 		2D76733E21EA934A00D99B0E /* cartridgeoff.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cartridgeoff.png; sourceTree = "<group>"; };
 		2D76734021EA935E00D99B0E /* cartridgeon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cartridgeon.png; sourceTree = "<group>"; };
 		2D76734221EA98D100D99B0E /* diskette.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = diskette.png; sourceTree = "<group>"; };
@@ -649,6 +628,7 @@
 		2DFB2BC808A99F86004EF21F /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
 		2DFF9C7504008D8200A8C8B4 /* cycle_map.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = cycle_map.c; path = ../cycle_map.c; sourceTree = SOURCE_ROOT; };
 		2DFF9C7604008D8200A8C8B4 /* cycle_map.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = cycle_map.h; path = ../cycle_map.h; sourceTree = SOURCE_ROOT; };
+		77A5A9D421EC3B430098C3A5 /* lock.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lock.png; sourceTree = "<group>"; };
 		F507FF78034EB78801A8C8B4 /* doc.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = doc.icns; sourceTree = "<group>"; };
 		F5176916034BFE7501A8C8B4 /* Atari800MacX Help */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = folder; path = "Atari800MacX Help"; sourceTree = "<group>"; };
 		F555833A030EF41401A8C8B4 /* config.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = SOURCE_ROOT; };
@@ -1007,31 +987,21 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				2D76732821EA8C1400D99B0E /* atari1020_dark.png */,
+				77A5A9D421EC3B430098C3A5 /* lock.png */,
 				2D76732921EA8C1400D99B0E /* atari1020.png */,
-				2D76731421EA870700D99B0E /* atari810closed_dark.png */,
 				2D76731521EA870700D99B0E /* atari810closed.png */,
-				2D76731021EA846800D99B0E /* atari810emtpy_dark.png */,
 				2D76731121EA846800D99B0E /* atari810emtpy.png */,
-				2D76730D21EA7F9A00D99B0E /* atari810off_dark.png */,
 				2D76730C21EA7F9A00D99B0E /* atari810off.png */,
-				2D76731921EA87F700D99B0E /* atari810read_dark.png */,
 				2D76731821EA87F700D99B0E /* atari810read.png */,
-				2D76731C21EA882000D99B0E /* atari810write_dark.png */,
 				2D76731D21EA882000D99B0E /* atari810write.png */,
-				2D76732421EA8B7900D99B0E /* atari825_dark.png */,
 				2D76732521EA8B7900D99B0E /* atari825.png */,
-				2D76733821EA921100D99B0E /* cassetteoff_dark.png */,
 				2D76733621EA920000D99B0E /* cassetteoff.png */,
-				2D76733B21EA922600D99B0E /* cassetteon_dark.png */,
 				2D76733A21EA922600D99B0E /* cassetteon.png */,
 				2D76733E21EA934A00D99B0E /* cartridgeoff.png */,
 				2D76734021EA935E00D99B0E /* cartridgeon.png */,
 				2D76734221EA98D100D99B0E /* diskette.png */,
-				2D76732C21EA8C9E00D99B0E /* epson_dark.png */,
 				2D76732D21EA8C9E00D99B0E /* epson.png */,
-				2D76732021EA8A3800D99B0E /* lock_dark.png */,
-				2D76732121EA8A3900D99B0E /* lock.png */,
+				2D76732121EA8A3900D99B0E /* lock_dark.png */,
 				2D76733421EA8DF600D99B0E /* text.png */,
 				2D76733121EA8D8E00D99B0E /* text_dark.png */,
 				2D9627A8106C3CC00081F384 /* Breakpoint.png */,
@@ -1352,18 +1322,14 @@
 				2DAEDB5009B69AED005FF181 /* Atari800MacX Help in Resources */,
 				2DAEDB5109B69AED005FF181 /* doc.icns in Resources */,
 				2DAEDB5209B69AED005FF181 /* Updater.esud in Resources */,
-				2D76731621EA870800D99B0E /* atari810closed_dark.png in Resources */,
-				2D76733D21EA922600D99B0E /* cassetteon_dark.png in Resources */,
-				2D76732621EA8B7A00D99B0E /* atari825_dark.png in Resources */,
-				2D76732A21EA8C1400D99B0E /* atari1020_dark.png in Resources */,
-				2D76732321EA8A3900D99B0E /* lock.png in Resources */,
+				2D76732321EA8A3900D99B0E /* lock_dark.png in Resources */,
+				77A5A9D521EC3B440098C3A5 /* lock.png in Resources */,
 				2D76732F21EA8C9E00D99B0E /* epson.png in Resources */,
 				2D76731721EA870800D99B0E /* atari810closed.png in Resources */,
 				2DAEDB5E09B69AED005FF181 /* DiskEditorWindow.nib in Resources */,
 				2D76732721EA8B7A00D99B0E /* atari825.png in Resources */,
 				2D76733321EA8D8F00D99B0E /* text_dark.png in Resources */,
 				2DAEDB5F09B69AED005FF181 /* AboutBox.nib in Resources */,
-				2D76731221EA846800D99B0E /* atari810emtpy_dark.png in Resources */,
 				2D76733721EA920000D99B0E /* cassetteoff.png in Resources */,
 				2D76731F21EA882000D99B0E /* atari810write.png in Resources */,
 				2DAEDB6009B69AED005FF181 /* Credits.html in Resources */,
@@ -1371,20 +1337,14 @@
 				2D76730E21EA7F9A00D99B0E /* atari810off.png in Resources */,
 				2D76734121EA935F00D99B0E /* cartridgeon.png in Resources */,
 				2D76732B21EA8C1400D99B0E /* atari1020.png in Resources */,
-				2D76733921EA921100D99B0E /* cassetteoff_dark.png in Resources */,
-				2D76731E21EA882000D99B0E /* atari810write_dark.png in Resources */,
 				2D76730B21EA791E00D99B0E /* Media.xcassets in Resources */,
-				2D76731B21EA87F800D99B0E /* atari810read_dark.png in Resources */,
 				2D76731321EA846800D99B0E /* atari810emtpy.png in Resources */,
 				2DAEDB6A09B69AED005FF181 /* PrintOutputConfirm.nib in Resources */,
 				2DAEDB6D09B69AED005FF181 /* SectorEditorWindow.nib in Resources */,
 				2D54B79310684FD800892FE1 /* go.png in Resources */,
 				2D9627A9106C3CC00081F384 /* Breakpoint.png in Resources */,
 				2D9627AB106C3CD90081F384 /* CurrentLine.png in Resources */,
-				2D76732E21EA8C9E00D99B0E /* epson_dark.png in Resources */,
-				2D76732221EA8A3900D99B0E /* lock_dark.png in Resources */,
 				2D9627CB106C43700081F384 /* BreakpointCurrentLine.png in Resources */,
-				2D76730F21EA7F9A00D99B0E /* atari810off_dark.png in Resources */,
 				2DE2D1EC106EA23D0049A8A1 /* DisabledBreakpoint.png in Resources */,
 				2D76731A21EA87F800D99B0E /* atari810read.png in Resources */,
 				2DE2D1ED106EA23D0049A8A1 /* DisabledBreakpointCurrentLine.png in Resources */,

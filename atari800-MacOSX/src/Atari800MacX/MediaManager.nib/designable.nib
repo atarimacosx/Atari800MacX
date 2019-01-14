@@ -2015,7 +2015,7 @@ DQ
                         <autoresizingMask key="autoresizingMask"/>
                     </box>
                     <imageView id="953">
-                        <rect key="frame" x="218" y="44" width="11" height="14"/>
+                        <rect key="frame" x="217" y="44" width="14" height="16"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <imageCell key="cell" refusesFirstResponder="YES" alignment="left" id="1799"/>
                     </imageView>
@@ -2036,17 +2036,17 @@ DQ
                         <autoresizingMask key="autoresizingMask"/>
                     </box>
                     <imageView id="971">
-                        <rect key="frame" x="299" y="44" width="11" height="14"/>
+                        <rect key="frame" x="298" y="44" width="14" height="16"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <imageCell key="cell" refusesFirstResponder="YES" alignment="left" id="1800"/>
                     </imageView>
                     <imageView id="972">
-                        <rect key="frame" x="380" y="44" width="11" height="14"/>
+                        <rect key="frame" x="379" y="44" width="14" height="16"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <imageCell key="cell" refusesFirstResponder="YES" alignment="left" id="1801"/>
                     </imageView>
                     <imageView id="973">
-                        <rect key="frame" x="461" y="44" width="11" height="14"/>
+                        <rect key="frame" x="460" y="44" width="14" height="16"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <imageCell key="cell" refusesFirstResponder="YES" alignment="left" id="1802"/>
                     </imageView>
