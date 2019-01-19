@@ -137,7 +137,7 @@
 	<key>CFBundleExecutable</key>
 	<string>Atari800MacX</string>
 	<key>CFBundleGetInfoString</key>
-	<string>5.0.0</string>
+	<string>5.0.1</string>
 	<key>CFBundleHelpBookFolder</key>
 	<string>Atari800MacX Help</string>
 	<key>CFBundleHelpBookName</key>
@@ -153,13 +153,13 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>5.0.0</string>
+	<string>5.0.1</string>
 	<key>CFBundleSignature</key>
 	<string>A8MX</string>
 	<key>CFBundleVersion</key>
-	<string>5.0.0</string>
+	<string>5.0.1</string>
 	<key>NSHumanReadableCopyright</key>
-	<string>Copyright © 2002-2018 Mark Grebe</string>
+	<string>Copyright © 2002-2019 Mark Grebe</string>
 	<key>NSMainNibFile</key>
 	<string>SDLMain</string>
 	<key>NSPrincipalClass</key>
