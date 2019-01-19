@@ -778,6 +778,7 @@ static Preferences *sharedInstance = nil;
     [serioSoundEnableButton setState:[[displayedValues objectForKey:EnableSerioSound] boolValue] ? NSOnState : NSOffState];
     [muteAudioButton setState:[[displayedValues objectForKey:DontMuteAudio] boolValue] ? NSOffState : NSOnState];
     [internationalKeyboardButton setState:[[displayedValues objectForKey:EnableInternational] boolValue] ? NSOnState : NSOffState];
+    [internationalKeyboardButton setEnabled:NO]; // Always enabled on libSDL 2.0
     [enableMultijoyButton setState:[[displayedValues objectForKey:EnableMultijoy] boolValue] ? NSOnState : NSOffState];
     [ignoreHeaderWriteprotectButton setState:[[displayedValues objectForKey:IgnoreHeaderWriteprotect] boolValue] ? NSOnState : NSOffState];
 	foundMatch = FALSE;
