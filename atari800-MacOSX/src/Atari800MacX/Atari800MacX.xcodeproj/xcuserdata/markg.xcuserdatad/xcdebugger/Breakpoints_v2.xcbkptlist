@@ -1,21 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Bucket
+   uuid = "9E93C0B2-E7E2-483A-BCC6-8A6FBDF71BDF"
    type = "1"
    version = "2.0">
    <Breakpoints>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
+            uuid = "628BCA65-A94D-439D-8503-62384F605F57"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ControlManager.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "573"
+            endingLineNumber = "573"
+            landmarkName = "-keyjoyEnable:"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "C3E20931-91D4-4B41-AAB3-EF9288B26A27"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "atari_mac_sdl.c"
-            timestampString = "568748638.183254"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2752"
-            endingLineNumber = "2752"
-            landmarkName = "Atari_Keyboard_International"
+            startingLineNumber = "7000"
+            endingLineNumber = "7000"
+            landmarkName = "ProcessMacMenus()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>

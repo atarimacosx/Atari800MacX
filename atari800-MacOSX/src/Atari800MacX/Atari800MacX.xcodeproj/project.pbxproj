@@ -324,6 +324,8 @@
 			isa = PBXBuildRule;
 			compilerSpec = com.apple.compilers.gcc.3_3;
 			fileType = sourcecode.c;
+			inputFiles = (
+			);
 			isEditable = 1;
 			outputFiles = (
 			);
@@ -332,6 +334,8 @@
 			isa = PBXBuildRule;
 			compilerSpec = com.apple.compilers.gcc.3_3;
 			fileType = sourcecode.c;
+			inputFiles = (
+			);
 			isEditable = 1;
 			outputFiles = (
 			);
@@ -340,6 +344,8 @@
 			isa = PBXBuildRule;
 			compilerSpec = com.apple.compilers.gcc.3_3;
 			fileType = sourcecode.c;
+			inputFiles = (
+			);
 			isEditable = 1;
 			outputFiles = (
 			);
@@ -1283,7 +1289,7 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1010;
+				LastUpgradeCheck = 1140;
 			};
 			buildConfigurationList = 2DD86A1809B559B00088C6D3 /* Build configuration list for PBXProject "Atari800MacX" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -1506,6 +1512,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_IDENTITY = "";
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					.,
@@ -1555,6 +1562,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_IDENTITY = "";
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					.,
@@ -1601,6 +1609,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_IDENTITY = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					.,
 					"$(HOME)/Library/Frameworks",
@@ -1662,7 +1671,7 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_VERSION = "";
 				MACOSX_DEPLOYMENT_TARGET = 10.8;
-				ONLY_ACTIVE_ARCH = NO;
+				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.4u.sdk";
 				ZERO_LINK = NO;
 			};

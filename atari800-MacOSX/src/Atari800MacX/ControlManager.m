@@ -35,6 +35,7 @@ extern int MONITOR_monitorCmd(char *input);
 extern int CalcAtariType(int machineType, int ramSize, int axlon, int mosaic);
 
 
+extern int keyjoyEnable;
 extern int pauseEmulator;
 extern int requestPauseEmulator;
 extern int requestColdReset;
@@ -115,6 +116,10 @@ void ControlManagerLoadState() {
 
 void ControlManagerPauseEmulator() {
     [[ControlManager sharedInstance] pause:nil];
+}
+
+void ControlManagerKeyjoyEnable() {
+    [[ControlManager sharedInstance] keyjoyEnable:nil];
 }
 
 void ControlManagerHideApp() {
@@ -565,6 +570,10 @@ static int monitorRunFirstTime = 1;
  *-----------------------------------------------------------------------------*/
 - (IBAction)keyjoyEnable:(id)sender
 {
+    if (1 - keyjoyEnable)
+        [keyjoyEnableItem setState:NSOnState];
+    else
+        [keyjoyEnableItem setState:NSOffState];
     requestKeyjoyEnableChange = 1;
 }
 

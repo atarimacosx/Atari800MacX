@@ -273,6 +273,7 @@ extern int ControlManagerFatalError(void);
 extern void ControlManagerSaveState(void); 
 extern void ControlManagerLoadState(void);
 extern void ControlManagerPauseEmulator(void);
+extern void ControlManagerKeyjoyEnable(void);
 extern void ControlManagerHideApp(void);
 extern void ControlManagerAboutApp(void);
 extern void ControlManagerMiniturize(void);
@@ -802,9 +803,9 @@ void SetVideoMode(int w, int h, int bpp)
         Log_print("Going Fullscreen at %d %d",w,h);
         // Create new window
         MainGLScreen = SDL_CreateWindow(windowCaption,
-                                        SDL_WINDOWPOS_CENTERED,
-                                        SDL_WINDOWPOS_CENTERED,
-                                        w, h, SDL_WINDOW_FULLSCREEN | SDL_WINDOW_OPENGL);
+                                        SDL_WINDOWPOS_UNDEFINED,
+                                        SDL_WINDOWPOS_UNDEFINED,
+                                        w, h, SDL_WINDOW_FULLSCREEN | SDL_WINDOW_OPENGL | SDL_WINDOW_ALLOW_HIGHDPI);
         glcontext = SDL_GL_CreateContext(MainGLScreen);
 
         // Save Mac Window for later use
@@ -1878,8 +1879,7 @@ int Atari_Keyboard_US(void)
                     ControlManagerMiniturize();
                     break;
                 case SDLK_j:
-                    keyjoyEnable = !keyjoyEnable;
-                    SetControlManagerKeyjoyEnable(keyjoyEnable);
+                    ControlManagerKeyjoyEnable();
                     break;
                 case SDLK_SLASH:
                     if (INPUT_key_shift)
@@ -3010,8 +3010,7 @@ int Atari_Keyboard_International(void)
                     ControlManagerMiniturize();
                     break;
                 case SDLK_j:
-                    keyjoyEnable = !keyjoyEnable;
-                    SetControlManagerKeyjoyEnable(keyjoyEnable);
+                    ControlManagerKeyjoyEnable();
                     break;
                 case SDLK_SLASH:
                     if (INPUT_key_shift)
