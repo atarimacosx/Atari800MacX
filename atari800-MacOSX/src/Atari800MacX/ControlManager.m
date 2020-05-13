@@ -1071,7 +1071,7 @@ static int monitorRunFirstTime = 1;
 - (IBAction)showDonation:(id)sender;
 {
 	[[NSWorkspace  sharedWorkspace] openURL:
-		[NSURL URLWithString:@"http://order.kagi.com/?6FBTU&lang=en"]];
+		[NSURL URLWithString:@"https://archive.org/donate/"]];
 }
 
 /*------------------------------------------------------------------------------
