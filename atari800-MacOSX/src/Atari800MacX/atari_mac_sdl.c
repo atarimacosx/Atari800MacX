@@ -1,7 +1,7 @@
 
 /* atari_mac_sdl.c - Main C file for 
  *  Macintosh OS X SDL port of Atari800
- *  Mark Grebe <atarimac@kc.rr.com>
+ *  Mark Grebe <atarimacosx@gmail.com>
  *  
  *  Based on the SDL port of Atari 800 by:
  *  Jacek Poplawski <jacekp@linux.com.pl>

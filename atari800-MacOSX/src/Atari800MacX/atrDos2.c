@@ -1,6 +1,6 @@
 /* atrDos2.c -  
  *  Part of the Atari Disk Image File Editor Library
- *  Mark Grebe <atarimac@kc.rr.com>
+ *  Mark Grebe <atarimacosx@gmail.com>
  *  
  * Based on code from:
  *    Atari800 Emulator (atari800.sourceforge.net)

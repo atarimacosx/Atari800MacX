@@ -3,7 +3,7 @@
        Non-NIB-Code & other changes: Max Horn <max@quendi.de>
     
        Macintosh OS X SDL port of Atari800
-       Mark Grebe <atarimac@kc.rr.com>
+       Mark Grebe <atarimacosx@gmail.com>
    
 
     Feel free to customize this file to suit your needs

@@ -1,7 +1,7 @@
 /* GtiaDataSource.m - 
  GtiaDataSource class for the
  Macintosh OS X SDL port of Atari800
- Mark Grebe <atarimac@kc.rr.com>
+ Mark Grebe <atarimacosx@gmail.com>
  */
 
 #import "GtiaDataSource.h"

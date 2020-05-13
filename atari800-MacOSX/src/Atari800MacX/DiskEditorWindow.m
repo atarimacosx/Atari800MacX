@@ -1,7 +1,7 @@
 /* DiskEditorWindow.m - DiskEditorWindow window 
    manager class and support functions for the
    Macintosh OS X SDL port of Atari800
-   Mark Grebe <atarimac@kc.rr.com>
+   Mark Grebe <atarimacosx@gmail.com>
 */
 #import "atari.h"
 #import "AtrUtil.h"

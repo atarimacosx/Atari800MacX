@@ -3,7 +3,7 @@
    and executable file management and support 
    functions for the Macintosh OS X SDL port 
    of Atari800
-   Mark Grebe <atarimac@kc.rr.com>
+   Mark Grebe <atarimacosx@gmail.com>
    
    Based on the Preferences pane of the
    TextEdit application.
