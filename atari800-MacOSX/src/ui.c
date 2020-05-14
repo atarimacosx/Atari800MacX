@@ -1749,7 +1749,7 @@ static void Screenshot(int interlaced)
 static void AboutEmulator(void)
 {
 	UI_driver->fInfoScreen("About the Emulator",
-		"Atari800MacOSX Version 5.0.1 based on\0"						   
+		"Atari800MacOSX Version 5.0.2 based on\0"						   
 		Atari800BASE_TITLE "\0"
 		"Copyright (c) 1995-1998 David Firth\0"
 		"and\0"
