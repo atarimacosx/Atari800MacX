@@ -153,8 +153,8 @@ void ESC_PatchOS(void)
 		 && MEMORY_dGetByte(addr_s + 4) == 0xe4) {
 			ESC_Add(addr_l, ESC_COPENLOAD, CASSETTE_LeaderLoad);
 			ESC_Add(addr_s, ESC_COPENSAVE, CASSETTE_LeaderSave);
+            ESC_AddEscRts(0xe459, ESC_SIOV, SIO_Handler);
 		}
-		ESC_AddEscRts(0xe459, ESC_SIOV, SIO_Handler);
 		patched = TRUE;
 	}
 	else {
@@ -163,11 +163,16 @@ void ESC_PatchOS(void)
 		ESC_Remove(ESC_SIOV);
 	};
 	if (patched && Atari800_machine_type == Atari800_MACHINE_XLXE) {
-		/* Disable Checksum Test */
-		MEMORY_dPutByte(0xc314, 0x8e);
-		MEMORY_dPutByte(0xc315, 0xff);
-		MEMORY_dPutByte(0xc319, 0x8e);
-		MEMORY_dPutByte(0xc31a, 0xff);
+        /* Disable Checksum Test but only
+           if it's a real XLXE rom */
+        unsigned short a1 = MEMORY_dGetByte(0xc314);
+        unsigned short a2 = MEMORY_dGetByte(0xc319);
+        if (a1 == 0x73 && a2 == 0x92) {
+            MEMORY_dPutByte(0xc314, 0x8e);
+            MEMORY_dPutByte(0xc315, 0xff);
+            MEMORY_dPutByte(0xc319, 0x8e);
+            MEMORY_dPutByte(0xc31a, 0xff);
+        }
 	}
 }
 
