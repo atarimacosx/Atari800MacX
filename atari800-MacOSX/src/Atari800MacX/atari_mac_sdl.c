@@ -300,6 +300,7 @@ extern void ClearScreen();
 extern void CenterPrint(int fg, int bg, char *string, int y);
 extern void RunPreferences(void);
 extern void UpdatePreferencesJoysticks();
+extern void PreferencesIdentifyGamepadNew();
 extern void PrintOutputControllerSelectPrinter(int printer);
 extern void Devices_H_Init(void);
 extern void PreferencesSaveDefaults(void);
@@ -3610,7 +3611,7 @@ int PLATFORM_Keyboard(void)
 void Check_SDL_Joysticks()
 {
     if (joystick0 != NULL) {
-        Log_print("Joystick 0 is %s", SDL_JoystickName(0));
+        Log_print("Joystick 0 is found");
         joystick0_nbuttons = SDL_JoystickNumButtons(joystick0);
         joystick0_nsticks = SDL_JoystickNumAxes(joystick0)/2;
         joystick0_nhats = SDL_JoystickNumHats(joystick0);
@@ -3643,7 +3644,7 @@ void Check_SDL_Joysticks()
         }
         
     if (joystick1 != NULL) {
-        Log_print("Joystick 1 is %s", SDL_JoystickName(1));
+        Log_print("Joystick 1 is found");
         joystick1_nbuttons = SDL_JoystickNumButtons(joystick1);
         joystick1_nsticks = SDL_JoystickNumAxes(joystick1)/2;
         joystick1_nhats = SDL_JoystickNumHats(joystick1);
@@ -3676,7 +3677,7 @@ void Check_SDL_Joysticks()
         }
 
     if (joystick2 != NULL) {
-        Log_print("Joystick 2 is %s", SDL_JoystickName(2));
+        Log_print("Joystick 2 is found");
         joystick2_nbuttons = SDL_JoystickNumButtons(joystick2);
         joystick2_nsticks = SDL_JoystickNumAxes(joystick2)/2;
         joystick2_nhats = SDL_JoystickNumHats(joystick2);
@@ -3709,7 +3710,7 @@ void Check_SDL_Joysticks()
         }
 
     if (joystick3 != NULL) {
-        Log_print("Joystick 3 is %s", SDL_JoystickName(3));
+        Log_print("Joystick 3 is found");
         joystick3_nbuttons = SDL_JoystickNumButtons(joystick3);
         joystick3_nsticks = SDL_JoystickNumAxes(joystick3)/2;
         joystick3_nhats = SDL_JoystickNumHats(joystick3);
@@ -8061,6 +8062,7 @@ void HidDeviceAdded(void *refCon, io_iterator_t iterator)
 	else {
 		Reinit_Joysticks();
 		UpdatePreferencesJoysticks();
+        PreferencesIdentifyGamepadNew();
 		}
 }
 
@@ -8081,6 +8083,7 @@ void HidDeviceRemoved(void *refCon, io_iterator_t iterator)
 	else {
 		Reinit_Joysticks();
 		UpdatePreferencesJoysticks();
+        PreferencesIdentifyGamepadNew();
 		}
 }
 

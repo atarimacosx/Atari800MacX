@@ -825,6 +825,11 @@ DQ
                                     </items>
                                 </menu>
                             </menuItem>
+                            <menuItem title="Show Gamepad  Identify Window" id="YE9-1t-g74">
+                                <connections>
+                                    <action selector="identifyGamepad:" target="315" id="WjZ-Kr-TrR"/>
+                                </connections>
+                            </menuItem>
                             <menuItem isSeparatorItem="YES" id="824">
                                 <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                             </menuItem>
@@ -845,11 +850,6 @@ DQ
                             <menuItem title="Show Message Window" id="644">
                                 <connections>
                                     <action selector="messageWindowShow:" target="524" id="645"/>
-                                </connections>
-                            </menuItem>
-                            <menuItem title="Show Gamepad  Identify Window" id="YE9-1t-g74">
-                                <connections>
-                                    <action selector="identifyGamepad:" target="315" id="WjZ-Kr-TrR"/>
                                 </connections>
                             </menuItem>
                         </items>

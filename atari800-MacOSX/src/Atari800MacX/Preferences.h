@@ -472,6 +472,12 @@
     IBOutlet id gamepadButton22;
     IBOutlet id gamepadButton23;
     IBOutlet id gamepadButton24;
+    id gamepadButtons[24];
+    IBOutlet id gamepadSelect1;
+    IBOutlet id gamepadSelect2;
+    IBOutlet id gamepadSelect3;
+    IBOutlet id gamepadSelect4;
+    IBOutlet id gamepadSelector;
     IBOutlet id errorOKButton;
     IBOutlet id configNameField;
     IBOutlet id leftJoyUpPulldown;
@@ -592,7 +598,8 @@
 - (void)gamepadButtonChange:(id)sender;
 - (void)buttonAssign:(id)sender; 
 - (void)button5200Assign:(id)sender; 
-- (IBAction)identifyGamepad:(id)sender; 
+- (IBAction)identifyGamepad:(id)sender;
+- (IBAction)identifyGamepadNew:(id)sender;
 - (void)identifyOK:(id)sender;
 - (void)identifyTest:(id)sender;
 - (void)configNameOK:(id)sender;
