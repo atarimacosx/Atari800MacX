@@ -4035,11 +4035,19 @@ static Preferences *sharedInstance = nil;
         replaceObjectAtIndex:buttonNum withObject:[NSNumber numberWithInt:index]];
     }
     
-- (void)identifyGamepad:(id)sender{
+- (IBAction)identifyGamepad:(id)sender{
     int numButtons, numSticks, numHats;
     SDL_Joystick *joystick;
 
-    padNum = [sender tag];
+    if (!gamepadButton1) {
+            if (![NSBundle loadNibNamed:@"Preferences" owner:self])  {
+                NSLog(@"Failed to load Preferences.nib");
+                NSBeep();
+                return;
+        }
+    }
+
+    padNum = 0; // [sender tag];
     if (padNum == 0) {
         joystick = joystick0;
         numButtons = joystick0_nbuttons;
@@ -4097,19 +4105,21 @@ static Preferences *sharedInstance = nil;
         }
     else {
         [gamepadNameField setStringValue:[NSString stringWithCString:SDL_JoystickName(joystick)
-                                          
-                                                            encoding:NSASCIIStringEncoding]];
+         encoding:NSASCIIStringEncoding]];
         [gamepadNumButtonsField setIntValue:numButtons];
         [gamepadNumSticksField setIntValue:numSticks];
         [gamepadNumHatsField setIntValue:numHats];
         }
+    Uint8 es = SDL_EventState(SDL_JOYBUTTONDOWN,
+                              SDL_ENABLE);
+    theTimer = [NSTimer
+                scheduledTimerWithTimeInterval:0.1 target:self  selector:@selector(identifyTest:) userInfo:nil repeats:YES];
     
-    [NSApp runModalForWindow:[gamepadButton1 window]];
+    [[gamepadButton1 window] orderFront:self];
     }
     
-
-
 - (void)identifyOK:(id)sender {
+    [theTimer invalidate];
     [NSApp stopModal];
     [[gamepadButton1 window] close];
     }
@@ -4117,9 +4127,9 @@ static Preferences *sharedInstance = nil;
 - (void)identifyTest:(id)sender {
     int numButtons;
     SDL_Joystick *joystick;
-    SDL_Event event;
     int i;
     int state;
+    SDL_Event event;
 
     if (padNum == 0) {
         joystick = joystick0;
@@ -4138,6 +4148,15 @@ static Preferences *sharedInstance = nil;
         numButtons = joystick3_nbuttons;
         }
 
+    while(1) {
+        if (SDL_PollEvent(&event)) {
+            if (event.type == SDL_JOYBUTTONDOWN)
+                NSLog(@"Stuff!");
+        }
+        else {
+            break;
+        }
+    }
     SDL_JoystickUpdate();
     for (i=0;i<numButtons;i++) {
         state = SDL_JoystickGetButton(joystick, i);
