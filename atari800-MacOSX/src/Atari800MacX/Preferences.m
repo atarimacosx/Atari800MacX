@@ -130,12 +130,6 @@ void PreferencesIdentifyGamepadNew() {
      identifyGamepadNew:0];
 }
 
-char *PreferencesRemoveUnicode(const char *input) {
-    NSString *inputStr = [NSString stringWithCString:input encoding:NSASCIIStringEncoding];
-    return [[[Preferences sharedInstance]
-       removeUnicode:inputStr] UTF8String];
-}
-
 /*------------------------------------------------------------------------------
 *  defaultValues - This method sets up the default values for the preferences
 *-----------------------------------------------------------------------------*/

@@ -301,7 +301,6 @@ extern void CenterPrint(int fg, int bg, char *string, int y);
 extern void RunPreferences(void);
 extern void UpdatePreferencesJoysticks();
 extern void PreferencesIdentifyGamepadNew();
-extern char *PreferencesRemoveUnicode(const char *input);
 extern void PrintOutputControllerSelectPrinter(int printer);
 extern void Devices_H_Init(void);
 extern void PreferencesSaveDefaults(void);
