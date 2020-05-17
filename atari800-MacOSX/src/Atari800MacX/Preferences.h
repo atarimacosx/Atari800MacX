@@ -599,6 +599,7 @@
 - (void)buttonAssign:(id)sender; 
 - (void)button5200Assign:(id)sender; 
 - (IBAction)identifyGamepad:(id)sender;
+- (NSString *) removeUnicode:(NSString *) unicodeString;
 - (IBAction)identifyGamepadNew:(id)sender;
 - (void)identifyOK:(id)sender;
 - (void)identifyTest:(id)sender;

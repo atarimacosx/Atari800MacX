@@ -229,5 +229,5 @@
 - (NSMutableAttributedString *) colorFromShort:(unsigned short)a:(unsigned short)old_a;
 - (NSString *) hexStringFromByte:(unsigned char)b;
 - (NSAttributedString *) colorFromByte:(unsigned char)b:(unsigned char)old_b;
-- (void) setRegFlag:(IBOutlet id)outlet:(unsigned char)old_reg:(unsigned char)mask;
+- (void) setRegFlag:(id)outlet:(unsigned char)old_reg:(unsigned char)mask;
 @end

@@ -4042,125 +4042,142 @@ static Preferences *sharedInstance = nil;
     }
     
 - (IBAction)identifyGamepad:(id)sender{
-int numButtons, numSticks, numHats, i;
-SDL_Joystick *joystick;
-
-if (!gamepadButton1) {
-        if (![NSBundle loadNibNamed:@"Preferences" owner:self])  {
-            NSLog(@"Failed to load Preferences.nib");
-            NSBeep();
-            return;
+    if (!gamepadButton1) {
+            if (![NSBundle loadNibNamed:@"Preferences" owner:self])  {
+                NSLog(@"Failed to load Preferences.nib");
+                NSBeep();
+                return;
+        }
     }
-}
 
-gamepadButtons[0] = gamepadButton1;
-gamepadButtons[1] = gamepadButton2;
-gamepadButtons[2] = gamepadButton3;
-gamepadButtons[3] = gamepadButton4;
-gamepadButtons[4] = gamepadButton5;
-gamepadButtons[5] = gamepadButton6;
-gamepadButtons[6] = gamepadButton7;
-gamepadButtons[7] = gamepadButton8;
-gamepadButtons[8] = gamepadButton9;
-gamepadButtons[9] = gamepadButton10;
-gamepadButtons[10] = gamepadButton11;
-gamepadButtons[11] = gamepadButton12;
-gamepadButtons[12] = gamepadButton13;
-gamepadButtons[13] = gamepadButton14;
-gamepadButtons[14] = gamepadButton15;
-gamepadButtons[15] = gamepadButton16;
-gamepadButtons[16] = gamepadButton17;
-gamepadButtons[17] = gamepadButton18;
-gamepadButtons[18] = gamepadButton19;
-gamepadButtons[19] = gamepadButton20;
-gamepadButtons[20] = gamepadButton21;
-gamepadButtons[21] = gamepadButton22;
-gamepadButtons[22] = gamepadButton23;
-gamepadButtons[23] = gamepadButton24;
+    gamepadButtons[0] = gamepadButton1;
+    gamepadButtons[1] = gamepadButton2;
+    gamepadButtons[2] = gamepadButton3;
+    gamepadButtons[3] = gamepadButton4;
+    gamepadButtons[4] = gamepadButton5;
+    gamepadButtons[5] = gamepadButton6;
+    gamepadButtons[6] = gamepadButton7;
+    gamepadButtons[7] = gamepadButton8;
+    gamepadButtons[8] = gamepadButton9;
+    gamepadButtons[9] = gamepadButton10;
+    gamepadButtons[10] = gamepadButton11;
+    gamepadButtons[11] = gamepadButton12;
+    gamepadButtons[12] = gamepadButton13;
+    gamepadButtons[13] = gamepadButton14;
+    gamepadButtons[14] = gamepadButton15;
+    gamepadButtons[15] = gamepadButton16;
+    gamepadButtons[16] = gamepadButton17;
+    gamepadButtons[17] = gamepadButton18;
+    gamepadButtons[18] = gamepadButton19;
+    gamepadButtons[19] = gamepadButton20;
+    gamepadButtons[20] = gamepadButton21;
+    gamepadButtons[21] = gamepadButton22;
+    gamepadButtons[22] = gamepadButton23;
+    gamepadButtons[23] = gamepadButton24;
 
-[self identifyGamepadNew:self];
+    [self identifyGamepadNew:self];
 
     theTimer = [NSTimer
             scheduledTimerWithTimeInterval:0.1 target:self  selector:@selector(identifyTest:) userInfo:nil repeats:YES];
 
-[[gamepadButton1 window] orderFront:self];
+    [[gamepadButton1 window] orderFront:self];
+}
+
+- (NSString *) removeUnicode:(NSString *) unicodeString {
+    NSUInteger len = [unicodeString length];
+    unichar buffer[len+1];
+
+    [unicodeString getCharacters:buffer range:NSMakeRange(0, len)];
+
+    unichar okBuffer[len+1];
+    int index = 0;
+    for(int i = 0; i < len; i++) {
+        if(buffer[i] < 128) {
+            okBuffer[index] = buffer[i];
+            index = index + 1;
+        }
+    }
+
+    NSString *removedUnicode = [[NSString alloc] initWithCharacters:okBuffer length:index];
+
+    return removedUnicode;
 }
 
 - (IBAction)identifyGamepadNew:(id)sender {
-int numButtons, numSticks, numHats, i;
-SDL_Joystick *joystick;
+    int numButtons, numSticks, numHats, i;
+    SDL_Joystick *joystick;
 
-if (joystick0)
-    [[gamepadSelector cellAtRow:0 column:0] setEnabled:YES];
-else
-    [[gamepadSelector cellAtRow:0 column:0] setEnabled:NO];
-if (joystick1)
-    [[gamepadSelector cellAtRow:0 column:1] setEnabled:YES];
-else
-    [[gamepadSelector cellAtRow:0 column:1] setEnabled:NO];
-if (joystick2)
-    [[gamepadSelector cellAtRow:0 column:2] setEnabled:YES];
-else
-    [[gamepadSelector cellAtRow:0 column:2] setEnabled:NO];
-if (joystick1)
-    [[gamepadSelector cellAtRow:0 column:3] setEnabled:YES];
-else
-    [[gamepadSelector cellAtRow:0 column:3] setEnabled:NO];
+    if (joystick0)
+        [[gamepadSelector cellAtRow:0 column:0] setEnabled:YES];
+    else
+        [[gamepadSelector cellAtRow:0 column:0] setEnabled:NO];
+    if (joystick1)
+        [[gamepadSelector cellAtRow:0 column:1] setEnabled:YES];
+    else
+        [[gamepadSelector cellAtRow:0 column:1] setEnabled:NO];
+    if (joystick2)
+        [[gamepadSelector cellAtRow:0 column:2] setEnabled:YES];
+    else
+        [[gamepadSelector cellAtRow:0 column:2] setEnabled:NO];
+    if (joystick1)
+        [[gamepadSelector cellAtRow:0 column:3] setEnabled:YES];
+    else
+        [[gamepadSelector cellAtRow:0 column:3] setEnabled:NO];
 
-if (sender == self || sender == 0) {
-    padNum = 0;
-    [gamepadSelector selectCellWithTag:0];
-}
-else {
-    padNum = [gamepadSelector selectedTag];
-}
-
-if (padNum == 0) {
-    joystick = joystick0;
-    numButtons = joystick0_nbuttons;
-    numSticks = joystick0_nsticks;
-    numHats = joystick0_nhats;
+    if (sender == self || sender == 0) {
+        padNum = 0;
+        [gamepadSelector selectCellWithTag:0];
     }
-else if (padNum == 1) {
-    joystick = joystick1;
-    numButtons = joystick1_nbuttons;
-    numSticks = joystick1_nsticks;
-    numHats = joystick1_nhats;
-    }
-else if (padNum == 2) {
-    joystick = joystick2;
-    numButtons = joystick2_nbuttons;
-    numSticks = joystick2_nsticks;
-    numHats = joystick2_nhats;
-    }
-else {
-    joystick = joystick3;
-    numButtons = joystick3_nbuttons;
-    numSticks = joystick3_nsticks;
-    numHats = joystick3_nhats;
+    else {
+        padNum = [gamepadSelector selectedTag];
     }
 
-if (joystick == NULL) {
-    [gamepadNameField setStringValue:@"No Joystick Connected"];
-    [gamepadNumButtonsField setStringValue:@"0"];
-    [gamepadNumSticksField setStringValue:@"0"];
-    [gamepadNumHatsField setStringValue:@"0"];
-    }
-else {
-    [gamepadNameField setStringValue:[NSString stringWithCString:SDL_JoystickName(joystick)
-     encoding:NSASCIIStringEncoding]];
-    [gamepadNumButtonsField setIntValue:numButtons];
-    [gamepadNumSticksField setIntValue:numSticks];
-    [gamepadNumHatsField setIntValue:numHats];
-    }
+    if (padNum == 0) {
+        joystick = joystick0;
+        numButtons = joystick0_nbuttons;
+        numSticks = joystick0_nsticks;
+        numHats = joystick0_nhats;
+        }
+    else if (padNum == 1) {
+        joystick = joystick1;
+        numButtons = joystick1_nbuttons;
+        numSticks = joystick1_nsticks;
+        numHats = joystick1_nhats;
+        }
+    else if (padNum == 2) {
+        joystick = joystick2;
+        numButtons = joystick2_nbuttons;
+        numSticks = joystick2_nsticks;
+        numHats = joystick2_nhats;
+        }
+    else {
+        joystick = joystick3;
+        numButtons = joystick3_nbuttons;
+        numSticks = joystick3_nsticks;
+        numHats = joystick3_nhats;
+        }
 
-for (i=0; i<NUM_JOYSTICK_BUTTONS; i++)
-    [gamepadButtons[i] setState:NSOffState];
+    if (joystick == NULL) {
+        [gamepadNameField setStringValue:@"No Joystick Connected"];
+        [gamepadNumButtonsField setStringValue:@"0"];
+        [gamepadNumSticksField setStringValue:@"0"];
+        [gamepadNumHatsField setStringValue:@"0"];
+        }
+    else {
+        NSString *name = [NSString stringWithCString:SDL_JoystickName(joystick) encoding:NSASCIIStringEncoding];
+        [gamepadNameField setStringValue:[self  removeUnicode:name]];
+        [gamepadNumButtonsField setIntValue:numButtons];
+        [gamepadNumSticksField setIntValue:numSticks];
+        [gamepadNumHatsField setIntValue:numHats];
+        }
 
-for (i=0; i<numButtons; i++)
-    [gamepadButtons[i] setEnabled:YES];
-for (i=numButtons; i<NUM_JOYSTICK_BUTTONS; i++)
-    [gamepadButtons[i] setEnabled:NO];
+    for (i=0; i<NUM_JOYSTICK_BUTTONS; i++)
+        [gamepadButtons[i] setState:NSOffState];
+
+    for (i=0; i<numButtons; i++)
+        [gamepadButtons[i] setEnabled:YES];
+    for (i=numButtons; i<NUM_JOYSTICK_BUTTONS; i++)
+        [gamepadButtons[i] setEnabled:NO];
 
 }
 
