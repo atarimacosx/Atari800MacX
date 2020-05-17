@@ -2,7 +2,7 @@
    support Drag and Drop to the disk drive image.
    For the Macintosh OS X SDL port 
    of Atari800
-   Mark Grebe <atarimac@kc.rr.com>
+   Mark Grebe <atarimacosx@gmail.com>
    
 */
 #import "Atari800ImageView.h"

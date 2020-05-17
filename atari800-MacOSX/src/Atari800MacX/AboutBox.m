@@ -1,7 +1,7 @@
 /* AboutBox.m - AboutBox window 
    class and support functions for the
    Macintosh OS X SDL port of Atari800
-   Mark Grebe <atarimac@kc.rr.com>
+   Mark Grebe <atarimacosx@gmail.com>
 */
 #import "AboutBox.h"
 #import "ControlManager.h"
@@ -51,7 +51,7 @@ static AboutBox *sharedInstance = nil;
     {
         NSWindow *theWindow;
         NSString *creditsPath;
-        NSAttributedString *creditsString;
+        NSMutableAttributedString *creditsString;
         NSString *appName;
         NSString *versionString;
         NSDictionary *infoDictionary;
@@ -88,12 +88,15 @@ static AboutBox *sharedInstance = nil;
                                                           versionString]];
 
         // Setup our credits
-        creditsPath = [[NSBundle mainBundle] pathForResource:@"Credits" 
+        creditsPath = [[NSBundle mainBundle] pathForResource:@"Credits"
                                              ofType:@"html"];
 
-        creditsString = [[NSAttributedString alloc] initWithPath:creditsPath 
+        creditsString = [[NSMutableAttributedString alloc] initWithPath:creditsPath
                                                     documentAttributes:nil];
-
+        [creditsString addAttribute:NSForegroundColorAttributeName
+              value: NSColor.controlTextColor
+                              range: NSMakeRange( 0, creditsString.length-1)];
+        
         [creditsField replaceCharactersInRange:NSMakeRange( 0, 0 ) 
                       withRTF:[creditsString RTFFromRange:
                                NSMakeRange( 0, [creditsString length] ) 

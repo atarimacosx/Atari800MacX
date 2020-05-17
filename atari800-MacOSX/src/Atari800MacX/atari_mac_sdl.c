@@ -1,7 +1,7 @@
 
 /* atari_mac_sdl.c - Main C file for 
  *  Macintosh OS X SDL port of Atari800
- *  Mark Grebe <atarimac@kc.rr.com>
+ *  Mark Grebe <atarimacosx@gmail.com>
  *  
  *  Based on the SDL port of Atari 800 by:
  *  Jacek Poplawski <jacekp@linux.com.pl>
@@ -273,6 +273,7 @@ extern int ControlManagerFatalError(void);
 extern void ControlManagerSaveState(void); 
 extern void ControlManagerLoadState(void);
 extern void ControlManagerPauseEmulator(void);
+extern void ControlManagerKeyjoyEnable(void);
 extern void ControlManagerHideApp(void);
 extern void ControlManagerAboutApp(void);
 extern void ControlManagerMiniturize(void);
@@ -299,6 +300,7 @@ extern void ClearScreen();
 extern void CenterPrint(int fg, int bg, char *string, int y);
 extern void RunPreferences(void);
 extern void UpdatePreferencesJoysticks();
+extern void PreferencesIdentifyGamepadNew();
 extern void PrintOutputControllerSelectPrinter(int printer);
 extern void Devices_H_Init(void);
 extern void PreferencesSaveDefaults(void);
@@ -802,9 +804,9 @@ void SetVideoMode(int w, int h, int bpp)
         Log_print("Going Fullscreen at %d %d",w,h);
         // Create new window
         MainGLScreen = SDL_CreateWindow(windowCaption,
-                                        SDL_WINDOWPOS_CENTERED,
-                                        SDL_WINDOWPOS_CENTERED,
-                                        w, h, SDL_WINDOW_FULLSCREEN | SDL_WINDOW_OPENGL);
+                                        SDL_WINDOWPOS_UNDEFINED,
+                                        SDL_WINDOWPOS_UNDEFINED,
+                                        w, h, SDL_WINDOW_FULLSCREEN | SDL_WINDOW_OPENGL | SDL_WINDOW_ALLOW_HIGHDPI);
         glcontext = SDL_GL_CreateContext(MainGLScreen);
 
         // Save Mac Window for later use
@@ -1878,8 +1880,7 @@ int Atari_Keyboard_US(void)
                     ControlManagerMiniturize();
                     break;
                 case SDLK_j:
-                    keyjoyEnable = !keyjoyEnable;
-                    SetControlManagerKeyjoyEnable(keyjoyEnable);
+                    ControlManagerKeyjoyEnable();
                     break;
                 case SDLK_SLASH:
                     if (INPUT_key_shift)
@@ -3010,8 +3011,7 @@ int Atari_Keyboard_International(void)
                     ControlManagerMiniturize();
                     break;
                 case SDLK_j:
-                    keyjoyEnable = !keyjoyEnable;
-                    SetControlManagerKeyjoyEnable(keyjoyEnable);
+                    ControlManagerKeyjoyEnable();
                     break;
                 case SDLK_SLASH:
                     if (INPUT_key_shift)
@@ -3611,7 +3611,7 @@ int PLATFORM_Keyboard(void)
 void Check_SDL_Joysticks()
 {
     if (joystick0 != NULL) {
-        Log_print("Joystick 0 is %s", SDL_JoystickName(0));
+        Log_print("Joystick 0 is found");
         joystick0_nbuttons = SDL_JoystickNumButtons(joystick0);
         joystick0_nsticks = SDL_JoystickNumAxes(joystick0)/2;
         joystick0_nhats = SDL_JoystickNumHats(joystick0);
@@ -3644,7 +3644,7 @@ void Check_SDL_Joysticks()
         }
         
     if (joystick1 != NULL) {
-        Log_print("Joystick 1 is %s", SDL_JoystickName(1));
+        Log_print("Joystick 1 is found");
         joystick1_nbuttons = SDL_JoystickNumButtons(joystick1);
         joystick1_nsticks = SDL_JoystickNumAxes(joystick1)/2;
         joystick1_nhats = SDL_JoystickNumHats(joystick1);
@@ -3677,7 +3677,7 @@ void Check_SDL_Joysticks()
         }
 
     if (joystick2 != NULL) {
-        Log_print("Joystick 2 is %s", SDL_JoystickName(2));
+        Log_print("Joystick 2 is found");
         joystick2_nbuttons = SDL_JoystickNumButtons(joystick2);
         joystick2_nsticks = SDL_JoystickNumAxes(joystick2)/2;
         joystick2_nhats = SDL_JoystickNumHats(joystick2);
@@ -3710,7 +3710,7 @@ void Check_SDL_Joysticks()
         }
 
     if (joystick3 != NULL) {
-        Log_print("Joystick 3 is %s", SDL_JoystickName(3));
+        Log_print("Joystick 3 is found");
         joystick3_nbuttons = SDL_JoystickNumButtons(joystick3);
         joystick3_nsticks = SDL_JoystickNumAxes(joystick3)/2;
         joystick3_nhats = SDL_JoystickNumHats(joystick3);
@@ -8062,6 +8062,7 @@ void HidDeviceAdded(void *refCon, io_iterator_t iterator)
 	else {
 		Reinit_Joysticks();
 		UpdatePreferencesJoysticks();
+        PreferencesIdentifyGamepadNew();
 		}
 }
 
@@ -8082,6 +8083,7 @@ void HidDeviceRemoved(void *refCon, io_iterator_t iterator)
 	else {
 		Reinit_Joysticks();
 		UpdatePreferencesJoysticks();
+        PreferencesIdentifyGamepadNew();
 		}
 }
 

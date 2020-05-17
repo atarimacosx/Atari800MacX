@@ -1,7 +1,7 @@
 /* Preferences.h - Header for Preferences 
    window class and support functions for the
    Macintosh OS X SDL port of Atari800
-   Mark Grebe <atarimac@kc.rr.com>
+   Mark Grebe <atarimacosx@gmail.com>
    
    Based on the Preferences pane of the
    TextEdit application.
@@ -472,6 +472,12 @@
     IBOutlet id gamepadButton22;
     IBOutlet id gamepadButton23;
     IBOutlet id gamepadButton24;
+    id gamepadButtons[24];
+    IBOutlet id gamepadSelect1;
+    IBOutlet id gamepadSelect2;
+    IBOutlet id gamepadSelect3;
+    IBOutlet id gamepadSelect4;
+    IBOutlet id gamepadSelector;
     IBOutlet id errorOKButton;
     IBOutlet id configNameField;
     IBOutlet id leftJoyUpPulldown;
@@ -510,6 +516,7 @@
     NSMutableDictionary *curValues;	// Current, confirmed values for the preferences
     NSDictionary *origValues;	// Values read from preferences at startup
     NSMutableDictionary *displayedValues;	// Values displayed in the UI
+    NSTimer *theTimer;
 }
 
 + (id)objectForKey:(id)key;	/* Convenience for getting global preferences */
@@ -591,7 +598,9 @@
 - (void)gamepadButtonChange:(id)sender;
 - (void)buttonAssign:(id)sender; 
 - (void)button5200Assign:(id)sender; 
-- (void)identifyGamepad:(id)sender; 
+- (IBAction)identifyGamepad:(id)sender;
+- (NSString *) removeUnicode:(NSString *) unicodeString;
+- (IBAction)identifyGamepadNew:(id)sender;
 - (void)identifyOK:(id)sender;
 - (void)identifyTest:(id)sender;
 - (void)configNameOK:(id)sender;

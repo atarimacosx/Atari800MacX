@@ -1,7 +1,7 @@
 /* ControlManager.h - Menu suppor class to 
    the Control menu functions for the 
    Macintosh OS X SDL port of Atari800
-   Mark Grebe <atarimac@kc.rr.com>
+   Mark Grebe <atarimacosx@gmail.com>
    
    Based on the Preferences pane of the
    TextEdit application.
@@ -229,5 +229,5 @@
 - (NSMutableAttributedString *) colorFromShort:(unsigned short)a:(unsigned short)old_a;
 - (NSString *) hexStringFromByte:(unsigned char)b;
 - (NSAttributedString *) colorFromByte:(unsigned char)b:(unsigned char)old_b;
-- (void) setRegFlag:(IBOutlet id)outlet:(unsigned char)old_reg:(unsigned char)mask;
+- (void) setRegFlag:(id)outlet:(unsigned char)old_reg:(unsigned char)mask;
 @end

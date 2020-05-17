@@ -1,7 +1,7 @@
 /* Atari800DriveTextField.m - Atari800DriveTextField 
    field class for the
    Macintosh OS X SDL port of Atari800
-   Mark Grebe <atarimac@kc.rr.com>
+   Mark Grebe <atarimacosx@gmail.com>
 */
 #import "Atari800DriveTextField.h"
 #import "Atari800ImageView.h"

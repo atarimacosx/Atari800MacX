@@ -3,7 +3,7 @@
        Non-NIB-Code & other changes: Max Horn <max@quendi.de>
     
        Macintosh OS X SDL port of Atari800
-       Mark Grebe <atarimac@kc.rr.com>
+       Mark Grebe <atarimacosx@gmail.com>
    
 
     Feel free to customize this file to suit your needs
@@ -91,21 +91,6 @@ int SDLMainIsActive() {
 @interface NSString (ReplaceSubString)
 - (NSString *)stringByReplacingRange:(NSRange)aRange with:(NSString *)aString;
 @end
-
-@interface SDLApplication : NSApplication
-@end
-
-@implementation SDLApplication
-/* Invoked from the Quit menu item */
-- (void)terminate:(id)sender
-{
-    /* Post a SDL_QUIT event */
-    SDL_Event event;
-    event.type = SDL_QUIT;
-    SDL_PushEvent(&event);
-}
-@end
-
 
 /* The main class of the application, the application's delegate */
 @implementation SDLMain

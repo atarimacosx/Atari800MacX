@@ -1,21 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Bucket
+   uuid = "9E93C0B2-E7E2-483A-BCC6-8A6FBDF71BDF"
    type = "1"
    version = "2.0">
    <Breakpoints>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
+            uuid = "9CAB81F5-4FFA-4EC2-90EB-BC6FE162ABD9"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../esc.c"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "200"
+            endingLineNumber = "200">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "058AFC8F-D310-46B5-A4C5-8FD248CC5A97"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "atari_mac_sdl.c"
-            timestampString = "568748638.183254"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2752"
-            endingLineNumber = "2752"
-            landmarkName = "Atari_Keyboard_International"
+            startingLineNumber = "6718"
+            endingLineNumber = "6718"
+            landmarkName = "SDL_Atari_Mouse(s, t)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>

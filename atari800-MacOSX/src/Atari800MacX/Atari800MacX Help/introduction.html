@@ -124,8 +124,8 @@ get familiar with some of the special features of the Mac version, and new featu
 
 The emulator is released under the GPL license, however many
 months/years of work have gone into it. &nbsp;If you use and appreciate
-the emulator, please donate to it's development. &nbsp;You can do this
-by clicking on the menu item Donation... under the Atari800MacX menu, or by <a href="http://order.kagi.com/?6FBTU&amp;lang=en">using this link</a>.
+the emulator, please donate to it's development. &nbsp;I no longer take donations personally, but instead ask that you support the Internet Archive if you feel that you should donate. &nbsp; You can do this
+by clicking on the menu item Donation... under the Atari800MacX menu, or by <a href="https://archive.org/donate/">using this link</a>.
 <h1>OS ROMS</h1>
 
 
@@ -222,97 +222,47 @@ the Windowed and Fullscreen versions.<br>
 <img style="width: 506px; height: 156px;" alt="" src="UnrecoverableError2.jpg"><br>
 
 
-<h1>What's New in 4.0?</h1>
+<h1>What's New in 5.0.x?</h1>
 
-
-
-
-&nbsp;&nbsp;&nbsp; Features Added/Changed:<br>
-
-
-
+<h4>New Features/Bug Fixes (in version 5.0.2):</h4>
 
 <ul>
-
-
-
-  <li>Added support of VAPI copy-protected disk images. &nbsp;This
-does not yet enable&nbsp;all images, but perhaps 90%. &nbsp;If the VAPI dll
-source is ever released, this&nbsp;number may be increased. &nbsp;The current
-images from www.atarimania.com which are known not to work are:</li><ul><li>Alternate Reality: The City</li><li>Ankh</li><li>Attack at EP CYG 4</li><li>Ballblazer Activision (UK)</li><li>Jenny of the Prairie</li><li>Mercenary - Escape from Targ _ Novagen Software</li><li>Mr. Do!</li><li>Music Studio (The)</li><li>Promoteur</li><li>Rescue on Fractalus! _ Activision (UK)</li><li>Spy vs Spy</li><li>Targets - A Number Game</li></ul><li>Added new D: patch, which provides an alternative to the H: hard drive
-emualtion. &nbsp;This sets up D5:-D8: to access hard drive directories one
-and two, with or without line feed translation. &nbsp;This allows the
-Macintosh hard drive direcories to be accessed by programs which do not
-recognize the H: device fully, such as MyDos and Action!.</li>
-
-
-
-  <li>Added
-multiple preference configurations, allowing you to set up multiple
-machine&nbsp;configurations, and load them by opening a .a8c file.</li>
-
-
-
-  
-  
-  
-  <ul></ul>
-
-
-
-  <li>Added
-ability to paste text from the Macintosh to the Atari. &nbsp;The pasted
-text&nbsp;is input as keystrokes to the emulator, and should be usable
-in most programs.</li>
-
-
-
-  <li>Added
-ability to copy text from the Atari to the Macintosh.&nbsp; The copied
-text can be selected using Select All, or by using the Mouse to define
-a selection rectangle on the screen.&nbsp; It works in normal video or
-XEP80 modes, but is not available in full screen mode, or if the Mouse
-is being used for Mouse Controller emulation.</li><li>Added emulation
-of Atari 1200XL Function keys.&nbsp; You can press the Atari F1 by
-pressing Option-F1 in the emulator, along with optionally shift and or
-control.&nbsp; F2-F4 work the same way.</li><li>Added alternatives for
-the Atari keys mapped to the Macintosh&nbsp;
-Insert/Delete/Home/End/PageUp/PageDown keys as those keys are not
-present on&nbsp; some new Macintosh keyboards.</li><li>Added ability to use multiple analog joysticks on the same gamepad as multiple Atari joysticks.</li>
-
-
-
-  <li>Added the following features from version 2.1 of Atari800 Core Emulator</li>
-
-
-
-  
-  
-  
-  <ul>
-
-
-
-    <li>Added Axlon and Mosaic RAM expansions for Atari 400/800</li>
-
-
-
-    <li>Added emulation of MIO and Black Box</li>
-
-
-
-    <li>Added support of .PRO copy-protected disk images</li><li>Implemented tape loading with variable bitrates</li><li>Implemented cassette writing via hardware registers</li><li>Added emulation of CX85 numeric keyboard</li><li>R: device can be serial-only or network-only (selectable)</li>
-
-
-
-  
-  
-  
-  </ul></ul>&nbsp;&nbsp;&nbsp; Bugs Fixed<ul><li>Fixed caps lock with International Key Mapping on.</li><li>Fixed a bug with turning joystick emulation on and off which was causing a&nbsp;stuck joystick.</li><li>Fixed a bug where one analog joystick was not selectable on Gamepad 2.</li><li>The following fixes were added from version 2.10 of Atari800:</li><ul><li>Fix for "Ilusia" demo</li><li>Better GTIA bug mode emulation</li><li>Fixed POKEY registers: ALLPOT, IRQEN and STIMER</li><li>Various Atari5200 fixes</li><li>Fixed Atrax cartridge bank switching</li><li>Major source code cleanup, compiles with -pedantic etc.</li></ul>
-
-
-
+    <li>Updated SDL Framework for better support of MacOS 10.15 Catalina</li>
+    <li>Moved Gamepad Identification window from Preferences to Control Menu (This window has not worked since 5.0.0</li>
 </ul>
+<h5>Bugs Fixed:</h5>
+<ul>
+    <li>Fixed issue with Fullscren in Catalina.</li>
+    <li>Fixed issue with Cmd-J Keybinding for toggling Keyboard Joysticks.</li>
+    <li>Fixed dark mode About menu issue.</li>
+    <li>Fix issue with Gampad names which contain unicode which caused emulator to crash</li>
+</ul>
+
+<h4>New Features/Bug Fixes (in version 5.0.1):</h4>
+
+<ul>
+<li>Added support for macOS Mojave Dark Mode - including new Media Status Panel images.</li>  <li>This release requires 10.12 Sierra or above.</li>
+<li>Added Inverse Key to Function Key Window.</li>
+</ul>
+<h5>Bugs Fixed:</h5>
+<ul>
+    <li>Fix spelling errors in Preferences panel.</li>
+    <li>Patched keyboard issues caused by libSDL 2.0 - International keyboard translation is always enabled now.</li>
+</ul>
+
+<h4>New Features/Bug Fixes (in version 5.0.0):</h4>
+
+<ul>
+  <li>Changed from using underlying SDL Library 1.2 to SDL Library 2.0.  This allows operation on Mac OSX Sierra, High Sierra, and Mojave.  Note, no testing has been done on Sierra and High Sierra.</li>
+  <li>This release requires 10.12 Sierra or above.</li>
+</ul>
+<h5>Bugs Fixed:</h5>
+<ul>
+    <li>Sound now works in Mac OSX Sierra and up</li>
+    <li>Fixed crashes with Atari 825 Printer emulation and Epson FX80 Printer emulation.</li>
+    <li>Fixes issues with Color Wells for Fullscreen Monitor and Atari 1020 Printer emulation.  Changed to use text boxes to specify 0-255 Red, Green, and Blue values for colors.</li>
+</ul>
+
 
 
 

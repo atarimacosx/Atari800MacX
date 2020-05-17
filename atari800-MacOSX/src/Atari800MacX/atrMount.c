@@ -1,6 +1,6 @@
 /* atrMount.c -  
  *  Part of the atrEditLib Library
- *  Mark Grebe <atarimac@kc.rr.com>
+ *  Mark Grebe <atarimacosx@gmail.com>
  *  
  * Based on code from:
  *    Atari800 Emulator (atari800.sourceforge.net)

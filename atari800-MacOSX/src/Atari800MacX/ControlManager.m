@@ -1,7 +1,7 @@
 /* ControlManager.m - Menu suppor class to 
    the Control menu functions for the 
    Macintosh OS X SDL port of Atari800
-   Mark Grebe <atarimac@kc.rr.com>
+   Mark Grebe <atarimacosx@gmail.com>
    
    Based on the Preferences pane of the
    TextEdit application.
@@ -35,6 +35,7 @@ extern int MONITOR_monitorCmd(char *input);
 extern int CalcAtariType(int machineType, int ramSize, int axlon, int mosaic);
 
 
+extern int keyjoyEnable;
 extern int pauseEmulator;
 extern int requestPauseEmulator;
 extern int requestColdReset;
@@ -115,6 +116,10 @@ void ControlManagerLoadState() {
 
 void ControlManagerPauseEmulator() {
     [[ControlManager sharedInstance] pause:nil];
+}
+
+void ControlManagerKeyjoyEnable() {
+    [[ControlManager sharedInstance] keyjoyEnable:nil];
 }
 
 void ControlManagerHideApp() {
@@ -565,6 +570,10 @@ static int monitorRunFirstTime = 1;
  *-----------------------------------------------------------------------------*/
 - (IBAction)keyjoyEnable:(id)sender
 {
+    if (1 - keyjoyEnable)
+        [keyjoyEnableItem setState:NSOnState];
+    else
+        [keyjoyEnableItem setState:NSOffState];
     requestKeyjoyEnableChange = 1;
 }
 
@@ -1062,7 +1071,7 @@ static int monitorRunFirstTime = 1;
 - (IBAction)showDonation:(id)sender;
 {
 	[[NSWorkspace  sharedWorkspace] openURL:
-		[NSURL URLWithString:@"http://order.kagi.com/?6FBTU&lang=en"]];
+		[NSURL URLWithString:@"https://archive.org/donate/"]];
 }
 
 /*------------------------------------------------------------------------------
