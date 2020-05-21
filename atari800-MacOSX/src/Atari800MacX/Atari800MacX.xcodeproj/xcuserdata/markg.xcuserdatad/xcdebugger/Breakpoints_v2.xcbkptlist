@@ -28,9 +28,41 @@
             filePath = "atari_mac_sdl.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "6718"
-            endingLineNumber = "6718"
+            startingLineNumber = "6721"
+            endingLineNumber = "6721"
             landmarkName = "SDL_Atari_Mouse(s, t)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "024AB6CA-44E1-40AC-ABDB-6F86DD63A48F"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "atari_mac_sdl.c"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1608"
+            endingLineNumber = "1608"
+            landmarkName = "Atari_Keyboard_US()"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "4017F54C-FE15-4F71-82C5-E7D87601AE46"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "atari_mac_sdl.c"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1614"
+            endingLineNumber = "1614"
+            landmarkName = "Atari_Keyboard_US()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
