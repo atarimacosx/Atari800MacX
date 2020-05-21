@@ -2756,6 +2756,9 @@ int Atari_Keyboard_International(void)
                     return AKEY_NONE;
             }
         }
+        else {
+            return AKEY_NONE;
+        }
         
         if (kbhits == NULL) {
             Log_print("oops, kbhits is NULL!");
