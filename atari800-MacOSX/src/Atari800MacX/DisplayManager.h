@@ -54,7 +54,7 @@
 - (IBAction)screenshot:(id)sender;
 - (IBAction)widthMode:(id)sender;
 - (IBAction)artifactModeChange:(id)sender;
-- (void) paste:(id) sender;
-- (void) selectAll:(id) sender;
-- (void) copy:(id) sender;
+- (IBAction) paste:(id) sender;
+- (IBAction) selectAll:(id) sender;
+- (IBAction) copy:(id) sender;
 @end

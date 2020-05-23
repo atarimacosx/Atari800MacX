@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="16096" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="16097" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment version="101202" identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="16096"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="16097"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="NSApplication">
@@ -89,10 +89,14 @@
                                 <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                             </menuItem>
                             <menuItem title="Cut" keyEquivalent="x" id="608"/>
-                            <menuItem title="Copy" keyEquivalent="c" id="631"/>
+                            <menuItem title="Copy" keyEquivalent="c" id="631">
+                                <connections>
+                                    <action selector="copy:" target="498" id="XWX-NT-khA"/>
+                                </connections>
+                            </menuItem>
                             <menuItem title="Paste" keyEquivalent="v" id="605">
                                 <connections>
-                                    <action selector="paste:" target="-1" id="642"/>
+                                    <action selector="paste:" target="498" id="l6m-ui-WGh"/>
                                 </connections>
                             </menuItem>
                             <menuItem title="Delete" id="615">
@@ -100,7 +104,11 @@
                                     <action selector="delete:" target="-1" id="637"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Select All" keyEquivalent="a" id="619"/>
+                            <menuItem title="Select All" keyEquivalent="a" id="619">
+                                <connections>
+                                    <action selector="selectAll:" target="498" id="np0-QJ-c9T"/>
+                                </connections>
+                            </menuItem>
                         </items>
                     </menu>
                 </menuItem>

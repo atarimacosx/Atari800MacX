@@ -372,7 +372,7 @@ static DisplayManager *sharedInstance = nil;
 /*------------------------------------------------------------------------------
  *  paste - Starts Paste from Mac to Atari
  *-----------------------------------------------------------------------------*/
-- (void) paste:(id) sender
+- (IBAction) paste:(id) sender
 {
     requestPaste = 1;
 }
@@ -380,7 +380,7 @@ static DisplayManager *sharedInstance = nil;
 /*------------------------------------------------------------------------------
  *  selectAll - Starts selectAll from Mac to Atari
  *-----------------------------------------------------------------------------*/
-- (void) selectAll:(id) sender
+- (IBAction) selectAll:(id) sender
 {
     requestSelectAll = 1;
 }
@@ -388,7 +388,7 @@ static DisplayManager *sharedInstance = nil;
 /*------------------------------------------------------------------------------
  *  copy - Starts copy from Mac to Atari
  *-----------------------------------------------------------------------------*/
-- (void) copy:(id) sender
+- (IBAction) copy:(id) sender
 {
     requestCopy = 1;
 }
