@@ -177,6 +177,7 @@ int requestSelectAll = 0;
 int copyStatus = COPY_IDLE;
 
 void Reinit_Joysticks(void);
+void checkForNewJoysticks(void);
 /* Filenames for saving and loading the state of the emulator */
 char saveFilename[FILENAME_MAX];
 char loadFilename[FILENAME_MAX];
@@ -2702,13 +2703,7 @@ int Atari_Keyboard_International(void)
     else {
         /* Poll for SDL events.  All we want here are Keydown and Keyup events,
          and the quit event. */
-        SDL_JoystickUpdate();
-        if (joystickCount != SDL_NumJoysticks()) {
-            joystickCount = SDL_NumJoysticks();
-            Reinit_Joysticks();
-            UpdatePreferencesJoysticks();
-            PreferencesIdentifyGamepadNew();
-        }
+        checkForNewJoysticks();
         if (SDL_PollEvent(&event)) {
             switch (event.type) {
                 case SDL_TEXTINPUT:
@@ -3887,6 +3882,19 @@ void Init_Joysticks(int *argc, char *argv[])
     Open_SDL_Joysticks();
     Remove_Bad_SDL_Joysticks();
     Init_SDL_Joykeys();        
+}
+
+/*------------------------------------------------------------------------------
+*  checkForNewJoysticks - Check if new joysticks have been adeed/removed
+*-----------------------------------------------------------------------------*/
+void checkForNewJoysticks(void) {
+    SDL_JoystickUpdate();
+    if (joystickCount != SDL_NumJoysticks()) {
+        joystickCount = SDL_NumJoysticks();
+        Reinit_Joysticks();
+        UpdatePreferencesJoysticks();
+        PreferencesIdentifyGamepadNew();
+    }
 }
 
 /*------------------------------------------------------------------------------

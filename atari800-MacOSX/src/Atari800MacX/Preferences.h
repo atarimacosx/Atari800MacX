@@ -516,7 +516,8 @@
     NSMutableDictionary *curValues;	// Current, confirmed values for the preferences
     NSDictionary *origValues;	// Values read from preferences at startup
     NSMutableDictionary *displayedValues;	// Values displayed in the UI
-    NSTimer *theTimer;
+    NSTimer *theIdentifyTimer;
+    NSTimer *theTopTimer;
 }
 
 + (id)objectForKey:(id)key;	/* Convenience for getting global preferences */
@@ -601,6 +602,8 @@
 - (IBAction)identifyGamepad:(id)sender;
 - (NSString *) removeUnicode:(NSString *) unicodeString;
 - (IBAction)identifyGamepadNew:(id)sender;
+- (void)checkNewGamepads:(id)sender;
+- (void)checkNewGamepadsMain:(id)sender;
 - (void)identifyOK:(id)sender;
 - (void)identifyTest:(id)sender;
 - (void)configNameOK:(id)sender;

@@ -43,6 +43,7 @@ extern void PauseAudio(int pause);
 extern int requestPrefsChange;
 extern int configurationChanged;
 extern void Reinit_Joysticks(void);
+extern void checkForNewJoysticks(void);
 
 extern ATARI825_PREF prefs825;
 extern ATARI1020_PREF prefs1020;
@@ -663,7 +664,15 @@ static Preferences *sharedInstance = nil;
     [[joystick4TypePulldown menu] setAutoenablesItems:NO];
     [[joystick4NumPulldown menu] setAutoenablesItems:NO];
     [[joystick4Pulldown menu] setAutoenablesItems:NO];
-	
+
+    theTopTimer = [NSTimer timerWithTimeInterval: 0.5
+                                      target: self
+                                    selector: @selector(checkNewGamepads:)
+                                    userInfo: nil
+                                     repeats:YES];
+
+    [[NSRunLoop currentRunLoop] addTimer:theTopTimer  forMode: NSModalPanelRunLoopMode];
+    
     [NSApp runModalForWindow:[prefTabView window]];
 }
 
@@ -1005,6 +1014,10 @@ static Preferences *sharedInstance = nil;
         [[joystick3Pulldown itemAtIndex:3] setEnabled:NO];
         [[joystick4Pulldown itemAtIndex:3] setEnabled:NO];
     } else {
+        [[joystick1Pulldown itemAtIndex:3] setEnabled:YES];
+        [[joystick2Pulldown itemAtIndex:3] setEnabled:YES];
+        [[joystick3Pulldown itemAtIndex:3] setEnabled:YES];
+        [[joystick4Pulldown itemAtIndex:3] setEnabled:YES];
         [joystick1TypePulldown setEnabled:YES];
         [gamepad1ConfigPulldown setEnabled:YES];
         [gamepad1IdentifyButton setEnabled:YES];
@@ -1098,6 +1111,10 @@ static Preferences *sharedInstance = nil;
         [[joystick3Pulldown itemAtIndex:4] setEnabled:NO];
         [[joystick4Pulldown itemAtIndex:4] setEnabled:NO];
     } else {
+        [[joystick1Pulldown itemAtIndex:4] setEnabled:YES];
+        [[joystick2Pulldown itemAtIndex:4] setEnabled:YES];
+        [[joystick3Pulldown itemAtIndex:4] setEnabled:YES];
+        [[joystick4Pulldown itemAtIndex:4] setEnabled:YES];
         [joystick2TypePulldown setEnabled:YES];
         [gamepad2ConfigPulldown setEnabled:YES];
         [gamepad2IdentifyButton setEnabled:YES];
@@ -1192,6 +1209,10 @@ static Preferences *sharedInstance = nil;
         [[joystick3Pulldown itemAtIndex:5] setEnabled:NO];
         [[joystick4Pulldown itemAtIndex:5] setEnabled:NO];
     } else {
+        [[joystick1Pulldown itemAtIndex:5] setEnabled:YES];
+        [[joystick2Pulldown itemAtIndex:5] setEnabled:YES];
+        [[joystick3Pulldown itemAtIndex:5] setEnabled:YES];
+        [[joystick4Pulldown itemAtIndex:5] setEnabled:YES];
         [joystick3TypePulldown setEnabled:YES];
         [gamepad3ConfigPulldown setEnabled:YES];
         [gamepad3IdentifyButton setEnabled:YES];
@@ -1286,6 +1307,10 @@ static Preferences *sharedInstance = nil;
         [[joystick3Pulldown itemAtIndex:6] setEnabled:NO];
         [[joystick4Pulldown itemAtIndex:6] setEnabled:NO];
     } else {
+        [[joystick1Pulldown itemAtIndex:6] setEnabled:YES];
+        [[joystick2Pulldown itemAtIndex:6] setEnabled:YES];
+        [[joystick3Pulldown itemAtIndex:6] setEnabled:YES];
+        [[joystick4Pulldown itemAtIndex:6] setEnabled:YES];
         [joystick4TypePulldown setEnabled:YES];
         [gamepad4ConfigPulldown setEnabled:YES];
         [gamepad4IdentifyButton setEnabled:YES];
@@ -3743,6 +3768,7 @@ static Preferences *sharedInstance = nil;
     [self miscChanged:self];
     [self gamepadConfigChange:gamepadConfigPulldown];
     [self commitDisplayedValues];
+    [theTopTimer invalidate];
     [NSApp stopModal];
     [[prefTabView window] close];
     [self transferValuesToEmulator];
@@ -3767,6 +3793,7 @@ static Preferences *sharedInstance = nil;
     [gamepad3ConfigPulldown selectItemAtIndex:0];
     [gamepad4ConfigPulldown selectItemAtIndex:0];
     [self gamepadButtonChange:self];
+    [theTopTimer invalidate];
     [NSApp stopModal];
     [[prefTabView window] close];
     [self transferValuesToEmulator];
@@ -3779,6 +3806,7 @@ static Preferences *sharedInstance = nil;
 
 - (void)revert:(id)sender {
     [self discardDisplayedValues];
+    [theTopTimer invalidate];
     [NSApp stopModal];
     [[prefTabView window] close];
     PauseAudio(0);
@@ -4077,7 +4105,7 @@ static Preferences *sharedInstance = nil;
 
     [self identifyGamepadNew:self];
 
-    theTimer = [NSTimer
+    theIdentifyTimer = [NSTimer
             scheduledTimerWithTimeInterval:0.1 target:self  selector:@selector(identifyTest:) userInfo:nil repeats:YES];
 
     [[gamepadButton1 window] orderFront:self];
@@ -4181,8 +4209,16 @@ static Preferences *sharedInstance = nil;
 
 }
 
+- (void)checkNewGamepads:(id)sender {
+    [self performSelectorOnMainThread:@selector(checkNewGamepadsMain:) withObject:self waitUntilDone:YES];
+}
+
+- (void)checkNewGamepadsMain:(id)sender {
+    checkForNewJoysticks();
+}
+
 - (void)identifyOK:(id)sender {
-    [theTimer invalidate];
+    [theIdentifyTimer invalidate];
     [NSApp stopModal];
     [[gamepadButton1 window] close];
     }
