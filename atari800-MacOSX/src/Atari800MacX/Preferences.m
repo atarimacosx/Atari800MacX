@@ -665,7 +665,7 @@ static Preferences *sharedInstance = nil;
     [[joystick4NumPulldown menu] setAutoenablesItems:NO];
     [[joystick4Pulldown menu] setAutoenablesItems:NO];
 
-    theTopTimer = [NSTimer timerWithTimeInterval: 0.5
+    theTopTimer = [NSTimer timerWithTimeInterval: 0.1
                                       target: self
                                     selector: @selector(checkNewGamepads:)
                                     userInfo: nil
