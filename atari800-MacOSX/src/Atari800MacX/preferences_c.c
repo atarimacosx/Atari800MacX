@@ -1005,4 +1005,9 @@ int loadMacPrefs(int firstTime)
     return(TRUE);
 }
 
-
+void reloadMacJoyPrefs() {
+   for (int i=0;i<4;i++) {
+       JOYSTICK_MODE[i] = prefs.joystickMode[i];
+       JOYSTICK_AUTOFIRE[i] = prefs.joystickAutofire[i];
+       }
+}

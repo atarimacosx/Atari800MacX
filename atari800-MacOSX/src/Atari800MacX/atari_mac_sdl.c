@@ -306,6 +306,7 @@ extern void PrintOutputControllerSelectPrinter(int printer);
 extern void Devices_H_Init(void);
 extern void PreferencesSaveDefaults(void);
 extern void loadMacPrefs(int firstTime);
+extern void reloadMacJoyPrefs();
 extern int PreferencesTypeFromIndex(int index, int *ver4type);
 extern void PreferencesSaveConfiguration();
 extern void PreferencesLoadConfiguration();
@@ -3895,8 +3896,7 @@ void Init_Joysticks(int *argc, char *argv[])
 void Reinit_Joysticks(void)
 {
 	printf("Reiniting joystics....\n");
-	//SDL_QuitSubSystem(SDL_INIT_JOYSTICK);
-	//SDL_InitSubSystem(SDL_INIT_JOYSTICK);
+    reloadMacJoyPrefs();
 	Init_Joysticks(NULL,NULL);
 }
 
