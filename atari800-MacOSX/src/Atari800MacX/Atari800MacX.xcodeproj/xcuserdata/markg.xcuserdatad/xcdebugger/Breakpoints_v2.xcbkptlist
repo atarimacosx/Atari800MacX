@@ -28,8 +28,8 @@
             filePath = "atari_mac_sdl.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "6721"
-            endingLineNumber = "6721"
+            startingLineNumber = "6737"
+            endingLineNumber = "6737"
             landmarkName = "SDL_Atari_Mouse(s, t)"
             landmarkType = "9">
          </BreakpointContent>
