@@ -4119,7 +4119,7 @@ static Preferences *sharedInstance = nil;
         [[gamepadSelector cellAtRow:0 column:2] setEnabled:YES];
     else
         [[gamepadSelector cellAtRow:0 column:2] setEnabled:NO];
-    if (joystick1)
+    if (joystick3)
         [[gamepadSelector cellAtRow:0 column:3] setEnabled:YES];
     else
         [[gamepadSelector cellAtRow:0 column:3] setEnabled:NO];

@@ -176,6 +176,7 @@ int requestSelectAll = 0;
 #define COPY_DEFINED 3
 int copyStatus = COPY_IDLE;
 
+void Reinit_Joysticks(void);
 /* Filenames for saving and loading the state of the emulator */
 char saveFilename[FILENAME_MAX];
 char loadFilename[FILENAME_MAX];
@@ -322,8 +323,6 @@ void Atari_DisplayScreen(UBYTE * screen);
 void SoundSetup(void); 
 void PauseAudio(int pause);
 void CreateWindowCaption(void);
-int Setup_HID_Notifications(void);
-void Clenup_HID_Notifications(void);
 void ProcessCopySelection(int *first_row, int *last_row, int selectAll);
 
 // joystick emulation - Future enhancement will allow user to set these in 
@@ -358,6 +357,7 @@ int SDL_JOY_1_RIGHTDOWN = SDL_SCANCODE_X;
 int keyjoyEnable = TRUE;
 
 // real joysticks - Pointers to SDL structures
+int joystickCount;
 SDL_Joystick *joystick0 = NULL;
 SDL_Joystick *joystick1 = NULL;
 SDL_Joystick *joystick2 = NULL;
@@ -2701,6 +2701,13 @@ int Atari_Keyboard_International(void)
     else {
         /* Poll for SDL events.  All we want here are Keydown and Keyup events,
          and the quit event. */
+        SDL_JoystickUpdate();
+        if (joystickCount != SDL_NumJoysticks()) {
+            joystickCount = SDL_NumJoysticks();
+            Reinit_Joysticks();
+            UpdatePreferencesJoysticks();
+            PreferencesIdentifyGamepadNew();
+        }
         if (SDL_PollEvent(&event)) {
             switch (event.type) {
                 case SDL_TEXTINPUT:
@@ -3752,12 +3759,20 @@ void Check_SDL_Joysticks()
 *-----------------------------------------------------------------------------*/
 void Open_SDL_Joysticks()
 {
+    if (joystick0)
+        SDL_JoystickClose(joystick0);
     joystick0 = SDL_JoystickOpen(0);
     joysticks[0] = joystick0;
+    if (joystick1)
+        SDL_JoystickClose(joystick1);
     joystick1 = SDL_JoystickOpen(1);
     joysticks[1] = joystick1;
+    if (joystick2)
+        SDL_JoystickClose(joystick2);
     joystick2 = SDL_JoystickOpen(2);
     joysticks[2] = joystick2;
+    if (joystick3)
+        SDL_JoystickClose(joystick3);
     joystick3 = SDL_JoystickOpen(3);
     joysticks[3] = joystick3;
     Check_SDL_Joysticks();
@@ -3880,8 +3895,8 @@ void Init_Joysticks(int *argc, char *argv[])
 void Reinit_Joysticks(void)
 {
 	printf("Reiniting joystics....\n");
-	SDL_QuitSubSystem(SDL_INIT_JOYSTICK);
-	SDL_InitSubSystem(SDL_INIT_JOYSTICK);
+	//SDL_QuitSubSystem(SDL_INIT_JOYSTICK);
+	//SDL_InitSubSystem(SDL_INIT_JOYSTICK);
 	Init_Joysticks(NULL,NULL);
 }
 
@@ -3938,6 +3953,7 @@ void PLATFORM_Initialise(int *argc, char *argv[])
         Log_flushlog();
         exit(-1);
     }
+    joystickCount = SDL_NumJoysticks();
     atexit(SDL_Quit);
 
     SDL_Sound_Initialise(argc, argv);
@@ -7691,8 +7707,6 @@ int SDL_main(int argc, char **argv)
       argv = prefsArgv;
 	  }
 
-	Setup_HID_Notifications();
-
     if (!Atari800_Initialise(&argc, argv))
         return 3;
 
@@ -8043,146 +8057,6 @@ int SDL_main(int argc, char **argv)
 		
         }
     Atari800_Exit(FALSE);
-/*	Clenup_HID_Notifications(); */
     Log_flushlog();
     return 0;
-}
-
-/*------------------------------------------------------------------------------
-* HidDeviceAdded - Process an HID Device added notification
-*-----------------------------------------------------------------------------*/
-void HidDeviceAdded(void *refCon, io_iterator_t iterator)
-{
-    io_service_t                usbDevice;
-	static int					first = TRUE;
-
-    while ((usbDevice = IOIteratorNext(iterator)))
-    {
-	} 
-	
-	if (first)
-		first = FALSE;
-	else {
-		Reinit_Joysticks();
-		UpdatePreferencesJoysticks();
-        PreferencesIdentifyGamepadNew();
-		}
-}
-
-/*------------------------------------------------------------------------------
-* HidDeviceRemoved - Process an HID Device removed notification
-*-----------------------------------------------------------------------------*/
-void HidDeviceRemoved(void *refCon, io_iterator_t iterator)
-{
-    io_service_t                usbDevice;
-	static int					first = TRUE;
-
-    while ((usbDevice = IOIteratorNext(iterator)))
-    {
-	}
-	
-	if (first)
-		first = FALSE;
-	else {
-		Reinit_Joysticks();
-		UpdatePreferencesJoysticks();
-        PreferencesIdentifyGamepadNew();
-		}
-}
-
-/*------------------------------------------------------------------------------
-* Setup_HID_Notifications - Setup so that we are notified if an HID type USB
-*   device is plugged in.
-*-----------------------------------------------------------------------------*/
-int Setup_HID_Notifications(void)
-{
-    mach_port_t             masterPort;
-    CFMutableDictionaryRef  matchingDict;
-    CFRunLoopSourceRef      runLoopSource;
-    kern_return_t           result;
-    SInt32					usbClass = 0;
-    SInt32					usbSubClass = 0;
-
-    //Create a master port for communication with the I/O Kit
-    result = IOMasterPort(MACH_PORT_NULL, &masterPort);
-    if (result || !masterPort)
-    {
-        printf("ERR: Couldn't create a master I/O Kit port(%08x)\n", result);
-        return -1;
-    }
-
-    //Set up matching dictionary for class IOUSBDevice and its subclasses
-    matchingDict = IOServiceMatching(kIOUSBDeviceClassName);
-    if (!matchingDict)
-    {
-        printf("Couldn't create a USB matching dictionary\n");
-        mach_port_deallocate(mach_task_self(), masterPort);
-        return -1;
-    }
-
-
-    //Add the vendor and product IDs to the matching dictionary
-    //This is the second key of the first table in the USB Common Class
-    //Specification
-	CFDictionarySetValue(matchingDict, CFSTR(kUSBDeviceClass),
-                        CFNumberCreate(kCFAllocatorDefault,
-                                     kCFNumberSInt32Type, &usbClass));
-	CFDictionarySetValue(matchingDict, CFSTR(kUSBDeviceSubClass),
-                        CFNumberCreate(kCFAllocatorDefault,
-                                     kCFNumberSInt32Type, &usbSubClass));
-
-    //To set up asynchronous notifications, create a notification port and 
-    //add its run loop event source to the program?s run loop
-    gNotifyPort = IONotificationPortCreate(masterPort);
-    runLoopSource = IONotificationPortGetRunLoopSource(gNotifyPort);
-    CFRunLoopAddSource(CFRunLoopGetCurrent(), runLoopSource, 
-                        kCFRunLoopCommonModes);
-
-    //Retain additional dictionary references because each call to
-    //IOServiceAddMatchingNotification consumes one reference
-    matchingDict = (CFMutableDictionaryRef) CFRetain(matchingDict);
-    matchingDict = (CFMutableDictionaryRef) CFRetain(matchingDict);
-
-    //Now set up two notifications: one to be called when a HID device
-    //is first matched by the I/O Kit and another to be called when the
-    //device is terminated
-    //Notification of first match
-    result = IOServiceAddMatchingNotification(gNotifyPort,
-                    kIOFirstMatchNotification, matchingDict,
-                    HidDeviceAdded, NULL, &gAddedIter);
-					
-    //Iterate over set of matching devices to access already-present devices
-    //and to arm the notification 
-    HidDeviceAdded(NULL, gAddedIter);
-	
-    //Notification of termination
-
-    result = IOServiceAddMatchingNotification(gNotifyPort,
-                    kIOTerminatedNotification, matchingDict,
-                    HidDeviceRemoved, NULL, &gRemovedIter);
-
-    //Iterate over set of matching devices to release each one and to 
-    //arm the notification
-
-    HidDeviceRemoved(NULL, gRemovedIter);
-	return(0);
-}
-
-/*------------------------------------------------------------------------------
-* Clenup_HID_Notifications - Cleanup notification structures on quiting.
-*-----------------------------------------------------------------------------*/
-void Clenup_HID_Notifications(void)
-{
-    IONotificationPortDestroy(gNotifyPort);
-    if (gAddedIter)
-    {
-        IOObjectRelease(gAddedIter);
-        gAddedIter = 0;
-    }
-
-    if (gRemovedIter)
-    {
-        IOObjectRelease(gRemovedIter);
-        gRemovedIter = 0;
-    }
 }
