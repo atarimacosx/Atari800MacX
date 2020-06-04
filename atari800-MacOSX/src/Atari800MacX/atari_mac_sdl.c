@@ -4153,37 +4153,32 @@ void Atari_DisplayScreen(UBYTE * screen)
     
     texture = SDL_CreateTextureFromSurface(renderer, MainScreen);
 
-    // Add the scanlines if we are in that mode
-    if (SCALE_MODE == SCANLINE_SCALE && DOUBLESIZE)
-        {
-        int rows = 0;
-        float yscanlineStart;
-        SDL_Rect scanlineRect;
-        
-        if (scaleFactor == 2)
-            yscanlineStart = 0.5;
-        else if (scaleFactor == 3)
-            yscanlineStart = 2.0/3.0;
-        else
-            yscanlineStart = 0.25;
-
-        //glColor3ub(255,255,255);
-    
-        for (rows = 0; rows < screen_height; rows ++)
-            scanlineRect.x = 0;
-            scanlineRect.w = screen_width;
-            scanlineRect.y = 1;
-            scanlineRect.h = 1;
-            SDL_RenderFillRect(renderer, &scanlineRect);
-            //glRectf(0.0,rows+yscanlineStart,screen_width*1.0,rows+1.0);
-        }
-
     //Copying the texture on to the window using renderer and rectangle
     rect.x = 0;
     rect.y = 0;
     rect.w = MainScreen->w;
     rect.h = MainScreen->h;
     SDL_RenderCopy(renderer, texture, NULL, &rect);
+
+    // Add the scanlines if we are in that mode
+    if (SCALE_MODE == SCANLINE_SCALE && DOUBLESIZE)
+        {
+        int rows = 0;
+        SDL_Rect scanlineRect;
+        
+        SDL_RenderSetScale(renderer, scaleFactor, 1);
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+
+        for (rows = 0; rows < MainScreen->h; rows ++)
+            {
+            scanlineRect.x = 0;
+                scanlineRect.w = screen_width;
+            scanlineRect.y = rows*scaleFactor+scaleFactor;
+            scanlineRect.h = 1;
+            SDL_RenderFillRect(renderer, &scanlineRect);
+            }
+        SDL_RenderSetScale(renderer, scaleFactor, scaleFactor);
+        }
 
     SDL_RenderPresent(renderer);
     SDL_DestroyTexture(texture);
