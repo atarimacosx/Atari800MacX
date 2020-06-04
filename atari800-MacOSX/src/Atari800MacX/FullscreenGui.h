@@ -13,8 +13,8 @@
 #include "GUI_status.h"
 
 extern "C" {
-	int FullscreenGUIRun(void);
-	int FullscreenCrashGUIRun(void);
+	int FullscreenGUIRun(SDL_Renderer *renderer, SDL_Window *window);
+	int FullscreenCrashGUIRun(SDL_Renderer *renderer);
 	void FullscreenGUIPrintf(const char *format,...);
 	void FullscreenGUIPuts(const char *string);
 }

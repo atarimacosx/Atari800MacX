@@ -283,8 +283,8 @@ extern void ControlManagerShowHelp(void);
 extern int ControlManagerMonitorRun(void);
 extern void ControlManagerFunctionKeysWindowShow(void);
 extern int PasteManagerGetChar(unsigned short *character);
-extern int FullscreenGUIRun(void);
-extern int FullscreenCrashGUIRun(void);
+extern int FullscreenGUIRun(SDL_Renderer *renderer, SDL_Window *windows);
+extern int FullscreenCrashGUIRun(SDL_Renderer *renderer);
 extern void SetSoundManagerEnable(int soundEnabled);
 extern void SetSoundManagerStereo(int soundStereo);
 extern void SetSoundManagerRecording(int soundRecording);
@@ -508,7 +508,8 @@ Uint8 *scaledScreen;
 SDL_Surface *MainScreen = NULL;
 SDL_Window *MainGLScreen = NULL;
 SDL_Surface *MonitorGLScreen = NULL;
-SDL_GLContext glcontext = NULL;
+SDL_Renderer *renderer = NULL;
+SDL_Texture *texture = NULL;
 GLuint MainScreenID;
 GLuint MonitorScreenID = 0;
 GLfloat texCoord[4];
@@ -792,12 +793,9 @@ void SetVideoMode(int w, int h, int bpp)
         wasFullscreen = 1;
         Uint32 texture_w, texture_h;
         
-        // Setup for Double Buffered
-        SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
-    
-        // Get rid of old GL context
-        if (glcontext)
-            SDL_GL_DeleteContext(glcontext);
+        // Get rid of old renderer
+        if (renderer)
+            SDL_DestroyRenderer(renderer);
     
         // Delete the old window, if it exists
         if (MainGLScreen)
@@ -809,23 +807,15 @@ void SetVideoMode(int w, int h, int bpp)
                                         SDL_WINDOWPOS_UNDEFINED,
                                         SDL_WINDOWPOS_UNDEFINED,
                                         w, h, SDL_WINDOW_FULLSCREEN | SDL_WINDOW_OPENGL | SDL_WINDOW_ALLOW_HIGHDPI);
-        glcontext = SDL_GL_CreateContext(MainGLScreen);
+        SDL_SetHint(SDL_HINT_RENDER_DRIVER, "metal");
+        renderer = SDL_CreateRenderer(MainGLScreen, -1, 0);
+        SDL_RenderSetScale(renderer, scaleFactor, scaleFactor);
 
         // Save Mac Window for later use
         SDL_SysWMinfo wmInfo;
         SDL_VERSION(&wmInfo.version);
         SDL_GetWindowWMInfo(MainGLScreen, &wmInfo);
         Atari800WindowCreate(wmInfo.info.cocoa.window);
-
-        glPushAttrib(GL_ENABLE_BIT);
-
-        // Center the image horizontally and vertically
-        glViewport(0,0,w,h);
-
-        // Load a 1:1 projection
-        glMatrixMode(GL_PROJECTION);
-        glPushMatrix();
-        glLoadIdentity();
 
         // Set the HW Scaling for OPENGL properly
         if ((SCALE_MODE == NORMAL_SCALE || SCALE_MODE == SCANLINE_SCALE || SCALE_MODE == SMOOTH_SCALE) && lockFullscreenSize) {
@@ -842,61 +832,29 @@ void SetVideoMode(int w, int h, int bpp)
 
         fullscreenWidth = w;
         fullscreenHeight = h;
-        glOrtho(0.0, (GLdouble) w, (GLdouble) h, 0.0, 0.0, 1.0);
-        glMatrixMode(GL_MODELVIEW);
-        glPushMatrix();
-        glLoadIdentity();
 
         // Delete the old textures
         if(MainScreen)
             SDL_FreeSurface(MainScreen);
-        glDeleteTextures(1, &MainScreenID);
-
-        // Setup to create the new texture
-        texture_w = power_of_two(w);
-        texture_h = power_of_two(h);
-        texCoord[0] = 0.0f;
-        texCoord[1] = 0.0f;
-        texCoord[2] = (GLfloat) w / texture_w;
-        texCoord[3] = (GLfloat) h / texture_h;
 
         // Create the SDL texture
+        texture_w = power_of_two(w);
+        texture_h = power_of_two(h);
         MainScreen = SDL_CreateRGBSurface(0, texture_w, texture_h, 16,
                         0x0000F800, 0x000007E0, 0x0000001F, 0x00000000);
-
-        // Create the OPENGL Texture
-        glGenTextures(1, &MainScreenID);
-        glBindTexture(GL_TEXTURE_2D, MainScreenID);
-        if (!MonitorScreenID) {
-            glGenTextures(1, &MonitorScreenID);
-        }
-
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-
-        // Set the proper flags
-        glDisable(GL_DEPTH_TEST);
-        glDisable(GL_CULL_FACE);
-        glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
-        glEnable(GL_TEXTURE_2D);
-        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
         
         // Make sure the screens are cleared to black
-        glClear(GL_COLOR_BUFFER_BIT);
-        SDL_GL_SwapWindow(MainGLScreen);
-        glClear(GL_COLOR_BUFFER_BIT);
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        SDL_RenderClear(renderer);
+
         wasOpenGl = TRUE;
         }
     else {
         Uint32 texture_w, texture_h;
-        // Setup for Double Buffered
-        SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
-        
-        // Get rid of old GL context
-        if (glcontext)
-            SDL_GL_DeleteContext(glcontext);
+
+        // Get rid of old renderer
+        if (renderer)
+            SDL_DestroyRenderer(renderer);
         
         // Delete the old window, if it exists
         if (MainGLScreen) {
@@ -909,7 +867,9 @@ void SetVideoMode(int w, int h, int bpp)
                                         SDL_WINDOWPOS_UNDEFINED,
                                         SDL_WINDOWPOS_UNDEFINED,
                                         w, h, SDL_WINDOW_OPENGL);
-        glcontext = SDL_GL_CreateContext(MainGLScreen);
+        SDL_SetHint(SDL_HINT_RENDER_DRIVER, "metal");
+        renderer = SDL_CreateRenderer(MainGLScreen, -1, 0);
+        SDL_RenderSetScale(renderer, scaleFactor, scaleFactor);
         
         // Save Mac Window for later use
         SDL_SysWMinfo wmInfo;
@@ -917,62 +877,26 @@ void SetVideoMode(int w, int h, int bpp)
         SDL_GetWindowWMInfo(MainGLScreen, &wmInfo);
         Atari800WindowCreate(wmInfo.info.cocoa.window);
 
-        glPushAttrib(GL_ENABLE_BIT);
-
-        // Center the image horizontally and vertically
-        glViewport(0,0,w,h);
-
-        // Load a 1:1 projection
-        glMatrixMode(GL_PROJECTION);
-        glPushMatrix();
-        glLoadIdentity();
-
         // Set the HW Scaling for OPENGL properly
         if ((SCALE_MODE == NORMAL_SCALE || SCALE_MODE == SCANLINE_SCALE || SCALE_MODE == SMOOTH_SCALE) && DOUBLESIZE) {
             w /= scaleFactor;
             h /= scaleFactor;
             }
-        glOrtho(0.0, (GLdouble) w, (GLdouble) h, 0.0, 0.0, 1.0);
-        glMatrixMode(GL_MODELVIEW);
-        glPushMatrix();
-        glLoadIdentity();
 
         // Delete the old textures
         if(MainScreen)
             SDL_FreeSurface(MainScreen);
-        glDeleteTextures(1, &MainScreenID);
 
-        // Setup to create the new texture
         texture_w = power_of_two(w);
         texture_h = power_of_two(h);
-        texCoord[0] = 0.0f;
-        texCoord[1] = 0.0f;
-        texCoord[2] = (GLfloat) w / texture_w;
-        texCoord[3] = (GLfloat) h / texture_h;
-
         // Create the SDL texture
         MainScreen = SDL_CreateRGBSurface(0, texture_w, texture_h, 16,
                         0x0000F800, 0x000007E0, 0x0000001F, 0x00000000);
 
-        // Create the OPENGL Texture
-        glGenTextures(1, &MainScreenID);
-        glBindTexture(GL_TEXTURE_2D, MainScreenID);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-
-        // Set the proper flags
-        glDisable(GL_DEPTH_TEST);
-        glDisable(GL_CULL_FACE);
-        glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
-        glEnable(GL_TEXTURE_2D);
-        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
-        
         // Make sure the screens are cleared to black
-        glClear(GL_COLOR_BUFFER_BIT);
-        SDL_GL_SwapWindow(MainGLScreen);
-        glClear(GL_COLOR_BUFFER_BIT);
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        SDL_RenderClear(renderer);
+
         wasOpenGl = TRUE;
 			
         if (!FULLSCREEN && wasFullscreen) {
@@ -1072,10 +996,6 @@ void SetNewVideoMode(int w, int h, int bpp)
 
         if (bpp == 0) {
             Log_print("detected %ibpp", SDL_ATARI_BPP);
-            Log_print("OPENGL Vendor  : %s",glGetString(GL_VENDOR));
-            Log_print("OPENGL Renderer: %s",glGetString(GL_RENDERER));
-            Log_print("OPENGL Version : %s\n",glGetString(GL_VERSION));
-				
 
         if ((SDL_ATARI_BPP != 8) && (SDL_ATARI_BPP != 16)
             && (SDL_ATARI_BPP != 32)) {
@@ -1140,8 +1060,10 @@ void PLATFORM_SwitchXep80(void)
 *-----------------------------------------------------------------------------*/
 void SwitchDoubleSize(int scale)
 {
-	if (scale == 1)
+    if (scale == 1) {
 		DOUBLESIZE = 0;
+        scaleFactor = 1;
+        }
 	else {
 		DOUBLESIZE = 1;
 		scaleFactor = scale;
@@ -2359,7 +2281,7 @@ int Atari_Keyboard_US(void)
             else
                 return AKEY_RETURN;
         case SDLK_F9:
-            printf("%d\n",FullscreenCrashGUIRun());
+            printf("%d\n",FullscreenCrashGUIRun(renderer));
             return AKEY_EXIT;
         case SDLK_F1:
             return AKEY_UI;
@@ -3494,7 +3416,7 @@ int Atari_Keyboard_International(void)
             else
                 return AKEY_RETURN;
         case SDLK_F9:
-            printf("%d\n",FullscreenCrashGUIRun());
+            printf("%d\n",FullscreenCrashGUIRun(renderer));
             return AKEY_EXIT;
         case SDLK_F1:
             return AKEY_UI;
@@ -3998,7 +3920,7 @@ int PLATFORM_Exit(int run_monitor)
         if (requestMonitor || !CPU_cim_encountered) {
             /* run the monitor....*/ 
             if (FULLSCREEN && FULLSCREEN_MONITOR) {
-				restart = FullscreenGUIRun();
+				restart = FullscreenGUIRun(renderer, MainGLScreen);
 				memset(Screen_atari, 0, (Screen_HEIGHT * Screen_WIDTH));
 				memset(Screen_atari_b, 0, (Screen_HEIGHT * Screen_WIDTH));
 				requestMonitor = FALSE;
@@ -4014,7 +3936,7 @@ int PLATFORM_Exit(int run_monitor)
         else {
             /* Run the crash dialogue */
 			if (FULLSCREEN && FULLSCREEN_MONITOR) { 
-				action = FullscreenCrashGUIRun();
+				action = FullscreenCrashGUIRun(renderer);
 				memset(Screen_atari, 0, (Screen_HEIGHT * Screen_WIDTH));
 				memset(Screen_atari_b, 0, (Screen_HEIGHT * Screen_WIDTH));
 				}
@@ -4031,7 +3953,7 @@ int PLATFORM_Exit(int run_monitor)
                 }
             else if (action == 3) {
 				if (FULLSCREEN && FULLSCREEN_MONITOR) { 
-					restart = FullscreenGUIRun();
+					restart = FullscreenGUIRun(renderer, MainGLScreen);
 					memset(Screen_atari, 0, (Screen_HEIGHT * Screen_WIDTH));
 					}
 				else {
@@ -4069,31 +3991,6 @@ int PLATFORM_Exit(int run_monitor)
 }
 
 /*------------------------------------------------------------------------------
-*  DisplayWithoutScaling8bpp - Displays the emulated atari screen, in single
-*    size mode, with 8 bits per pixel.
-*-----------------------------------------------------------------------------*/
-void DisplayWithoutScaling8bpp(Uint8 * screen, int jumped, int width,
-                                 int first_row, int last_row)
-{
-    register Uint32 *start32;
-    register int pitch4;
-    int i;
-	int screen_width = (PLATFORM_xep80 ? XEP80_SCRN_WIDTH : Screen_WIDTH);
-	
-    pitch4 = MainScreen->pitch / 4;
-    start32 = (Uint32 *) MainScreen->pixels + (first_row * pitch4);
-
-    screen = screen + jumped + (first_row * screen_width);
-    i = last_row - first_row + 1;
-    while (i > 0) {
-        memcpy(start32, screen, width);
-        screen += screen_width;
-        start32 += pitch4;
-        i--;
-        }
-}
-
-/*------------------------------------------------------------------------------
 *  DisplayWithoutScaling16bpp - Displays the emulated atari screen, in single
 *    size mode, with 16 bits per pixel.
 *-----------------------------------------------------------------------------*/
@@ -4118,1448 +4015,6 @@ void DisplayWithoutScaling16bpp(Uint8 * screen, int jumped, int width,
         fromPtr = screen;
         while (j > 0) {
             *toPtr++ = Palette16[*fromPtr++];
-            j--;
-            }
-        screen += screen_width;
-        start32 += pitch4;
-        i--;
-        }
-}
-
-/*------------------------------------------------------------------------------
-*  DisplayWithoutScaling32bpp - Displays the emulated atari screen, in single
-*    size mode, with 32 bits per pixel.
-*-----------------------------------------------------------------------------*/
-void DisplayWithoutScaling32bpp(Uint8 * screen, int jumped, int width,
-                                 int first_row, int last_row)
-{
-    register Uint8 *fromPtr;
-    register Uint32 *toPtr;
-    register int i,j;
-    register Uint32 *start32;
-    register int pitch4;
-	int screen_width = (PLATFORM_xep80 ? XEP80_SCRN_WIDTH : Screen_WIDTH);
-
-    pitch4 = MainScreen->pitch / 4;
-    start32 = (Uint32 *) MainScreen->pixels + (first_row * pitch4);
-
-    screen = screen + jumped + (first_row * screen_width);
-    i = last_row - first_row + 1;
-    while (i > 0) {
-        j = width;
-        toPtr = (Uint32 *) start32;
-        fromPtr = screen;
-        while (j > 0) {
-            *toPtr++ = Palette32[*fromPtr++];
-            j--;
-            }
-        screen += screen_width;
-        start32 += pitch4;
-        i--;
-        }
-}
-
-/*------------------------------------------------------------------------------
-*  DisplayWith2xScaling8bpp - Displays the emulated atari screen, in double
-*    size mode, with 8 bits per pixel.
-*-----------------------------------------------------------------------------*/
-void DisplayWith2xScaling8bpp(Uint8 * screen, int jumped, int width,
-                                 int first_row, int last_row)
-{
-    register Uint8 *fromptr, *toptr;
-    register int i,j;
-    register Uint32 *start32;
-    register int pitch4;
-	int screen_width = (PLATFORM_xep80 ? XEP80_SCRN_WIDTH : Screen_WIDTH);
-
-    pitch4 = MainScreen->pitch / 4;
-    start32 = (Uint32 *) MainScreen->pixels + (first_row * pitch4 * 2);
-
-    screen = screen + jumped + (first_row * screen_width);
-    i = last_row - first_row + 1;
-    while (i > 0) {
-        toptr = (Uint8 *) start32;
-        fromptr = screen;
-        j = width;
-        while (j>0) {
-           *toptr++ = *fromptr;
-           *toptr++ = *fromptr++;
-           j--;
-           }
-        start32 += pitch4;
-        toptr = (Uint8 *) start32;
-        fromptr = screen;
-        j = width;
-        while (j>0) {
-           *toptr++ = *fromptr;
-           *toptr++ = *fromptr++;
-           j--;
-           }
-        screen += screen_width;
-        start32 += pitch4;
-        i--;
-    }
-}
-
-/*------------------------------------------------------------------------------
-*  DisplayWith2xScalingSmooth8bpp - Displays the emulated atari screen, in double
-*    size mode, with 8 bits per pixel.
-*-----------------------------------------------------------------------------*/
-void DisplayWith2xScalingSmooth8bpp(Uint8 * screen, int jumped, int width,
-                                 int first_row, int last_row)
-{
-    register Uint8 *fromptr, *toptr;
-    register int i,j;
-    register Uint32 *start32;
-    register int pitch4;
-	int screen_width = (PLATFORM_xep80 ? XEP80_SCRN_WIDTH : Screen_WIDTH);
-	
-	if (last_row - first_row + 1 < 2)
-		return;
-
-	scale(2, scaledScreen + 4*first_row*screen_width, screen_width*2, 
-			screen + first_row*screen_width, screen_width, 
-			1, screen_width, last_row - first_row + 1);
-
-    pitch4 = MainScreen->pitch / 4;
-    start32 = (Uint32 *) MainScreen->pixels + (first_row * pitch4 * 2);
-
-    screen = scaledScreen + 2*jumped + 4*(first_row * screen_width);
-    i = (last_row - first_row + 1)*2;
-    while (i > 0) {
-        toptr = (Uint8 *) start32;
-        fromptr = screen;
-        j = width*2;
-        while (j>0) {
-           *toptr++ = *fromptr++;
-           j--;
-           }
-        screen += 2*screen_width;
-        start32 += pitch4;
-        i--;
-    }
-}
-
-/*------------------------------------------------------------------------------
-*  DisplayWith2xScalingScanline8bpp - Displays the emulated atari screen, in 
-*    double size mode, skipping every other line, with 8 bits per pixel.
-*-----------------------------------------------------------------------------*/
-void DisplayWith2xScalingScanline8bpp(Uint8 * screen, int jumped, int width,
-										int first_row, int last_row)
-{
-    register Uint8 *fromptr, *toptr;
-    register int i,j;
-    register Uint32 *start32;
-    register int pitch4;
-	int screen_width = (PLATFORM_xep80 ? XEP80_SCRN_WIDTH : Screen_WIDTH);
-
-    pitch4 = MainScreen->pitch / 4;
-    start32 = (Uint32 *) MainScreen->pixels + (first_row * pitch4 * 2);
-
-    screen = screen + jumped + (first_row * screen_width);
-    i = last_row - first_row + 1;
-    while (i > 0) {
-        toptr = (Uint8 *) start32;
-        fromptr = screen;
-        j = width;
-        while (j>0) {
-           *toptr++ = *fromptr;
-           *toptr++ = *fromptr++;
-           j--;
-           }
-        start32 += pitch4;
-        toptr = (Uint8 *) start32;
-        j = width*2;
-        while (j>0) {
-           *toptr++ = 0;
-           j--;
-           }
-        screen += screen_width;
-        start32 += pitch4;
-        i--;
-    }
-}
-
-/*------------------------------------------------------------------------------
-*  DisplayWith3xScaling8bpp - Displays the emulated atari screen, in triple
-*    size mode, with 8 bits per pixel.
-*-----------------------------------------------------------------------------*/
-void DisplayWith3xScaling8bpp(Uint8 * screen, int jumped, int width,
-                                 int first_row, int last_row)
-{
-    register Uint8 *fromptr, *toptr;
-    register int i,j;
-    register Uint32 *start32;
-    register int pitch4;
-	int screen_width = (PLATFORM_xep80 ? XEP80_SCRN_WIDTH : Screen_WIDTH);
-
-    pitch4 = MainScreen->pitch / 4;
-    start32 = (Uint32 *) MainScreen->pixels + (first_row * pitch4 * 3);
-
-    screen = screen + jumped + (first_row * screen_width);
-    i = last_row - first_row + 1;
-    while (i > 0) {
-        toptr = (Uint8 *) start32;
-        fromptr = screen;
-        j = width;
-        while (j>0) {
-           *toptr++ = *fromptr;
-           *toptr++ = *fromptr;
-           *toptr++ = *fromptr++;
-           j--;
-           }
-        start32 += pitch4;
-        toptr = (Uint8 *) start32;
-        fromptr = screen;
-        j = width;
-        while (j>0) {
-           *toptr++ = *fromptr;
-           *toptr++ = *fromptr;
-           *toptr++ = *fromptr++;
-           j--;
-           }
-        start32 += pitch4;
-        toptr = (Uint8 *) start32;
-        fromptr = screen;
-        j = width;
-        while (j>0) {
-           *toptr++ = *fromptr;
-           *toptr++ = *fromptr;
-           *toptr++ = *fromptr++;
-           j--;
-           }
-        screen += screen_width;
-        start32 += pitch4;
-        i--;
-    }
-}
-
-/*------------------------------------------------------------------------------
-*  DisplayWith3xScalingSmooth8bpp - Displays the emulated atari screen, in triple
-*    size mode, with 8 bits per pixel.
-*-----------------------------------------------------------------------------*/
-void DisplayWith3xScalingSmooth8bpp(Uint8 * screen, int jumped, int width,
-                                 int first_row, int last_row)
-{
-    register Uint8 *fromptr, *toptr;
-    register int i,j;
-    register Uint32 *start32;
-    register int pitch4;
-	int screen_width = (PLATFORM_xep80 ? XEP80_SCRN_WIDTH : Screen_WIDTH);
-
-	if (last_row - first_row + 1 < 2)
-		return;
-
-	scale(3, scaledScreen + 9*first_row*screen_width, screen_width*3, 
-			screen + first_row*screen_width, screen_width, 
-			1, screen_width, last_row - first_row + 1);
-
-    pitch4 = MainScreen->pitch / 4;
-    start32 = (Uint32 *) MainScreen->pixels + (first_row * pitch4 * 3);
-
-    screen = scaledScreen + 3*jumped + 9*(first_row * screen_width);
-    i = (last_row - first_row + 1)*3;
-    while (i > 0) {
-        toptr = (Uint8 *) start32;
-        fromptr = screen;
-        j = width*3;
-        while (j>0) {
-           *toptr++ = *fromptr++;
-           j--;
-           }
-        screen += screen_width*3;
-        start32 += pitch4;
-        i--;
-    }
-}
-
-/*------------------------------------------------------------------------------
-*  DisplayWith3xScalingScanline8bpp - Displays the emulated atari screen, in 
-*    triple size mode, skipping every 3rd line, with 8 bits per pixel.
-*-----------------------------------------------------------------------------*/
-void DisplayWith3xScalingScanline8bpp(Uint8 * screen, int jumped, int width,
-										int first_row, int last_row)
-{
-    register Uint8 *fromptr, *toptr;
-    register int i,j;
-    register Uint32 *start32;
-    register int pitch4;
-	int screen_width = (PLATFORM_xep80 ? XEP80_SCRN_WIDTH : Screen_WIDTH);
-
-    pitch4 = MainScreen->pitch / 4;
-    start32 = (Uint32 *) MainScreen->pixels + (first_row * pitch4 * 3);
-
-    screen = screen + jumped + (first_row * screen_width);
-    i = last_row - first_row + 1;
-    while (i > 0) {
-        toptr = (Uint8 *) start32;
-        fromptr = screen;
-        j = width;
-        while (j>0) {
-           *toptr++ = *fromptr;
-           *toptr++ = *fromptr;
-           *toptr++ = *fromptr++;
-           j--;
-           }
-        start32 += pitch4;
-        toptr = (Uint8 *) start32;
-        fromptr = screen;
-        j = width;
-        while (j>0) {
-           *toptr++ = *fromptr;
-           *toptr++ = *fromptr;
-           *toptr++ = *fromptr++;
-           j--;
-           }
-        start32 += pitch4;
-        toptr = (Uint8 *) start32;
-        fromptr = screen;
-        j = width*3;
-        while (j>0) {
-           *toptr++ = 0;
-           j--;
-           }
-        screen += screen_width;
-        start32 += pitch4;
-        i--;
-    }
-}
-
-/*------------------------------------------------------------------------------
-*  DisplayWith4xScaling8bpp - Displays the emulated atari screen, in four times
-*    size mode, with 8 bits per pixel.
-*-----------------------------------------------------------------------------*/
-void DisplayWith4xScaling8bpp(Uint8 * screen, int jumped, int width,
-                                 int first_row, int last_row)
-{
-    register Uint8 *fromptr, *toptr;
-    register int i,j;
-    register Uint32 *start32;
-    register int pitch4;
-	int screen_width = (PLATFORM_xep80 ? XEP80_SCRN_WIDTH : Screen_WIDTH);
-
-    pitch4 = MainScreen->pitch / 4;
-    start32 = (Uint32 *) MainScreen->pixels + (first_row * pitch4 * 4);
-
-    screen = screen + jumped + (first_row * screen_width);
-    i = last_row - first_row + 1;
-    while (i > 0) {
-        toptr = (Uint8 *) start32;
-        fromptr = screen;
-        j = width;
-        while (j>0) {
-           *toptr++ = *fromptr;
-           *toptr++ = *fromptr;
-           *toptr++ = *fromptr;
-           *toptr++ = *fromptr++;
-           j--;
-           }
-        start32 += pitch4;
-        toptr = (Uint8 *) start32;
-        fromptr = screen;
-        j = width;
-        while (j>0) {
-           *toptr++ = *fromptr;
-           *toptr++ = *fromptr;
-           *toptr++ = *fromptr;
-           *toptr++ = *fromptr++;
-           j--;
-           }
-        start32 += pitch4;
-        toptr = (Uint8 *) start32;
-        fromptr = screen;
-        j = width;
-        while (j>0) {
-           *toptr++ = *fromptr;
-           *toptr++ = *fromptr;
-           *toptr++ = *fromptr;
-           *toptr++ = *fromptr++;
-           j--;
-           }
-        start32 += pitch4;
-        toptr = (Uint8 *) start32;
-        fromptr = screen;
-        j = width;
-        while (j>0) {
-           *toptr++ = *fromptr;
-           *toptr++ = *fromptr;
-           *toptr++ = *fromptr;
-           *toptr++ = *fromptr++;
-           j--;
-           }
-        screen += screen_width;
-        start32 += pitch4;
-        i--;
-    }
-}
-
-/*------------------------------------------------------------------------------
-*  DisplayWith4xScalingSmooth8bpp - Displays the emulated atari screen, in four times
-*    size mode, with 8 bits per pixel.
-*-----------------------------------------------------------------------------*/
-void DisplayWith4xScalingSmooth8bpp(Uint8 * screen, int jumped, int width,
-                                 int first_row, int last_row)
-{
-    register Uint8 *fromptr, *toptr;
-    register int i,j;
-    register Uint32 *start32;
-    register int pitch4;
-	int screen_width = (PLATFORM_xep80 ? XEP80_SCRN_WIDTH : Screen_WIDTH);
-
-	if (last_row - first_row + 1 < 2)
-		return;
-	
-	if ((last_row - first_row + 1) < 4)
-		{
-		if (first_row > 1)
-			first_row -= 2;
-		else
-			last_row += 2;
-		}
-
-	scale(4, scaledScreen + 16*first_row*screen_width, screen_width*4, 
-			screen + first_row*screen_width, screen_width, 
-			1, screen_width, last_row - first_row + 1);
-
-    pitch4 = MainScreen->pitch / 4;
-    start32 = (Uint32 *) MainScreen->pixels + (first_row * pitch4 * 4);
-
-    screen = scaledScreen + jumped*4 + 16*(first_row * screen_width);
-    i = (last_row - first_row + 1)*4;
-    while (i > 0) {
-        toptr = (Uint8 *) start32;
-        fromptr = screen;
-        j = width*4;
-        while (j>0) {
-           *toptr++ = *fromptr++;
-           j--;
-           }
-        screen += screen_width*4;
-        start32 += pitch4;
-        i--;
-    }
-}
-
-/*------------------------------------------------------------------------------
-*  DisplayWith4xScalingScanline8bpp - Displays the emulated atari screen, in 
-*    four times size mode, skipping every 4th line, with 8 bits per pixel.
-*-----------------------------------------------------------------------------*/
-void DisplayWith4xScalingScanline8bpp(Uint8 * screen, int jumped, int width,
-                                 int first_row, int last_row)
-{
-    register Uint8 *fromptr, *toptr;
-    register int i,j;
-    register Uint32 *start32;
-    register int pitch4;
-	int screen_width = (PLATFORM_xep80 ? XEP80_SCRN_WIDTH : Screen_WIDTH);
-
-    pitch4 = MainScreen->pitch / 4;
-    start32 = (Uint32 *) MainScreen->pixels + (first_row * pitch4 * 4);
-
-    screen = screen + jumped + (first_row * screen_width);
-    i = last_row - first_row + 1;
-    while (i > 0) {
-        toptr = (Uint8 *) start32;
-        fromptr = screen;
-        j = width;
-        while (j>0) {
-           *toptr++ = *fromptr;
-           *toptr++ = *fromptr;
-           *toptr++ = *fromptr;
-           *toptr++ = *fromptr++;
-           j--;
-           }
-        start32 += pitch4;
-        toptr = (Uint8 *) start32;
-        fromptr = screen;
-        j = width;
-        while (j>0) {
-           *toptr++ = *fromptr;
-           *toptr++ = *fromptr;
-           *toptr++ = *fromptr;
-           *toptr++ = *fromptr++;
-           j--;
-           }
-        start32 += pitch4;
-        toptr = (Uint8 *) start32;
-        fromptr = screen;
-        j = width;
-        while (j>0) {
-           *toptr++ = *fromptr;
-           *toptr++ = *fromptr;
-           *toptr++ = *fromptr;
-           *toptr++ = *fromptr++;
-           j--;
-           }
-        start32 += pitch4;
-        toptr = (Uint8 *) start32;
-        fromptr = screen;
-        j = width*4;
-        while (j>0) {
-           *toptr++ = 0;
-           j--;
-           }
-        screen += screen_width;
-        start32 += pitch4;
-        i--;
-    }
-}
-
-/*------------------------------------------------------------------------------
-*  DisplayWith2xScaling16bpp - Displays the emulated atari screen, in double
-*    size mode, with 16 bits per pixel.
-*-----------------------------------------------------------------------------*/
-void DisplayWith2xScaling16bpp(Uint8 * screen, int jumped, int width,
-                                 int first_row, int last_row)
-{
-    register Uint8 *fromPtr;
-    register Uint16 *toPtr;
-    register Uint16 quad;
-    register int i,j;
-    register Uint32 *start32;
-    register int pitch4;
-	int screen_width = (PLATFORM_xep80 ? XEP80_SCRN_WIDTH : Screen_WIDTH);
-
-    pitch4 = MainScreen->pitch / 4;
-    start32 = (Uint32 *) MainScreen->pixels + (first_row * pitch4 * 2);
-
-    screen = screen + jumped + (first_row * screen_width);
-    i = last_row - first_row + 1;
-    while (i > 0) {
-        j = width;
-        toPtr = (Uint16 *) start32;
-        fromPtr = screen;
-        while (j > 0) {
-            quad = Palette16[*fromPtr++];
-            *toPtr++ = quad;
-            *toPtr++ = quad;
-            j--;
-            }
-        start32 += pitch4;
-        j = width;
-        toPtr = (Uint16 *) start32;
-        fromPtr = screen;
-        while (j > 0) {
-            quad = Palette16[*fromPtr++];
-            *toPtr++ = quad;
-            *toPtr++ = quad;
-            j--;
-            }
-        screen += screen_width;
-        start32 += pitch4;
-        i--;
-        }
-}
-
-/*------------------------------------------------------------------------------
-*  DisplayWith2xScalingSmooth16bpp - Displays the emulated atari screen, in double
-*    size mode, with 16 bits per pixel.
-*-----------------------------------------------------------------------------*/
-void DisplayWith2xScalingSmooth16bpp(Uint8 * screen, int jumped, int width,
-                                 int first_row, int last_row)
-{
-    register Uint8 *fromPtr;
-    register Uint16 *toPtr;
-    register Uint16 quad;
-    register int i,j;
-    register Uint32 *start32;
-    register int pitch4;
-	int screen_width = (PLATFORM_xep80 ? XEP80_SCRN_WIDTH : Screen_WIDTH);
-
-	scale(2, scaledScreen, screen_width*2, screen, 
-		  screen_width, 1, screen_width, last_row - first_row + 1);
-    
-    pitch4 = MainScreen->pitch / 4;
-    start32 = (Uint32 *) MainScreen->pixels + (first_row * pitch4 * 2);
-
-    screen = scaledScreen + 2*jumped + 4*(first_row * screen_width);
-    i = (last_row - first_row + 1)*2;
-    while (i > 0) {
-        j = width*2;
-        toPtr = (Uint16 *) start32;
-        fromPtr = screen;
-        while (j > 0) {
-            quad = Palette16[*fromPtr++];
-            *toPtr++ = quad;
-            j--;
-            }
-        screen += screen_width*2;
-        start32 += pitch4;
-        i--;
-        }
-}
-
-/*------------------------------------------------------------------------------
-*  DisplayWith2xScalingScanline16bpp - Displays the emulated atari screen, in 
-*    double size mode, skipping every 2nd line, with 16 bits per pixel.
-*-----------------------------------------------------------------------------*/
-void DisplayWith2xScalingScanline16bpp(Uint8 * screen, int jumped, int width,
-										int first_row, int last_row)
-{
-    register Uint8 *fromPtr;
-    register Uint16 *toPtr;
-    register Uint16 quad;
-    register int i,j;
-    register Uint32 *start32;
-    register int pitch4;
-	int screen_width = (PLATFORM_xep80 ? XEP80_SCRN_WIDTH : Screen_WIDTH);
-
-    pitch4 = MainScreen->pitch / 4;
-    start32 = (Uint32 *) MainScreen->pixels + (first_row * pitch4 * 2);
-
-    screen = screen + jumped + (first_row * screen_width);
-    i = last_row - first_row + 1;
-    while (i > 0) {
-        j = width;
-        toPtr = (Uint16 *) start32;
-        fromPtr = screen;
-        while (j > 0) {
-            quad = Palette16[*fromPtr++];
-            *toPtr++ = quad;
-            *toPtr++ = quad;
-            j--;
-            }
-        start32 += pitch4;
-        j = width*2;
-        toPtr = (Uint16 *) start32;
-        fromPtr = screen;
-        while (j > 0) {
-            *toPtr++ = 0;
-            j--;
-            }
-        screen += screen_width;
-        start32 += pitch4;
-        i--;
-        }
-}
-
-/*------------------------------------------------------------------------------
-*  DisplayWith3xScaling16bpp - Displays the emulated atari screen, in triple
-*    size mode, with 16 bits per pixel.
-*-----------------------------------------------------------------------------*/
-void DisplayWith3xScaling16bpp(Uint8 * screen, int jumped, int width,
-                                 int first_row, int last_row)
-{
-    register Uint8 *fromPtr;
-    register Uint16 *toPtr;
-    register Uint16 quad;
-    register int i,j;
-    register Uint32 *start32;
-    register int pitch4;
-	int screen_width = (PLATFORM_xep80 ? XEP80_SCRN_WIDTH : Screen_WIDTH);
-
-    pitch4 = MainScreen->pitch / 4;
-    start32 = (Uint32 *) MainScreen->pixels + (first_row * pitch4 * 3);
-
-    screen = screen + jumped + (first_row * screen_width);
-    i = last_row - first_row + 1;
-    while (i > 0) {
-        j = width;
-        toPtr = (Uint16 *) start32;
-        fromPtr = screen;
-        while (j > 0) {
-            quad = Palette16[*fromPtr++];
-            *toPtr++ = quad;
-            *toPtr++ = quad;
-            *toPtr++ = quad;
-            j--;
-            }
-        start32 += pitch4;
-        j = width;
-        toPtr = (Uint16 *) start32;
-        fromPtr = screen;
-        while (j > 0) {
-            quad = Palette16[*fromPtr++];
-            *toPtr++ = quad;
-            *toPtr++ = quad;
-            *toPtr++ = quad;
-            j--;
-            }
-        start32 += pitch4;
-        j = width;
-        toPtr = (Uint16 *) start32;
-        fromPtr = screen;
-        while (j > 0) {
-            quad = Palette16[*fromPtr++];
-            *toPtr++ = quad;
-            *toPtr++ = quad;
-            *toPtr++ = quad;
-            j--;
-            }
-        screen += screen_width;
-        start32 += pitch4;
-        i--;
-        }
-}
-
-/*------------------------------------------------------------------------------
-*  DisplayWith3xScalingSmooth16bpp - Displays the emulated atari screen, in triple
-*    size mode, with 16 bits per pixel.
-*-----------------------------------------------------------------------------*/
-void DisplayWith3xScalingSmooth16bpp(Uint8 * screen, int jumped, int width,
-                                 int first_row, int last_row)
-{
-    register Uint8 *fromPtr;
-    register Uint16 *toPtr;
-    register Uint16 quad;
-    register int i,j;
-    register Uint32 *start32;
-    register int pitch4;
-	int screen_width = (PLATFORM_xep80 ? XEP80_SCRN_WIDTH : Screen_WIDTH);
-
-	if (last_row - first_row + 1 < 2)
-		return;
-
-	scale(3, scaledScreen + 9*first_row*screen_width, screen_width*3, 
-			screen + first_row*screen_width, screen_width, 
-			1, screen_width, last_row - first_row + 1);
-
-    pitch4 = MainScreen->pitch / 4;
-    start32 = (Uint32 *) MainScreen->pixels + (first_row * pitch4 * 3);
-
-    screen = scaledScreen + 3*jumped + 9*(first_row * screen_width);
-    i = (last_row - first_row + 1)*3;
-    while (i > 0) {
-        j = width*3;
-        toPtr = (Uint16 *) start32;
-        fromPtr = screen;
-        while (j > 0) {
-            quad = Palette16[*fromPtr++];
-            *toPtr++ = quad;
-            j--;
-            }
-        screen += screen_width*3;
-        start32 += pitch4;
-        i--;
-        }
-}
-
-/*------------------------------------------------------------------------------
-*  DisplayWith3xScalingScanline16bpp - Displays the emulated atari screen, in 
-*    triple size mode, skipping every 3rd line, with 16 bits per pixel.
-*-----------------------------------------------------------------------------*/
-void DisplayWith3xScalingScanline16bpp(Uint8 * screen, int jumped, int width,
-										int first_row, int last_row)
-{
-    register Uint8 *fromPtr;
-    register Uint16 *toPtr;
-    register Uint16 quad;
-    register int i,j;
-    register Uint32 *start32;
-    register int pitch4;
-	int screen_width = (PLATFORM_xep80 ? XEP80_SCRN_WIDTH : Screen_WIDTH);
-
-    pitch4 = MainScreen->pitch / 4;
-    start32 = (Uint32 *) MainScreen->pixels + (first_row * pitch4 * 3);
-
-    screen = screen + jumped + (first_row * screen_width);
-    i = last_row - first_row + 1;
-    while (i > 0) {
-        j = width;
-        toPtr = (Uint16 *) start32;
-        fromPtr = screen;
-        while (j > 0) {
-            quad = Palette16[*fromPtr++];
-            *toPtr++ = quad;
-            *toPtr++ = quad;
-            *toPtr++ = quad;
-            j--;
-            }
-        start32 += pitch4;
-        j = width;
-        toPtr = (Uint16 *) start32;
-        fromPtr = screen;
-        while (j > 0) {
-            quad = Palette16[*fromPtr++];
-            *toPtr++ = quad;
-            *toPtr++ = quad;
-            *toPtr++ = quad;
-            j--;
-            }
-        start32 += pitch4;
-        j = width*3;
-        toPtr = (Uint16 *) start32;
-        fromPtr = screen;
-        while (j > 0) {
-            *toPtr++ = 0;
-            j--;
-            }
-        screen += screen_width;
-        start32 += pitch4;
-        i--;
-        }
-}
-
-/*------------------------------------------------------------------------------
-*  DisplayWith4xScaling16bpp - Displays the emulated atari screen, in four times
-*    size mode, with 16 bits per pixel.
-*-----------------------------------------------------------------------------*/
-void DisplayWith4xScaling16bpp(Uint8 * screen, int jumped, int width,
-                                 int first_row, int last_row)
-{
-    register Uint8 *fromPtr;
-    register Uint16 *toPtr;
-    register Uint16 quad;
-    register int i,j;
-    register Uint32 *start32;
-    register int pitch4;
-	int screen_width = (PLATFORM_xep80 ? XEP80_SCRN_WIDTH : Screen_WIDTH);
-
-    pitch4 = MainScreen->pitch / 4;
-    start32 = (Uint32 *) MainScreen->pixels + (first_row * pitch4 * 4);
-
-    screen = screen + jumped + (first_row * screen_width);
-    i = last_row - first_row + 1;
-    while (i > 0) {
-        j = width;
-        toPtr = (Uint16 *) start32;
-        fromPtr = screen;
-        while (j > 0) {
-            quad = Palette16[*fromPtr++];
-            *toPtr++ = quad;
-            *toPtr++ = quad;
-            *toPtr++ = quad;
-            *toPtr++ = quad;
-            j--;
-            }
-        start32 += pitch4;
-        j = width;
-        toPtr = (Uint16 *) start32;
-        fromPtr = screen;
-        while (j > 0) {
-            quad = Palette16[*fromPtr++];
-            *toPtr++ = quad;
-            *toPtr++ = quad;
-            *toPtr++ = quad;
-            *toPtr++ = quad;
-            j--;
-            }
-        start32 += pitch4;
-        j = width;
-        toPtr = (Uint16 *) start32;
-        fromPtr = screen;
-        while (j > 0) {
-            quad = Palette16[*fromPtr++];
-            *toPtr++ = quad;
-            *toPtr++ = quad;
-            *toPtr++ = quad;
-            *toPtr++ = quad;
-            j--;
-            }
-        start32 += pitch4;
-        j = width;
-        toPtr = (Uint16 *) start32;
-        fromPtr = screen;
-        while (j > 0) {
-            quad = Palette16[*fromPtr++];
-            *toPtr++ = quad;
-            *toPtr++ = quad;
-            *toPtr++ = quad;
-            *toPtr++ = quad;
-            j--;
-            }
-        screen += screen_width;
-        start32 += pitch4;
-        i--;
-        }
-}
-
-/*------------------------------------------------------------------------------
-*  DisplayWith4xScalingSmooth16bpp - Displays the emulated atari screen, in four times
-*    size mode, with 16 bits per pixel.
-*-----------------------------------------------------------------------------*/
-void DisplayWith4xScalingSmooth16bpp(Uint8 * screen, int jumped, int width,
-                                 int first_row, int last_row)
-{
-    register Uint8 *fromPtr;
-    register Uint16 *toPtr;
-    register Uint16 quad;
-    register int i,j;
-    register Uint32 *start32;
-    register int pitch4;
-	int screen_width = (PLATFORM_xep80 ? XEP80_SCRN_WIDTH : Screen_WIDTH);
-
-	if (last_row - first_row + 1 < 2)
-		return;
-	
-	if ((last_row - first_row + 1) < 4)
-		{
-		if (first_row > 1)
-			first_row -= 2;
-		else
-			last_row += 2;
-		}
-
-	scale(4, scaledScreen + 16*first_row*screen_width, screen_width*4, 
-			screen + first_row*screen_width, screen_width, 
-			1, screen_width, last_row - first_row + 1);
-
-    pitch4 = MainScreen->pitch / 4;
-    start32 = (Uint32 *) MainScreen->pixels + (first_row * pitch4 * 4);
-
-    screen = scaledScreen + 4*jumped + 16*(first_row * screen_width);
-    i = (last_row - first_row + 1)*4;
-    while (i > 0) {
-        j = width*4;
-        toPtr = (Uint16 *) start32;
-        fromPtr = screen;
-        while (j > 0) {
-            quad = Palette16[*fromPtr++];
-            *toPtr++ = quad;
-            j--;
-            }
-        screen += screen_width*4;
-        start32 += pitch4;
-        i--;
-        }
-}
-
-/*------------------------------------------------------------------------------
-*  DisplayWith4xScalingScanline16bpp - Displays the emulated atari screen, in 
-*    four times size mode, skipping every 3rd line, with 16 bits per pixel.
-*-----------------------------------------------------------------------------*/
-void DisplayWith4xScalingScanline16bpp(Uint8 * screen, int jumped, int width,
-										int first_row, int last_row)
-{
-    register Uint8 *fromPtr;
-    register Uint16 *toPtr;
-    register Uint16 quad;
-    register int i,j;
-    register Uint32 *start32;
-    register int pitch4;
-	int screen_width = (PLATFORM_xep80 ? XEP80_SCRN_WIDTH : Screen_WIDTH);
-
-    pitch4 = MainScreen->pitch / 4;
-    start32 = (Uint32 *) MainScreen->pixels + (first_row * pitch4 * 4);
-
-    screen = screen + jumped + (first_row * screen_width);
-    i = last_row - first_row + 1;
-    while (i > 0) {
-        j = width;
-        toPtr = (Uint16 *) start32;
-        fromPtr = screen;
-        while (j > 0) {
-            quad = Palette16[*fromPtr++];
-            *toPtr++ = quad;
-            *toPtr++ = quad;
-            *toPtr++ = quad;
-            *toPtr++ = quad;
-            j--;
-            }
-        start32 += pitch4;
-        j = width;
-        toPtr = (Uint16 *) start32;
-        fromPtr = screen;
-        while (j > 0) {
-            quad = Palette16[*fromPtr++];
-            *toPtr++ = quad;
-            *toPtr++ = quad;
-            *toPtr++ = quad;
-            *toPtr++ = quad;
-            j--;
-            }
-        start32 += pitch4;
-        j = width;
-        toPtr = (Uint16 *) start32;
-        fromPtr = screen;
-        while (j > 0) {
-            quad = Palette16[*fromPtr++];
-            *toPtr++ = quad;
-            *toPtr++ = quad;
-            *toPtr++ = quad;
-            *toPtr++ = quad;
-            j--;
-            }
-        start32 += pitch4;
-        j = width*4;
-        toPtr = (Uint16 *) start32;
-        fromPtr = screen;
-        while (j > 0) {
-            *toPtr++ = 0;
-            j--;
-            }
-        screen += screen_width;
-        start32 += pitch4;
-        i--;
-        }
-}
-
-/*------------------------------------------------------------------------------
-*  DisplayWith2xScaling32bpp - Displays the emulated atari screen, in double
-*    size mode, with 32 bits per pixel.
-*-----------------------------------------------------------------------------*/
-void DisplayWith2xScaling32bpp(Uint8 * screen, int jumped, int width,
-                                 int first_row, int last_row)
-{
-    register Uint8 *fromPtr;
-    register Uint32 *toPtr;
-    register Uint32 quad;
-    register int i,j;
-    register Uint32 *start32;
-    register int pitch4;
-	int screen_width = (PLATFORM_xep80 ? XEP80_SCRN_WIDTH : Screen_WIDTH);
-
-    pitch4 = MainScreen->pitch / 4;
-    start32 = (Uint32 *) MainScreen->pixels + first_row * pitch4 * 2;
-
-    screen = screen + jumped + (first_row * screen_width);
-    i = last_row - first_row + 1;
-    while (i > 0) {
-        j = width;
-        toPtr = start32;
-        fromPtr = screen;
-        while (j > 0) {
-            quad = Palette32[*fromPtr++];
-            *toPtr++ = quad;
-            *toPtr++ = quad;
-            j--;
-            }
-        start32 += pitch4;
-        j = width;
-        toPtr = start32;
-        fromPtr = screen;
-        while (j > 0) {
-            quad = Palette32[*fromPtr++];
-            *toPtr++ = quad;
-            *toPtr++ = quad;
-            j--;
-            }
-        screen += screen_width;
-        start32 += pitch4;
-        i--;
-        }
-}
-
-/*------------------------------------------------------------------------------
-*  DisplayWith2xScalingSmooth32bpp - Displays the emulated atari screen, in triple
-*    size mode, with 32 bits per pixel.
-*-----------------------------------------------------------------------------*/
-void DisplayWith2xScalingSmooth32bpp(Uint8 * screen, int jumped, int width,
-                                     int first_row, int last_row)
-{
-    register Uint8 *fromPtr;
-    register Uint32 *toPtr;
-    register Uint32 quad;
-    register int i,j;
-    register Uint32 *start32;
-    register int pitch4;
-	int screen_width = (PLATFORM_xep80 ? XEP80_SCRN_WIDTH : Screen_WIDTH);
-
-	if (last_row - first_row + 1 < 2)
-		return;
-
-	scale(2, scaledScreen + 4*first_row*screen_width, screen_width*2, 
-			screen + first_row*screen_width, screen_width, 
-			1, screen_width, last_row - first_row + 1);
-
-    pitch4 = MainScreen->pitch / 4;
-    start32 = (Uint32 *) MainScreen->pixels + (first_row * pitch4 * 2);
-
-    screen = scaledScreen + 2*jumped + 4*(first_row * screen_width);
-    i = (last_row - first_row + 1)*2;
-    while (i > 0) {
-        j = width*2;
-        toPtr = start32;
-        fromPtr = screen;
-        while (j > 0) {
-            quad = Palette32[*fromPtr++];
-            *toPtr++ = quad;
-            j--;
-            }
-        screen += 2*screen_width;
-        start32 += pitch4;
-        i--;
-        }
-}
-
-/*------------------------------------------------------------------------------
-*  DisplayWith2xScalingScanline32bpp - Displays the emulated atari screen, in 
-*    double size mode, skipping every other line, with 32 bits per pixel.
-*-----------------------------------------------------------------------------*/
-void DisplayWith2xScalingScanline32bpp(Uint8 * screen, int jumped, int width,
-                                 int first_row, int last_row)
-{
-    register Uint8 *fromPtr;
-    register Uint32 *toPtr;
-    register Uint32 quad;
-    register int i,j;
-    register Uint32 *start32;
-    register int pitch4;
-	int screen_width = (PLATFORM_xep80 ? XEP80_SCRN_WIDTH : Screen_WIDTH);
-
-    pitch4 = MainScreen->pitch / 4;
-    start32 = (Uint32 *) MainScreen->pixels + first_row * pitch4 * 2;
-
-    screen = screen + jumped + (first_row * screen_width);
-    i = last_row - first_row + 1;
-    while (i > 0) {
-        j = width;
-        toPtr = start32;
-        fromPtr = screen;
-        while (j > 0) {
-            quad = Palette32[*fromPtr++];
-            *toPtr++ = quad;
-            *toPtr++ = quad;
-            j--;
-            }
-        start32 += pitch4;
-        j = width*2;
-        toPtr = start32;
-        fromPtr = screen;
-        while (j > 0) {
-            *toPtr++ = 0;
-            j--;
-            }
-        screen += screen_width;
-        start32 += pitch4;
-        i--;
-        }
-}
-
-/*------------------------------------------------------------------------------
-*  DisplayWith3xScaling32bpp - Displays the emulated atari screen, in triple
-*    size mode, with 32 bits per pixel.
-*-----------------------------------------------------------------------------*/
-void DisplayWith3xScaling32bpp(Uint8 * screen, int jumped, int width,
-                                 int first_row, int last_row)
-{
-    register Uint8 *fromPtr;
-    register Uint32 *toPtr;
-    register Uint32 quad;
-    register int i,j;
-    register Uint32 *start32;
-    register int pitch4;
-	int screen_width = (PLATFORM_xep80 ? XEP80_SCRN_WIDTH : Screen_WIDTH);
-
-    pitch4 = MainScreen->pitch / 4;
-    start32 = (Uint32 *) MainScreen->pixels + (first_row * pitch4 * 3);
-
-    screen = screen + jumped + (first_row * screen_width);
-    i = last_row - first_row + 1;
-    while (i > 0) {
-        j = width;
-        toPtr = start32;
-        fromPtr = screen;
-        while (j > 0) {
-            quad = Palette32[*fromPtr++];
-            *toPtr++ = quad;
-            *toPtr++ = quad;
-            *toPtr++ = quad;
-            j--;
-            }
-        start32 += pitch4;
-        j = width;
-        toPtr = start32;
-        fromPtr = screen;
-        while (j > 0) {
-            quad = Palette32[*fromPtr++];
-            *toPtr++ = quad;
-            *toPtr++ = quad;
-            *toPtr++ = quad;
-            j--;
-            }
-        start32 += pitch4;
-        j = width;
-        toPtr = start32;
-        fromPtr = screen;
-        while (j > 0) {
-            quad = Palette32[*fromPtr++];
-            *toPtr++ = quad;
-            *toPtr++ = quad;
-            *toPtr++ = quad;
-            j--;
-            }
-        screen += screen_width;
-        start32 += pitch4;
-        i--;
-        }
-}
-
-/*------------------------------------------------------------------------------
-*  DisplayWith3xScalingSmooth32bpp - Displays the emulated atari screen, in triple
-*    size mode, with 32 bits per pixel.
-*-----------------------------------------------------------------------------*/
-void DisplayWith3xScalingSmooth32bpp(Uint8 * screen, int jumped, int width,
-                                     int first_row, int last_row)
-{
-    register Uint8 *fromPtr;
-    register Uint32 *toPtr;
-    register Uint32 quad;
-    register int i,j;
-    register Uint32 *start32;
-    register int pitch4;
-	int screen_width = (PLATFORM_xep80 ? XEP80_SCRN_WIDTH : Screen_WIDTH);
-
-	if (last_row - first_row + 1 < 2)
-		return;
-
-	scale(3, scaledScreen + 9*first_row*screen_width, screen_width*3, 
-			screen + first_row*screen_width, screen_width, 
-			1, screen_width, last_row - first_row + 1);
-
-    pitch4 = MainScreen->pitch / 4;
-    start32 = (Uint32 *) MainScreen->pixels + (first_row * pitch4 * 3);
-
-    screen = scaledScreen + 3*jumped + 9*(first_row * screen_width);
-    i = (last_row - first_row + 1)*3;
-    while (i > 0) {
-        j = width*3;
-        toPtr = start32;
-        fromPtr = screen;
-        while (j > 0) {
-            quad = Palette32[*fromPtr++];
-            *toPtr++ = quad;
-            j--;
-            }
-        screen += 3*screen_width;
-        start32 += pitch4;
-        i--;
-        }
-}
-
-/*------------------------------------------------------------------------------
-*  DisplayWith3xScalingScanline32bpp - Displays the emulated atari screen, in 
-*    triple size mode, skipping every 3rd line, with 32 bits per pixel.
-*-----------------------------------------------------------------------------*/
-void DisplayWith3xScalingScanline32bpp(Uint8 * screen, int jumped, int width,
-                                        int first_row, int last_row)
-{
-    register Uint8 *fromPtr;
-    register Uint32 *toPtr;
-    register Uint32 quad;
-    register int i,j;
-    register Uint32 *start32;
-    register int pitch4;
-	int screen_width = (PLATFORM_xep80 ? XEP80_SCRN_WIDTH : Screen_WIDTH);
-
-    pitch4 = MainScreen->pitch / 4;
-    start32 = (Uint32 *) MainScreen->pixels + (first_row * pitch4 * 3);
-
-    screen = screen + jumped + (first_row * screen_width);
-    i = last_row - first_row + 1;
-    while (i > 0) {
-        j = width;
-        toPtr = start32;
-        fromPtr = screen;
-        while (j > 0) {
-            quad = Palette32[*fromPtr++];
-            *toPtr++ = quad;
-            *toPtr++ = quad;
-            *toPtr++ = quad;
-            j--;
-            }
-        start32 += pitch4;
-        j = width;
-        toPtr = start32;
-        fromPtr = screen;
-        while (j > 0) {
-            quad = Palette32[*fromPtr++];
-            *toPtr++ = quad;
-            *toPtr++ = quad;
-            *toPtr++ = quad;
-            j--;
-            }
-        start32 += pitch4;
-        j = width*3;
-        toPtr = start32;
-        fromPtr = screen;
-        while (j > 0) {
-            quad = Palette32[*fromPtr++];
-            *toPtr++ = 0;
-            j--;
-            }
-        screen += screen_width;
-        start32 += pitch4;
-        i--;
-        }
-}
-
-/*------------------------------------------------------------------------------
-*  DisplayWith4xScaling32bpp - Displays the emulated atari screen, in four times
-*    size mode, with 32 bits per pixel.
-*-----------------------------------------------------------------------------*/
-void DisplayWith4xScaling32bpp(Uint8 * screen, int jumped, int width,
-                                 int first_row, int last_row)
-{
-    register Uint8 *fromPtr;
-    register Uint32 *toPtr;
-    register Uint32 quad;
-    register int i,j;
-    register Uint32 *start32;
-    register int pitch4;
-	int screen_width = (PLATFORM_xep80 ? XEP80_SCRN_WIDTH : Screen_WIDTH);
-
-    pitch4 = MainScreen->pitch / 4;
-    start32 = (Uint32 *) MainScreen->pixels + (first_row * pitch4 * 4);
-
-    screen = screen + jumped + (first_row * screen_width);
-    i = last_row - first_row + 1;
-    while (i > 0) {
-        j = width;
-        toPtr = start32;
-        fromPtr = screen;
-        while (j > 0) {
-            quad = Palette32[*fromPtr++];
-            *toPtr++ = quad;
-            *toPtr++ = quad;
-            *toPtr++ = quad;
-            *toPtr++ = quad;
-            j--;
-            }
-        start32 += pitch4;
-        j = width;
-        toPtr = start32;
-        fromPtr = screen;
-        while (j > 0) {
-            quad = Palette32[*fromPtr++];
-            *toPtr++ = quad;
-            *toPtr++ = quad;
-            *toPtr++ = quad;
-            *toPtr++ = quad;
-            j--;
-            }
-        start32 += pitch4;
-        j = width;
-        toPtr = start32;
-        fromPtr = screen;
-        while (j > 0) {
-            quad = Palette32[*fromPtr++];
-            *toPtr++ = quad;
-            *toPtr++ = quad;
-            *toPtr++ = quad;
-            *toPtr++ = quad;
-            j--;
-            }
-        start32 += pitch4;
-        j = width;
-        toPtr = start32;
-        fromPtr = screen;
-        while (j > 0) {
-            quad = Palette32[*fromPtr++];
-            *toPtr++ = quad;
-            *toPtr++ = quad;
-            *toPtr++ = quad;
-            *toPtr++ = quad;
-            j--;
-            }
-        screen += screen_width;
-        start32 += pitch4;
-        i--;
-        }
-}
-
-/*------------------------------------------------------------------------------
-*  DisplayWith4xScalingSmooth32bpp - Displays the emulated atari screen, in four times
-*    size mode, with 32 bits per pixel.
-*-----------------------------------------------------------------------------*/
-void DisplayWith4xScalingSmooth32bpp(Uint8 * screen, int jumped, int width,
-                                 int first_row, int last_row)
-{
-    register Uint8 *fromPtr;
-    register Uint32 *toPtr;
-    register Uint32 quad;
-    register int i,j;
-    register Uint32 *start32;
-    register int pitch4;
-	int screen_width = (PLATFORM_xep80 ? XEP80_SCRN_WIDTH : Screen_WIDTH);
-
-	if (last_row - first_row + 1 < 2)
-		return;
-	
-	if ((last_row - first_row + 1) < 4)
-		{
-		if (first_row > 1)
-			first_row -= 2;
-		else
-			last_row += 2;
-		}
-
-	scale(4, scaledScreen + 16*first_row*screen_width, screen_width*4, 
-			screen + first_row*screen_width, screen_width, 
-			1, screen_width, last_row - first_row + 1);
-
-    pitch4 = MainScreen->pitch / 4;
-    start32 = (Uint32 *) MainScreen->pixels + (first_row * pitch4 * 4);
-
-    screen = scaledScreen + 4*jumped + 16*(first_row * screen_width);
-    i = (last_row - first_row + 1)*4;
-    while (i > 0) {
-        j = width*4;
-        toPtr = start32;
-        fromPtr = screen;
-        while (j > 0) {
-            quad = Palette32[*fromPtr++];
-            *toPtr++ = quad;
-            j--;
-            }
-        screen += screen_width*4;
-        start32 += pitch4;
-        i--;
-        }
-}
-
-/*------------------------------------------------------------------------------
-*  DisplayWith4xScalingScanline32bpp - Displays the emulated atari screen, in 
-*    four times size mode, skipping every 4th line, with 32 bits per pixel.
-*-----------------------------------------------------------------------------*/
-void DisplayWith4xScalingScanline32bpp(Uint8 * screen, int jumped, int width,
-										int first_row, int last_row)
-{
-    register Uint8 *fromPtr;
-    register Uint32 *toPtr;
-    register Uint32 quad;
-    register int i,j;
-    register Uint32 *start32;
-    register int pitch4;
-	int screen_width = (PLATFORM_xep80 ? XEP80_SCRN_WIDTH : Screen_WIDTH);
-
-    pitch4 = MainScreen->pitch / 4;
-    start32 = (Uint32 *) MainScreen->pixels + (first_row * pitch4 * 4);
-
-    screen = screen + jumped + (first_row * screen_width);
-    i = last_row - first_row + 1;
-    while (i > 0) {
-        j = width;
-        toPtr = start32;
-        fromPtr = screen;
-        while (j > 0) {
-            quad = Palette32[*fromPtr++];
-            *toPtr++ = quad;
-            *toPtr++ = quad;
-            *toPtr++ = quad;
-            *toPtr++ = quad;
-            j--;
-            }
-        start32 += pitch4;
-        j = width;
-        toPtr = start32;
-        fromPtr = screen;
-        while (j > 0) {
-            quad = Palette32[*fromPtr++];
-            *toPtr++ = quad;
-            *toPtr++ = quad;
-            *toPtr++ = quad;
-            *toPtr++ = quad;
-            j--;
-            }
-        start32 += pitch4;
-        j = width;
-        toPtr = start32;
-        fromPtr = screen;
-        while (j > 0) {
-            quad = Palette32[*fromPtr++];
-            *toPtr++ = quad;
-            *toPtr++ = quad;
-            *toPtr++ = quad;
-            *toPtr++ = quad;
-            j--;
-            }
-        start32 += pitch4;
-        j = width*4;
-        toPtr = start32;
-        fromPtr = screen;
-        while (j > 0) {
-            *toPtr++ = 0;
             j--;
             }
         screen += screen_width;
@@ -5605,6 +4060,7 @@ void Atari_DisplayScreen(UBYTE * screen)
     int last_row = Screen_HEIGHT - 1;
     ULONG *line_start1, *line_start2;
     static int xep80Frame = 0;
+    SDL_Rect rect;
 	
     if (FULLSCREEN && lockFullscreenSize) {
         width = Screen_WIDTH - 2 * 24 - 2 * 8;
@@ -5681,12 +4137,7 @@ void Atari_DisplayScreen(UBYTE * screen)
 	else
 		full_display--;
 		
-    if (FULLSCREEN && lockFullscreenSize) {
-        DisplayWithoutScaling16bpp(screen, jumped, width, first_row, last_row);
-        }
-    else {
-        DisplayWithoutScaling16bpp(screen, jumped, width, first_row, last_row);
-        }
+    DisplayWithoutScaling16bpp(screen, jumped, width, first_row, last_row);
 
     // If not in mouse emulation or Fullscreen, check for copy selection
 	if (!FULLSCREEN && INPUT_mouse_mode == INPUT_MOUSE_OFF)
@@ -5700,22 +4151,14 @@ void Atari_DisplayScreen(UBYTE * screen)
     scaledWidth = width;
     scaledHeight = screen_height;
     
-    glBindTexture(GL_TEXTURE_2D, MainScreenID);
-    glEnable(GL_TEXTURE_2D);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, MainScreen->w, MainScreen->h, 0, GL_RGB, GL_UNSIGNED_SHORT_5_6_5,
-                    MainScreen->pixels);
-    glBegin(GL_QUADS);
-    glTexCoord2f(texCoord[0], texCoord[1]); glVertex2i(0, 0);
-    glTexCoord2f(texCoord[2], texCoord[1]); glVertex2i(scaledWidth, 0);
-    glTexCoord2f(texCoord[2], texCoord[3]); glVertex2i(scaledWidth,scaledHeight);
-    glTexCoord2f(texCoord[0], texCoord[3]); glVertex2i(0, scaledHeight);
-    glEnd();
+    texture = SDL_CreateTextureFromSurface(renderer, MainScreen);
 
     // Add the scanlines if we are in that mode
     if (SCALE_MODE == SCANLINE_SCALE && DOUBLESIZE)
         {
         int rows = 0;
-        GLfloat yscanlineStart;
+        float yscanlineStart;
+        SDL_Rect scanlineRect;
         
         if (scaleFactor == 2)
             yscanlineStart = 0.5;
@@ -5724,19 +4167,26 @@ void Atari_DisplayScreen(UBYTE * screen)
         else
             yscanlineStart = 0.25;
 
-        glColor3ub(255,255,255);
+        //glColor3ub(255,255,255);
     
         for (rows = 0; rows < screen_height; rows ++)
-            glRectf(0.0,rows+yscanlineStart,screen_width*1.0,rows+1.0);
+            scanlineRect.x = 0;
+            scanlineRect.w = screen_width;
+            scanlineRect.y = 1;
+            scanlineRect.h = 1;
+            SDL_RenderFillRect(renderer, &scanlineRect);
+            //glRectf(0.0,rows+yscanlineStart,screen_width*1.0,rows+1.0);
         }
-    
-    // Now show all changes made to the textures
-    SDL_GL_SwapWindow(MainGLScreen);
 
-    // Added this to work around problem in 10.4 where if OpenGL window was occluded, the frame rate
-    //   would drop to half normal (30fps).
-    glFlush();
+    //Copying the texture on to the window using renderer and rectangle
+    rect.x = 0;
+    rect.y = 0;
+    rect.w = MainScreen->w;
+    rect.h = MainScreen->h;
+    SDL_RenderCopy(renderer, texture, NULL, &rect);
 
+    SDL_RenderPresent(renderer);
+    SDL_DestroyTexture(texture);
 }
 
 // two empty functions, needed by input.c and platform.h
@@ -7774,7 +6224,7 @@ int SDL_main(int argc, char **argv)
     memset(Screen_atari_b, 0, (Screen_HEIGHT * Screen_WIDTH));
 	
 	/* Create the OpenGL Monitor Screen */
-	MonitorGLScreen = SDL_CreateRGBSurface(SDL_SWSURFACE, 1024, 512, 16,
+	MonitorGLScreen = SDL_CreateRGBSurface(SDL_SWSURFACE, 640, 480, 16,
 								0x0000F800, 0x000007E0, 0x0000001F, 0x00000000);
 
     SDL_PauseAudio(0);

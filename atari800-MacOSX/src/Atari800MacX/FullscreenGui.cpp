@@ -26,6 +26,7 @@ extern int fullBackGreen;
 extern int fullBackBlue;
 extern int fullscreenGuiColorsChanged;
 extern int fullscreenCrashColorsChanged;
+extern int scaleFactor;
 extern "C" {
 	void MONITOR_monitorEnter(void);
 	int MONITOR_monitorCmd(char *input);
@@ -42,15 +43,13 @@ static char inputBuffer[256];
 static int inputLen = 0;
 static int inputPos = 0;
 static int monitorRetValue;
-static int monitorGUIOpenGL;
-static int crashGUIOpenGL;
 static int crashStatus;
 
 SDL_Surface *upimage;
 SDL_Surface *downimage;
 
 #define MONITOR_WIDTH 640
-#define MONITOR_HEIGHT 240
+#define MONITOR_HEIGHT 480
 
 int keyFunc (SDL_Keycode key,  char *text)
 {
@@ -200,12 +199,12 @@ static void setSurfaceColors(SDL_Surface *surface,
 	}
 }
 
-static void initFullscreenGUI(SDL_Surface *display, int openGl)
+static void initFullscreenGUI(SDL_Surface *display, SDL_Renderer *renderer)
 {
 	SDL_Rect middle_rect;
 	Uint32 fg,bg;
 
- 	fullscreenGUI = new GUI(display, MONITOR_WIDTH, MONITOR_HEIGHT, openGl, MainScreenID, MainGLScreen);
+ 	fullscreenGUI = new GUI(display, MONITOR_WIDTH, MONITOR_HEIGHT, renderer);
 
 	fg = SDL_MapRGBA(display->format,fullForeRed,fullForeGreen,fullForeBlue,0);
 	bg = SDL_MapRGBA(display->format,fullBackRed,fullBackGreen,fullBackBlue,0);
@@ -237,13 +236,13 @@ static void initFullscreenGUI(SDL_Surface *display, int openGl)
 	scrollbar->SetColoring(fullForeRed,fullForeGreen,fullForeBlue,1,fullBackRed,fullBackGreen,fullBackBlue);
 }
 
-static void initFullscreenCrashGUI(SDL_Surface *display, int openGl, SDL_Window *window)
+static void initFullscreenCrashGUI(SDL_Surface *display, SDL_Renderer *renderer)
 {
 	GUI_Area *area;
 	GUI_Button *button;
 	GUI_TermWin *textArea;
 
-	fullscreenCrashGUI = new GUI(display, MONITOR_WIDTH, MONITOR_HEIGHT, openGl, MainScreenID, window);
+	fullscreenCrashGUI = new GUI(display, MONITOR_WIDTH, MONITOR_HEIGHT, renderer);
 
 	area = new GUI_Area(70, 140, 500, 150,fullBackRed,fullBackGreen,fullBackBlue, 
 						fullForeRed,fullForeGreen,fullForeBlue, 2,AREA_ANGULAR);
@@ -291,52 +290,37 @@ static void initFullscreenCrashGUI(SDL_Surface *display, int openGl, SDL_Window 
 	
 }
 
-int FullscreenCrashGUIRun(void)
+int FullscreenCrashGUIRun(SDL_Renderer *renderer)
 {
 	if (fullscreenCrashGUI == NULL) {
-			initFullscreenCrashGUI(MonitorGLScreen, 1, MainGLScreen);
+			initFullscreenCrashGUI(MonitorGLScreen, renderer);
 		}
-		
-	/* Set the scaling for the monitor */
-    glMatrixMode(GL_PROJECTION);
-    glPushMatrix();
-    glLoadIdentity();
-    glOrtho(0.0, (GLdouble) MONITOR_WIDTH, (GLdouble) MONITOR_HEIGHT, 0.0, 0.0, 1.0);
-    glMatrixMode(GL_MODELVIEW);
-    glPushMatrix();
-    glLoadIdentity();
 
-	SDL_ShowCursor(SDL_ENABLE); // show mouse cursor 
+    SDL_ShowCursor(SDL_ENABLE); // show mouse cursor
 	fullscreenCrashGUI->Run();
 	SDL_ShowCursor(SDL_DISABLE); // show mouse cursor 
-	
-	/* Set the scaling for the normal Atari Screen */
-    glMatrixMode(GL_PROJECTION);
-    glPushMatrix();
-    glLoadIdentity();
-    glOrtho(0.0,(GLdouble) fullscreenWidth, (GLdouble) fullscreenHeight, 0.0, 0.0, 1.0);
-    glMatrixMode(GL_MODELVIEW);
-    glPushMatrix();
-    glLoadIdentity();
 	
 	return(crashStatus);
 }
 
-int FullscreenGUIRun(void)
+int FullscreenGUIRun(SDL_Renderer *renderer, SDL_Window *window)
 {
-	if (fullscreenGUI == NULL) {
-        initFullscreenGUI(MonitorGLScreen, 1);
-		}
-		
-	/* Set the scaling for the monitor */
-    glMatrixMode(GL_PROJECTION);
-    glPushMatrix();
-    glLoadIdentity();
-    glOrtho(0.0, (GLdouble) MONITOR_WIDTH, (GLdouble) MONITOR_HEIGHT, 0.0, 0.0, 1.0);
-    glMatrixMode(GL_MODELVIEW);
-    glPushMatrix();
-    glLoadIdentity();
+    float monitorXScaleFactor;
+    float monitorYScaleFactor;
+    int windowX, windowY;
+    
+    SDL_GetWindowSize(window, &windowX, &windowY);
 
+	if (fullscreenGUI == NULL) {
+        initFullscreenGUI(MonitorGLScreen, renderer);
+		}
+    monitorXScaleFactor = ((float) windowX) / ((float) MONITOR_WIDTH);
+    monitorYScaleFactor = ((float) windowY) / ((float) MONITOR_HEIGHT);
+    printf("monitor - %f %f %d %d\n", monitorXScaleFactor, monitorYScaleFactor,
+           windowX, windowY);
+    /* Set the scaling for the monitor */
+    SDL_RenderSetScale(renderer, 1.0, 1.0);
+    
 	MONITOR_monitorEnter();
 	terminal->AddText(">");
 	terminal->StartPrompt();
@@ -344,14 +328,8 @@ int FullscreenGUIRun(void)
 	fullscreenGUI->Run();
     SDL_SetRelativeMouseMode(SDL_TRUE);
 
-	/* Set the scaling for the normal Atari Screen */
-    glMatrixMode(GL_PROJECTION);
-    glPushMatrix();
-    glLoadIdentity();
-    glOrtho(0.0,(GLdouble) fullscreenWidth, (GLdouble) fullscreenHeight, 0.0, 0.0, 1.0);
-    glMatrixMode(GL_MODELVIEW);
-    glPushMatrix();
-    glLoadIdentity();
+    /* Set the scaling for the normal Atari Screen */
+    SDL_RenderSetScale(renderer, scaleFactor, scaleFactor);
 
     if (monitorRetValue <= -1)
         return(1);

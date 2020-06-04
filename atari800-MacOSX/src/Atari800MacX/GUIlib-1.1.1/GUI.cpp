@@ -32,21 +32,16 @@
 #define WIDGET_ARRAYCHUNK	32
 
 
-GUI:: GUI(SDL_Surface *display, int w, int h, int openGLSurface, GLuint textureID, SDL_Window *guiWindow)
+//GUI:: GUI(SDL_Surface *display, int w, int h, int openGLSurface, GLuint textureID, SDL_Window *guiWindow)
+GUI:: GUI(SDL_Surface *display, int w, int h, SDL_Renderer *sdl_renderer)
 {
 	screen = display;
-	openGL = openGLSurface;
-	GLTextureID = textureID;
-    window = guiWindow;
+    renderer = sdl_renderer;
 	numwidgets = 0;
 	maxwidgets = 0;
 	widgets = NULL;
 	width = w;
 	height = h;
-	guiTexCoord[0] = 0.0f;
-	guiTexCoord[1] = 0.0f;
-	guiTexCoord[2] = (GLfloat) width / display->w;
-	guiTexCoord[3] = (GLfloat) height / display->h;
 }
 
 GUI:: ~GUI()
@@ -99,35 +94,24 @@ void
 GUI:: Display(void)
 {
 	int i;
+    SDL_Rect rect;
 
 	for ( i=0; i<numwidgets; ++i ) {
 		if ( widgets[i]->Status() == WIDGET_VISIBLE ) {
 			widgets[i]->Display();
 		}
 	}
-	if (openGL) {
-		glBindTexture(GL_TEXTURE_2D, GLTextureID);
-		glEnable(GL_TEXTURE_2D);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, screen->w, screen->h, 0, GL_RGB, GL_UNSIGNED_SHORT_5_6_5,
-						screen->pixels);
-		glBegin(GL_QUADS);
-		glTexCoord2f(guiTexCoord[0], guiTexCoord[1]); glVertex2i(0, 0);
-		glTexCoord2f(guiTexCoord[2], guiTexCoord[1]); glVertex2i(width, 0);
-		glTexCoord2f(guiTexCoord[2], guiTexCoord[3]); glVertex2i(width,height);
-		glTexCoord2f(guiTexCoord[0], guiTexCoord[3]); glVertex2i(0, height);
-		glEnd();
+    
+    texture = SDL_CreateTextureFromSurface(renderer, screen);
 
-		// Now show all changes made to the textures
-        SDL_GL_SwapWindow(window);
+    rect.x = 0;
+    rect.y = 0;
+    rect.w = width;
+    rect.h = height;
+    SDL_RenderCopy(renderer, texture, NULL, &rect);
 
-		// Added this to work around problem in 10.4 where if OpenGL window was occluded, the frame rate
-		//   would drop to half normal (30fps). 
-		glFlush();
-		}
-#if 0 // TBD
-	else
-		SDL_UpdateRect(screen, 0, 0, 0, 0);
-#endif
+    SDL_RenderPresent(renderer);
+    SDL_DestroyTexture(texture);
 }
 
 /* Function to handle a GUI status */
