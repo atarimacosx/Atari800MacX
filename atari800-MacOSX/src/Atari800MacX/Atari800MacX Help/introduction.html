@@ -224,63 +224,17 @@ the Windowed and Fullscreen versions.<br>
 
 <h1>What's New in 5.0.x?</h1>
 
-<h4>New Features/Bug Fixes (in version 5.0.4):</h4>
+<h4>New Features/Bug Fixes (in version 5.1.0):</h4>
+
+<ul>
+    <li>Updated application to use Apple's Metal API instead of OpenGL.  MacOS had depricated OpenGL, and this should help to future proof the program.</li>
+</ul>
 
 <h5>Bugs Fixed:</h5>
 <ul>
-    <li>Fixed issues with gamepad/joystick hotplug.</li>
-    <li>Fixed copy, paste, and select all menu items.</li>
-    <li>Fixed typos in Preferences for CX85.</li>
+    <li>Fixed issues with keypresses stil being issued along with joystick/trigger motions when using Keyboard joyticks..</li>
 
 </ul>
-
-<h4>New Features/Bug Fixes (in version 5.0.3):</h4>
-
-<h5>Bugs Fixed:</h5>
-<ul>
-    <li>Fixed issue with extra characters being input with an International keyboard.</li>
-</ul>
-
-<h4>New Features/Bug Fixes (in version 5.0.2):</h4>
-
-<ul>
-    <li>Updated SDL Framework for better support of MacOS 10.15 Catalina</li>
-    <li>Moved Gamepad Identification window from Preferences to Control Menu (This window has not worked since 5.0.0</li>
-</ul>
-<h5>Bugs Fixed:</h5>
-<ul>
-    <li>Fixed issue with Fullscren in Catalina.</li>
-    <li>Fixed issue with Cmd-J Keybinding for toggling Keyboard Joysticks.</li>
-    <li>Fixed dark mode About menu issue.</li>
-    <li>Fix issue with Gampad names which contain unicode which caused emulator to crash</li>
-</ul>
-
-<h4>New Features/Bug Fixes (in version 5.0.1):</h4>
-
-<ul>
-<li>Added support for macOS Mojave Dark Mode - including new Media Status Panel images.</li>  <li>This release requires 10.12 Sierra or above.</li>
-<li>Added Inverse Key to Function Key Window.</li>
-</ul>
-<h5>Bugs Fixed:</h5>
-<ul>
-    <li>Fix spelling errors in Preferences panel.</li>
-    <li>Patched keyboard issues caused by libSDL 2.0 - International keyboard translation is always enabled now.</li>
-</ul>
-
-<h4>New Features/Bug Fixes (in version 5.0.0):</h4>
-
-<ul>
-  <li>Changed from using underlying SDL Library 1.2 to SDL Library 2.0.  This allows operation on Mac OSX Sierra, High Sierra, and Mojave.  Note, no testing has been done on Sierra and High Sierra.</li>
-  <li>This release requires 10.12 Sierra or above.</li>
-</ul>
-<h5>Bugs Fixed:</h5>
-<ul>
-    <li>Sound now works in Mac OSX Sierra and up</li>
-    <li>Fixed crashes with Atari 825 Printer emulation and Epson FX80 Printer emulation.</li>
-    <li>Fixes issues with Color Wells for Fullscreen Monitor and Atari 1020 Printer emulation.  Changed to use text boxes to specify 0-255 Red, Green, and Blue values for colors.</li>
-</ul>
-
-
 
 
 <br>
