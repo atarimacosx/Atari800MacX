@@ -804,7 +804,10 @@ void SetVideoMode(int w, int h, int bpp)
                                         w, h, SDL_WINDOW_FULLSCREEN | SDL_WINDOW_OPENGL | SDL_WINDOW_ALLOW_HIGHDPI);
         SDL_SetHint(SDL_HINT_RENDER_DRIVER, "metal");
         renderer = SDL_CreateRenderer(MainGLScreen, -1, 0);
-        SDL_RenderSetScale(renderer, scaleFactor, scaleFactor);
+        if (lockFullscreenSize)
+            SDL_RenderSetScale(renderer, 2.0, 2.0);
+        else
+            SDL_RenderSetScale(renderer, scaleFactor, scaleFactor);
 
         // Save Mac Window for later use
         SDL_SysWMinfo wmInfo;
