@@ -1579,7 +1579,8 @@ int Atari_Keyboard_International(void)
         /* Poll for SDL events.  All we want here are Keydown and Keyup events,
          and the quit event. */
         checkForNewJoysticks();
-        if (SDL_PollEvent(&event)) {
+        int pollEvent;
+        if ((pollEvent = SDL_PollEvent(&event))) {
             switch (event.type) {
                 case SDL_TEXTINPUT:
                     kbhits = (Uint8 *) SDL_GetKeyboardState(NULL);
@@ -1639,10 +1640,7 @@ int Atari_Keyboard_International(void)
                     return AKEY_NONE;
             }
         }
-        else {
-            return AKEY_NONE;
-        }
-        
+
         if (kbhits == NULL) {
             Log_print("oops, kbhits is NULL!");
             Log_flushlog();
@@ -1672,6 +1670,10 @@ int Atari_Keyboard_International(void)
                 copyStatus = COPY_IDLE;
             else if (lastkey != SDL_SCANCODE_LGUI && lastkey != SDLK_c)
                 copyStatus = COPY_IDLE;
+        }
+        
+        if (!pollEvent) {
+            return AKEY_NONE;
         }
     }
     
