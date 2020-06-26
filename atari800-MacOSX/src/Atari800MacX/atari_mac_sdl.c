@@ -801,7 +801,7 @@ void SetVideoMode(int w, int h, int bpp)
         MainGLScreen = SDL_CreateWindow(windowCaption,
                                         SDL_WINDOWPOS_UNDEFINED,
                                         SDL_WINDOWPOS_UNDEFINED,
-                                        w, h, SDL_WINDOW_FULLSCREEN | SDL_WINDOW_OPENGL | SDL_WINDOW_ALLOW_HIGHDPI);
+                                        w, h, SDL_WINDOW_FULLSCREEN |  SDL_WINDOW_ALLOW_HIGHDPI);
         SDL_SetHint(SDL_HINT_RENDER_DRIVER, "metal");
         renderer = SDL_CreateRenderer(MainGLScreen, -1, 0);
         if (lockFullscreenSize)
@@ -864,7 +864,7 @@ void SetVideoMode(int w, int h, int bpp)
         MainGLScreen = SDL_CreateWindow(windowCaption,
                                         SDL_WINDOWPOS_UNDEFINED,
                                         SDL_WINDOWPOS_UNDEFINED,
-                                        w, h, SDL_WINDOW_OPENGL);
+                                        w, h, 0);
         SDL_SetHint(SDL_HINT_RENDER_DRIVER, "metal");
         renderer = SDL_CreateRenderer(MainGLScreen, -1, 0);
         SDL_RenderSetScale(renderer, scaleFactor, scaleFactor);
