@@ -115,7 +115,7 @@ int SDLMainIsActive() {
         if ([menuItem hasSubmenu])
             [self fixMenu:[menuItem submenu] withAppName:appName];
     }
-    [ aMenu sizeToFit ];
+    //[ aMenu sizeToFit ];
 }
 
 /* Called when the internal event loop has just started running */

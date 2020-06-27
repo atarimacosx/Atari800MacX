@@ -25,7 +25,7 @@
 {
 	unichar firstChar;
 	
-    if ([anEvent type] == NSKeyDown) {
+    if ([anEvent type] == NSEventTypeKeyDown) {
 		firstChar = [[anEvent characters] characterAtIndex:0];
 		if (firstChar == NSUpArrowFunctionKey) {
 			[[ControlManager sharedInstance] monitorUpArrow];

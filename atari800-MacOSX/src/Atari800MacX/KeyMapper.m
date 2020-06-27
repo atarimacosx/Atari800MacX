@@ -81,12 +81,12 @@ static KeyMapper *sharedInstance = nil;
 	charCode = [character characterAtIndex:0];
 	keyCode = [self getQuartzKey:charCode];
     
-    event1 = [NSEvent keyEventWithType:NSKeyUp location:point modifierFlags:0
+    event1 = [NSEvent keyEventWithType:NSEventTypeKeyUp location:point modifierFlags:0
                     timestamp:0.0 windowNumber:0 context:nil characters:character
                     charactersIgnoringModifiers:character isARepeat:NO keyCode:keyCode];
     [NSApp postEvent:event1 atStart:NO];
     
-    event2 = [NSEvent keyEventWithType:NSFlagsChanged location:point modifierFlags:0
+    event2 = [NSEvent keyEventWithType:NSEventTypeFlagsChanged location:point modifierFlags:0
                     timestamp:0.0 windowNumber:0 context:nil characters:nil
                     charactersIgnoringModifiers:nil isARepeat:NO keyCode:0];
     [NSApp postEvent:event2 atStart:NO];

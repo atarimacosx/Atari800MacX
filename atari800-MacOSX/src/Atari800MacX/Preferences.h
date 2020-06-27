@@ -10,7 +10,7 @@
 #import <Cocoa/Cocoa.h>
 #import "Atari825Simulator.h"
 #import "Atari1020Simulator.h"
-#import "EpsonFx80Simulator.h"
+#import "EpsonFX80Simulator.h"
 #import "preferences_c.h"
 
 /* Keys in the dictionary... */
