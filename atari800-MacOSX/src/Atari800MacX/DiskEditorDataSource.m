@@ -682,7 +682,7 @@ static int idCounter = 0;
 		
 		/* Delete the files, since they are no longer needed */
 		for (i=0;i<[files count];i++) {
-			[[files objectAtIndex:i] getCString:cname];
+			[[files objectAtIndex:i] getCString:cname maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding ];
 			unlink(cname);
 			}
 		

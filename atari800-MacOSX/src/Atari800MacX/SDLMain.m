@@ -148,7 +148,7 @@ int SDLMainIsActive() {
         [SDLMain loadFile:filename];
     else {
         fileToLoad = TRUE;
-        [filename getCString:startupFile];
+        [filename getCString:startupFile maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
     }
 
     return(FALSE);
