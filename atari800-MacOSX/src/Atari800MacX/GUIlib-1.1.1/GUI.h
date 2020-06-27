@@ -36,7 +36,7 @@
 class GUI {
 
 public:
-	GUI(SDL_Surface *display, int w, int h, int openGLSurface, GLuint textureID, SDL_Window *guiWindow);
+	GUI(SDL_Surface *display, int w, int h, SDL_Renderer *sdl_renderer);
 	~GUI();
 
 	/* Add a widget to the GUI.
@@ -72,9 +72,6 @@ protected:
     /* The display surface */
     SDL_Surface *screen;
     
-    /* The display window */
-    SDL_Window *window;
-    
 	/* Pointers for an array of widgets */
 	int maxwidgets;
 	int numwidgets;
@@ -86,11 +83,8 @@ protected:
 	/* Flag - whether or not the GUI needs to be displayed */
 	int display;
 
-	/* Flag - whether or not the GUI is running on an OpenGL Surface */
-	int openGL;
-	
-	GLuint GLTextureID;
-	GLfloat guiTexCoord[4];
+	SDL_Renderer *renderer;
+	SDL_Texture *texture;
 	int width;
 	int height;
 	
