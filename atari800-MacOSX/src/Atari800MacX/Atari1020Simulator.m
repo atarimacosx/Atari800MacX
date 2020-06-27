@@ -38,7 +38,7 @@ ATARI1020_PREF prefs1020;
 
 @implementation Atari1020Simulator
 static Atari1020Simulator *sharedInstance = nil;
-static float lineTypes[16][2];
+static double lineTypes[16][2];
 static NSColor *colors[4];
 static NSBezierPath *fontPaths[0x60];
 static NSBezierPath *interFontPaths[26];
@@ -665,7 +665,7 @@ static int interFontTemplates[26][25][3] =
 	[self checkPoints:&horizPosition:&vertPosition];
 }
 
-- (void)checkPoints:(float *)horiz:(float *)vert
+- (void)checkPoints:(double *)horiz:(double *)vert
 {
 	if (*horiz < leftMargin)
 		*horiz = leftMargin;
@@ -709,8 +709,8 @@ static int interFontTemplates[26][25][3] =
 - (void)gotDrawAbsoluteYState:(unsigned char) character
 {
 	NSPoint point;
-	float horizNew;
-	float vertNew;
+	double horizNew;
+	double vertNew;
 	
 	switch (character)
         {
@@ -790,8 +790,8 @@ static int interFontTemplates[26][25][3] =
 
 - (void)gotDrawRelativeYState:(unsigned char) character
 {
-	float horizNew;
-	float vertNew;
+	double horizNew;
+	double vertNew;
 	NSPoint point;
 	
 	switch (character)

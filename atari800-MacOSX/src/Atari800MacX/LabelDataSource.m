@@ -14,7 +14,7 @@
 {
 	labels = nil;
 	sortedLabels = nil;
-	currentColumnId = [[NSString stringWithString:@"L"] retain];
+	currentColumnId = [@"L" retain];
 	currentOrderAscending = YES;
 	dirty = YES;
 

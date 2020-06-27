@@ -33,23 +33,23 @@ typedef struct ATARI1020_PREF {
 
 @interface Atari1020Simulator : NSObject <PrinterProtocol> {
 	int state;
-	float leftMargin;
-	float rightMargin;
-	float horizPosition;
-	float vertPosition;
-	float horizOrigin;
-	float vertOrigin;
+	double leftMargin;
+	double rightMargin;
+	double horizPosition;
+	double vertPosition;
+	double horizOrigin;
+	double vertOrigin;
 	bool autoLineFeed;
-	float lineSpacing;
-	float formLength;
+	double lineSpacing;
+	double formLength;
 
     int color;
     int rotation;
     int lineType;
     int charSize;
-    float xAccum;
-    float yAccum;
-    float stepAccum;
+    double xAccum;
+    double yAccum;
+    double stepAccum;
     int intervalAccum;
 	int charCount;
 	char charBuffer[256];
@@ -77,7 +77,7 @@ typedef struct ATARI1020_PREF {
 - (void)gotCharSizeState:(unsigned char) character;
 - (void)checkAccums;
 - (void)checkPositions;
-- (void)checkPoints:(float *)horiz:(float *)vert;
+- (void)checkPoints:(double *)horiz:(double *)vert;
 - (void)gotDrawAbsoluteState:(unsigned char) character;
 - (void)gotDrawAbsoluteYState:(unsigned char) character;
 - (void)gotDrawRelativeState:(unsigned char) character;

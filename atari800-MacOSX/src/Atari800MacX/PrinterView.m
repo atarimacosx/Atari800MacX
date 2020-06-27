@@ -34,7 +34,7 @@
 	NSColor *purple = [NSColor purpleColor];
 	NSColor *black = [NSColor blackColor];
 	NSColor *grey = [NSColor grayColor];
-	float offset = [controller getPrintOffset];
+	double offset = [controller getPrintOffset];
 	
     [[NSColor whiteColor] setFill];
     NSRectFill(rect);
@@ -51,15 +51,15 @@
 	//   and page break markers.
 	if ([controller isPreview])
 		{
-		float width = [self frame].size.width;
+		double width = [self frame].size.width;
 		NSPoint point1 = NSMakePoint(0.0,vertPosition+offset-5.0);
 		NSPoint point2 = NSMakePoint(10.0,vertPosition+offset);
 		NSPoint point3 = NSMakePoint(0.0,vertPosition+offset+5.0);
 		NSPoint point4 = NSMakePoint(width,vertPosition+offset-5.0);
 		NSPoint point5 = NSMakePoint(width - 10.0,vertPosition+offset);
 		NSPoint point6 = NSMakePoint(width,vertPosition+5.0+offset);
-		float pageBreak;
-		float array[2] = {5.0,2.0};
+		double pageBreak;
+		double array[2] = {5.0,2.0};
 		
 		// Print the current line position markers
 		path = [NSBezierPath bezierPath];

@@ -39,7 +39,7 @@
 		// Note, because this uses regDefs to populate the data, it is
 		//  a "virtual" class, and must be subclassed.
 		[nameStrings addObject:[NSString stringWithCString:regDefs[i].name encoding:NSASCIIStringEncoding]];
-		[regStrings addObject:[NSString stringWithString:@""]];
+		[regStrings addObject:@""];
 	}
 	oldRegs = calloc(regCount, sizeof(unsigned char));
 	firstTime = YES;
