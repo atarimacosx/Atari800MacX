@@ -1392,7 +1392,6 @@ static int Atari_International_Good_Key(int key) {
 int Atari_Keyboard_International(void)
 {
     static int lastkey = SDLK_UNKNOWN, key_pressed = 0;
-    char lastchar;
     SDL_Event event;
     int key_option = 0;
     static int key_was_pressed = 0;

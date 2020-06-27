@@ -4,8 +4,8 @@
    Mark Grebe <atarimacosx@gmail.com>
 */
 #import "atari.h"
-#import "AtrUtil.h"
-#import "AtrMount.h"
+#import "atrUtil.h"
+#import "atrMount.h"
 #import "DiskEditorWindow.h"
 
 extern void PauseAudio(int pause);

@@ -59,7 +59,7 @@ void SDLMainLoadStartupFile() {
 		strcpy(startupFile, startupDir);
 		printf("Changed\n");
 		}
-    [SDLMain loadFile:[NSString stringWithCString:startupFile]];
+    [SDLMain loadFile:[NSString stringWithCString:startupFile encoding:NSASCIIStringEncoding]];
 }
 
 void SDLMainCloseWindow() {

@@ -683,10 +683,7 @@ static Preferences *sharedInstance = nil;
 - (void)updateUI {
     int index;
     int i,j,foundMatch;
-    NSColor *pen1, *pen2, *pen3, *pen4, *fore;
     NSString *portName;
-    float foreRed, foreGreen, foreBlue;
-    float backRed, backGreen, backBlue;
 
     if (!prefTabView) return;	/* UI hasn't been loaded... */
 

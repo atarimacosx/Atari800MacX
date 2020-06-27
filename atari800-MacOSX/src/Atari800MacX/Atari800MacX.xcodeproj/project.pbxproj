@@ -48,7 +48,6 @@
 		2D17D9840F538B710027F526 /* cfg.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D17D9830F538B710027F526 /* cfg.h */; };
 		2D1A748A107A66C0000049E3 /* MemoryEditorTableView.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D1A7488107A66C0000049E3 /* MemoryEditorTableView.h */; };
 		2D1A748B107A66C0000049E3 /* MemoryEditorTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D1A7489107A66C0000049E3 /* MemoryEditorTableView.m */; };
-		2D20134121D076AA005793AE /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D20134021D076AA005793AE /* SDL2.framework */; };
 		2D20134221D45A5B005793AE /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D20134021D076AA005793AE /* SDL2.framework */; };
 		2D20134321D45A5B005793AE /* SDL2.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 2D20134021D076AA005793AE /* SDL2.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		2D27A624106BE2BF002AAAE7 /* DisasmTableView.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D27A622106BE2BF002AAAE7 /* DisasmTableView.h */; };
@@ -708,7 +707,6 @@
 				2DAEDBC709B69AED005FF181 /* Cocoa.framework in Frameworks */,
 				2DAEDBC809B69AED005FF181 /* IOKit.framework in Frameworks */,
 				2D20134221D45A5B005793AE /* SDL2.framework in Frameworks */,
-				2D20134121D076AA005793AE /* SDL2.framework in Frameworks */,
 				2DDD85100AAA055D00DE182D /* Carbon.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1666,7 +1664,7 @@
 		2DD86A1909B559B00088C6D3 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
+				ALWAYS_SEARCH_USER_PATHS = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
