@@ -518,7 +518,7 @@ static int monitorRunFirstTime = 1;
     [openPanel setCanChooseDirectories:NO];
     [openPanel setCanChooseFiles:YES];
     
-    if ([openPanel runModalForDirectory:directory file:nil types:nil] == NSOKButton)
+    if ([openPanel runModalForDirectory:directory file:nil types:nil] == NSModalResponseOK)
         return([[openPanel filenames] objectAtIndex:0]);
     else
         return nil;
@@ -535,7 +535,7 @@ static int monitorRunFirstTime = 1;
     
     [savePanel setRequiredFileType:type];
     
-    if ([savePanel runModalForDirectory:directory file:nil] == NSOKButton)
+    if ([savePanel runModalForDirectory:directory file:nil] == NSModalResponseOK)
         return([savePanel filename]);
     else
         return nil;
@@ -776,7 +776,7 @@ static int monitorRunFirstTime = 1;
     NSEvent *event1;
     NSPoint point;
     
-    event1 = [NSEvent keyEventWithType:NSKeyUp location:point modifierFlags:0
+    event1 = [NSEvent keyEventWithType:NSEventTypeKeyUp location:point modifierFlags:0
                     timestamp:0.0 windowNumber:0 context:nil characters:@" "
                     charactersIgnoringModifiers:@" " isARepeat:NO keyCode:keyCode];
     [NSApp postEvent:event1 atStart:NO];

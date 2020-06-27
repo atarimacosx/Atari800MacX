@@ -2646,7 +2646,7 @@ static Preferences *sharedInstance = nil;
     [openPanel setCanChooseDirectories:NO];
     [openPanel setCanChooseFiles:YES];
     
-    if ([openPanel runModalForTypes:nil] == NSOKButton)
+    if ([openPanel runModalForTypes:nil] == NSModalResponseOK)
         return([[openPanel filenames] objectAtIndex:0]);
     else
         return nil;
@@ -2663,7 +2663,7 @@ static Preferences *sharedInstance = nil;
     [openPanel setCanChooseDirectories:NO];
     [openPanel setCanChooseFiles:YES];
     
-    if ([openPanel runModalForDirectory:directory file:nil types:nil] == NSOKButton) 
+    if ([openPanel runModalForDirectory:directory file:nil types:nil] == NSModalResponseOK) 
         return([[openPanel filenames] objectAtIndex:0]);
     else
         return nil;
@@ -2680,7 +2680,7 @@ static Preferences *sharedInstance = nil;
     
     [savePanel setRequiredFileType:type];
     
-    if ([savePanel runModalForDirectory:directory file:nil] == NSOKButton)
+    if ([savePanel runModalForDirectory:directory file:nil] == NSModalResponseOK)
         return([savePanel filename]);
     else
         return nil;
@@ -2696,7 +2696,7 @@ static Preferences *sharedInstance = nil;
     [openPanel setCanChooseDirectories:YES];
     [openPanel setCanChooseFiles:NO];
     
-    if ([openPanel runModalForTypes:nil] == NSOKButton)
+    if ([openPanel runModalForTypes:nil] == NSModalResponseOK)
         return([[openPanel filenames] objectAtIndex:0]);
     else
         return nil;
@@ -5292,7 +5292,7 @@ static Preferences *sharedInstance = nil;
 	[openPanel setCanChooseFiles:YES];
 			
 	if ([openPanel runModalForDirectory:[NSString stringWithCString:atari_config_dir encoding:NSASCIIStringEncoding] file:nil 
-								  types:[NSArray arrayWithObjects:@"a8c",@"A8C",nil]] != NSOKButton) { 
+                                  types:[NSArray arrayWithObjects:@"a8c",@"A8C",nil]] != NSModalResponseOK) { 
 		[[KeyMapper sharedInstance] releaseCmdKeys:@"l"];
         return 0;
 		}

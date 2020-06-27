@@ -8,8 +8,8 @@
 #import "Atari800TableView.h"
 #import "Preferences.h"
 #import "atari.h"
-#import "AtrUtil.h"
-#import "AtrMount.h"
+#import "atrUtil.h"
+#import "atrMount.h"
 #import "MediaManager.h"
 #import "DiskEditorDataSource.h"
 
@@ -34,8 +34,8 @@
                         fromView:nil]];
 	flags = [theEvent modifierFlags];
 	if (([self isRowSelected:row] == NO) && 
-		!(flags & NSShiftKeyMask) &&
-		!(flags & NSCommandKeyMask))
+        !(flags & NSEventModifierFlagShift) &&
+        !(flags & NSEventModifierFlagCommand))
         [self selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
 	/* Call the normal mouseDown processing */	
 	[super mouseDown:theEvent];

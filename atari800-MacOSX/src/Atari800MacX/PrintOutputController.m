@@ -291,7 +291,7 @@ static NSMutableArray *printArray;
     [savePanel setRequiredFileType:@"pdf"];
 	directory = [NSString stringWithCString:atari_print_dir encoding:NSASCIIStringEncoding];
     
-    if ([savePanel runModalForDirectory:directory file:nil] == NSOKButton)
+    if ([savePanel runModalForDirectory:directory file:nil] == NSModalResponseOK)
 		{
 		preview = NO;
 		

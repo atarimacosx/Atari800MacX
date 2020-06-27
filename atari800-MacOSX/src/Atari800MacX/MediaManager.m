@@ -12,8 +12,8 @@
 #import <Cocoa/Cocoa.h>
 #import "afile.h"
 #import "atari.h"
-#import "AtrUtil.h"
-#import "AtrMount.h"
+#import "atrUtil.h"
+#import "atrMount.h"
 #import "MediaManager.h"
 #import "ControlManager.h"
 #import "Preferences.h"
@@ -202,8 +202,6 @@ NSImage *disketteImage;
 }
 
 - (id)init {
-	char filename[FILENAME_MAX];
-	
     if (sharedInstance) {
 	[self dealloc];
     } else {
@@ -471,7 +469,7 @@ NSImage *disketteImage;
     [openPanel setCanChooseDirectories:NO];
     [openPanel setCanChooseFiles:YES];
     
-    if ([openPanel runModalForDirectory:directory file:nil types:nil] == NSOKButton)
+    if ([openPanel runModalForDirectory:directory file:nil types:nil] == NSModalResponseOK)
         return([[openPanel filenames] objectAtIndex:0]);
     else
         return nil;
@@ -489,7 +487,7 @@ NSImage *disketteImage;
     [openPanel setCanChooseFiles:YES];
     
     if ([openPanel runModalForDirectory:directory file:nil 
-            types:filetypes] == NSOKButton)
+            types:filetypes] == NSModalResponseOK)
         return([[openPanel filenames] objectAtIndex:0]);
     else
         return nil;
@@ -506,7 +504,7 @@ NSImage *disketteImage;
     
     [savePanel setRequiredFileType:type];
     
-    if ([savePanel runModalForDirectory:directory file:nil] == NSOKButton)
+    if ([savePanel runModalForDirectory:directory file:nil] == NSModalResponseOK)
         return([savePanel filename]);
     else
         return nil;

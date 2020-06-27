@@ -122,7 +122,7 @@ static NSMutableArray *editorArray = nil;
     [openPanel setCanChooseFiles:YES];
 	[openPanel setAllowsMultipleSelection:YES];
 	
-    if ([openPanel runModalForDirectory:nil file:nil types:nil] == NSOKButton)
+    if ([openPanel runModalForDirectory:nil file:nil types:nil] == NSModalResponseOK)
         return([openPanel filenames]);
     else
         return nil;
@@ -139,7 +139,7 @@ static NSMutableArray *editorArray = nil;
     [openPanel setCanChooseFiles:NO];
 	[openPanel setAllowsMultipleSelection:NO];
 
-    if ([openPanel runModalForDirectory:nil file:nil types:nil] == NSOKButton)
+    if ([openPanel runModalForDirectory:nil file:nil types:nil] == NSModalResponseOK)
         return([[openPanel filenames] objectAtIndex:0]);
     else
         return nil;
