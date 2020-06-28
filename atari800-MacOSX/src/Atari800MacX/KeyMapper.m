@@ -16,10 +16,10 @@ static KeyMapper *sharedInstance = nil;
 }
 
 - (id)init {
-    const void *KCHRPtr;
+    BOOL saw_layout = NO;
     Uint32 state;
     UInt32 value;
-    int i;
+    Uint16 i;
     int world = 128; // TBD SDLK_WORLD_0;
 
     if (sharedInstance) {
@@ -31,31 +31,59 @@ static KeyMapper *sharedInstance = nil;
 		for ( i=0; i<128; ++i )
 			keymap[i] = SDLK_UNKNOWN;
 		
-        /* Get a pointer to the systems cached KCHR */
-        KCHRPtr = (void *)GetScriptManagerVariable(smKCHRCache);
-        if (KCHRPtr)
-        {
-            /* Loop over all 127 possible scan codes */
-            for (i = 0; i < 0x7F; i++)
-            {
-                /* We pretend a clean start to begin with (i.e. no dead keys active */
-                state = 0;
+        TISInputSourceRef src = TISCopyCurrentKeyboardLayoutInputSource();
+        if (src != NULL) {
+            CFDataRef data = (CFDataRef)
+                TISGetInputSourceProperty(src,
+                    kTISPropertyUnicodeKeyLayoutData);
+            if (data != NULL) {
+                const UCKeyboardLayout *layout = (const UCKeyboardLayout *)
+                    CFDataGetBytePtr(data);
+                if (layout != NULL) {
+                    const UInt32 kbdtype = LMGetKbdType();
+                    saw_layout = YES;
 
-                /* Now translate the key code to a key value */
-                value = KeyTranslate(KCHRPtr, i, (UInt32*)&state) & 0xff;
+                    /* Loop over all 127 possible scan codes */
+                    for (i = 0; i < 0x7F; i++) {
+                        UniChar buf[16];
+                        UniCharCount count = 0;
 
-                /* If the state become 0, it was a dead key. We need to translate again,
-                    passing in the new state, to get the actual key value */
-                if (state != 0)
-                    value = KeyTranslate(KCHRPtr, i,(UInt32*) &state) & 0xff;
+                        /* We pretend a clean start to begin with (i.e. no dead keys active */
+                        state = 0;
 
-                /* Now we should have an ascii value, or 0. Try to figure out to which SDL symbol it maps */
-                if (value >= 128)     /* Some non-ASCII char, map it to SDLK_WORLD_* */
-                    keymap[i] = world++;
-                else if (value >= 32)     /* non-control ASCII char */
-                    keymap[i] = value;
+                        if (UCKeyTranslate(layout, i, kUCKeyActionDown, 0, kbdtype,
+                                           0, &state, 16, &count, buf) != noErr) {
+                            continue;
+                        }
+
+                        /* If the state become 0, it was a dead key. We need to
+                           translate again, passing in the new state, to get
+                           the actual key value */
+                        if (state != 0) {
+                            if (UCKeyTranslate(layout, i, kUCKeyActionDown, 0, kbdtype,
+                                               0, &state, 16, &count, buf) != noErr) {
+                                continue;
+                            }
+                        }
+
+                        if (count != 1) {
+                            continue;  /* no multi-char. Use SDL 1.3 instead. :) */
+                        }
+
+                        value = (UInt32) buf[0];
+                        if (value >= 128) {
+                            /* Some non-ASCII char, map it to SDLK_WORLD_* */
+                            if (world < 0xFF) {
+                                keymap[i] = world++;
+                            }
+                        } else if (value >= 32) {     /* non-control ASCII char */
+                            keymap[i] = value;
+                        }
+                    }
+                }
             }
-		}
+            CFRelease(src);
+        }
  	}
     return sharedInstance;
 }

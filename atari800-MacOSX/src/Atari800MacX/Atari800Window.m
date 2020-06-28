@@ -199,6 +199,9 @@ void Atari800MakeKeyWindow(void) {
 
 @end
 
+@interface Atari800WindowDelegate : NSObject
+@end
+
 /* Delegate for our NSWindow to send SDLQuit() on close */
 @implementation Atari800WindowDelegate
 - (NSDragOperation)ourDraggingEntered:(id <NSDraggingInfo>)sender {
