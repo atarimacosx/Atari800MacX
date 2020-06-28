@@ -319,36 +319,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
-		2DAEDBD209B69AED005FF181 /* PBXBuildRule */ = {
-			isa = PBXBuildRule;
-			compilerSpec = com.apple.compilers.gcc.3_3;
-			fileType = sourcecode.c;
-			inputFiles = (
-			);
-			isEditable = 1;
-			outputFiles = (
-			);
-		};
-		2DAEDBD309B69AED005FF181 /* PBXBuildRule */ = {
-			isa = PBXBuildRule;
-			compilerSpec = com.apple.compilers.gcc.3_3;
-			fileType = sourcecode.c;
-			inputFiles = (
-			);
-			isEditable = 1;
-			outputFiles = (
-			);
-		};
-		2DAEDBD409B69AED005FF181 /* PBXBuildRule */ = {
-			isa = PBXBuildRule;
-			compilerSpec = com.apple.compilers.gcc.3_3;
-			fileType = sourcecode.c;
-			inputFiles = (
-			);
-			isEditable = 1;
-			outputFiles = (
-			);
-		};
 /* End PBXBuildRule section */
 
 /* Begin PBXCopyFilesBuildPhase section */
