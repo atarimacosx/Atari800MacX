@@ -322,19 +322,19 @@ static NSMutableArray *editorArray = nil;
 - (IBAction)diskImageExport:(id)sender
 {
 	NSString *filename;
-	NSEnumerator *enumerator;
-	NSArray *indicies;
-	int i;
+    NSIndexSet *indicies;
 	
 	filename = [self browseDirectory];
 	if (filename != nil) {
-		enumerator = [directoryTableView selectedRowEnumerator]; 
-	
-		indicies = [enumerator allObjects];
-	
-		//printf("lfconvert = %d\n",lfConvert);
-		for (i=0;i<[indicies count];i++)
-			[directoryDataSource exportFile:[[indicies objectAtIndex:i] intValue]:filename:lfConvert];
+
+        indicies = [directoryTableView selectedRowIndexes];
+
+        NSUInteger idx = [indicies firstIndex];
+        while (idx != NSNotFound)
+            {
+                [directoryDataSource exportFile:idx:filename:lfConvert];
+             idx = [indicies indexGreaterThanIndex:idx];
+            }
 		}
 }
 
@@ -343,17 +343,17 @@ static NSMutableArray *editorArray = nil;
 *-----------------------------------------------------------------------------*/
 - (IBAction)diskImageDelete:(id)sender
 {
-	NSEnumerator *enumerator;
-	NSArray *indicies;
-	int i;
+    NSIndexSet *indicies;
+
+    indicies = [directoryTableView selectedRowIndexes];
 	
-	enumerator = [directoryTableView selectedRowEnumerator]; 
-	
-	indicies = [enumerator allObjects];
-	
-	for (i=0;i<[indicies count];i++)
-		[directoryDataSource deleteFile:[[indicies objectAtIndex:i] intValue]];
-	
+    NSUInteger idx = [indicies firstIndex];
+    while (idx != NSNotFound)
+        {
+        [directoryDataSource deleteFile:idx];
+         idx = [indicies indexGreaterThanIndex:idx];
+        }
+
 	[self diskImageEnableButtons];
 }
 
@@ -362,24 +362,17 @@ static NSMutableArray *editorArray = nil;
 *-----------------------------------------------------------------------------*/
 - (IBAction)diskImageRename:(id)sender
 {
-	int result;
-	
 	[diskImageNameField setStringValue:@""];
     PauseAudio(1);
-	[NSApp beginSheet: diskImageNewNameSheet
-            modalForWindow: [self window]
-            modalDelegate: nil
-            didEndSelector: nil
-            contextInfo: nil];
-    result = [NSApp runModalForWindow: diskImageNewNameSheet];
-    // Sheet is up here.
+    [self.window beginSheet:diskImageNewNameSheet
+                       completionHandler:^(NSModalResponse returnCode){
+      if (returnCode) {
+          [directoryDataSource renameFile:[directoryTableView selectedRow]:
+                                          [diskImageNameField stringValue]];
+          }
+    }];
+    [NSApp runModalForWindow: diskImageNewNameSheet];
     [NSApp endSheet: diskImageNewNameSheet];
-    [diskImageNewNameSheet orderOut: self];
-
-	if (result) {
-		[directoryDataSource renameFile:[directoryTableView selectedRow]:
-									[diskImageNameField stringValue]];
-		}
 }
 
 /*------------------------------------------------------------------------------
@@ -387,16 +380,16 @@ static NSMutableArray *editorArray = nil;
 *-----------------------------------------------------------------------------*/
 - (IBAction)diskImageLock:(id)sender
 {
-	NSEnumerator *enumerator;
-	NSArray *indicies;
-	int i;
-	
-	enumerator = [directoryTableView selectedRowEnumerator]; 
-	
-	indicies = [enumerator allObjects];
-	
-	for (i=0;i<[indicies count];i++)
-		[directoryDataSource lockFile:[[indicies objectAtIndex:i] intValue]];
+    NSIndexSet *indicies;
+
+    indicies = [directoryTableView selectedRowIndexes];
+
+    NSUInteger idx = [indicies firstIndex];
+    while (idx != NSNotFound)
+        {
+        [directoryDataSource lockFile:idx];
+         idx = [indicies indexGreaterThanIndex:idx];
+        }
 }
 
 /*------------------------------------------------------------------------------
@@ -404,16 +397,16 @@ static NSMutableArray *editorArray = nil;
 *-----------------------------------------------------------------------------*/
 - (IBAction)diskImageUnlock:(id)sender
 {
-	NSEnumerator *enumerator;
-	NSArray *indicies;
-	int i;
-	
-	enumerator = [directoryTableView selectedRowEnumerator]; 
-	
-	indicies = [enumerator allObjects];
-	
-	for (i=0;i<[indicies count];i++)
-		[directoryDataSource unlockFile:[[indicies objectAtIndex:i] intValue]];
+    NSIndexSet *indicies;
+
+    indicies = [directoryTableView selectedRowIndexes];
+
+    NSUInteger idx = [indicies firstIndex];
+    while (idx != NSNotFound)
+        {
+        [directoryDataSource unlockFile:idx];
+         idx = [indicies indexGreaterThanIndex:idx];
+        }
 }
 
 /*------------------------------------------------------------------------------
@@ -421,23 +414,17 @@ static NSMutableArray *editorArray = nil;
 *-----------------------------------------------------------------------------*/
 - (IBAction)diskImageMkdir:(id)sender
 {
-	int result;
-	
-	[diskImageNameField setStringValue:@""];
+    [diskImageNameField setStringValue:@""];
     PauseAudio(1);
-	[NSApp beginSheet: diskImageNewNameSheet
-            modalForWindow: [self window]
-            modalDelegate: nil
-            didEndSelector: nil
-            contextInfo: nil];
-    result = [NSApp runModalForWindow: diskImageNewNameSheet];
-    // Sheet is up here.
+    [self.window beginSheet:diskImageNewNameSheet
+                       completionHandler:^(NSModalResponse returnCode){
+      if (returnCode) {
+          [directoryDataSource createDirectory:[diskImageNameField stringValue]];
+          }
+    }];
+    [NSApp runModalForWindow: diskImageNewNameSheet];
     [NSApp endSheet: diskImageNewNameSheet];
     [diskImageNewNameSheet orderOut: self];
-
-	if (result) {
-		[directoryDataSource createDirectory:[diskImageNameField stringValue]];
-		}
 	[self diskImageEnableButtons];
 }
 
@@ -593,11 +580,9 @@ static NSMutableArray *editorArray = nil;
 - (void)displayErrorWindow:(NSString *)errorMsg {
     [errorField setStringValue:errorMsg];
     PauseAudio(1);
-	[NSApp beginSheet: diskImageErrorSheet
-            modalForWindow: [self window]
-            modalDelegate: nil
-            didEndSelector: nil
-            contextInfo: nil];
+    
+    [self.window beginSheet:diskImageErrorSheet
+                       completionHandler:^(NSModalResponse returnCode){}];
     [NSApp runModalForWindow: diskImageErrorSheet];
     // Sheet is up here.
     [NSApp endSheet: diskImageErrorSheet];

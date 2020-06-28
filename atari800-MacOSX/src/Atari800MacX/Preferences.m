@@ -361,7 +361,7 @@ static NSDictionary *defaultValues() {
                 StandardConfigString, Gamepad2ConfigCurrent,
                 StandardConfigString, Gamepad3ConfigCurrent,
                 StandardConfigString, Gamepad4ConfigCurrent,
-                [NSMutableArray arrayWithObjects:nil],GamepadConfigArray,
+                [NSMutableArray new], GamepadConfigArray,
                 [NSMutableArray arrayWithObjects:[NSNumber numberWithInt:0], [NSNumber numberWithInt:0],
                 [NSNumber numberWithInt:0],[NSNumber numberWithInt:0],[NSNumber numberWithInt:0],
                 [NSNumber numberWithInt:0],[NSNumber numberWithInt:0],[NSNumber numberWithInt:0],

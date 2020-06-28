@@ -28,7 +28,7 @@
 	int row;
 	int flags;
 	
-	[[self dataSource] saveEvent:theEvent];
+	[(DiskEditorDataSource *)[self dataSource] saveEvent:theEvent];
 	
 	row = [self rowAtPoint:[self convertPoint:[theEvent locationInWindow]
                         fromView:nil]];
@@ -46,7 +46,7 @@
 *-----------------------------------------------------------------------------*/
 - (void)selectAll:(id)sender
 {
-	[[self dataSource] allSelected];
+	[(DiskEditorDataSource *)[self dataSource] allSelected];
 	[super selectAll:sender];
 }
 

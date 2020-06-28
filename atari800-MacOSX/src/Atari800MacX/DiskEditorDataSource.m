@@ -771,7 +771,7 @@ static int idCounter = 0;
 	mouseEvent = theEvent;
 }
 
-- (unsigned int)draggingSourceOperationMaskForLocal:(BOOL)isLocal
+-(NSDragOperation)draggingSourceOperationMaskForLocal:(BOOL)isLocal
 {
 	return(NSDragOperationCopy);
 }
