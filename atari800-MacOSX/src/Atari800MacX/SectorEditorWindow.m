@@ -289,18 +289,15 @@ static SectorEditorWindow *sharedInstance = nil;
 }
 
 /*------------------------------------------------------------------------------
-*  displaySectorWindow - This method displays an error dialog box with the passed
-*      in error message.
+*  displaySectorWindow - This method displays an input box to get a new sector
+*  number.
 *-----------------------------------------------------------------------------*/
 - (IBAction)displaySectorWindow:(id)sender
 {
 	[[sectorNumberField formatter] setMaximum:[NSDecimalNumber decimalNumberWithMantissa:maxSector exponent:0 isNegative:NO]];
     [[self window] endEditingFor:nil];
-	[NSApp beginSheet: [sectorNumberField window]
-            modalForWindow: [self window]
-            modalDelegate: nil
-            didEndSelector: nil
-            contextInfo: nil];
+    [self.window beginSheet:[sectorNumberField window]
+      completionHandler:^(NSModalResponse returnCode){}];
     [NSApp runModalForWindow: [sectorNumberField window]];
     [NSApp endSheet: [sectorNumberField window]];
 }
@@ -316,6 +313,7 @@ static SectorEditorWindow *sharedInstance = nil;
 	[self displaySector];
 	[sectorDataSource readSector:currentSector];
 	[self reloadSectorData];
+    [sectorStepper setIntValue:currentSector];
     [NSApp stopModal];
 }
 
@@ -364,14 +362,13 @@ static SectorEditorWindow *sharedInstance = nil;
 *-----------------------------------------------------------------------------*/
 - (bool)confirmDiscard
 {
-	int confirm;
+	__block int confirm;
 	
-	[NSApp beginSheet: [confirmOKButton window]
-            modalForWindow: [self window]
-            modalDelegate: nil
-            didEndSelector: nil
-            contextInfo: nil];
-    confirm = [NSApp runModalForWindow: [confirmOKButton window]];
+    [self.window beginSheet:[confirmOKButton window]
+                       completionHandler:^(NSModalResponse returnCode){
+        confirm = returnCode;
+    }];
+    [NSApp runModalForWindow: [confirmOKButton window]];
     [NSApp endSheet: [confirmOKButton window]];
  	if (confirm)
 		return YES;
