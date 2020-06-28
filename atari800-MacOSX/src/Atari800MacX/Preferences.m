@@ -5001,7 +5001,7 @@ static Preferences *sharedInstance = nil;
 
 - (void)saveConfigurationData:(NSString *)filename {
 	NSData *xmlData;
-	NSString *error; 
+	NSError *error;
 	NSMutableDictionary *dict;
 
 	if ([[displayedValues objectForKey:SaveCurrentMedia] boolValue] == YES)
@@ -5234,9 +5234,9 @@ static Preferences *sharedInstance = nil;
     setConfig(ApplicationWindowX);
     setConfig(ApplicationWindowY);
 	
-	xmlData = [NSPropertyListSerialization dataFromPropertyList:dict
-										   format:NSPropertyListXMLFormat_v1_0
-										   errorDescription:&error];
+    xmlData = [NSPropertyListSerialization dataWithPropertyList:dict
+        format:NSPropertyListXMLFormat_v1_0 options:0
+                                           error:&error];
 	[dict release];
 	
 	if(xmlData) {
@@ -5345,17 +5345,17 @@ static Preferences *sharedInstance = nil;
 - (void) loadConfigFile:(NSString *) filename {
 	NSData *plistData;
 	int i, count;
-	NSString *error;
+	NSError *error;
 	NSPropertyListFormat format;
     NSMutableDictionary *configDict;
     NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithCapacity:100];
 	
 	plistData = [NSData dataWithContentsOfFile:filename];
 	
-	configDict = [NSPropertyListSerialization propertyListFromData:plistData
-										 mutabilityOption:NSPropertyListMutableContainersAndLeaves
-										 format:&format
-										 errorDescription:&error];
+    configDict = [NSPropertyListSerialization propertyListWithData:plistData
+        options:NSPropertyListMutableContainersAndLeaves
+        format:&format
+        error:&error];
 	if(!configDict){
 		NSLog(@"%@",error);
 		[error release];

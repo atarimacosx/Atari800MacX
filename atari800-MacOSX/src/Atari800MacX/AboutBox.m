@@ -93,6 +93,7 @@ static AboutBox *sharedInstance = nil;
         creditsPath = [[NSBundle mainBundle] pathForResource:@"Credits"
                                              ofType:@"html"];
 
+//        creditsString = [[NSMutableAttributedString alloc] initWithURL:[NSURL fileURLWithPath:creditsPath] options:nil documentAttributes:nil error:nil ];
         creditsString = [[NSMutableAttributedString alloc] initWithPath:creditsPath
                                                     documentAttributes:nil];
         [creditsString addAttribute:NSForegroundColorAttributeName

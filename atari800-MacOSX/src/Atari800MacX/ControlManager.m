@@ -777,7 +777,7 @@ static int monitorRunFirstTime = 1;
 - (void) releaseKey:(int)keyCode
 {
     NSEvent *event1;
-    NSPoint point;
+    NSPoint point={0.0,0.0};
     
     event1 = [NSEvent keyEventWithType:NSEventTypeKeyUp location:point modifierFlags:0
                     timestamp:0.0 windowNumber:0 context:nil characters:@" "
@@ -1235,7 +1235,7 @@ static int monitorRunFirstTime = 1;
 	CPU_regP ^= (1 << [sender tag]);
 	old_regP = CPU_regP;
 	[monitorPRegField setStringValue:[self hexStringFromByte:CPU_regP]];
-	[self colorFromByte:monitorPRegField:CPU_regP:CPU_regP];
+	[self colorFromByte:CPU_regP:CPU_regP];
 }
 
 - (IBAction) monitorMemoryAddressChanged:(id)sender
@@ -1702,15 +1702,15 @@ static int monitorRunFirstTime = 1;
 	return([NSString stringWithFormat:@"%02X",b]);
 }
 
-- (void) setRegFlag:(IBOutlet id)outlet:(unsigned char)old_reg:(unsigned char)mask
+- (void) setRegFlag:(NSButton *)checkbox:(unsigned char)old_reg:(unsigned char)mask
 {
 	NSAttributedString *attributeTitle = nil;
 	
 	if (CPU_regP & mask) {
-		[outlet setState:NSOnState];
+		[checkbox setState:NSOnState];
 	}
 	else {
-		[outlet setState:NSOffState];
+		[checkbox setState:NSOffState];
 	}
 	
 	if ((CPU_regP & mask) == (old_reg & mask)) {
@@ -1763,7 +1763,7 @@ static int monitorRunFirstTime = 1;
 		}
 	}
 
-	[outlet setAttributedTitle:attributeTitle];
+	[checkbox setAttributedTitle:attributeTitle];
 }
 
 @end

@@ -157,13 +157,10 @@ static NSMutableArray *printArray;
 	ourPrinterView = [PrinterView alloc];
 	// Init it and make sure it knows we are it's owner
 	[ourPrinterView initWithFrame:printRect:self:formLength:[currentPrinter getVertPosition]];
-	
-    [NSApp beginSheet:[self window]
-            modalForWindow: [Atari800Window ourWindow]
-            modalDelegate: nil
-            didEndSelector: nil
-            contextInfo: nil];
-			
+
+    [[Atari800Window ourWindow] beginSheet:[self window]
+                       completionHandler:^(NSModalResponse returnCode){}];
+
 	[mMainScrollView setHasVerticalScroller:YES];
 	[mMainScrollView setDocumentView:ourPrinterView];
 	[mMainScrollView setDrawsBackground:YES];
