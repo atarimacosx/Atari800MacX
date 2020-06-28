@@ -56,7 +56,7 @@
 			Breakpoint *theBreakpoint;
 			unsigned short addr;
 			
-			addr = [[self dataSource] getAddressWithRow:menuActionRow];
+			addr = [(WatchDataSource *)[self dataSource] getAddressWithRow:menuActionRow];
 			theBreakpoint = [[BreakpointsController sharedInstance] getBreakpointWithMem:addr];
 			if (theBreakpoint == nil) 
 				return;
@@ -181,7 +181,7 @@
 			[[[self menu] itemAtIndex:HEX_INDEX] setState:NSOffState];
 			[[[self menu] itemAtIndex:ASCII_INDEX] setState:NSOnState];
 		}
-		memAddr = [[self dataSource] getAddressWithRow:menuActionRow];
+		memAddr = [(WatchDataSource *)[self dataSource] getAddressWithRow:menuActionRow];
 		if (memAddr == -1) {
 			[[[self menu] itemAtIndex:READ_BREAK_INDEX] setEnabled:NO];
 			[[[self menu] itemAtIndex:WRITE_BREAK_INDEX] setEnabled:NO];
@@ -250,7 +250,7 @@
 {
 	int addr;
 	
-	addr = [[self dataSource] getAddressWithRow:menuActionRow];
+	addr = [(WatchDataSource *)[self dataSource] getAddressWithRow:menuActionRow];
 	[[ControlManager sharedInstance] monitorMemoryAddress:addr];
 }
 
@@ -258,10 +258,10 @@
 {
 	int addr, size;
 	
-	addr = [[self dataSource] getAddressWithRow:menuActionRow];
+	addr = [(WatchDataSource *)[self dataSource] getAddressWithRow:menuActionRow];
 	if (addr == -1)
 		return;
-	size = [[self dataSource] getSizeWithRow:menuActionRow];
+	size = [(WatchDataSource *)[self dataSource] getSizeWithRow:menuActionRow];
 	
 	[[BreakpointsController sharedInstance] addBreakpointWithType:MONITOR_BREAKPOINT_READ Mem:addr Size:size];		
 	[[BreakpointsController sharedInstance] loadBreakpoints];
@@ -272,10 +272,10 @@
 {
 	int addr, size;
 	
-	addr = [[self dataSource] getAddressWithRow:menuActionRow];
+	addr = [(WatchDataSource *)[self dataSource] getAddressWithRow:menuActionRow];
 	if (addr == -1)
 		return;
-	size = [[self dataSource] getSizeWithRow:menuActionRow];
+	size = [(WatchDataSource *)[self dataSource] getSizeWithRow:menuActionRow];
 	
 	[[BreakpointsController sharedInstance] addBreakpointWithType:MONITOR_BREAKPOINT_WRITE Mem:addr Size:size];
 	[[BreakpointsController sharedInstance] loadBreakpoints];
@@ -286,10 +286,10 @@
 {
 	int addr, size;
 	
-	addr = [[self dataSource] getAddressWithRow:menuActionRow];
+	addr = [(WatchDataSource *)[self dataSource] getAddressWithRow:menuActionRow];
 	if (addr == -1)
 		return;
-	size = [[self dataSource] getSizeWithRow:menuActionRow];
+	size = [(WatchDataSource *)[self dataSource] getSizeWithRow:menuActionRow];
 	
 	[[BreakpointsController sharedInstance] addBreakpointWithType:MONITOR_BREAKPOINT_ACCESS Mem:addr Size:size];
 	[[BreakpointsController sharedInstance] loadBreakpoints];
@@ -303,10 +303,10 @@
 	
 	value = [[ControlManager sharedInstance] monitorGetBreakValue];
 	
-	addr = [[self dataSource] getAddressWithRow:menuActionRow];
+	addr = [(WatchDataSource *)[self dataSource] getAddressWithRow:menuActionRow];
 	if (addr == -1)
 		return;
-	size = [[self dataSource] getSizeWithRow:menuActionRow];
+	size = [(WatchDataSource *)[self dataSource] getSizeWithRow:menuActionRow];
 	
 	[[BreakpointsController sharedInstance] addBreakpointWithMem:addr Size:size Value:value];
 	[[BreakpointsController sharedInstance] loadBreakpoints];
@@ -317,7 +317,7 @@
 {
 	int addr;
 	
-	addr = [[self dataSource] getAddressWithRow:menuActionRow];
+	addr = [(WatchDataSource *)[self dataSource] getAddressWithRow:menuActionRow];
 	[[BreakpointsController sharedInstance] editBreakpointWithMem:addr];
 	[[BreakpointsController sharedInstance] loadBreakpoints];
 	[self reloadData];
@@ -327,7 +327,7 @@
 {
 	int addr;
 	
-	addr = [[self dataSource] getAddressWithRow:menuActionRow];
+	addr = [(WatchDataSource *)[self dataSource] getAddressWithRow:menuActionRow];
 	[[BreakpointsController sharedInstance] deleteBreakpointWithMem:addr];
 	[[BreakpointsController sharedInstance] loadBreakpoints];
 	[self reloadData];

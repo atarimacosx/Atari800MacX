@@ -15,7 +15,7 @@
 #define HEX_FORMAT		2
 #define ASCII_FORMAT    3
 
-@interface WatchDataSource : NSObject {
+@interface WatchDataSource : NSObject <NSTableViewDataSource> {
 	id owner;
 	NSMutableArray *expressions;
 	NSMutableArray *numbers;

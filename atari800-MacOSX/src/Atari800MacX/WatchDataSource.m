@@ -245,7 +245,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 /*------------------------------------------------------------------------------
  *  numberOfRowsInTableView - Return the number of rows in the table.
  *-----------------------------------------------------------------------------*/
--(int) numberOfRowsInTableView:(NSTableView *)aTableView
+-(NSInteger) numberOfRowsInTableView:(NSTableView *)aTableView
 {
 	return([expressions count]);
 }
