@@ -288,13 +288,12 @@ static NSMutableArray *printArray;
     NSMutableDictionary *printInfoDict;
     NSMutableDictionary *sharedDict;
     NSSavePanel *savePanel = nil;
-	NSString *directory;
     
     savePanel = [NSSavePanel savePanel];
-    [savePanel setRequiredFileType:@"pdf"];
-	directory = [NSString stringWithCString:atari_print_dir encoding:NSASCIIStringEncoding];
+    [savePanel setAllowedFileTypes:[NSArray arrayWithObject:@"pdf"]];
+	[savePanel setDirectoryURL:[NSURL fileURLWithPath:[NSString stringWithCString:atari_print_dir encoding:NSASCIIStringEncoding]]];
     
-    if ([savePanel runModalForDirectory:directory file:nil] == NSModalResponseOK)
+    if ([savePanel runModal] == NSModalResponseOK)
 		{
 		preview = NO;
 		
@@ -302,7 +301,7 @@ static NSMutableArray *printArray;
 		sharedDict = [sharedInfo dictionary];
 		printInfoDict = [NSMutableDictionary dictionaryWithDictionary:sharedDict];
 		[printInfoDict setObject:NSPrintSaveJob forKey:NSPrintJobDisposition];
-		[printInfoDict setObject:[savePanel filename] forKey:NSPrintSavePath];
+		[printInfoDict setObject:[savePanel URL] forKey:NSPrintJobSavingURL];
 	
 		printInfo = [[NSPrintInfo alloc] initWithDictionary: printInfoDict];
 		[printInfo setLeftMargin:0.0];

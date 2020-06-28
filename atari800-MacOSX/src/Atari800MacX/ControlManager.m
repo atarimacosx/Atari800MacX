@@ -519,9 +519,9 @@ static int monitorRunFirstTime = 1;
     openPanel = [NSOpenPanel openPanel];
     [openPanel setCanChooseDirectories:NO];
     [openPanel setCanChooseFiles:YES];
-    
-    if ([openPanel runModalForDirectory:directory file:nil types:nil] == NSModalResponseOK)
-        return([[openPanel filenames] objectAtIndex:0]);
+    [openPanel setDirectoryURL:[NSURL fileURLWithPath:directory]];
+    if ([openPanel runModal] == NSModalResponseOK)
+        return([[[openPanel URLs] objectAtIndex:0] path]);
     else
         return nil;
     }
@@ -535,10 +535,11 @@ static int monitorRunFirstTime = 1;
     
     savePanel = [NSSavePanel savePanel];
     
-    [savePanel setRequiredFileType:type];
-    
-    if ([savePanel runModalForDirectory:directory file:nil] == NSModalResponseOK)
-        return([savePanel filename]);
+    [savePanel setAllowedFileTypes:[NSArray arrayWithObject:type]];
+    [savePanel setDirectoryURL:[NSURL fileURLWithPath:directory]];
+
+    if ([savePanel runModal] == NSModalResponseOK)
+        return([[savePanel URL] path]);
     else
         return nil;
     }

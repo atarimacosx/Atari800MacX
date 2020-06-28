@@ -2648,8 +2648,8 @@ static Preferences *sharedInstance = nil;
     [openPanel setCanChooseDirectories:NO];
     [openPanel setCanChooseFiles:YES];
     
-    if ([openPanel runModalForTypes:nil] == NSModalResponseOK)
-        return([[openPanel filenames] objectAtIndex:0]);
+    if ([openPanel runModal] == NSModalResponseOK)
+        return([[[openPanel URLs] objectAtIndex:0] path]);
     else
         return nil;
     }
@@ -2664,9 +2664,9 @@ static Preferences *sharedInstance = nil;
     openPanel = [NSOpenPanel openPanel];
     [openPanel setCanChooseDirectories:NO];
     [openPanel setCanChooseFiles:YES];
-    
-    if ([openPanel runModalForDirectory:directory file:nil types:nil] == NSModalResponseOK) 
-        return([[openPanel filenames] objectAtIndex:0]);
+    [openPanel setDirectoryURL:[NSURL fileURLWithPath:directory]];
+    if ([openPanel runModal] == NSModalResponseOK)
+        return([[[openPanel URLs] objectAtIndex:0] path]);
     else
         return nil;
     }
@@ -2680,10 +2680,10 @@ static Preferences *sharedInstance = nil;
     
     savePanel = [NSSavePanel savePanel];
     
-    [savePanel setRequiredFileType:type];
-    
-    if ([savePanel runModalForDirectory:directory file:nil] == NSModalResponseOK)
-        return([savePanel filename]);
+    [savePanel setAllowedFileTypes:[NSArray arrayWithObject:type]];
+    [savePanel setDirectoryURL:[NSURL fileURLWithPath:directory]];
+    if ([savePanel runModal] == NSModalResponseOK)
+        return([[savePanel URL] path]);
     else
         return nil;
 }
@@ -2698,8 +2698,8 @@ static Preferences *sharedInstance = nil;
     [openPanel setCanChooseDirectories:YES];
     [openPanel setCanChooseFiles:NO];
     
-    if ([openPanel runModalForTypes:nil] == NSModalResponseOK)
-        return([[openPanel filenames] objectAtIndex:0]);
+    if ([openPanel runModal] == NSModalResponseOK)
+        return([[[openPanel URLs] objectAtIndex:0] path]);
     else
         return nil;
     }
@@ -5294,13 +5294,14 @@ static Preferences *sharedInstance = nil;
 	openPanel = [NSOpenPanel openPanel];
 	[openPanel setCanChooseDirectories:NO];
 	[openPanel setCanChooseFiles:YES];
-			
-	if ([openPanel runModalForDirectory:[NSString stringWithCString:atari_config_dir encoding:NSASCIIStringEncoding] file:nil 
-                                  types:[NSArray arrayWithObjects:@"a8c",@"A8C",nil]] != NSModalResponseOK) { 
+    [openPanel setDirectoryURL:[NSURL fileURLWithPath:[NSString stringWithCString:atari_config_dir encoding:NSASCIIStringEncoding]]];
+    [openPanel setAllowedFileTypes:[NSArray arrayWithObjects:@"a8c",@"A8C",nil]];
+
+	if ([openPanel runModal] != NSModalResponseOK) { 
 		[[KeyMapper sharedInstance] releaseCmdKeys:@"l"];
         return 0;
 		}
-	filename = [[openPanel filenames] objectAtIndex:0];
+	filename = [[[openPanel URLs] objectAtIndex:0] path];
 	[self loadConfigFile:filename];
     [[KeyMapper sharedInstance] releaseCmdKeys:@"l"];
 	configurationChanged = 1;

@@ -470,9 +470,9 @@ NSImage *disketteImage;
     openPanel = [NSOpenPanel openPanel];
     [openPanel setCanChooseDirectories:NO];
     [openPanel setCanChooseFiles:YES];
-    
-    if ([openPanel runModalForDirectory:directory file:nil types:nil] == NSModalResponseOK)
-        return([[openPanel filenames] objectAtIndex:0]);
+    [openPanel setDirectoryURL:[NSURL fileURLWithPath:directory]];
+    if ([openPanel runModal] == NSModalResponseOK)
+        return([[[openPanel URLs] objectAtIndex:0] path]);
     else
         return nil;
     }
@@ -487,10 +487,10 @@ NSImage *disketteImage;
     openPanel = [NSOpenPanel openPanel];
     [openPanel setCanChooseDirectories:NO];
     [openPanel setCanChooseFiles:YES];
+    [openPanel setAllowedFileTypes:filetypes];
     
-    if ([openPanel runModalForDirectory:directory file:nil 
-            types:filetypes] == NSModalResponseOK)
-        return([[openPanel filenames] objectAtIndex:0]);
+    if ([openPanel runModal] == NSModalResponseOK)
+        return([[[openPanel URLs] objectAtIndex:0] path]);
     else
         return nil;
     }
@@ -504,10 +504,11 @@ NSImage *disketteImage;
     
     savePanel = [NSSavePanel savePanel];
     
-    [savePanel setRequiredFileType:type];
-    
-    if ([savePanel runModalForDirectory:directory file:nil] == NSModalResponseOK)
-        return([savePanel filename]);
+    [savePanel setAllowedFileTypes:[NSArray arrayWithObject:type]];
+    [savePanel setDirectoryURL:[NSURL fileURLWithPath:directory]];
+
+    if ([savePanel runModal] == NSModalResponseOK)
+        return([[savePanel URL] path]);
     else
         return nil;
     }

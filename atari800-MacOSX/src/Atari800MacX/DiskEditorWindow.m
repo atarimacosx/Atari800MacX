@@ -121,9 +121,14 @@ static NSMutableArray *editorArray = nil;
     [openPanel setCanChooseDirectories:NO];
     [openPanel setCanChooseFiles:YES];
 	[openPanel setAllowsMultipleSelection:YES];
-	
-    if ([openPanel runModalForDirectory:nil file:nil types:nil] == NSModalResponseOK)
-        return([openPanel filenames]);
+
+    if ([openPanel runModal] == NSModalResponseOK) {
+        NSMutableArray *filenames = [[NSMutableArray alloc] init];
+        for (id url in [openPanel URLs]) {
+            [filenames addObject:[url path]];
+        }
+        return filenames;
+    }
     else
         return nil;
 	}	
@@ -139,12 +144,11 @@ static NSMutableArray *editorArray = nil;
     [openPanel setCanChooseFiles:NO];
 	[openPanel setAllowsMultipleSelection:NO];
 
-    if ([openPanel runModalForDirectory:nil file:nil types:nil] == NSModalResponseOK)
-        return([[openPanel filenames] objectAtIndex:0]);
+    if ([openPanel runModal] == NSModalResponseOK)
+        return([[[openPanel URLs] objectAtIndex:0] path]);
     else
         return nil;
-    
-	}
+    }
 		
 /*------------------------------------------------------------------------------
 *  diskImageSelect - Called when a table row is selected.
