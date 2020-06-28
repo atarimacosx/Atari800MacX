@@ -218,6 +218,7 @@ static int monitorRunFirstTime = 1;
     NSDictionary *attribs;
 	NSArray *cols;
 	int i;
+    NSArray *top;
 
     if (sharedInstance) {
 	[self dealloc];
@@ -225,11 +226,12 @@ static int monitorRunFirstTime = 1;
         [super init];
         sharedInstance = self;
         if (!errorTextField) {
-				if (![NSBundle loadNibNamed:@"ControlManager" owner:self])  {
+				if (![[NSBundle mainBundle] loadNibNamed:@"ControlManager" owner:self topLevelObjects:&top])  {
 					NSLog(@"Failed to load ControlManager.nib");
 					NSBeep();
 					return nil;
 			}
+            [top retain];
             }
 	[[errorTextField window] setExcludedFromWindowsMenu:YES];
 	[[errorTextField window] setMenu:nil];

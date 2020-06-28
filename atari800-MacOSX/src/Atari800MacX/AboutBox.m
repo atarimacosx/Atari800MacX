@@ -49,6 +49,7 @@ static AboutBox *sharedInstance = nil;
 	
     if (!appNameField)
     {
+        NSArray *top;
         NSWindow *theWindow;
         NSString *creditsPath;
         NSMutableAttributedString *creditsString;
@@ -58,12 +59,13 @@ static AboutBox *sharedInstance = nil;
         CFBundleRef localInfoBundle;
         NSDictionary *localInfoDict;
 
-        if (![NSBundle loadNibNamed:@"AboutBox" owner:self])
-        {
+        if (![[NSBundle mainBundle] loadNibNamed:@"AboutBox" owner:self topLevelObjects:&top])
+            {
             NSLog( @"Failed to load AboutBox.nib" );
             NSBeep();
             return;
-        }
+            }
+        [top retain];
         theWindow = [appNameField window];
 
         // Get the info dictionary (Info.plist)

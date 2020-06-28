@@ -202,6 +202,7 @@ NSImage *disketteImage;
 }
 
 - (id)init {
+    NSArray *top;
     if (sharedInstance) {
 	[self dealloc];
     } else {
@@ -210,11 +211,12 @@ NSImage *disketteImage;
         sharedInstance = self;
         /* load the nib and all the windows */
         if (!d1DiskField) {
-				if (![NSBundle loadNibNamed:@"MediaManager" owner:self])  {
+				if (![[NSBundle mainBundle] loadNibNamed:@"MediaManager" owner:self topLevelObjects:&top])  {
 					NSLog(@"Failed to load MediaManager.nib");
 					NSBeep();
 					return nil;
  			}
+            [top retain];
             }
 	[[diskFmtMatrix window] setExcludedFromWindowsMenu:YES];
 	[[diskFmtMatrix window] setMenu:nil];

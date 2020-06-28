@@ -21,6 +21,7 @@ static SectorEditorWindow *sharedInstance = nil;
 }
 - (id)init {
 	NSTextView *fieldEditor;
+    NSArray *top;
 	
     if (sharedInstance) {
 	[self dealloc];
@@ -30,11 +31,12 @@ static SectorEditorWindow *sharedInstance = nil;
         sharedInstance = self;
         /* load the nib and all the windows */
         if (!sectorTableView) {
-				if (![NSBundle loadNibNamed:@"SectorEditorWindow" owner:self])  {
+				if (![[NSBundle mainBundle] loadNibNamed:@"SectorEditorWindow" owner:self topLevelObjects:&top])  {
 					NSLog(@"Failed to load SectorEditorWindow.nib");
 					NSBeep();
 					return nil;
 			}
+            [top retain];
             }
 	[[sectorTableView window] setExcludedFromWindowsMenu:YES];
 	[[sectorTableView window] setMenu:nil];

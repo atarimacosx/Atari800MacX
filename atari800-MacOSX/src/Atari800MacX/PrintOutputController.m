@@ -32,6 +32,7 @@ static NSMutableArray *printArray;
 }
 
 - (id)init {
+    NSArray *top;
     if (sharedInstance) {
 		[self dealloc];
     } else {
@@ -40,18 +41,20 @@ static NSMutableArray *printArray;
         /* load the reset confirm nib  */
         if (!mResetConfirmButton) {
 			if ([[Preferences sharedInstance] getBrushed]) { 
-				if (![NSBundle loadNibNamed:@"PrintOutputConfirmBrushed" owner:self])  {
+				if (![[NSBundle mainBundle] loadNibNamed:@"PrintOutputConfirmBrushed" owner:self topLevelObjects:&top])  {
 					NSLog(@"Failed to load PrintOutputConfirm.nib");
 					NSBeep();
 					return nil;
 					}
+                [top retain];
                 }
 			else {
-				if (![NSBundle loadNibNamed:@"PrintOutputConfirm" owner:self])  {
+				if (![[NSBundle mainBundle] loadNibNamed:@"PrintOutputConfirm" owner:self topLevelObjects:&top])  {
 					NSLog(@"Failed to load PrintOutputConfirm.nib");
 					NSBeep();
 					return nil;
 					}
+                [top retain];
 				}
 			}
 		[[mResetConfirmButton window] setExcludedFromWindowsMenu:YES];

@@ -576,6 +576,7 @@ static Preferences *sharedInstance = nil;
 *-----------------------------------------------------------------------------*/
 - (void)showPanel:(id)sender {
     NSMutableArray *configArray;
+    NSArray *top;
     int i,numberGamepadConfigs;
     int currNumConfigs;
   
@@ -591,11 +592,12 @@ static Preferences *sharedInstance = nil;
     PauseAudio(1);
 
     if (!prefTabView) {
-			if (![NSBundle loadNibNamed:@"Preferences" owner:self])  {
+        if (![[NSBundle mainBundle] loadNibNamed:@"Preferences" owner:self topLevelObjects:&top])  {
 				NSLog(@"Failed to load Preferences.nib");
 				NSBeep();
 				return;
 		}
+    [top retain];
 	[[prefTabView window] setExcludedFromWindowsMenu:YES];
 	[[prefTabView window] setMenu:nil];
 	[[gamepadButton1 window] setExcludedFromWindowsMenu:YES];
@@ -4067,12 +4069,14 @@ static Preferences *sharedInstance = nil;
     }
     
 - (IBAction)identifyGamepad:(id)sender{
+    NSArray *top;
     if (!gamepadButton1) {
-            if (![NSBundle loadNibNamed:@"Preferences" owner:self])  {
+        if (![[NSBundle mainBundle] loadNibNamed:@"Preferences" owner:self topLevelObjects:&top ])  {
                 NSLog(@"Failed to load Preferences.nib");
                 NSBeep();
                 return;
         }
+        [top retain];
     }
 
     gamepadButtons[0] = gamepadButton1;
