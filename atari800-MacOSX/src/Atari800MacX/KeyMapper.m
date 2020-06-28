@@ -101,7 +101,7 @@ static KeyMapper *sharedInstance = nil;
 - (void) releaseCmdKeys:(NSString *)character
 {
     NSEvent *event1, *event2;
-    NSPoint point;
+    NSPoint point = {0.0,0.0};
     SDL_Event event;
 	int keyCode;
 	unsigned int charCode;
@@ -115,8 +115,8 @@ static KeyMapper *sharedInstance = nil;
     [NSApp postEvent:event1 atStart:NO];
     
     event2 = [NSEvent keyEventWithType:NSEventTypeFlagsChanged location:point modifierFlags:0
-                    timestamp:0.0 windowNumber:0 context:nil characters:nil
-                    charactersIgnoringModifiers:nil isARepeat:NO keyCode:0];
+                    timestamp:0.0 windowNumber:0 context:nil characters:@""
+                    charactersIgnoringModifiers:@"" isARepeat:NO keyCode:0];
     [NSApp postEvent:event2 atStart:NO];
 	
 	SDL_PollEvent(&event);
