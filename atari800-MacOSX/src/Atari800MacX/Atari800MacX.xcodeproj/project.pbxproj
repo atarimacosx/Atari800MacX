@@ -318,9 +318,6 @@
 		77A5A9D521EC3B440098C3A5 /* lock.png in Resources */ = {isa = PBXBuildFile; fileRef = 77A5A9D421EC3B430098C3A5 /* lock.png */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXBuildRule section */
-/* End PBXBuildRule section */
-
 /* Begin PBXCopyFilesBuildPhase section */
 		2DAEDBCB09B69AED005FF181 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
@@ -1240,9 +1237,6 @@
 				2DC4F4C2105F2EA500F80EE9 /* CopyFiles */,
 			);
 			buildRules = (
-				2DAEDBD209B69AED005FF181 /* PBXBuildRule */,
-				2DAEDBD309B69AED005FF181 /* PBXBuildRule */,
-				2DAEDBD409B69AED005FF181 /* PBXBuildRule */,
 			);
 			dependencies = (
 			);
@@ -1634,7 +1628,7 @@
 		2DD86A1909B559B00088C6D3 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
+				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
@@ -1652,6 +1646,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 2DC1975009B69F6200906A5A /* Atari800MacX.xcconfig */;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
@@ -1662,6 +1657,7 @@
 		2DD86A1B09B559B00088C6D3 /* Default */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.4u.sdk";
