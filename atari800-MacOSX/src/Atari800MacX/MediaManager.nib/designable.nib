@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="16097" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment version="101202" identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14460.31"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="16097"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -117,13 +117,13 @@
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="104" y="218" width="675" height="399"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1028"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
             <value key="minSize" type="size" width="81" height="2"/>
             <view key="contentView" id="202">
                 <rect key="frame" x="0.0" y="0.0" width="675" height="399"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <button verticalHuggingPriority="750" imageHugsTitle="YES" id="177">
+                    <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="177">
                         <rect key="frame" x="570" y="12" width="84" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="OK" bezelStyle="rounded" alignment="center" state="on" borderStyle="border" inset="2" id="1688">
@@ -137,7 +137,7 @@ DQ
                             <action selector="ok:" target="-2" id="351"/>
                         </connections>
                     </button>
-                    <button verticalHuggingPriority="750" tag="5" imageHugsTitle="YES" id="263">
+                    <button verticalHuggingPriority="750" fixedFrame="YES" tag="5" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="263">
                         <rect key="frame" x="41" y="198" width="62" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="D5:" bezelStyle="rounded" alignment="center" borderStyle="border" tag="5" inset="2" id="1689">
@@ -150,16 +150,16 @@ DQ
                             <action selector="diskInsert:" target="-2" id="514"/>
                         </connections>
                     </button>
-                    <textField verticalHuggingPriority="750" id="264">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="264">
                         <rect key="frame" x="104" y="232" width="414" height="34"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="1690">
-                            <font key="font" metaFont="smallSystem"/>
+                            <font key="font" metaFont="label" size="11"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <button verticalHuggingPriority="750" tag="2" imageHugsTitle="YES" id="265">
+                    <button verticalHuggingPriority="750" fixedFrame="YES" tag="2" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="265">
                         <rect key="frame" x="41" y="303" width="62" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="D2:" bezelStyle="rounded" alignment="center" borderStyle="border" tag="2" inset="2" id="1691">
@@ -172,7 +172,7 @@ DQ
                             <action selector="diskInsert:" target="-2" id="511"/>
                         </connections>
                     </button>
-                    <button verticalHuggingPriority="750" tag="1" imageHugsTitle="YES" id="266">
+                    <button verticalHuggingPriority="750" fixedFrame="YES" tag="1" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="266">
                         <rect key="frame" x="41" y="338" width="62" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="D1:" bezelStyle="rounded" alignment="center" borderStyle="border" tag="1" inset="2" id="1692">
@@ -185,7 +185,7 @@ DQ
                             <action selector="diskInsert:" target="-2" id="510"/>
                         </connections>
                     </button>
-                    <button verticalHuggingPriority="750" tag="6" imageHugsTitle="YES" id="267">
+                    <button verticalHuggingPriority="750" fixedFrame="YES" tag="6" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="267">
                         <rect key="frame" x="41" y="163" width="62" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="D6:" bezelStyle="rounded" alignment="center" borderStyle="border" tag="6" inset="2" id="1693">
@@ -198,25 +198,25 @@ DQ
                             <action selector="diskInsert:" target="-2" id="515"/>
                         </connections>
                     </button>
-                    <textField verticalHuggingPriority="750" id="270">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="270">
                         <rect key="frame" x="104" y="267" width="414" height="34"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="1694">
-                            <font key="font" metaFont="smallSystem"/>
+                            <font key="font" metaFont="label" size="11"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" id="271">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="271">
                         <rect key="frame" x="104" y="162" width="414" height="34"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="1695">
-                            <font key="font" metaFont="smallSystem"/>
+                            <font key="font" metaFont="label" size="11"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <button verticalHuggingPriority="750" tag="4" imageHugsTitle="YES" id="272">
+                    <button verticalHuggingPriority="750" fixedFrame="YES" tag="4" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="272">
                         <rect key="frame" x="41" y="233" width="62" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="D4:" bezelStyle="rounded" alignment="center" borderStyle="border" tag="4" inset="2" id="1696">
@@ -229,16 +229,16 @@ DQ
                             <action selector="diskInsert:" target="-2" id="513"/>
                         </connections>
                     </button>
-                    <textField verticalHuggingPriority="750" id="273">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="273">
                         <rect key="frame" x="104" y="337" width="414" height="34"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="1697">
-                            <font key="font" metaFont="smallSystem"/>
+                            <font key="font" metaFont="label" size="11"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <button verticalHuggingPriority="750" tag="3" imageHugsTitle="YES" id="275">
+                    <button verticalHuggingPriority="750" fixedFrame="YES" tag="3" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="275">
                         <rect key="frame" x="41" y="268" width="62" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="D3:" bezelStyle="rounded" alignment="center" borderStyle="border" tag="3" inset="2" id="1698">
@@ -251,7 +251,7 @@ DQ
                             <action selector="diskInsert:" target="-2" id="512"/>
                         </connections>
                     </button>
-                    <button verticalHuggingPriority="750" tag="8" imageHugsTitle="YES" id="276">
+                    <button verticalHuggingPriority="750" fixedFrame="YES" tag="8" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="276">
                         <rect key="frame" x="41" y="93" width="62" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="D8:" bezelStyle="rounded" alignment="center" borderStyle="border" tag="8" inset="2" id="1699">
@@ -264,7 +264,7 @@ DQ
                             <action selector="diskInsert:" target="-2" id="517"/>
                         </connections>
                     </button>
-                    <button verticalHuggingPriority="750" tag="7" imageHugsTitle="YES" id="278">
+                    <button verticalHuggingPriority="750" fixedFrame="YES" tag="7" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="278">
                         <rect key="frame" x="41" y="128" width="62" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="D7:" bezelStyle="rounded" alignment="center" borderStyle="border" tag="7" inset="2" id="1700">
@@ -277,48 +277,48 @@ DQ
                             <action selector="diskInsert:" target="-2" id="516"/>
                         </connections>
                     </button>
-                    <textField verticalHuggingPriority="750" id="279">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="279">
                         <rect key="frame" x="104" y="197" width="414" height="34"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="1701">
-                            <font key="font" metaFont="smallSystem"/>
+                            <font key="font" metaFont="label" size="11"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" id="282">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="282">
                         <rect key="frame" x="104" y="92" width="414" height="34"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="1702">
-                            <font key="font" metaFont="smallSystem"/>
+                            <font key="font" metaFont="label" size="11"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" id="283">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="283">
                         <rect key="frame" x="104" y="127" width="414" height="34"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="1703">
-                            <font key="font" metaFont="smallSystem"/>
+                            <font key="font" metaFont="label" size="11"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" id="285">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="285">
                         <rect key="frame" x="104" y="302" width="414" height="34"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="1704">
-                            <font key="font" metaFont="smallSystem"/>
+                            <font key="font" metaFont="label" size="11"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <popUpButton verticalHuggingPriority="750" tag="1" imageHugsTitle="YES" id="286">
+                    <popUpButton verticalHuggingPriority="750" fixedFrame="YES" tag="1" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="286">
                         <rect key="frame" x="523" y="342" width="128" height="26"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <popUpButtonCell key="cell" type="push" title="Read Only" bezelStyle="rounded" alignment="left" lineBreakMode="clipping" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="289" id="1705">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="menu"/>
+                            <font key="font" metaFont="system"/>
                             <menu key="menu" title="OtherViews" id="288">
                                 <items>
                                     <menuItem title="Off" id="287"/>
@@ -332,12 +332,12 @@ DQ
                             <action selector="driveStatusChange:" target="-2" id="335"/>
                         </connections>
                     </popUpButton>
-                    <popUpButton verticalHuggingPriority="750" tag="2" imageHugsTitle="YES" id="292">
+                    <popUpButton verticalHuggingPriority="750" fixedFrame="YES" tag="2" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="292">
                         <rect key="frame" x="523" y="307" width="128" height="26"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <popUpButtonCell key="cell" type="push" title="Read Only" bezelStyle="rounded" alignment="left" lineBreakMode="clipping" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="296" id="1706">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="menu"/>
+                            <font key="font" metaFont="system"/>
                             <menu key="menu" title="OtherViews" id="293">
                                 <items>
                                     <menuItem title="Off" id="295"/>
@@ -351,12 +351,12 @@ DQ
                             <action selector="driveStatusChange:" target="-2" id="336"/>
                         </connections>
                     </popUpButton>
-                    <popUpButton verticalHuggingPriority="750" tag="3" imageHugsTitle="YES" id="301">
+                    <popUpButton verticalHuggingPriority="750" fixedFrame="YES" tag="3" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="301">
                         <rect key="frame" x="523" y="272" width="128" height="26"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <popUpButtonCell key="cell" type="push" title="Read Only" bezelStyle="rounded" alignment="left" lineBreakMode="clipping" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="299" id="1707">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="menu"/>
+                            <font key="font" metaFont="system"/>
                             <menu key="menu" title="OtherViews" id="298">
                                 <items>
                                     <menuItem title="Off" id="303"/>
@@ -370,12 +370,12 @@ DQ
                             <action selector="driveStatusChange:" target="-2" id="337"/>
                         </connections>
                     </popUpButton>
-                    <popUpButton verticalHuggingPriority="750" tag="4" imageHugsTitle="YES" id="304">
+                    <popUpButton verticalHuggingPriority="750" fixedFrame="YES" tag="4" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="304">
                         <rect key="frame" x="523" y="237" width="128" height="26"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <popUpButtonCell key="cell" type="push" title="Read Only" bezelStyle="rounded" alignment="left" lineBreakMode="clipping" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="306" id="1708">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="menu"/>
+                            <font key="font" metaFont="system"/>
                             <menu key="menu" title="OtherViews" id="307">
                                 <items>
                                     <menuItem title="Off" id="305"/>
@@ -389,12 +389,12 @@ DQ
                             <action selector="driveStatusChange:" target="-2" id="338"/>
                         </connections>
                     </popUpButton>
-                    <popUpButton verticalHuggingPriority="750" tag="5" imageHugsTitle="YES" id="313">
+                    <popUpButton verticalHuggingPriority="750" fixedFrame="YES" tag="5" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="313">
                         <rect key="frame" x="523" y="202" width="128" height="26"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <popUpButtonCell key="cell" type="push" title="Read Only" bezelStyle="rounded" alignment="left" lineBreakMode="clipping" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="312" id="1709">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="menu"/>
+                            <font key="font" metaFont="system"/>
                             <menu key="menu" title="OtherViews" id="310">
                                 <items>
                                     <menuItem title="Off" id="311"/>
@@ -408,12 +408,12 @@ DQ
                             <action selector="driveStatusChange:" target="-2" id="339"/>
                         </connections>
                     </popUpButton>
-                    <popUpButton verticalHuggingPriority="750" tag="6" imageHugsTitle="YES" id="316">
+                    <popUpButton verticalHuggingPriority="750" fixedFrame="YES" tag="6" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="316">
                         <rect key="frame" x="523" y="167" width="128" height="26"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <popUpButtonCell key="cell" type="push" title="Read Only" bezelStyle="rounded" alignment="left" lineBreakMode="clipping" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="320" id="1710">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="menu"/>
+                            <font key="font" metaFont="system"/>
                             <menu key="menu" title="OtherViews" id="317">
                                 <items>
                                     <menuItem title="Off" id="319"/>
@@ -427,12 +427,12 @@ DQ
                             <action selector="driveStatusChange:" target="-2" id="340"/>
                         </connections>
                     </popUpButton>
-                    <popUpButton verticalHuggingPriority="750" tag="7" imageHugsTitle="YES" id="324">
+                    <popUpButton verticalHuggingPriority="750" fixedFrame="YES" tag="7" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="324">
                         <rect key="frame" x="523" y="132" width="128" height="26"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <popUpButtonCell key="cell" type="push" title="Read Only" bezelStyle="rounded" alignment="left" lineBreakMode="clipping" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="327" id="1711">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="menu"/>
+                            <font key="font" metaFont="system"/>
                             <menu key="menu" title="OtherViews" id="325">
                                 <items>
                                     <menuItem title="Off" id="322"/>
@@ -446,12 +446,12 @@ DQ
                             <action selector="driveStatusChange:" target="-2" id="341"/>
                         </connections>
                     </popUpButton>
-                    <popUpButton verticalHuggingPriority="750" tag="8" imageHugsTitle="YES" id="330">
+                    <popUpButton verticalHuggingPriority="750" fixedFrame="YES" tag="8" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="330">
                         <rect key="frame" x="523" y="97" width="128" height="26"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <popUpButtonCell key="cell" type="push" title="Read Only" bezelStyle="rounded" alignment="left" lineBreakMode="clipping" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="332" id="1712">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="menu"/>
+                            <font key="font" metaFont="system"/>
                             <menu key="menu" title="OtherViews" id="331">
                                 <items>
                                     <menuItem title="Off" id="329"/>
@@ -465,7 +465,7 @@ DQ
                             <action selector="driveStatusChange:" target="-2" id="342"/>
                         </connections>
                     </popUpButton>
-                    <button verticalHuggingPriority="750" imageHugsTitle="YES" id="334">
+                    <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="334">
                         <rect key="frame" x="29" y="12" width="154" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="New Disk Image..." bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="1713">
@@ -478,7 +478,7 @@ DQ
                             <action selector="showCreatePanel:" target="-2" id="505"/>
                         </connections>
                     </button>
-                    <button verticalHuggingPriority="750" imageHugsTitle="YES" id="502">
+                    <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="502">
                         <rect key="frame" x="220" y="12" width="91" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="Eject All" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="1714">
@@ -491,7 +491,7 @@ DQ
                             <action selector="diskRemoveAll:" target="-2" id="518"/>
                         </connections>
                     </button>
-                    <textField verticalHuggingPriority="750" id="507">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="507">
                         <rect key="frame" x="254" y="371" width="114" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="Disk File Name" id="1715">
@@ -500,7 +500,7 @@ DQ
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" id="508">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="508">
                         <rect key="frame" x="544" y="371" width="114" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" id="1716">
@@ -511,7 +511,7 @@ DQ
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" id="509">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="509">
                         <rect key="frame" x="56" y="371" width="61" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="Load" id="1717">
@@ -520,7 +520,7 @@ DQ
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <button verticalHuggingPriority="750" imageHugsTitle="YES" id="712">
+                    <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="712">
                         <rect key="frame" x="29" y="55" width="136" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="Save Disk Set..." bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="1718">
@@ -533,7 +533,7 @@ DQ
                             <action selector="diskSetSave:" target="-2" id="714"/>
                         </connections>
                     </button>
-                    <button verticalHuggingPriority="750" imageHugsTitle="YES" id="713">
+                    <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="713">
                         <rect key="frame" x="199" y="55" width="138" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="Load Disk Set..." bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="1719">
@@ -546,7 +546,7 @@ DQ
                             <action selector="diskSetLoad:" target="-2" id="715"/>
                         </connections>
                     </button>
-                    <button verticalHuggingPriority="750" imageHugsTitle="YES" id="716">
+                    <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="716">
                         <rect key="frame" x="391" y="55" width="119" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="Rotate Disks" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="1720">
@@ -559,7 +559,7 @@ DQ
                             <action selector="diskRotate:" target="-2" id="717"/>
                         </connections>
                     </button>
-                    <button imageHugsTitle="YES" id="1263">
+                    <button fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1263">
                         <rect key="frame" x="14" y="347" width="20" height="18"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="check" bezelStyle="regularSquare" imagePosition="leading" alignment="left" inset="2" id="1721">
@@ -571,7 +571,7 @@ DQ
                             <action selector="checkDisk:" target="-2" id="1359"/>
                         </connections>
                     </button>
-                    <button tag="1" imageHugsTitle="YES" id="1264">
+                    <button fixedFrame="YES" tag="1" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1264">
                         <rect key="frame" x="14" y="312" width="20" height="18"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="check" bezelStyle="regularSquare" imagePosition="leading" alignment="left" tag="1" inset="2" id="1722">
@@ -583,7 +583,7 @@ DQ
                             <action selector="checkDisk:" target="-2" id="1360"/>
                         </connections>
                     </button>
-                    <button tag="2" imageHugsTitle="YES" id="1265">
+                    <button fixedFrame="YES" tag="2" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1265">
                         <rect key="frame" x="14" y="279" width="20" height="18"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="check" bezelStyle="regularSquare" imagePosition="leading" alignment="left" tag="2" inset="2" id="1723">
@@ -595,7 +595,7 @@ DQ
                             <action selector="checkDisk:" target="-2" id="1361"/>
                         </connections>
                     </button>
-                    <button tag="3" imageHugsTitle="YES" id="1266">
+                    <button fixedFrame="YES" tag="3" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1266">
                         <rect key="frame" x="14" y="243" width="20" height="18"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="check" bezelStyle="regularSquare" imagePosition="leading" alignment="left" tag="3" inset="2" id="1724">
@@ -607,7 +607,7 @@ DQ
                             <action selector="checkDisk:" target="-2" id="1362"/>
                         </connections>
                     </button>
-                    <button tag="4" imageHugsTitle="YES" id="1346">
+                    <button fixedFrame="YES" tag="4" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1346">
                         <rect key="frame" x="14" y="207" width="20" height="18"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="check" bezelStyle="regularSquare" imagePosition="leading" alignment="left" tag="4" inset="2" id="1725">
@@ -619,7 +619,7 @@ DQ
                             <action selector="checkDisk:" target="-2" id="1363"/>
                         </connections>
                     </button>
-                    <button tag="5" imageHugsTitle="YES" id="1347">
+                    <button fixedFrame="YES" tag="5" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1347">
                         <rect key="frame" x="14" y="172" width="20" height="18"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="check" bezelStyle="regularSquare" imagePosition="leading" alignment="left" tag="5" inset="2" id="1726">
@@ -631,7 +631,7 @@ DQ
                             <action selector="checkDisk:" target="-2" id="1364"/>
                         </connections>
                     </button>
-                    <button tag="6" imageHugsTitle="YES" id="1348">
+                    <button fixedFrame="YES" tag="6" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1348">
                         <rect key="frame" x="14" y="137" width="20" height="18"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="check" bezelStyle="regularSquare" imagePosition="leading" alignment="left" tag="6" inset="2" id="1727">
@@ -643,7 +643,7 @@ DQ
                             <action selector="checkDisk:" target="-2" id="1365"/>
                         </connections>
                     </button>
-                    <button tag="7" imageHugsTitle="YES" id="1349">
+                    <button fixedFrame="YES" tag="7" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1349">
                         <rect key="frame" x="14" y="102" width="20" height="18"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="check" bezelStyle="regularSquare" imagePosition="leading" alignment="left" tag="7" inset="2" id="1728">
@@ -655,7 +655,7 @@ DQ
                             <action selector="checkDisk:" target="-2" id="1366"/>
                         </connections>
                     </button>
-                    <textField verticalHuggingPriority="750" id="1370">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1370">
                         <rect key="frame" x="7" y="372" width="61" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="Swap" id="1729">
@@ -672,20 +672,20 @@ DQ
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="629" y="179" width="323" height="428"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1028"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
             <value key="minSize" type="size" width="81" height="2"/>
             <view key="contentView" id="374">
                 <rect key="frame" x="0.0" y="0.0" width="323" height="428"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <box title="Disk Format" id="437">
+                    <box fixedFrame="YES" title="Disk Format" translatesAutoresizingMaskIntoConstraints="NO" id="437">
                         <rect key="frame" x="20" y="151" width="283" height="270"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <view key="contentView" id="6Xo-Ci-lhl">
-                            <rect key="frame" x="3" y="3" width="277" height="249"/>
+                            <rect key="frame" x="3" y="3" width="277" height="250"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" id="439">
+                                <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="439">
                                     <rect key="frame" x="12" y="79" width="176" height="162"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -719,12 +719,12 @@ DQ
                                         <action selector="miscUpdate:" target="-2" id="485"/>
                                     </connections>
                                 </matrix>
-                                <popUpButton verticalHuggingPriority="750" imageHugsTitle="YES" id="446">
+                                <popUpButton verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="446">
                                     <rect key="frame" x="42" y="100" width="86" height="26"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <popUpButtonCell key="cell" type="push" title="128" bezelStyle="rounded" alignment="left" lineBreakMode="clipping" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="449" id="1730">
                                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                        <font key="font" metaFont="menu"/>
+                                        <font key="font" metaFont="system"/>
                                         <menu key="menu" title="OtherViews" id="447">
                                             <items>
                                                 <menuItem title="128" state="on" id="449"/>
@@ -736,7 +736,7 @@ DQ
                                         <action selector="miscUpdate:" target="-2" id="487"/>
                                     </connections>
                                 </popUpButton>
-                                <textField verticalHuggingPriority="750" id="461">
+                                <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="461">
                                     <rect key="frame" x="45" y="51" width="80" height="22"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="1731">
@@ -759,7 +759,7 @@ DQ
                                         <action selector="miscUpdate:" target="-2" id="486"/>
                                     </connections>
                                 </textField>
-                                <textField verticalHuggingPriority="750" id="479">
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="479">
                                     <rect key="frame" x="130" y="53" width="138" height="17"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" id="1732">
@@ -772,12 +772,12 @@ Sectors
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
-                                <popUpButton verticalHuggingPriority="750" imageHugsTitle="YES" id="481">
+                                <popUpButton verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="481">
                                     <rect key="frame" x="42" y="19" width="86" height="26"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <popUpButtonCell key="cell" type="push" title="128" bezelStyle="rounded" alignment="left" lineBreakMode="clipping" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="482" id="1733">
                                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                        <font key="font" metaFont="menu"/>
+                                        <font key="font" metaFont="system"/>
                                         <menu key="menu" title="OtherViews" id="480">
                                             <items>
                                                 <menuItem title="128" state="on" id="482"/>
@@ -790,7 +790,7 @@ Sectors
                                         <action selector="miscUpdate:" target="-2" id="488"/>
                                     </connections>
                                 </popUpButton>
-                                <textField verticalHuggingPriority="750" id="484">
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="484">
                                     <rect key="frame" x="130" y="25" width="114" height="17"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" id="1734">
@@ -801,7 +801,7 @@ Sectors
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
-                                <textField verticalHuggingPriority="750" id="506">
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="506">
                                     <rect key="frame" x="130" y="106" width="138" height="17"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" id="1735">
@@ -816,14 +816,14 @@ Sectors
                         </view>
                         <font key="titleFont" metaFont="system"/>
                     </box>
-                    <box title="Attach to" id="462">
+                    <box fixedFrame="YES" title="Attach to" translatesAutoresizingMaskIntoConstraints="NO" id="462">
                         <rect key="frame" x="18" y="60" width="283" height="84"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <view key="contentView" id="oJP-9e-sxs">
-                            <rect key="frame" x="3" y="3" width="277" height="63"/>
+                            <rect key="frame" x="3" y="3" width="277" height="64"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <button imageHugsTitle="YES" id="464">
+                                <button fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="464">
                                     <rect key="frame" x="18" y="37" width="225" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Insert new disk image into drive" bezelStyle="regularSquare" imagePosition="leading" alignment="left" inset="2" id="1736">
@@ -834,12 +834,12 @@ Sectors
                                         <action selector="miscUpdate:" target="-2" id="489"/>
                                     </connections>
                                 </button>
-                                <popUpButton verticalHuggingPriority="750" imageHugsTitle="YES" id="465">
+                                <popUpButton verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="465">
                                     <rect key="frame" x="39" y="7" width="70" height="26"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <popUpButtonCell key="cell" type="push" title="8" bezelStyle="rounded" alignment="left" lineBreakMode="clipping" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="474" id="1737">
                                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                        <font key="font" metaFont="menu"/>
+                                        <font key="font" metaFont="system"/>
                                         <menu key="menu" title="OtherViews" id="466">
                                             <items>
                                                 <menuItem title="1" id="468"/>
@@ -861,7 +861,7 @@ Sectors
                         </view>
                         <font key="titleFont" metaFont="system"/>
                     </box>
-                    <button verticalHuggingPriority="750" imageHugsTitle="YES" id="476">
+                    <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="476">
                         <rect key="frame" x="223" y="12" width="84" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="1738">
@@ -875,7 +875,7 @@ Gw
                             <action selector="cancelDisk:" target="-2" id="492"/>
                         </connections>
                     </button>
-                    <button verticalHuggingPriority="750" imageHugsTitle="YES" id="477">
+                    <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="477">
                         <rect key="frame" x="139" y="12" width="84" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="Create" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="1739">
@@ -889,18 +889,19 @@ Gw
                     </button>
                 </subviews>
             </view>
+            <point key="canvasLocation" x="139" y="147"/>
         </window>
         <window title="Error" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="546" userLabel="Error">
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="201" y="454" width="386" height="122"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1028"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
             <value key="minSize" type="size" width="81" height="2"/>
             <view key="contentView" id="539">
                 <rect key="frame" x="0.0" y="0.0" width="386" height="122"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <textField verticalHuggingPriority="750" id="555">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="555">
                         <rect key="frame" x="95" y="66" width="274" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="center" title="Unable to Mount Disk Image!" id="1740">
@@ -909,7 +910,7 @@ Gw
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <button verticalHuggingPriority="750" imageHugsTitle="YES" id="556">
+                    <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="556">
                         <rect key="frame" x="161" y="12" width="84" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="OK" bezelStyle="rounded" alignment="center" state="on" borderStyle="border" inset="2" id="1741">
@@ -923,7 +924,7 @@ DQ
                             <action selector="errorOK:" target="-2" id="558"/>
                         </connections>
                     </button>
-                    <imageView id="559">
+                    <imageView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="559">
                         <rect key="frame" x="15" y="45" width="75" height="58"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="Fuji" id="1742"/>
@@ -935,13 +936,13 @@ DQ
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="294" y="260" width="330" height="152"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1028"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
             <value key="minSize" type="size" width="81" height="2"/>
             <view key="contentView" id="564">
                 <rect key="frame" x="0.0" y="0.0" width="330" height="152"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <button verticalHuggingPriority="750" tag="8" imageHugsTitle="YES" id="563">
+                    <button verticalHuggingPriority="750" fixedFrame="YES" tag="8" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="563">
                         <rect key="frame" x="195" y="16" width="84" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="OK" bezelStyle="rounded" alignment="center" state="on" borderStyle="border" tag="8" inset="2" id="1743">
@@ -955,7 +956,7 @@ DQ
                             <action selector="cartSelectOK:" target="-2" id="633"/>
                         </connections>
                     </button>
-                    <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" id="565">
+                    <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="565">
                         <rect key="frame" x="64" y="62" width="211" height="78"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -986,7 +987,7 @@ DQ
                             </column>
                         </cells>
                     </matrix>
-                    <button verticalHuggingPriority="750" imageHugsTitle="YES" id="583">
+                    <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="583">
                         <rect key="frame" x="60" y="16" width="84" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="1744">
@@ -1007,13 +1008,13 @@ Gw
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="328" y="246" width="335" height="211"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1028"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
             <value key="minSize" type="size" width="81" height="2"/>
             <view key="contentView" id="571">
                 <rect key="frame" x="0.0" y="0.0" width="335" height="211"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <button verticalHuggingPriority="750" tag="16" imageHugsTitle="YES" id="573">
+                    <button verticalHuggingPriority="750" fixedFrame="YES" tag="16" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="573">
                         <rect key="frame" x="203" y="18" width="84" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="OK" bezelStyle="rounded" alignment="center" state="on" borderStyle="border" tag="16" inset="2" id="1745">
@@ -1027,7 +1028,7 @@ DQ
                             <action selector="cartSelectOK:" target="-2" id="636"/>
                         </connections>
                     </button>
-                    <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" id="576">
+                    <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="576">
                         <rect key="frame" x="63" y="59" width="220" height="138"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -1070,7 +1071,7 @@ DQ
                             </column>
                         </cells>
                     </matrix>
-                    <button verticalHuggingPriority="750" imageHugsTitle="YES" id="584">
+                    <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="584">
                         <rect key="frame" x="59" y="18" width="84" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="1746">
@@ -1091,13 +1092,13 @@ Gw
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="313" y="273" width="330" height="184"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1028"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
             <value key="minSize" type="size" width="81" height="2"/>
             <view key="contentView" id="587">
                 <rect key="frame" x="0.0" y="0.0" width="330" height="184"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <button verticalHuggingPriority="750" tag="32" imageHugsTitle="YES" id="592">
+                    <button verticalHuggingPriority="750" fixedFrame="YES" tag="32" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="592">
                         <rect key="frame" x="203" y="12" width="84" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="OK" bezelStyle="rounded" alignment="center" state="on" borderStyle="border" tag="32" inset="2" id="1748">
@@ -1111,7 +1112,7 @@ DQ
                             <action selector="cartSelectOK:" target="-2" id="639"/>
                         </connections>
                     </button>
-                    <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" id="590">
+                    <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="590">
                         <rect key="frame" x="63" y="53" width="229" height="118"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -1150,7 +1151,7 @@ DQ
                             </column>
                         </cells>
                     </matrix>
-                    <button verticalHuggingPriority="750" imageHugsTitle="YES" id="589">
+                    <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="589">
                         <rect key="frame" x="59" y="12" width="84" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="1747">
@@ -1171,13 +1172,13 @@ Gw
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="304" y="169" width="338" height="203"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1028"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
             <value key="minSize" type="size" width="81" height="2"/>
             <view key="contentView" id="603">
                 <rect key="frame" x="0.0" y="0.0" width="338" height="203"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <button verticalHuggingPriority="750" tag="64" imageHugsTitle="YES" id="601">
+                    <button verticalHuggingPriority="750" fixedFrame="YES" tag="64" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="601">
                         <rect key="frame" x="203" y="12" width="84" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="OK" bezelStyle="rounded" alignment="center" state="on" borderStyle="border" tag="64" inset="2" id="1749">
@@ -1191,7 +1192,7 @@ DQ
                             <action selector="cartSelectOK:" target="-2" id="645"/>
                         </connections>
                     </button>
-                    <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" id="606">
+                    <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="606">
                         <rect key="frame" x="63" y="52" width="229" height="138"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -1234,7 +1235,7 @@ DQ
                             </column>
                         </cells>
                     </matrix>
-                    <button verticalHuggingPriority="750" imageHugsTitle="YES" id="608">
+                    <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="608">
                         <rect key="frame" x="59" y="12" width="84" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="1750">
@@ -1255,13 +1256,13 @@ Gw
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="220" y="299" width="333" height="114"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1028"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
             <value key="minSize" type="size" width="81" height="2"/>
             <view key="contentView" id="613">
                 <rect key="frame" x="0.0" y="0.0" width="333" height="114"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <button verticalHuggingPriority="750" tag="40" imageHugsTitle="YES" id="615">
+                    <button verticalHuggingPriority="750" fixedFrame="YES" tag="40" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="615">
                         <rect key="frame" x="195" y="12" width="84" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="OK" bezelStyle="rounded" alignment="center" state="on" borderStyle="border" tag="40" inset="2" id="1752">
@@ -1275,7 +1276,7 @@ DQ
                             <action selector="cartSelectOK:" target="-2" id="642"/>
                         </connections>
                     </button>
-                    <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" id="611">
+                    <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="611">
                         <rect key="frame" x="64" y="58" width="230" height="38"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -1298,7 +1299,7 @@ DQ
                             </column>
                         </cells>
                     </matrix>
-                    <button verticalHuggingPriority="750" imageHugsTitle="YES" id="612">
+                    <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="612">
                         <rect key="frame" x="60" y="12" width="84" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="1751">
@@ -1319,13 +1320,13 @@ Gw
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="192" y="332" width="340" height="135"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1028"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
             <value key="minSize" type="size" width="81" height="2"/>
             <view key="contentView" id="624">
                 <rect key="frame" x="0.0" y="0.0" width="340" height="135"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <button verticalHuggingPriority="750" tag="256" imageHugsTitle="YES" id="622">
+                    <button verticalHuggingPriority="750" fixedFrame="YES" tag="256" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="622">
                         <rect key="frame" x="195" y="12" width="84" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="OK" bezelStyle="rounded" alignment="center" state="on" borderStyle="border" tag="256" inset="2" id="1753">
@@ -1339,7 +1340,7 @@ DQ
                             <action selector="cartSelectOK:" target="-2" id="648"/>
                         </connections>
                     </button>
-                    <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" id="621">
+                    <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="621">
                         <rect key="frame" x="64" y="61" width="243" height="58"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -1366,7 +1367,7 @@ DQ
                             </column>
                         </cells>
                     </matrix>
-                    <button verticalHuggingPriority="750" imageHugsTitle="YES" id="623">
+                    <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="623">
                         <rect key="frame" x="60" y="12" width="84" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="1754">
@@ -1387,13 +1388,13 @@ Gw
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="641" y="313" width="346" height="138"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1028"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
             <value key="minSize" type="size" width="81" height="2"/>
             <view key="contentView" id="629">
                 <rect key="frame" x="0.0" y="0.0" width="346" height="138"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <button verticalHuggingPriority="750" tag="512" imageHugsTitle="YES" id="630">
+                    <button verticalHuggingPriority="750" fixedFrame="YES" tag="512" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="630">
                         <rect key="frame" x="197" y="22" width="84" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="OK" bezelStyle="rounded" alignment="center" state="on" borderStyle="border" tag="512" inset="2" id="1755">
@@ -1407,7 +1408,7 @@ DQ
                             <action selector="cartSelectOK:" target="-2" id="652"/>
                         </connections>
                     </button>
-                    <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" id="627">
+                    <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="627">
                         <rect key="frame" x="64" y="67" width="240" height="58"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -1434,7 +1435,7 @@ DQ
                             </column>
                         </cells>
                     </matrix>
-                    <button verticalHuggingPriority="750" imageHugsTitle="YES" id="631">
+                    <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="631">
                         <rect key="frame" x="60" y="22" width="84" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="1756">
@@ -1455,13 +1456,13 @@ Gw
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="384" y="337" width="334" height="174"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1028"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
             <value key="minSize" type="size" width="81" height="2"/>
             <view key="contentView" id="654">
                 <rect key="frame" x="0.0" y="0.0" width="334" height="174"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <button verticalHuggingPriority="750" tag="128" imageHugsTitle="YES" id="657">
+                    <button verticalHuggingPriority="750" fixedFrame="YES" tag="128" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="657">
                         <rect key="frame" x="195" y="12" width="84" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="OK" bezelStyle="rounded" alignment="center" state="on" borderStyle="border" tag="128" inset="2" id="1757">
@@ -1475,7 +1476,7 @@ DQ
                             <action selector="cartSelectOK:" target="-2" id="661"/>
                         </connections>
                     </button>
-                    <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" id="656">
+                    <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="656">
                         <rect key="frame" x="64" y="49" width="241" height="118"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -1514,7 +1515,7 @@ DQ
                             </column>
                         </cells>
                     </matrix>
-                    <button verticalHuggingPriority="750" imageHugsTitle="YES" id="658">
+                    <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="658">
                         <rect key="frame" x="60" y="12" width="84" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="1758">
@@ -1535,13 +1536,13 @@ Gw
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="251" y="82" width="348" height="137"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1028"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
             <value key="minSize" type="size" width="81" height="2"/>
             <view key="contentView" id="695">
                 <rect key="frame" x="0.0" y="0.0" width="348" height="137"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <button verticalHuggingPriority="750" tag="512" imageHugsTitle="YES" id="696">
+                    <button verticalHuggingPriority="750" fixedFrame="YES" tag="512" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="696">
                         <rect key="frame" x="196" y="12" width="84" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="OK" bezelStyle="rounded" alignment="center" state="on" borderStyle="border" tag="512" inset="2" id="1760">
@@ -1555,7 +1556,7 @@ DQ
                             <action selector="cartSelectOK:" target="-2" id="1526"/>
                         </connections>
                     </button>
-                    <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" id="694">
+                    <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="694">
                         <rect key="frame" x="64" y="51" width="251" height="78"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -1586,7 +1587,7 @@ DQ
                             </column>
                         </cells>
                     </matrix>
-                    <button verticalHuggingPriority="750" imageHugsTitle="YES" id="693">
+                    <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="693">
                         <rect key="frame" x="60" y="12" width="84" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="1759">
@@ -1607,13 +1608,13 @@ Gw
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="632" y="501" width="386" height="122"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1028"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
             <value key="minSize" type="size" width="81" height="2"/>
             <view key="contentView" id="722">
                 <rect key="frame" x="0.0" y="0.0" width="386" height="122"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <textField verticalHuggingPriority="750" id="721">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="721">
                         <rect key="frame" x="95" y="76" width="274" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="center" title="Unable to Mount Disk Image!" id="1761">
@@ -1622,7 +1623,7 @@ Gw
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <button verticalHuggingPriority="750" imageHugsTitle="YES" id="723">
+                    <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="723">
                         <rect key="frame" x="161" y="12" width="84" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="OK" bezelStyle="rounded" alignment="center" state="on" borderStyle="border" inset="2" id="1762">
@@ -1636,12 +1637,12 @@ DQ
                             <action selector="error2OK:" target="-2" id="730"/>
                         </connections>
                     </button>
-                    <imageView id="724">
+                    <imageView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="724">
                         <rect key="frame" x="15" y="45" width="75" height="58"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="Fuji" id="1763"/>
                     </imageView>
-                    <textField verticalHuggingPriority="750" id="726">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="726">
                         <rect key="frame" x="95" y="55" width="274" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="center" title="Unable to Mount Disk Image!" id="1764">
@@ -1657,73 +1658,73 @@ DQ
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="94" y="485" width="800" height="111"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1028"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
             <value key="minSize" type="size" width="153.75999999999999" height="5"/>
             <view key="contentView" id="744">
                 <rect key="frame" x="0.0" y="0.0" width="800" height="111"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <button imageHugsTitle="YES" id="1088">
+                    <button fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1088">
                         <rect key="frame" x="4" y="45" width="92" height="20"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="square" title="Save Disk Set" bezelStyle="shadowlessSquare" alignment="center" borderStyle="border" inset="2" id="1813">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="smallSystem"/>
+                            <font key="font" metaFont="message" size="11"/>
                         </buttonCell>
                         <connections>
                             <action selector="diskSetSave:" target="-2" id="1091"/>
                         </connections>
                     </button>
-                    <button imageHugsTitle="YES" id="1087">
+                    <button fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1087">
                         <rect key="frame" x="4" y="67" width="92" height="20"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="square" title="Load Disk Set" bezelStyle="shadowlessSquare" alignment="center" borderStyle="border" inset="2" id="1812">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="smallSystem"/>
+                            <font key="font" metaFont="message" size="11"/>
                         </buttonCell>
                         <connections>
                             <action selector="diskSetLoad:" target="-2" id="1090"/>
                         </connections>
                     </button>
-                    <button imageHugsTitle="YES" id="1086">
+                    <button fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1086">
                         <rect key="frame" x="4" y="89" width="92" height="20"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="square" title="Rotate Disks" bezelStyle="shadowlessSquare" alignment="center" borderStyle="border" inset="2" id="1811">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="smallSystem"/>
+                            <font key="font" metaFont="message" size="11"/>
                         </buttonCell>
                         <connections>
                             <action selector="diskRotate:" target="-2" id="1089"/>
                         </connections>
                     </button>
-                    <button verticalHuggingPriority="750" imageHugsTitle="YES" id="787">
+                    <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="787">
                         <rect key="frame" x="149" y="16" width="45" height="28"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="On" bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" inset="2" id="1766">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="smallSystem"/>
+                            <font key="font" metaFont="message" size="11"/>
                         </buttonCell>
                         <connections>
                             <action selector="diskStatusPower:" target="-2" id="805"/>
                         </connections>
                     </button>
-                    <imageView id="788" customClass="Atari800ImageView">
+                    <imageView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="788" customClass="Atari800ImageView">
                         <rect key="frame" x="154" y="70" width="77" height="38"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="1767"/>
                     </imageView>
-                    <textField verticalHuggingPriority="750" id="789">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="789">
                         <rect key="frame" x="152" y="44" width="26" height="13"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" id="1768">
-                            <font key="font" metaFont="label"/>
+                            <font key="font" metaFont="menu" size="10"/>
                             <string key="title">D1
 </string>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" id="791">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="791">
                         <rect key="frame" x="151" y="59" width="83" height="11"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="center" title="Off" id="1769">
@@ -1732,67 +1733,67 @@ DQ
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <button verticalHuggingPriority="750" imageHugsTitle="YES" id="792">
+                    <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="792">
                         <rect key="frame" x="183" y="16" width="53" height="28"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="Lock" bezelStyle="rounded" alignment="center" controlSize="small" enabled="NO" borderStyle="border" inset="2" id="1770">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="smallSystem"/>
+                            <font key="font" metaFont="message" size="11"/>
                         </buttonCell>
                         <connections>
                             <action selector="diskStatusProtect:" target="-2" id="807"/>
                         </connections>
                     </button>
-                    <button verticalHuggingPriority="750" imageHugsTitle="YES" id="783">
+                    <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="783">
                         <rect key="frame" x="164" y="35" width="57" height="28"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="Insert" bezelStyle="rounded" alignment="center" controlSize="small" enabled="NO" borderStyle="border" inset="2" id="1765">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="smallSystem"/>
+                            <font key="font" metaFont="message" size="11"/>
                         </buttonCell>
                         <connections>
                             <action selector="diskStatusChange:" target="-2" id="804"/>
                         </connections>
                     </button>
-                    <textField verticalHuggingPriority="750" id="814">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="814">
                         <rect key="frame" x="233" y="44" width="26" height="13"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" id="1771">
-                            <font key="font" metaFont="label"/>
+                            <font key="font" metaFont="menu" size="10"/>
                             <string key="title">D2
 </string>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <imageView tag="1" id="815" customClass="Atari800ImageView">
+                    <imageView fixedFrame="YES" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="815" customClass="Atari800ImageView">
                         <rect key="frame" x="235" y="70" width="77" height="38"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="1772"/>
                     </imageView>
-                    <button verticalHuggingPriority="750" tag="1" imageHugsTitle="YES" id="816">
+                    <button verticalHuggingPriority="750" fixedFrame="YES" tag="1" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="816">
                         <rect key="frame" x="245" y="35" width="57" height="28"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="Insert" bezelStyle="rounded" alignment="center" controlSize="small" enabled="NO" borderStyle="border" tag="1" inset="2" id="1773">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="smallSystem"/>
+                            <font key="font" metaFont="message" size="11"/>
                         </buttonCell>
                         <connections>
                             <action selector="diskStatusChange:" target="-2" id="891"/>
                         </connections>
                     </button>
-                    <button verticalHuggingPriority="750" tag="1" imageHugsTitle="YES" id="817">
+                    <button verticalHuggingPriority="750" fixedFrame="YES" tag="1" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="817">
                         <rect key="frame" x="264" y="16" width="53" height="28"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="Lock" bezelStyle="rounded" alignment="center" controlSize="small" enabled="NO" borderStyle="border" tag="1" inset="2" id="1774">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="smallSystem"/>
+                            <font key="font" metaFont="message" size="11"/>
                         </buttonCell>
                         <connections>
                             <action selector="diskStatusProtect:" target="-2" id="892"/>
                         </connections>
                     </button>
-                    <textField verticalHuggingPriority="750" id="818">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="818">
                         <rect key="frame" x="232" y="59" width="83" height="11"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="center" title="Off" id="1775">
@@ -1801,18 +1802,18 @@ DQ
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <button verticalHuggingPriority="750" tag="1" imageHugsTitle="YES" id="819">
+                    <button verticalHuggingPriority="750" fixedFrame="YES" tag="1" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="819">
                         <rect key="frame" x="230" y="16" width="45" height="28"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="On" bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" tag="1" inset="2" id="1776">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="smallSystem"/>
+                            <font key="font" metaFont="message" size="11"/>
                         </buttonCell>
                         <connections>
                             <action selector="diskStatusPower:" target="-2" id="890"/>
                         </connections>
                     </button>
-                    <textField verticalHuggingPriority="750" id="820">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="820">
                         <rect key="frame" x="313" y="59" width="83" height="11"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="center" title="Off" id="1777">
@@ -1821,76 +1822,76 @@ DQ
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <imageView tag="2" id="821" customClass="Atari800ImageView">
+                    <imageView fixedFrame="YES" tag="2" translatesAutoresizingMaskIntoConstraints="NO" id="821" customClass="Atari800ImageView">
                         <rect key="frame" x="316" y="70" width="77" height="38"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="1778"/>
                     </imageView>
-                    <button verticalHuggingPriority="750" tag="2" imageHugsTitle="YES" id="822">
+                    <button verticalHuggingPriority="750" fixedFrame="YES" tag="2" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="822">
                         <rect key="frame" x="311" y="16" width="45" height="28"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="On" bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" tag="2" inset="2" id="1779">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="smallSystem"/>
+                            <font key="font" metaFont="message" size="11"/>
                         </buttonCell>
                         <connections>
                             <action selector="diskStatusPower:" target="-2" id="893"/>
                         </connections>
                     </button>
-                    <button verticalHuggingPriority="750" tag="2" imageHugsTitle="YES" id="823">
+                    <button verticalHuggingPriority="750" fixedFrame="YES" tag="2" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="823">
                         <rect key="frame" x="345" y="16" width="53" height="28"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="Lock" bezelStyle="rounded" alignment="center" controlSize="small" enabled="NO" borderStyle="border" tag="2" inset="2" id="1780">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="smallSystem"/>
+                            <font key="font" metaFont="message" size="11"/>
                         </buttonCell>
                         <connections>
                             <action selector="diskStatusProtect:" target="-2" id="895"/>
                         </connections>
                     </button>
-                    <textField verticalHuggingPriority="750" id="824">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="824">
                         <rect key="frame" x="314" y="44" width="26" height="13"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="D3" id="1781">
-                            <font key="font" metaFont="label"/>
+                            <font key="font" metaFont="menu" size="10"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <button verticalHuggingPriority="750" tag="2" imageHugsTitle="YES" id="825">
+                    <button verticalHuggingPriority="750" fixedFrame="YES" tag="2" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="825">
                         <rect key="frame" x="326" y="35" width="57" height="28"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="Insert" bezelStyle="rounded" alignment="center" controlSize="small" enabled="NO" borderStyle="border" tag="2" inset="2" id="1782">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="smallSystem"/>
+                            <font key="font" metaFont="message" size="11"/>
                         </buttonCell>
                         <connections>
                             <action selector="diskStatusChange:" target="-2" id="894"/>
                         </connections>
                     </button>
-                    <button verticalHuggingPriority="750" tag="3" imageHugsTitle="YES" id="826">
+                    <button verticalHuggingPriority="750" fixedFrame="YES" tag="3" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="826">
                         <rect key="frame" x="426" y="16" width="53" height="28"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="Lock" bezelStyle="rounded" alignment="center" controlSize="small" enabled="NO" borderStyle="border" tag="3" inset="2" id="1783">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="smallSystem"/>
+                            <font key="font" metaFont="message" size="11"/>
                         </buttonCell>
                         <connections>
                             <action selector="diskStatusProtect:" target="-2" id="898"/>
                         </connections>
                     </button>
-                    <button verticalHuggingPriority="750" tag="3" imageHugsTitle="YES" id="827">
+                    <button verticalHuggingPriority="750" fixedFrame="YES" tag="3" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="827">
                         <rect key="frame" x="407" y="35" width="57" height="28"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="Insert" bezelStyle="rounded" alignment="center" controlSize="small" enabled="NO" borderStyle="border" tag="3" inset="2" id="1784">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="smallSystem"/>
+                            <font key="font" metaFont="message" size="11"/>
                         </buttonCell>
                         <connections>
                             <action selector="diskStatusChange:" target="-2" id="897"/>
                         </connections>
                     </button>
-                    <textField verticalHuggingPriority="750" id="828">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="828">
                         <rect key="frame" x="394" y="59" width="83" height="11"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="center" title="Off" id="1785">
@@ -1899,37 +1900,37 @@ DQ
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <imageView tag="3" id="829" customClass="Atari800ImageView">
+                    <imageView fixedFrame="YES" tag="3" translatesAutoresizingMaskIntoConstraints="NO" id="829" customClass="Atari800ImageView">
                         <rect key="frame" x="397" y="70" width="77" height="38"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="1786"/>
                     </imageView>
-                    <textField verticalHuggingPriority="750" id="830">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="830">
                         <rect key="frame" x="395" y="44" width="26" height="13"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="D4" id="1787">
-                            <font key="font" metaFont="label"/>
+                            <font key="font" metaFont="menu" size="10"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <button verticalHuggingPriority="750" tag="3" imageHugsTitle="YES" id="831">
+                    <button verticalHuggingPriority="750" fixedFrame="YES" tag="3" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="831">
                         <rect key="frame" x="392" y="16" width="45" height="28"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="On" bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" tag="3" inset="2" id="1788">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="smallSystem"/>
+                            <font key="font" metaFont="message" size="11"/>
                         </buttonCell>
                         <connections>
                             <action selector="diskStatusPower:" target="-2" id="896"/>
                         </connections>
                     </button>
-                    <imageView tag="8" id="919" customClass="Atari800ImageView">
+                    <imageView fixedFrame="YES" tag="8" translatesAutoresizingMaskIntoConstraints="NO" id="919" customClass="Atari800ImageView">
                         <rect key="frame" x="489" y="73" width="57" height="35"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="1789"/>
                     </imageView>
-                    <textField verticalHuggingPriority="750" id="921">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="921">
                         <rect key="frame" x="477" y="59" width="83" height="11"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="center" title="Empty" id="1790">
@@ -1938,18 +1939,18 @@ DQ
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <button verticalHuggingPriority="750" imageHugsTitle="YES" id="923">
+                    <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="923">
                         <rect key="frame" x="471" y="16" width="57" height="28"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="Insert" bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" inset="2" id="1791">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="smallSystem"/>
+                            <font key="font" metaFont="message" size="11"/>
                         </buttonCell>
                         <connections>
                             <action selector="cassStatusChange:" target="-2" id="933"/>
                         </connections>
                     </button>
-                    <button verticalHuggingPriority="750" imageHugsTitle="YES" id="924">
+                    <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="924">
                         <rect key="frame" x="564" y="21" width="57" height="16"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="Insert" bezelStyle="rounded" alignment="center" controlSize="mini" borderStyle="border" inset="2" id="1792">
@@ -1960,12 +1961,12 @@ DQ
                             <action selector="cartStatusChange:" target="-2" id="934"/>
                         </connections>
                     </button>
-                    <imageView tag="9" id="925" customClass="Atari800ImageView">
+                    <imageView fixedFrame="YES" tag="9" translatesAutoresizingMaskIntoConstraints="NO" id="925" customClass="Atari800ImageView">
                         <rect key="frame" x="569" y="66" width="45" height="46"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="1793"/>
                     </imageView>
-                    <textField verticalHuggingPriority="750" id="926">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="926">
                         <rect key="frame" x="555" y="51" width="75" height="11"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="center" title="Empty" id="1794">
@@ -1974,93 +1975,93 @@ DQ
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" id="935" customClass="Atari800DriveTextField">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="935" customClass="Atari800DriveTextField">
                         <rect key="frame" x="151" y="82" width="83" height="13"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="center" id="1795">
-                            <font key="font" metaFont="label"/>
+                            <font key="font" metaFont="menu" size="10"/>
                             <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" tag="1" id="937" customClass="Atari800DriveTextField">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="937" customClass="Atari800DriveTextField">
                         <rect key="frame" x="232" y="83" width="83" height="13"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="center" tag="1" id="1796">
-                            <font key="font" metaFont="label"/>
+                            <font key="font" metaFont="menu" size="10"/>
                             <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" tag="2" id="938" customClass="Atari800DriveTextField">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" tag="2" translatesAutoresizingMaskIntoConstraints="NO" id="938" customClass="Atari800DriveTextField">
                         <rect key="frame" x="313" y="83" width="83" height="13"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="center" tag="2" id="1797">
-                            <font key="font" metaFont="label"/>
+                            <font key="font" metaFont="menu" size="10"/>
                             <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" tag="3" id="939" customClass="Atari800DriveTextField">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" tag="3" translatesAutoresizingMaskIntoConstraints="NO" id="939" customClass="Atari800DriveTextField">
                         <rect key="frame" x="394" y="83" width="83" height="13"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="center" tag="3" id="1798">
-                            <font key="font" metaFont="label"/>
+                            <font key="font" metaFont="menu" size="10"/>
                             <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <box horizontalHuggingPriority="750" boxType="separator" id="951">
+                    <box horizontalHuggingPriority="750" fixedFrame="YES" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="951">
                         <rect key="frame" x="230" y="21" width="5" height="102"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </box>
-                    <imageView id="953">
+                    <imageView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="953">
                         <rect key="frame" x="217" y="44" width="14" height="16"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <imageCell key="cell" refusesFirstResponder="YES" alignment="left" id="1799"/>
                     </imageView>
-                    <box horizontalHuggingPriority="750" boxType="separator" id="955">
+                    <box horizontalHuggingPriority="750" fixedFrame="YES" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="955">
                         <rect key="frame" x="311" y="20" width="5" height="102"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </box>
-                    <box horizontalHuggingPriority="750" boxType="separator" id="958">
+                    <box horizontalHuggingPriority="750" fixedFrame="YES" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="958">
                         <rect key="frame" x="392" y="20" width="5" height="102"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </box>
-                    <box horizontalHuggingPriority="750" boxType="separator" id="960">
+                    <box horizontalHuggingPriority="750" fixedFrame="YES" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="960">
                         <rect key="frame" x="473" y="20" width="5" height="102"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </box>
-                    <box horizontalHuggingPriority="750" boxType="separator" id="969">
+                    <box horizontalHuggingPriority="750" fixedFrame="YES" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="969">
                         <rect key="frame" x="560" y="20" width="5" height="102"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </box>
-                    <imageView id="971">
+                    <imageView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="971">
                         <rect key="frame" x="298" y="44" width="14" height="16"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <imageCell key="cell" refusesFirstResponder="YES" alignment="left" id="1800"/>
                     </imageView>
-                    <imageView id="972">
+                    <imageView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="972">
                         <rect key="frame" x="379" y="44" width="14" height="16"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <imageCell key="cell" refusesFirstResponder="YES" alignment="left" id="1801"/>
                     </imageView>
-                    <imageView id="973">
+                    <imageView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="973">
                         <rect key="frame" x="460" y="44" width="14" height="16"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <imageCell key="cell" refusesFirstResponder="YES" alignment="left" id="1802"/>
                     </imageView>
-                    <slider verticalHuggingPriority="750" id="986">
+                    <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="986">
                         <rect key="frame" x="480" y="39" width="75" height="15"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <sliderCell key="cell" controlSize="small" alignment="left" minValue="1" maxValue="100" doubleValue="50" tickMarkPosition="above" allowsTickMarkValuesOnly="YES" sliderType="linear" id="1803">
-                            <font key="font" size="12" name="Helvetica"/>
+                            <font key="font" metaFont="user"/>
                         </sliderCell>
                         <connections>
                             <action selector="cassSliderChange:" target="-2" id="994"/>
                         </connections>
                     </slider>
-                    <textField verticalHuggingPriority="750" id="988">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="988">
                         <rect key="frame" x="527" y="51" width="29" height="11"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="400" id="1804">
@@ -2069,7 +2070,7 @@ DQ
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" id="999">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="999">
                         <rect key="frame" x="476" y="51" width="35" height="11"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="1" id="1805">
@@ -2078,11 +2079,11 @@ DQ
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <box horizontalHuggingPriority="750" boxType="separator" id="1060">
+                    <box horizontalHuggingPriority="750" fixedFrame="YES" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="1060">
                         <rect key="frame" x="98" y="20" width="5" height="102"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </box>
-                    <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" id="1064">
+                    <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1064">
                         <rect key="frame" x="103" y="32" width="58" height="38"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -2096,11 +2097,11 @@ DQ
                             <column>
                                 <buttonCell type="radio" title="1-4" imagePosition="leading" alignment="left" controlSize="small" state="on" inset="2" id="1063">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                    <font key="font" metaFont="smallSystem"/>
+                                    <font key="font" metaFont="message" size="11"/>
                                 </buttonCell>
                                 <buttonCell type="radio" title="5-8" imagePosition="leading" alignment="left" controlSize="small" tag="1" inset="2" id="1062">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                    <font key="font" metaFont="smallSystem"/>
+                                    <font key="font" metaFont="message" size="11"/>
                                 </buttonCell>
                             </column>
                         </cells>
@@ -2108,99 +2109,99 @@ DQ
                             <action selector="diskDisplayChange:" target="-2" id="1069"/>
                         </connections>
                     </matrix>
-                    <textField verticalHuggingPriority="750" id="1065">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1065">
                         <rect key="frame" x="99" y="71" width="56" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="center" title="Display Drives" id="1806">
-                            <font key="font" metaFont="smallSystem"/>
+                            <font key="font" metaFont="message" size="11"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <box horizontalHuggingPriority="750" boxType="separator" id="1071">
+                    <box horizontalHuggingPriority="750" fixedFrame="YES" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="1071">
                         <rect key="frame" x="620" y="20" width="5" height="101"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </box>
-                    <button imageHugsTitle="YES" id="1073">
+                    <button fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1073">
                         <rect key="frame" x="697" y="90" width="98" height="20"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="square" title="Warmstart" bezelStyle="shadowlessSquare" alignment="center" borderStyle="border" inset="2" id="1807">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="smallSystem"/>
+                            <font key="font" metaFont="message" size="11"/>
                         </buttonCell>
                         <connections>
                             <action selector="warmStart:" target="-2" id="1077"/>
                         </connections>
                     </button>
-                    <button imageHugsTitle="YES" id="1074">
+                    <button fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1074">
                         <rect key="frame" x="697" y="68" width="98" height="20"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="square" title="Coldstart" bezelStyle="shadowlessSquare" alignment="center" borderStyle="border" inset="2" id="1808">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="smallSystem"/>
+                            <font key="font" metaFont="message" size="11"/>
                         </buttonCell>
                         <connections>
                             <action selector="coldStart:" target="-2" id="1078"/>
                         </connections>
                     </button>
-                    <button imageHugsTitle="YES" id="1075">
+                    <button fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1075">
                         <rect key="frame" x="697" y="46" width="98" height="20"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="square" title="Limit Speed" bezelStyle="shadowlessSquare" alignment="center" borderStyle="border" inset="2" id="1809">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                            <font key="font" metaFont="smallSystem"/>
+                            <font key="font" metaFont="message" size="11"/>
                         </buttonCell>
                         <connections>
                             <action selector="limit:" target="-2" id="1079"/>
                         </connections>
                     </button>
-                    <button imageHugsTitle="YES" id="1076">
+                    <button fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1076">
                         <rect key="frame" x="697" y="23" width="98" height="20"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="square" title="Disable Basic" bezelStyle="shadowlessSquare" alignment="center" borderStyle="border" inset="2" id="1810">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                            <font key="font" metaFont="smallSystem"/>
+                            <font key="font" metaFont="message" size="11"/>
                         </buttonCell>
                         <connections>
                             <action selector="disableBasic:" target="-2" id="1083"/>
                         </connections>
                     </button>
-                    <box horizontalHuggingPriority="750" boxType="separator" id="1084">
+                    <box horizontalHuggingPriority="750" fixedFrame="YES" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="1084">
                         <rect key="frame" x="149" y="20" width="5" height="102"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </box>
-                    <button imageHugsTitle="YES" id="1093">
+                    <button fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1093">
                         <rect key="frame" x="4" y="23" width="92" height="20"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="square" title="New Disk Img" bezelStyle="shadowlessSquare" alignment="center" borderStyle="border" inset="2" id="1814">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="smallSystem"/>
+                            <font key="font" metaFont="message" size="11"/>
                         </buttonCell>
                         <connections>
                             <action selector="showCreatePanel:" target="-2" id="1094"/>
                         </connections>
                     </button>
-                    <box horizontalHuggingPriority="750" boxType="separator" id="1153">
+                    <box horizontalHuggingPriority="750" fixedFrame="YES" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="1153">
                         <rect key="frame" x="691" y="23" width="5" height="98"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </box>
-                    <button verticalHuggingPriority="750" imageHugsTitle="YES" id="1157">
+                    <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1157">
                         <rect key="frame" x="620" y="16" width="76" height="28"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="Preview" bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" inset="2" id="1815">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="smallSystem"/>
+                            <font key="font" metaFont="message" size="11"/>
                         </buttonCell>
                         <connections>
                             <action selector="showPrinterOutput:" target="1168" id="1169"/>
                         </connections>
                     </button>
-                    <popUpButton imageHugsTitle="YES" id="1158">
+                    <popUpButton fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1158">
                         <rect key="frame" x="623" y="39" width="69" height="21"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <popUpButtonCell key="cell" type="bevel" title="Select" bezelStyle="regularSquare" alignment="left" controlSize="small" lineBreakMode="clipping" borderStyle="borderAndBezel" inset="2" pullsDown="YES" preferredEdge="maxY" selectedItem="1161" id="1816">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="smallSystem"/>
+                            <font key="font" metaFont="message" size="11"/>
                             <menu key="menu" title="OtherViews" id="1160">
                                 <items>
                                     <menuItem title="Select" hidden="YES" id="1161"/>
@@ -2236,12 +2237,12 @@ DQ
                             </menu>
                         </popUpButtonCell>
                     </popUpButton>
-                    <imageView tag="8" id="1172" customClass="Atari800ImageView">
+                    <imageView fixedFrame="YES" tag="8" translatesAutoresizingMaskIntoConstraints="NO" id="1172" customClass="Atari800ImageView">
                         <rect key="frame" x="629" y="68" width="57" height="35"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="1817"/>
                     </imageView>
-                    <textField verticalHuggingPriority="750" id="1174">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1174">
                         <rect key="frame" x="619" y="59" width="75" height="11"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="center" title="Text" id="1818">
@@ -2250,27 +2251,27 @@ DQ
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <button verticalHuggingPriority="750" imageHugsTitle="YES" id="1192">
+                    <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1192">
                         <rect key="frame" x="517" y="16" width="49" height="28"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="New" bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" inset="2" id="1819">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="smallSystem"/>
+                            <font key="font" metaFont="message" size="11"/>
                         </buttonCell>
                         <connections>
                             <action selector="createCassette:" target="-2" id="1193"/>
                         </connections>
                     </button>
-                    <box verticalHuggingPriority="750" boxType="separator" id="1194">
+                    <box verticalHuggingPriority="750" fixedFrame="YES" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="1194">
                         <rect key="frame" x="-3" y="18" width="803" height="5"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </box>
-                    <popUpButton verticalHuggingPriority="750" imageHugsTitle="YES" id="1196">
+                    <popUpButton verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1196">
                         <rect key="frame" x="1" y="-2" width="226" height="22"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <popUpButtonCell key="cell" type="push" title="Atari 5200 (16KB)" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="1200" id="1820">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="smallSystem"/>
+                            <font key="font" metaFont="message" size="11"/>
                             <menu key="menu" title="OtherViews" id="1197">
                                 <items>
                                     <menuItem title="Atari OS/A (16KB)" id="1199"/>
@@ -2299,12 +2300,12 @@ DQ
                             <action selector="machineTypeChange:" target="-2" id="1247"/>
                         </connections>
                     </popUpButton>
-                    <popUpButton verticalHuggingPriority="750" imageHugsTitle="YES" id="1201">
+                    <popUpButton verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1201">
                         <rect key="frame" x="224" y="-2" width="91" height="22"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <popUpButtonCell key="cell" type="push" title="3x Scale" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="1234" id="1821">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="smallSystem"/>
+                            <font key="font" metaFont="message" size="11"/>
                             <menu key="menu" title="OtherViews" id="1202">
                                 <items>
                                     <menuItem title="1x Scale" id="1204"/>
@@ -2318,12 +2319,12 @@ DQ
                             <action selector="scaleSizeChange:" target="-2" id="1248"/>
                         </connections>
                     </popUpButton>
-                    <popUpButton verticalHuggingPriority="750" imageHugsTitle="YES" id="1206">
+                    <popUpButton verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1206">
                         <rect key="frame" x="315" y="-2" width="123" height="22"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <popUpButtonCell key="cell" type="push" title="Default Width" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="1236" id="1822">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="smallSystem"/>
+                            <font key="font" metaFont="message" size="11"/>
                             <menu key="menu" title="OtherViews" id="1207">
                                 <items>
                                     <menuItem title="Normal Width" id="1209"/>
@@ -2336,12 +2337,12 @@ DQ
                             <action selector="widthModeChange:" target="-2" id="1249"/>
                         </connections>
                     </popUpButton>
-                    <popUpButton verticalHuggingPriority="750" imageHugsTitle="YES" id="1211">
+                    <popUpButton verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1211">
                         <rect key="frame" x="437" y="-2" width="122" height="22"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <popUpButtonCell key="cell" type="push" title="Normal Scaling" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="1214" id="1823">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="smallSystem"/>
+                            <font key="font" metaFont="message" size="11"/>
                             <menu key="menu" title="OtherViews" id="1212">
                                 <items>
                                     <menuItem title="Normal Scaling" state="on" id="1214"/>
@@ -2354,12 +2355,12 @@ DQ
                             <action selector="scaleModeChange:" target="-2" id="1250"/>
                         </connections>
                     </popUpButton>
-                    <popUpButton verticalHuggingPriority="750" imageHugsTitle="YES" id="1216">
+                    <popUpButton verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1216">
                         <rect key="frame" x="558" y="-2" width="185" height="22"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <popUpButtonCell key="cell" type="push" title="Rev XL/XE GTIA Artifacting" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="1220" id="1824">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="smallSystem"/>
+                            <font key="font" metaFont="message" size="11"/>
                             <menu key="menu" title="OtherViews" id="1217">
                                 <items>
                                     <menuItem title="No Artifacting" id="1219"/>
@@ -2374,7 +2375,7 @@ DQ
                             <action selector="artifactModeChange:" target="-2" id="1251"/>
                         </connections>
                     </popUpButton>
-                    <button verticalHuggingPriority="750" imageHugsTitle="YES" id="1258">
+                    <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1258">
                         <rect key="frame" x="564" y="36" width="57" height="16"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="Insert 2" bezelStyle="rounded" alignment="center" controlSize="mini" enabled="NO" borderStyle="border" inset="2" id="1825">
@@ -2385,7 +2386,7 @@ DQ
                             <action selector="cartSecondStatusChange:" target="-2" id="1262"/>
                         </connections>
                     </button>
-                    <textField verticalHuggingPriority="750" id="1259">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1259">
                         <rect key="frame" x="555" y="60" width="75" height="11"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="center" id="1826">
@@ -2394,7 +2395,7 @@ DQ
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <button imageHugsTitle="YES" id="1371">
+                    <button fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1371">
                         <rect key="frame" x="744" y="1" width="50" height="18"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="square" title="XEP80" bezelStyle="shadowlessSquare" alignment="center" borderStyle="border" inset="2" id="1827">

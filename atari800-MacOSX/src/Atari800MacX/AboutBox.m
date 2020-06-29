@@ -88,11 +88,11 @@ static AboutBox *sharedInstance = nil;
         // Setup the version field
         versionString = [infoDictionary objectForKey:@"CFBundleVersion"];
         [versionField setStringValue:[NSString stringWithFormat:@"Version %@", 
-                                                          versionString]];
+            versionString]];
 
         // Setup our credits
         creditsPath = [[NSBundle mainBundle] pathForResource:@"Credits"
-                                             ofType:@"html"];
+            ofType:@"html"];
 
         creditsString = [[NSMutableAttributedString alloc] initWithURL:[NSURL fileURLWithPath:creditsPath] options:@{} documentAttributes:NULL error:&err ];
         [creditsString addAttribute:NSForegroundColorAttributeName
