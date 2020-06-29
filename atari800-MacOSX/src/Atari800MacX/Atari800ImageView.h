@@ -8,12 +8,10 @@
 #import <Cocoa/Cocoa.h>
 
 /* Subclass of NSIMageView to allow for drag and drop and other specific functions  */
-@interface Atari800ImageView : NSImageView 
+@interface Atari800ImageView : NSImageView  <NSDraggingSource, NSDraggingDestination>
 - (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender;
 - (BOOL)performDragOperation:(id <NSDraggingInfo>)sender;
 - (void)mouseDown:(NSEvent *)theEvent;
-- (unsigned int)draggingSourceOperationMaskForLocal:(BOOL)isLocal;
-- (void)draggedImage:(NSImage *)anImage endedAt:(NSPoint)aPoint operation:(NSDragOperation)operation;
 
 @end
 

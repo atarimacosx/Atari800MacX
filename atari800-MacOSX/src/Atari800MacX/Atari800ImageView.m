@@ -52,6 +52,7 @@ static char fileToCopy[FILENAME_MAX];
 			tag += 4;
 
 		if (SIO_drive_status[tag] == SIO_READ_ONLY || SIO_drive_status[tag] == SIO_READ_WRITE) {
+#if 0
 			// Write data to the pasteboard
 			NSArray *fileList = [NSArray arrayWithObjects:[NSString stringWithCString:SIO_filename[tag] encoding:NSASCIIStringEncoding], nil];
 			NSPasteboard *pboard = [NSPasteboard pasteboardWithName:NSDragPboard];
@@ -71,27 +72,45 @@ static char fileToCopy[FILENAME_MAX];
 				pasteboard:pboard
 				source:self
 				slideBack:YES];
+#else
+            NSArray *fileList = [NSArray arrayWithObject:[NSString stringWithCString:SIO_filename[tag] encoding:NSASCIIStringEncoding]];
+            NSPasteboard *pboard = [NSPasteboard pasteboardWithName:NSDragPboard];
+            [pboard declareTypes:[NSArray arrayWithObject:NSFilenamesPboardType]
+                owner:self];
+            [pboard setPropertyList:fileList forType:NSFilenamesPboardType];
+            
+            NSPasteboardItem *pasteItem = [[NSPasteboardItem alloc] setPropertyList:fileList forType:NSFilenamesPboardType];
+            NSDraggingItem* dragItem = [[NSDraggingItem alloc] initWithPasteboardWriter:pasteItem];
 
+            dragImage = disketteImage;
+            dragPosition = [self convertPoint:[theEvent locationInWindow]
+                            fromView:nil];
+            dragPosition.x -= 32;
+
+            NSRect dragFrame;
+            dragFrame.origin = dragPosition;
+            dragFrame.size = dragImage.size;
+
+            [dragItem setDraggingFrame:dragFrame contents:dragImage];
+            
+            NSArray *draggingItems = [NSArray arrayWithObject:dragItem];
+
+            [self beginDraggingSessionWithItems:draggingItems event:theEvent source:self];
+#endif
 			}
 		}
 }
 
-/*------------------------------------------------------------------------------
-*  draggingSourceOperationMaskForLocal - Only allow drags to other drives,
-*     not to the finder or elsewhere. 
-*-----------------------------------------------------------------------------*/
-- (unsigned int)draggingSourceOperationMaskForLocal:(BOOL)isLocal
-{
-	if (isLocal)
-		return NSDragOperationCopy | NSDragOperationMove;
-	else
-		return NSDragOperationNone;
-}
+- (NSDragOperation)draggingSession:(NSDraggingSession *)session
+sourceOperationMaskForDraggingContext:(NSDraggingContext)context
+    {
+    return (NSDragOperationCopy | NSDragOperationMove);
+    }
 
 /*------------------------------------------------------------------------------
-*  draggedImage - Runs when a image has been dropped on another disk instance. 
+*  draggingSession - Runs when a image has been dropped on another disk instance.
 *-----------------------------------------------------------------------------*/
-- (void)draggedImage:(NSImage *)anImage endedAt:(NSPoint)aPoint operation:(NSDragOperation)operation
+- (void)draggingSession:(NSDraggingSession *)aSession endedAt:(NSPoint)aPoint operation:(NSDragOperation)operation
 {
 	int driveNo = [self tag];
 	
