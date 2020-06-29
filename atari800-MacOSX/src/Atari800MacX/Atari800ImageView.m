@@ -73,14 +73,8 @@ static char fileToCopy[FILENAME_MAX];
 				source:self
 				slideBack:YES];
 #else
-            NSArray *fileList = [NSArray arrayWithObject:[NSString stringWithCString:SIO_filename[tag] encoding:NSASCIIStringEncoding]];
-            NSPasteboard *pboard = [NSPasteboard pasteboardWithName:NSDragPboard];
-            [pboard declareTypes:[NSArray arrayWithObject:NSFilenamesPboardType]
-                owner:self];
-            [pboard setPropertyList:fileList forType:NSFilenamesPboardType];
-            
-            NSPasteboardItem *pasteItem = [[NSPasteboardItem alloc] setPropertyList:fileList forType:NSFilenamesPboardType];
-            NSDraggingItem* dragItem = [[NSDraggingItem alloc] initWithPasteboardWriter:pasteItem];
+            NSURL *fileURL = [NSURL fileURLWithPath: [NSString stringWithCString:SIO_filename[tag] encoding:NSASCIIStringEncoding]];
+            NSDraggingItem* dragItem = [[NSDraggingItem alloc] initWithPasteboardWriter:fileURL];
 
             dragImage = disketteImage;
             dragPosition = [self convertPoint:[theEvent locationInWindow]
