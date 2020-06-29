@@ -52,27 +52,6 @@ static char fileToCopy[FILENAME_MAX];
 			tag += 4;
 
 		if (SIO_drive_status[tag] == SIO_READ_ONLY || SIO_drive_status[tag] == SIO_READ_WRITE) {
-#if 0
-			// Write data to the pasteboard
-			NSArray *fileList = [NSArray arrayWithObjects:[NSString stringWithCString:SIO_filename[tag] encoding:NSASCIIStringEncoding], nil];
-			NSPasteboard *pboard = [NSPasteboard pasteboardWithName:NSDragPboard];
-			[pboard declareTypes:[NSArray arrayWithObject:NSFilenamesPboardType]
-				owner:nil];
-			[pboard setPropertyList:fileList forType:NSFilenamesPboardType];
-			
-			// Start the drag operation
-			dragImage = disketteImage;
-			dragPosition = [self convertPoint:[theEvent locationInWindow]
-							fromView:nil];
-			dragPosition.x -= 32;
-			[self dragImage:dragImage
-				at:dragPosition
-				offset:NSZeroSize
-				event:theEvent
-				pasteboard:pboard
-				source:self
-				slideBack:YES];
-#else
             NSURL *fileURL = [NSURL fileURLWithPath: [NSString stringWithCString:SIO_filename[tag] encoding:NSASCIIStringEncoding]];
             NSDraggingItem* dragItem = [[NSDraggingItem alloc] initWithPasteboardWriter:fileURL];
 
@@ -90,7 +69,6 @@ static char fileToCopy[FILENAME_MAX];
             NSArray *draggingItems = [NSArray arrayWithObject:dragItem];
 
             [self beginDraggingSessionWithItems:draggingItems event:theEvent source:self];
-#endif
 			}
 		}
 }
@@ -98,16 +76,18 @@ static char fileToCopy[FILENAME_MAX];
 - (NSDragOperation)draggingSession:(NSDraggingSession *)session
 sourceOperationMaskForDraggingContext:(NSDraggingContext)context
     {
-    return (NSDragOperationCopy | NSDragOperationMove);
+    if (context == NSDraggingContextWithinApplication)
+        return NSDragOperationCopy | NSDragOperationMove;
+    else
+        return NSDragOperationNone;
     }
 
 /*------------------------------------------------------------------------------
-*  draggingSession - Runs when a image has been dropped on another disk instance.
+*  draggingDone - Runs to cleanup source image when
+*  image has been dropped on destination.
 *-----------------------------------------------------------------------------*/
-- (void)draggingSession:(NSDraggingSession *)aSession endedAt:(NSPoint)aPoint operation:(NSDragOperation)operation
+- (void)draggingDone:(int) driveNo operation:(NSDragOperation)operation
 {
-	int driveNo = [self tag];
-	
 	if (showUpperDrives)
 		driveNo += 4;
 
@@ -197,9 +177,11 @@ sourceOperationMaskForDraggingContext:(NSDraggingContext)context
     NSPasteboard *pboard;
     NSDragOperation sourceDragMask;
 	int driveNo;
+    id source;
 
     sourceDragMask = [sender draggingSourceOperationMask];
     pboard = [sender draggingPasteboard];
+    source = [sender draggingSource];
 
     /* Check for filenames type drag */
     if ( [[pboard types] containsObject:NSFilenamesPboardType] ) {
@@ -213,8 +195,10 @@ sourceOperationMaskForDraggingContext:(NSDraggingContext)context
 				driveNo = [self tag];
 			if (sourceDragMask & NSDragOperationCopy) {
 				strcpy(fileToCopy,SIO_filename[driveNo]);
-				}				
+				}
 			[[MediaManager sharedInstance] diskNoInsertFile:[files objectAtIndex:0]:driveNo];
+            if (sender)
+                [self draggingDone:[source tag] operation:sourceDragMask];
 			} 
 	   else if ([self tag] == 8)
 			[[MediaManager sharedInstance] cassInsertFile:[files objectAtIndex:0]]; 

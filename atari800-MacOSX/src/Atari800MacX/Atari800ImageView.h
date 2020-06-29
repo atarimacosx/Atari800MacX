@@ -12,6 +12,7 @@
 - (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender;
 - (BOOL)performDragOperation:(id <NSDraggingInfo>)sender;
 - (void)mouseDown:(NSEvent *)theEvent;
+- (void)draggingDone:(int) driveNo operation:(NSDragOperation)operation;
 
 @end
 
