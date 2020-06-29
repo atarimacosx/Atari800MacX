@@ -8,7 +8,7 @@
 #import <Cocoa/Cocoa.h>
 
 
-@interface LabelDataSource : NSObject {
+@interface LabelDataSource : NSObject <NSFileManagerDelegate> {
 	id owner;
 	int count;
 	BOOL dirty;

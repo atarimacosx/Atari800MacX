@@ -58,6 +58,7 @@ static AboutBox *sharedInstance = nil;
         NSDictionary *infoDictionary;
         CFBundleRef localInfoBundle;
         NSDictionary *localInfoDict;
+        NSError *err;
 
         if (![[NSBundle mainBundle] loadNibNamed:@"AboutBox" owner:self topLevelObjects:&top])
             {
@@ -93,9 +94,7 @@ static AboutBox *sharedInstance = nil;
         creditsPath = [[NSBundle mainBundle] pathForResource:@"Credits"
                                              ofType:@"html"];
 
-//        creditsString = [[NSMutableAttributedString alloc] initWithURL:[NSURL fileURLWithPath:creditsPath] options:nil documentAttributes:nil error:nil ];
-        creditsString = [[NSMutableAttributedString alloc] initWithPath:creditsPath
-                                                    documentAttributes:nil];
+        creditsString = [[NSMutableAttributedString alloc] initWithURL:[NSURL fileURLWithPath:creditsPath] options:@{} documentAttributes:NULL error:&err ];
         [creditsString addAttribute:NSForegroundColorAttributeName
               value: NSColor.controlTextColor
                               range: NSMakeRange( 0, creditsString.length-1)];

@@ -64,7 +64,7 @@ static char fileToCopy[FILENAME_MAX];
 			dragPosition = [self convertPoint:[theEvent locationInWindow]
 							fromView:nil];
 			dragPosition.x -= 32;
-			[self dragImage:dragImage 
+			[self dragImage:dragImage
 				at:dragPosition
 				offset:NSZeroSize
 				event:theEvent
