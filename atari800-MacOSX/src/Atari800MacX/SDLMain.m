@@ -70,14 +70,6 @@ void SDLMainSelectAll() {
 	[[[NSApp keyWindow] firstResponder] selectAll:NSApp];
 }
 
-void SDLMainCopy() {
-	[[[NSApp keyWindow] firstResponder] copy:NSApp];
-}
-
-void SDLMainPaste() {
-	[[[NSApp keyWindow] firstResponder] paste:NSApp];
-}
-
 void SDLMainActivate() {
 	[NSApp activateIgnoringOtherApps:YES];
 }

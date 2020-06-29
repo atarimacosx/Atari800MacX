@@ -223,8 +223,6 @@ extern int  SDLMainIsActive();
 extern void SDLMainLoadStartupFile(void);
 extern void SDLMainCloseWindow(void);
 extern void SDLMainSelectAll(void);
-extern void SDLMainCopy(void);
-extern void SDLMainPaste(void);
 extern void AboutBoxScroll(void);
 extern void Atari800WindowCreate(NSWindow *window);
 extern void Atari800OriginSet(void);
@@ -1913,8 +1911,6 @@ int Atari_Keyboard_International(void)
                     break;
                 case SDLK_c:
                     requestCopy = 1;
-                    //if (!FULLSCREEN)
-                    //    SDLMainCopy();
                     break;
             }
         }
