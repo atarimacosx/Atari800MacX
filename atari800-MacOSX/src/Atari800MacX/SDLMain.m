@@ -62,6 +62,10 @@ void SDLMainLoadStartupFile() {
     [SDLMain loadFile:[NSString stringWithCString:startupFile encoding:NSASCIIStringEncoding]];
 }
 
+void SDLMainLoadFile(char * file) {
+    [SDLMain loadFile:[NSString stringWithCString:file encoding:NSASCIIStringEncoding]];
+}
+
 void SDLMainCloseWindow() {
 	[[NSApp keyWindow] performClose:NSApp];
 }

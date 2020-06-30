@@ -221,6 +221,7 @@ extern int mioRequested;
 extern void SDLMainActivate(void);
 extern int  SDLMainIsActive();
 extern void SDLMainLoadStartupFile(void);
+extern void SDLMainLoadFile(char * file);
 extern void SDLMainCloseWindow(void);
 extern void SDLMainSelectAll(void);
 extern void AboutBoxScroll(void);
@@ -1579,6 +1580,9 @@ int Atari_Keyboard_International(void)
         int pollEvent;
         if ((pollEvent = SDL_PollEvent(&event))) {
             switch (event.type) {
+                case SDL_DROPFILE:
+                    SDLMainLoadFile(event.drop.file);
+                    break;
                 case SDL_TEXTINPUT:
                     kbhits = (Uint8 *) SDL_GetKeyboardState(NULL);
                     text_input = event.text.text;

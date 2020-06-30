@@ -135,32 +135,16 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "6D92088F-9110-46FA-A209-D75E9FCF6510"
-            shouldBeEnabled = "Yes"
+            uuid = "DD682E77-0C2D-4150-800B-ADB88968C7C2"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Atari800Window.m"
+            filePath = "atari_mac_sdl.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "124"
-            endingLineNumber = "124"
-            landmarkName = "-draggingEntered:"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "0F712392-E00C-47FF-A5DB-18F786852758"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Atari800Window.m"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "31"
-            endingLineNumber = "31"
-            landmarkName = "Atari800WindowCreate(window)"
+            startingLineNumber = "1585"
+            endingLineNumber = "1585"
+            landmarkName = "Atari_Keyboard_International()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
