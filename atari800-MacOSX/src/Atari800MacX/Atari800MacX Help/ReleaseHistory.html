@@ -23,12 +23,16 @@ Release History<br>
 
 <ul>
     <li>Updated application to use Apple's Metal API instead of OpenGL.  MacOS has depricated OpenGL, and this should help to future proof the program.</li>
+    <li>Readded Drag and Drop of disk, rom, cassette and XEX files to the main program screen.  This feature was in 4.x versions, but had been removed in 5.x versions.</li>
 </ul>
 
-<h5>Bugs Fixed:</h5>
+&nbsp;&nbsp; Bugs Fixed:<br>
 <ul>
     <li>Fixed issues with keypresses still being issued along with joystick/trigger motions when using Keyboard joyticks.</li>
     <li>Fixed a keyboard issue when using a Ctrl+Shift combination, where the shift key state was stuck to pressed after both keys were released. The shift will go back to unpressed only if another Ctrl key was pressed.</li>
+    <li>Replaced deprecated MacOS API calls, to ease porting to future MacOS versions.</li>
+    <li>Fixed issue with Disk Sector editor where after doing a Goto Disk sector, the up and down arrows used the old location.</li>
+
 </ul>
 <br>Version 5.0.4 Release 05-23-2020<br>&nbsp;
 
