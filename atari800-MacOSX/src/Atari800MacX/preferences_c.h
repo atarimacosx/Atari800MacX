@@ -65,7 +65,8 @@ typedef struct ATARI800MACX_PREF {
 				int enable16BitSound;
                 int enableConsoleSound; 
                 int enableSerioSound; 
-				int dontMuteAudio;
+                int dontMuteAudio;
+                int diskDriveSound;
 				int enableInternational;
                 int ignoreHeaderWriteprotect; 
 				int axlonBankMask;

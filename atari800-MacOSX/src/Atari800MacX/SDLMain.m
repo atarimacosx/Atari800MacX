@@ -47,6 +47,7 @@ static char startupDir[FILENAME_MAX];
 
 extern void PauseAudio(int pause);
 extern int dontMuteAudio;
+extern int diskDriveSound;
 extern int requestPrefsChange;
 extern int configurationChanged;
 

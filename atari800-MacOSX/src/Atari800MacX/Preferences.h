@@ -119,6 +119,7 @@
 #define Enable16BitSound @"Enable16BitSound"
 #define EnableConsoleSound @"EnableConsoleSound"
 #define EnableSerioSound @"EnableSerioSound"
+#define DiskDriveSound @"DiskDriveSound"
 #define DontMuteAudio @"DontMuteAudio"
 #define EnableMultijoy @"EnableMultijoy"
 #define IgnoreHeaderWriteprotect @"IgnoreHeaderWriteprotect"
@@ -342,6 +343,7 @@
     IBOutlet id consoleSoundEnableButton;
     IBOutlet id serioSoundEnableButton;
 	IBOutlet id muteAudioButton;
+    IBOutlet id diskDriveSoundButton;
     IBOutlet id exeFileDirField;
     IBOutlet id fullScreenMatrix;
     IBOutlet id fpsButton;

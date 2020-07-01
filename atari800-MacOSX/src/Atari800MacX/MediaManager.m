@@ -91,6 +91,7 @@ extern int Atari800_machine_type;
 extern int MEMORY_ram_size;
 extern int UI_alt_function;
 extern int requestFullScreenUI;
+extern int diskDriveSound;
 
 /* Arrays which define the cartridge types for each size */
 static int CART8KTYPES[] = {CARTRIDGE_STD_8, CARTRIDGE_5200_8, CARTRIDGE_RIGHT_8, CARTRIDGE_PHOENIX_8};
@@ -1071,7 +1072,8 @@ NSImage *disketteImage;
     filename = [self browseFileInDirectory:
                 [NSString stringWithCString:atari_disk_dirs[0] encoding:NSASCIIStringEncoding]];
     if (filename != nil) {
-        [[NSSound soundNamed:@"close810snd"] play];
+        if (diskDriveSound)
+            [[NSSound soundNamed:@"close810snd"] play];
         SIO_Dismount(diskNum + 1);
         if (Atari800_machine_type == Atari800_MACHINE_5200)
 			[self changeToComputer];
@@ -1108,7 +1110,8 @@ NSImage *disketteImage;
     
     readOnly = (SIO_drive_status[0] == SIO_READ_ONLY ? TRUE : FALSE);
     if (filename != nil) {
-        [[NSSound soundNamed:@"close810snd"] play];
+        if (diskDriveSound)
+            [[NSSound soundNamed:@"close810snd"] play];
         SIO_Dismount(1);
         if (Atari800_machine_type == Atari800_MACHINE_5200)
 			[self changeToComputer];
@@ -1133,7 +1136,8 @@ NSImage *disketteImage;
     
     readOnly = (SIO_drive_status[driveNo] == SIO_READ_ONLY ? TRUE : FALSE);
     if (filename != nil) {
-        [[NSSound soundNamed:@"close810snd"] play];
+        if (diskDriveSound)
+            [[NSSound soundNamed:@"close810snd"] play];
         SIO_Dismount(driveNo+1);
         if (Atari800_machine_type == Atari800_MACHINE_5200)
 			[self changeToComputer];
@@ -1166,7 +1170,8 @@ NSImage *disketteImage;
     readOnly = (SIO_drive_status[diskNum] == SIO_READ_ONLY ? TRUE : FALSE);
     filename = [self browseFileInDirectory:[NSString stringWithCString:atari_disk_dirs[0] encoding:NSASCIIStringEncoding]];
     if (filename != nil) {
-        [[NSSound soundNamed:@"close810snd"] play];
+        if (diskDriveSound)
+            [[NSSound soundNamed:@"close810snd"] play];
         SIO_Dismount(diskNum);
         if (Atari800_machine_type == Atari800_MACHINE_5200)
 			[self changeToComputer];
@@ -1193,7 +1198,8 @@ NSImage *disketteImage;
     if (FULLSCREEN)
         return;
     
-    [[NSSound soundNamed:@"open810snd"] play];
+    if (diskDriveSound)
+        [[NSSound soundNamed:@"open810snd"] play];
     SIO_Dismount(diskNum + 1);
     [self updateInfo];
 }
@@ -1207,7 +1213,8 @@ NSImage *disketteImage;
     if (FULLSCREEN)
         return;
     
-    [[NSSound soundNamed:@"open810snd"] play];
+    if (diskDriveSound)
+        [[NSSound soundNamed:@"open810snd"] play];
     SIO_Dismount(diskNum );
     [self updateInfo];
 }

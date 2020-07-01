@@ -51,6 +51,7 @@ extern EPSON_PREF prefsEpson;
 extern int FULLSCREEN;
 extern int UI_alt_function;
 extern int requestFullScreenUI;
+extern int diskDriveSound;
 
 extern char atari_config_dir[FILENAME_MAX];
 
@@ -289,8 +290,9 @@ static NSDictionary *defaultValues() {
 #endif
                 [NSNumber numberWithBool:YES], EnableConsoleSound, 
                 [NSNumber numberWithBool:YES], EnableSerioSound, 
-                [NSNumber numberWithBool:NO], DontMuteAudio, 
-                [NSNumber numberWithBool:NO], EnableInternational, 
+                [NSNumber numberWithBool:NO], DontMuteAudio,
+                [NSNumber numberWithBool:YES], DiskDriveSound,
+                [NSNumber numberWithBool:NO], EnableInternational,
                 [NSNumber numberWithBool:NO], EnableMultijoy, 
                 [NSNumber numberWithBool:NO], IgnoreHeaderWriteprotect,
                 [NSString stringWithCString:imageDirStr encoding:NSASCIIStringEncoding], ImageDir, 
@@ -791,6 +793,7 @@ static Preferences *sharedInstance = nil;
     [consoleSoundEnableButton setState:[[displayedValues objectForKey:EnableConsoleSound] boolValue] ? NSOnState : NSOffState];
     [serioSoundEnableButton setState:[[displayedValues objectForKey:EnableSerioSound] boolValue] ? NSOnState : NSOffState];
     [muteAudioButton setState:[[displayedValues objectForKey:DontMuteAudio] boolValue] ? NSOffState : NSOnState];
+    [diskDriveSoundButton setState:[[displayedValues objectForKey:DiskDriveSound] boolValue] ? NSOnState : NSOffState];
     [internationalKeyboardButton setState:[[displayedValues objectForKey:EnableInternational] boolValue] ? NSOnState : NSOffState];
     [internationalKeyboardButton setEnabled:NO]; // Always enabled on libSDL 2.0
     [enableMultijoyButton setState:[[displayedValues objectForKey:EnableMultijoy] boolValue] ? NSOnState : NSOffState];
@@ -2015,6 +2018,10 @@ static Preferences *sharedInstance = nil;
         [displayedValues setObject:yes forKey:DontMuteAudio];
     else
         [displayedValues setObject:no forKey:DontMuteAudio];
+    if ([diskDriveSoundButton state] == NSOnState)
+        [displayedValues setObject:yes forKey:DiskDriveSound];
+    else
+        [displayedValues setObject:no forKey:DiskDriveSound];
     if ([internationalKeyboardButton state] == NSOnState)
         [displayedValues setObject:yes forKey:EnableInternational];
     else
@@ -3229,6 +3236,7 @@ static Preferences *sharedInstance = nil;
   prefs->enableConsoleSound = [[curValues objectForKey:EnableConsoleSound] intValue];
   prefs->enableSerioSound = [[curValues objectForKey:EnableSerioSound] intValue];
   prefs->dontMuteAudio = [[curValues objectForKey:DontMuteAudio] intValue];
+  prefs->diskDriveSound = [[curValues objectForKey:DiskDriveSound] intValue];
   prefs->enableInternational = [[curValues objectForKey:EnableInternational] intValue];
   prefs->enableMultijoy = [[curValues objectForKey:EnableMultijoy] intValue];
   prefs->ignoreHeaderWriteprotect = [[curValues objectForKey:IgnoreHeaderWriteprotect] intValue];
@@ -4611,6 +4619,7 @@ static Preferences *sharedInstance = nil;
     getBoolDefault(EnableConsoleSound);
     getBoolDefault(EnableSerioSound);
     getBoolDefault(DontMuteAudio);
+    getBoolDefault(DiskDriveSound);
     getBoolDefault(EnableInternational);
     getBoolDefault(EnableMultijoy);
     getBoolDefault(IgnoreHeaderWriteprotect);
@@ -4871,6 +4880,7 @@ static Preferences *sharedInstance = nil;
     setBoolDefault(EnableConsoleSound);
     setBoolDefault(EnableSerioSound);
     setBoolDefault(DontMuteAudio);
+    setBoolDefault(DiskDriveSound);
     setBoolDefault(EnableInternational);
     setBoolDefault(EnableMultijoy);
     setBoolDefault(IgnoreHeaderWriteprotect);
@@ -5116,6 +5126,7 @@ static Preferences *sharedInstance = nil;
     setConfig(EnableConsoleSound);
     setConfig(EnableSerioSound);
     setConfig(DontMuteAudio);
+    setConfig(DiskDriveSound);
     setConfig(EnableInternational);
     setConfig(EnableMultijoy);
     setConfig(IgnoreHeaderWriteprotect);
@@ -5469,6 +5480,7 @@ static Preferences *sharedInstance = nil;
     getConfig(EnableConsoleSound);
     getConfig(EnableSerioSound);
     getConfig(DontMuteAudio);
+    getConfig(DiskDriveSound);
     getConfig(EnableInternational);
     getConfig(EnableMultijoy);
     getConfig(IgnoreHeaderWriteprotect);

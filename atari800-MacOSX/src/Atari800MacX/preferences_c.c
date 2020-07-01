@@ -190,6 +190,7 @@ int bbChanged;
 int bbRequested = FALSE;
 int mioRequested = FALSE;
 int dontMuteAudio = 0;
+int diskDriveSound = 1;
 
 int saveCurrentMedia = 1;
 int clearCurrentMedia = 0;
@@ -867,8 +868,9 @@ int loadMacPrefs(int firstTime)
     POKEYSND_stereo_enabled = prefs.enableStereo;
     POKEYSND_console_sound_enabled = prefs.enableConsoleSound;
     POKEYSND_serio_sound_enabled = prefs.enableSerioSound;
-	dontMuteAudio = prefs.dontMuteAudio;
-#if 0 /* enableHifiSound is deprecated from 4.2.2 on */    	
+    dontMuteAudio = prefs.dontMuteAudio;
+    diskDriveSound = prefs.diskDriveSound;
+#if 0 /* enableHifiSound is deprecated from 4.2.2 on */
     POKEYSND_enable_new_pokey = prefs.enableHifiSound;
 #endif	
 	if (firstTime) {
