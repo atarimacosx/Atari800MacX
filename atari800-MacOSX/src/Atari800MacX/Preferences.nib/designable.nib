@@ -1774,21 +1774,21 @@
                                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                         <size key="cellSize" width="167" height="18"/>
                                                         <size key="intercellSpacing" width="4" height="2"/>
-                                                        <buttonCell key="prototype" type="radio" title="Radio" imagePosition="leading" alignment="left" imageScaling="proportionallyDown" inset="2" id="13273">
+                                                        <buttonCell key="prototype" type="radio" title="Radio" imagePosition="leading" alignment="left" inset="2" id="13273">
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                             <font key="font" metaFont="system"/>
                                                         </buttonCell>
                                                         <cells>
                                                             <column>
-                                                                <buttonCell type="radio" title="No PBI Expansion" imagePosition="leading" alignment="left" state="on" imageScaling="proportionallyDown" inset="2" id="7954">
+                                                                <buttonCell type="radio" title="No PBI Expansion" imagePosition="leading" alignment="left" state="on" inset="2" id="7954">
                                                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                                     <font key="font" metaFont="system"/>
                                                                 </buttonCell>
-                                                                <buttonCell type="radio" title="Black Box" imagePosition="leading" alignment="left" tag="1" imageScaling="proportionallyDown" inset="2" id="7955">
+                                                                <buttonCell type="radio" title="Black Box" imagePosition="leading" alignment="left" tag="1" inset="2" id="7955">
                                                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                                     <font key="font" metaFont="system"/>
                                                                 </buttonCell>
-                                                                <buttonCell type="radio" title="MIO" imagePosition="leading" alignment="left" tag="2" imageScaling="proportionallyDown" inset="2" id="7957">
+                                                                <buttonCell type="radio" title="MIO" imagePosition="leading" alignment="left" tag="2" inset="2" id="7957">
                                                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                                     <font key="font" metaFont="system"/>
                                                                 </buttonCell>
@@ -2990,9 +2990,9 @@ Command Path for Hx: Devices
                             <tabViewItem label="Boot Media" identifier="2" id="489">
                                 <view key="view" id="485">
                                     <rect key="frame" x="10" y="33" width="791" height="390"/>
-                                    <autoresizingMask key="autoresizingMask"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <button verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="492">
+                                        <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="492">
                                             <rect key="frame" x="185" y="356" width="99" height="32"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <buttonCell key="cell" type="push" title="Floppy" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="13032">
@@ -3003,7 +3003,7 @@ Command Path for Hx: Devices
                                                 <action selector="browseD1File:" target="-2" id="554"/>
                                             </connections>
                                         </button>
-                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="487">
+                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="487">
                                             <rect key="frame" x="288" y="358" width="382" height="30"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="13031">
@@ -3015,7 +3015,7 @@ Command Path for Hx: Devices
                                                 <action selector="miscChanged:" target="-2" id="574"/>
                                             </connections>
                                         </textField>
-                                        <button imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="496">
+                                        <button fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="496">
                                             <rect key="frame" x="677" y="363" width="72" height="18"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <buttonCell key="cell" type="check" title="Enabled" bezelStyle="regularSquare" imagePosition="leading" alignment="left" inset="2" id="13033">
@@ -3026,7 +3026,7 @@ Command Path for Hx: Devices
                                                 <action selector="miscChanged:" target="-2" id="575"/>
                                             </connections>
                                         </button>
-                                        <button verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="497">
+                                        <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="497">
                                             <rect key="frame" x="185" y="325" width="99" height="32"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <buttonCell key="cell" type="push" title="Floppy" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="13034">
@@ -3037,7 +3037,7 @@ Command Path for Hx: Devices
                                                 <action selector="browseD2File:" target="-2" id="555"/>
                                             </connections>
                                         </button>
-                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="498">
+                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="498">
                                             <rect key="frame" x="288" y="327" width="382" height="30"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="13035">
@@ -3049,7 +3049,7 @@ Command Path for Hx: Devices
                                                 <action selector="miscChanged:" target="-2" id="573"/>
                                             </connections>
                                         </textField>
-                                        <button imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="499">
+                                        <button fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="499">
                                             <rect key="frame" x="677" y="334" width="72" height="18"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <buttonCell key="cell" type="check" title="Enabled" bezelStyle="regularSquare" imagePosition="leading" alignment="left" inset="2" id="13036">
@@ -3060,7 +3060,7 @@ Command Path for Hx: Devices
                                                 <action selector="miscChanged:" target="-2" id="576"/>
                                             </connections>
                                         </button>
-                                        <button verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="501">
+                                        <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="501">
                                             <rect key="frame" x="185" y="294" width="99" height="32"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <buttonCell key="cell" type="push" title="Floppy" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="13037">
@@ -3071,7 +3071,7 @@ Command Path for Hx: Devices
                                                 <action selector="browseD3File:" target="-2" id="556"/>
                                             </connections>
                                         </button>
-                                        <button imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="503">
+                                        <button fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="503">
                                             <rect key="frame" x="677" y="303" width="72" height="18"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <buttonCell key="cell" type="check" title="Enabled" bezelStyle="regularSquare" imagePosition="leading" alignment="left" inset="2" id="13038">
@@ -3082,7 +3082,7 @@ Command Path for Hx: Devices
                                                 <action selector="miscChanged:" target="-2" id="577"/>
                                             </connections>
                                         </button>
-                                        <button verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="504">
+                                        <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="504">
                                             <rect key="frame" x="185" y="263" width="99" height="32"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <buttonCell key="cell" type="push" title="Floppy" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="13039">
@@ -3093,7 +3093,7 @@ Command Path for Hx: Devices
                                                 <action selector="browseD4File:" target="-2" id="557"/>
                                             </connections>
                                         </button>
-                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="505">
+                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="505">
                                             <rect key="frame" x="288" y="265" width="382" height="30"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="13040">
@@ -3105,7 +3105,7 @@ Command Path for Hx: Devices
                                                 <action selector="miscChanged:" target="-2" id="571"/>
                                             </connections>
                                         </textField>
-                                        <button imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="506">
+                                        <button fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="506">
                                             <rect key="frame" x="677" y="272" width="72" height="18"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <buttonCell key="cell" type="check" title="Enabled" bezelStyle="regularSquare" imagePosition="leading" alignment="left" inset="2" id="13041">
@@ -3116,7 +3116,7 @@ Command Path for Hx: Devices
                                                 <action selector="miscChanged:" target="-2" id="578"/>
                                             </connections>
                                         </button>
-                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="508">
+                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="508">
                                             <rect key="frame" x="288" y="296" width="382" height="30"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="13042">
@@ -3128,7 +3128,7 @@ Command Path for Hx: Devices
                                                 <action selector="miscChanged:" target="-2" id="572"/>
                                             </connections>
                                         </textField>
-                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="513">
+                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="513">
                                             <rect key="frame" x="288" y="172" width="382" height="30"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="13044">
@@ -3140,7 +3140,7 @@ Command Path for Hx: Devices
                                                 <action selector="miscChanged:" target="-2" id="568"/>
                                             </connections>
                                         </textField>
-                                        <button imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="514">
+                                        <button fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="514">
                                             <rect key="frame" x="677" y="210" width="72" height="18"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <buttonCell key="cell" type="check" title="Enabled" bezelStyle="regularSquare" imagePosition="leading" alignment="left" inset="2" id="13045">
@@ -3151,7 +3151,7 @@ Command Path for Hx: Devices
                                                 <action selector="miscChanged:" target="-2" id="580"/>
                                             </connections>
                                         </button>
-                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="515">
+                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="515">
                                             <rect key="frame" x="288" y="141" width="382" height="30"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="13046">
@@ -3163,7 +3163,7 @@ Command Path for Hx: Devices
                                                 <action selector="miscChanged:" target="-2" id="567"/>
                                             </connections>
                                         </textField>
-                                        <button verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="516">
+                                        <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="516">
                                             <rect key="frame" x="185" y="232" width="99" height="32"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <buttonCell key="cell" type="push" title="Floppy" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="13047">
@@ -3174,7 +3174,7 @@ Command Path for Hx: Devices
                                                 <action selector="browseD5File:" target="-2" id="558"/>
                                             </connections>
                                         </button>
-                                        <button verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="517">
+                                        <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="517">
                                             <rect key="frame" x="185" y="170" width="99" height="32"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <buttonCell key="cell" type="push" title="Floppy" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="13048">
@@ -3185,7 +3185,7 @@ Command Path for Hx: Devices
                                                 <action selector="browseD7File:" target="-2" id="560"/>
                                             </connections>
                                         </button>
-                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="518">
+                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="518">
                                             <rect key="frame" x="288" y="234" width="382" height="30"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="13049">
@@ -3197,7 +3197,7 @@ Command Path for Hx: Devices
                                                 <action selector="miscChanged:" target="-2" id="570"/>
                                             </connections>
                                         </textField>
-                                        <button verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="519">
+                                        <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="519">
                                             <rect key="frame" x="185" y="201" width="99" height="32"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <buttonCell key="cell" type="push" title="Floppy" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="13050">
@@ -3208,7 +3208,7 @@ Command Path for Hx: Devices
                                                 <action selector="browseD6File:" target="-2" id="559"/>
                                             </connections>
                                         </button>
-                                        <button imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="520">
+                                        <button fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="520">
                                             <rect key="frame" x="677" y="148" width="72" height="18"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <buttonCell key="cell" type="check" title="Enabled" bezelStyle="regularSquare" imagePosition="leading" alignment="left" inset="2" id="13051">
@@ -3219,7 +3219,7 @@ Command Path for Hx: Devices
                                                 <action selector="miscChanged:" target="-2" id="582"/>
                                             </connections>
                                         </button>
-                                        <button verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="521">
+                                        <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="521">
                                             <rect key="frame" x="185" y="139" width="99" height="32"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <buttonCell key="cell" type="push" title="Floppy" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="13052">
@@ -3230,7 +3230,7 @@ Command Path for Hx: Devices
                                                 <action selector="browseD8File:" target="-2" id="561"/>
                                             </connections>
                                         </button>
-                                        <button imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="522">
+                                        <button fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="522">
                                             <rect key="frame" x="677" y="179" width="72" height="18"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <buttonCell key="cell" type="check" title="Enabled" bezelStyle="regularSquare" imagePosition="leading" alignment="left" inset="2" id="13053">
@@ -3241,7 +3241,7 @@ Command Path for Hx: Devices
                                                 <action selector="miscChanged:" target="-2" id="581"/>
                                             </connections>
                                         </button>
-                                        <button imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="524">
+                                        <button fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="524">
                                             <rect key="frame" x="677" y="241" width="72" height="18"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <buttonCell key="cell" type="check" title="Enabled" bezelStyle="regularSquare" imagePosition="leading" alignment="left" inset="2" id="13054">
@@ -3252,7 +3252,7 @@ Command Path for Hx: Devices
                                                 <action selector="miscChanged:" target="-2" id="579"/>
                                             </connections>
                                         </button>
-                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="525">
+                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="525">
                                             <rect key="frame" x="288" y="110" width="382" height="30"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="13055">
@@ -3264,7 +3264,7 @@ Command Path for Hx: Devices
                                                 <action selector="miscChanged:" target="-2" id="566"/>
                                             </connections>
                                         </textField>
-                                        <button imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="526">
+                                        <button fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="526">
                                             <rect key="frame" x="677" y="117" width="72" height="18"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <buttonCell key="cell" type="check" title="Enabled" bezelStyle="regularSquare" imagePosition="leading" alignment="left" inset="2" id="13056">
@@ -3275,7 +3275,7 @@ Command Path for Hx: Devices
                                                 <action selector="miscChanged:" target="-2" id="583"/>
                                             </connections>
                                         </button>
-                                        <button verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="527">
+                                        <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="527">
                                             <rect key="frame" x="187" y="108" width="99" height="32"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <buttonCell key="cell" type="push" title="Cartridge" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="13057">
@@ -3286,7 +3286,7 @@ Command Path for Hx: Devices
                                                 <action selector="browseCartFile:" target="-2" id="562"/>
                                             </connections>
                                         </button>
-                                        <button imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="529">
+                                        <button fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="529">
                                             <rect key="frame" x="677" y="55" width="72" height="18"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <buttonCell key="cell" type="check" title="Enabled" bezelStyle="regularSquare" imagePosition="leading" alignment="left" inset="2" id="13058">
@@ -3297,7 +3297,7 @@ Command Path for Hx: Devices
                                                 <action selector="miscChanged:" target="-2" id="584"/>
                                             </connections>
                                         </button>
-                                        <button verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="530">
+                                        <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="530">
                                             <rect key="frame" x="187" y="46" width="99" height="32"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <buttonCell key="cell" type="push" title="Exe File" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="13059">
@@ -3308,7 +3308,7 @@ Command Path for Hx: Devices
                                                 <action selector="browseExeFile:" target="-2" id="565"/>
                                             </connections>
                                         </button>
-                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="532">
+                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="532">
                                             <rect key="frame" x="288" y="48" width="382" height="30"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="13060">
@@ -3320,7 +3320,7 @@ Command Path for Hx: Devices
                                                 <action selector="miscChanged:" target="-2" id="564"/>
                                             </connections>
                                         </textField>
-                                        <button verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="659">
+                                        <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="659">
                                             <rect key="frame" x="187" y="15" width="99" height="32"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <buttonCell key="cell" type="push" title="Cassette" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="13061">
@@ -3331,7 +3331,7 @@ Command Path for Hx: Devices
                                                 <action selector="browseCassFile:" target="-2" id="663"/>
                                             </connections>
                                         </button>
-                                        <button imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="660">
+                                        <button fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="660">
                                             <rect key="frame" x="677" y="24" width="72" height="18"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <buttonCell key="cell" type="check" title="Enabled" bezelStyle="regularSquare" imagePosition="leading" alignment="left" inset="2" id="13062">
@@ -3342,7 +3342,7 @@ Command Path for Hx: Devices
                                                 <action selector="miscChanged:" target="-2" id="664"/>
                                             </connections>
                                         </button>
-                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="661">
+                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="661">
                                             <rect key="frame" x="288" y="17" width="382" height="30"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="13063">
@@ -3354,7 +3354,7 @@ Command Path for Hx: Devices
                                                 <action selector="miscChanged:" target="-2" id="662"/>
                                             </connections>
                                         </textField>
-                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="511">
+                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="511">
                                             <rect key="frame" x="288" y="203" width="382" height="30"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="13043">
@@ -3366,7 +3366,7 @@ Command Path for Hx: Devices
                                                 <action selector="miscChanged:" target="-2" id="569"/>
                                             </connections>
                                         </textField>
-                                        <button imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4279">
+                                        <button fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4279">
                                             <rect key="frame" x="15" y="-2" width="408" height="18"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <buttonCell key="cell" type="check" title="Start Emulator With Media Present When Emulator Last Exited" bezelStyle="regularSquare" imagePosition="leading" alignment="left" inset="2" id="13064">
@@ -3377,7 +3377,7 @@ Command Path for Hx: Devices
                                                 <action selector="miscChanged:" target="-2" id="4280"/>
                                             </connections>
                                         </button>
-                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="4307">
+                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4307">
                                             <rect key="frame" x="288" y="80" width="382" height="30"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="13065">
@@ -3386,7 +3386,7 @@ Command Path for Hx: Devices
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                         </textField>
-                                        <button imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4308">
+                                        <button fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4308">
                                             <rect key="frame" x="677" y="86" width="72" height="18"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <buttonCell key="cell" type="check" title="Enabled" bezelStyle="regularSquare" imagePosition="leading" alignment="left" inset="2" id="13066">
@@ -3397,7 +3397,7 @@ Command Path for Hx: Devices
                                                 <action selector="miscChanged:" target="-2" id="4313"/>
                                             </connections>
                                         </button>
-                                        <button verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4309">
+                                        <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4309">
                                             <rect key="frame" x="187" y="77" width="99" height="32"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <buttonCell key="cell" type="push" title="Cartridge2" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="13067">
@@ -3408,10 +3408,10 @@ Command Path for Hx: Devices
                                                 <action selector="browseCart2File:" target="-2" id="4312"/>
                                             </connections>
                                         </button>
-                                        <button imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="11638">
+                                        <button fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="11638">
                                             <rect key="frame" x="492" y="-2" width="309" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <buttonCell key="cell" type="check" title="Clear Media on Configuration Load" bezelStyle="regularSquare" imagePosition="leading" alignment="left" imageScaling="proportionallyDown" inset="2" id="13068">
+                                            <buttonCell key="cell" type="check" title="Clear Media on Configuration Load" bezelStyle="regularSquare" imagePosition="leading" alignment="left" inset="2" id="13068">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
@@ -3419,7 +3419,7 @@ Command Path for Hx: Devices
                                                 <action selector="miscChanged:" target="-2" id="11640"/>
                                             </connections>
                                         </button>
-                                        <button verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="12044">
+                                        <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="12044">
                                             <rect key="frame" x="3" y="201" width="173" height="32"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="push" title="Set To Current Media" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="13069">

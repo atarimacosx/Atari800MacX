@@ -197,7 +197,7 @@ sourceOperationMaskForDraggingContext:(NSDraggingContext)context
 				strcpy(fileToCopy,SIO_filename[driveNo]);
 				}
 			[[MediaManager sharedInstance] diskNoInsertFile:[files objectAtIndex:0]:driveNo];
-            if (sender)
+            if (source)
                 [self draggingDone:[source tag] operation:sourceDragMask];
 			} 
 	   else if ([self tag] == 8)
