@@ -315,6 +315,8 @@
 		2DEF29230FDCBE6E00660E07 /* PasteWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = 2DEF29210FDCBE6E00660E07 /* PasteWindow.h */; };
 		2DEF29240FDCBE6E00660E07 /* PasteWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DEF29220FDCBE6E00660E07 /* PasteWindow.m */; };
 		2DF39C950A07024E00206A1B /* statesav.c in Sources */ = {isa = PBXBuildFile; fileRef = 2DF39C940A07024E00206A1B /* statesav.c */; };
+		77324B9224AC2CC50007CB07 /* close810snd.wav in Resources */ = {isa = PBXBuildFile; fileRef = 77324B9024AC2CC50007CB07 /* close810snd.wav */; };
+		77324B9324AC2CC50007CB07 /* open810snd.wav in Resources */ = {isa = PBXBuildFile; fileRef = 77324B9124AC2CC50007CB07 /* open810snd.wav */; };
 		77A5A9D521EC3B440098C3A5 /* lock.png in Resources */ = {isa = PBXBuildFile; fileRef = 77A5A9D421EC3B430098C3A5 /* lock.png */; };
 /* End PBXBuildFile section */
 
@@ -601,6 +603,8 @@
 		2DFB2BC808A99F86004EF21F /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
 		2DFF9C7504008D8200A8C8B4 /* cycle_map.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = cycle_map.c; path = ../cycle_map.c; sourceTree = SOURCE_ROOT; };
 		2DFF9C7604008D8200A8C8B4 /* cycle_map.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = cycle_map.h; path = ../cycle_map.h; sourceTree = SOURCE_ROOT; };
+		77324B9024AC2CC50007CB07 /* close810snd.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = close810snd.wav; sourceTree = "<group>"; };
+		77324B9124AC2CC50007CB07 /* open810snd.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = open810snd.wav; sourceTree = "<group>"; };
 		77A5A9D421EC3B430098C3A5 /* lock.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lock.png; sourceTree = "<group>"; };
 		F507FF78034EB78801A8C8B4 /* doc.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = doc.icns; sourceTree = "<group>"; };
 		F5176916034BFE7501A8C8B4 /* Atari800MacX Help */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = folder; path = "Atari800MacX Help"; sourceTree = "<group>"; };
@@ -959,6 +963,8 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				77324B9024AC2CC50007CB07 /* close810snd.wav */,
+				77324B9124AC2CC50007CB07 /* open810snd.wav */,
 				77A5A9D421EC3B430098C3A5 /* lock.png */,
 				2D76732921EA8C1400D99B0E /* atari1020.png */,
 				2D76731521EA870700D99B0E /* atari810closed.png */,
@@ -1303,6 +1309,7 @@
 				2D76733721EA920000D99B0E /* cassetteoff.png in Resources */,
 				2D76731F21EA882000D99B0E /* atari810write.png in Resources */,
 				2DAEDB6009B69AED005FF181 /* Credits.html in Resources */,
+				77324B9324AC2CC50007CB07 /* open810snd.wav in Resources */,
 				2DAEDB6509B69AED005FF181 /* PrintOutput.nib in Resources */,
 				2D76730E21EA7F9A00D99B0E /* atari810off.png in Resources */,
 				2D76734121EA935F00D99B0E /* cartridgeon.png in Resources */,
@@ -1310,6 +1317,7 @@
 				2D76730B21EA791E00D99B0E /* Media.xcassets in Resources */,
 				2D76731321EA846800D99B0E /* atari810emtpy.png in Resources */,
 				2DAEDB6A09B69AED005FF181 /* PrintOutputConfirm.nib in Resources */,
+				77324B9224AC2CC50007CB07 /* close810snd.wav in Resources */,
 				2DAEDB6D09B69AED005FF181 /* SectorEditorWindow.nib in Resources */,
 				2D54B79310684FD800892FE1 /* go.png in Resources */,
 				2D9627A9106C3CC00081F384 /* Breakpoint.png in Resources */,
