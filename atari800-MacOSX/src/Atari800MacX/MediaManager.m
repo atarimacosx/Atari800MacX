@@ -1707,11 +1707,13 @@ NSImage *disketteImage;
 	if (SIO_drive_status[driveNo] == SIO_OFF) {
 		SIO_drive_status[driveNo] = SIO_NO_DISK;
         strcpy(SIO_filename[driveNo],"Empty");
+        [[NSSound soundNamed:@"open810snd"] play];
 		}
 	else {
 		if (SIO_drive_status[driveNo] == SIO_READ_ONLY || SIO_drive_status[driveNo] == SIO_READ_WRITE) 
 			SIO_Dismount(driveNo+1);
 		SIO_DisableDrive(driveNo+1);
+        [[NSSound soundNamed:@"close810snd"] play];
 		}
 	[self updateInfo];
 }
