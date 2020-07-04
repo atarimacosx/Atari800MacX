@@ -651,7 +651,7 @@ static int interFontTemplates[26][25][3] =
 - (void)checkAccums
 {
         if (xAccum < -999)
-                xAccum = 999;
+                xAccum = -999;
         if (xAccum > 999)
                 xAccum = 999;
         if (yAccum < -999)
