@@ -35,6 +35,8 @@
                 <outlet property="atari825FormLengthStepper" destination="4174" id="4182"/>
                 <outlet property="atariSwitchTypePulldown" destination="4257" id="4274"/>
                 <outlet property="atariTypePulldown" destination="335" id="393"/>
+                <outlet property="atasciiFormLengthField" destination="W0d-tG-mYV" id="Z8S-TH-JYZ"/>
+                <outlet property="atasciiFormLengthStepper" destination="BeO-Ut-zBP" id="Xj8-wr-0qP"/>
                 <outlet property="axlonMemSizePulldown" destination="7149" id="8365"/>
                 <outlet property="basicRomFileField" destination="363" id="406"/>
                 <outlet property="blackBoxRomFileField" destination="8353" id="8368"/>
@@ -1999,9 +2001,9 @@
                                                                             <menuItem title="US" state="on" id="4130"/>
                                                                             <menuItem title="France" id="4127"/>
                                                                             <menuItem title="UK" id="4131"/>
-                                                                            <menuItem title="Germany" state="on" id="4121"/>
-                                                                            <menuItem title="Italy" state="on" id="4132"/>
-                                                                            <menuItem title="Swed/Fin" state="on" id="4128"/>
+                                                                            <menuItem title="Germany" id="4121"/>
+                                                                            <menuItem title="Italy" id="4132"/>
+                                                                            <menuItem title="Swed/Fin" id="4128"/>
                                                                         </items>
                                                                     </menu>
                                                                 </popUpButtonCell>
@@ -2786,55 +2788,20 @@
                                                         <rect key="frame" x="10" y="33" width="736" height="246"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <subviews>
-                                                            <button fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bxk-j4-Whk">
-                                                                <rect key="frame" x="273" y="69" width="110" height="18"/>
-                                                                <autoresizingMask key="autoresizingMask"/>
-                                                                <buttonCell key="cell" type="check" title="Auto Linefeed" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="r42-yh-1et">
-                                                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                                    <font key="font" metaFont="system"/>
-                                                                </buttonCell>
-                                                                <connections>
-                                                                    <action selector="miscChanged:" target="-2" id="iMC-Dt-TUe"/>
-                                                                </connections>
-                                                            </button>
-                                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="iia-sy-3qw">
-                                                                <rect key="frame" x="188" y="158" width="114" height="17"/>
-                                                                <autoresizingMask key="autoresizingMask"/>
-                                                                <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" id="b8d-eL-IhN">
-                                                                    <font key="font" metaFont="system"/>
-                                                                    <string key="title">Character Set
-</string>
-                                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                                </textFieldCell>
-                                                            </textField>
-                                                            <popUpButton verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="u7d-Wa-R6s">
-                                                                <rect key="frame" x="306" y="152" width="135" height="26"/>
-                                                                <autoresizingMask key="autoresizingMask"/>
-                                                                <popUpButtonCell key="cell" type="push" title="US" bezelStyle="rounded" alignment="left" lineBreakMode="clipping" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="w9F-rU-frE" id="xEK-fR-fCs">
-                                                                    <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                                                    <font key="font" metaFont="system"/>
-                                                                    <menu key="menu" title="OtherViews" id="XHi-1Q-izh">
-                                                                        <items>
-                                                                            <menuItem title="US" state="on" id="w9F-rU-frE"/>
-                                                                            <menuItem title="France" id="kJh-l9-U2c"/>
-                                                                            <menuItem title="UK" id="c97-dY-VnV"/>
-                                                                            <menuItem title="Germany" state="on" id="pfK-RN-Gkw"/>
-                                                                            <menuItem title="Italy" state="on" id="cjL-bi-icN"/>
-                                                                            <menuItem title="Swed/Fin" state="on" id="S4U-Vn-jBc"/>
-                                                                        </items>
-                                                                    </menu>
-                                                                </popUpButtonCell>
-                                                                <connections>
-                                                                    <action selector="miscChanged:" target="-2" id="CMD-E0-L21"/>
-                                                                </connections>
-                                                            </popUpButton>
                                                             <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="BeO-Ut-zBP">
                                                                 <rect key="frame" x="352" y="111" width="19" height="27"/>
                                                                 <autoresizingMask key="autoresizingMask"/>
                                                                 <stepperCell key="cell" continuous="YES" alignment="left" minValue="2" maxValue="14" doubleValue="11" id="1zz-hZ-xCZ"/>
                                                                 <connections>
                                                                     <action selector="miscChanged:" target="-2" id="hLj-4W-rdG"/>
+                                                                </connections>
+                                                            </stepper>
+                                                            <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="SjG-CH-7SI">
+                                                                <rect key="frame" x="352" y="151" width="19" height="27"/>
+                                                                <autoresizingMask key="autoresizingMask"/>
+                                                                <stepperCell key="cell" continuous="YES" alignment="left" minValue="7" maxValue="24" doubleValue="7" id="sUs-AW-tKC"/>
+                                                                <connections>
+                                                                    <action selector="miscChanged:" target="-2" id="g30-qR-v6G"/>
                                                                 </connections>
                                                             </stepper>
                                                             <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="W0d-tG-mYV">
@@ -2857,15 +2824,24 @@
                                                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                 </textFieldCell>
                                                             </textField>
-                                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cdZ-J1-NKx">
-                                                                <rect key="frame" x="242" y="116" width="114" height="17"/>
+                                                            <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vqH-Sj-lPO">
+                                                                <rect key="frame" x="328" y="155" width="25" height="22"/>
                                                                 <autoresizingMask key="autoresizingMask"/>
-                                                                <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" id="DU0-rk-1ih">
+                                                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" drawsBackground="YES" id="Vo2-4g-H3d">
+                                                                    <numberFormatter key="formatter" formatterBehavior="10_0" positiveFormat="0" negativeFormat="-0" localizesFormat="NO" hasThousandSeparators="NO" thousandSeparator="," id="x5m-nb-Gbk">
+                                                                        <attributedString key="attributedStringForNil"/>
+                                                                        <attributedString key="attributedStringForNotANumber">
+                                                                            <fragment content="NaN"/>
+                                                                        </attributedString>
+                                                                        <attributedString key="attributedStringForZero">
+                                                                            <fragment content="0"/>
+                                                                        </attributedString>
+                                                                        <decimal key="minimum" value="2"/>
+                                                                        <decimal key="maximum" value="14"/>
+                                                                    </numberFormatter>
                                                                     <font key="font" metaFont="system"/>
-                                                                    <string key="title">Form Length
-</string>
-                                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                                    <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                 </textFieldCell>
                                                             </textField>
                                                             <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="FzE-IX-CkJ">
@@ -2877,13 +2853,44 @@
                                                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                 </textFieldCell>
                                                             </textField>
+                                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="jcT-RO-s4s">
+                                                                <rect key="frame" x="373" y="157" width="114" height="17"/>
+                                                                <autoresizingMask key="autoresizingMask"/>
+                                                                <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="points" id="p9q-li-hKz">
+                                                                    <font key="font" metaFont="system"/>
+                                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                                </textFieldCell>
+                                                            </textField>
+                                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="iia-sy-3qw">
+                                                                <rect key="frame" x="208" y="142" width="114" height="32"/>
+                                                                <autoresizingMask key="autoresizingMask"/>
+                                                                <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" id="b8d-eL-IhN">
+                                                                    <font key="font" metaFont="system"/>
+                                                                    <string key="title">Character Size
+</string>
+                                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                                </textFieldCell>
+                                                            </textField>
+                                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cdZ-J1-NKx">
+                                                                <rect key="frame" x="235" y="118" width="87" height="17"/>
+                                                                <autoresizingMask key="autoresizingMask"/>
+                                                                <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" id="DU0-rk-1ih">
+                                                                    <font key="font" metaFont="system"/>
+                                                                    <string key="title">Form Length
+</string>
+                                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                                </textFieldCell>
+                                                            </textField>
                                                         </subviews>
                                                     </view>
                                                 </tabViewItem>
                                             </tabViewItems>
                                         </tabView>
                                         <popUpButton verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4141">
-                                            <rect key="frame" x="335" y="296" width="135" height="26"/>
+                                            <rect key="frame" x="373" y="296" width="135" height="26"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <popUpButtonCell key="cell" type="push" title="Text" bezelStyle="rounded" alignment="left" lineBreakMode="clipping" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="4143" id="13136">
                                                 <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
@@ -2903,7 +2910,7 @@
                                             </connections>
                                         </popUpButton>
                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4148">
-                                            <rect key="frame" x="219" y="302" width="114" height="17"/>
+                                            <rect key="frame" x="257" y="302" width="114" height="17"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" id="13137">
                                                 <font key="font" metaFont="system"/>
@@ -5208,7 +5215,7 @@ DQ
             <connections>
                 <outlet property="initialFirstResponder" destination="261" id="469"/>
             </connections>
-            <point key="canvasLocation" x="279" y="142"/>
+            <point key="canvasLocation" x="278.5" y="141.5"/>
         </window>
         <window title="Identify Gamepad Buttons" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="1061" userLabel="Identify" customClass="Atari800GamepadWindow">
             <windowStyleMask key="styleMask" titled="YES"/>

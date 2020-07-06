@@ -10,6 +10,7 @@
 #import <Cocoa/Cocoa.h>
 #import "Atari825Simulator.h"
 #import "Atari1020Simulator.h"
+#import "AtasciiPrinter.h"
 #import "EpsonFX80Simulator.h"
 #import "preferences_c.h"
 
@@ -82,6 +83,7 @@
 #define Atari825AutoLinefeed @"Atari825AutoLinefeed"
 #define Atari1020PrintWidth @"Atari1020PrintWidth"
 #define Atari1020FormLength @"Atari1020FormLength"
+#define AtasciiFormLength @"AtasciiFormLength"
 #define Atari1020AutoLinefeed @"Atari825AutoLinefeed"
 #define Atari1020AutoPageAdjust @"Atari1020AutoPageAdjust"
 #define Atari1020Pen1Red @"Atari1020Pen1Red"
@@ -328,7 +330,9 @@
     IBOutlet id atari1020Pen4Red;
     IBOutlet id atari1020Pen4Green;
     IBOutlet id atari1020Pen4Blue;
-	IBOutlet id epsonCharSetPulldown;
+    IBOutlet id atasciiFormLengthField;
+    IBOutlet id atasciiFormLengthStepper;
+    IBOutlet id epsonCharSetPulldown;
 	IBOutlet id epsonPrintPitchPulldown;
 	IBOutlet id epsonPrintWeightPulldown;
 	IBOutlet id epsonFormLengthField;
@@ -585,6 +589,7 @@
 - (void)transferValuesToEmulator;
 - (void)transferValuesToAtari825;
 - (void)transferValuesToAtari1020;
+- (void)transferValuesToAtascii;
 - (void)transferValuesToEpson;
 - (NSPoint)mediaStatusOrigin;
 - (NSPoint)messagesOrigin;

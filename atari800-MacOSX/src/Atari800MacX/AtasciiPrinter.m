@@ -12,6 +12,8 @@ static float horizWidths[8] = {6,16};
 // Other constants
 #define ATARI825_LEFT_PRINT_EDGE            10.8
 
+ATASCII_PREF prefsAtascii;
+
 @implementation AtasciiPrinter
 static AtasciiPrinter *sharedInstance = nil;
 
@@ -64,7 +66,7 @@ static AtasciiPrinter *sharedInstance = nil;
            attributes:[NSDictionary dictionaryWithObjectsAndKeys:
                        styles[styleNum], NSFontAttributeName,
                        nil]];
-
+        
     [printBuffer appendAttributedString:newString];
 	
     //	Increment horizontal position by character width;
@@ -140,7 +142,6 @@ static AtasciiPrinter *sharedInstance = nil;
 	vertPosition += amount;
 	if (vertPosition < 0.0)
 		vertPosition = 0.0;
-	expandedMode = NO;
 	[self setStyle];
 	// Skip over the paper perferation.
 	if (skipOverPerf)
@@ -187,12 +188,8 @@ static AtasciiPrinter *sharedInstance = nil;
     startHorizPosition = leftMargin;
     nextHorizPosition = leftMargin;
     
-    lineSpacing = 12.0;
-    formLength = 72.0*12.0; //prefs825.formLength;
-    expandedMode = NO;
-    compressedMode = NO;
-    underlineMode = NO;
-    proportionalMode = NO;
+    lineSpacing = 7.0;
+    formLength = 72.0*72.0*prefsAtascii.formLength;
     horizWidth = horizWidths[style];
     skipOverPerf = 0;
     splitPerfSkip = NO;

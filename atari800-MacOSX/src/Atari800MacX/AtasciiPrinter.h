@@ -9,35 +9,21 @@
 #import "PrintableGraphics.h"
 #import "PrinterProtocol.h"
 
-#if 0
-typedef struct ATARI825_PREF {
-	int charSet; 
+typedef struct ATASCII_PREF {
     int formLength;
-    int autoLinefeed; 
-} ATARI825_PREF;
-#endif
+} ATASCII_PREF;
 
 @interface AtasciiPrinter : NSObject <PrinterProtocol> {
-	int state;
 	int style;
-	int pitch;
 	NSFont *styles[16];
 	float leftMargin;
 	float rightMargin;
-	float compressedRightMargin;
 	float startHorizPosition;
 	float nextHorizPosition;
 	float vertPosition;
-	bool autoLineFeed;
 	float lineSpacing;
 	float formLength;
-	bool expandedMode;
-	bool compressedMode;
-	bool underlineMode;
-	bool proportionalMode;
 	float horizWidth;
-	float propCharSetback;
-	int countryMode;
 	int skipOverPerf;
 	bool splitPerfSkip;
 
@@ -46,7 +32,6 @@ typedef struct ATARI825_PREF {
 
 + (AtasciiPrinter *)sharedInstance;
 - (void)addChar:(unsigned short)unicharacter;
-
 -(void)setStyle;
 -(void)emptyPrintBuffer;
 -(void)executeLineFeed:(float)amount;
