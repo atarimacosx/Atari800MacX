@@ -2336,14 +2336,20 @@ static void Devices_P_Write(void)
 		CPU_regY = 1;
 		CPU_ClrN;
 	}
-	else
-	{
-		if (byte == 0x9b)
-			byte = 0x0D;
-		
-		PrintOutputControllerPrintChar(byte);
-		CPU_regY = 1;
-		CPU_ClrN;
+    else if (currPrinter == 4)
+    {
+        PrintOutputControllerPrintChar(byte);
+        CPU_regY = 1;
+        CPU_ClrN;
+    }
+    else if (currPrinter == 4)
+    {
+        if (byte == 0x9b)
+            byte = 0x0D;
+        
+        PrintOutputControllerPrintChar(byte);
+        CPU_regY = 1;
+        CPU_ClrN;
     }
 #else
 	if (byte == 0x9b)

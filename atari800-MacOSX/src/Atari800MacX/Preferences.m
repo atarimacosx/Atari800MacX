@@ -1771,6 +1771,9 @@ static Preferences *sharedInstance = nil;
         case 3:
             [displayedValues setObject:three forKey:PrinterType];
             break;
+        case 4:
+            [displayedValues setObject:four forKey:PrinterType];
+            break;
 		}
 	[printerTabView selectTabViewItemAtIndex:[printerTypePulldown indexOfSelectedItem]];
     switch([atari825CharSetPulldown indexOfSelectedItem]) {
@@ -3576,6 +3579,9 @@ static Preferences *sharedInstance = nil;
             break;
         case 3:
             [displayedValues setObject:three forKey:PrinterType];
+            break;
+        case 4:
+            [displayedValues setObject:four forKey:PrinterType];
             break;
 		}
     switch(prefssave->artifactingMode) {

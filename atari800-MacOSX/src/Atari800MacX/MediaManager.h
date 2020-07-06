@@ -68,6 +68,8 @@
 	IBOutlet id selectAtari1020MenuItem;
 	IBOutlet id selectEpsonItem;
 	IBOutlet id selectEpsonMenuItem;
+    IBOutlet id selectAtasciiItem;
+    IBOutlet id selectAtasciiMenuItem;
 	IBOutlet id resetPrinterItem;
 	IBOutlet id resetPrinterMenuItem;
     IBOutlet id errorButton;

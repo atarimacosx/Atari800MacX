@@ -117,7 +117,7 @@
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="104" y="218" width="675" height="399"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1027"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
             <value key="minSize" type="size" width="81" height="2"/>
             <view key="contentView" id="202">
                 <rect key="frame" x="0.0" y="0.0" width="675" height="399"/>
@@ -154,7 +154,7 @@ DQ
                         <rect key="frame" x="104" y="232" width="414" height="34"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="1690">
-                            <font key="font" metaFont="menu" size="11"/>
+                            <font key="font" metaFont="message" size="11"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -202,7 +202,7 @@ DQ
                         <rect key="frame" x="104" y="267" width="414" height="34"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="1694">
-                            <font key="font" metaFont="menu" size="11"/>
+                            <font key="font" metaFont="message" size="11"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -211,7 +211,7 @@ DQ
                         <rect key="frame" x="104" y="162" width="414" height="34"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="1695">
-                            <font key="font" metaFont="menu" size="11"/>
+                            <font key="font" metaFont="message" size="11"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -233,7 +233,7 @@ DQ
                         <rect key="frame" x="104" y="337" width="414" height="34"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="1697">
-                            <font key="font" metaFont="menu" size="11"/>
+                            <font key="font" metaFont="message" size="11"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -281,7 +281,7 @@ DQ
                         <rect key="frame" x="104" y="197" width="414" height="34"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="1701">
-                            <font key="font" metaFont="menu" size="11"/>
+                            <font key="font" metaFont="message" size="11"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -290,7 +290,7 @@ DQ
                         <rect key="frame" x="104" y="92" width="414" height="34"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="1702">
-                            <font key="font" metaFont="menu" size="11"/>
+                            <font key="font" metaFont="message" size="11"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -299,7 +299,7 @@ DQ
                         <rect key="frame" x="104" y="127" width="414" height="34"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="1703">
-                            <font key="font" metaFont="menu" size="11"/>
+                            <font key="font" metaFont="message" size="11"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -308,7 +308,7 @@ DQ
                         <rect key="frame" x="104" y="302" width="414" height="34"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="1704">
-                            <font key="font" metaFont="menu" size="11"/>
+                            <font key="font" metaFont="message" size="11"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -672,7 +672,7 @@ DQ
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="629" y="179" width="323" height="428"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1027"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
             <value key="minSize" type="size" width="81" height="2"/>
             <view key="contentView" id="374">
                 <rect key="frame" x="0.0" y="0.0" width="323" height="428"/>
@@ -895,7 +895,7 @@ Gw
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="201" y="454" width="386" height="122"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1027"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
             <value key="minSize" type="size" width="81" height="2"/>
             <view key="contentView" id="539">
                 <rect key="frame" x="0.0" y="0.0" width="386" height="122"/>
@@ -937,7 +937,7 @@ DQ
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="294" y="260" width="330" height="152"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1027"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
             <value key="minSize" type="size" width="81" height="2"/>
             <view key="contentView" id="564">
                 <rect key="frame" x="0.0" y="0.0" width="330" height="152"/>
@@ -1010,7 +1010,7 @@ Gw
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="328" y="246" width="335" height="211"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1027"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
             <value key="minSize" type="size" width="81" height="2"/>
             <view key="contentView" id="571">
                 <rect key="frame" x="0.0" y="0.0" width="335" height="211"/>
@@ -1095,7 +1095,7 @@ Gw
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="313" y="273" width="330" height="184"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1027"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
             <value key="minSize" type="size" width="81" height="2"/>
             <view key="contentView" id="587">
                 <rect key="frame" x="0.0" y="0.0" width="330" height="184"/>
@@ -1176,7 +1176,7 @@ Gw
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="304" y="169" width="338" height="203"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1027"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
             <value key="minSize" type="size" width="81" height="2"/>
             <view key="contentView" id="603">
                 <rect key="frame" x="0.0" y="0.0" width="338" height="203"/>
@@ -1261,7 +1261,7 @@ Gw
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="220" y="299" width="333" height="114"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1027"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
             <value key="minSize" type="size" width="81" height="2"/>
             <view key="contentView" id="613">
                 <rect key="frame" x="0.0" y="0.0" width="333" height="114"/>
@@ -1326,7 +1326,7 @@ Gw
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="192" y="332" width="340" height="135"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1027"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
             <value key="minSize" type="size" width="81" height="2"/>
             <view key="contentView" id="624">
                 <rect key="frame" x="0.0" y="0.0" width="340" height="135"/>
@@ -1395,7 +1395,7 @@ Gw
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="641" y="313" width="346" height="138"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1027"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
             <value key="minSize" type="size" width="81" height="2"/>
             <view key="contentView" id="629">
                 <rect key="frame" x="0.0" y="0.0" width="346" height="138"/>
@@ -1464,7 +1464,7 @@ Gw
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="384" y="337" width="334" height="174"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1027"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
             <value key="minSize" type="size" width="81" height="2"/>
             <view key="contentView" id="654">
                 <rect key="frame" x="0.0" y="0.0" width="334" height="174"/>
@@ -1544,7 +1544,7 @@ Gw
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="251" y="82" width="348" height="137"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1027"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
             <value key="minSize" type="size" width="81" height="2"/>
             <view key="contentView" id="695">
                 <rect key="frame" x="0.0" y="0.0" width="348" height="137"/>
@@ -1616,7 +1616,7 @@ Gw
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="632" y="501" width="386" height="122"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1027"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
             <value key="minSize" type="size" width="81" height="2"/>
             <view key="contentView" id="722">
                 <rect key="frame" x="0.0" y="0.0" width="386" height="122"/>
@@ -1666,7 +1666,7 @@ DQ
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="94" y="485" width="800" height="111"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1027"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
             <value key="minSize" type="size" width="153.75999999999999" height="5"/>
             <view key="contentView" id="744">
                 <rect key="frame" x="0.0" y="0.0" width="800" height="111"/>
@@ -2207,7 +2207,7 @@ DQ
                     <popUpButton fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1158">
                         <rect key="frame" x="623" y="39" width="69" height="21"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <popUpButtonCell key="cell" type="bevel" title="Select" bezelStyle="regularSquare" alignment="left" controlSize="small" lineBreakMode="clipping" borderStyle="borderAndBezel" inset="2" pullsDown="YES" preferredEdge="maxY" selectedItem="1161" id="1816">
+                        <popUpButtonCell key="cell" type="bevel" title="Select" bezelStyle="regularSquare" alignment="left" controlSize="small" lineBreakMode="clipping" borderStyle="borderAndBezel" inset="2" pullsDown="YES" preferredEdge="maxY" id="1816">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="message" size="11"/>
                             <menu key="menu" title="OtherViews" id="1160">
@@ -2231,6 +2231,11 @@ DQ
                                     <menuItem title="Epson FX-80" tag="3" id="1159">
                                         <connections>
                                             <action selector="onSelectPrinter:" target="1168" id="1179"/>
+                                        </connections>
+                                    </menuItem>
+                                    <menuItem title="ATASCII Printer" tag="4" id="kye-zg-wSd">
+                                        <connections>
+                                            <action selector="onSelectPrinter:" target="1168" id="Qmm-IV-Huf"/>
                                         </connections>
                                     </menuItem>
                                     <menuItem isSeparatorItem="YES" id="1165">
@@ -2416,7 +2421,7 @@ DQ
                     </button>
                 </subviews>
             </view>
-            <point key="canvasLocation" x="-120" y="2604"/>
+            <point key="canvasLocation" x="-119" y="2433"/>
         </window>
         <customObject id="1168" userLabel="PrintOutputController" customClass="PrintOutputController"/>
         <view id="952">
