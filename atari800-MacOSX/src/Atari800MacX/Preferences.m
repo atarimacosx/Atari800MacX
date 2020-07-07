@@ -1892,9 +1892,6 @@ static Preferences *sharedInstance = nil;
         case 1:
             [displayedValues setObject:one forKey:AtasciiCharSet];
             break;
-        case 2:
-            [displayedValues setObject:two forKey:AtasciiCharSet];
-            break;
         }
 
     switch([epsonCharSetPulldown indexOfSelectedItem]) {

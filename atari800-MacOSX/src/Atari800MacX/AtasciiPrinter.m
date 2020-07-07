@@ -30,7 +30,7 @@ static AtasciiPrinter *sharedInstance = nil;
 	
     sharedInstance = self;
 	
-    styles[0] = [[NSFont fontWithName : @"AtariClassic-Regular" size : 7] retain];
+    styles[0] = [[NSFont fontWithName : @"AtariClassic-Regular" size : prefsAtascii.charSize] retain];
 
     styles[1] = [[NSFont fontWithName : @"AtariClassic-Regular" size : 16] retain];
 						
@@ -188,7 +188,7 @@ static AtasciiPrinter *sharedInstance = nil;
     startHorizPosition = leftMargin;
     nextHorizPosition = leftMargin;
     
-    lineSpacing = 7.0;
+    lineSpacing = prefsAtascii.charSize + prefsAtascii.lineGap;
     formLength = 72.0*72.0*prefsAtascii.formLength;
     horizWidth = horizWidths[style];
     skipOverPerf = 0;
