@@ -11,6 +11,9 @@
 
 typedef struct ATASCII_PREF {
     int formLength;
+    int charSet;
+    int charSize;
+    int lineGap;
 } ATASCII_PREF;
 
 @interface AtasciiPrinter : NSObject <PrinterProtocol> {
