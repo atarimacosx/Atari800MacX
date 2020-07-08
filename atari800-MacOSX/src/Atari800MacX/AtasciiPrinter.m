@@ -47,8 +47,8 @@ static AtasciiPrinter *sharedInstance = nil;
 
     if (prefsAtascii.charSet == 0)
         unicharacter = unicharacter + 0xE000;
-    //else
-      //  unicharacter = unicharacter + //0xE100;
+    else
+        unicharacter = unicharacter + 0xE100;
 
     if ((unsigned char) character == 0x9b)
         [self executeLineFeed];
@@ -184,7 +184,7 @@ static AtasciiPrinter *sharedInstance = nil;
 }
 
 - (void)reset {
-    style = 0;
+    [self setStyle];
     rightMargin = 576.0 + ATARI825_LEFT_PRINT_EDGE;
     leftMargin = 0.0 + ATARI825_LEFT_PRINT_EDGE;
     startHorizPosition = leftMargin;
@@ -193,7 +193,7 @@ static AtasciiPrinter *sharedInstance = nil;
     lineSpacing = prefsAtascii.charSize + prefsAtascii.lineGap;
     formLength = 72.0*prefsAtascii.formLength;
     horizWidth = prefsAtascii.charSize;
-    skipOverPerf = 0;
+    skipOverPerf = 1;
     splitPerfSkip = NO;
     if (splitPerfSkip == NO)
         vertPosition = 0.0;
