@@ -75,7 +75,7 @@ static AtasciiPrinter *sharedInstance = nil;
 	
     currRightMargin = rightMargin;
 				
-	if (nextHorizPosition >= currRightMargin) 
+	if (nextHorizPosition + horizWidth >= currRightMargin) 
 		{
 			[self executeLineFeed:lineSpacing];            // move to next line
 		}
@@ -145,7 +145,7 @@ static AtasciiPrinter *sharedInstance = nil;
 	// Skip over the paper perferation.
 	if (skipOverPerf)
 		{
-		posOnPage = vertPosition -  (((int) (vertPosition/formLength)) * formLength);
+		posOnPage = vertPosition -  (((int) (vertPosition/formLength)) * formLength) + lineSpacing;
 		if (splitPerfSkip == NO)
 			linesToSkip = skipOverPerf;
 		else
@@ -191,7 +191,7 @@ static AtasciiPrinter *sharedInstance = nil;
     formLength = 72.0*prefsAtascii.formLength;
     horizWidth = prefsAtascii.charSize;
     skipOverPerf = 1;
-    splitPerfSkip = NO;
+    splitPerfSkip = YES;
     if (splitPerfSkip == NO)
         vertPosition = 0.0;
     else
