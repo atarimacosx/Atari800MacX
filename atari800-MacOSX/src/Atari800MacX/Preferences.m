@@ -3840,6 +3840,7 @@ static Preferences *sharedInstance = nil;
     [self transferValuesToEmulator];
     [self transferValuesToAtari825];
     [self transferValuesToAtari1020];
+    [self transferValuesToAtascii];
     [self transferValuesToEpson];
     requestPrefsChange = 1;
     PauseAudio(0);
@@ -3865,6 +3866,7 @@ static Preferences *sharedInstance = nil;
     [self transferValuesToEmulator];
     [self transferValuesToAtari825];
     [self transferValuesToAtari1020];
+    [self transferValuesToAtascii];
     [self transferValuesToEpson];
     requestPrefsChange = 1;
     PauseAudio(0);
@@ -5404,6 +5406,7 @@ static Preferences *sharedInstance = nil;
     [self transferValuesToAtari825];
     [self transferValuesToAtari1020];
     [self transferValuesToEpson];
+    [self transferValuesToAtascii];
     requestPrefsChange = 1;
 }
 
@@ -5420,6 +5423,7 @@ static Preferences *sharedInstance = nil;
     [self transferValuesToAtari825];
     [self transferValuesToAtari1020];
     [self transferValuesToEpson];
+    [self transferValuesToAtascii];
     requestPrefsChange = 1;
 	configurationChanged = 1;
 }
