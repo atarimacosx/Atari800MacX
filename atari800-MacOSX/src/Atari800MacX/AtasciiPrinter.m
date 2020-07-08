@@ -7,8 +7,6 @@
 #import "AtasciiPrinter.h"
 #import "PrintOutputController.h"
 
-static float horizWidths[8] = {6,16};
-
 // Other constants
 #define ATARI825_LEFT_PRINT_EDGE            10.8
 
@@ -22,6 +20,8 @@ static AtasciiPrinter *sharedInstance = nil;
 }
 
 - (id)init {
+    int size;
+    
     if (sharedInstance) {
 		[self dealloc];
     } else {
@@ -30,10 +30,9 @@ static AtasciiPrinter *sharedInstance = nil;
 	
     sharedInstance = self;
 	
-    styles[0] = [[NSFont fontWithName : @"AtariClassic-Regular" size : prefsAtascii.charSize] retain];
+    for (size = 7; size <= 24; size++)
+        styles[size - 7] = [[NSFont fontWithName : @"AtariClassic-Regular" size : prefsAtascii.charSize] retain];
 
-    styles[1] = [[NSFont fontWithName : @"AtariClassic-Regular" size : 16] retain];
-						
 	printBuffer = [[PrintableString alloc] init];
 	[printBuffer retain];
 	
@@ -46,7 +45,10 @@ static AtasciiPrinter *sharedInstance = nil;
 {
     unsigned short unicharacter = (unsigned short) ((unsigned char) character);
 
-    unicharacter = unicharacter + 0xE000;
+    if (prefsAtascii.charSet == 0)
+        unicharacter = unicharacter + 0xE000;
+    //else
+      //  unicharacter = unicharacter + //0xE100;
 
     if ((unsigned char) character == 0x9b)
         [self executeLineFeed];
@@ -85,7 +87,7 @@ static AtasciiPrinter *sharedInstance = nil;
 
 -(void)setStyle
 {
-    style = 0;
+    style = prefsAtascii.charSize - 7;
 }
 
 -(void)emptyPrintBuffer
@@ -189,8 +191,8 @@ static AtasciiPrinter *sharedInstance = nil;
     nextHorizPosition = leftMargin;
     
     lineSpacing = prefsAtascii.charSize + prefsAtascii.lineGap;
-    formLength = 72.0*72.0*prefsAtascii.formLength;
-    horizWidth = horizWidths[style];
+    formLength = 72.0*prefsAtascii.formLength;
+    horizWidth = prefsAtascii.charSize;
     skipOverPerf = 0;
     splitPerfSkip = NO;
     if (splitPerfSkip == NO)

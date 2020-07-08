@@ -2954,7 +2954,7 @@
                                                                     <font key="font" metaFont="system"/>
                                                                     <menu key="menu" title="OtherViews" id="0fy-re-L5b">
                                                                         <items>
-                                                                            <menuItem title="Original" state="on" keyEquivalent="O" id="hfi-Im-M4g">
+                                                                            <menuItem title="Original" state="on" id="hfi-Im-M4g">
                                                                                 <modifierMask key="keyEquivalentModifierMask"/>
                                                                             </menuItem>
                                                                             <menuItem title="International" id="v4J-1w-Kh4"/>

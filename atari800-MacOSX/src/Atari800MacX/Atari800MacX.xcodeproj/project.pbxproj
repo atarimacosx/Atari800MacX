@@ -30,6 +30,8 @@
 		2D0CA96924B16A410089AC88 /* AtariClassic-Regular.ttf in CopyFiles */ = {isa = PBXBuildFile; fileRef = 2D0CA96624B1689E0089AC88 /* AtariClassic-Regular.ttf */; };
 		2D0CA96C24B176360089AC88 /* AtasciiPrinter.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D0CA96A24B176360089AC88 /* AtasciiPrinter.m */; };
 		2D0CA96D24B176360089AC88 /* AtasciiPrinter.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D0CA96B24B176360089AC88 /* AtasciiPrinter.h */; };
+		2D0CA96F24B534ED0089AC88 /* Atari Classic Smooth.suit in Resources */ = {isa = PBXBuildFile; fileRef = 2D0CA96E24B534ED0089AC88 /* Atari Classic Smooth.suit */; };
+		2D0CA97024B535140089AC88 /* Atari Classic Smooth.suit in CopyFiles */ = {isa = PBXBuildFile; fileRef = 2D0CA96E24B534ED0089AC88 /* Atari Classic Smooth.suit */; };
 		2D14CDFF0FFEEEDF00E60EAA /* copydata.c in Sources */ = {isa = PBXBuildFile; fileRef = 2D14CDFD0FFEEEDF00E60EAA /* copydata.c */; };
 		2D16680C0F51E0A400A78B94 /* akey.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D16680B0F51E0A400A78B94 /* akey.h */; };
 		2D1668170F51F07000A78B94 /* esc.c in Sources */ = {isa = PBXBuildFile; fileRef = 2D1668150F51F07000A78B94 /* esc.c */; };
@@ -331,6 +333,7 @@
 			dstPath = Fonts;
 			dstSubfolderSpec = 7;
 			files = (
+				2D0CA97024B535140089AC88 /* Atari Classic Smooth.suit in CopyFiles */,
 				2D0CA96924B16A410089AC88 /* AtariClassic-Regular.ttf in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -399,6 +402,7 @@
 		2D0CA96624B1689E0089AC88 /* AtariClassic-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "AtariClassic-Regular.ttf"; sourceTree = "<group>"; };
 		2D0CA96A24B176360089AC88 /* AtasciiPrinter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AtasciiPrinter.m; sourceTree = "<group>"; };
 		2D0CA96B24B176360089AC88 /* AtasciiPrinter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AtasciiPrinter.h; sourceTree = "<group>"; };
+		2D0CA96E24B534ED0089AC88 /* Atari Classic Smooth.suit */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "Atari Classic Smooth.suit"; sourceTree = "<group>"; };
 		2D0FC28A08C550D0002D1327 /* compfile.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = compfile.h; path = ../compfile.h; sourceTree = SOURCE_ROOT; };
 		2D10A79609B0E209001F913C /* rdevice.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = rdevice.c; path = ../rdevice.c; sourceTree = SOURCE_ROOT; };
 		2D10A79709B0E209001F913C /* rdevice.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = rdevice.h; path = ../rdevice.h; sourceTree = SOURCE_ROOT; };
@@ -1039,6 +1043,7 @@
 			isa = PBXGroup;
 			children = (
 				2D0CA96624B1689E0089AC88 /* AtariClassic-Regular.ttf */,
+				2D0CA96E24B534ED0089AC88 /* Atari Classic Smooth.suit */,
 			);
 			path = Fonts;
 			sourceTree = "<group>";
@@ -1348,6 +1353,7 @@
 				2D76730B21EA791E00D99B0E /* Media.xcassets in Resources */,
 				2D76731321EA846800D99B0E /* atari810emtpy.png in Resources */,
 				2DAEDB6A09B69AED005FF181 /* PrintOutputConfirm.nib in Resources */,
+				2D0CA96F24B534ED0089AC88 /* Atari Classic Smooth.suit in Resources */,
 				77324B9224AC2CC50007CB07 /* close810snd.wav in Resources */,
 				2DAEDB6D09B69AED005FF181 /* SectorEditorWindow.nib in Resources */,
 				2D54B79310684FD800892FE1 /* go.png in Resources */,
