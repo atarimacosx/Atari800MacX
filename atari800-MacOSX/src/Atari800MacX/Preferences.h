@@ -84,7 +84,6 @@
 #define Atari1020PrintWidth @"Atari1020PrintWidth"
 #define Atari1020FormLength @"Atari1020FormLength"
 #define AtasciiFormLength @"AtasciiFormLength"
-#define AtasciiCharSet @"AtasciiCharSet"
 #define AtasciiCharSize @"AtasciiCharSize"
 #define AtasciiLineGap @"AtasciiLineGap"
 #define Atari1020AutoLinefeed @"Atari825AutoLinefeed"
@@ -335,7 +334,6 @@
     IBOutlet id atari1020Pen4Blue;
     IBOutlet id atasciiFormLengthField;
     IBOutlet id atasciiFormLengthStepper;
-    IBOutlet id atasciiCharSetPulldown;
     IBOutlet id atasciiCharSizeField;
     IBOutlet id atasciiCharSizeStepper;
     IBOutlet id atasciiLineGapField;

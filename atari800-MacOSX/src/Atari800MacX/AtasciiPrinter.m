@@ -45,10 +45,7 @@ static AtasciiPrinter *sharedInstance = nil;
 {
     unsigned short unicharacter = (unsigned short) ((unsigned char) character);
 
-    if (prefsAtascii.charSet == 0)
-        unicharacter = unicharacter + 0xE000;
-    else
-        unicharacter = unicharacter + 0xE100;
+    unicharacter = unicharacter + 0xE000;
 
     if ((unsigned char) character == 0x9b)
         [self executeLineFeed];

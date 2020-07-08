@@ -35,7 +35,6 @@
                 <outlet property="atari825FormLengthStepper" destination="4174" id="4182"/>
                 <outlet property="atariSwitchTypePulldown" destination="4257" id="4274"/>
                 <outlet property="atariTypePulldown" destination="335" id="393"/>
-                <outlet property="atasciiCharSetPulldown" destination="CeF-cF-n2U" id="uhp-Nx-nFN"/>
                 <outlet property="atasciiCharSizeField" destination="vqH-Sj-lPO" id="ZV8-9K-8m5"/>
                 <outlet property="atasciiCharSizeStepper" destination="SjG-CH-7SI" id="gJo-tn-Enl"/>
                 <outlet property="atasciiFormLengthField" destination="W0d-tG-mYV" id="Z8S-TH-JYZ"/>
@@ -1191,7 +1190,7 @@
                                                         <rect key="frame" x="417" y="124" width="284" height="13"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="(Note: Actual Atari does not work this way)" id="12892">
-                                                            <font key="font" metaFont="system" size="10"/>
+                                                            <font key="font" metaFont="menu" size="10"/>
                                                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                         </textFieldCell>
@@ -1408,7 +1407,7 @@
                                             <rect key="frame" x="221" y="23" width="399" height="39"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" id="13284">
-                                                <font key="font" metaFont="system" size="10"/>
+                                                <font key="font" metaFont="menu" size="10"/>
                                                 <string key="title">&lt;--(Warning:  Changing this does not take effect until application is restarted)
 </string>
                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -2794,7 +2793,7 @@
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <subviews>
                                                             <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="BeO-Ut-zBP">
-                                                                <rect key="frame" x="377" y="62" width="19" height="27"/>
+                                                                <rect key="frame" x="377" y="79" width="19" height="27"/>
                                                                 <autoresizingMask key="autoresizingMask"/>
                                                                 <stepperCell key="cell" continuous="YES" alignment="left" minValue="2" maxValue="14" doubleValue="11" id="1zz-hZ-xCZ"/>
                                                                 <connections>
@@ -2802,7 +2801,7 @@
                                                                 </connections>
                                                             </stepper>
                                                             <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="SjG-CH-7SI">
-                                                                <rect key="frame" x="377" y="135" width="19" height="27"/>
+                                                                <rect key="frame" x="377" y="152" width="19" height="27"/>
                                                                 <autoresizingMask key="autoresizingMask"/>
                                                                 <stepperCell key="cell" continuous="YES" alignment="left" minValue="7" maxValue="24" doubleValue="7" id="sUs-AW-tKC"/>
                                                                 <connections>
@@ -2810,7 +2809,7 @@
                                                                 </connections>
                                                             </stepper>
                                                             <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="W0d-tG-mYV">
-                                                                <rect key="frame" x="353" y="65" width="25" height="22"/>
+                                                                <rect key="frame" x="353" y="82" width="25" height="22"/>
                                                                 <autoresizingMask key="autoresizingMask"/>
                                                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" drawsBackground="YES" id="s9z-HS-tTq">
                                                                     <numberFormatter key="formatter" formatterBehavior="10_0" positiveFormat="0" negativeFormat="-0" localizesFormat="NO" hasThousandSeparators="NO" thousandSeparator="," id="f4C-an-VD5">
@@ -2830,7 +2829,7 @@
                                                                 </textFieldCell>
                                                             </textField>
                                                             <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vqH-Sj-lPO">
-                                                                <rect key="frame" x="353" y="139" width="25" height="22"/>
+                                                                <rect key="frame" x="353" y="156" width="25" height="22"/>
                                                                 <autoresizingMask key="autoresizingMask"/>
                                                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" drawsBackground="YES" id="Vo2-4g-H3d">
                                                                     <numberFormatter key="formatter" formatterBehavior="10_0" positiveFormat="0" negativeFormat="-0" localizesFormat="NO" hasThousandSeparators="NO" thousandSeparator="," id="x5m-nb-Gbk">
@@ -2850,7 +2849,7 @@
                                                                 </textFieldCell>
                                                             </textField>
                                                             <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="WHE-5x-dld">
-                                                                <rect key="frame" x="377" y="99" width="19" height="27"/>
+                                                                <rect key="frame" x="377" y="116" width="19" height="27"/>
                                                                 <autoresizingMask key="autoresizingMask"/>
                                                                 <stepperCell key="cell" continuous="YES" alignment="left" maxValue="8" id="q2W-iI-71u"/>
                                                                 <connections>
@@ -2858,7 +2857,7 @@
                                                                 </connections>
                                                             </stepper>
                                                             <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="xgG-8q-n9D">
-                                                                <rect key="frame" x="353" y="103" width="25" height="22"/>
+                                                                <rect key="frame" x="353" y="120" width="25" height="22"/>
                                                                 <autoresizingMask key="autoresizingMask"/>
                                                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" drawsBackground="YES" id="lgw-Xu-4IV">
                                                                     <numberFormatter key="formatter" formatterBehavior="10_0" positiveFormat="0" negativeFormat="-0" localizesFormat="NO" hasThousandSeparators="NO" thousandSeparator="," id="wr8-oi-hrW">
@@ -2878,7 +2877,7 @@
                                                                 </textFieldCell>
                                                             </textField>
                                                             <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cdZ-J1-NKx">
-                                                                <rect key="frame" x="260" y="69" width="87" height="17"/>
+                                                                <rect key="frame" x="260" y="86" width="87" height="17"/>
                                                                 <autoresizingMask key="autoresizingMask"/>
                                                                 <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" id="DU0-rk-1ih">
                                                                     <font key="font" metaFont="system"/>
@@ -2889,7 +2888,7 @@
                                                                 </textFieldCell>
                                                             </textField>
                                                             <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="pwA-ob-tdX">
-                                                                <rect key="frame" x="198" y="106" width="149" height="16"/>
+                                                                <rect key="frame" x="198" y="123" width="149" height="16"/>
                                                                 <autoresizingMask key="autoresizingMask"/>
                                                                 <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Gap Between Lines" id="aVY-4x-ZuT">
                                                                     <font key="font" metaFont="system"/>
@@ -2898,7 +2897,7 @@
                                                                 </textFieldCell>
                                                             </textField>
                                                             <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="FzE-IX-CkJ">
-                                                                <rect key="frame" x="398" y="68" width="114" height="17"/>
+                                                                <rect key="frame" x="398" y="85" width="114" height="17"/>
                                                                 <autoresizingMask key="autoresizingMask"/>
                                                                 <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="inches" id="xjS-zX-WRj">
                                                                     <font key="font" metaFont="system"/>
@@ -2907,7 +2906,7 @@
                                                                 </textFieldCell>
                                                             </textField>
                                                             <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="jcT-RO-s4s">
-                                                                <rect key="frame" x="398" y="141" width="114" height="17"/>
+                                                                <rect key="frame" x="398" y="158" width="114" height="17"/>
                                                                 <autoresizingMask key="autoresizingMask"/>
                                                                 <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="points" id="p9q-li-hKz">
                                                                     <font key="font" metaFont="system"/>
@@ -2916,7 +2915,7 @@
                                                                 </textFieldCell>
                                                             </textField>
                                                             <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="iia-sy-3qw">
-                                                                <rect key="frame" x="233" y="138" width="114" height="20"/>
+                                                                <rect key="frame" x="233" y="155" width="114" height="20"/>
                                                                 <autoresizingMask key="autoresizingMask"/>
                                                                 <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" id="b8d-eL-IhN">
                                                                     <font key="font" metaFont="system"/>
@@ -2926,19 +2925,8 @@
                                                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                 </textFieldCell>
                                                             </textField>
-                                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="z57-cd-3GI">
-                                                                <rect key="frame" x="233" y="160" width="114" height="32"/>
-                                                                <autoresizingMask key="autoresizingMask"/>
-                                                                <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" id="nTR-Ht-DTV">
-                                                                    <font key="font" metaFont="system"/>
-                                                                    <string key="title">Character Set
-</string>
-                                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                                </textFieldCell>
-                                                            </textField>
                                                             <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="F9I-9g-qEn">
-                                                                <rect key="frame" x="399" y="106" width="114" height="17"/>
+                                                                <rect key="frame" x="399" y="123" width="114" height="17"/>
                                                                 <autoresizingMask key="autoresizingMask"/>
                                                                 <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="points" id="HiL-XF-5aI">
                                                                     <font key="font" metaFont="system"/>
@@ -2946,25 +2934,6 @@
                                                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                 </textFieldCell>
                                                             </textField>
-                                                            <popUpButton verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="CeF-cF-n2U">
-                                                                <rect key="frame" x="351" y="170" width="135" height="26"/>
-                                                                <autoresizingMask key="autoresizingMask"/>
-                                                                <popUpButtonCell key="cell" type="push" title="Original" bezelStyle="rounded" alignment="left" lineBreakMode="clipping" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="hfi-Im-M4g" id="ICK-Ec-DAW">
-                                                                    <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                                                    <font key="font" metaFont="system"/>
-                                                                    <menu key="menu" title="OtherViews" id="0fy-re-L5b">
-                                                                        <items>
-                                                                            <menuItem title="Original" state="on" id="hfi-Im-M4g">
-                                                                                <modifierMask key="keyEquivalentModifierMask"/>
-                                                                            </menuItem>
-                                                                            <menuItem title="International" id="v4J-1w-Kh4"/>
-                                                                        </items>
-                                                                    </menu>
-                                                                </popUpButtonCell>
-                                                                <connections>
-                                                                    <action selector="miscChanged:" target="-2" id="ldB-qQ-kAT"/>
-                                                                </connections>
-                                                            </popUpButton>
                                                         </subviews>
                                                     </view>
                                                 </tabViewItem>
@@ -5313,7 +5282,7 @@ DQ
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="round" bezelStyle="circular" imagePosition="above" alignment="left" borderStyle="border" id="13159">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                            <font key="font" metaFont="system" size="10"/>
+                            <font key="font" metaFont="menu" size="10"/>
                         </buttonCell>
                     </button>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1064">
@@ -5330,7 +5299,7 @@ DQ
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="round" bezelStyle="circular" imagePosition="above" alignment="left" borderStyle="border" id="13161">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                            <font key="font" metaFont="system" size="10"/>
+                            <font key="font" metaFont="menu" size="10"/>
                         </buttonCell>
                     </button>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1066">
@@ -5347,7 +5316,7 @@ DQ
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="round" bezelStyle="circular" imagePosition="above" alignment="left" borderStyle="border" id="13163">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                            <font key="font" metaFont="system" size="10"/>
+                            <font key="font" metaFont="menu" size="10"/>
                         </buttonCell>
                     </button>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1068">
@@ -5364,7 +5333,7 @@ DQ
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="round" bezelStyle="circular" imagePosition="above" alignment="left" borderStyle="border" id="13165">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                            <font key="font" metaFont="system" size="10"/>
+                            <font key="font" metaFont="menu" size="10"/>
                         </buttonCell>
                     </button>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1070">
@@ -5381,7 +5350,7 @@ DQ
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="round" bezelStyle="circular" imagePosition="above" alignment="left" borderStyle="border" id="13167">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                            <font key="font" metaFont="system" size="10"/>
+                            <font key="font" metaFont="menu" size="10"/>
                         </buttonCell>
                     </button>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1072">
@@ -5398,7 +5367,7 @@ DQ
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="round" bezelStyle="circular" imagePosition="above" alignment="left" borderStyle="border" id="13169">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                            <font key="font" metaFont="system" size="10"/>
+                            <font key="font" metaFont="menu" size="10"/>
                         </buttonCell>
                     </button>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1080">
@@ -5415,7 +5384,7 @@ DQ
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="round" bezelStyle="circular" imagePosition="above" alignment="left" borderStyle="border" id="13171">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                            <font key="font" metaFont="system" size="10"/>
+                            <font key="font" metaFont="menu" size="10"/>
                         </buttonCell>
                     </button>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1082">
@@ -5432,7 +5401,7 @@ DQ
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="round" bezelStyle="circular" imagePosition="above" alignment="left" borderStyle="border" id="13173">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                            <font key="font" metaFont="system" size="10"/>
+                            <font key="font" metaFont="menu" size="10"/>
                         </buttonCell>
                     </button>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1084">
@@ -5458,7 +5427,7 @@ DQ
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="round" bezelStyle="circular" imagePosition="above" alignment="left" borderStyle="border" id="13176">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                            <font key="font" metaFont="system" size="10"/>
+                            <font key="font" metaFont="menu" size="10"/>
                         </buttonCell>
                     </button>
                     <button horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1087">
@@ -5466,7 +5435,7 @@ DQ
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="round" bezelStyle="circular" imagePosition="above" alignment="left" borderStyle="border" id="13177">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                            <font key="font" metaFont="system" size="10"/>
+                            <font key="font" metaFont="menu" size="10"/>
                         </buttonCell>
                     </button>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1088">
@@ -5483,7 +5452,7 @@ DQ
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="round" bezelStyle="circular" imagePosition="above" alignment="left" borderStyle="border" id="13179">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                            <font key="font" metaFont="system" size="10"/>
+                            <font key="font" metaFont="menu" size="10"/>
                         </buttonCell>
                     </button>
                     <button horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1090">
@@ -5491,7 +5460,7 @@ DQ
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="round" bezelStyle="circular" imagePosition="above" alignment="left" borderStyle="border" id="13180">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                            <font key="font" metaFont="system" size="10"/>
+                            <font key="font" metaFont="menu" size="10"/>
                         </buttonCell>
                     </button>
                     <button horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1091">
@@ -5499,7 +5468,7 @@ DQ
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="round" bezelStyle="circular" imagePosition="above" alignment="left" borderStyle="border" id="13181">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                            <font key="font" metaFont="system" size="10"/>
+                            <font key="font" metaFont="menu" size="10"/>
                         </buttonCell>
                     </button>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1092">
@@ -5516,7 +5485,7 @@ DQ
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="round" bezelStyle="circular" imagePosition="above" alignment="left" borderStyle="border" id="13183">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                            <font key="font" metaFont="system" size="10"/>
+                            <font key="font" metaFont="menu" size="10"/>
                         </buttonCell>
                     </button>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1094">
@@ -5542,7 +5511,7 @@ DQ
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="round" bezelStyle="circular" imagePosition="above" alignment="left" borderStyle="border" id="13186">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                            <font key="font" metaFont="system" size="10"/>
+                            <font key="font" metaFont="menu" size="10"/>
                         </buttonCell>
                     </button>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1097">
@@ -5559,7 +5528,7 @@ DQ
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="round" bezelStyle="circular" imagePosition="above" alignment="left" borderStyle="border" id="13188">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                            <font key="font" metaFont="system" size="10"/>
+                            <font key="font" metaFont="menu" size="10"/>
                         </buttonCell>
                     </button>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1099">
@@ -5596,7 +5565,7 @@ DQ
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="round" bezelStyle="circular" imagePosition="above" alignment="left" borderStyle="border" id="13193">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                            <font key="font" metaFont="system" size="10"/>
+                            <font key="font" metaFont="menu" size="10"/>
                         </buttonCell>
                     </button>
                     <button horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3631">
@@ -5604,7 +5573,7 @@ DQ
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="round" bezelStyle="circular" imagePosition="above" alignment="left" borderStyle="border" id="13194">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                            <font key="font" metaFont="system" size="10"/>
+                            <font key="font" metaFont="menu" size="10"/>
                         </buttonCell>
                     </button>
                     <button horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3632">
@@ -5612,7 +5581,7 @@ DQ
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="round" bezelStyle="circular" imagePosition="above" alignment="left" borderStyle="border" id="13195">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                            <font key="font" metaFont="system" size="10"/>
+                            <font key="font" metaFont="menu" size="10"/>
                         </buttonCell>
                     </button>
                     <button horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3633">
@@ -5620,7 +5589,7 @@ DQ
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="round" bezelStyle="circular" imagePosition="above" alignment="left" borderStyle="border" id="13196">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                            <font key="font" metaFont="system" size="10"/>
+                            <font key="font" metaFont="menu" size="10"/>
                         </buttonCell>
                     </button>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3634">
@@ -5637,7 +5606,7 @@ DQ
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="round" bezelStyle="circular" imagePosition="above" alignment="left" borderStyle="border" id="13198">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                            <font key="font" metaFont="system" size="10"/>
+                            <font key="font" metaFont="menu" size="10"/>
                         </buttonCell>
                     </button>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3636">
@@ -5663,7 +5632,7 @@ DQ
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="round" bezelStyle="circular" imagePosition="above" alignment="left" borderStyle="border" id="13201">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                            <font key="font" metaFont="system" size="10"/>
+                            <font key="font" metaFont="menu" size="10"/>
                         </buttonCell>
                     </button>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3639">
@@ -5680,7 +5649,7 @@ DQ
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="round" bezelStyle="circular" imagePosition="above" alignment="left" borderStyle="border" id="13203">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                            <font key="font" metaFont="system" size="10"/>
+                            <font key="font" metaFont="menu" size="10"/>
                         </buttonCell>
                     </button>
                     <button horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3641">
@@ -5688,7 +5657,7 @@ DQ
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="round" bezelStyle="circular" imagePosition="above" alignment="left" borderStyle="border" id="13204">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                            <font key="font" metaFont="system" size="10"/>
+                            <font key="font" metaFont="menu" size="10"/>
                         </buttonCell>
                     </button>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3642">
