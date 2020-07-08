@@ -196,6 +196,7 @@ static NSImage *atari825Image;
 static NSImage *atari1020Image;
 static NSImage *epsonImage;
 static NSImage *textImage;
+static NSImage *atasciiImage;
 NSImage *disketteImage;
 
 + (MediaManager *)sharedInstance {
@@ -264,6 +265,7 @@ NSImage *disketteImage;
     atari825Image = [NSImage imageNamed:@"atari825"];		
     atari1020Image = [NSImage imageNamed:@"atari1020"];
     textImage = [NSImage imageNamed:@"text"];
+    atasciiImage = [NSImage imageNamed:@"atascii"];
     disketteImage = [NSImage imageNamed:@"diskette"];
 	}
 	
@@ -1865,7 +1867,7 @@ NSImage *disketteImage;
 				break;
             case 4:
                 [printerImageNameField setStringValue:@"ATASCII"];
-                [printerImageView setImage:atari825Image];
+                [printerImageView setImage:atasciiImage];
                 [printerPreviewItem setTarget:[PrintOutputController sharedInstance]];
                 [printerPreviewButton setEnabled:YES];
                 [selectTextItem setState:NSOffState];

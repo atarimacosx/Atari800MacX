@@ -30,6 +30,8 @@
 		2D0CA96924B16A410089AC88 /* AtariClassic-Regular.ttf in CopyFiles */ = {isa = PBXBuildFile; fileRef = 2D0CA96624B1689E0089AC88 /* AtariClassic-Regular.ttf */; };
 		2D0CA96C24B176360089AC88 /* AtasciiPrinter.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D0CA96A24B176360089AC88 /* AtasciiPrinter.m */; };
 		2D0CA96D24B176360089AC88 /* AtasciiPrinter.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D0CA96B24B176360089AC88 /* AtasciiPrinter.h */; };
+		2D0CA97624B56AE80089AC88 /* AtasciiDark.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D0CA97424B56AE80089AC88 /* AtasciiDark.png */; };
+		2D0CA97724B56AE80089AC88 /* AtasciiLight.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D0CA97524B56AE80089AC88 /* AtasciiLight.png */; };
 		2D14CDFF0FFEEEDF00E60EAA /* copydata.c in Sources */ = {isa = PBXBuildFile; fileRef = 2D14CDFD0FFEEEDF00E60EAA /* copydata.c */; };
 		2D16680C0F51E0A400A78B94 /* akey.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D16680B0F51E0A400A78B94 /* akey.h */; };
 		2D1668170F51F07000A78B94 /* esc.c in Sources */ = {isa = PBXBuildFile; fileRef = 2D1668150F51F07000A78B94 /* esc.c */; };
@@ -399,6 +401,8 @@
 		2D0CA96624B1689E0089AC88 /* AtariClassic-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "AtariClassic-Regular.ttf"; sourceTree = "<group>"; };
 		2D0CA96A24B176360089AC88 /* AtasciiPrinter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AtasciiPrinter.m; sourceTree = "<group>"; };
 		2D0CA96B24B176360089AC88 /* AtasciiPrinter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AtasciiPrinter.h; sourceTree = "<group>"; };
+		2D0CA97424B56AE80089AC88 /* AtasciiDark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = AtasciiDark.png; sourceTree = "<group>"; };
+		2D0CA97524B56AE80089AC88 /* AtasciiLight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = AtasciiLight.png; sourceTree = "<group>"; };
 		2D0FC28A08C550D0002D1327 /* compfile.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = compfile.h; path = ../compfile.h; sourceTree = SOURCE_ROOT; };
 		2D10A79609B0E209001F913C /* rdevice.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = rdevice.c; path = ../rdevice.c; sourceTree = SOURCE_ROOT; };
 		2D10A79709B0E209001F913C /* rdevice.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = rdevice.h; path = ../rdevice.h; sourceTree = SOURCE_ROOT; };
@@ -999,6 +1003,8 @@
 				2D76732121EA8A3900D99B0E /* lock_dark.png */,
 				2D76733421EA8DF600D99B0E /* text.png */,
 				2D76733121EA8D8E00D99B0E /* text_dark.png */,
+				2D0CA97524B56AE80089AC88 /* AtasciiLight.png */,
+				2D0CA97424B56AE80089AC88 /* AtasciiDark.png */,
 				2D9627A8106C3CC00081F384 /* Breakpoint.png */,
 				2D9627CA106C43700081F384 /* BreakpointCurrentLine.png */,
 				2D9627AA106C3CD90081F384 /* CurrentLine.png */,
@@ -1339,9 +1345,11 @@
 				2DAEDB5F09B69AED005FF181 /* AboutBox.nib in Resources */,
 				2D76733721EA920000D99B0E /* cassetteoff.png in Resources */,
 				2D76731F21EA882000D99B0E /* atari810write.png in Resources */,
+				2D0CA97724B56AE80089AC88 /* AtasciiLight.png in Resources */,
 				2DAEDB6009B69AED005FF181 /* Credits.html in Resources */,
 				77324B9324AC2CC50007CB07 /* open810snd.wav in Resources */,
 				2DAEDB6509B69AED005FF181 /* PrintOutput.nib in Resources */,
+				2D0CA97624B56AE80089AC88 /* AtasciiDark.png in Resources */,
 				2D76730E21EA7F9A00D99B0E /* atari810off.png in Resources */,
 				2D76734121EA935F00D99B0E /* cartridgeon.png in Resources */,
 				2D76732B21EA8C1400D99B0E /* atari1020.png in Resources */,
