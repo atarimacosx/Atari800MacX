@@ -94,8 +94,6 @@ static AtasciiPrinter *sharedInstance = nil;
 	if ([[printBuffer string] length] == 0)
 		return;
 
-	location = NSMakePoint(startHorizPosition, vertPosition);
-		
 	[printBuffer setLocation:location];
 	[[PrintOutputController sharedInstance] addToPrintArray:printBuffer];
 	[printBuffer release];
