@@ -8,6 +8,7 @@
 #import "PrintOutputController.h"
 
 // Other constants
+#define ATASCII_MIN_CHAR_SIZE               7
 #define ATARI825_LEFT_PRINT_EDGE            10.8
 
 ATASCII_PREF prefsAtascii;
@@ -30,8 +31,8 @@ static AtasciiPrinter *sharedInstance = nil;
 	
     sharedInstance = self;
 	
-    for (size = 7; size <= 24; size++)
-        styles[size - 7] = [[NSFont fontWithName : @"AtariClassic-Regular" size : prefsAtascii.charSize] retain];
+    for (size = ATASCII_MIN_CHAR_SIZE; size <= 24; size++)
+        styles[size - ATASCII_MIN_CHAR_SIZE] = [[NSFont fontWithName : @"AtariClassic-Regular" size : prefsAtascii.charSize] retain];
 
 	printBuffer = [[PrintableString alloc] init];
 	[printBuffer retain];
@@ -75,7 +76,7 @@ static AtasciiPrinter *sharedInstance = nil;
 	
     currRightMargin = rightMargin;
 				
-	if (nextHorizPosition + horizWidth >= currRightMargin) 
+	if (nextHorizPosition + horizWidth >= currRightMargin)
 		{
 			[self executeLineFeed:lineSpacing];            // move to next line
 		}
@@ -84,7 +85,7 @@ static AtasciiPrinter *sharedInstance = nil;
 
 -(void)setStyle
 {
-    style = prefsAtascii.charSize - 7;
+    style = prefsAtascii.charSize - ATASCII_MIN_CHAR_SIZE;
 }
 
 -(void)emptyPrintBuffer
