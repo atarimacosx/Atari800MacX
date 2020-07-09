@@ -32,7 +32,7 @@ static AtasciiPrinter *sharedInstance = nil;
     sharedInstance = self;
 	
     for (size = ATASCII_MIN_CHAR_SIZE; size <= 24; size++)
-        styles[size - ATASCII_MIN_CHAR_SIZE] = [[NSFont fontWithName : @"AtariClassic-Regular" size : prefsAtascii.charSize] retain];
+        styles[size - ATASCII_MIN_CHAR_SIZE] = [[NSFont fontWithName : @"AtariClassic-Regular" size : size] retain];
 
 	printBuffer = [[PrintableString alloc] init];
 	[printBuffer retain];
@@ -58,13 +58,12 @@ static AtasciiPrinter *sharedInstance = nil;
 {
 	NSAttributedString *newString;
 	float currRightMargin;
-	int styleNum = style;
 	
 	newString = [NSAttributedString alloc];
     [newString initWithString:[NSString stringWithCharacters:&unicharacter
                                 length:1]
            attributes:[NSDictionary dictionaryWithObjectsAndKeys:
-                       styles[styleNum], NSFontAttributeName,
+                       style, NSFontAttributeName,
                        nil]];
         
     [printBuffer appendAttributedString:newString];
@@ -85,7 +84,7 @@ static AtasciiPrinter *sharedInstance = nil;
 
 -(void)setStyle
 {
-    style = prefsAtascii.charSize - ATASCII_MIN_CHAR_SIZE;
+    style = styles[prefsAtascii.charSize - ATASCII_MIN_CHAR_SIZE];
 }
 
 -(void)emptyPrintBuffer

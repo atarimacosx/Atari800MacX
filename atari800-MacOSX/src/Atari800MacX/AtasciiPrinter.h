@@ -17,7 +17,7 @@ typedef struct ATASCII_PREF {
 } ATASCII_PREF;
 
 @interface AtasciiPrinter : NSObject <PrinterProtocol> {
-	int style;
+    NSFont *style;
 	NSFont *styles[18];
 	float leftMargin;
 	float rightMargin;
