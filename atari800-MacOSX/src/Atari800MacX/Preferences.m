@@ -264,7 +264,7 @@ static NSDictionary *defaultValues() {
                 [NSNumber numberWithFloat:0.0],Atari1020Pen4Green,
                 [NSNumber numberWithFloat:1.0],Atari1020Pen4Alpha,
                 [NSNumber numberWithInt:11],AtasciiFormLength,
-                [NSNumber numberWithInt:7],AtasciiCharSize,
+                [NSNumber numberWithInt:12],AtasciiCharSize,
                 [NSNumber numberWithInt:0],AtasciiLineGap,
                 [NSNumber numberWithInt:0],EpsonCharSet,
                 [NSNumber numberWithInt:0],EpsonPrintPitch,
