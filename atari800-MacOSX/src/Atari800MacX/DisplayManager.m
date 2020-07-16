@@ -61,6 +61,11 @@ void SetDisplayManagerXEP80Mode(int xep80Enabled, int xep80Port, int xep80) {
     [[DisplayManager sharedInstance] setXEP80ModeMenu:(xep80Enabled):(xep80Port):(xep80)];
     }
 
+void SetDisplayManagerXEP80Autoswitch(int autoswitchOn) {
+    [[DisplayManager sharedInstance] setXEP80AutoswitchMenu:autoswitchOn];
+    }
+
+
 @implementation DisplayManager
 
 static DisplayManager *sharedInstance = nil;
@@ -158,7 +163,7 @@ static DisplayManager *sharedInstance = nil;
 }
 
 /*------------------------------------------------------------------------------
-*  setFpsMenu - This method is used to set/clear the enabled check for the 
+*  setFpsMenu - This method is used to set/clear the enabled check for the
 *     display frames per second menu item.
 *-----------------------------------------------------------------------------*/
 - (void)setFpsMenu:(int)fpsOn
@@ -167,6 +172,18 @@ static DisplayManager *sharedInstance = nil;
         [displayFpsItem setState:NSOnState];
     else
         [displayFpsItem setState:NSOffState];
+}
+
+/*------------------------------------------------------------------------------
+*  setXEP80AutoswitchMenu - This method is used to set/clear the enabled check for the
+*     XEP80 Autoswitch menu item.
+*-----------------------------------------------------------------------------*/
+- (void)setXEP80AutoswitchMenu:(int)autoswitchOn
+{
+    if (autoswitchOn)
+        [xep80AutoswitchItem setState:NSOnState];
+    else
+        [xep80AutoswitchItem setState:NSOffState];
 }
 
 /*------------------------------------------------------------------------------
@@ -294,6 +311,15 @@ static DisplayManager *sharedInstance = nil;
 - (IBAction)xep80:(id)sender
 {
     requestXEP80Change = 1;
+}
+
+/*------------------------------------------------------------------------------
+*  xep80 - This method handles the normal/XEP80 menu selection.
+*-----------------------------------------------------------------------------*/
+- (IBAction)xep80Autoswitch:(id)sender
+{
+    XEP80_autoswitch = 1 - XEP80_autoswitch;
+    [self setXEP80AutoswitchMenu:XEP80_autoswitch];
 }
 
 /*------------------------------------------------------------------------------

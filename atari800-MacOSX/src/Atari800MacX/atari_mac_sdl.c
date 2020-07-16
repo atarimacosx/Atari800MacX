@@ -258,6 +258,7 @@ extern void SetDisplayManagerScaleMode(int scaleMode);
 extern void SetDisplayManagerArtifactMode(int scaleMode);
 extern void SetDisplayManagerGrabMouse(int mouseOn);
 extern void SetDisplayManagerXEP80Mode(int xep80Enabled, int xep80Port, int xep80);
+extern void SetDisplayManagerXEP80Autoswitch(int autoswitchOn);
 extern void SetControlManagerLimit(int limit);
 extern void SetControlManagerDisableBasic(int disableBasic);
 extern void SetControlManagerKeyjoyEnable(int keyjoyEnable);
@@ -4706,6 +4707,7 @@ void ProcessMacPrefsChange()
     SetDisplayManagerScaleMode(SCALE_MODE);
 	SetDisplayManagerArtifactMode(ANTIC_artif_mode);
 	SetDisplayManagerXEP80Mode(XEP80_enabled, XEP80_port, PLATFORM_xep80);
+    SetDisplayManagerXEP80Autoswitch(XEP80_autoswitch);
 	MediaManagerXEP80Mode(XEP80_enabled, PLATFORM_xep80);
     real_deltatime = deltatime;
 	SetControlManagerDisableBasic(Atari800_disable_basic);
@@ -5148,6 +5150,7 @@ int SDL_main(int argc, char **argv)
     SetDisplayManagerScaleMode(SCALE_MODE);
 	SetDisplayManagerArtifactMode(ANTIC_artif_mode);
 	SetDisplayManagerXEP80Mode(XEP80_enabled, XEP80_port, PLATFORM_xep80);
+    SetDisplayManagerXEP80Autoswitch(XEP80_autoswitch);
 	MediaManagerXEP80Mode(XEP80_enabled, PLATFORM_xep80);
     real_deltatime = deltatime;
     SetControlManagerLimit(speed_limit);

@@ -14,8 +14,8 @@
             filePath = "Preferences.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2695"
-            endingLineNumber = "2695"
+            startingLineNumber = "2701"
+            endingLineNumber = "2701"
             landmarkName = "-browseFile"
             landmarkType = "7">
          </BreakpointContent>
@@ -142,8 +142,8 @@
             filePath = "atari_mac_sdl.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1585"
-            endingLineNumber = "1585"
+            startingLineNumber = "1586"
+            endingLineNumber = "1586"
             landmarkName = "Atari_Keyboard_International()"
             landmarkType = "9">
          </BreakpointContent>

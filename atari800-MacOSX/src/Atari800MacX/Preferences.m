@@ -216,6 +216,7 @@ static NSDictionary *defaultValues() {
                 [NSNumber numberWithBool:YES], LedStatusMedia,
                 [NSNumber numberWithBool:YES], LedSectorMedia,
                 [NSNumber numberWithBool:NO], XEP80Enabled,
+                [NSNumber numberWithBool:NO], XEP80Autoswitch,
                 [NSNumber numberWithInt:0], XEP80Port,
                 [NSNumber numberWithBool:NO], XEP80,
                 [NSNumber numberWithInt:15], XEP80OnColor,
@@ -778,7 +779,8 @@ static Preferences *sharedInstance = nil;
     [bootFromCassetteButton setState:[[displayedValues objectForKey:BootFromCassette] boolValue] ? NSOnState : NSOffState];
     [speedLimitButton setState:[[displayedValues objectForKey:SpeedLimit] boolValue] ? NSOnState : NSOffState];
     
-	[xep80EnabledButton setState:[[displayedValues objectForKey:XEP80Enabled] boolValue] ? NSOnState : NSOffState];
+    [xep80EnabledButton setState:[[displayedValues objectForKey:XEP80Enabled] boolValue] ? NSOnState : NSOffState];
+    [xep80AutoswitchButton setState:[[displayedValues objectForKey:XEP80Autoswitch] boolValue] ? NSOnState : NSOffState];
 	[xep80PortPulldown selectItemAtIndex:[[displayedValues objectForKey:XEP80Port] intValue]];
     [xep80ForegroundField setIntValue:[[displayedValues objectForKey:XEP80OnColor] intValue]];
     [xep80BackgroundField setIntValue:[[displayedValues objectForKey:XEP80OffColor] intValue]];
@@ -2009,6 +2011,10 @@ static Preferences *sharedInstance = nil;
         [displayedValues setObject:yes forKey:XEP80Enabled];
     else
         [displayedValues setObject:no forKey:XEP80Enabled];
+    if ([xep80AutoswitchButton state] == NSOnState)
+        [displayedValues setObject:yes forKey:XEP80Autoswitch];
+    else
+        [displayedValues setObject:no forKey:XEP80Autoswitch];
     switch([xep80PortPulldown indexOfSelectedItem]) {
         case 0:
 		default:
@@ -3262,6 +3268,7 @@ static Preferences *sharedInstance = nil;
     prefs->enableSound = [[curValues objectForKey:EnableSound] intValue]; 
 	prefs->soundVolume = [[curValues objectForKey:SoundVolume] floatValue];
     prefs->xep80_enabled = [[curValues objectForKey:XEP80Enabled] intValue];
+    prefs->xep80_autoswitch = [[curValues objectForKey:XEP80Autoswitch] intValue];
     prefs->xep80_port = [[curValues objectForKey:XEP80Port] intValue];
     prefs->xep80 = [[curValues objectForKey:XEP80] intValue];
     prefs->xep80_oncolor = [[curValues objectForKey:XEP80OnColor] intValue];
@@ -3522,6 +3529,7 @@ static Preferences *sharedInstance = nil;
     [displayedValues setObject:prefssave->enableSound ? yes : no forKey:EnableSound];
     [displayedValues setObject:prefssave->xep80 ? yes : no forKey:XEP80];
     [displayedValues setObject:prefssave->xep80_enabled ? yes : no forKey:XEP80Enabled];
+    [displayedValues setObject:prefssave->xep80_autoswitch ? yes : no forKey:XEP80Autoswitch];
     switch(prefssave->xep80_port) {
         case 0:
 		default:
@@ -4589,7 +4597,8 @@ static Preferences *sharedInstance = nil;
     getBoolDefault(LedSector);
     getBoolDefault(LedStatusMedia);
     getBoolDefault(LedSectorMedia);
-	getBoolDefault(XEP80Enabled);
+    getBoolDefault(XEP80Enabled);
+    getBoolDefault(XEP80Autoswitch);
 	getIntDefault(XEP80Port);
 	getBoolDefault(XEP80);
 	getIntDefault(XEP80OnColor);
@@ -4857,7 +4866,8 @@ static Preferences *sharedInstance = nil;
     setBoolDefault(LedSector);
     setBoolDefault(LedStatusMedia);
     setBoolDefault(LedSectorMedia);
-	setBoolDefault(XEP80Enabled);
+    setBoolDefault(XEP80Enabled);
+    setBoolDefault(XEP80Autoswitch);
 	setIntDefault(XEP80Port);
 	setBoolDefault(XEP80);
 	setIntDefault(XEP80OnColor);
@@ -5106,7 +5116,8 @@ static Preferences *sharedInstance = nil;
     setConfig(LedSector);
     setConfig(LedStatusMedia);
     setConfig(LedSectorMedia);
-	setConfig(XEP80Enabled);
+    setConfig(XEP80Enabled);
+    setConfig(XEP80Autoswitch);
 	setConfig(XEP80Port);
 	setConfig(XEP80);
 	setConfig(XEP80OnColor);
@@ -5465,7 +5476,8 @@ static Preferences *sharedInstance = nil;
     getConfig(LedSector);
     getConfig(LedStatusMedia);
     getConfig(LedSectorMedia);
-	getConfig(XEP80Enabled);
+    getConfig(XEP80Enabled);
+    getConfig(XEP80Autoswitch);
 	getConfig(XEP80Port);
 	getConfig(XEP80);
 	getConfig(XEP80OnColor);

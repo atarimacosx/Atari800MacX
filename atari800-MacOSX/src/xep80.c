@@ -97,7 +97,7 @@
 						(((xep80_data[y][x] & 0x80) == 0) && font_a_double))
 
 /* Global variables */
-int XEP80_autoswitch = TRUE;
+int XEP80_autoswitch = FALSE;
 int XEP80_enabled = FALSE;
 int XEP80_last_sent_count = 0;
 int XEP80_sent_count = 0;
