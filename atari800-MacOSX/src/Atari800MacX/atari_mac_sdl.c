@@ -5413,6 +5413,14 @@ int SDL_main(int argc, char **argv)
 		}
 
         ProcessMacMenus();
+        
+        if (XEP80_enabled && XEP80_autoswitch) {
+            if (XEP80_sent_count > XEP80_last_sent_count + 1) {
+                if (!PLATFORM_xep80)
+                    PLATFORM_SwitchXep80();
+            }
+            XEP80_last_sent_count = XEP80_sent_count;
+        }
 
         /* If emulator isn't paused, and 5200 has a cartridge */
         if (!pauseEmulator && !((Atari800_machine_type == Atari800_MACHINE_5200) && (CARTRIDGE_type == CARTRIDGE_NONE))) {

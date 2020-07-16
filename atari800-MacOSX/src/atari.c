@@ -177,7 +177,15 @@ void Atari800_Warmstart(void)
 {
 #ifdef MACOSX
 	MacCapsLockStateReset();
-#endif	
+    if (XEP80_enabled)
+        XEP80_Reset();
+    if (XEP80_enabled && XEP80_autoswitch) {
+        XEP80_sent_count = 0;
+        XEP80_last_sent_count = 0;
+        if (PLATFORM_xep80)
+            PLATFORM_SwitchXep80();
+    }
+#endif
 	if (Atari800_machine_type == Atari800_MACHINE_OSA || Atari800_machine_type == Atari800_MACHINE_OSB) {
 		/* A real Axlon homebanks on reset */
 		/* XXX: what does Mosaic do? */
@@ -216,6 +224,14 @@ void Atari800_Coldstart(void)
 	   because Reset routine vector must be read from OS ROM */
 	CPU_Reset();
 	/* note: POKEY and GTIA have no Reset pin */
+    if (XEP80_enabled)
+        XEP80_Reset();
+    if (XEP80_enabled && XEP80_autoswitch) {
+        XEP80_sent_count = 0;
+        XEP80_last_sent_count = 0;
+        if (PLATFORM_xep80)
+            PLATFORM_SwitchXep80();
+    }
 #ifdef __PLUS
 	HandleResetEvent();
 #endif
