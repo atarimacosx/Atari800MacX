@@ -256,6 +256,7 @@
                 <outlet property="useAtariCursorKeysPulldown" destination="12860" id="12867"/>
                 <outlet property="whiteLevelField" destination="796" id="805"/>
                 <outlet property="widthModeMatrix" destination="270" id="291"/>
+                <outlet property="xep80AutoswitchButton" destination="6Qw-Dv-qgO" id="DAY-qd-ddz"/>
                 <outlet property="xep80BackgroundField" destination="4371" id="4378"/>
                 <outlet property="xep80EnabledButton" destination="4362" id="4375"/>
                 <outlet property="xep80ForegroundField" destination="4369" id="4377"/>
@@ -1586,7 +1587,7 @@
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <button fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4362">
-                                                        <rect key="frame" x="17" y="9" width="133" height="18"/>
+                                                        <rect key="frame" x="17" y="7" width="133" height="18"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <buttonCell key="cell" type="check" title="XEP80 Connected" bezelStyle="regularSquare" imagePosition="leading" alignment="left" inset="2" id="12903">
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -1597,7 +1598,7 @@
                                                         </connections>
                                                     </button>
                                                     <popUpButton verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4363">
-                                                        <rect key="frame" x="153" y="5" width="130" height="26"/>
+                                                        <rect key="frame" x="153" y="3" width="130" height="26"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <popUpButtonCell key="cell" type="push" title="Joystick Port 2" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="4367" id="12904">
                                                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
@@ -1614,7 +1615,7 @@
                                                         </connections>
                                                     </popUpButton>
                                                     <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4369">
-                                                        <rect key="frame" x="463" y="7" width="38" height="22"/>
+                                                        <rect key="frame" x="553" y="7" width="38" height="22"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="12905">
                                                             <numberFormatter key="formatter" formatterBehavior="10_0" positiveFormat="0" negativeFormat="-0" localizesFormat="NO" hasThousandSeparators="NO" thousandSeparator="," id="4373">
@@ -1637,7 +1638,7 @@
                                                         </connections>
                                                     </textField>
                                                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4370">
-                                                        <rect key="frame" x="343" y="9" width="120" height="17"/>
+                                                        <rect key="frame" x="433" y="10" width="120" height="17"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="Foreground Color" id="12906">
                                                             <font key="font" metaFont="system"/>
@@ -1646,7 +1647,7 @@
                                                         </textFieldCell>
                                                     </textField>
                                                     <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4371">
-                                                        <rect key="frame" x="639" y="7" width="38" height="22"/>
+                                                        <rect key="frame" x="729" y="7" width="38" height="22"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="12907">
                                                             <numberFormatter key="formatter" formatterBehavior="10_0" positiveFormat="0" negativeFormat="-0" localizesFormat="NO" hasThousandSeparators="NO" thousandSeparator="," id="4374">
@@ -1669,7 +1670,7 @@
                                                         </connections>
                                                     </textField>
                                                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4372">
-                                                        <rect key="frame" x="519" y="9" width="120" height="17"/>
+                                                        <rect key="frame" x="609" y="11" width="120" height="17"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="Background Color" id="12908">
                                                             <font key="font" metaFont="system"/>
@@ -1677,6 +1678,17 @@
                                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                         </textFieldCell>
                                                     </textField>
+                                                    <button fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6Qw-Dv-qgO">
+                                                        <rect key="frame" x="313" y="9" width="90" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask"/>
+                                                        <buttonCell key="cell" type="check" title="Autoswitch" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="pqY-7I-bLF">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                        <connections>
+                                                            <action selector="miscChanged:" target="-2" id="gPm-mW-K4v"/>
+                                                        </connections>
+                                                    </button>
                                                 </subviews>
                                             </view>
                                         </box>

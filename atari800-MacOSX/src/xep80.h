@@ -16,7 +16,10 @@
 
 #define XEP80_ATARI_EOL			0x9b
 
+extern int XEP80_autoswitch;
 extern int XEP80_enabled;
+extern int XEP80_last_sent_count;
+extern int XEP80_sent_count;
 extern int XEP80_port;
 
 extern UBYTE XEP80_screen_1[XEP80_SCRN_WIDTH*XEP80_SCRN_HEIGHT];
@@ -31,6 +34,7 @@ void XEP80_ChangeColors(void);
 void XEP80_StateSave(void);
 void XEP80_StateRead(void);
 void XEP80_Initialise(int *argc, char *argv[]);
+void XEP80_Reset(void);
 int XEP80GetCopyData(int startx, int endx, int starty, int endy, unsigned char *data);
 
 #endif /* XEP80_H_ */

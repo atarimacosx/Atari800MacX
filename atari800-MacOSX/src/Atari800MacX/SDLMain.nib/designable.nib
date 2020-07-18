@@ -544,6 +544,12 @@
                                     <action selector="xep80:" target="498" id="863"/>
                                 </connections>
                             </menuItem>
+                            <menuItem title="XEP80 Display Autoswitch" id="nBK-cd-jka">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="xep80Autoswitch:" target="498" id="Nkx-s6-dr7"/>
+                                </connections>
+                            </menuItem>
                             <menuItem title="Fullscreen" id="442">
                                 <string key="keyEquivalent" base64-UTF8="YES">
 DQ
@@ -948,6 +954,7 @@ DQ
                 <outlet property="widthModeDefaultItem" destination="695" id="706"/>
                 <outlet property="widthModeFullItem" destination="696" id="707"/>
                 <outlet property="widthModeNarrowItem" destination="692" id="705"/>
+                <outlet property="xep80AutoswitchItem" destination="nBK-cd-jka" id="MmZ-gw-Jr3"/>
                 <outlet property="xep80Item" destination="857" id="862"/>
                 <outlet property="xep80Mode0Item" destination="854" id="867"/>
                 <outlet property="xep80Mode1Item" destination="855" id="868"/>

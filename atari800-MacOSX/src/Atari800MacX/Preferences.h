@@ -50,6 +50,7 @@
 #define LedStatusMedia @"LedStatusMedia"
 #define LedSectorMedia @"LedSectorMedia"
 #define XEP80Enabled @"XEP80Enabled"
+#define XEP80Autoswitch @"XEP80Autoswitch"
 #define XEP80Port @"XEP80Port"
 #define XEP80OnColor @"XEP80OnColor"
 #define XEP80OffColor @"XEP800OffColor"
@@ -294,7 +295,8 @@
 	IBOutlet id ledSectorButton;
 	IBOutlet id ledStatusMediaButton;
 	IBOutlet id ledSectorMediaButton;
-	IBOutlet id xep80EnabledButton;
+    IBOutlet id xep80EnabledButton;
+    IBOutlet id xep80AutoswitchButton;
 	IBOutlet id xep80PortPulldown;
 	IBOutlet id xep80ForegroundField;
 	IBOutlet id xep80BackgroundField;

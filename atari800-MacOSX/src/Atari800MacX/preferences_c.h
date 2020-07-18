@@ -154,7 +154,8 @@ typedef struct ATARI800MACX_PREF {
 				int clearCurrentMedia;
 				int keyjoyEnable;
 				double emulationSpeed;
-				int xep80_enabled;
+                int xep80_enabled;
+                int xep80_autoswitch;
 				int xep80;
 				int xep80_port;
 				int xep80_oncolor;
@@ -192,6 +193,7 @@ typedef struct ATARI800MACX_PREFSAVE {
 				int enableStereo; 
 				int xep80;
 				int xep80_enabled;
+                int xep80_autoswitch;
 				int xep80_port;
 				int blackBoxEnabled;
 				int mioEnabled;

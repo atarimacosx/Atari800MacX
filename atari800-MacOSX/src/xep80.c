@@ -97,7 +97,10 @@
 						(((xep80_data[y][x] & 0x80) == 0) && font_a_double))
 
 /* Global variables */
+int XEP80_autoswitch = FALSE;
 int XEP80_enabled = FALSE;
+int XEP80_last_sent_count = 0;
+int XEP80_sent_count = 0;
 int XEP80_port = 0;
 int XEP80_first_row = XEP80_SCRN_HEIGHT - 1;
 int XEP80_last_row = 0;
@@ -357,6 +360,8 @@ void XEP80_PutBit(UBYTE byte)
 {
     byte &= output_mask[XEP80_port];
 
+    XEP80_sent_count++;
+    
     /* Shift output words from the Atari for each write */
 	switch(output_state) {
     case -1:
@@ -780,6 +785,12 @@ static void XEP80_GetXCur(void)
 	XEP80_InputWord(xcur);
 }
 
+void XEP80_Reset(void)
+{
+    XEP80_ClearScreen();
+    XEP80_MasterReset();
+}
+
 static void XEP80_MasterReset(void)
 {
 	int i;
@@ -823,8 +834,8 @@ static void XEP80_MasterReset(void)
         XEP80_FONTS_InitFonts();
 	for (i=0;i<XEP80_HEIGHT;i++)
 		eol_at_margin[i] = FALSE;
+    XEP80_UpdateCursor();
     XEP80_BlitScreen();
-	XEP80_UpdateCursor();
 	XEP80_InputWord(0x01);
 }
 

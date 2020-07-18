@@ -283,7 +283,8 @@ void savePrefs() {
     prefssave.speedLimit = speed_limit; 
 	prefssave.xep80 = PLATFORM_xep80;
 	prefssave.xep80_port = XEP80_port;
-	prefssave.xep80_enabled = XEP80_enabled;
+    prefssave.xep80_enabled = XEP80_enabled;
+    prefssave.xep80_autoswitch = XEP80_autoswitch;
     prefssave.enableSound = sound_enabled;
 	prefssave.soundVolume = sound_volume;
     prefssave.enableStereo = POKEYSND_stereo_enabled; 
@@ -859,7 +860,8 @@ int loadMacPrefs(int firstTime)
     portnum = prefs.rPatchPort;
     strncpy(Devices_print_command, prefs.printCommand,256);
 	PLATFORM_xep80 = prefs.xep80;
-	XEP80_enabled = prefs.xep80_enabled;
+    XEP80_enabled = prefs.xep80_enabled;
+    XEP80_autoswitch = prefs.xep80_autoswitch;
 	XEP80_port = prefs.xep80_port;
 	XEP80_FONTS_oncolor = prefs.xep80_oncolor;
 	XEP80_FONTS_offcolor = prefs.xep80_offcolor;
