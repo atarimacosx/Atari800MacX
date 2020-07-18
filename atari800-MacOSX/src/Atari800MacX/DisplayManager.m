@@ -8,10 +8,12 @@
 
 */
 #import "DisplayManager.h"
+#import "MediaManager.h"
+#import "af80.h"
 #import "xep80.h"
 
 extern void SwitchFullscreen(void);
-extern void PLATFORM_SwitchXep80(void);
+extern void PLATFORM_Switch80Col(void);
 extern int requestDoubleSizeChange;
 extern int DOUBLESIZE;
 extern int SCALE_MODE;
@@ -20,15 +22,16 @@ extern int requestWidthModeChange;
 extern int WIDTH_MODE;
 extern int Screen_show_atari_speed;
 extern int requestFullScreenChange;
-extern int requestXEP80Change;
+extern int request80ColChange;
 extern int requestFpsChange;
 extern int requestScaleModeChange;
 extern int requestGrabMouse;
 extern int requestScreenshot;
 extern int ANTIC_artif_mode;
 extern int requestArtifChange;
-extern int PLATFORM_xep80;
+extern int PLATFORM_80col;
 extern int requestPaste;
+extern int request80ColModeChange;
 extern int requestCopy;
 extern int requestSelectAll;
 
@@ -57,8 +60,8 @@ void SetDisplayManagerGrabMouse(int mouseOn) {
     [[DisplayManager sharedInstance] setGrabmouseMenu:(mouseOn)];
     }
 
-void SetDisplayManagerXEP80Mode(int xep80Enabled, int xep80Port, int xep80) {
-    [[DisplayManager sharedInstance] setXEP80ModeMenu:(xep80Enabled):(xep80Port):(xep80)];
+void SetDisplayManager80ColMode(int xep80Enabled, int xep80Port, int af80Enabled, int col80) {
+    [[DisplayManager sharedInstance] set80ColModeMenu:(xep80Enabled):(xep80Port):(af80Enabled):(col80)];
     }
 
 void SetDisplayManagerXEP80Autoswitch(int autoswitchOn) {
@@ -260,13 +263,14 @@ static DisplayManager *sharedInstance = nil;
 
 /*------------------------------------------------------------------------------
 *  setXEP80ModeMenu - This method is used to set the menu text for the
-*     XEP80 mode menu items.
+*     80 Col mode menu items.
 *-----------------------------------------------------------------------------*/
-- (void)setXEP80ModeMenu:(int)xep80Enabled:(int)xep80Port:(int)xep80;
+- (void)set80ColModeMenu:(int)xep80Enabled:(int)xep80Port:(int)af80Enabled:(int)col80;
 {
 	if (xep80Enabled) {
 		[xep80Item setTarget:self];
 		[xep80Mode0Item setState:NSOffState];
+        [af80ModeItem setState:NSOffState];
 		if (xep80Port == 0) {
 			[xep80Mode1Item setState:NSOnState];
 			[xep80Mode2Item setState:NSOffState];
@@ -275,17 +279,25 @@ static DisplayManager *sharedInstance = nil;
 			[xep80Mode1Item setState:NSOffState];
 			[xep80Mode2Item setState:NSOnState];
 			}
-		if (xep80)
+		if (col80)
 			[xep80Item setState:NSOnState];
 		else
 			[xep80Item setState:NSOffState];
 		}
+    else if (af80Enabled) {
+        [xep80Item setTarget:self];
+        [xep80Mode0Item setState:NSOffState];
+        [xep80Mode1Item setState:NSOffState];
+        [xep80Mode2Item setState:NSOffState];
+        [af80ModeItem setState:NSOnState];
+    }
 	else {
 		[xep80Item setState:NSOffState];
 		[xep80Item setTarget:nil];
 		[xep80Mode0Item setState:NSOnState];
 		[xep80Mode1Item setState:NSOffState];
 		[xep80Mode2Item setState:NSOffState];
+        [af80ModeItem setState:NSOffState];
 		}
 }
 
@@ -310,7 +322,7 @@ static DisplayManager *sharedInstance = nil;
 *-----------------------------------------------------------------------------*/
 - (IBAction)xep80:(id)sender
 {
-    requestXEP80Change = 1;
+    request80ColChange = 1;
 }
 
 /*------------------------------------------------------------------------------
@@ -327,22 +339,35 @@ static DisplayManager *sharedInstance = nil;
 *-----------------------------------------------------------------------------*/
 - (IBAction)xep80Mode:(id)sender
 {
+    int modeChange = 1;
+    
+    if (AF80_enabled)
+        modeChange = 2;
 	switch ([sender tag]) {
 		case 0:
 			XEP80_enabled = FALSE;
-			if (PLATFORM_xep80)
-				PLATFORM_SwitchXep80();
+            AF80_enabled = FALSE;
+			if (PLATFORM_80col)
+				PLATFORM_Switch80Col();
 			break;
 		case 1:
 			XEP80_enabled = TRUE;
 			XEP80_port = 0;
+            AF80_enabled = FALSE;
 			break;
-		case 2:
-			XEP80_enabled = TRUE;
-			XEP80_port = 1;
-			break;
+        case 2:
+            XEP80_enabled = TRUE;
+            XEP80_port = 1;
+            AF80_enabled = FALSE;
+            break;
+        case 3:
+            XEP80_enabled = FALSE;
+            AF80_enabled = TRUE;
+            break;
 	}
-	[self setXEP80ModeMenu:XEP80_enabled:XEP80_port:PLATFORM_xep80];
+    request80ColModeChange = modeChange;
+    [self set80ColModeMenu:XEP80_enabled:XEP80_port:AF80_enabled:PLATFORM_80col];
+    [[MediaManager sharedInstance]  set80ColMode:XEP80_enabled:AF80_enabled:PLATFORM_80col];
 }
 
 /*------------------------------------------------------------------------------

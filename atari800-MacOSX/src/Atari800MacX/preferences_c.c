@@ -47,7 +47,7 @@ extern int paletteWhite;
 extern int paletteIntensity;
 extern int paletteColorShift;
 extern int FULLSCREEN;
-extern int PLATFORM_xep80;
+extern int PLATFORM_80col;
 extern int OPENGL;
 extern int lockFullscreenSize;
 extern int FULLSCREEN_MONITOR;
@@ -186,6 +186,7 @@ int hardDiskChanged;
 int osRomsChanged;
 int fullscreenGuiColorsChanged;
 int fullscreenCrashColorsChanged;
+int af80EnabledChanged;
 int xep80EnabledChanged;
 int xep80ColorsChanged;
 int configurationChanged;
@@ -285,9 +286,10 @@ void savePrefs() {
 	prefssave.ledStatus = Screen_show_disk_led;
 	prefssave.ledSector = Screen_show_sector_counter;
     prefssave.speedLimit = speed_limit; 
-	prefssave.xep80 = PLATFORM_xep80;
-	prefssave.xep80_port = XEP80_port;
+	prefssave.xep80 = PLATFORM_80col;
+    prefssave.af80_enabled = AF80_enabled;
     prefssave.xep80_enabled = XEP80_enabled;
+	prefssave.xep80_port = XEP80_port;
     prefssave.xep80_autoswitch = XEP80_autoswitch;
     prefssave.enableSound = sound_enabled;
 	prefssave.soundVolume = sound_volume;
@@ -759,11 +761,16 @@ void CalculatePrefsChanged()
 	if (currPrinter != prefs.currPrinter)
 		PrintOutputControllerSelectPrinter(prefs.currPrinter);
 	
-	if (XEP80_enabled != prefs.xep80_enabled)
-		xep80EnabledChanged = TRUE;
-	else
-		xep80EnabledChanged = FALSE;
-		
+    if (XEP80_enabled != prefs.xep80_enabled)
+        xep80EnabledChanged = TRUE;
+    else
+        xep80EnabledChanged = FALSE;
+        
+    if (AF80_enabled != prefs.af80_enabled)
+        af80EnabledChanged = TRUE;
+    else
+        af80EnabledChanged = FALSE;
+        
 	if ((XEP80_FONTS_oncolor != prefs.xep80_oncolor) || (XEP80_FONTS_offcolor != prefs.xep80_offcolor))
 		xep80ColorsChanged = TRUE;
 	else
@@ -874,9 +881,11 @@ int loadMacPrefs(int firstTime)
 	strncpy(RDevice_serial_device, prefs.rPatchSerialPort,FILENAME_MAX);
     portnum = prefs.rPatchPort;
     strncpy(Devices_print_command, prefs.printCommand,256);
-	PLATFORM_xep80 = prefs.xep80;
+    PLATFORM_80col = prefs.xep80;
     XEP80_enabled = prefs.xep80_enabled;
-    AF80_enabled = TRUE;
+    AF80_enabled = prefs.af80_enabled;
+    if (XEP80_enabled && AF80_enabled)
+        AF80_enabled = FALSE;
     XEP80_autoswitch = prefs.xep80_autoswitch;
 	XEP80_port = prefs.xep80_port;
 	XEP80_FONTS_oncolor = prefs.xep80_oncolor;

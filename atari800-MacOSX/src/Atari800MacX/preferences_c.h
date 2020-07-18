@@ -195,7 +195,8 @@ typedef struct ATARI800MACX_PREFSAVE {
 				int cx85Enable;
 				int enableStereo; 
 				int xep80;
-				int xep80_enabled;
+                int af80_enabled;
+                int xep80_enabled;
                 int xep80_autoswitch;
 				int xep80_port;
 				int blackBoxEnabled;

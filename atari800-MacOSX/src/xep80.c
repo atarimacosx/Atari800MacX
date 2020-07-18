@@ -1928,7 +1928,7 @@ void XEP80_StateSave(void)
 	StateSav_SaveINT(&XEP80_enabled, 1);
 	if (XEP80_enabled) {
 		StateSav_SaveINT(&XEP80_port, 1);
-		StateSav_SaveINT(&PLATFORM_xep80, 1);
+		StateSav_SaveINT(&PLATFORM_80col, 1);
 		StateSav_SaveINT(&output_state, 1);
 		StateSav_SaveINT(&output_word, 1);
 		StateSav_SaveINT(&input_count, 1);
@@ -2033,17 +2033,17 @@ void XEP80_StateRead(void)
 		XEP80_enabled = TRUE;
 		/* not correct for SDL version */
 #ifdef MACOSX
-		if (PLATFORM_xep80 != local_xep80)
-			PLATFORM_SwitchXep80();
+		if (PLATFORM_80col != local_xep80)
+			PLATFORM_Switch80Col();
 #endif
-		PLATFORM_xep80 = local_xep80;
+		PLATFORM_80col = local_xep80;
 		}
 	else {
 		XEP80_enabled = FALSE;
 		/* not correct for SDL version */
 #ifdef MACOSX
-		if (PLATFORM_xep80)
-			PLATFORM_SwitchXep80();
+		if (PLATFORM_80col)
+			PLATFORM_Switch80Col();
 #endif
 		}
 }

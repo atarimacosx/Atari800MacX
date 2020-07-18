@@ -1273,11 +1273,11 @@ static void SaveState(void)
 		UI_driver->fMessage("Please wait while saving...", 0);
 #ifdef XEP80_EMULATION
 		/* Save true XEP80 state */
-		PLATFORM_xep80 = saved_xep80;
+		PLATFORM_80col = saved_xep80;
 #endif
 		result = StateSav_SaveAtariState(state_filename, "wb", TRUE);
 #ifdef XEP80_EMULATION
-		PLATFORM_xep80 = FALSE;
+		PLATFORM_80col = FALSE;
 #endif
 		if (!result)
 			CantSave(state_filename);
@@ -1296,8 +1296,8 @@ static void LoadState(void)
 			CantLoad(state_filename);
 	}
 #ifdef XEP80_EMULATION
-	saved_xep80 = PLATFORM_xep80;
-	PLATFORM_xep80 = FALSE;
+	saved_xep80 = PLATFORM_80col;
+	PLATFORM_80col = FALSE;
 #endif
 }
 
@@ -1826,9 +1826,9 @@ void UI_Run(void)
 	int option = UI_MENU_RUN;
 	int done = FALSE;
 #ifdef XEP80_EMULATION
-	saved_xep80 = PLATFORM_xep80;
-	if (PLATFORM_xep80) {
-		PLATFORM_SwitchXep80();
+	saved_xep80 = PLATFORM_80col;
+	if (PLATFORM_80col) {
+		PLATFORM_Switch80Col();
 	}
 #endif
 
@@ -1969,8 +1969,8 @@ void UI_Run(void)
 	UI_alt_function = -1;
 	/* restore XEP80 screen */
 #ifdef XEP80_EMULATION
-	if (saved_xep80 != PLATFORM_xep80) {
-		PLATFORM_SwitchXep80();
+	if (saved_xep80 != PLATFORM_80col) {
+		PLATFORM_Switch80Col();
 	}
 #endif
 }

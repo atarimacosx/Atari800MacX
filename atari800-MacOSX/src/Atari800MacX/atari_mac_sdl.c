@@ -116,7 +116,7 @@ int functionKeysWindowOpen;
 int enable_international = 1;
 int led_enabled_media = 1;
 int led_counter_enabled_media = 1;
-int PLATFORM_xep80 = 0;
+int PLATFORM_80col = 0;
 int useAtariCursorKeys = 1;
 #define USE_ATARI_CURSOR_CTRL_ARROW 0
 #define USE_ATARI_CURSOR_ARROW_ONLY 1
@@ -143,7 +143,8 @@ int requestDoubleSizeChange = 0;
 int requestWidthModeChange = 0;
 int requestFullScreenChange = 0;
 int requestFullScreenUI = 0;
-int requestXEP80Change = 0;
+int request80ColChange = 0;
+int request80ColModeChange = 0;
 int requestGrabMouse = 0;
 int requestScreenshot = 0;
 int requestColdReset = 0;
@@ -207,6 +208,7 @@ extern int machineTypeChanged;
 extern int patchFlagsChanged;
 extern int keyboardJoystickChanged;
 extern int hardDiskChanged;
+extern int af80EnabledChanged;
 extern int xep80EnabledChanged;
 extern int xep80ColorsChanged;
 extern int configurationChanged;
@@ -249,7 +251,7 @@ extern void MediaManagerStatusLed(int diskNo, int on, int read);
 extern void MediaManagerCassSliderUpdate(int block);
 extern void MediaManagerStatusWindowShow(void);
 extern void MediaManagerShowCreatePanel(void);
-extern void MediaManagerXEP80Mode(int xep80Enabled, int xep80);
+extern void MediaManager80ColMode(int xep80Enabled, int af80Enabled, int xep80);
 extern int  PasteManagerStartPaste(void);
 extern void PasteManagerStartCopy(unsigned char *string);
 extern void SetDisplayManagerDoubleSize(int doubleSize);
@@ -258,7 +260,7 @@ extern void SetDisplayManagerFps(int fpsOn);
 extern void SetDisplayManagerScaleMode(int scaleMode);
 extern void SetDisplayManagerArtifactMode(int scaleMode);
 extern void SetDisplayManagerGrabMouse(int mouseOn);
-extern void SetDisplayManagerXEP80Mode(int xep80Enabled, int xep80Port, int xep80);
+extern void SetDisplayManager80ColMode(int xep80Enabled, int xep80Port, int af80Enabled, int xep80);
 extern void SetDisplayManagerXEP80Autoswitch(int autoswitchOn);
 extern void SetControlManagerLimit(int limit);
 extern void SetControlManagerDisableBasic(int disableBasic);
@@ -804,7 +806,7 @@ void SetVideoMode(int w, int h, int bpp)
                                         w, h, SDL_WINDOW_FULLSCREEN |  SDL_WINDOW_ALLOW_HIGHDPI);
         SDL_SetHint(SDL_HINT_RENDER_DRIVER, "metal");
         renderer = SDL_CreateRenderer(MainGLScreen, -1, 0);
-        if (AF80_enabled && PLATFORM_xep80)
+        if (AF80_enabled && PLATFORM_80col)
             SDL_RenderSetScale(renderer, 4.0, 4.0);
         else if (lockFullscreenSize)
             SDL_RenderSetScale(renderer, 2.0, 2.0);
@@ -977,16 +979,18 @@ void SetNewVideoMode(int w, int h, int bpp)
         
         SDL_ShowCursor(SDL_ENABLE); // show mouse cursor 
 
-    if (0){//PLATFORM_xep80 && XEP80_enabled) {
-            w = XEP80_SCRN_WIDTH;
-            h = XEP80_SCRN_HEIGHT;
-            XEP80_first_row = 0;
-            XEP80_last_row = XEP80_SCRN_HEIGHT - 1;
-        }
-        else if (PLATFORM_xep80 && AF80_enabled) {
-            w = AF80_SCRN_WIDTH;
-            h = AF80_SCRN_HEIGHT;
-        }
+        if (PLATFORM_80col) {
+            if (XEP80_enabled) {
+                w = XEP80_SCRN_WIDTH;
+                h = XEP80_SCRN_HEIGHT;
+                XEP80_first_row = 0;
+                XEP80_last_row = XEP80_SCRN_HEIGHT - 1;
+                }
+            else if (AF80_enabled) {
+                w = AF80_SCRN_WIDTH;
+                h = AF80_SCRN_HEIGHT;
+                }
+            }
 
         if (FULLSCREEN && lockFullscreenSize)
             SetVideoMode(2*w, 2*h, bpp);
@@ -1046,16 +1050,27 @@ void SwitchFullscreen()
 	copyStatus = COPY_IDLE;
 }
 
-void PLATFORM_SwitchXep80(void)
+void PLATFORM_Switch80Col(void)
 {
-	PLATFORM_xep80 = 1 - PLATFORM_xep80;
-	SetNewVideoMode(our_width, our_height,
-					MainScreen->format->BitsPerPixel);
-	Atari_DisplayScreen((UBYTE *) Screen_atari);
-	CreateWindowCaption();
-	if (!FULLSCREEN)
+    PLATFORM_80col = 1 - PLATFORM_80col;
+    SetNewVideoMode(our_width, our_height,
+                    MainScreen->format->BitsPerPixel);
+    Atari_DisplayScreen((UBYTE *) Screen_atari);
+    CreateWindowCaption();
+    if (!FULLSCREEN)
         SDL_SetWindowTitle(MainGLScreen, windowCaption);
-	copyStatus = COPY_IDLE;
+    copyStatus = COPY_IDLE;
+}
+
+void PLATFORM_Switch80ColMode(void)
+{
+    SetNewVideoMode(our_width, our_height,
+                    MainScreen->format->BitsPerPixel);
+    Atari_DisplayScreen((UBYTE *) Screen_atari);
+    CreateWindowCaption();
+    if (!FULLSCREEN)
+        SDL_SetWindowTitle(MainGLScreen, windowCaption);
+    copyStatus = COPY_IDLE;
 }
 
 /*------------------------------------------------------------------------------
@@ -1755,9 +1770,9 @@ int Atari_Keyboard_International(void)
                     break;
                 case SDLK_x:
                     if (INPUT_key_shift && XEP80_enabled) {
-                        PLATFORM_SwitchXep80();
-                        SetDisplayManagerXEP80Mode(XEP80_enabled, XEP80_port, PLATFORM_xep80);
-                        MediaManagerXEP80Mode(XEP80_enabled, PLATFORM_xep80);
+                        PLATFORM_Switch80Col();
+                        SetDisplayManager80ColMode(XEP80_enabled, XEP80_port, AF80_enabled, PLATFORM_80col);
+                        MediaManager80ColMode(XEP80_enabled, AF80_enabled, PLATFORM_80col);
                     }
                     break;
                 case SDLK_COMMA:
@@ -2965,7 +2980,7 @@ void DisplayWithoutScaling16bpp(Uint8 * screen, int jumped, int width,
     register int i,j;
     register Uint32 *start32;
     register int pitch4;
-	int screen_width = (PLATFORM_xep80 ? XEP80_SCRN_WIDTH : Screen_WIDTH);
+	int screen_width = (PLATFORM_80col ? XEP80_SCRN_WIDTH : Screen_WIDTH);
 
     pitch4 = MainScreen->pitch / 4;
     start32 = (Uint32 *) MainScreen->pixels + (first_row * pitch4);
@@ -3086,7 +3101,7 @@ void Atari_DisplayScreen(UBYTE * screen)
         }
     }
 	
-    if (0) {//PLATFORM_xep80 && XEP80_enabled) {
+    if (PLATFORM_80col && XEP80_enabled) {
 		width = XEP80_SCRN_WIDTH;
 		jumped = 0;
 		if (xep80Frame < 30) {
@@ -3114,7 +3129,7 @@ void Atari_DisplayScreen(UBYTE * screen)
 		XEP80_last_row = 0;
 		XEP80_first_row = XEP80_SCRN_HEIGHT - 1;
 		}
-    else if (PLATFORM_xep80 && AF80_enabled) {
+    else if (PLATFORM_80col && AF80_enabled) {
         width = AF80_SCRN_WIDTH;
         first_row = 0;
         last_row = AF80_SCRN_HEIGHT - 1;;
@@ -3144,7 +3159,7 @@ void Atari_DisplayScreen(UBYTE * screen)
 	else
 		full_display--;
 		
-    if (PLATFORM_xep80 && AF80_enabled) {
+    if (PLATFORM_80col && AF80_enabled) {
         DisplayAF80WithoutScaling16bpp(first_row, last_row, af80Frame >= 30);
     } else {
         DisplayWithoutScaling16bpp(screen, jumped, width, first_row, last_row);
@@ -3156,8 +3171,8 @@ void Atari_DisplayScreen(UBYTE * screen)
 	requestSelectAll = 0;
 	
     Uint32 scaledWidth, scaledHeight;
-    int screen_height = (PLATFORM_xep80 ? (XEP80_enabled ?  XEP80_SCRN_HEIGHT :  AF80_SCRN_HEIGHT) : Screen_HEIGHT);
-    int screen_width = (PLATFORM_xep80 ? (XEP80_enabled ? XEP80_SCRN_WIDTH : AF80_SCRN_WIDTH) : Screen_WIDTH);
+    int screen_height = (PLATFORM_80col ? (XEP80_enabled ?  XEP80_SCRN_HEIGHT :  AF80_SCRN_HEIGHT) : Screen_HEIGHT);
+    int screen_width = (PLATFORM_80col ? (XEP80_enabled ? XEP80_SCRN_WIDTH : AF80_SCRN_WIDTH) : Screen_WIDTH);
     
     scaledWidth = width;
     scaledHeight = screen_height;
@@ -4408,12 +4423,12 @@ void ProcessMacMenus()
          SwitchFullscreen();
          requestFullScreenChange = 0;
          }
-    if (requestXEP80Change) {
-		 if (XEP80_enabled)
-			PLATFORM_SwitchXep80();
-         requestXEP80Change = 0;
-		 SetDisplayManagerXEP80Mode(XEP80_enabled, XEP80_port, PLATFORM_xep80);
- 		 MediaManagerXEP80Mode(XEP80_enabled, PLATFORM_xep80);
+    if (request80ColChange) {
+		 if (XEP80_enabled || AF80_enabled)
+			PLATFORM_Switch80Col();
+         request80ColChange = 0;
+		 SetDisplayManager80ColMode(XEP80_enabled, XEP80_port, AF80_enabled, PLATFORM_80col);
+ 		 MediaManager80ColMode(XEP80_enabled, AF80_enabled, PLATFORM_80col);
          }
     if (requestWidthModeChange) {
         SwitchWidth(requestWidthModeChange-1);
@@ -4549,8 +4564,16 @@ void ProcessMacMenus()
             PauseAudio(0);
          requestPauseEmulator = 0;
          }
+    if (request80ColModeChange)
+        {
+        PLATFORM_Switch80ColMode();
+        if (request80ColModeChange == 2)
+            AF80_RemoveRightCartridge();
+        Atari800_Coldstart();
+        request80ColModeChange = 0;
+        }
     if (requestColdReset) {
-         Atari800_Coldstart();
+        Atari800_Coldstart();
         requestColdReset = 0;
         }
     if (requestWarmReset) {
@@ -4586,7 +4609,7 @@ void ProcessMacMenus()
 		}
 	if (requestCopy) {
 		copyStatus = COPY_IDLE;
-		if (PLATFORM_xep80) {
+		if (PLATFORM_80col) {
 			if (XEP80GetCopyData(selectionStartX,selectionEndX,
 								 selectionStartY,selectionEndY,
 								 ScreenCopyData) != 0)
@@ -4720,10 +4743,14 @@ void ProcessMacPrefsChange()
             Atari800_Coldstart();
 			}
 #endif		
-		if (xep80EnabledChanged) {
-			if (!XEP80_enabled && PLATFORM_xep80)
-				PLATFORM_SwitchXep80();
-			}
+        if (xep80EnabledChanged) {
+            if (!XEP80_enabled && PLATFORM_80col)
+                PLATFORM_Switch80Col();
+            }
+        if (af80EnabledChanged) {
+            if (!XEP80_enabled && PLATFORM_80col)
+                PLATFORM_Switch80Col();
+            }
 		if (xep80ColorsChanged && XEP80_enabled) {
 			XEP80_ChangeColors();
 			}
@@ -4760,9 +4787,9 @@ void ProcessMacPrefsChange()
     SetDisplayManagerFps(Screen_show_atari_speed);
     SetDisplayManagerScaleMode(SCALE_MODE);
 	SetDisplayManagerArtifactMode(ANTIC_artif_mode);
-	SetDisplayManagerXEP80Mode(XEP80_enabled, XEP80_port, PLATFORM_xep80);
+	SetDisplayManager80ColMode(XEP80_enabled, XEP80_port, AF80_enabled, PLATFORM_80col);
     SetDisplayManagerXEP80Autoswitch(XEP80_autoswitch);
-	MediaManagerXEP80Mode(XEP80_enabled, PLATFORM_xep80);
+	MediaManager80ColMode(XEP80_enabled, AF80_enabled, PLATFORM_80col);
     real_deltatime = deltatime;
 	SetControlManagerDisableBasic(Atari800_disable_basic);
 	SetControlManagerKeyjoyEnable(keyjoyEnable);
@@ -4809,10 +4836,10 @@ void CreateWindowCaption()
     char *machineType;
 	char xep80String[10];
 
-    if (PLATFORM_xep80 && XEP80_enabled) {
+    if (PLATFORM_80col && XEP80_enabled) {
         strcpy(xep80String," - XEP80");
         }
-    else if (PLATFORM_xep80 && AF80_enabled) {
+    else if (PLATFORM_80col && AF80_enabled) {
         strcpy(xep80String," - AF80");
         }
 	else {
@@ -5204,9 +5231,9 @@ int SDL_main(int argc, char **argv)
     SetDisplayManagerFps(Screen_show_atari_speed);
     SetDisplayManagerScaleMode(SCALE_MODE);
 	SetDisplayManagerArtifactMode(ANTIC_artif_mode);
-	SetDisplayManagerXEP80Mode(XEP80_enabled, XEP80_port, PLATFORM_xep80);
+	SetDisplayManager80ColMode(XEP80_enabled, XEP80_port, AF80_enabled, PLATFORM_80col);
     SetDisplayManagerXEP80Autoswitch(XEP80_autoswitch);
-	MediaManagerXEP80Mode(XEP80_enabled, PLATFORM_xep80);
+	MediaManager80ColMode(XEP80_enabled, AF80_enabled, PLATFORM_80col);
     real_deltatime = deltatime;
     SetControlManagerLimit(speed_limit);
 	SetControlManagerDisableBasic(Atari800_disable_basic);
@@ -5325,9 +5352,9 @@ int SDL_main(int argc, char **argv)
 					init_mzpokeysnd_sync();
 #endif			 
 				}
-				was_xep80 = PLATFORM_xep80;
+				was_xep80 = PLATFORM_80col;
 				if (was_xep80)
-					PLATFORM_SwitchXep80();
+					PLATFORM_Switch80Col();
                 UI_Run();
 				if (speed_limit == 0) { 
 					deltatime = DELTAFAST;
@@ -5336,7 +5363,7 @@ int SDL_main(int argc, char **argv)
 #endif			 
 				}
 				if (was_xep80)
-					PLATFORM_SwitchXep80();
+					PLATFORM_Switch80Col();
 				memset(Screen_atari_b, 0, (Screen_HEIGHT * Screen_WIDTH));
 				Atari_DisplayScreen((UBYTE *) Screen_atari);
                 PauseAudio(0);
@@ -5474,8 +5501,8 @@ int SDL_main(int argc, char **argv)
         
         if (XEP80_enabled && XEP80_autoswitch) {
             if (XEP80_sent_count > XEP80_last_sent_count + 1) {
-                if (!PLATFORM_xep80)
-                    PLATFORM_SwitchXep80();
+                if (!PLATFORM_80col)
+                    PLATFORM_Switch80Col();
             }
             XEP80_last_sent_count = XEP80_sent_count;
         }

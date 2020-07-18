@@ -22,6 +22,7 @@
     IBOutlet id xep80Mode0Item;
     IBOutlet id xep80Mode1Item;
     IBOutlet id xep80Mode2Item;
+    IBOutlet id af80ModeItem;
     IBOutlet id widthModeNarrowItem;
     IBOutlet id widthModeDefaultItem;
     IBOutlet id widthModeFullItem;
@@ -44,7 +45,8 @@
 - (void)setFpsMenu:(int)fpsOn;
 - (void)setScaleModeMenu:(int)scaleMode;
 - (void)setArtifactModeMenu:(int)artifactMode;
-- (void)setXEP80ModeMenu:(int)xep80Enabled:(int)xep80Port:(int)xep80;
+- (void)set80ColModeMenu:(int)xep80Enabled:(int)xep80Port:(int)af80Enabled:(int)col80;
+
 - (void)setXEP80AutoswitchMenu:(int)autoswitchOn;
 - (IBAction)doubleSize:(id)sender;
 - (IBAction)fullScreen:(id)sender;

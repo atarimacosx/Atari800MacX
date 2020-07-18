@@ -215,6 +215,7 @@ static NSDictionary *defaultValues() {
                 [NSNumber numberWithBool:YES], LedSector,
                 [NSNumber numberWithBool:YES], LedStatusMedia,
                 [NSNumber numberWithBool:YES], LedSectorMedia,
+                [NSNumber numberWithBool:NO], AF80Enabled,
                 [NSNumber numberWithBool:NO], XEP80Enabled,
                 [NSNumber numberWithBool:NO], XEP80Autoswitch,
                 [NSNumber numberWithInt:0], XEP80Port,
@@ -780,10 +781,14 @@ static Preferences *sharedInstance = nil;
     [printCommandField setStringValue:[displayedValues objectForKey:PrintCommand]];
     [bootFromCassetteButton setState:[[displayedValues objectForKey:BootFromCassette] boolValue] ? NSOnState : NSOffState];
     [speedLimitButton setState:[[displayedValues objectForKey:SpeedLimit] boolValue] ? NSOnState : NSOffState];
-    
-    [xep80EnabledButton setState:[[displayedValues objectForKey:XEP80Enabled] boolValue] ? NSOnState : NSOffState];
     [xep80AutoswitchButton setState:[[displayedValues objectForKey:XEP80Autoswitch] boolValue] ? NSOnState : NSOffState];
-	[xep80PortPulldown selectItemAtIndex:[[displayedValues objectForKey:XEP80Port] intValue]];
+    if ([[displayedValues objectForKey:XEP80Enabled] boolValue] == YES) {
+        [xep80PortPulldown selectItemAtIndex:[[displayedValues objectForKey:XEP80Port] intValue] + 1];
+    } else if ([[displayedValues objectForKey:AF80Enabled] boolValue] == YES) {
+        [xep80PortPulldown selectItemAtIndex:3];
+    } else {
+        [xep80PortPulldown selectItemAtIndex:0];
+    }
     [xep80ForegroundField setIntValue:[[displayedValues objectForKey:XEP80OnColor] intValue]];
     [xep80BackgroundField setIntValue:[[displayedValues objectForKey:XEP80OffColor] intValue]];
 	[enableSoundButton setState:[[displayedValues objectForKey:EnableSound] boolValue] ? NSOnState : NSOffState];
@@ -2009,10 +2014,6 @@ static Preferences *sharedInstance = nil;
         [displayedValues setObject:yes forKey:SpeedLimit];
     else
         [displayedValues setObject:no forKey:SpeedLimit];
-    if ([xep80EnabledButton state] == NSOnState)
-        [displayedValues setObject:yes forKey:XEP80Enabled];
-    else
-        [displayedValues setObject:no forKey:XEP80Enabled];
     if ([xep80AutoswitchButton state] == NSOnState)
         [displayedValues setObject:yes forKey:XEP80Autoswitch];
     else
@@ -2021,9 +2022,23 @@ static Preferences *sharedInstance = nil;
         case 0:
 		default:
             [displayedValues setObject:zero forKey:XEP80Port];
+            [displayedValues setObject:no forKey:XEP80Enabled];
+            [displayedValues setObject:no forKey:AF80Enabled];
             break;
         case 1:
+            [displayedValues setObject:zero forKey:XEP80Port];
+            [displayedValues setObject:yes forKey:XEP80Enabled];
+            [displayedValues setObject:no forKey:AF80Enabled];
+            break;
+        case 2:
             [displayedValues setObject:one forKey:XEP80Port];
+            [displayedValues setObject:yes forKey:XEP80Enabled];
+            [displayedValues setObject:no forKey:AF80Enabled];
+            break;
+        case 3:
+            [displayedValues setObject:zero forKey:XEP80Port];
+            [displayedValues setObject:no forKey:XEP80Enabled];
+            [displayedValues setObject:yes forKey:AF80Enabled];
             break;
 		}
     anInt = [xep80ForegroundField intValue];
@@ -3269,6 +3284,7 @@ static Preferences *sharedInstance = nil;
     prefs->speedLimit = [[curValues objectForKey:SpeedLimit] intValue]; 
     prefs->enableSound = [[curValues objectForKey:EnableSound] intValue]; 
 	prefs->soundVolume = [[curValues objectForKey:SoundVolume] floatValue];
+    prefs->af80_enabled = [[curValues objectForKey:AF80Enabled] intValue];
     prefs->xep80_enabled = [[curValues objectForKey:XEP80Enabled] intValue];
     prefs->xep80_autoswitch = [[curValues objectForKey:XEP80Autoswitch] intValue];
     prefs->xep80_port = [[curValues objectForKey:XEP80Port] intValue];
@@ -3533,6 +3549,7 @@ static Preferences *sharedInstance = nil;
     [displayedValues setObject:prefssave->enableSound ? yes : no forKey:EnableSound];
     [displayedValues setObject:prefssave->xep80 ? yes : no forKey:XEP80];
     [displayedValues setObject:prefssave->xep80_enabled ? yes : no forKey:XEP80Enabled];
+    [displayedValues setObject:prefssave->af80_enabled ? yes : no forKey:AF80Enabled];
     [displayedValues setObject:prefssave->xep80_autoswitch ? yes : no forKey:XEP80Autoswitch];
     switch(prefssave->xep80_port) {
         case 0:
@@ -4601,6 +4618,7 @@ static Preferences *sharedInstance = nil;
     getBoolDefault(LedSector);
     getBoolDefault(LedStatusMedia);
     getBoolDefault(LedSectorMedia);
+    getBoolDefault(AF80Enabled);
     getBoolDefault(XEP80Enabled);
     getBoolDefault(XEP80Autoswitch);
 	getIntDefault(XEP80Port);
@@ -4872,6 +4890,7 @@ static Preferences *sharedInstance = nil;
     setBoolDefault(LedSector);
     setBoolDefault(LedStatusMedia);
     setBoolDefault(LedSectorMedia);
+    setBoolDefault(AF80Enabled);
     setBoolDefault(XEP80Enabled);
     setBoolDefault(XEP80Autoswitch);
 	setIntDefault(XEP80Port);
@@ -5124,6 +5143,7 @@ static Preferences *sharedInstance = nil;
     setConfig(LedSector);
     setConfig(LedStatusMedia);
     setConfig(LedSectorMedia);
+    setConfig(AF80Enabled);
     setConfig(XEP80Enabled);
     setConfig(XEP80Autoswitch);
 	setConfig(XEP80Port);
@@ -5486,6 +5506,7 @@ static Preferences *sharedInstance = nil;
     getConfig(LedSector);
     getConfig(LedStatusMedia);
     getConfig(LedSectorMedia);
+    getConfig(AF80Enabled);
     getConfig(XEP80Enabled);
     getConfig(XEP80Autoswitch);
 	getConfig(XEP80Port);

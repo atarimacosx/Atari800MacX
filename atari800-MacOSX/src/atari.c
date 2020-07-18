@@ -183,8 +183,8 @@ void Atari800_Warmstart(void)
     if (XEP80_enabled && XEP80_autoswitch) {
         XEP80_sent_count = 0;
         XEP80_last_sent_count = 0;
-        if (PLATFORM_xep80)
-            PLATFORM_SwitchXep80();
+        if (PLATFORM_80col)
+            PLATFORM_Switch80Col();
     }
 #endif
 	if (Atari800_machine_type == Atari800_MACHINE_OSA || Atari800_machine_type == Atari800_MACHINE_OSB) {
@@ -230,8 +230,8 @@ void Atari800_Coldstart(void)
     if (XEP80_enabled && XEP80_autoswitch) {
         XEP80_sent_count = 0;
         XEP80_last_sent_count = 0;
-        if (PLATFORM_xep80)
-            PLATFORM_SwitchXep80();
+        if (PLATFORM_80col)
+            PLATFORM_Switch80Col();
     }
 #ifdef __PLUS
 	HandleResetEvent();

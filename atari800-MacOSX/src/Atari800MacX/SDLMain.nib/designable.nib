@@ -518,10 +518,10 @@
                                     </items>
                                 </menu>
                             </menuItem>
-                            <menuItem title="XEP80 Control" id="852">
-                                <menu key="submenu" title="XEP80 Control" id="853">
+                            <menuItem title="80 Column Control" id="852">
+                                <menu key="submenu" title="80 Column Control" id="853">
                                     <items>
-                                        <menuItem title="XEP80 Not Connected" id="854">
+                                        <menuItem title="80 Column Not Connected" id="854">
                                             <connections>
                                                 <action selector="xep80Mode:" target="498" id="864"/>
                                             </connections>
@@ -536,15 +536,20 @@
                                                 <action selector="xep80Mode:" target="498" id="866"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem title="Austin Franklin 80 Column Card" tag="3" id="MnU-TU-cRx">
+                                            <connections>
+                                                <action selector="xep80Mode:" target="498" id="cjo-yp-xEL"/>
+                                            </connections>
+                                        </menuItem>
                                     </items>
                                 </menu>
                             </menuItem>
-                            <menuItem title="Display XEP80 Screen" keyEquivalent="X" id="857">
+                            <menuItem title="Display 80 Column Screen" keyEquivalent="X" id="857">
                                 <connections>
                                     <action selector="xep80:" target="498" id="863"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="XEP80 Display Autoswitch" id="nBK-cd-jka">
+                            <menuItem title="80 Column Display Autoswitch" id="nBK-cd-jka">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="xep80Autoswitch:" target="498" id="Nkx-s6-dr7"/>
@@ -940,6 +945,7 @@ DQ
                 <outlet property="GTIA400800Item" destination="833" id="843"/>
                 <outlet property="NoArtifactItem" destination="830" id="840"/>
                 <outlet property="XLXEGTIAItem" destination="832" id="842"/>
+                <outlet property="af80ModeItem" destination="MnU-TU-cRx" id="vFu-px-Qsg"/>
                 <outlet property="displayFpsItem" destination="544" id="546"/>
                 <outlet property="fullscreenItem" destination="442" id="539"/>
                 <outlet property="grabMouseItem" destination="541" id="543"/>

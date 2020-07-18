@@ -64,6 +64,7 @@
 #define MioEnabled @"MioEnabled"
 #define BlackBoxEnabled @"BlackBoxEnabled"
 #define MioRomFile @"MioRomFile"
+#define AF80Enabled @"AF80Enabled"
 #define AF80RomFile @"AF80RomFile"
 #define AF80CharsetFile @"AF80CharsetFile"
 #define BlackBoxRomFile @"BlackBoxRomFile"
@@ -297,7 +298,6 @@
 	IBOutlet id ledSectorButton;
 	IBOutlet id ledStatusMediaButton;
 	IBOutlet id ledSectorMediaButton;
-    IBOutlet id xep80EnabledButton;
     IBOutlet id xep80AutoswitchButton;
 	IBOutlet id xep80PortPulldown;
 	IBOutlet id xep80ForegroundField;

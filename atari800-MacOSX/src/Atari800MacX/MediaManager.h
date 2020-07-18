@@ -228,6 +228,6 @@
 - (IBAction)artifactModeChange:(id)sender;
 - (IBAction)checkDisk:(id)sender;
 - (void)switchDisks;
-- (void)setXEP80Mode:(int)xep80Enabled:(int)xep80;
+- (void)set80ColMode:(int)xep80Enabled:(int)af80Enabled:(int)xep80;
 
 @end
