@@ -3,6 +3,7 @@
 #import "Preferences.h"
 #import "PrintableString.h"
 #import "PrinterView.h"
+#import "AtasciiPrinter.h"
 #import "Atari825Simulator.h"
 #import "Atari1020Simulator.h"
 #import "EpsonFX80Simulator.h"
@@ -268,10 +269,14 @@ static NSMutableArray *printArray;
 			[self setPrinter:[Atari1020Simulator sharedInstance]];
 			[self onResetPrinter:self];
 			break;
-		case 3:
-			[self setPrinter:[EpsonFX80Simulator sharedInstance]];
-			[self onResetPrinter:self];
-			break;
+        case 3:
+            [self setPrinter:[EpsonFX80Simulator sharedInstance]];
+            [self onResetPrinter:self];
+            break;
+        case 4:
+            [self setPrinter:[AtasciiPrinter sharedInstance]];
+            [self onResetPrinter:self];
+            break;
 		}
 		
 	[[MediaManager sharedInstance] updateInfo];

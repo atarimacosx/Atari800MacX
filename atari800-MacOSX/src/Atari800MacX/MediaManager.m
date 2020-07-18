@@ -196,6 +196,7 @@ static NSImage *atari825Image;
 static NSImage *atari1020Image;
 static NSImage *epsonImage;
 static NSImage *textImage;
+static NSImage *atasciiImage;
 NSImage *disketteImage;
 
 + (MediaManager *)sharedInstance {
@@ -264,6 +265,7 @@ NSImage *disketteImage;
     atari825Image = [NSImage imageNamed:@"atari825"];		
     atari1020Image = [NSImage imageNamed:@"atari1020"];
     textImage = [NSImage imageNamed:@"text"];
+    atasciiImage = [NSImage imageNamed:@"atascii"];
     disketteImage = [NSImage imageNamed:@"diskette"];
 	}
 	
@@ -1807,7 +1809,8 @@ NSImage *disketteImage;
 		[selectTextMenuItem setTarget:[PrintOutputController sharedInstance]];
 		[selectAtari825MenuItem setTarget:[PrintOutputController sharedInstance]];
 		[selectAtari1020MenuItem setTarget:[PrintOutputController sharedInstance]];
-		[selectEpsonMenuItem setTarget:[PrintOutputController sharedInstance]];
+        [selectEpsonMenuItem setTarget:[PrintOutputController sharedInstance]];
+        [selectAtasciiMenuItem setTarget:[PrintOutputController sharedInstance]];
 		switch(currPrinter)
 			{
 			case 0:
@@ -1819,6 +1822,7 @@ NSImage *disketteImage;
 				[selectAtari825Item setState:NSOffState];
 				[selectAtari1020Item setState:NSOffState];
 				[selectEpsonItem setState:NSOffState];
+                [selectAtasciiItem setState:NSOffState];
 				[resetPrinterItem setTarget:nil];
 				[resetPrinterMenuItem setTarget:nil];
 				break;
@@ -1831,6 +1835,7 @@ NSImage *disketteImage;
 				[selectAtari825Item setState:NSOnState];
 				[selectAtari1020Item setState:NSOffState];
 				[selectEpsonItem setState:NSOffState];
+                [selectAtasciiItem setState:NSOffState];
 				[resetPrinterItem setTarget:[PrintOutputController sharedInstance]];
 				[resetPrinterMenuItem setTarget:[PrintOutputController sharedInstance]];
 				break;
@@ -1843,6 +1848,7 @@ NSImage *disketteImage;
 				[selectAtari825Item setState:NSOffState];
 				[selectAtari1020Item setState:NSOnState];
 				[selectEpsonItem setState:NSOffState];
+                [selectAtasciiItem setState:NSOffState];
 				[resetPrinterItem setTarget:[PrintOutputController sharedInstance]];
 				[resetPrinterMenuItem setTarget:[PrintOutputController sharedInstance]];
 				break;
@@ -1855,9 +1861,23 @@ NSImage *disketteImage;
 				[selectAtari825Item setState:NSOffState];
 				[selectAtari1020Item setState:NSOffState];
 				[selectEpsonItem setState:NSOnState];
+                [selectAtasciiItem setState:NSOffState];
 				[resetPrinterItem setTarget:[PrintOutputController sharedInstance]];
 				[resetPrinterMenuItem setTarget:[PrintOutputController sharedInstance]];
 				break;
+            case 4:
+                [printerImageNameField setStringValue:@"ATASCII"];
+                [printerImageView setImage:atasciiImage];
+                [printerPreviewItem setTarget:[PrintOutputController sharedInstance]];
+                [printerPreviewButton setEnabled:YES];
+                [selectTextItem setState:NSOffState];
+                [selectAtari825Item setState:NSOffState];
+                [selectAtari1020Item setState:NSOffState];
+                [selectEpsonItem setState:NSOffState];
+                [selectAtasciiItem setState:NSOnState];
+                [resetPrinterItem setTarget:[PrintOutputController sharedInstance]];
+                [resetPrinterMenuItem setTarget:[PrintOutputController sharedInstance]];
+                break;
 			}
 		}
 	else

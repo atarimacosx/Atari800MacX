@@ -374,6 +374,11 @@
                                                 <action selector="onSelectPrinter:" target="788" id="803"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem title="ATASCII Printer" tag="4" id="qcY-e6-1oa">
+                                            <connections>
+                                                <action selector="onSelectPrinter:" target="788" id="Fgc-jc-Eni"/>
+                                            </connections>
+                                        </menuItem>
                                         <menuItem isSeparatorItem="YES" id="796">
                                             <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                                         </menuItem>
@@ -914,6 +919,8 @@ DQ
                 <outlet property="selectAtari1020MenuItem" destination="794" id="814"/>
                 <outlet property="selectAtari825Item" destination="793" id="805"/>
                 <outlet property="selectAtari825MenuItem" destination="793" id="813"/>
+                <outlet property="selectAtasciiItem" destination="qcY-e6-1oa" id="DbP-SS-7Xs"/>
+                <outlet property="selectAtasciiMenuItem" destination="qcY-e6-1oa" id="bjS-xY-IQS"/>
                 <outlet property="selectEpsonItem" destination="795" id="807"/>
                 <outlet property="selectEpsonMenuItem" destination="795" id="815"/>
                 <outlet property="selectPrinterMenu" destination="792" id="810"/>

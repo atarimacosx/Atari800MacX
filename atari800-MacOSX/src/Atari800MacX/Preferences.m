@@ -48,6 +48,7 @@ extern void checkForNewJoysticks(void);
 extern ATARI825_PREF prefs825;
 extern ATARI1020_PREF prefs1020;
 extern EPSON_PREF prefsEpson;
+extern ATASCII_PREF prefsAtascii;
 extern int FULLSCREEN;
 extern int UI_alt_function;
 extern int requestFullScreenUI;
@@ -262,6 +263,9 @@ static NSDictionary *defaultValues() {
                 [NSNumber numberWithFloat:0.0],Atari1020Pen4Blue,
                 [NSNumber numberWithFloat:0.0],Atari1020Pen4Green,
                 [NSNumber numberWithFloat:1.0],Atari1020Pen4Alpha,
+                [NSNumber numberWithInt:11],AtasciiFormLength,
+                [NSNumber numberWithInt:12],AtasciiCharSize,
+                [NSNumber numberWithInt:0],AtasciiLineGap,
                 [NSNumber numberWithInt:0],EpsonCharSet,
                 [NSNumber numberWithInt:0],EpsonPrintPitch,
                 [NSNumber numberWithInt:0],EpsonPrintWeight,
@@ -540,6 +544,7 @@ static Preferences *sharedInstance = nil;
         [self transferValuesToEmulator];
         [self transferValuesToAtari825];
         [self transferValuesToAtari1020];
+        [self transferValuesToAtascii];
         [self transferValuesToEpson];
         commitPrefs();
         [self discardDisplayedValues];
@@ -947,6 +952,12 @@ static Preferences *sharedInstance = nil;
     [atari1020Pen4Red setIntValue:[[displayedValues objectForKey:Atari1020Pen4Red] floatValue]*255];
     [atari1020Pen4Green setIntValue:[[displayedValues objectForKey:Atari1020Pen4Green] floatValue]*255];
     [atari1020Pen4Blue setIntValue:[[displayedValues objectForKey:Atari1020Pen4Blue] floatValue]*255];
+    [atasciiFormLengthField setIntValue:[[displayedValues objectForKey:AtasciiFormLength] intValue]];
+    [atasciiFormLengthStepper setIntValue:[[displayedValues objectForKey:AtasciiFormLength] intValue]];
+    [atasciiCharSizeField setIntValue:[[displayedValues objectForKey:AtasciiCharSize] intValue]];
+    [atasciiCharSizeStepper setIntValue:[[displayedValues objectForKey:AtasciiCharSize] intValue]];
+    [atasciiLineGapField setIntValue:[[displayedValues objectForKey:AtasciiLineGap] intValue]];
+    [atasciiLineGapStepper setIntValue:[[displayedValues objectForKey:AtasciiLineGap] intValue]];
 	[epsonCharSetPulldown selectItemAtIndex:[[displayedValues objectForKey:EpsonCharSet] intValue]];
 	[epsonPrintPitchPulldown selectItemAtIndex:[[displayedValues objectForKey:EpsonPrintPitch] intValue]];
 	[epsonPrintWeightPulldown selectItemAtIndex:[[displayedValues objectForKey:EpsonPrintWeight] intValue]];
@@ -1714,6 +1725,12 @@ static Preferences *sharedInstance = nil;
         [atari1020Pen4Red setEnabled:YES];
         [atari1020Pen4Green setEnabled:YES];
         [atari1020Pen4Blue setEnabled:YES];
+        [atasciiFormLengthField setEnabled:YES];
+        [atasciiFormLengthStepper setEnabled:YES];
+        [atasciiCharSizeField setEnabled:YES];
+        [atasciiCharSizeStepper setEnabled:YES];
+        [atasciiLineGapField setEnabled:YES];
+        [atasciiLineGapStepper setEnabled:YES];
         [epsonCharSetPulldown setEnabled:YES];
         [epsonPrintPitchPulldown setEnabled:YES];
         [epsonPrintWeightPulldown setEnabled:YES];
@@ -1748,6 +1765,12 @@ static Preferences *sharedInstance = nil;
         [atari1020Pen4Red setEnabled:NO];
         [atari1020Pen4Green setEnabled:NO];
         [atari1020Pen4Blue setEnabled:NO];
+        [atasciiFormLengthField setEnabled:NO];
+        [atasciiFormLengthStepper setEnabled:NO];
+        [atasciiCharSizeField setEnabled:NO];
+        [atasciiCharSizeStepper setEnabled:NO];
+        [atasciiLineGapField setEnabled:NO];
+        [atasciiLineGapStepper setEnabled:NO];
         [epsonCharSetPulldown setEnabled:NO];
         [epsonPrintPitchPulldown setEnabled:NO];
         [epsonPrintWeightPulldown setEnabled:NO];
@@ -1770,6 +1793,9 @@ static Preferences *sharedInstance = nil;
             break;
         case 3:
             [displayedValues setObject:three forKey:PrinterType];
+            break;
+        case 4:
+            [displayedValues setObject:four forKey:PrinterType];
             break;
 		}
 	[printerTabView selectTabViewItemAtIndex:[printerTypePulldown indexOfSelectedItem]];
@@ -1845,6 +1871,15 @@ static Preferences *sharedInstance = nil;
     [displayedValues setObject:[NSNumber numberWithFloat:penRed] forKey:Atari1020Pen4Red];
     [displayedValues setObject:[NSNumber numberWithFloat:penBlue] forKey:Atari1020Pen4Blue];
     [displayedValues setObject:[NSNumber numberWithFloat:penGreen] forKey:Atari1020Pen4Green];
+    anInt = [atasciiFormLengthStepper intValue];
+    [displayedValues setObject:[NSNumber numberWithInt:anInt] forKey:AtasciiFormLength];
+    [atasciiFormLengthField setIntValue:anInt];
+    anInt = [atasciiCharSizeStepper intValue];
+    [displayedValues setObject:[NSNumber numberWithInt:anInt] forKey:AtasciiCharSize];
+    [atasciiCharSizeField setIntValue:anInt];
+    anInt = [atasciiLineGapStepper intValue];
+    [displayedValues setObject:[NSNumber numberWithInt:anInt] forKey:AtasciiLineGap];
+    [atasciiLineGapField setIntValue:anInt];
 
     switch([epsonCharSetPulldown indexOfSelectedItem]) {
         case 0:
@@ -3139,6 +3174,13 @@ static Preferences *sharedInstance = nil;
 	prefs1020.pen4Alpha = [[curValues objectForKey:Atari1020Pen4Alpha] floatValue];
 	}
 	
+- (void)transferValuesToAtascii
+    {
+    prefsAtascii.formLength = [[curValues objectForKey:AtasciiFormLength] intValue];
+    prefsAtascii.charSize = [[curValues objectForKey:AtasciiCharSize] intValue];
+    prefsAtascii.lineGap = [[curValues objectForKey:AtasciiLineGap] intValue];
+    }
+
 - (void)transferValuesToEpson
 	{
 	prefsEpson.charSet = [[curValues objectForKey:EpsonCharSet] intValue];
@@ -3577,6 +3619,9 @@ static Preferences *sharedInstance = nil;
         case 3:
             [displayedValues setObject:three forKey:PrinterType];
             break;
+        case 4:
+            [displayedValues setObject:four forKey:PrinterType];
+            break;
 		}
     switch(prefssave->artifactingMode) {
         case 0:
@@ -3781,6 +3826,7 @@ static Preferences *sharedInstance = nil;
     [self transferValuesToEmulator];
     [self transferValuesToAtari825];
     [self transferValuesToAtari1020];
+    [self transferValuesToAtascii];
     [self transferValuesToEpson];
     requestPrefsChange = 1;
     PauseAudio(0);
@@ -3806,6 +3852,7 @@ static Preferences *sharedInstance = nil;
     [self transferValuesToEmulator];
     [self transferValuesToAtari825];
     [self transferValuesToAtari1020];
+    [self transferValuesToAtascii];
     [self transferValuesToEpson];
     requestPrefsChange = 1;
     PauseAudio(0);
@@ -4595,7 +4642,10 @@ static Preferences *sharedInstance = nil;
 	getFloatDefault(Atari1020Pen4Blue);
 	getFloatDefault(Atari1020Pen4Green); 
 	getFloatDefault(Atari1020Pen4Alpha); 
-	getIntDefault(EpsonCharSet); 
+    getIntDefault(AtasciiFormLength);
+    getIntDefault(AtasciiCharSize);
+    getIntDefault(AtasciiLineGap);
+	getIntDefault(EpsonCharSet);
 	getIntDefault(EpsonPrintPitch); 
 	getIntDefault(EpsonPrintWeight); 
 	getIntDefault(EpsonFormLength); 
@@ -4860,7 +4910,10 @@ static Preferences *sharedInstance = nil;
 	setFloatDefault(Atari1020Pen4Blue);
 	setFloatDefault(Atari1020Pen4Green); 
 	setFloatDefault(Atari1020Pen4Alpha); 
-	setIntDefault(EpsonCharSet); 
+    setIntDefault(AtasciiFormLength);
+    setIntDefault(AtasciiCharSize);
+    setIntDefault(AtasciiLineGap);
+	setIntDefault(EpsonCharSet);
 	setIntDefault(EpsonPrintPitch); 
 	setIntDefault(EpsonPrintWeight); 
 	setIntDefault(EpsonFormLength); 
@@ -5106,7 +5159,10 @@ static Preferences *sharedInstance = nil;
 	setConfig(Atari1020Pen4Blue);
 	setConfig(Atari1020Pen4Green); 
 	setConfig(Atari1020Pen4Alpha); 
-	setConfig(EpsonCharSet); 
+    setConfig(AtasciiFormLength);
+    setConfig(AtasciiCharSize);
+    setConfig(AtasciiLineGap);
+	setConfig(EpsonCharSet);
 	setConfig(EpsonPrintPitch); 
 	setConfig(EpsonPrintWeight); 
 	setConfig(EpsonFormLength); 
@@ -5333,6 +5389,7 @@ static Preferences *sharedInstance = nil;
     [self transferValuesToAtari825];
     [self transferValuesToAtari1020];
     [self transferValuesToEpson];
+    [self transferValuesToAtascii];
     requestPrefsChange = 1;
 }
 
@@ -5349,6 +5406,7 @@ static Preferences *sharedInstance = nil;
     [self transferValuesToAtari825];
     [self transferValuesToAtari1020];
     [self transferValuesToEpson];
+    [self transferValuesToAtascii];
     requestPrefsChange = 1;
 	configurationChanged = 1;
 }
@@ -5460,7 +5518,10 @@ static Preferences *sharedInstance = nil;
 	getConfig(Atari1020Pen4Blue);
 	getConfig(Atari1020Pen4Green); 
 	getConfig(Atari1020Pen4Alpha); 
-	getConfig(EpsonCharSet); 
+    getConfig(AtasciiFormLength);
+    getConfig(AtasciiCharSize);
+    getConfig(AtasciiLineGap);
+	getConfig(EpsonCharSet);
 	getConfig(EpsonPrintPitch); 
 	getConfig(EpsonPrintWeight); 
 	getConfig(EpsonFormLength); 
