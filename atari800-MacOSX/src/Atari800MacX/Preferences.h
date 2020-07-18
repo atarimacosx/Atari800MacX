@@ -64,6 +64,8 @@
 #define MioEnabled @"MioEnabled"
 #define BlackBoxEnabled @"BlackBoxEnabled"
 #define MioRomFile @"MioRomFile"
+#define AF80RomFile @"AF80RomFile"
+#define AF80CharsetFile @"AF80CharsetFile"
 #define BlackBoxRomFile @"BlackBoxRomFile"
 #define BlackBoxScsiDiskFile @"BlackBoxScsiDiskFile"
 #define MioScsiDiskFile @"MioScsiDiskFile"

@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "af80.h"
 #include "akey.h"
 #include "atari.h"
 #include "cfg.h"
@@ -144,7 +145,10 @@ extern char bb_rom_filename[FILENAME_MAX];
 extern char mio_rom_filename[FILENAME_MAX];
 extern char bb_scsi_disk_filename[FILENAME_MAX];
 extern char mio_scsi_disk_filename[FILENAME_MAX];
+extern char af80_rom_filename[FILENAME_MAX];
+extern char af80_charset_filename[FILENAME_MAX];
 
+extern void init_af80();
 extern void init_bb();
 extern void init_mio();
 
@@ -653,7 +657,9 @@ void CalculatePrefsChanged()
 	strcpy(mio_rom_filename, prefs.mioRomFile);
 	strcpy(bb_scsi_disk_filename, prefs.blackBoxScsiDiskFile);
 	strcpy(mio_scsi_disk_filename, prefs.mioScsiDiskFile);
-	
+    strcpy(af80_rom_filename, prefs.af80RomFile);
+    strcpy(af80_charset_filename, prefs.af80CharsetFile);
+
     CalcMachineTypeRam(prefs.atariType, &new_machine_type, &new_ram_size,
 					   &new_axlon, &new_mosaic);
     if ((Atari800_machine_type != new_machine_type) ||
@@ -718,7 +724,10 @@ void CalculatePrefsChanged()
 		(strcmp(CFG_xlxe_filename, prefs.xlRomFile) !=0) ||
 		(strcmp(CFG_basic_filename, prefs.basicRomFile) !=0) ||
 		(strcmp(CFG_5200_filename, prefs.a5200RomFile) !=0) ||
-		(strcmp(bb_rom_filename, prefs.blackBoxRomFile) != 0) ||
+        (strcmp(af80_rom_filename, prefs.af80RomFile) != 0) ||
+        (strcmp(af80_charset_filename, prefs.af80CharsetFile) != 0) ||
+        (strcmp(bb_rom_filename, prefs.blackBoxRomFile) != 0) ||
+        (strcmp(bb_rom_filename, prefs.blackBoxRomFile) != 0) ||
 		(strcmp(mio_rom_filename, prefs.mioRomFile) != 0) ||
 		(strcmp(bb_scsi_disk_filename, prefs.blackBoxScsiDiskFile) != 0) ||
 		(strcmp(mio_scsi_disk_filename, prefs.mioScsiDiskFile) != 0))		
@@ -813,7 +822,9 @@ int loadMacPrefs(int firstTime)
 	MEMORY_axlon_bankmask = prefs.axlonBankMask;
 	MEMORY_mosaic_maxbank = prefs.mosaicMaxBank;
 
-	strcpy(bb_rom_filename, prefs.blackBoxRomFile);
+    strcpy(af80_rom_filename, prefs.af80RomFile);
+    strcpy(af80_charset_filename, prefs.af80CharsetFile);
+    strcpy(bb_rom_filename, prefs.blackBoxRomFile);
 	strcpy(mio_rom_filename, prefs.mioRomFile);
 	strcpy(bb_scsi_disk_filename, prefs.blackBoxScsiDiskFile);
 	strcpy(mio_scsi_disk_filename, prefs.mioScsiDiskFile);
@@ -826,7 +837,11 @@ int loadMacPrefs(int firstTime)
 			   ((strcmp(bb_rom_filename, prefs.blackBoxRomFile) != 0) ||
 				(strcmp(bb_scsi_disk_filename, prefs.blackBoxScsiDiskFile) != 0))) {
 		init_bb();
-	}
+    } else if (prefs.af80_enabled &&
+               ((strcmp(af80_rom_filename, prefs.af80RomFile) != 0) ||
+                (strcmp(af80_charset_filename, prefs.af80CharsetFile) != 0))) {
+        init_af80();
+    }
 	if (mioRequested != prefs.mioEnabled && prefs.mioEnabled) {
 		if (!PBI_MIO_enabled) {
 			init_mio();
@@ -861,6 +876,7 @@ int loadMacPrefs(int firstTime)
     strncpy(Devices_print_command, prefs.printCommand,256);
 	PLATFORM_xep80 = prefs.xep80;
     XEP80_enabled = prefs.xep80_enabled;
+    AF80_enabled = TRUE;
     XEP80_autoswitch = prefs.xep80_autoswitch;
 	XEP80_port = prefs.xep80_port;
 	XEP80_FONTS_oncolor = prefs.xep80_oncolor;

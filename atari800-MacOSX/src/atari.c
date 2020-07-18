@@ -63,6 +63,7 @@
 #include "SDL.h"
 #endif
 
+#include "af80.h"
 #include "akey.h"
 #include "antic.h"
 #include "atari.h"
@@ -253,6 +254,10 @@ void Atari800_Coldstart(void)
 	}
 	GTIA_consol_table[1] = GTIA_consol_table[2];
 	Devices_WarmCold_Start();
+    if (AF80_enabled) {
+        AF80_Reset();
+        AF80_InsertRightCartridge();
+    }
 }
 
 int Atari800_LoadImage(const char *filename, UBYTE *buffer, int nbytes)
@@ -692,7 +697,10 @@ int Atari800_Initialise(int *argc, char *argv[])
 	INPUT_Initialise(argc, argv);
 #endif
 #ifdef XEP80_EMULATION
-	XEP80_Initialise(argc, argv);
+    XEP80_Initialise(argc, argv);
+#endif
+#ifdef AF80_EMULATION
+    AF80_Initialise(argc, argv);
 #endif
 #ifndef DONT_DISPLAY
 	/* Platform Specific Initialisation */

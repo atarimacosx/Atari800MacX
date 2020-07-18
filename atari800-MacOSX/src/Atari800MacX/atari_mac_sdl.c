@@ -44,6 +44,7 @@
 
 // Atari800 includes
 #include "config.h"
+#include "af80.h"
 #include "akey.h"
 #include "atari.h"
 #include "esc.h"
@@ -499,7 +500,6 @@ static int callbacktick = 0;
 #endif
 
 // video
-Uint8 *scaledScreen;
 SDL_Surface *MainScreen = NULL;
 SDL_Window *MainGLScreen = NULL;
 SDL_Surface *MonitorGLScreen = NULL;
@@ -804,7 +804,9 @@ void SetVideoMode(int w, int h, int bpp)
                                         w, h, SDL_WINDOW_FULLSCREEN |  SDL_WINDOW_ALLOW_HIGHDPI);
         SDL_SetHint(SDL_HINT_RENDER_DRIVER, "metal");
         renderer = SDL_CreateRenderer(MainGLScreen, -1, 0);
-        if (lockFullscreenSize)
+        if (AF80_enabled && PLATFORM_xep80)
+            SDL_RenderSetScale(renderer, 4.0, 4.0);
+        else if (lockFullscreenSize)
             SDL_RenderSetScale(renderer, 2.0, 2.0);
         else
             SDL_RenderSetScale(renderer, scaleFactor, scaleFactor);
@@ -975,11 +977,15 @@ void SetNewVideoMode(int w, int h, int bpp)
         
         SDL_ShowCursor(SDL_ENABLE); // show mouse cursor 
 
-		if (PLATFORM_xep80) {
+    if (0){//PLATFORM_xep80 && XEP80_enabled) {
             w = XEP80_SCRN_WIDTH;
             h = XEP80_SCRN_HEIGHT;
-			XEP80_first_row = 0;
-			XEP80_last_row = XEP80_SCRN_HEIGHT - 1;
+            XEP80_first_row = 0;
+            XEP80_last_row = XEP80_SCRN_HEIGHT - 1;
+        }
+        else if (PLATFORM_xep80 && AF80_enabled) {
+            w = AF80_SCRN_WIDTH;
+            h = AF80_SCRN_HEIGHT;
         }
 
         if (FULLSCREEN && lockFullscreenSize)
@@ -2980,6 +2986,40 @@ void DisplayWithoutScaling16bpp(Uint8 * screen, int jumped, int width,
         }
 }
 
+void DisplayAF80WithoutScaling16bpp(int first_row, int last_row, int blink)
+{
+    Uint32 const black = (Uint32)Palette16[0];
+    Uint32 const black2 = black << 16;
+    register Uint32 *start32;
+    unsigned int column;
+    UBYTE pixels;
+    register int pitch4;
+
+    pitch4 = MainScreen->pitch / 4;
+    start32 = (Uint32 *) MainScreen->pixels + (first_row * pitch4);
+    register Uint32 quad;
+    for (; first_row < last_row; first_row++) {
+        for (column = 0; column < 80; column++) {
+            int i;
+            int colour;
+            pixels = AF80_GetPixels(first_row, column, &colour, blink);
+            for (i = 0; i < 4; i++) {
+                if (pixels & 0x01)
+                    quad = Palette16[colour];
+                else
+                    quad = black;
+                if (pixels & 0x02)
+                    quad |= Palette16[colour] << 16;
+                else
+                    quad |= black2;
+                *start32++ = quad;
+                pixels >>= 2;
+            }
+        }
+        start32 += pitch4 - (4*80);
+    }
+}
+
 /*------------------------------------------------------------------------------
 *  Display_Line_Equal - Determines if two display lines are equal.  Used as a 
 *     test to determine which parts of the screen must be redrawn.
@@ -3017,6 +3057,7 @@ void Atari_DisplayScreen(UBYTE * screen)
     int last_row = Screen_HEIGHT - 1;
     ULONG *line_start1, *line_start2;
     static int xep80Frame = 0;
+    static int af80Frame = 0;
     SDL_Rect rect;
 	
     if (FULLSCREEN && lockFullscreenSize) {
@@ -3045,7 +3086,7 @@ void Atari_DisplayScreen(UBYTE * screen)
         }
     }
 	
-	if (PLATFORM_xep80) {
+    if (0) {//PLATFORM_xep80 && XEP80_enabled) {
 		width = XEP80_SCRN_WIDTH;
 		jumped = 0;
 		if (xep80Frame < 30) {
@@ -3073,6 +3114,15 @@ void Atari_DisplayScreen(UBYTE * screen)
 		XEP80_last_row = 0;
 		XEP80_first_row = XEP80_SCRN_HEIGHT - 1;
 		}
+    else if (PLATFORM_xep80 && AF80_enabled) {
+        width = AF80_SCRN_WIDTH;
+        first_row = 0;
+        last_row = AF80_SCRN_HEIGHT - 1;;
+        af80Frame++;
+        if (af80Frame >= 60) {
+            af80Frame = 0;
+            }
+        }
 	else if (!full_display) {
 		line_start1 = Screen_atari + (Screen_WIDTH/4 * (Screen_HEIGHT-1));
 		line_start2 = Screen_atari_b + (Screen_WIDTH/4 * (Screen_HEIGHT-1));
@@ -3094,16 +3144,20 @@ void Atari_DisplayScreen(UBYTE * screen)
 	else
 		full_display--;
 		
-    DisplayWithoutScaling16bpp(screen, jumped, width, first_row, last_row);
-
+    if (PLATFORM_xep80 && AF80_enabled) {
+        DisplayAF80WithoutScaling16bpp(first_row, last_row, af80Frame >= 30);
+    } else {
+        DisplayWithoutScaling16bpp(screen, jumped, width, first_row, last_row);
+    }
+    
     // If not in mouse emulation or Fullscreen, check for copy selection
 	if (!FULLSCREEN && INPUT_mouse_mode == INPUT_MOUSE_OFF)
 		ProcessCopySelection(&first_row, &last_row, requestSelectAll);
 	requestSelectAll = 0;
 	
     Uint32 scaledWidth, scaledHeight;
-    int screen_height = (PLATFORM_xep80 ? XEP80_SCRN_HEIGHT : Screen_HEIGHT);
-    int screen_width = (PLATFORM_xep80 ? XEP80_SCRN_WIDTH : Screen_WIDTH);
+    int screen_height = (PLATFORM_xep80 ? (XEP80_enabled ?  XEP80_SCRN_HEIGHT :  AF80_SCRN_HEIGHT) : Screen_HEIGHT);
+    int screen_width = (PLATFORM_xep80 ? (XEP80_enabled ? XEP80_SCRN_WIDTH : AF80_SCRN_WIDTH) : Screen_WIDTH);
     
     scaledWidth = width;
     scaledHeight = screen_height;
@@ -4755,9 +4809,12 @@ void CreateWindowCaption()
     char *machineType;
 	char xep80String[10];
 
-	if (PLATFORM_xep80) {
-		strcpy(xep80String," - XEP80");
-		}
+    if (PLATFORM_xep80 && XEP80_enabled) {
+        strcpy(xep80String," - XEP80");
+        }
+    else if (PLATFORM_xep80 && AF80_enabled) {
+        strcpy(xep80String," - AF80");
+        }
 	else {
 		xep80String[0] = 0;
 		}
@@ -5110,8 +5167,6 @@ int SDL_main(int argc, char **argv)
 	SDL_GetVersion(&v);
 	Log_print("SDL Version: %u.%u.%u", v.major, v.minor, v.patch);
 	SDLMainActivate();
-	
-    scaledScreen = malloc((XEP80_SCRN_WIDTH*4)*(XEP80_SCRN_HEIGHT*4));
 	
     if (!fileToLoad) {
 	  argc = prefsArgc;

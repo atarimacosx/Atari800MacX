@@ -32,6 +32,8 @@
 		2D0CA96D24B176360089AC88 /* AtasciiPrinter.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D0CA96B24B176360089AC88 /* AtasciiPrinter.h */; };
 		2D0CA97624B56AE80089AC88 /* AtasciiDark.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D0CA97424B56AE80089AC88 /* AtasciiDark.png */; };
 		2D0CA97724B56AE80089AC88 /* AtasciiLight.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D0CA97524B56AE80089AC88 /* AtasciiLight.png */; };
+		2D0CA97A24C27B050089AC88 /* af80.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D0CA97824C27B050089AC88 /* af80.h */; };
+		2D0CA97B24C27B050089AC88 /* af80.c in Sources */ = {isa = PBXBuildFile; fileRef = 2D0CA97924C27B050089AC88 /* af80.c */; };
 		2D14CDFF0FFEEEDF00E60EAA /* copydata.c in Sources */ = {isa = PBXBuildFile; fileRef = 2D14CDFD0FFEEEDF00E60EAA /* copydata.c */; };
 		2D16680C0F51E0A400A78B94 /* akey.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D16680B0F51E0A400A78B94 /* akey.h */; };
 		2D1668170F51F07000A78B94 /* esc.c in Sources */ = {isa = PBXBuildFile; fileRef = 2D1668150F51F07000A78B94 /* esc.c */; };
@@ -403,6 +405,8 @@
 		2D0CA96B24B176360089AC88 /* AtasciiPrinter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AtasciiPrinter.h; sourceTree = "<group>"; };
 		2D0CA97424B56AE80089AC88 /* AtasciiDark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = AtasciiDark.png; sourceTree = "<group>"; };
 		2D0CA97524B56AE80089AC88 /* AtasciiLight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = AtasciiLight.png; sourceTree = "<group>"; };
+		2D0CA97824C27B050089AC88 /* af80.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = af80.h; path = ../af80.h; sourceTree = "<group>"; };
+		2D0CA97924C27B050089AC88 /* af80.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = af80.c; path = ../af80.c; sourceTree = "<group>"; };
 		2D0FC28A08C550D0002D1327 /* compfile.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = compfile.h; path = ../compfile.h; sourceTree = SOURCE_ROOT; };
 		2D10A79609B0E209001F913C /* rdevice.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = rdevice.c; path = ../rdevice.c; sourceTree = SOURCE_ROOT; };
 		2D10A79709B0E209001F913C /* rdevice.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = rdevice.h; path = ../rdevice.h; sourceTree = SOURCE_ROOT; };
@@ -862,6 +866,8 @@
 			isa = PBXGroup;
 			children = (
 				2D1668250F51F19900A78B94 /* afile.c */,
+				2D0CA97924C27B050089AC88 /* af80.c */,
+				2D0CA97824C27B050089AC88 /* af80.h */,
 				2D1668260F51F19900A78B94 /* afile.h */,
 				2D16680B0F51E0A400A78B94 /* akey.h */,
 				F5558373030EF4CD01A8C8B4 /* antic.h */,
@@ -1137,6 +1143,7 @@
 				2DAEDAF809B69AED005FF181 /* binload.h in Headers */,
 				2DAEDAF909B69AED005FF181 /* sio.h in Headers */,
 				2DAEDAFA09B69AED005FF181 /* rtime.h in Headers */,
+				2D0CA97A24C27B050089AC88 /* af80.h in Headers */,
 				2DAEDAFC09B69AED005FF181 /* pokeysnd.h in Headers */,
 				2DAEDAFD09B69AED005FF181 /* pokey.h in Headers */,
 				2DAEDAFE09B69AED005FF181 /* platform.h in Headers */,
@@ -1375,6 +1382,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2D0CA97B24C27B050089AC88 /* af80.c in Sources */,
 				2DAEDB7009B69AED005FF181 /* SDLMain.m in Sources */,
 				2DAEDB7109B69AED005FF181 /* memory.c in Sources */,
 				2DAEDB7209B69AED005FF181 /* log.c in Sources */,

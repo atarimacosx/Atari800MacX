@@ -24,6 +24,7 @@
 */
 
 #include "atari.h"
+#include "af80.h"
 #include "pbi.h"
 #include "memory.h"
 #include "pia.h"
@@ -229,6 +230,7 @@ void PBI_D1PutByte(UWORD addr, UBYTE byte)
 /* $D6xx */
 UBYTE PBI_D6GetByte(UWORD addr)
 {
+    if (AF80_enabled) return AF80_D6GetByte(addr);
 #ifdef PBI_MIO
 	if (PBI_MIO_enabled) return PBI_MIO_D6GetByte(addr);
 #endif
@@ -243,6 +245,10 @@ UBYTE PBI_D6GetByte(UWORD addr)
 /* $D6xx */
 void PBI_D6PutByte(UWORD addr, UBYTE byte)
 {
+    if (AF80_enabled) {
+        AF80_D6PutByte(addr,byte);
+        return;
+    }
 #ifdef PBI_MIO
 	if (PBI_MIO_enabled) {
 		PBI_MIO_D6PutByte(addr,byte);

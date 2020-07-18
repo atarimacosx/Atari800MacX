@@ -229,6 +229,8 @@ static NSDictionary *defaultValues() {
                 [NSNumber numberWithInt:3],MosaicMaxBank,
                 [NSNumber numberWithBool:NO],MioEnabled,
                 [NSNumber numberWithBool:NO],BlackBoxEnabled,
+                @"/Users/markg/Test/AF80CART.ROM",AF80RomFile,
+                @"/Users/markg/Test/AF80CHARSET.ROM",AF80CharsetFile,
                 @"",MioRomFile,
                 @"",BlackBoxRomFile,
                 @"",BlackBoxScsiDiskFile,
@@ -3293,7 +3295,9 @@ static Preferences *sharedInstance = nil;
 	prefs->mosaicMaxBank =  [[curValues objectForKey:MosaicMaxBank] intValue];
 	prefs->blackBoxEnabled = [[curValues objectForKey:BlackBoxEnabled] intValue];
 	prefs->mioEnabled = [[curValues objectForKey:MioEnabled] intValue];
-  [[curValues objectForKey:BlackBoxRomFile] getCString:prefs->blackBoxRomFile maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+    [[curValues objectForKey:AF80CharsetFile] getCString:prefs->af80CharsetFile maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+    [[curValues objectForKey:AF80RomFile] getCString:prefs->af80RomFile maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+    [[curValues objectForKey:BlackBoxRomFile] getCString:prefs->blackBoxRomFile maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
 	[[curValues objectForKey:MioRomFile] getCString:prefs->mioRomFile maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
 	[[curValues objectForKey:BlackBoxScsiDiskFile] getCString:prefs->blackBoxScsiDiskFile maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
 	[[curValues objectForKey:MioScsiDiskFile] getCString:prefs->mioScsiDiskFile maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
@@ -4612,7 +4616,9 @@ static Preferences *sharedInstance = nil;
 	getBoolDefault(MioEnabled);
 	getBoolDefault(BlackBoxEnabled);
 	getStringDefault(MioRomFile);
-	getStringDefault(BlackBoxRomFile);
+    getStringDefault(AF80CharsetFile);
+    getStringDefault(AF80RomFile);
+    getStringDefault(BlackBoxRomFile);
 	getStringDefault(BlackBoxScsiDiskFile);
 	getStringDefault(MioScsiDiskFile);
     getBoolDefault(DisableBasic);
@@ -4881,7 +4887,9 @@ static Preferences *sharedInstance = nil;
 	setBoolDefault(MioEnabled);
 	setBoolDefault(BlackBoxEnabled);
 	setStringDefault(MioRomFile);
-	setStringDefault(BlackBoxRomFile);
+    setStringDefault(AF80CharsetFile);
+    setStringDefault(AF80RomFile);
+    setStringDefault(BlackBoxRomFile);
 	setStringDefault(BlackBoxScsiDiskFile);
 	setStringDefault(MioScsiDiskFile);
     setBoolDefault(DisableBasic);
@@ -5131,7 +5139,9 @@ static Preferences *sharedInstance = nil;
 	setConfig(MioEnabled);
 	setConfig(BlackBoxEnabled);
 	setConfig(MioRomFile);
-	setConfig(BlackBoxRomFile);
+    setConfig(AF80CharsetFile);
+    setConfig(AF80RomFile);
+    setConfig(BlackBoxRomFile);
 	setConfig(BlackBoxScsiDiskFile);
 	setConfig(MioScsiDiskFile);
     setConfig(DisableBasic);
@@ -5491,7 +5501,9 @@ static Preferences *sharedInstance = nil;
 	getConfig(MioEnabled);
 	getConfig(BlackBoxEnabled);
 	getConfig(MioRomFile);
-	getConfig(BlackBoxRomFile);
+    getConfig(AF80CharsetFile);
+    getConfig(AF80RomFile);
+    getConfig(BlackBoxRomFile);
 	getConfig(BlackBoxScsiDiskFile);
 	getConfig(MioScsiDiskFile);
     getConfig(DisableBasic);
