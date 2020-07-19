@@ -6,6 +6,8 @@
 
 #define BIT3_SCRN_WIDTH    (640)
 #define BIT3_SCRN_HEIGHT   (240)
+#define BIT3_CHAR_HEIGHT    (10)
+#define BIT3_CHAR_WIDTH     (8)
 
 extern int BIT3_palette[2];
 extern char bit3_rom_filename[FILENAME_MAX];
@@ -22,5 +24,6 @@ void BIT3_D6PutByte(UWORD addr, UBYTE byte);
 UBYTE BIT3_GetPixels(int scanline, int column, int *colour, int blink);
 extern int BIT3_enabled;
 void BIT3_Reset(void);
+int Bit3GetCopyData(int startx, int endx, int starty, int endy, unsigned char *data);
 
 #endif /* BIT3_H_ */

@@ -257,6 +257,70 @@ void BIT3_Reset(void)
 	//VIDEOMODE_Set80Column(video_latch);
 }
 
+int Bit3GetCopyData(int startx, int endx, int starty, int endy, unsigned char *data)
+{
+    int table_start = crtreg[0x0d] + ((crtreg[0x0c]&0x3f)<<8);
+    int startrow, startcol, endrow, endcol, row, col;
+    int count = 0;
+    int screen_pos;
+    unsigned char character;
+
+    // Find the starting column
+    if (startx % BIT3_CHAR_WIDTH < 3)
+        startcol = startx/BIT3_CHAR_WIDTH;
+    else
+        startcol = startx/BIT3_CHAR_WIDTH + 1;
+    // Find the ending column
+    if (endx % BIT3_CHAR_WIDTH > (BIT3_CHAR_WIDTH -3))
+        endcol = endx/BIT3_CHAR_WIDTH;
+    else
+        endcol = endx/BIT3_CHAR_WIDTH -1;
+    // Find the starting row
+    if (starty % BIT3_CHAR_HEIGHT < 3)
+        startrow = starty/BIT3_CHAR_HEIGHT;
+    else
+        startrow = starty/BIT3_CHAR_HEIGHT + 1;
+    // Find the ending row
+    if (endy % BIT3_CHAR_HEIGHT > (BIT3_CHAR_HEIGHT-3))
+        endrow = endy/BIT3_CHAR_HEIGHT;
+    else
+        endrow = endy/BIT3_CHAR_HEIGHT -1;
+    
+    if (startrow > endrow || startcol > endcol) {
+        *data = 0;
+        return(0);
+    }
+    
+    for (row=startrow; row<=endrow; row++) {
+        for (col=startcol; col<=endcol; col++) {
+            screen_pos = ((row * 80 + col + table_start)&0x3fff);
+            character = bit3_screen[screen_pos&0x7ff];
+            count++;
+            if (character == 0x9b) {
+                *data++ = ' ';
+                if (col == endcol && row != endrow) {
+                    *data++ = '\n';
+                    count++;
+                    }
+                }
+            else {
+                character &= 0x7F;
+                if (character >= ' ' && character <= 'z')
+                    *data++ = character & 0x7F;
+                else
+                    *data++ = ' ';
+                if (col == endcol  && row != endrow) {
+                    *data++ = '\n';
+                    count++;
+                }
+            }
+        }
+    }
+    *data = 0;
+    return(count);
+}
+
+
 /*
 vim:ts=4:sw=4:
 */

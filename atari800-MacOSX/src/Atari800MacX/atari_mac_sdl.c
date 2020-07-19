@@ -4687,6 +4687,11 @@ void ProcessMacMenus()
                                  selectionStartY,selectionEndY,
                                  ScreenCopyData) != 0)
                     PasteManagerStartCopy(ScreenCopyData);
+            } else if (BIT3_enabled) {
+                if (Bit3GetCopyData(selectionStartX,selectionEndX,
+                                 selectionStartY,selectionEndY,
+                                 ScreenCopyData) != 0)
+                    PasteManagerStartCopy(ScreenCopyData);
             }
 		} else {
 			int width = 0;
