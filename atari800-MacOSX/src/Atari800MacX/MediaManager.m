@@ -173,8 +173,8 @@ void MediaManagerStatusWindowShow(void) {
  [[MediaManager sharedInstance] mediaStatusWindowShow:nil];
 }
 
-void MediaManager80ColMode(int xep80Enabled, int af80Enabled, int col80) {
-    [[MediaManager sharedInstance] set80ColMode:(xep80Enabled):(af80Enabled):(col80)];
+void MediaManager80ColMode(int xep80Enabled, int af80Enabled, int bit3Enabled, int col80) {
+    [[MediaManager sharedInstance] set80ColMode:(xep80Enabled):(af80Enabled):(bit3Enabled):(col80)];
     }
 
 @implementation MediaManager
@@ -2533,9 +2533,9 @@ NSImage *disketteImage;
     [self updateInfo];
 }
 
-- (void)set80ColMode:(int)xep80Enabled:(int)af80Enabled:(int)col80
+- (void)set80ColMode:(int)xep80Enabled:(int)af80Enabled:(int)bit3Enabled:(int)col80
 {
-	if (!xep80Enabled && !af80Enabled) {
+	if (!xep80Enabled && !af80Enabled && !bit3Enabled) {
 		[xep80Button setEnabled:NO];
 		}
 	else {

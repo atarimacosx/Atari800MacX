@@ -68,6 +68,7 @@
 #include "antic.h"
 #include "atari.h"
 #include "binload.h"
+#include "bit3.h"
 #include "cartridge.h"
 #include "cassette.h"
 #include "cfg.h"
@@ -257,6 +258,9 @@ void Atari800_Coldstart(void)
     if (AF80_enabled) {
         AF80_Reset();
         AF80_InsertRightCartridge();
+    }
+    if (BIT3_enabled) {
+        BIT3_Reset();
     }
 }
 
@@ -701,6 +705,9 @@ int Atari800_Initialise(int *argc, char *argv[])
 #endif
 #ifdef AF80_EMULATION
     AF80_Initialise(argc, argv);
+#endif
+#ifdef BIT3_EMULATION
+    BIT3_Initialise(argc, argv);
 #endif
 #ifndef DONT_DISPLAY
 	/* Platform Specific Initialisation */

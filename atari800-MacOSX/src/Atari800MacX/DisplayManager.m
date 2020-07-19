@@ -10,6 +10,7 @@
 #import "DisplayManager.h"
 #import "MediaManager.h"
 #import "af80.h"
+#import "bit3.h"
 #import "xep80.h"
 
 extern void SwitchFullscreen(void);
@@ -60,8 +61,8 @@ void SetDisplayManagerGrabMouse(int mouseOn) {
     [[DisplayManager sharedInstance] setGrabmouseMenu:(mouseOn)];
     }
 
-void SetDisplayManager80ColMode(int xep80Enabled, int xep80Port, int af80Enabled, int col80) {
-    [[DisplayManager sharedInstance] set80ColModeMenu:(xep80Enabled):(xep80Port):(af80Enabled):(col80)];
+void SetDisplayManager80ColMode(int xep80Enabled, int xep80Port, int af80Enabled, int bit3Enabled, int col80) {
+    [[DisplayManager sharedInstance] set80ColModeMenu:(xep80Enabled):(xep80Port):(af80Enabled):(bit3Enabled):(col80)];
     }
 
 void SetDisplayManagerXEP80Autoswitch(int autoswitchOn) {
@@ -70,6 +71,10 @@ void SetDisplayManagerXEP80Autoswitch(int autoswitchOn) {
 
 void SetDisplayManagerDisableAF80() {
     [[DisplayManager sharedInstance] disableAF80];
+    }
+
+void SetDisplayManagerDisableBit3() {
+    [[DisplayManager sharedInstance] disableBit3];
     }
 
 @implementation DisplayManager
@@ -268,12 +273,13 @@ static DisplayManager *sharedInstance = nil;
 *  setXEP80ModeMenu - This method is used to set the menu text for the
 *     80 Col mode menu items.
 *-----------------------------------------------------------------------------*/
-- (void)set80ColModeMenu:(int)xep80Enabled:(int)xep80Port:(int)af80Enabled:(int)col80;
+- (void)set80ColModeMenu:(int)xep80Enabled:(int)xep80Port:(int)af80Enabled:(int)bit3Enabled:(int)col80;
 {
 	if (xep80Enabled) {
 		[xep80Item setTarget:self];
 		[xep80Mode0Item setState:NSOffState];
         [af80ModeItem setState:NSOffState];
+        [bit3ModeItem setState:NSOffState];
 		if (xep80Port == 0) {
 			[xep80Mode1Item setState:NSOnState];
 			[xep80Mode2Item setState:NSOffState];
@@ -293,6 +299,15 @@ static DisplayManager *sharedInstance = nil;
         [xep80Mode1Item setState:NSOffState];
         [xep80Mode2Item setState:NSOffState];
         [af80ModeItem setState:NSOnState];
+        [bit3ModeItem setState:NSOffState];
+    }
+    else if (bit3Enabled) {
+        [xep80Item setTarget:self];
+        [xep80Mode0Item setState:NSOffState];
+        [xep80Mode1Item setState:NSOffState];
+        [xep80Mode2Item setState:NSOffState];
+        [af80ModeItem setState:NSOffState];
+        [bit3ModeItem setState:NSOnState];
     }
 	else {
 		[xep80Item setState:NSOffState];
@@ -301,6 +316,7 @@ static DisplayManager *sharedInstance = nil;
 		[xep80Mode1Item setState:NSOffState];
 		[xep80Mode2Item setState:NSOffState];
         [af80ModeItem setState:NSOffState];
+        [bit3ModeItem setState:NSOffState];
 		}
 }
 
@@ -310,6 +326,14 @@ static DisplayManager *sharedInstance = nil;
 - (void) disableAF80
 {
     [af80ModeItem setTarget:nil];
+}
+
+/*------------------------------------------------------------------------------
+*  disableBit3 - This method disables the Bit3 menu itmes.
+*-----------------------------------------------------------------------------*/
+- (void) disableBit3
+{
+    [bit3ModeItem setTarget:nil];
 }
 
 /*------------------------------------------------------------------------------
@@ -358,6 +382,7 @@ static DisplayManager *sharedInstance = nil;
 		case 0:
 			XEP80_enabled = FALSE;
             AF80_enabled = FALSE;
+            BIT3_enabled = FALSE;
 			if (PLATFORM_80col)
 				PLATFORM_Switch80Col();
 			break;
@@ -365,20 +390,28 @@ static DisplayManager *sharedInstance = nil;
 			XEP80_enabled = TRUE;
 			XEP80_port = 0;
             AF80_enabled = FALSE;
+            BIT3_enabled = FALSE;
 			break;
         case 2:
             XEP80_enabled = TRUE;
             XEP80_port = 1;
             AF80_enabled = FALSE;
+            BIT3_enabled = FALSE;
             break;
         case 3:
             XEP80_enabled = FALSE;
             AF80_enabled = TRUE;
+            BIT3_enabled = FALSE;
+            break;
+        case 4:
+            XEP80_enabled = FALSE;
+            AF80_enabled = FALSE;
+            BIT3_enabled = TRUE;
             break;
 	}
     request80ColModeChange = modeChange;
-    [self set80ColModeMenu:XEP80_enabled:XEP80_port:AF80_enabled:PLATFORM_80col];
-    [[MediaManager sharedInstance]  set80ColMode:XEP80_enabled:AF80_enabled:PLATFORM_80col];
+    [self set80ColModeMenu:XEP80_enabled:XEP80_port:AF80_enabled:BIT3_enabled:PLATFORM_80col];
+    [[MediaManager sharedInstance]  set80ColMode:XEP80_enabled:AF80_enabled:BIT3_enabled:PLATFORM_80col];
 }
 
 /*------------------------------------------------------------------------------

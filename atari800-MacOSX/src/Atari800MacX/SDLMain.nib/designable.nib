@@ -541,6 +541,11 @@
                                                 <action selector="xep80Mode:" target="498" id="cjo-yp-xEL"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem title="Bit3 80 Column Card" tag="4" id="5Bm-Vo-lcW">
+                                            <connections>
+                                                <action selector="xep80Mode:" target="498" id="1Xb-on-TsB"/>
+                                            </connections>
+                                        </menuItem>
                                     </items>
                                 </menu>
                             </menuItem>
@@ -946,6 +951,7 @@ DQ
                 <outlet property="NoArtifactItem" destination="830" id="840"/>
                 <outlet property="XLXEGTIAItem" destination="832" id="842"/>
                 <outlet property="af80ModeItem" destination="MnU-TU-cRx" id="vFu-px-Qsg"/>
+                <outlet property="bit3ModeItem" destination="5Bm-Vo-lcW" id="Sm2-fg-1BT"/>
                 <outlet property="displayFpsItem" destination="544" id="546"/>
                 <outlet property="fullscreenItem" destination="442" id="539"/>
                 <outlet property="grabMouseItem" destination="541" id="543"/>

@@ -343,6 +343,8 @@
 
 #define AF80_EMULATION
 
+#define BIT3_EMULATION
+
 #define PBI_MIO
 
 #define PBI_BB
