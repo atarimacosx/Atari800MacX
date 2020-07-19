@@ -541,7 +541,7 @@
                                                 <action selector="xep80Mode:" target="498" id="cjo-yp-xEL"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Bit3 80 Column Card" tag="4" id="5Bm-Vo-lcW">
+                                        <menuItem title="Bit3 Full View 80 Column Card" tag="4" id="5Bm-Vo-lcW">
                                             <connections>
                                                 <action selector="xep80Mode:" target="498" id="1Xb-on-TsB"/>
                                             </connections>
