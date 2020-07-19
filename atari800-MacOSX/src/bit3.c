@@ -30,7 +30,10 @@
 #include "cpu.h"
 #include <stdlib.h>
 
-extern void         SetDisplayManagerDisableBit3(void);
+extern void SetDisplayManagerDisableBit3(void);
+extern void PLATFORM_Switch80Col(void);
+extern int PLATFORM_80col;
+extern int XEP80_autoswitch;
 
 static UBYTE bit3_rom[0x1000];
 char bit3_rom_filename[FILENAME_MAX];
@@ -178,6 +181,12 @@ void BIT3_D5PutByte(UWORD addr, UBYTE byte)
 			};
 			if (video_latch != !!(byte & 0x10)){
 				video_latch = !!(byte & 0x10);
+                if (XEP80_autoswitch) {
+                    if (video_latch && !PLATFORM_80col)
+                        PLATFORM_Switch80Col();
+                    if (!video_latch && PLATFORM_80col)
+                        PLATFORM_Switch80Col();
+                }
 				//VIDEOMODE_Set80Column(video_latch);
 			}
 	}
@@ -245,6 +254,10 @@ void BIT3_Reset(void)
 	memset(crtreg, 0, sizeof(crtreg));
 	update_d6();
 	video_latch = 0;
+    if (XEP80_autoswitch) {
+        if (PLATFORM_80col)
+            PLATFORM_Switch80Col();
+    }
 	//VIDEOMODE_Set80Column(video_latch);
 }
 
