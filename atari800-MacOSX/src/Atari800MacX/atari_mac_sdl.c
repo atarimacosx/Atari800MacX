@@ -3185,7 +3185,7 @@ void Atari_DisplayScreen(UBYTE * screen)
         first_row = 0;
         last_row = BIT3_SCRN_HEIGHT - 1;;
         bit3Frame++;
-        if (af80Frame >= 60) {
+        if (bit3Frame >= 60) {
             bit3Frame = 0;
             }
         }

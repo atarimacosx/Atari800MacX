@@ -231,6 +231,8 @@ void Atari800_Coldstart(void)
     if (XEP80_enabled && XEP80_autoswitch) {
         XEP80_sent_count = 0;
         XEP80_last_sent_count = 0;
+    }
+    if ((XEP80_enabled || BIT3_enabled) && XEP80_autoswitch) {
         if (PLATFORM_80col)
             PLATFORM_Switch80Col();
     }

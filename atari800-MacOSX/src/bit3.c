@@ -254,10 +254,6 @@ void BIT3_Reset(void)
 	memset(crtreg, 0, sizeof(crtreg));
 	update_d6();
 	video_latch = 0;
-    if (XEP80_autoswitch) {
-        if (PLATFORM_80col)
-            PLATFORM_Switch80Col();
-    }
 	//VIDEOMODE_Set80Column(video_latch);
 }
 
