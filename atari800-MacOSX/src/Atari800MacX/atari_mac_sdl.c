@@ -3026,11 +3026,11 @@ void DisplayAF80WithoutScaling16bpp(int first_row, int last_row, int blink)
             pixels = AF80_GetPixels(first_row, column, &colour, blink);
             for (i = 0; i < 4; i++) {
                 if (pixels & 0x01)
-                    quad = Palette16[colour];
+                    quad = AF80_palette[colour];
                 else
                     quad = black;
                 if (pixels & 0x02)
-                    quad |= Palette16[colour] << 16;
+                    quad |= AF80_palette[colour] << 16;
                 else
                     quad |= black2;
                 *start32++ = quad;
@@ -3044,39 +3044,37 @@ void DisplayAF80WithoutScaling16bpp(int first_row, int last_row, int blink)
 void DisplayBit3WithoutScaling16bpp(int first_line, int last_line, int blink)
 {
     register Uint32 *start32;
-    unsigned int column;
-    UBYTE pixels;
+    Uint32 const black = (Uint32)Palette16[0];
+    Uint32 const black2 = black << 16;
+
     register int pitch4;
 
     pitch4 = MainScreen->pitch / 4;
     start32 = (Uint32 *) MainScreen->pixels + (first_line * pitch4);
-
+    unsigned int column;
+    UBYTE pixels;
     register Uint32 quad;
     for (; first_line < last_line; first_line++) {
         for (column = 0; column < 80; column++) {
             int i;
             int colour;
             pixels = BIT3_GetPixels(first_line, column, &colour, blink);
-            for (i = 0; i < 2; i++) {
+            for (i = 0; i < 4; i++) {
                 if (pixels & 0x01)
-                    quad = colour;
+                    quad = BIT3_palette[colour];
                 else
-                    quad = 0;
+                    quad = black;
                 if (pixels & 0x02)
-                    quad |= colour << 8;
-                if (pixels & 0x04)
-                    quad |= colour << 16;
-                if (pixels & 0x08)
-                    quad |= colour << 24;
-
+                    quad |= BIT3_palette[colour] << 16;
+                else
+                    quad |= black2;
                 *start32++ = quad;
-                pixels >>= 4;
+                pixels >>= 2;
             }
         }
         start32 += pitch4 - (4*80);
     }
 }
-
 
 /*------------------------------------------------------------------------------
 *  Display_Line_Equal - Determines if two display lines are equal.  Used as a 

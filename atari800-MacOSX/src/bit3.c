@@ -130,7 +130,7 @@ void BIT3_WriteConfig(FILE *fp)
 	fprintf(fp, "BIT3_CHARSET=%s\n", bit3_charset_filename);
 }
 
-int BIT3_D6GetByte(UWORD addr, int no_side_effects)
+int BIT3_D6GetByte(UWORD addr)
 {
 	int result = MEMORY_dGetByte(addr);
 	return result;
@@ -141,7 +141,7 @@ void BIT3_D6PutByte(UWORD addr, UBYTE byte)
 	return;
 }
 
-int BIT3_D5GetByte(UWORD addr, int no_side_effects)
+int BIT3_D5GetByte(UWORD addr)
 {
 	int result=0xff;
 	if (addr == 0xd508) {

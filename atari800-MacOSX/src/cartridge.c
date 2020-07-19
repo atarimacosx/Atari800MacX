@@ -30,6 +30,7 @@
 #include "af80.h"
 #include "atari.h"
 #include "binload.h" /* BINLOAD_loading_basic */
+#include "bit3.h"
 #include "cartridge.h"
 #include "memory.h"
 #include "pia.h"
@@ -348,6 +349,9 @@ UBYTE CARTRIDGE_GetByte(UWORD addr)
     if (AF80_enabled) {
         return AF80_D5GetByte(addr);
     }
+    if (BIT3_enabled) {
+        return BIT3_D5GetByte(addr);
+    }
 	if (RTIME_enabled && (addr == 0xd5b8 || addr == 0xd5b9))
 		return RTIME_GetByte();
 	access_D5(CARTRIDGE_type, addr);
@@ -365,6 +369,9 @@ void CARTRIDGE_PutByte(UWORD addr, UBYTE byte)
            cartridge in the left slot and no other cartridges are
            there. */
         return;
+    }
+    if (BIT3_enabled && (addr == 0xd508 || addr == 0xd580 || addr == 0xd581 || addr == 0xd583 || addr == 0xd585)) {
+        BIT3_D5PutByte(addr,byte);
     }
 	if (RTIME_enabled && (addr == 0xd5b8 || addr == 0xd5b9)) {
 		RTIME_PutByte(byte);
