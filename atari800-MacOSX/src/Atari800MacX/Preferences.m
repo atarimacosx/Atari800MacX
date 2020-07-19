@@ -216,6 +216,7 @@ static NSDictionary *defaultValues() {
                 [NSNumber numberWithBool:YES], LedStatusMedia,
                 [NSNumber numberWithBool:YES], LedSectorMedia,
                 [NSNumber numberWithBool:NO], AF80Enabled,
+                [NSNumber numberWithBool:NO], Bit3Enabled,
                 [NSNumber numberWithBool:NO], XEP80Enabled,
                 [NSNumber numberWithBool:NO], XEP80Autoswitch,
                 [NSNumber numberWithInt:0], XEP80Port,
@@ -230,8 +231,10 @@ static NSDictionary *defaultValues() {
                 [NSNumber numberWithInt:3],MosaicMaxBank,
                 [NSNumber numberWithBool:NO],MioEnabled,
                 [NSNumber numberWithBool:NO],BlackBoxEnabled,
-                @"/Users/markg/Test/AF80CART.ROM",AF80RomFile,
-                @"/Users/markg/Test/AF80CHARSET.ROM",AF80CharsetFile,
+                @"",AF80RomFile,
+                @"",AF80CharsetFile,
+                @"",Bit3RomFile,
+                @"",Bit3CharsetFile,
                 @"",MioRomFile,
                 @"",BlackBoxRomFile,
                 @"",BlackBoxScsiDiskFile,
@@ -786,6 +789,8 @@ static Preferences *sharedInstance = nil;
         [xep80PortPulldown selectItemAtIndex:[[displayedValues objectForKey:XEP80Port] intValue] + 1];
     } else if ([[displayedValues objectForKey:AF80Enabled] boolValue] == YES) {
         [xep80PortPulldown selectItemAtIndex:3];
+    } else if ([[displayedValues objectForKey:Bit3Enabled] boolValue] == YES) {
+            [xep80PortPulldown selectItemAtIndex:4];
     } else {
         [xep80PortPulldown selectItemAtIndex:0];
     }
@@ -836,6 +841,10 @@ static Preferences *sharedInstance = nil;
 		[pbiExpansionMatrix selectCellWithTag:2];
 	else
 		[pbiExpansionMatrix selectCellWithTag:0];		
+    [af80RomFileField setStringValue:[displayedValues objectForKey:AF80RomFile]];
+    [af80CharsetRomFileField setStringValue:[displayedValues objectForKey:AF80CharsetFile]];
+    [bit3RomFileField setStringValue:[displayedValues objectForKey:Bit3RomFile]];
+    [bit3CharsetRomFileField setStringValue:[displayedValues objectForKey:Bit3CharsetFile]];
     [blackBoxRomFileField setStringValue:[displayedValues objectForKey:BlackBoxRomFile]];
     [mioRomFileField setStringValue:[displayedValues objectForKey:MioRomFile]];
     [blackBoxScsiDiskFileField setStringValue:[displayedValues objectForKey:BlackBoxScsiDiskFile]];
@@ -2024,21 +2033,31 @@ static Preferences *sharedInstance = nil;
             [displayedValues setObject:zero forKey:XEP80Port];
             [displayedValues setObject:no forKey:XEP80Enabled];
             [displayedValues setObject:no forKey:AF80Enabled];
+            [displayedValues setObject:no forKey:Bit3Enabled];
             break;
         case 1:
             [displayedValues setObject:zero forKey:XEP80Port];
             [displayedValues setObject:yes forKey:XEP80Enabled];
             [displayedValues setObject:no forKey:AF80Enabled];
+            [displayedValues setObject:no forKey:Bit3Enabled];
             break;
         case 2:
             [displayedValues setObject:one forKey:XEP80Port];
             [displayedValues setObject:yes forKey:XEP80Enabled];
             [displayedValues setObject:no forKey:AF80Enabled];
+            [displayedValues setObject:no forKey:Bit3Enabled];
             break;
         case 3:
             [displayedValues setObject:zero forKey:XEP80Port];
             [displayedValues setObject:no forKey:XEP80Enabled];
             [displayedValues setObject:yes forKey:AF80Enabled];
+            [displayedValues setObject:no forKey:Bit3Enabled];
+            break;
+        case 4:
+            [displayedValues setObject:zero forKey:XEP80Port];
+            [displayedValues setObject:no forKey:XEP80Enabled];
+            [displayedValues setObject:no forKey:AF80Enabled];
+            [displayedValues setObject:yes forKey:Bit3Enabled];
             break;
 		}
     anInt = [xep80ForegroundField intValue];
@@ -2110,8 +2129,12 @@ static Preferences *sharedInstance = nil;
             [displayedValues setObject:yes forKey:MioEnabled];
             break;
     }
-	[displayedValues setObject:[blackBoxRomFileField stringValue] forKey:BlackBoxRomFile];
-	[displayedValues setObject:[mioRomFileField stringValue] forKey:MioRomFile];
+    [displayedValues setObject:[af80RomFileField stringValue] forKey:AF80RomFile];
+    [displayedValues setObject:[af80CharsetRomFileField stringValue] forKey:AF80CharsetFile];
+    [displayedValues setObject:[bit3RomFileField stringValue] forKey:Bit3RomFile];
+    [displayedValues setObject:[bit3CharsetRomFileField stringValue] forKey:Bit3CharsetFile];
+    [displayedValues setObject:[blackBoxRomFileField stringValue] forKey:BlackBoxRomFile];
+    [displayedValues setObject:[mioRomFileField stringValue] forKey:MioRomFile];
 	[displayedValues setObject:[blackBoxScsiDiskFileField stringValue] forKey:BlackBoxScsiDiskFile];
 	[displayedValues setObject:[mioScsiDiskFileField stringValue] forKey:MioScsiDiskFile];
 	 
@@ -2858,6 +2881,54 @@ static Preferences *sharedInstance = nil;
     [dir release];
     }
     
+- (IBAction)browseAF80Rom:(id)sender {
+    NSString *filename, *dir;
+
+    dir = [[NSString alloc] initWithCString:osromsDir encoding:NSASCIIStringEncoding];
+    filename = [self browseFileInDirectory:dir];
+    if (filename != nil) {
+        [af80RomFileField setStringValue:filename];
+        [self miscChanged:self];
+        }
+    [dir release];
+    }
+
+- (IBAction)browseAF80CharsetRom:(id)sender {
+    NSString *filename, *dir;
+
+    dir = [[NSString alloc] initWithCString:osromsDir encoding:NSASCIIStringEncoding];
+    filename = [self browseFileInDirectory:dir];
+    if (filename != nil) {
+        [af80CharsetRomFileField setStringValue:filename];
+        [self miscChanged:self];
+        }
+    [dir release];
+}
+
+- (IBAction)browseBit3Rom:(id)sender {
+    NSString *filename, *dir;
+
+    dir = [[NSString alloc] initWithCString:osromsDir encoding:NSASCIIStringEncoding];
+    filename = [self browseFileInDirectory:dir];
+    if (filename != nil) {
+        [bit3RomFileField setStringValue:filename];
+        [self miscChanged:self];
+        }
+    [dir release];
+    }
+
+- (IBAction)browseBit3CharsetRom:(id)sender {
+    NSString *filename, *dir;
+
+    dir = [[NSString alloc] initWithCString:osromsDir encoding:NSASCIIStringEncoding];
+    filename = [self browseFileInDirectory:dir];
+    if (filename != nil) {
+        [bit3CharsetRomFileField setStringValue:filename];
+        [self miscChanged:self];
+        }
+    [dir release];
+}
+
 - (void)browseOsBRom:(id)sender {
     NSString *filename, *dir;
     
@@ -3285,6 +3356,7 @@ static Preferences *sharedInstance = nil;
     prefs->enableSound = [[curValues objectForKey:EnableSound] intValue]; 
 	prefs->soundVolume = [[curValues objectForKey:SoundVolume] floatValue];
     prefs->af80_enabled = [[curValues objectForKey:AF80Enabled] intValue];
+    prefs->bit3_enabled = [[curValues objectForKey:Bit3Enabled] intValue];
     prefs->xep80_enabled = [[curValues objectForKey:XEP80Enabled] intValue];
     prefs->xep80_autoswitch = [[curValues objectForKey:XEP80Autoswitch] intValue];
     prefs->xep80_port = [[curValues objectForKey:XEP80Port] intValue];
@@ -3313,6 +3385,8 @@ static Preferences *sharedInstance = nil;
 	prefs->mioEnabled = [[curValues objectForKey:MioEnabled] intValue];
     [[curValues objectForKey:AF80CharsetFile] getCString:prefs->af80CharsetFile maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
     [[curValues objectForKey:AF80RomFile] getCString:prefs->af80RomFile maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+    [[curValues objectForKey:Bit3CharsetFile] getCString:prefs->bit3CharsetFile maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+    [[curValues objectForKey:Bit3RomFile] getCString:prefs->bit3RomFile maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
     [[curValues objectForKey:BlackBoxRomFile] getCString:prefs->blackBoxRomFile maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
 	[[curValues objectForKey:MioRomFile] getCString:prefs->mioRomFile maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
 	[[curValues objectForKey:BlackBoxScsiDiskFile] getCString:prefs->blackBoxScsiDiskFile maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
@@ -3550,6 +3624,7 @@ static Preferences *sharedInstance = nil;
     [displayedValues setObject:prefssave->xep80 ? yes : no forKey:XEP80];
     [displayedValues setObject:prefssave->xep80_enabled ? yes : no forKey:XEP80Enabled];
     [displayedValues setObject:prefssave->af80_enabled ? yes : no forKey:AF80Enabled];
+    [displayedValues setObject:prefssave->bit3_enabled ? yes : no forKey:Bit3Enabled];
     [displayedValues setObject:prefssave->xep80_autoswitch ? yes : no forKey:XEP80Autoswitch];
     switch(prefssave->xep80_port) {
         case 0:
@@ -4619,6 +4694,7 @@ static Preferences *sharedInstance = nil;
     getBoolDefault(LedStatusMedia);
     getBoolDefault(LedSectorMedia);
     getBoolDefault(AF80Enabled);
+    getBoolDefault(Bit3Enabled);
     getBoolDefault(XEP80Enabled);
     getBoolDefault(XEP80Autoswitch);
 	getIntDefault(XEP80Port);
@@ -4636,6 +4712,8 @@ static Preferences *sharedInstance = nil;
 	getStringDefault(MioRomFile);
     getStringDefault(AF80CharsetFile);
     getStringDefault(AF80RomFile);
+    getStringDefault(Bit3CharsetFile);
+    getStringDefault(Bit3RomFile);
     getStringDefault(BlackBoxRomFile);
 	getStringDefault(BlackBoxScsiDiskFile);
 	getStringDefault(MioScsiDiskFile);
@@ -4891,6 +4969,7 @@ static Preferences *sharedInstance = nil;
     setBoolDefault(LedStatusMedia);
     setBoolDefault(LedSectorMedia);
     setBoolDefault(AF80Enabled);
+    setBoolDefault(Bit3Enabled);
     setBoolDefault(XEP80Enabled);
     setBoolDefault(XEP80Autoswitch);
 	setIntDefault(XEP80Port);
@@ -4908,6 +4987,8 @@ static Preferences *sharedInstance = nil;
 	setStringDefault(MioRomFile);
     setStringDefault(AF80CharsetFile);
     setStringDefault(AF80RomFile);
+    setStringDefault(Bit3CharsetFile);
+    setStringDefault(Bit3RomFile);
     setStringDefault(BlackBoxRomFile);
 	setStringDefault(BlackBoxScsiDiskFile);
 	setStringDefault(MioScsiDiskFile);
@@ -5144,6 +5225,7 @@ static Preferences *sharedInstance = nil;
     setConfig(LedStatusMedia);
     setConfig(LedSectorMedia);
     setConfig(AF80Enabled);
+    setConfig(Bit3Enabled);
     setConfig(XEP80Enabled);
     setConfig(XEP80Autoswitch);
 	setConfig(XEP80Port);
@@ -5161,6 +5243,8 @@ static Preferences *sharedInstance = nil;
 	setConfig(MioRomFile);
     setConfig(AF80CharsetFile);
     setConfig(AF80RomFile);
+    setConfig(Bit3CharsetFile);
+    setConfig(Bit3RomFile);
     setConfig(BlackBoxRomFile);
 	setConfig(BlackBoxScsiDiskFile);
 	setConfig(MioScsiDiskFile);
@@ -5507,6 +5591,7 @@ static Preferences *sharedInstance = nil;
     getConfig(LedStatusMedia);
     getConfig(LedSectorMedia);
     getConfig(AF80Enabled);
+    getConfig(Bit3Enabled);
     getConfig(XEP80Enabled);
     getConfig(XEP80Autoswitch);
 	getConfig(XEP80Port);
@@ -5524,6 +5609,8 @@ static Preferences *sharedInstance = nil;
 	getConfig(MioRomFile);
     getConfig(AF80CharsetFile);
     getConfig(AF80RomFile);
+    getConfig(Bit3CharsetFile);
+    getConfig(Bit3RomFile);
     getConfig(BlackBoxRomFile);
 	getConfig(BlackBoxScsiDiskFile);
 	getConfig(MioScsiDiskFile);

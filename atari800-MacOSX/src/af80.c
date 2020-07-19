@@ -30,6 +30,8 @@
 #include "cpu.h"
 #include <stdlib.h>
 
+extern void SetDisplayManagerDisableAF80();
+
 static UBYTE af80_rom[0x1000];
 #ifdef MACOSX
 char af80_rom_filename[FILENAME_MAX] = Util_FILENAME_NOT_SET;
@@ -130,33 +132,33 @@ static void init_af80(void)
 {
     int i, j;
 
-    if (AF80_enabled) {
-        Log_print("Austin Franklin 80 enabled");
-        if (!Atari800_LoadImage(af80_rom_filename, af80_rom, 0x1000)) {
-            AF80_enabled = FALSE;
-            Log_print("Couldn't load Austin Franklin ROM image");
-            return;
-        }
-        else {
-            Log_print("loaded Austin Franklin rom image");
-        }
-        if (!Atari800_LoadImage(af80_charset_filename, af80_charset, 0x1000)) {
-            AF80_enabled = FALSE;
-            Log_print("Couldn't load Austin Franklin charset image");
-            return;
-        }
-        else {
-            Log_print("loaded Austin Franklin charset image");
-        }
+    Log_print("Austin Franklin 80 enabled");
+    if (!Atari800_LoadImage(af80_rom_filename, af80_rom, 0x1000)) {
+        AF80_enabled = FALSE;
+        SetDisplayManagerDisableAF80();
+        Log_print("Couldn't load Austin Franklin ROM image");
+        return;
+    }
+    else {
+        Log_print("loaded Austin Franklin rom image");
+    }
+    if (!Atari800_LoadImage(af80_charset_filename, af80_charset, 0x1000)) {
+        AF80_enabled = FALSE;
+        SetDisplayManagerDisableAF80();
+        Log_print("Couldn't load Austin Franklin charset image");
+        return;
+    }
+    else {
+        Log_print("loaded Austin Franklin charset image");
+    }
 
-        //AF80_Reset();
+    AF80_Reset();
 
-        /* swap palette */
-        for (i=0; i<16; i++ ) {
-            j=i;
-            j = (j&0x0a) + ((j&0x01) << 2) + ((j&0x04) >> 2);
-            AF80_palette[i] = rgbi_palette[j];
-        }
+    /* swap palette */
+    for (i=0; i<16; i++ ) {
+        j=i;
+        j = (j&0x0a) + ((j&0x01) << 2) + ((j&0x04) >> 2);
+        AF80_palette[i] = rgbi_palette[j];
     }
 }
 

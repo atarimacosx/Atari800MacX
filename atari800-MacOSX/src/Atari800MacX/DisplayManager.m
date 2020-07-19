@@ -68,6 +68,9 @@ void SetDisplayManagerXEP80Autoswitch(int autoswitchOn) {
     [[DisplayManager sharedInstance] setXEP80AutoswitchMenu:autoswitchOn];
     }
 
+void SetDisplayManagerDisableAF80() {
+    [[DisplayManager sharedInstance] disableAF80];
+    }
 
 @implementation DisplayManager
 
@@ -299,6 +302,14 @@ static DisplayManager *sharedInstance = nil;
 		[xep80Mode2Item setState:NSOffState];
         [af80ModeItem setState:NSOffState];
 		}
+}
+
+/*------------------------------------------------------------------------------
+*  disableAF80 - This method disables the AF80 menu itmes.
+*-----------------------------------------------------------------------------*/
+- (void) disableAF80
+{
+    [af80ModeItem setTarget:nil];
 }
 
 /*------------------------------------------------------------------------------

@@ -67,6 +67,9 @@
 #define AF80Enabled @"AF80Enabled"
 #define AF80RomFile @"AF80RomFile"
 #define AF80CharsetFile @"AF80CharsetFile"
+#define Bit3Enabled @"Bit3Enabled"
+#define Bit3RomFile @"Bit3RomFile"
+#define Bit3CharsetFile @"Bit3CharsetFile"
 #define BlackBoxRomFile @"BlackBoxRomFile"
 #define BlackBoxScsiDiskFile @"BlackBoxScsiDiskFile"
 #define MioScsiDiskFile @"MioScsiDiskFile"
@@ -372,6 +375,10 @@
     IBOutlet id intensityField;
     IBOutlet id osARomFileField;
     IBOutlet id osBRomFileField;
+    IBOutlet id af80CharsetRomFileField;
+    IBOutlet id af80RomFileField;
+    IBOutlet id bit3CharsetRomFileField;
+    IBOutlet id bit3RomFileField;
     IBOutlet id refreshRatioPulldown;
     IBOutlet id savedStateDirField;
     IBOutlet id configDirField;
@@ -569,8 +576,12 @@
 - (void)browseHardDisk2:(id)sender; 
 - (void)browseHardDisk3:(id)sender; 
 - (void)browseHardDisk4:(id)sender; 
-- (void)browseOsARom:(id)sender; 
-- (void)browseOsBRom:(id)sender; 
+- (IBAction)browseAF80CharsetRom:(id)sender;
+- (IBAction)browseAF80Rom:(id)sender;
+- (IBAction)browseBit3CharsetRom:(id)sender;
+- (IBAction)browseBit3Rom:(id)sender;
+- (void)browseOsARom:(id)sender;
+- (void)browseOsBRom:(id)sender;
 - (void)browseXlRom:(id)sender; 
 - (void)browseBasicRom:(id)sender; 
 - (void)browse5200Rom:(id)sender; 

@@ -48,6 +48,7 @@
 - (void)set80ColModeMenu:(int)xep80Enabled:(int)xep80Port:(int)af80Enabled:(int)col80;
 
 - (void)setXEP80AutoswitchMenu:(int)autoswitchOn;
+- (void)disableAF80;
 - (IBAction)doubleSize:(id)sender;
 - (IBAction)fullScreen:(id)sender;
 - (IBAction)xep80:(id)sender;

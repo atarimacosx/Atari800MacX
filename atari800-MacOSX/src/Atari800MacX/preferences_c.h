@@ -75,6 +75,8 @@ typedef struct ATARI800MACX_PREF {
 				int mioEnabled;
                 char af80CharsetFile[FILENAME_MAX];
                 char af80RomFile[FILENAME_MAX];
+                char bit3CharsetFile[FILENAME_MAX];
+                char bit3RomFile[FILENAME_MAX];
                 char blackBoxRomFile[FILENAME_MAX];
 				char mioRomFile[FILENAME_MAX];
 				char blackBoxScsiDiskFile[FILENAME_MAX]; 
@@ -157,6 +159,7 @@ typedef struct ATARI800MACX_PREF {
 				int keyjoyEnable;
 				double emulationSpeed;
                 int af80_enabled;
+                int bit3_enabled;
                 int xep80_enabled;
                 int xep80_autoswitch;
 				int xep80;
@@ -196,6 +199,7 @@ typedef struct ATARI800MACX_PREFSAVE {
 				int enableStereo; 
 				int xep80;
                 int af80_enabled;
+                int bit3_enabled;
                 int xep80_enabled;
                 int xep80_autoswitch;
 				int xep80_port;
