@@ -4677,10 +4677,17 @@ void ProcessMacMenus()
 	if (requestCopy) {
 		copyStatus = COPY_IDLE;
 		if (PLATFORM_80col) {
-			if (XEP80GetCopyData(selectionStartX,selectionEndX,
+            if (XEP80_enabled) {
+                if (XEP80GetCopyData(selectionStartX,selectionEndX,
 								 selectionStartY,selectionEndY,
 								 ScreenCopyData) != 0)
-				PasteManagerStartCopy(ScreenCopyData);
+                    PasteManagerStartCopy(ScreenCopyData);
+            } else if (AF80_enabled) {
+                if (AF80GetCopyData(selectionStartX,selectionEndX,
+                                 selectionStartY,selectionEndY,
+                                 ScreenCopyData) != 0)
+                    PasteManagerStartCopy(ScreenCopyData);
+            }
 		} else {
 			int width = 0;
 			int startx, endx; 

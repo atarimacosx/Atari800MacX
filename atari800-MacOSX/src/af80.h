@@ -6,6 +6,8 @@
 
 #define AF80_SCRN_WIDTH    (640)
 #define AF80_SCRN_HEIGHT   (250)
+#define AF80_CHAR_HEIGHT    (10)
+#define AF80_CHAR_WIDTH     (8)
 
 extern int AF80_palette[16];
 int AF80_Initialise(int *argc, char *argv[]);
@@ -21,5 +23,6 @@ void AF80_D6PutByte(UWORD addr, UBYTE byte);
 UBYTE AF80_GetPixels(int scanline, int column, int *colour, int blink);
 extern int AF80_enabled;
 void AF80_Reset(void);
+int AF80GetCopyData(int startx, int endx, int starty, int endy, unsigned char *data);
 
 #endif /* AF80_H_ */

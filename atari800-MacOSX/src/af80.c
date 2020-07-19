@@ -398,6 +398,67 @@ void AF80_Reset(void)
 	memset(crtreg, 0, sizeof(crtreg));
 }
 
+int AF80GetCopyData(int startx, int endx, int starty, int endy, unsigned char *data)
+{
+    int table_start = crtreg[0x0c] + ((crtreg[0x0d]&0x3f)<<8);
+    int startrow, startcol, endrow, endcol, row, col;
+    int count = 0;
+    unsigned char character;
+
+    // Find the starting column
+    if (startx % AF80_CHAR_WIDTH < 3)
+        startcol = startx/AF80_CHAR_WIDTH;
+    else
+        startcol = startx/AF80_CHAR_WIDTH + 1;
+    // Find the ending column
+    if (endx % AF80_CHAR_WIDTH > (AF80_CHAR_WIDTH -3))
+        endcol = endx/AF80_CHAR_WIDTH;
+    else
+        endcol = endx/AF80_CHAR_WIDTH -1;
+    // Find the starting row
+    if (starty % AF80_CHAR_HEIGHT < 3)
+        startrow = starty/AF80_CHAR_HEIGHT;
+    else
+        startrow = starty/AF80_CHAR_HEIGHT + 1;
+    // Find the ending row
+    if (endy % AF80_CHAR_HEIGHT > (AF80_CHAR_HEIGHT-3))
+        endrow = endy/AF80_CHAR_HEIGHT;
+    else
+        endrow = endy/AF80_CHAR_HEIGHT -1;
+    
+    if (startrow > endrow || startcol > endcol) {
+        *data = 0;
+        return(0);
+    }
+    
+    for (row=startrow; row<=endrow; row++) {
+        for (col=startcol; col<=endcol; col++) {
+            character = af80_screen[row * 80 + col + table_start];
+            count++;
+            if (character == 0x9b) {
+                *data++ = ' ';
+                if (col == endcol && row != endrow) {
+                    *data++ = '\n';
+                    count++;
+                    }
+                }
+            else {
+                character &= 0x7F;
+                if (character >= ' ' && character <= 'z')
+                    *data++ = character & 0x7F;
+                else
+                    *data++ = ' ';
+                if (col == endcol  && row != endrow) {
+                    *data++ = '\n';
+                    count++;
+                }
+            }
+        }
+    }
+    *data = 0;
+    return(count);
+}
+
 /*
 vim:ts=4:sw=4:
 */
