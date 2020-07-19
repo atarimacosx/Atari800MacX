@@ -3213,7 +3213,7 @@ void Atari_DisplayScreen(UBYTE * screen)
     if (PLATFORM_80col && AF80_enabled) {
         DisplayAF80WithoutScaling16bpp(first_row, last_row, af80Frame >= 30);
     } else if (PLATFORM_80col && BIT3_enabled) {
-            DisplayBit3WithoutScaling16bpp(first_row, last_row, bit3Frame >= 30);
+            DisplayBit3WithoutScaling16bpp(first_row, last_row, bit3Frame / 30);
     } else {
         DisplayWithoutScaling16bpp(screen, jumped, width, first_row, last_row);
     }
@@ -4859,7 +4859,7 @@ void ProcessMacPrefsChange()
     SetDisplayManagerScaleMode(SCALE_MODE);
 	SetDisplayManagerArtifactMode(ANTIC_artif_mode);
 	SetDisplayManager80ColMode(XEP80_enabled, XEP80_port, AF80_enabled, BIT3_enabled, PLATFORM_80col);
-    SetDisplayManagerXEP80Autoswitch(XEP80_autoswitch);
+    SetDisplayManagerXEP80Autoswitch(COL80_autoswitch);
 	MediaManager80ColMode(XEP80_enabled, AF80_enabled, BIT3_enabled, PLATFORM_80col);
     real_deltatime = deltatime;
 	SetControlManagerDisableBasic(Atari800_disable_basic);
@@ -5306,7 +5306,7 @@ int SDL_main(int argc, char **argv)
     SetDisplayManagerScaleMode(SCALE_MODE);
 	SetDisplayManagerArtifactMode(ANTIC_artif_mode);
 	SetDisplayManager80ColMode(XEP80_enabled, XEP80_port, AF80_enabled, BIT3_enabled, PLATFORM_80col);
-    SetDisplayManagerXEP80Autoswitch(XEP80_autoswitch);
+    SetDisplayManagerXEP80Autoswitch(COL80_autoswitch);
 	MediaManager80ColMode(XEP80_enabled, AF80_enabled, BIT3_enabled, PLATFORM_80col);
     real_deltatime = deltatime;
     SetControlManagerLimit(speed_limit);
@@ -5573,7 +5573,7 @@ int SDL_main(int argc, char **argv)
 
         ProcessMacMenus();
         
-        if (XEP80_enabled && XEP80_autoswitch) {
+        if (XEP80_enabled && COL80_autoswitch) {
             if (XEP80_sent_count > XEP80_last_sent_count + 1) {
                 if (!PLATFORM_80col)
                     PLATFORM_Switch80Col();

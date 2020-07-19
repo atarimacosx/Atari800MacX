@@ -33,7 +33,7 @@
 extern void SetDisplayManagerDisableBit3(void);
 extern void PLATFORM_Switch80Col(void);
 extern int PLATFORM_80col;
-extern int XEP80_autoswitch;
+extern int COL80_autoswitch;
 
 static UBYTE bit3_rom[0x1000];
 char bit3_rom_filename[FILENAME_MAX];
@@ -181,7 +181,7 @@ void BIT3_D5PutByte(UWORD addr, UBYTE byte)
 			};
 			if (video_latch != !!(byte & 0x10)){
 				video_latch = !!(byte & 0x10);
-                if (XEP80_autoswitch) {
+                if (COL80_autoswitch) {
                     if (video_latch && !PLATFORM_80col)
                         PLATFORM_Switch80Col();
                     if (!video_latch && PLATFORM_80col)

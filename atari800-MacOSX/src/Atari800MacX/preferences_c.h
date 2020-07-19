@@ -161,7 +161,7 @@ typedef struct ATARI800MACX_PREF {
                 int af80_enabled;
                 int bit3_enabled;
                 int xep80_enabled;
-                int xep80_autoswitch;
+                int COL80_autoswitch;
 				int xep80;
 				int xep80_port;
 				int xep80_oncolor;
@@ -201,7 +201,7 @@ typedef struct ATARI800MACX_PREFSAVE {
                 int af80_enabled;
                 int bit3_enabled;
                 int xep80_enabled;
-                int xep80_autoswitch;
+                int COL80_autoswitch;
 				int xep80_port;
 				int blackBoxEnabled;
 				int mioEnabled;

@@ -296,7 +296,7 @@ void savePrefs() {
     prefssave.bit3_enabled = BIT3_enabled;
     prefssave.xep80_enabled = XEP80_enabled;
 	prefssave.xep80_port = XEP80_port;
-    prefssave.xep80_autoswitch = XEP80_autoswitch;
+    prefssave.COL80_autoswitch = COL80_autoswitch;
     prefssave.enableSound = sound_enabled;
 	prefssave.soundVolume = sound_volume;
     prefssave.enableStereo = POKEYSND_stereo_enabled; 
@@ -912,7 +912,7 @@ int loadMacPrefs(int firstTime)
         BIT3_enabled = FALSE;
     if (AF80_enabled && BIT3_enabled)
         BIT3_enabled = FALSE;
-    XEP80_autoswitch = prefs.xep80_autoswitch;
+    COL80_autoswitch = prefs.COL80_autoswitch;
 	XEP80_port = prefs.xep80_port;
 	XEP80_FONTS_oncolor = prefs.xep80_oncolor;
 	XEP80_FONTS_offcolor = prefs.xep80_offcolor;

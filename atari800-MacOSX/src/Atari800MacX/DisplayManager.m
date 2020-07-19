@@ -365,8 +365,8 @@ static DisplayManager *sharedInstance = nil;
 *-----------------------------------------------------------------------------*/
 - (IBAction)xep80Autoswitch:(id)sender
 {
-    XEP80_autoswitch = 1 - XEP80_autoswitch;
-    [self setXEP80AutoswitchMenu:XEP80_autoswitch];
+    COL80_autoswitch = 1 - COL80_autoswitch;
+    [self setXEP80AutoswitchMenu:COL80_autoswitch];
 }
 
 /*------------------------------------------------------------------------------

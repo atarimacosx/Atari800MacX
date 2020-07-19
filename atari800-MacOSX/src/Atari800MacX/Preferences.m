@@ -218,7 +218,7 @@ static NSDictionary *defaultValues() {
                 [NSNumber numberWithBool:NO], AF80Enabled,
                 [NSNumber numberWithBool:NO], Bit3Enabled,
                 [NSNumber numberWithBool:NO], XEP80Enabled,
-                [NSNumber numberWithBool:NO], XEP80Autoswitch,
+                [NSNumber numberWithBool:YES], XEP80Autoswitch,
                 [NSNumber numberWithInt:0], XEP80Port,
                 [NSNumber numberWithBool:NO], XEP80,
                 [NSNumber numberWithInt:15], XEP80OnColor,
@@ -3358,7 +3358,7 @@ static Preferences *sharedInstance = nil;
     prefs->af80_enabled = [[curValues objectForKey:AF80Enabled] intValue];
     prefs->bit3_enabled = [[curValues objectForKey:Bit3Enabled] intValue];
     prefs->xep80_enabled = [[curValues objectForKey:XEP80Enabled] intValue];
-    prefs->xep80_autoswitch = [[curValues objectForKey:XEP80Autoswitch] intValue];
+    prefs->COL80_autoswitch = [[curValues objectForKey:XEP80Autoswitch] intValue];
     prefs->xep80_port = [[curValues objectForKey:XEP80Port] intValue];
     prefs->xep80 = [[curValues objectForKey:XEP80] intValue];
     prefs->xep80_oncolor = [[curValues objectForKey:XEP80OnColor] intValue];
@@ -3625,7 +3625,7 @@ static Preferences *sharedInstance = nil;
     [displayedValues setObject:prefssave->xep80_enabled ? yes : no forKey:XEP80Enabled];
     [displayedValues setObject:prefssave->af80_enabled ? yes : no forKey:AF80Enabled];
     [displayedValues setObject:prefssave->bit3_enabled ? yes : no forKey:Bit3Enabled];
-    [displayedValues setObject:prefssave->xep80_autoswitch ? yes : no forKey:XEP80Autoswitch];
+    [displayedValues setObject:prefssave->COL80_autoswitch ? yes : no forKey:XEP80Autoswitch];
     switch(prefssave->xep80_port) {
         case 0:
 		default:

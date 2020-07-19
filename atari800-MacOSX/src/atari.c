@@ -181,7 +181,7 @@ void Atari800_Warmstart(void)
 	MacCapsLockStateReset();
     if (XEP80_enabled)
         XEP80_Reset();
-    if (XEP80_enabled && XEP80_autoswitch) {
+    if (XEP80_enabled && COL80_autoswitch) {
         XEP80_sent_count = 0;
         XEP80_last_sent_count = 0;
         if (PLATFORM_80col)
@@ -228,12 +228,16 @@ void Atari800_Coldstart(void)
 	/* note: POKEY and GTIA have no Reset pin */
     if (XEP80_enabled)
         XEP80_Reset();
-    if (XEP80_enabled && XEP80_autoswitch) {
+    if (XEP80_enabled && COL80_autoswitch) {
         XEP80_sent_count = 0;
         XEP80_last_sent_count = 0;
     }
-    if ((XEP80_enabled || BIT3_enabled) && XEP80_autoswitch) {
+    if ((XEP80_enabled || BIT3_enabled) && COL80_autoswitch) {
         if (PLATFORM_80col)
+            PLATFORM_Switch80Col();
+    }
+    if (AF80_enabled && COL80_autoswitch) {
+        if (!PLATFORM_80col)
             PLATFORM_Switch80Col();
     }
 #ifdef __PLUS
