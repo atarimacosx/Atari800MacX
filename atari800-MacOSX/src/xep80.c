@@ -2061,22 +2061,22 @@ int XEP80GetCopyData(int startx, int endx, int starty, int endy, unsigned char *
 	}
 	
 	// Find the starting column
-	if (startx % XEP80_CHAR_WIDTH ==0)
+	if (startx % XEP80_CHAR_WIDTH < 3)
 		startcol = startx/XEP80_CHAR_WIDTH;
 	else
 		startcol = startx/XEP80_CHAR_WIDTH + 1;
 	// Find the ending column
-	if (endx % 8 == (XEP80_CHAR_WIDTH -1))
+	if (endx % XEP80_CHAR_WIDTH > (XEP80_CHAR_WIDTH -3))
 		endcol = endx/XEP80_CHAR_WIDTH;
 	else
 		endcol = endx/XEP80_CHAR_WIDTH -1;
 	// Find the starting row
-	if (starty % XEP80_CHAR_HEIGHT ==0)
+	if (starty % XEP80_CHAR_HEIGHT < 3)
 		startrow = starty/XEP80_CHAR_HEIGHT;
 	else
 		startrow = starty/XEP80_CHAR_HEIGHT + 1;
 	// Find the ending row
-	if (endy % XEP80_CHAR_HEIGHT == (XEP80_CHAR_HEIGHT-1))
+	if (endy % XEP80_CHAR_HEIGHT > (XEP80_CHAR_HEIGHT-3))
 		endrow = endy/XEP80_CHAR_HEIGHT;
 	else
 		endrow = endy/XEP80_CHAR_HEIGHT -1;
