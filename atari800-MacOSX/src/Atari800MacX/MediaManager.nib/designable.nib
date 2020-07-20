@@ -2409,9 +2409,9 @@ DQ
                         </textFieldCell>
                     </textField>
                     <button fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1371">
-                        <rect key="frame" x="744" y="1" width="50" height="18"/>
+                        <rect key="frame" x="742" y="-3" width="53" height="24"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <buttonCell key="cell" type="square" title="XEP80" bezelStyle="shadowlessSquare" alignment="center" borderStyle="border" inset="2" id="1827">
+                        <buttonCell key="cell" type="square" title="80COL" bezelStyle="shadowlessSquare" alignment="center" borderStyle="border" inset="2" id="1827">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>

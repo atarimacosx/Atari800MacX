@@ -22,6 +22,8 @@
 		2D0326F510856DB400983A3E /* PokeyDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D0326F310856DB400983A3E /* PokeyDataSource.m */; };
 		2D037E351001124F0045DB8E /* PastePanel.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D037E331001124F0045DB8E /* PastePanel.h */; };
 		2D037E361001124F0045DB8E /* PastePanel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D037E341001124F0045DB8E /* PastePanel.m */; };
+		2D05560324C3E7690026DE9C /* bit3.c in Sources */ = {isa = PBXBuildFile; fileRef = 2D05560124C3E7690026DE9C /* bit3.c */; };
+		2D05560424C3E7690026DE9C /* bit3.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D05560224C3E7690026DE9C /* bit3.h */; };
 		2D0BA11A107D6EF000DEF450 /* LabelDataSource.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D0BA118107D6EF000DEF450 /* LabelDataSource.h */; };
 		2D0BA11B107D6EF000DEF450 /* LabelDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D0BA119107D6EF000DEF450 /* LabelDataSource.m */; };
 		2D0BA125107D724600DEF450 /* Label.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D0BA123107D724600DEF450 /* Label.h */; };
@@ -32,6 +34,8 @@
 		2D0CA96D24B176360089AC88 /* AtasciiPrinter.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D0CA96B24B176360089AC88 /* AtasciiPrinter.h */; };
 		2D0CA97624B56AE80089AC88 /* AtasciiDark.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D0CA97424B56AE80089AC88 /* AtasciiDark.png */; };
 		2D0CA97724B56AE80089AC88 /* AtasciiLight.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D0CA97524B56AE80089AC88 /* AtasciiLight.png */; };
+		2D0CA97A24C27B050089AC88 /* af80.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D0CA97824C27B050089AC88 /* af80.h */; };
+		2D0CA97B24C27B050089AC88 /* af80.c in Sources */ = {isa = PBXBuildFile; fileRef = 2D0CA97924C27B050089AC88 /* af80.c */; };
 		2D14CDFF0FFEEEDF00E60EAA /* copydata.c in Sources */ = {isa = PBXBuildFile; fileRef = 2D14CDFD0FFEEEDF00E60EAA /* copydata.c */; };
 		2D16680C0F51E0A400A78B94 /* akey.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D16680B0F51E0A400A78B94 /* akey.h */; };
 		2D1668170F51F07000A78B94 /* esc.c in Sources */ = {isa = PBXBuildFile; fileRef = 2D1668150F51F07000A78B94 /* esc.c */; };
@@ -387,6 +391,8 @@
 		2D0326F310856DB400983A3E /* PokeyDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PokeyDataSource.m; sourceTree = SOURCE_ROOT; };
 		2D037E331001124F0045DB8E /* PastePanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PastePanel.h; sourceTree = "<group>"; };
 		2D037E341001124F0045DB8E /* PastePanel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PastePanel.m; sourceTree = "<group>"; };
+		2D05560124C3E7690026DE9C /* bit3.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = bit3.c; path = ../bit3.c; sourceTree = "<group>"; };
+		2D05560224C3E7690026DE9C /* bit3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bit3.h; path = ../bit3.h; sourceTree = "<group>"; };
 		2D068AA908DD1DAD001D855E /* SectorEditorByteFieldCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SectorEditorByteFieldCell.h; sourceTree = "<group>"; };
 		2D068AAA08DD1DAD001D855E /* SectorEditorByteFieldCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SectorEditorByteFieldCell.m; sourceTree = "<group>"; };
 		2D068AEF08DD2FA0001D855E /* SectorEditorDataSource.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SectorEditorDataSource.h; sourceTree = SOURCE_ROOT; };
@@ -403,6 +409,8 @@
 		2D0CA96B24B176360089AC88 /* AtasciiPrinter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AtasciiPrinter.h; sourceTree = "<group>"; };
 		2D0CA97424B56AE80089AC88 /* AtasciiDark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = AtasciiDark.png; sourceTree = "<group>"; };
 		2D0CA97524B56AE80089AC88 /* AtasciiLight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = AtasciiLight.png; sourceTree = "<group>"; };
+		2D0CA97824C27B050089AC88 /* af80.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = af80.h; path = ../af80.h; sourceTree = "<group>"; };
+		2D0CA97924C27B050089AC88 /* af80.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = af80.c; path = ../af80.c; sourceTree = "<group>"; };
 		2D0FC28A08C550D0002D1327 /* compfile.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = compfile.h; path = ../compfile.h; sourceTree = SOURCE_ROOT; };
 		2D10A79609B0E209001F913C /* rdevice.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = rdevice.c; path = ../rdevice.c; sourceTree = SOURCE_ROOT; };
 		2D10A79709B0E209001F913C /* rdevice.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = rdevice.h; path = ../rdevice.h; sourceTree = SOURCE_ROOT; };
@@ -862,6 +870,8 @@
 			isa = PBXGroup;
 			children = (
 				2D1668250F51F19900A78B94 /* afile.c */,
+				2D0CA97924C27B050089AC88 /* af80.c */,
+				2D0CA97824C27B050089AC88 /* af80.h */,
 				2D1668260F51F19900A78B94 /* afile.h */,
 				2D16680B0F51E0A400A78B94 /* akey.h */,
 				F5558373030EF4CD01A8C8B4 /* antic.h */,
@@ -892,6 +902,8 @@
 				F5558355030EF4CD01A8C8B4 /* binload.h */,
 				F5558356030EF4CD01A8C8B4 /* binload.c */,
 				F5558351030EF4CD01A8C8B4 /* cassette.h */,
+				2D05560124C3E7690026DE9C /* bit3.c */,
+				2D05560224C3E7690026DE9C /* bit3.h */,
 				F5558352030EF4CD01A8C8B4 /* cassette.c */,
 				F5558353030EF4CD01A8C8B4 /* cartridge.h */,
 				F5558354030EF4CD01A8C8B4 /* cartridge.c */,
@@ -1137,6 +1149,7 @@
 				2DAEDAF809B69AED005FF181 /* binload.h in Headers */,
 				2DAEDAF909B69AED005FF181 /* sio.h in Headers */,
 				2DAEDAFA09B69AED005FF181 /* rtime.h in Headers */,
+				2D0CA97A24C27B050089AC88 /* af80.h in Headers */,
 				2DAEDAFC09B69AED005FF181 /* pokeysnd.h in Headers */,
 				2DAEDAFD09B69AED005FF181 /* pokey.h in Headers */,
 				2DAEDAFE09B69AED005FF181 /* platform.h in Headers */,
@@ -1210,6 +1223,7 @@
 				2DAEDB4209B69AED005FF181 /* arrows.h in Headers */,
 				2DAEDB4309B69AED005FF181 /* SectorEditorByteFieldCell.h in Headers */,
 				2DAEDB4409B69AED005FF181 /* SectorEditorDataSource.h in Headers */,
+				2D05560424C3E7690026DE9C /* bit3.h in Headers */,
 				2DAEDB4509B69AED005FF181 /* SectorEditorWindow.h in Headers */,
 				2D003B9E21D70F5C003F6F94 /* Atari800Window.h in Headers */,
 				2DAEDB4609B69AED005FF181 /* SectorEditorAsciiFieldCell.h in Headers */,
@@ -1375,12 +1389,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2D0CA97B24C27B050089AC88 /* af80.c in Sources */,
 				2DAEDB7009B69AED005FF181 /* SDLMain.m in Sources */,
 				2DAEDB7109B69AED005FF181 /* memory.c in Sources */,
 				2DAEDB7209B69AED005FF181 /* log.c in Sources */,
 				2DAEDB7309B69AED005FF181 /* list.c in Sources */,
 				2DAEDB7409B69AED005FF181 /* gtia.c in Sources */,
 				2DAEDB7509B69AED005FF181 /* cpu.c in Sources */,
+				2D05560324C3E7690026DE9C /* bit3.c in Sources */,
 				2DAEDB7609B69AED005FF181 /* pia.c in Sources */,
 				2DAEDB7709B69AED005FF181 /* compfile.c in Sources */,
 				2DAEDB7809B69AED005FF181 /* cassette.c in Sources */,

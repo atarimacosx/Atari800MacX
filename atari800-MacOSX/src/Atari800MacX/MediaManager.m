@@ -67,7 +67,7 @@ extern int cart_type;
 extern int CARTRIDGE_second_type;
 extern int requestCaptionChange;
 extern int requestArtifChange;
-extern int requestXEP80Change;
+extern int request80ColChange;
 extern int dcmtoatr(FILE *fin, FILE *fout, const char *input, char *output );
 extern int mediaStatusWindowOpen;
 extern int currPrinter;
@@ -173,8 +173,8 @@ void MediaManagerStatusWindowShow(void) {
  [[MediaManager sharedInstance] mediaStatusWindowShow:nil];
 }
 
-void MediaManagerXEP80Mode(int xep80Enabled, int xep80) {
-    [[MediaManager sharedInstance] setXEP80Mode:(xep80Enabled):(xep80)];
+void MediaManager80ColMode(int xep80Enabled, int af80Enabled, int bit3Enabled, int col80) {
+    [[MediaManager sharedInstance] set80ColMode:(xep80Enabled):(af80Enabled):(bit3Enabled):(col80)];
     }
 
 @implementation MediaManager
@@ -2533,14 +2533,14 @@ NSImage *disketteImage;
     [self updateInfo];
 }
 
-- (void)setXEP80Mode:(int)xep80Enabled:(int)xep80
+- (void)set80ColMode:(int)xep80Enabled:(int)af80Enabled:(int)bit3Enabled:(int)col80
 {
-	if (!xep80Enabled) {
+	if (!xep80Enabled && !af80Enabled && !bit3Enabled) {
 		[xep80Button setEnabled:NO];
 		}
 	else {
 		[xep80Button setEnabled:YES];
-		if (xep80)
+		if (col80)
 			[xep80Button setState:NSOnState];
 		else
 			[xep80Button setState:NSOffState];
@@ -2549,7 +2549,7 @@ NSImage *disketteImage;
 
 -(IBAction)changeXEP80:(id)sender
 {
-    requestXEP80Change = 1;
+    request80ColChange = 1;
 }
 
 /*------------------------------------------------------------------------------

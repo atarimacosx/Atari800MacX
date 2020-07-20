@@ -97,7 +97,7 @@
 						(((xep80_data[y][x] & 0x80) == 0) && font_a_double))
 
 /* Global variables */
-int XEP80_autoswitch = FALSE;
+int COL80_autoswitch = FALSE;
 int XEP80_enabled = FALSE;
 int XEP80_last_sent_count = 0;
 int XEP80_sent_count = 0;
@@ -1928,7 +1928,7 @@ void XEP80_StateSave(void)
 	StateSav_SaveINT(&XEP80_enabled, 1);
 	if (XEP80_enabled) {
 		StateSav_SaveINT(&XEP80_port, 1);
-		StateSav_SaveINT(&PLATFORM_xep80, 1);
+		StateSav_SaveINT(&PLATFORM_80col, 1);
 		StateSav_SaveINT(&output_state, 1);
 		StateSav_SaveINT(&output_word, 1);
 		StateSav_SaveINT(&input_count, 1);
@@ -2033,17 +2033,17 @@ void XEP80_StateRead(void)
 		XEP80_enabled = TRUE;
 		/* not correct for SDL version */
 #ifdef MACOSX
-		if (PLATFORM_xep80 != local_xep80)
-			PLATFORM_SwitchXep80();
+		if (PLATFORM_80col != local_xep80)
+			PLATFORM_Switch80Col();
 #endif
-		PLATFORM_xep80 = local_xep80;
+		PLATFORM_80col = local_xep80;
 		}
 	else {
 		XEP80_enabled = FALSE;
 		/* not correct for SDL version */
 #ifdef MACOSX
-		if (PLATFORM_xep80)
-			PLATFORM_SwitchXep80();
+		if (PLATFORM_80col)
+			PLATFORM_Switch80Col();
 #endif
 		}
 }
@@ -2061,22 +2061,22 @@ int XEP80GetCopyData(int startx, int endx, int starty, int endy, unsigned char *
 	}
 	
 	// Find the starting column
-	if (startx % XEP80_CHAR_WIDTH ==0)
+	if (startx % XEP80_CHAR_WIDTH < 3)
 		startcol = startx/XEP80_CHAR_WIDTH;
 	else
 		startcol = startx/XEP80_CHAR_WIDTH + 1;
 	// Find the ending column
-	if (endx % 8 == (XEP80_CHAR_WIDTH -1))
+	if (endx % XEP80_CHAR_WIDTH > (XEP80_CHAR_WIDTH -3))
 		endcol = endx/XEP80_CHAR_WIDTH;
 	else
 		endcol = endx/XEP80_CHAR_WIDTH -1;
 	// Find the starting row
-	if (starty % XEP80_CHAR_HEIGHT ==0)
+	if (starty % XEP80_CHAR_HEIGHT < 3)
 		startrow = starty/XEP80_CHAR_HEIGHT;
 	else
 		startrow = starty/XEP80_CHAR_HEIGHT + 1;
 	// Find the ending row
-	if (endy % XEP80_CHAR_HEIGHT == (XEP80_CHAR_HEIGHT-1))
+	if (endy % XEP80_CHAR_HEIGHT > (XEP80_CHAR_HEIGHT-3))
 		endrow = endy/XEP80_CHAR_HEIGHT;
 	else
 		endrow = endy/XEP80_CHAR_HEIGHT -1;

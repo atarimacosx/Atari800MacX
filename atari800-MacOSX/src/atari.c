@@ -63,10 +63,12 @@
 #include "SDL.h"
 #endif
 
+#include "af80.h"
 #include "akey.h"
 #include "antic.h"
 #include "atari.h"
 #include "binload.h"
+#include "bit3.h"
 #include "cartridge.h"
 #include "cassette.h"
 #include "cfg.h"
@@ -179,11 +181,11 @@ void Atari800_Warmstart(void)
 	MacCapsLockStateReset();
     if (XEP80_enabled)
         XEP80_Reset();
-    if (XEP80_enabled && XEP80_autoswitch) {
+    if (XEP80_enabled && COL80_autoswitch) {
         XEP80_sent_count = 0;
         XEP80_last_sent_count = 0;
-        if (PLATFORM_xep80)
-            PLATFORM_SwitchXep80();
+        if (PLATFORM_80col)
+            PLATFORM_Switch80Col();
     }
 #endif
 	if (Atari800_machine_type == Atari800_MACHINE_OSA || Atari800_machine_type == Atari800_MACHINE_OSB) {
@@ -226,11 +228,17 @@ void Atari800_Coldstart(void)
 	/* note: POKEY and GTIA have no Reset pin */
     if (XEP80_enabled)
         XEP80_Reset();
-    if (XEP80_enabled && XEP80_autoswitch) {
+    if (XEP80_enabled && COL80_autoswitch) {
         XEP80_sent_count = 0;
         XEP80_last_sent_count = 0;
-        if (PLATFORM_xep80)
-            PLATFORM_SwitchXep80();
+    }
+    if ((XEP80_enabled || BIT3_enabled) && COL80_autoswitch) {
+        if (PLATFORM_80col)
+            PLATFORM_Switch80Col();
+    }
+    if (AF80_enabled && COL80_autoswitch) {
+        if (!PLATFORM_80col)
+            PLATFORM_Switch80Col();
     }
 #ifdef __PLUS
 	HandleResetEvent();
@@ -253,6 +261,13 @@ void Atari800_Coldstart(void)
 	}
 	GTIA_consol_table[1] = GTIA_consol_table[2];
 	Devices_WarmCold_Start();
+    if (AF80_enabled) {
+        AF80_Reset();
+        AF80_InsertRightCartridge();
+    }
+    if (BIT3_enabled) {
+        BIT3_Reset();
+    }
 }
 
 int Atari800_LoadImage(const char *filename, UBYTE *buffer, int nbytes)
@@ -692,7 +707,13 @@ int Atari800_Initialise(int *argc, char *argv[])
 	INPUT_Initialise(argc, argv);
 #endif
 #ifdef XEP80_EMULATION
-	XEP80_Initialise(argc, argv);
+    XEP80_Initialise(argc, argv);
+#endif
+#ifdef AF80_EMULATION
+    AF80_Initialise(argc, argv);
+#endif
+#ifdef BIT3_EMULATION
+    BIT3_Initialise(argc, argv);
 #endif
 #ifndef DONT_DISPLAY
 	/* Platform Specific Initialisation */
@@ -909,6 +930,8 @@ int Atari800_Exit(int run_monitor)
 #ifdef SOUND
 		SndSave_CloseSoundFile();
 #endif
+        AF80_Exit();
+        BIT3_Exit();
 	}
 #endif /* __PLUS */
 	return restart;

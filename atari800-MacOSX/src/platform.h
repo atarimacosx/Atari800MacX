@@ -51,9 +51,9 @@ int PLATFORM_GetRawKey(void);
 
 #ifdef XEP80_EMULATION
 /* Switch between the Atari and XEP80 screen */
-void PLATFORM_SwitchXep80(void);
+void PLATFORM_Switch80Col(void);
 /* TRUE if the XEP80 screen is visible */
-extern int PLATFORM_xep80;
+extern int PLATFORM_80col;
 #endif
 
 #ifdef NTSC_FILTER

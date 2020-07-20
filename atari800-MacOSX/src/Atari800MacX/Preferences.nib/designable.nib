@@ -10,6 +10,8 @@
             <connections>
                 <outlet property="a5200RomFileField" destination="366" id="407"/>
                 <outlet property="adjustPaletteButton" destination="802" id="807"/>
+                <outlet property="af80CharsetRomFileField" destination="nmH-4T-a90" id="NPh-8N-c8W"/>
+                <outlet property="af80RomFileField" destination="Bii-BU-0bk" id="afA-Zt-wvQ"/>
                 <outlet property="artifactNewButton" destination="4276" id="4277"/>
                 <outlet property="artifactingPulldown" destination="310" id="317"/>
                 <outlet property="atari1020AutoLinefeedButton" destination="4119" id="4191"/>
@@ -43,6 +45,8 @@
                 <outlet property="atasciiLineGapStepper" destination="WHE-5x-dld" id="zbj-za-AJn"/>
                 <outlet property="axlonMemSizePulldown" destination="7149" id="8365"/>
                 <outlet property="basicRomFileField" destination="363" id="406"/>
+                <outlet property="bit3CharsetRomFileField" destination="cv4-4v-UYO" id="UHX-De-jgi"/>
+                <outlet property="bit3RomFileField" destination="zqW-7T-CBF" id="LqM-P0-6Gy"/>
                 <outlet property="blackBoxRomFileField" destination="8353" id="8368"/>
                 <outlet property="blackBoxScsiDiskFileField" destination="7960" id="9595"/>
                 <outlet property="blackLevelField" destination="794" id="803"/>
@@ -258,7 +262,6 @@
                 <outlet property="widthModeMatrix" destination="270" id="291"/>
                 <outlet property="xep80AutoswitchButton" destination="6Qw-Dv-qgO" id="DAY-qd-ddz"/>
                 <outlet property="xep80BackgroundField" destination="4371" id="4378"/>
-                <outlet property="xep80EnabledButton" destination="4362" id="4375"/>
                 <outlet property="xep80ForegroundField" destination="4369" id="4377"/>
                 <outlet property="xep80PortPulldown" destination="4363" id="4383"/>
                 <outlet property="xlRomFileField" destination="360" id="405"/>
@@ -1579,34 +1582,26 @@
                                                 <action selector="miscChanged:" target="-2" id="12866"/>
                                             </connections>
                                         </popUpButton>
-                                        <box fixedFrame="YES" title="XEP80" translatesAutoresizingMaskIntoConstraints="NO" id="4360">
+                                        <box fixedFrame="YES" title="80 Columns" translatesAutoresizingMaskIntoConstraints="NO" id="4360">
                                             <rect key="frame" x="2" y="98" width="783" height="50"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <view key="contentView" id="Sps-0r-Ypz">
                                                 <rect key="frame" x="3" y="3" width="777" height="32"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
-                                                    <button fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4362">
-                                                        <rect key="frame" x="17" y="7" width="133" height="18"/>
-                                                        <autoresizingMask key="autoresizingMask"/>
-                                                        <buttonCell key="cell" type="check" title="XEP80 Connected" bezelStyle="regularSquare" imagePosition="leading" alignment="left" inset="2" id="12903">
-                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                            <font key="font" metaFont="system"/>
-                                                        </buttonCell>
-                                                        <connections>
-                                                            <action selector="miscChanged:" target="-2" id="4379"/>
-                                                        </connections>
-                                                    </button>
                                                     <popUpButton verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4363">
-                                                        <rect key="frame" x="153" y="3" width="130" height="26"/>
+                                                        <rect key="frame" x="7" y="2" width="239" height="26"/>
                                                         <autoresizingMask key="autoresizingMask"/>
-                                                        <popUpButtonCell key="cell" type="push" title="Joystick Port 2" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="4367" id="12904">
+                                                        <popUpButtonCell key="cell" type="push" title="No 80 Column Card Conected" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="4366" id="12904">
                                                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                                                             <font key="font" metaFont="system"/>
                                                             <menu key="menu" title="OtherViews" id="4364">
                                                                 <items>
-                                                                    <menuItem title="Joystick Port 1" id="4366"/>
-                                                                    <menuItem title="Joystick Port 2" state="on" id="4367"/>
+                                                                    <menuItem title="No 80 Column Card Conected" state="on" id="4366"/>
+                                                                    <menuItem title="Atari XEP80 - Joystick Port 1" id="4367"/>
+                                                                    <menuItem title="Atari XEP80 - Joystick Port 2" id="Y9S-Y5-SMJ"/>
+                                                                    <menuItem title="Austin Franklin 80 Column Card" id="06a-PU-acE"/>
+                                                                    <menuItem title="Bit3 Full View 80 Column Card" id="hu8-Ix-FfE"/>
                                                                 </items>
                                                             </menu>
                                                         </popUpButtonCell>
@@ -1679,7 +1674,7 @@
                                                         </textFieldCell>
                                                     </textField>
                                                     <button fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6Qw-Dv-qgO">
-                                                        <rect key="frame" x="313" y="9" width="90" height="18"/>
+                                                        <rect key="frame" x="291" y="9" width="90" height="18"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <buttonCell key="cell" type="check" title="Autoswitch" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="pqY-7I-bLF">
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -3605,10 +3600,10 @@ Command Path for Hx: Devices
                             <tabViewItem label="Roms" identifier="2" id="332">
                                 <view key="view" id="333">
                                     <rect key="frame" x="10" y="33" width="791" height="390"/>
-                                    <autoresizingMask key="autoresizingMask"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="353">
-                                            <rect key="frame" x="206" y="302" width="382" height="30"/>
+                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="353">
+                                            <rect key="frame" x="206" y="340" width="382" height="35"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="12951">
                                                 <font key="font" metaFont="message" size="11"/>
@@ -3619,8 +3614,8 @@ Command Path for Hx: Devices
                                                 <action selector="miscChanged:" target="-2" id="424"/>
                                             </connections>
                                         </textField>
-                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="354">
-                                            <rect key="frame" x="87" y="309" width="114" height="17"/>
+                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="354">
+                                            <rect key="frame" x="87" y="347" width="114" height="17"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Atari OS Rev. A" id="12952">
                                                 <font key="font" metaFont="system"/>
@@ -3628,8 +3623,17 @@ Command Path for Hx: Devices
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                         </textField>
-                                        <button verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="355">
-                                            <rect key="frame" x="599" y="299" width="84" height="32"/>
+                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Rjz-dn-GGf">
+                                            <rect key="frame" x="307" y="152" width="176" height="25"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="80 Column Display  ROMS" id="bvh-an-iX4">
+                                                <font key="font" metaFont="system"/>
+                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                        </textField>
+                                        <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="355">
+                                            <rect key="frame" x="592" y="340" width="84" height="32"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <buttonCell key="cell" type="push" title="Select" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="12953">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -3639,8 +3643,8 @@ Command Path for Hx: Devices
                                                 <action selector="browseOsARom:" target="-2" id="456"/>
                                             </connections>
                                         </button>
-                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="357">
-                                            <rect key="frame" x="206" y="262" width="382" height="30"/>
+                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="357">
+                                            <rect key="frame" x="206" y="300" width="382" height="35"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="12954">
                                                 <font key="font" metaFont="message" size="11"/>
@@ -3651,8 +3655,8 @@ Command Path for Hx: Devices
                                                 <action selector="miscChanged:" target="-2" id="425"/>
                                             </connections>
                                         </textField>
-                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="358">
-                                            <rect key="frame" x="87" y="269" width="114" height="17"/>
+                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="358">
+                                            <rect key="frame" x="87" y="307" width="114" height="17"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Atari OS Rev. B" id="12955">
                                                 <font key="font" metaFont="system"/>
@@ -3660,8 +3664,8 @@ Command Path for Hx: Devices
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                         </textField>
-                                        <button verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="359">
-                                            <rect key="frame" x="599" y="259" width="84" height="32"/>
+                                        <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="359">
+                                            <rect key="frame" x="592" y="299" width="84" height="32"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <buttonCell key="cell" type="push" title="Select" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="12956">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -3671,8 +3675,8 @@ Command Path for Hx: Devices
                                                 <action selector="browseOsBRom:" target="-2" id="457"/>
                                             </connections>
                                         </button>
-                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="360">
-                                            <rect key="frame" x="206" y="222" width="382" height="30"/>
+                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="360">
+                                            <rect key="frame" x="206" y="260" width="382" height="35"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="12957">
                                                 <font key="font" metaFont="message" size="11"/>
@@ -3683,8 +3687,8 @@ Command Path for Hx: Devices
                                                 <action selector="miscChanged:" target="-2" id="426"/>
                                             </connections>
                                         </textField>
-                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="361">
-                                            <rect key="frame" x="87" y="229" width="114" height="17"/>
+                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="361">
+                                            <rect key="frame" x="87" y="267" width="114" height="17"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Atari XL" id="12958">
                                                 <font key="font" metaFont="system"/>
@@ -3692,8 +3696,8 @@ Command Path for Hx: Devices
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                         </textField>
-                                        <button verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="362">
-                                            <rect key="frame" x="599" y="219" width="84" height="32"/>
+                                        <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="362">
+                                            <rect key="frame" x="592" y="259" width="84" height="32"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <buttonCell key="cell" type="push" title="Select" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="12959">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -3703,8 +3707,8 @@ Command Path for Hx: Devices
                                                 <action selector="browseXlRom:" target="-2" id="458"/>
                                             </connections>
                                         </button>
-                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="363">
-                                            <rect key="frame" x="206" y="182" width="382" height="30"/>
+                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="363">
+                                            <rect key="frame" x="206" y="220" width="382" height="35"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="12960">
                                                 <font key="font" metaFont="message" size="11"/>
@@ -3715,8 +3719,8 @@ Command Path for Hx: Devices
                                                 <action selector="miscChanged:" target="-2" id="427"/>
                                             </connections>
                                         </textField>
-                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="364">
-                                            <rect key="frame" x="87" y="189" width="114" height="17"/>
+                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="364">
+                                            <rect key="frame" x="87" y="229" width="114" height="17"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Atari Basic" id="12961">
                                                 <font key="font" metaFont="system"/>
@@ -3724,8 +3728,8 @@ Command Path for Hx: Devices
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                         </textField>
-                                        <button verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="365">
-                                            <rect key="frame" x="599" y="179" width="84" height="32"/>
+                                        <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="365">
+                                            <rect key="frame" x="592" y="219" width="84" height="32"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <buttonCell key="cell" type="push" title="Select" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="12962">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -3735,8 +3739,8 @@ Command Path for Hx: Devices
                                                 <action selector="browseBasicRom:" target="-2" id="459"/>
                                             </connections>
                                         </button>
-                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="366">
-                                            <rect key="frame" x="206" y="142" width="382" height="30"/>
+                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="366">
+                                            <rect key="frame" x="206" y="180" width="382" height="35"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="12963">
                                                 <font key="font" metaFont="message" size="11"/>
@@ -3747,8 +3751,8 @@ Command Path for Hx: Devices
                                                 <action selector="miscChanged:" target="-2" id="428"/>
                                             </connections>
                                         </textField>
-                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="367">
-                                            <rect key="frame" x="87" y="149" width="114" height="17"/>
+                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="367">
+                                            <rect key="frame" x="87" y="188" width="114" height="17"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Atari 5200" id="12964">
                                                 <font key="font" metaFont="system"/>
@@ -3756,8 +3760,8 @@ Command Path for Hx: Devices
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                         </textField>
-                                        <button verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="368">
-                                            <rect key="frame" x="599" y="139" width="84" height="32"/>
+                                        <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="368">
+                                            <rect key="frame" x="592" y="177" width="84" height="32"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <buttonCell key="cell" type="push" title="Select" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="12965">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -3767,6 +3771,143 @@ Command Path for Hx: Devices
                                                 <action selector="browse5200Rom:" target="-2" id="460"/>
                                             </connections>
                                         </button>
+                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Bii-BU-0bk">
+                                            <rect key="frame" x="206" y="123" width="382" height="35"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="E8M-Bg-Nus">
+                                                <font key="font" metaFont="message" size="11"/>
+                                                <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                            <connections>
+                                                <action selector="miscChanged:" target="-2" id="AOG-qo-zKK"/>
+                                            </connections>
+                                        </textField>
+                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mZP-22-CdJ">
+                                            <rect key="frame" x="87" y="131" width="114" height="17"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="AF80 Cartridge" id="tTf-MM-txm">
+                                                <font key="font" metaFont="system"/>
+                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                        </textField>
+                                        <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="N1f-0n-w5J">
+                                            <rect key="frame" x="592" y="124" width="84" height="32"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <buttonCell key="cell" type="push" title="Select" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="OoJ-1H-Qou">
+                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <action selector="browseAF80Rom:" target="-2" id="BsB-Jt-Kva"/>
+                                            </connections>
+                                        </button>
+                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="nmH-4T-a90">
+                                            <rect key="frame" x="206" y="83" width="382" height="35"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="xQp-DE-VbR">
+                                                <font key="font" metaFont="message" size="11"/>
+                                                <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                            <connections>
+                                                <action selector="miscChanged:" target="-2" id="MOj-yg-LxG"/>
+                                            </connections>
+                                        </textField>
+                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="zqW-7T-CBF">
+                                            <rect key="frame" x="207" y="42" width="382" height="35"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="iy3-ps-9Yz">
+                                                <font key="font" metaFont="message" size="11"/>
+                                                <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                            <connections>
+                                                <action selector="miscChanged:" target="-2" id="l39-dJ-ONG"/>
+                                            </connections>
+                                        </textField>
+                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cv4-4v-UYO">
+                                            <rect key="frame" x="207" y="2" width="382" height="35"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="tvS-mZ-KRC">
+                                                <font key="font" metaFont="message" size="11"/>
+                                                <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                            <connections>
+                                                <action selector="miscChanged:" target="-2" id="hso-mK-dx6"/>
+                                            </connections>
+                                        </textField>
+                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7U3-Vx-MIt">
+                                            <rect key="frame" x="60" y="77" width="141" height="32"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="AF80 Character Set" id="wny-Tw-Gos">
+                                                <font key="font" metaFont="system"/>
+                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                        </textField>
+                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="U52-gh-BxS">
+                                            <rect key="frame" x="87" y="51" width="114" height="17"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Bit3 ROM" id="YAn-Ll-rgT">
+                                                <font key="font" metaFont="system"/>
+                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                        </textField>
+                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cq6-KP-VNF">
+                                            <rect key="frame" x="60" y="-3" width="141" height="32"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Bit3 Character Set" id="aL0-mf-vEc">
+                                                <font key="font" metaFont="system"/>
+                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                        </textField>
+                                        <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="402-CM-wUR">
+                                            <rect key="frame" x="592" y="83" width="84" height="32"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <buttonCell key="cell" type="push" title="Select" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="F1O-1d-L6Q">
+                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <action selector="browseAF80CharsetRom:" target="-2" id="8Mj-dW-9nb"/>
+                                            </connections>
+                                        </button>
+                                        <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="hjk-sH-Jys">
+                                            <rect key="frame" x="592" y="43" width="84" height="32"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <buttonCell key="cell" type="push" title="Select" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="Xqb-tw-VZx">
+                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <action selector="browseBit3Rom:" target="-2" id="oAf-fH-DNB"/>
+                                            </connections>
+                                        </button>
+                                        <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6tX-bJ-e6o">
+                                            <rect key="frame" x="592" y="0.0" width="84" height="32"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <buttonCell key="cell" type="push" title="Select" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="OOX-GS-LZZ">
+                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <action selector="browseBit3CharsetRom:" target="-2" id="Xa0-9i-o65"/>
+                                            </connections>
+                                        </button>
+                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="h3o-0M-hQZ">
+                                            <rect key="frame" x="313" y="377" width="114" height="17"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="OS ROMS" id="Dlx-Lb-jwi">
+                                                <font key="font" metaFont="system"/>
+                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                        </textField>
                                     </subviews>
                                 </view>
                             </tabViewItem>
@@ -5277,7 +5418,7 @@ DQ
             <connections>
                 <outlet property="initialFirstResponder" destination="261" id="469"/>
             </connections>
-            <point key="canvasLocation" x="278.5" y="141.5"/>
+            <point key="canvasLocation" x="230.5" y="-57.5"/>
         </window>
         <window title="Identify Gamepad Buttons" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="1061" userLabel="Identify" customClass="Atari800GamepadWindow">
             <windowStyleMask key="styleMask" titled="YES"/>
@@ -8051,6 +8192,8 @@ DQ
                 </subviews>
             </view>
         </window>
+        <menuItem title="XEP80 Joystick Port 2" state="on" id="pHP-gu-ysi"/>
+        <menuItem title="XEP80 Joystick Port 2" state="on" id="ul2-UD-vZL"/>
     </objects>
     <resources>
         <image name="Fuji" width="128" height="128"/>

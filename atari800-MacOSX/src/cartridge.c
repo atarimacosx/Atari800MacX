@@ -27,8 +27,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "af80.h"
 #include "atari.h"
 #include "binload.h" /* BINLOAD_loading_basic */
+#include "bit3.h"
 #include "cartridge.h"
 #include "memory.h"
 #include "pia.h"
@@ -344,6 +346,12 @@ static void access_D5(int curr_cart_type,UWORD addr)
 /* a read from D500-D5FF area */
 UBYTE CARTRIDGE_GetByte(UWORD addr)
 {
+    if (AF80_enabled) {
+        return AF80_D5GetByte(addr);
+    }
+    if (BIT3_enabled) {
+        return BIT3_D5GetByte(addr);
+    }
 	if (RTIME_enabled && (addr == 0xd5b8 || addr == 0xd5b9))
 		return RTIME_GetByte();
 	access_D5(CARTRIDGE_type, addr);
@@ -355,6 +363,16 @@ void CARTRIDGE_PutByte(UWORD addr, UBYTE byte)
 {
 	int curr_cart_type;
 	
+    if (AF80_enabled) {
+        AF80_D5PutByte(addr,byte);
+        /* Return, because AF_80_enabled means there's an AF80
+           cartridge in the left slot and no other cartridges are
+           there. */
+        return;
+    }
+    if (BIT3_enabled && (addr == 0xd508 || addr == 0xd580 || addr == 0xd581 || addr == 0xd583 || addr == 0xd585)) {
+        BIT3_D5PutByte(addr,byte);
+    }
 	if (RTIME_enabled && (addr == 0xd5b8 || addr == 0xd5b9)) {
 		RTIME_PutByte(byte);
 		return;

@@ -9,8 +9,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "af80.h"
 #include "akey.h"
 #include "atari.h"
+#include "bit3.h"
 #include "cfg.h"
 #include "prompts.h"
 #include "input.h"
@@ -46,7 +48,7 @@ extern int paletteWhite;
 extern int paletteIntensity;
 extern int paletteColorShift;
 extern int FULLSCREEN;
-extern int PLATFORM_xep80;
+extern int PLATFORM_80col;
 extern int OPENGL;
 extern int lockFullscreenSize;
 extern int FULLSCREEN_MONITOR;
@@ -144,8 +146,14 @@ extern char bb_rom_filename[FILENAME_MAX];
 extern char mio_rom_filename[FILENAME_MAX];
 extern char bb_scsi_disk_filename[FILENAME_MAX];
 extern char mio_scsi_disk_filename[FILENAME_MAX];
+extern char af80_rom_filename[FILENAME_MAX];
+extern char af80_charset_filename[FILENAME_MAX];
+extern char bit3_rom_filename[FILENAME_MAX];
+extern char bit3_charset_filename[FILENAME_MAX];
 
+extern void init_af80();
 extern void init_bb();
+extern void init_bit3();
 extern void init_mio();
 
 /* Variables brought over from RT_CONFIG.C */
@@ -182,6 +190,8 @@ int hardDiskChanged;
 int osRomsChanged;
 int fullscreenGuiColorsChanged;
 int fullscreenCrashColorsChanged;
+int af80EnabledChanged;
+int bit3EnabledChanged;
 int xep80EnabledChanged;
 int xep80ColorsChanged;
 int configurationChanged;
@@ -281,10 +291,12 @@ void savePrefs() {
 	prefssave.ledStatus = Screen_show_disk_led;
 	prefssave.ledSector = Screen_show_sector_counter;
     prefssave.speedLimit = speed_limit; 
-	prefssave.xep80 = PLATFORM_xep80;
-	prefssave.xep80_port = XEP80_port;
+	prefssave.xep80 = PLATFORM_80col;
+    prefssave.af80_enabled = AF80_enabled;
+    prefssave.bit3_enabled = BIT3_enabled;
     prefssave.xep80_enabled = XEP80_enabled;
-    prefssave.xep80_autoswitch = XEP80_autoswitch;
+	prefssave.xep80_port = XEP80_port;
+    prefssave.COL80_autoswitch = COL80_autoswitch;
     prefssave.enableSound = sound_enabled;
 	prefssave.soundVolume = sound_volume;
     prefssave.enableStereo = POKEYSND_stereo_enabled; 
@@ -653,7 +665,11 @@ void CalculatePrefsChanged()
 	strcpy(mio_rom_filename, prefs.mioRomFile);
 	strcpy(bb_scsi_disk_filename, prefs.blackBoxScsiDiskFile);
 	strcpy(mio_scsi_disk_filename, prefs.mioScsiDiskFile);
-	
+    strcpy(af80_rom_filename, prefs.af80RomFile);
+    strcpy(af80_charset_filename, prefs.af80CharsetFile);
+    strcpy(bit3_rom_filename, prefs.bit3RomFile);
+    strcpy(bit3_charset_filename, prefs.bit3CharsetFile);
+
     CalcMachineTypeRam(prefs.atariType, &new_machine_type, &new_ram_size,
 					   &new_axlon, &new_mosaic);
     if ((Atari800_machine_type != new_machine_type) ||
@@ -718,7 +734,12 @@ void CalculatePrefsChanged()
 		(strcmp(CFG_xlxe_filename, prefs.xlRomFile) !=0) ||
 		(strcmp(CFG_basic_filename, prefs.basicRomFile) !=0) ||
 		(strcmp(CFG_5200_filename, prefs.a5200RomFile) !=0) ||
-		(strcmp(bb_rom_filename, prefs.blackBoxRomFile) != 0) ||
+        (strcmp(af80_rom_filename, prefs.af80RomFile) != 0) ||
+        (strcmp(af80_charset_filename, prefs.af80CharsetFile) != 0) ||
+        (strcmp(bit3_rom_filename, prefs.bit3RomFile) != 0) ||
+        (strcmp(bit3_charset_filename, prefs.bit3CharsetFile) != 0) ||
+        (strcmp(bb_rom_filename, prefs.blackBoxRomFile) != 0) ||
+        (strcmp(bb_rom_filename, prefs.blackBoxRomFile) != 0) ||
 		(strcmp(mio_rom_filename, prefs.mioRomFile) != 0) ||
 		(strcmp(bb_scsi_disk_filename, prefs.blackBoxScsiDiskFile) != 0) ||
 		(strcmp(mio_scsi_disk_filename, prefs.mioScsiDiskFile) != 0))		
@@ -750,11 +771,21 @@ void CalculatePrefsChanged()
 	if (currPrinter != prefs.currPrinter)
 		PrintOutputControllerSelectPrinter(prefs.currPrinter);
 	
-	if (XEP80_enabled != prefs.xep80_enabled)
-		xep80EnabledChanged = TRUE;
-	else
-		xep80EnabledChanged = FALSE;
-		
+    if (XEP80_enabled != prefs.xep80_enabled)
+        xep80EnabledChanged = TRUE;
+    else
+        xep80EnabledChanged = FALSE;
+        
+    if (BIT3_enabled != prefs.bit3_enabled)
+        bit3EnabledChanged = TRUE;
+    else
+        bit3EnabledChanged = FALSE;
+        
+    if (AF80_enabled != prefs.af80_enabled)
+        af80EnabledChanged = TRUE;
+    else
+        af80EnabledChanged = FALSE;
+        
 	if ((XEP80_FONTS_oncolor != prefs.xep80_oncolor) || (XEP80_FONTS_offcolor != prefs.xep80_offcolor))
 		xep80ColorsChanged = TRUE;
 	else
@@ -813,7 +844,11 @@ int loadMacPrefs(int firstTime)
 	MEMORY_axlon_bankmask = prefs.axlonBankMask;
 	MEMORY_mosaic_maxbank = prefs.mosaicMaxBank;
 
-	strcpy(bb_rom_filename, prefs.blackBoxRomFile);
+    strcpy(af80_rom_filename, prefs.af80RomFile);
+    strcpy(af80_charset_filename, prefs.af80CharsetFile);
+    strcpy(bit3_rom_filename, prefs.bit3RomFile);
+    strcpy(bit3_charset_filename, prefs.bit3CharsetFile);
+    strcpy(bb_rom_filename, prefs.blackBoxRomFile);
 	strcpy(mio_rom_filename, prefs.mioRomFile);
 	strcpy(bb_scsi_disk_filename, prefs.blackBoxScsiDiskFile);
 	strcpy(mio_scsi_disk_filename, prefs.mioScsiDiskFile);
@@ -826,7 +861,15 @@ int loadMacPrefs(int firstTime)
 			   ((strcmp(bb_rom_filename, prefs.blackBoxRomFile) != 0) ||
 				(strcmp(bb_scsi_disk_filename, prefs.blackBoxScsiDiskFile) != 0))) {
 		init_bb();
-	}
+    } else if (prefs.af80_enabled &&
+               ((strcmp(af80_rom_filename, prefs.af80RomFile) != 0) ||
+                (strcmp(af80_charset_filename, prefs.af80CharsetFile) != 0))) {
+        init_af80();
+    } else if (prefs.bit3_enabled &&
+               ((strcmp(bit3_rom_filename, prefs.af80RomFile) != 0) ||
+                (strcmp(bit3_charset_filename, prefs.bit3CharsetFile) != 0))) {
+        init_bit3();
+    }
 	if (mioRequested != prefs.mioEnabled && prefs.mioEnabled) {
 		if (!PBI_MIO_enabled) {
 			init_mio();
@@ -859,9 +902,17 @@ int loadMacPrefs(int firstTime)
 	strncpy(RDevice_serial_device, prefs.rPatchSerialPort,FILENAME_MAX);
     portnum = prefs.rPatchPort;
     strncpy(Devices_print_command, prefs.printCommand,256);
-	PLATFORM_xep80 = prefs.xep80;
+    PLATFORM_80col = prefs.xep80;
     XEP80_enabled = prefs.xep80_enabled;
-    XEP80_autoswitch = prefs.xep80_autoswitch;
+    AF80_enabled = prefs.af80_enabled;
+    BIT3_enabled = prefs.bit3_enabled;
+    if (XEP80_enabled && AF80_enabled)
+        AF80_enabled = FALSE;
+    if (XEP80_enabled && BIT3_enabled)
+        BIT3_enabled = FALSE;
+    if (AF80_enabled && BIT3_enabled)
+        BIT3_enabled = FALSE;
+    COL80_autoswitch = prefs.COL80_autoswitch;
 	XEP80_port = prefs.xep80_port;
 	XEP80_FONTS_oncolor = prefs.xep80_oncolor;
 	XEP80_FONTS_offcolor = prefs.xep80_offcolor;

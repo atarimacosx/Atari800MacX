@@ -518,38 +518,6 @@
                                     </items>
                                 </menu>
                             </menuItem>
-                            <menuItem title="XEP80 Control" id="852">
-                                <menu key="submenu" title="XEP80 Control" id="853">
-                                    <items>
-                                        <menuItem title="XEP80 Not Connected" id="854">
-                                            <connections>
-                                                <action selector="xep80Mode:" target="498" id="864"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem title="XEP80 Joystick Port 1" tag="1" id="855">
-                                            <connections>
-                                                <action selector="xep80Mode:" target="498" id="865"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem title="XEP80 Joystick Port 2" tag="2" id="856">
-                                            <connections>
-                                                <action selector="xep80Mode:" target="498" id="866"/>
-                                            </connections>
-                                        </menuItem>
-                                    </items>
-                                </menu>
-                            </menuItem>
-                            <menuItem title="Display XEP80 Screen" keyEquivalent="X" id="857">
-                                <connections>
-                                    <action selector="xep80:" target="498" id="863"/>
-                                </connections>
-                            </menuItem>
-                            <menuItem title="XEP80 Display Autoswitch" id="nBK-cd-jka">
-                                <modifierMask key="keyEquivalentModifierMask"/>
-                                <connections>
-                                    <action selector="xep80Autoswitch:" target="498" id="Nkx-s6-dr7"/>
-                                </connections>
-                            </menuItem>
                             <menuItem title="Fullscreen" id="442">
                                 <string key="keyEquivalent" base64-UTF8="YES">
 DQ
@@ -558,12 +526,60 @@ DQ
                                     <action selector="fullScreen:" target="498" id="500"/>
                                 </connections>
                             </menuItem>
+                            <menuItem isSeparatorItem="YES" id="540">
+                                <modifierMask key="keyEquivalentModifierMask" command="YES"/>
+                            </menuItem>
+                            <menuItem title="80 Column Card Selection" id="852">
+                                <menu key="submenu" title="80 Column Card Selection" id="853">
+                                    <items>
+                                        <menuItem title="80 Column Card Not Connected" id="854">
+                                            <connections>
+                                                <action selector="xep80Mode:" target="498" id="864"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Atari XEP80 - Joystick Port 1" tag="1" id="855">
+                                            <connections>
+                                                <action selector="xep80Mode:" target="498" id="865"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Atari XEP80 - Joystick Port 2" tag="2" id="856">
+                                            <connections>
+                                                <action selector="xep80Mode:" target="498" id="866"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Austin Franklin 80 Column Card" tag="3" id="MnU-TU-cRx">
+                                            <connections>
+                                                <action selector="xep80Mode:" target="498" id="cjo-yp-xEL"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Bit3 Full View 80 Column Card" tag="4" id="5Bm-Vo-lcW">
+                                            <connections>
+                                                <action selector="xep80Mode:" target="498" id="1Xb-on-TsB"/>
+                                            </connections>
+                                        </menuItem>
+                                    </items>
+                                </menu>
+                            </menuItem>
+                            <menuItem title="80 Column Display Autoswitch" id="nBK-cd-jka">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="xep80Autoswitch:" target="498" id="Nkx-s6-dr7"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Display 80 Column Screen" keyEquivalent="X" id="857">
+                                <connections>
+                                    <action selector="xep80:" target="498" id="863"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem isSeparatorItem="YES" id="cim-gf-ecb">
+                                <modifierMask key="keyEquivalentModifierMask" command="YES"/>
+                            </menuItem>
                             <menuItem title="Show Frames Per Second" keyEquivalent="k" id="544">
                                 <connections>
                                     <action selector="displayFps:" target="498" id="545"/>
                                 </connections>
                             </menuItem>
-                            <menuItem isSeparatorItem="YES" id="540">
+                            <menuItem isSeparatorItem="YES" id="BJ4-Qn-8bf">
                                 <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                             </menuItem>
                             <menuItem title="Grab Mouse" keyEquivalent="" id="541">
@@ -940,6 +956,8 @@ DQ
                 <outlet property="GTIA400800Item" destination="833" id="843"/>
                 <outlet property="NoArtifactItem" destination="830" id="840"/>
                 <outlet property="XLXEGTIAItem" destination="832" id="842"/>
+                <outlet property="af80ModeItem" destination="MnU-TU-cRx" id="vFu-px-Qsg"/>
+                <outlet property="bit3ModeItem" destination="5Bm-Vo-lcW" id="Sm2-fg-1BT"/>
                 <outlet property="displayFpsItem" destination="544" id="546"/>
                 <outlet property="fullscreenItem" destination="442" id="539"/>
                 <outlet property="grabMouseItem" destination="541" id="543"/>

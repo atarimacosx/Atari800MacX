@@ -159,41 +159,6 @@ Tab</a> page of the Preferences Window.</blockquote>
 
 
 
-<b><u>XEP80 Control Submenu</u><br>
-
-
-
-</b>
-<blockquote>This submenu lets you set&nbsp;choose if the XEP80 80
-Column Display adapter is connected, and if it is, to which joytick
-port, 1 or 2.<br>
-</blockquote>
-
-<b><u>XEP80 Display Autoswitch</u><br>
-
-
-</b>
-<blockquote>
-This menu item determines if the XEP80 80 column display is automatically displayed when it's driver is
-connected and in use.  The system will also switch back
-to the normal Atari display upon cold reset.<br>
-</blockquote>
-
-<b><u>Toggle XEP80 mode (cmd-shift-X)</u><br>
-
-
-
-</b>
-<blockquote>This menu item allows you to toggle between the normal
-Atari display and the XEP80 80 column display. &nbsp;It is only enabled
-when the XEP80 is connected.<br>
-
-
-
-</blockquote>
-
-
-
 <b><u>Toggle Fullscreen mode (cmd-F)</u><br>
 
 
@@ -204,6 +169,51 @@ Fullscreen and Windowed modes. &nbsp;More info on screen modes can be
 found on the <a href="DisplayTab.html">Display
 Tab</a> page of the
 Preferences Window. <br>
+
+
+
+</blockquote>
+
+
+
+<b><u>80 Column Card Selection Submenu</u><br>
+
+
+
+</b>
+<blockquote>This submenu lets you set&nbsp;choose if an 80
+    Column Display is connected to the Atari.  There are
+    three types available.  The XEP80 may be connected to
+    either Joystick Port 1 or Joystick Port 2.  It does not require ROMS for operation. <br>The Austin Franklin 80 Column board does require two ROMs to operate, and
+    the paths to those ROMs must be entered on the Preferences
+    ROM page before this menu item will be enabled.
+    <br>The Bit3 Full View card also requires 3 ROMs for operation, which must be specified on the Preferences ROMs tab as well.
+    
+Column Display adapter is connected, and if it is, to which joytick
+port, 1 or 2.<br>
+</blockquote>
+
+<b><u>80 Column Display Autoswitch</u><br>
+
+
+</b>
+<blockquote>
+This menu item determines 80 column display is automatically displayed when it's in use.  The system will also switch back
+to the normal Atari display upon cold reset.
+<br>For the Austin Franklin board, the 80 column display is always shown.
+<br>For the XEP80, the 80 column display is switched to when data is detected being sent to the XEP80, normally when the driver is loaded.
+<br>For the Bit3 Full View, the display is switched under control
+of the videomode switch which present on the board.
+</blockquote>
+
+<b><u>Display 80 Column Screen (cmd-shift-X)</u><br>
+
+
+
+</b>
+<blockquote>This menu item allows you to manually toggle between the normal
+Atari display and the 80 column card display. It is only enabled
+when one of the 80 column cards are connected.<br>
 
 
 

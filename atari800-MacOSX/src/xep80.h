@@ -16,7 +16,7 @@
 
 #define XEP80_ATARI_EOL			0x9b
 
-extern int XEP80_autoswitch;
+extern int COL80_autoswitch;
 extern int XEP80_enabled;
 extern int XEP80_last_sent_count;
 extern int XEP80_sent_count;
