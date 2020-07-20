@@ -518,7 +518,7 @@
                                     </items>
                                 </menu>
                             </menuItem>
-                            <menuItem title="Fullscreen" state="on" id="442">
+                            <menuItem title="Fullscreen" id="442">
                                 <string key="keyEquivalent" base64-UTF8="YES">
 DQ
 </string>
@@ -574,7 +574,7 @@ DQ
                             <menuItem isSeparatorItem="YES" id="cim-gf-ecb">
                                 <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                             </menuItem>
-                            <menuItem title="Show Frames Per Second" state="on" keyEquivalent="k" id="544">
+                            <menuItem title="Show Frames Per Second" keyEquivalent="k" id="544">
                                 <connections>
                                     <action selector="displayFps:" target="498" id="545"/>
                                 </connections>
