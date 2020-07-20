@@ -1592,14 +1592,14 @@
                                                     <popUpButton verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4363">
                                                         <rect key="frame" x="7" y="2" width="239" height="26"/>
                                                         <autoresizingMask key="autoresizingMask"/>
-                                                        <popUpButtonCell key="cell" type="push" title="No 80 Column Conected" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="4366" id="12904">
+                                                        <popUpButtonCell key="cell" type="push" title="No 80 Column Card Conected" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="4366" id="12904">
                                                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                                                             <font key="font" metaFont="system"/>
                                                             <menu key="menu" title="OtherViews" id="4364">
                                                                 <items>
-                                                                    <menuItem title="No 80 Column Conected" state="on" id="4366"/>
-                                                                    <menuItem title="XEP80 Joystick Port 1" id="4367"/>
-                                                                    <menuItem title="XEP80 Joystick Port 2" id="Y9S-Y5-SMJ"/>
+                                                                    <menuItem title="No 80 Column Card Conected" state="on" id="4366"/>
+                                                                    <menuItem title="Atari XEP80 - Joystick Port 1" id="4367"/>
+                                                                    <menuItem title="Atari XEP80 - Joystick Port 2" id="Y9S-Y5-SMJ"/>
                                                                     <menuItem title="Austin Franklin 80 Column Card" id="06a-PU-acE"/>
                                                                     <menuItem title="Bit3 Full View 80 Column Card" id="hu8-Ix-FfE"/>
                                                                 </items>
