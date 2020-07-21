@@ -93,6 +93,7 @@
 #define AtasciiFormLength @"AtasciiFormLength"
 #define AtasciiCharSize @"AtasciiCharSize"
 #define AtasciiLineGap @"AtasciiLineGap"
+#define AtasciiFont @"AtasciiFont"
 #define Atari1020AutoLinefeed @"Atari825AutoLinefeed"
 #define Atari1020AutoPageAdjust @"Atari1020AutoPageAdjust"
 #define Atari1020Pen1Red @"Atari1020Pen1Red"
@@ -345,6 +346,7 @@
     IBOutlet id atasciiCharSizeStepper;
     IBOutlet id atasciiLineGapField;
     IBOutlet id atasciiLineGapStepper;
+    IBOutlet id atasciiFontDropdown;
     IBOutlet id epsonCharSetPulldown;
 	IBOutlet id epsonPrintPitchPulldown;
 	IBOutlet id epsonPrintWeightPulldown;

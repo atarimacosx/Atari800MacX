@@ -20,9 +20,21 @@ static AtasciiPrinter *sharedInstance = nil;
     return sharedInstance ? sharedInstance : [[self alloc] init];
 }
 
-- (id)init {
+- (void)generateFonts
+{
     int size;
-    
+    NSString *fontName;
+
+    for (size = ATASCII_MIN_CHAR_SIZE; size <= 24; size++)
+        if (styles[size - ATASCII_MIN_CHAR_SIZE])
+            [styles[size - ATASCII_MIN_CHAR_SIZE] release];
+
+    fontName = [NSString stringWithCString:prefsAtascii.font encoding:NSASCIIStringEncoding];
+    for (size = ATASCII_MIN_CHAR_SIZE; size <= 24; size++)
+        styles[size - ATASCII_MIN_CHAR_SIZE] = [[NSFont fontWithName : fontName size : size] retain];
+}
+
+- (id)init {
     if (sharedInstance) {
 		[self dealloc];
     } else {
@@ -31,9 +43,8 @@ static AtasciiPrinter *sharedInstance = nil;
 	
     sharedInstance = self;
 	
-    for (size = ATASCII_MIN_CHAR_SIZE; size <= 24; size++)
-        styles[size - ATASCII_MIN_CHAR_SIZE] = [[NSFont fontWithName : @"AtariClassic-Regular" size : size] retain];
-
+    [self generateFonts];
+ 
 	printBuffer = [[PrintableString alloc] init];
 	[printBuffer retain];
 	
@@ -179,6 +190,7 @@ static AtasciiPrinter *sharedInstance = nil;
 }
 
 - (void)reset {
+    [self generateFonts];
     [self setStyle];
     rightMargin = 576.0 + ATARI825_LEFT_PRINT_EDGE;
     leftMargin = 0.0 + ATARI825_LEFT_PRINT_EDGE;
@@ -194,6 +206,7 @@ static AtasciiPrinter *sharedInstance = nil;
         vertPosition = 0.0;
     else
         vertPosition = (skipOverPerf / 2) * lineSpacing;
+    
 }
 
 
