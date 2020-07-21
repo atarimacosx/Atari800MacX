@@ -273,6 +273,7 @@ static NSDictionary *defaultValues() {
                 [NSNumber numberWithInt:11],AtasciiFormLength,
                 [NSNumber numberWithInt:12],AtasciiCharSize,
                 [NSNumber numberWithInt:0],AtasciiLineGap,
+                @"AtariClassic-Regular",AtasciiFont,
                 [NSNumber numberWithInt:0],EpsonCharSet,
                 [NSNumber numberWithInt:0],EpsonPrintPitch,
                 [NSNumber numberWithInt:0],EpsonPrintWeight,
@@ -450,6 +451,12 @@ static NSDictionary *defaultValues() {
 static Preferences *sharedInstance = nil;
 
 + (Preferences *)sharedInstance {
+    Preferences *shared;
+    
+    if (sharedInstance)
+        return sharedInstance;
+    
+    shared = [[self alloc] init];
     return sharedInstance ? sharedInstance : [[self alloc] init];
 }
 
@@ -591,6 +598,7 @@ static Preferences *sharedInstance = nil;
 - (void)showPanel:(id)sender {
     NSMutableArray *configArray;
     NSArray *top;
+    static bool fontsInited = NO;
     int i,numberGamepadConfigs;
     int currNumConfigs;
   
@@ -611,6 +619,16 @@ static Preferences *sharedInstance = nil;
 				NSBeep();
 				return;
 		}
+    if (!fontsInited) {
+        NSArray *fonts = [[NSFontManager sharedFontManager] availableFonts];
+        NSArray *filteredFonts =
+            [fonts filteredArrayUsingPredicate:
+                 [NSPredicate predicateWithBlock:^BOOL(id object, NSDictionary *bindings) {
+                        return ![object hasPrefix:@"."];
+                    }]];
+        [atasciiFontDropdown removeAllItems];
+        [atasciiFontDropdown addItemsWithTitles:filteredFonts];
+        }
     [top retain];
 	[[prefTabView window] setExcludedFromWindowsMenu:YES];
 	[[prefTabView window] setMenu:nil];
@@ -976,6 +994,7 @@ static Preferences *sharedInstance = nil;
     [atasciiCharSizeStepper setIntValue:[[displayedValues objectForKey:AtasciiCharSize] intValue]];
     [atasciiLineGapField setIntValue:[[displayedValues objectForKey:AtasciiLineGap] intValue]];
     [atasciiLineGapStepper setIntValue:[[displayedValues objectForKey:AtasciiLineGap] intValue]];
+    [atasciiFontDropdown selectItemWithTitle:[displayedValues objectForKey:AtasciiFont]];
 	[epsonCharSetPulldown selectItemAtIndex:[[displayedValues objectForKey:EpsonCharSet] intValue]];
 	[epsonPrintPitchPulldown selectItemAtIndex:[[displayedValues objectForKey:EpsonPrintPitch] intValue]];
 	[epsonPrintWeightPulldown selectItemAtIndex:[[displayedValues objectForKey:EpsonPrintWeight] intValue]];
@@ -1749,6 +1768,7 @@ static Preferences *sharedInstance = nil;
         [atasciiCharSizeStepper setEnabled:YES];
         [atasciiLineGapField setEnabled:YES];
         [atasciiLineGapStepper setEnabled:YES];
+        [atasciiFontDropdown setEnabled:YES];
         [epsonCharSetPulldown setEnabled:YES];
         [epsonPrintPitchPulldown setEnabled:YES];
         [epsonPrintWeightPulldown setEnabled:YES];
@@ -1789,6 +1809,7 @@ static Preferences *sharedInstance = nil;
         [atasciiCharSizeStepper setEnabled:NO];
         [atasciiLineGapField setEnabled:NO];
         [atasciiLineGapStepper setEnabled:NO];
+        [atasciiFontDropdown setEnabled:NO];
         [epsonCharSetPulldown setEnabled:NO];
         [epsonPrintPitchPulldown setEnabled:NO];
         [epsonPrintWeightPulldown setEnabled:NO];
@@ -1898,6 +1919,7 @@ static Preferences *sharedInstance = nil;
     anInt = [atasciiLineGapStepper intValue];
     [displayedValues setObject:[NSNumber numberWithInt:anInt] forKey:AtasciiLineGap];
     [atasciiLineGapField setIntValue:anInt];
+    [displayedValues setObject:[atasciiFontDropdown titleOfSelectedItem] forKey:AtasciiFont];
 
     switch([epsonCharSetPulldown indexOfSelectedItem]) {
         case 0:
@@ -3273,6 +3295,7 @@ static Preferences *sharedInstance = nil;
     prefsAtascii.formLength = [[curValues objectForKey:AtasciiFormLength] intValue];
     prefsAtascii.charSize = [[curValues objectForKey:AtasciiCharSize] intValue];
     prefsAtascii.lineGap = [[curValues objectForKey:AtasciiLineGap] intValue];
+        [[curValues objectForKey:AtasciiFont] getCString:prefsAtascii.font maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
     }
 
 - (void)transferValuesToEpson
@@ -4756,6 +4779,7 @@ static Preferences *sharedInstance = nil;
     getIntDefault(AtasciiFormLength);
     getIntDefault(AtasciiCharSize);
     getIntDefault(AtasciiLineGap);
+    getStringDefault(AtasciiFont);
 	getIntDefault(EpsonCharSet);
 	getIntDefault(EpsonPrintPitch); 
 	getIntDefault(EpsonPrintWeight); 
@@ -5031,6 +5055,7 @@ static Preferences *sharedInstance = nil;
     setIntDefault(AtasciiFormLength);
     setIntDefault(AtasciiCharSize);
     setIntDefault(AtasciiLineGap);
+    setStringDefault(AtasciiFont);
 	setIntDefault(EpsonCharSet);
 	setIntDefault(EpsonPrintPitch); 
 	setIntDefault(EpsonPrintWeight); 
@@ -5287,6 +5312,7 @@ static Preferences *sharedInstance = nil;
     setConfig(AtasciiFormLength);
     setConfig(AtasciiCharSize);
     setConfig(AtasciiLineGap);
+    setConfig(AtasciiFont);
 	setConfig(EpsonCharSet);
 	setConfig(EpsonPrintPitch); 
 	setConfig(EpsonPrintWeight); 
@@ -5653,6 +5679,7 @@ static Preferences *sharedInstance = nil;
     getConfig(AtasciiFormLength);
     getConfig(AtasciiCharSize);
     getConfig(AtasciiLineGap);
+    getConfig(AtasciiFont);
 	getConfig(EpsonCharSet);
 	getConfig(EpsonPrintPitch); 
 	getConfig(EpsonPrintWeight); 

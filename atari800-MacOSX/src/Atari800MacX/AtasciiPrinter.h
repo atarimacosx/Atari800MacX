@@ -14,6 +14,7 @@ typedef struct ATASCII_PREF {
     int charSet;
     int charSize;
     int lineGap;
+    char font[FILENAME_MAX];
 } ATASCII_PREF;
 
 @interface AtasciiPrinter : NSObject <PrinterProtocol> {
@@ -35,8 +36,9 @@ typedef struct ATASCII_PREF {
 
 + (AtasciiPrinter *)sharedInstance;
 - (void)addChar:(unsigned short)unicharacter;
--(void)setStyle;
--(void)emptyPrintBuffer;
--(void)executeLineFeed:(float)amount;
+- (void)generateFonts;
+- (void)setStyle;
+- (void)emptyPrintBuffer;
+- (void)executeLineFeed:(float)amount;
 
 @end
