@@ -108,10 +108,12 @@ int fullBackGreen;
 int fullBackBlue;
 int DOUBLESIZE;
 int SCALE_MODE;
-int scaleFactor = 3;
+double scaleFactor = 3;
 int lockFullscreenSize = 1;
 int GRAB_MOUSE = 0;
 int WIDTH_MODE;  /* Width mode, and the constants that define it */
+int current_w;
+int current_h;
 int mediaStatusWindowOpen;
 int functionKeysWindowOpen;
 int enable_international = 1;
@@ -172,6 +174,7 @@ int requestCaptionChange = 0;
 int requestPaste = 0;
 int requestCopy = 0;
 int requestSelectAll = 0;
+int requestResize = 0;
 
 #define COPY_OFF     0
 #define COPY_IDLE    1
@@ -828,8 +831,8 @@ void SetVideoMode(int w, int h, int bpp)
             }
         else if ((SCALE_MODE == NORMAL_SCALE || SCALE_MODE == SCANLINE_SCALE || SCALE_MODE == SMOOTH_SCALE) && DOUBLESIZE)
             {
-            w /= scaleFactor;
-            h /= scaleFactor;
+            w = (double) w / scaleFactor;
+            h = (double) h / scaleFactor;
             }
         /* Save the values in case we need to go back to them after entering the monitor */
         Log_print("Going Fullscreen at %d %d",w,h);
@@ -870,7 +873,9 @@ void SetVideoMode(int w, int h, int bpp)
         MainGLScreen = SDL_CreateWindow(windowCaption,
                                         SDL_WINDOWPOS_UNDEFINED,
                                         SDL_WINDOWPOS_UNDEFINED,
-                                        w, h, 0);
+                                        w, h, SDL_WINDOW_RESIZABLE);
+        current_w = w;
+        current_h = h;
         SDL_SetHint(SDL_HINT_RENDER_DRIVER, "metal");
         renderer = SDL_CreateRenderer(MainGLScreen, -1, 0);
         SDL_RenderSetScale(renderer, scaleFactor, scaleFactor);
@@ -1001,7 +1006,7 @@ void SetNewVideoMode(int w, int h, int bpp)
         if (FULLSCREEN && lockFullscreenSize)
             SetVideoMode(2*w, 2*h, bpp);
         else if (DOUBLESIZE) {
-			SetVideoMode(scaleFactor*w, scaleFactor*h, bpp);
+			SetVideoMode(scaleFactor*(double)w, scaleFactor*(double)h, bpp);
 			}
         else
             SetVideoMode(w, h, bpp);
@@ -1611,6 +1616,14 @@ int Atari_Keyboard_International(void)
                 case SDL_DROPFILE:
                     SDLMainLoadFile(event.drop.file);
                     break;
+                case SDL_WINDOWEVENT:
+                    if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
+                        scaleFactor =
+                        ((double) event.window.data1 /
+                        (double) current_w) * scaleFactor;
+                        current_w = event.window.data1;
+                        requestResize = 1;
+                    }
                 case SDL_TEXTINPUT:
                     kbhits = (Uint8 *) SDL_GetKeyboardState(NULL);
                     text_input = event.text.text;
@@ -4489,6 +4502,11 @@ void ProcessMacMenus()
     if (requestFullScreenChange) {
          SwitchFullscreen();
          requestFullScreenChange = 0;
+         }
+    if (requestResize) {
+         SetNewVideoMode(our_width, our_height,
+                         MainScreen->format->BitsPerPixel);
+         requestResize = 0;
          }
     if (request80ColChange) {
 		 if (XEP80_enabled || AF80_enabled || BIT3_enabled)
