@@ -193,8 +193,7 @@ static NSDictionary *defaultValues() {
                 [NSNumber numberWithFloat:0.0],FullscreenBackBlue,
                 [NSNumber numberWithFloat:0.0],FullscreenBackGreen,
                 [NSNumber numberWithFloat:1.0],FullscreenBackAlpha,
-                [NSNumber numberWithBool:NO], DoubleSize, 
-                [NSNumber numberWithInt:0], ScaleMode, 
+                [NSNumber numberWithInt:0], ScaleMode,
                 [NSNumber numberWithInt:2], ScaleFactor,
                 [NSNumber numberWithFloat:2.0], ScaleFactorFloat,
                 [NSNumber numberWithInt:1], WidthMode,
@@ -731,10 +730,6 @@ static Preferences *sharedInstance = nil;
     [fullscreenBackgroundRed setIntValue:[[displayedValues objectForKey:FullscreenBackRed] floatValue]*255];
     [fullscreenBackgroundGreen setIntValue:[[displayedValues objectForKey:FullscreenBackGreen] floatValue]*255];
     [fullscreenBackgroundBlue setIntValue:[[displayedValues objectForKey:FullscreenBackBlue] floatValue]*255];
-	if ([[displayedValues objectForKey:DoubleSize] boolValue] == 0)
-		[scaleFactorMatrix  selectCellWithTag:0];
-	else
-		[scaleFactorMatrix  selectCellWithTag:[[displayedValues objectForKey:ScaleFactor] intValue]];
     [scaleModeMatrix  selectCellWithTag:[[displayedValues objectForKey:ScaleMode] intValue]];
     [widthModeMatrix  selectCellWithTag:[[displayedValues objectForKey:WidthMode] intValue]];
     [tvModeMatrix  selectCellWithTag:[[displayedValues objectForKey:TvMode] intValue]];
@@ -1521,25 +1516,6 @@ static Preferences *sharedInstance = nil;
 	[displayedValues setObject:[NSNumber numberWithFloat:penBlue] forKey:FullscreenBackBlue];
 	[displayedValues setObject:[NSNumber numberWithFloat:penGreen] forKey:FullscreenBackGreen];
 	[displayedValues setObject:[NSNumber numberWithFloat:penAlpha] forKey:FullscreenBackAlpha];
-    switch([[scaleFactorMatrix selectedCell] tag]) {
-        case 1:
-		default:
-            [displayedValues setObject:one forKey:ScaleFactor];
-			[displayedValues setObject:no forKey:DoubleSize];
-            break;
-        case 2:
-            [displayedValues setObject:two forKey:ScaleFactor];
-			[displayedValues setObject:yes forKey:DoubleSize];
-            break;
-        case 3:
-            [displayedValues setObject:three forKey:ScaleFactor];
-			[displayedValues setObject:yes forKey:DoubleSize];
-            break;
-        case 4:
-            [displayedValues setObject:four forKey:ScaleFactor];
-			[displayedValues setObject:yes forKey:DoubleSize];
-            break;
-    }
 	switch([[scaleModeMatrix selectedCell] tag]) {
         case 0:
 		default:
@@ -3313,7 +3289,6 @@ static Preferences *sharedInstance = nil;
 	prefs->fullBackGreen = (int) ([[curValues objectForKey:FullscreenBackGreen] floatValue] * 255);
 	prefs->fullBackBlue = (int) ([[curValues objectForKey:FullscreenBackBlue] floatValue] * 255);
     prefs->spriteCollisions = [[curValues objectForKey:SpriteCollisions] intValue]; 
-    prefs->doubleSize = [[curValues objectForKey:DoubleSize] intValue]; 
     prefs->scaleFactor = [[curValues objectForKey:ScaleFactor] intValue];
     prefs->scaleFactorFloat = [[curValues objectForKey:ScaleFactorFloat] floatValue];
     prefs->widthMode = [[curValues objectForKey:WidthMode] intValue];
@@ -3583,7 +3558,6 @@ static Preferences *sharedInstance = nil;
     }
 
     [displayedValues setObject:prefssave->fullScreen ? yes : no forKey:FullScreen];
-    [displayedValues setObject:prefssave->doubleSize ? yes : no forKey:DoubleSize];
     [displayedValues setObject:[NSNumber numberWithDouble:prefssave->scaleFactorFloat] forKey:ScaleFactorFloat];
     switch(prefssave->scaleFactor) {
         case 1:
@@ -4676,7 +4650,6 @@ static Preferences *sharedInstance = nil;
 	getFloatDefault(FullscreenBackBlue); 
 	getFloatDefault(FullscreenBackGreen); 
 	getFloatDefault(FullscreenBackAlpha); 
-    getBoolDefault(DoubleSize);
     getIntDefault(ScaleMode);
     getIntDefault(ScaleFactor);
     getFloatDefault(ScaleFactorFloat);
@@ -4953,7 +4926,6 @@ static Preferences *sharedInstance = nil;
 	setFloatDefault(FullscreenBackBlue); 
 	setFloatDefault(FullscreenBackGreen); 
 	setFloatDefault(FullscreenBackAlpha); 
-    setBoolDefault(DoubleSize);
     setIntDefault(ScaleMode);
     setFloatDefault(ScaleFactorFloat);
     setIntDefault(ScaleFactor);
@@ -5211,7 +5183,6 @@ static Preferences *sharedInstance = nil;
 	setConfig(FullscreenBackBlue); 
 	setConfig(FullscreenBackGreen); 
 	setConfig(FullscreenBackAlpha); 
-    setConfig(DoubleSize);
     setConfig(ScaleMode);
     setConfig(ScaleFactor);
     setConfig(ScaleFactorFloat);
@@ -5579,7 +5550,6 @@ static Preferences *sharedInstance = nil;
 	getConfig(FullscreenBackBlue); 
 	getConfig(FullscreenBackGreen); 
 	getConfig(FullscreenBackAlpha); 
-    getConfig(DoubleSize);
     getConfig(ScaleMode);
     getConfig(ScaleFactor);
     getConfig(ScaleFactorFloat);

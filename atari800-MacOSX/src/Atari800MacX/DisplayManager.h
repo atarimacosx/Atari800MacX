@@ -11,11 +11,7 @@
 
 @interface DisplayManager : NSObject
 {
-    IBOutlet id doubleSizeItem;
-	IBOutlet id scale1xItem;
-	IBOutlet id scale2xItem;
-	IBOutlet id scale3xItem;
-	IBOutlet id scale4xItem;
+
     IBOutlet id fullscreenItem;
     IBOutlet id xep80Item;
     IBOutlet id xep80AutoswitchItem;
@@ -40,7 +36,6 @@
 
 }
 + (DisplayManager *)sharedInstance;
-- (void)setDoublesizeMenu:(int)scale;
 - (void)setWidthmodeMenu:(int)widthMode;
 - (void)setGrabmouseMenu:(int)mouseOn;
 - (void)setFpsMenu:(int)fpsOn;
@@ -51,7 +46,6 @@
 - (void)setXEP80AutoswitchMenu:(int)autoswitchOn;
 - (void)disableAF80;
 - (void)disableBit3;
-- (IBAction)doubleSize:(id)sender;
 - (IBAction)fullScreen:(id)sender;
 - (IBAction)xep80:(id)sender;
 - (IBAction)xep80Autoswitch:(id)sender;

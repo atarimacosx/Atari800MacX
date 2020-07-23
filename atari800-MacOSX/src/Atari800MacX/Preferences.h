@@ -29,7 +29,6 @@
 #define FullscreenBackAlpha @"FullscreenBackAlpha"
 #define ScaleFactor @"ScaleFactor"
 #define ScaleFactorFloat @"ScaleFactorFloat"
-#define DoubleSize @"DoubleSize"
 #define ScaleMode @"ScaleMode"
 #define WidthMode @"WidthMode"
 #define TvMode @"TvMode"

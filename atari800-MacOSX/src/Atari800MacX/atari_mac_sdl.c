@@ -257,7 +257,6 @@ extern void MediaManagerShowCreatePanel(void);
 extern void MediaManager80ColMode(int xep80Enabled, int af80Enabled, int bit3Enabled, int xep80);
 extern int  PasteManagerStartPaste(void);
 extern void PasteManagerStartCopy(unsigned char *string);
-extern void SetDisplayManagerDoubleSize(int doubleSize);
 extern void SetDisplayManagerWidthMode(int widthMode);
 extern void SetDisplayManagerFps(int fpsOn);
 extern void SetDisplayManagerScaleMode(int scaleMode);
@@ -1069,23 +1068,6 @@ void PLATFORM_Switch80ColMode(void)
 }
 
 /*------------------------------------------------------------------------------
-*  SwitchDoubleSize - Called by user interface to switch between Single (336x240) 
-*    and DoubleSize (672x480) screens. (Dimensions for normal width)
-*-----------------------------------------------------------------------------*/
-void SwitchDoubleSize(int scale)
-{
-    scaleFactorFloat = scale;
-    if (!FULLSCREEN) {
-        SetNewVideoMode(our_width, our_height,
-                        MainScreen->format->BitsPerPixel);
-		full_display = FULL_DISPLAY_COUNT;
-        Atari_DisplayScreen((UBYTE *) Screen_atari);
-        }
-	SetDisplayManagerDoubleSize(scale);
-	copyStatus = COPY_IDLE;
-}
-
-/*------------------------------------------------------------------------------
 *  SwitchScaleMode - Called by user interface to switch between using scanlines
 *    in the display, and not. 
 *-----------------------------------------------------------------------------*/
@@ -1884,8 +1866,6 @@ int Atari_Keyboard_International(void)
                     if (!FULLSCREEN) {
                         if (CONTROL)
                             MediaManagerRemoveDisk(lastkey - SDLK_1 + 1);
-                        else if (key_option & (lastkey <= SDLK_4))
-                            SwitchDoubleSize(lastkey - SDLK_1 + 1);
                         else if (key_option & (lastkey <= SDLK_7))
                             requestWidthModeChange = (lastkey - SDLK_5 + 1);
                         else if (key_option & (lastkey == SDLK_8)) {
@@ -4846,7 +4826,6 @@ void ProcessMacPrefsChange()
     SetSoundManagerEnable(sound_enabled);
     SetSoundManagerStereo(POKEYSND_stereo_enabled);
     SetSoundManagerRecording(SndSave_IsSoundFileOpen());
-    SetDisplayManagerDoubleSize(scaleFactor);
     SetDisplayManagerWidthMode(WIDTH_MODE);
     SetDisplayManagerFps(Screen_show_atari_speed);
     SetDisplayManagerScaleMode(SCALE_MODE);
@@ -5276,7 +5255,6 @@ int SDL_main(int argc, char **argv)
     SetSoundManagerEnable(sound_enabled);
     SetSoundManagerStereo(POKEYSND_stereo_enabled);
     SetSoundManagerRecording(SndSave_IsSoundFileOpen());
-    SetDisplayManagerDoubleSize(scaleFactor);
     SetDisplayManagerWidthMode(WIDTH_MODE);
     SetDisplayManagerFps(Screen_show_atari_speed);
     SetDisplayManagerScaleMode(SCALE_MODE);

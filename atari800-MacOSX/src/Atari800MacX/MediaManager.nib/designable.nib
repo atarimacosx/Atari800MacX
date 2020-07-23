@@ -104,7 +104,6 @@
                 <outlet property="printerImageView" destination="1172" id="1173"/>
                 <outlet property="printerPreviewButton" destination="1157" id="1181"/>
                 <outlet property="scaleModePulldown" destination="1211" id="1245"/>
-                <outlet property="scaleSizePulldown" destination="1201" id="1243"/>
                 <outlet property="selectPrinterPulldown" destination="1158" id="1182"/>
                 <outlet property="speedLimitButton" destination="1075" id="1081"/>
                 <outlet property="widthModePulldown" destination="1206" id="1244"/>
@@ -2313,25 +2312,6 @@ DQ
                             <action selector="machineTypeChange:" target="-2" id="1247"/>
                         </connections>
                     </popUpButton>
-                    <popUpButton verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1201">
-                        <rect key="frame" x="224" y="-2" width="91" height="22"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                        <popUpButtonCell key="cell" type="push" title="3x Scale" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="1234" id="1821">
-                            <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="message" size="11"/>
-                            <menu key="menu" title="OtherViews" id="1202">
-                                <items>
-                                    <menuItem title="1x Scale" id="1204"/>
-                                    <menuItem title="2x Scale" id="1233"/>
-                                    <menuItem title="3x Scale" state="on" id="1234"/>
-                                    <menuItem title="4x Scale" id="1235"/>
-                                </items>
-                            </menu>
-                        </popUpButtonCell>
-                        <connections>
-                            <action selector="scaleSizeChange:" target="-2" id="1248"/>
-                        </connections>
-                    </popUpButton>
                     <popUpButton verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1206">
                         <rect key="frame" x="315" y="-2" width="123" height="22"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -2421,7 +2401,7 @@ DQ
                     </button>
                 </subviews>
             </view>
-            <point key="canvasLocation" x="-119" y="2433"/>
+            <point key="canvasLocation" x="45" y="2424"/>
         </window>
         <customObject id="1168" userLabel="PrintOutputController" customClass="PrintOutputController"/>
         <view id="952">

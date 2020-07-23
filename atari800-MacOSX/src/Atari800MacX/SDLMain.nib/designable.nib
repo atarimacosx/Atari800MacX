@@ -409,36 +409,6 @@
                 <menuItem title="Display" id="439">
                     <menu key="submenu" title="Display" id="440">
                         <items>
-                            <menuItem title="Display Scale Factor" id="686">
-                                <menu key="submenu" title="Display Scale Factor" id="687">
-                                    <items>
-                                        <menuItem title="1x Atari Display" tag="1" keyEquivalent="1" id="691">
-                                            <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
-                                            <connections>
-                                                <action selector="doubleSize:" target="498" id="697"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem title="2x Atari Display" tag="2" keyEquivalent="2" id="688">
-                                            <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
-                                            <connections>
-                                                <action selector="doubleSize:" target="498" id="698"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem title="3x Atari Display" tag="3" keyEquivalent="3" id="690">
-                                            <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
-                                            <connections>
-                                                <action selector="doubleSize:" target="498" id="699"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem title="4x Atari Display" tag="4" keyEquivalent="4" id="689">
-                                            <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
-                                            <connections>
-                                                <action selector="doubleSize:" target="498" id="700"/>
-                                            </connections>
-                                        </menuItem>
-                                    </items>
-                                </menu>
-                            </menuItem>
                             <menuItem title="Display Width" id="693">
                                 <menu key="submenu" title="Display Width" id="694">
                                     <items>
@@ -962,10 +932,6 @@ DQ
                 <outlet property="fullscreenItem" destination="442" id="539"/>
                 <outlet property="grabMouseItem" destination="541" id="543"/>
                 <outlet property="revXLXEGTIAItem" destination="831" id="841"/>
-                <outlet property="scale1xItem" destination="691" id="701"/>
-                <outlet property="scale2xItem" destination="688" id="702"/>
-                <outlet property="scale3xItem" destination="690" id="703"/>
-                <outlet property="scale4xItem" destination="689" id="704"/>
                 <outlet property="scaleModeNormalItem" destination="711" id="716"/>
                 <outlet property="scaleModeScanlineItem" destination="714" id="717"/>
                 <outlet property="scaleModeSmoothItem" destination="715" id="718"/>

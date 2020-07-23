@@ -35,10 +35,6 @@ extern int requestCopy;
 extern int requestSelectAll;
 
 /* Functions which provide an interface for C code to call this object's shared Instance functions */
-void SetDisplayManagerDoubleSize(int scale) {
-    [[DisplayManager sharedInstance] setDoublesizeMenu:scale];
-    }
-
 void SetDisplayManagerWidthMode(int widthMode) {
     [[DisplayManager sharedInstance] setWidthmodeMenu:(widthMode)];
     }
@@ -95,41 +91,6 @@ static DisplayManager *sharedInstance = nil;
 
 - (void)dealloc {
 	[super dealloc];
-}
-
-/*------------------------------------------------------------------------------
-*  setDoublesizeMenu - This method is used to set the menu text for the 
-*     single/double size menu item.
-*-----------------------------------------------------------------------------*/
-- (void)setDoublesizeMenu:(int)scale
-{
-	switch(scale)
-	{
-		case 1:
-			[scale1xItem setState:NSOnState];
-			[scale2xItem setState:NSOffState];
-			[scale3xItem setState:NSOffState];
-			[scale4xItem setState:NSOffState];
-			break;
-		case 2:
-			[scale1xItem setState:NSOffState];
-			[scale2xItem setState:NSOnState];
-			[scale3xItem setState:NSOffState];
-			[scale4xItem setState:NSOffState];
-			break;
-		case 3:
-			[scale1xItem setState:NSOffState];
-			[scale2xItem setState:NSOffState];
-			[scale3xItem setState:NSOnState];
-			[scale4xItem setState:NSOffState];
-			break;
-		case 4:
-			[scale1xItem setState:NSOffState];
-			[scale2xItem setState:NSOffState];
-			[scale3xItem setState:NSOffState];
-			[scale4xItem setState:NSOnState];
-			break;
-	}
 }
 
 /*------------------------------------------------------------------------------

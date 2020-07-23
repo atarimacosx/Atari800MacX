@@ -18,7 +18,6 @@ typedef struct ATARI800MACX_PREF {
 				int fullBackRed;
 				int fullBackGreen;
 				int fullBackBlue;
-                int doubleSize; 
                 int scaleFactor;
                 double scaleFactorFloat;
                 int widthMode;
@@ -170,7 +169,6 @@ typedef struct ATARI800MACX_PREF {
 
 typedef struct ATARI800MACX_PREFSAVE {
                 int fullScreen; 
-                int doubleSize; 
                 int scaleFactor;
                 double scaleFactorFloat;
                 int widthMode; 
