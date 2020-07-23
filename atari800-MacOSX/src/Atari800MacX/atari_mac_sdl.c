@@ -174,7 +174,6 @@ int requestCaptionChange = 0;
 int requestPaste = 0;
 int requestCopy = 0;
 int requestSelectAll = 0;
-int requestResize = 0;
 
 #define COPY_OFF     0
 #define COPY_IDLE    1
@@ -234,6 +233,7 @@ extern void SDLMainCloseWindow(void);
 extern void SDLMainSelectAll(void);
 extern void AboutBoxScroll(void);
 extern void Atari800WindowCreate(NSWindow *window);
+extern void Atari800WindowAspectSet(int w, int h);
 extern void Atari800OriginSet(void);
 extern void Atari800WindowCenter(void);
 extern void Atari800WindowDisplay(void);
@@ -876,6 +876,12 @@ void SetVideoMode(int w, int h, int bpp)
         SDL_VERSION(&wmInfo.version);
         SDL_GetWindowWMInfo(MainGLScreen, &wmInfo);
         Atari800WindowCreate(wmInfo.info.cocoa.window);
+        if (WIDTH_MODE == SHORT_WIDTH_MODE)
+            Atari800WindowAspectSet(320,240);
+        else if (WIDTH_MODE == DEFAULT_WIDTH_MODE)
+            Atari800WindowAspectSet(336,240);
+        else
+            Atari800WindowAspectSet(384,240);
 
         // Set the HW Scaling for OPENGL properly
         w /= scaleFactorFloat;
@@ -1583,7 +1589,6 @@ int Atari_Keyboard_International(void)
                         requested_w = event.window.data1;
                         requested_h = event.window.data2;
                         HandleResizeRequest();
-                        //requestResize = 1;
                     }
                 case SDL_TEXTINPUT:
                     kbhits = (Uint8 *) SDL_GetKeyboardState(NULL);
@@ -4443,80 +4448,11 @@ void CountFPS()
 
 void HandleResizeRequest()
 {
-    // Requested size is in current_w/current_h.
-    float ww, hh;
-    int adjusted_w, adjusted_h;
-    int display_index;
-    SDL_Rect rect;
-    
-    // Try to calculate based on requested width and
-    // height, then see if height fits on screen.
-    ww = requested_w;
-    hh = requested_h;
-
-    switch (WIDTH_MODE) {
-        case SHORT_WIDTH_MODE:
-            if (ww * 0.75 < hh)
-                hh = ww * 0.75;
-            else
-                ww = hh / 0.75;
-            break;
-        case DEFAULT_WIDTH_MODE:
-            if (ww / 1.4 < hh)
-                hh = ww / 1.4;
-            else
-                ww = hh * 1.4;
-            break;
-        case FULL_WIDTH_MODE:
-            if (ww / 1.6 < hh)
-                hh = ww / 1.6;
-            else
-                ww = hh * 1.6;
-            break;
-        }
-    adjusted_w = ww;
-    adjusted_h = hh;
-    adjusted_w = adjusted_w / 8;
-    adjusted_w = adjusted_w * 8;
-    adjusted_h = adjusted_h / 8;
-    adjusted_h = adjusted_h * 8;
-        
-    display_index = SDL_GetWindowDisplayIndex(MainGLScreen);
-    if (SDL_GetDisplayUsableBounds(display_index, &rect) == 0);
-        {
-        if (adjusted_h > rect.h)
-            {
-            hh = rect.h;
-
-            switch (WIDTH_MODE) {
-                case SHORT_WIDTH_MODE:
-                        ww = hh / 0.75;
-                    break;
-                case DEFAULT_WIDTH_MODE:
-                        ww = hh * 1.4;
-                    break;
-                case FULL_WIDTH_MODE:
-                        ww = hh * 1.6;
-                    break;
-                }
-            adjusted_w = ww;
-            adjusted_h = hh;
-            adjusted_w = adjusted_w / 8;
-            adjusted_w = adjusted_w * 8;
-            adjusted_h = adjusted_h / 8;
-            adjusted_h = adjusted_h * 8;
-            }
-        }
-
-    if ((adjusted_h != current_h) || (adjusted_w != current_w))
-        {
-        SDL_SetWindowSize(MainGLScreen, adjusted_w, adjusted_h);
-        }
-    scaleFactorFloat = ((double) adjusted_w /
+    scaleFactorFloat = ((double) requested_w /
                         (double) current_w) * scaleFactorFloat;
     SDL_RenderSetScale(renderer, scaleFactorFloat, scaleFactorFloat);
-    current_w = adjusted_w;
-    current_h = adjusted_h;
+    current_w = requested_w;
+    current_h = requested_h;
 }
 
 /*------------------------------------------------------------------------------
@@ -4528,11 +4464,6 @@ void ProcessMacMenus()
     if (requestFullScreenChange) {
          SwitchFullscreen();
          requestFullScreenChange = 0;
-         }
-    if (requestResize) {
-         if (!FULLSCREEN)
-             HandleResizeRequest();
-         requestResize = 0;
          }
     if (request80ColChange) {
 		 if (XEP80_enabled || AF80_enabled || BIT3_enabled)

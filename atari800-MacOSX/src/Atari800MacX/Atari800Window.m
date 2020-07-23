@@ -21,6 +21,10 @@ void Atari800WindowCreate(NSWindow *window) {
     our_window = window;
 }
 
+void Atari800WindowAspectSet(int w, int h) {
+    our_window.aspectRatio = NSMakeSize(w,h);
+}
+
 void Atari800OriginSet() {
     [Atari800Window applicationWindowOriginSetPrefs];
 }
