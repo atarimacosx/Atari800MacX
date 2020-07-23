@@ -113,6 +113,8 @@ int GRAB_MOUSE = 0;
 int WIDTH_MODE;  /* Width mode, and the constants that define it */
 int current_w;
 int current_h;
+int requested_w;
+int requested_h;
 int mediaStatusWindowOpen;
 int functionKeysWindowOpen;
 int enable_international = 1;
@@ -326,6 +328,7 @@ void SoundSetup(void);
 void PauseAudio(int pause);
 void CreateWindowCaption(void);
 void ProcessCopySelection(int *first_row, int *last_row, int selectAll);
+void HandleResizeRequest(void);
 
 // joystick emulation - Future enhancement will allow user to set these in 
 //   Preferences.
@@ -1577,11 +1580,10 @@ int Atari_Keyboard_International(void)
                     break;
                 case SDL_WINDOWEVENT:
                     if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
-                        scaleFactorFloat =
-                        ((double) event.window.data1 /
-                        (double) current_w) * scaleFactorFloat;
-                        current_w = event.window.data1;
-                        requestResize = 1;
+                        requested_w = event.window.data1;
+                        requested_h = event.window.data2;
+                        HandleResizeRequest();
+                        //requestResize = 1;
                     }
                 case SDL_TEXTINPUT:
                     kbhits = (Uint8 *) SDL_GetKeyboardState(NULL);
@@ -4439,6 +4441,84 @@ void CountFPS()
             }
 }
 
+void HandleResizeRequest()
+{
+    // Requested size is in current_w/current_h.
+    float ww, hh;
+    int adjusted_w, adjusted_h;
+    int display_index;
+    SDL_Rect rect;
+    
+    // Try to calculate based on requested width and
+    // height, then see if height fits on screen.
+    ww = requested_w;
+    hh = requested_h;
+
+    switch (WIDTH_MODE) {
+        case SHORT_WIDTH_MODE:
+            if (ww * 0.75 < hh)
+                hh = ww * 0.75;
+            else
+                ww = hh / 0.75;
+            break;
+        case DEFAULT_WIDTH_MODE:
+            if (ww / 1.4 < hh)
+                hh = ww / 1.4;
+            else
+                ww = hh * 1.4;
+            break;
+        case FULL_WIDTH_MODE:
+            if (ww / 1.6 < hh)
+                hh = ww / 1.6;
+            else
+                ww = hh * 1.6;
+            break;
+        }
+    adjusted_w = ww;
+    adjusted_h = hh;
+    adjusted_w = adjusted_w / 8;
+    adjusted_w = adjusted_w * 8;
+    adjusted_h = adjusted_h / 8;
+    adjusted_h = adjusted_h * 8;
+        
+    display_index = SDL_GetWindowDisplayIndex(MainGLScreen);
+    if (SDL_GetDisplayUsableBounds(display_index, &rect) == 0);
+        {
+        if (adjusted_h > rect.h)
+            {
+            hh = rect.h;
+
+            switch (WIDTH_MODE) {
+                case SHORT_WIDTH_MODE:
+                        ww = hh / 0.75;
+                    break;
+                case DEFAULT_WIDTH_MODE:
+                        ww = hh * 1.4;
+                    break;
+                case FULL_WIDTH_MODE:
+                        ww = hh * 1.6;
+                    break;
+                }
+            adjusted_w = ww;
+            adjusted_h = hh;
+            adjusted_w = adjusted_w / 8;
+            adjusted_w = adjusted_w * 8;
+            adjusted_h = adjusted_h / 8;
+            adjusted_h = adjusted_h * 8;
+            }
+        }
+
+    if ((adjusted_h != current_h) || (adjusted_w != current_w))
+        {
+        SDL_SetWindowSize(MainGLScreen, adjusted_w, adjusted_h);
+        }
+    scaleFactorFloat = ((double) adjusted_w /
+                        (double) current_w) * scaleFactorFloat;
+    SDL_RenderSetScale(renderer, scaleFactorFloat, scaleFactorFloat);
+    current_w = adjusted_w;
+    current_h = adjusted_h;
+}
+
 /*------------------------------------------------------------------------------
 *  ProcessMacMenus - Handle requested changes do to menu operations in the
 *      Objective-C Cocoa code.
@@ -4450,8 +4530,8 @@ void ProcessMacMenus()
          requestFullScreenChange = 0;
          }
     if (requestResize) {
-         SetNewVideoMode(our_width, our_height,
-                         MainScreen->format->BitsPerPixel);
+         if (!FULLSCREEN)
+             HandleResizeRequest();
          requestResize = 0;
          }
     if (request80ColChange) {
