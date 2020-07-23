@@ -106,10 +106,9 @@ int fullForeBlue;
 int fullBackRed;
 int fullBackGreen;
 int fullBackBlue;
-int DOUBLESIZE;
 int SCALE_MODE;
 double scaleFactor = 3;
-int lockFullscreenSize = 1;
+double scaleFactorFloat = 2.0;
 int GRAB_MOUSE = 0;
 int WIDTH_MODE;  /* Width mode, and the constants that define it */
 int current_w;
@@ -142,7 +141,6 @@ int pauseEmulator = 0;
 #define DELTAFAST (1.0/300.0)  
 
 /* Semaphore flags used for signalling between the Objective-C menu managers and the emulator. */
-int requestDoubleSizeChange = 0;
 int requestWidthModeChange = 0;
 int requestFullScreenChange = 0;
 int requestFullScreenUI = 0;
@@ -813,10 +811,8 @@ void SetVideoMode(int w, int h, int bpp)
         renderer = SDL_CreateRenderer(MainGLScreen, -1, 0);
         if ((AF80_enabled || BIT3_enabled) && PLATFORM_80col)
             SDL_RenderSetScale(renderer, 4.0, 4.0);
-        else if (lockFullscreenSize)
-            SDL_RenderSetScale(renderer, 2.0, 2.0);
         else
-            SDL_RenderSetScale(renderer, scaleFactor, scaleFactor);
+            SDL_RenderSetScale(renderer, 2.0, 2.0);
 
         // Save Mac Window for later use
         SDL_SysWMinfo wmInfo;
@@ -825,15 +821,8 @@ void SetVideoMode(int w, int h, int bpp)
         Atari800WindowCreate(wmInfo.info.cocoa.window);
 
         // Set the HW Scaling for OPENGL properly
-        if ((SCALE_MODE == NORMAL_SCALE || SCALE_MODE == SCANLINE_SCALE || SCALE_MODE == SMOOTH_SCALE) && lockFullscreenSize) {
-            w = w / 2;
-            h = h / 2;
-            }
-        else if ((SCALE_MODE == NORMAL_SCALE || SCALE_MODE == SCANLINE_SCALE || SCALE_MODE == SMOOTH_SCALE) && DOUBLESIZE)
-            {
-            w = (double) w / scaleFactor;
-            h = (double) h / scaleFactor;
-            }
+        w = w / 2;
+        h = h / 2;
         /* Save the values in case we need to go back to them after entering the monitor */
         Log_print("Going Fullscreen at %d %d",w,h);
 
@@ -878,7 +867,7 @@ void SetVideoMode(int w, int h, int bpp)
         current_h = h;
         SDL_SetHint(SDL_HINT_RENDER_DRIVER, "metal");
         renderer = SDL_CreateRenderer(MainGLScreen, -1, 0);
-        SDL_RenderSetScale(renderer, scaleFactor, scaleFactor);
+        SDL_RenderSetScale(renderer, scaleFactorFloat, scaleFactorFloat);
         
         // Save Mac Window for later use
         SDL_SysWMinfo wmInfo;
@@ -887,10 +876,8 @@ void SetVideoMode(int w, int h, int bpp)
         Atari800WindowCreate(wmInfo.info.cocoa.window);
 
         // Set the HW Scaling for OPENGL properly
-        if ((SCALE_MODE == NORMAL_SCALE || SCALE_MODE == SCANLINE_SCALE || SCALE_MODE == SMOOTH_SCALE) && DOUBLESIZE) {
-            w /= scaleFactor;
-            h /= scaleFactor;
-            }
+        w /= scaleFactorFloat;
+        h /= scaleFactorFloat;
 
         // Delete the old textures
         if(MainScreen)
@@ -945,7 +932,7 @@ void SetNewVideoMode(int w, int h, int bpp)
     // aspect ratio, floats needed
     ww = w;
     hh = h;
-    if (FULLSCREEN && lockFullscreenSize) {
+    if (FULLSCREEN) {
         if (ww * 0.75 < hh)
             hh = ww * 0.75;
         else
@@ -1003,13 +990,10 @@ void SetNewVideoMode(int w, int h, int bpp)
                 }
             }
 
-        if (FULLSCREEN && lockFullscreenSize)
+        if (FULLSCREEN)
             SetVideoMode(2*w, 2*h, bpp);
-        else if (DOUBLESIZE) {
-			SetVideoMode(scaleFactor*(double)w, scaleFactor*(double)h, bpp);
-			}
         else
-            SetVideoMode(w, h, bpp);
+			SetVideoMode(scaleFactorFloat*(double)w, scaleFactorFloat*(double)h, bpp);
 
         SDL_ATARI_BPP = 32;
 
@@ -1090,15 +1074,8 @@ void PLATFORM_Switch80ColMode(void)
 *-----------------------------------------------------------------------------*/
 void SwitchDoubleSize(int scale)
 {
-    if (scale == 1) {
-		DOUBLESIZE = 0;
-        scaleFactor = 1;
-        }
-	else {
-		DOUBLESIZE = 1;
-		scaleFactor = scale;
-		}
-    if (!(FULLSCREEN && lockFullscreenSize)) {
+    scaleFactorFloat = scale;
+    if (!FULLSCREEN) {
         SetNewVideoMode(our_width, our_height,
                         MainScreen->format->BitsPerPixel);
 		full_display = FULL_DISPLAY_COUNT;
@@ -1158,7 +1135,7 @@ void SwitchGrabMouse()
 void SwitchWidth(int width)
 {
     WIDTH_MODE = width;
-    if (!(FULLSCREEN && lockFullscreenSize)) {
+    if (!FULLSCREEN) {
         SetNewVideoMode(our_width, our_height,
                         MainScreen->format->BitsPerPixel);
 		full_display = FULL_DISPLAY_COUNT;
@@ -1618,9 +1595,9 @@ int Atari_Keyboard_International(void)
                     break;
                 case SDL_WINDOWEVENT:
                     if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
-                        scaleFactor =
+                        scaleFactorFloat =
                         ((double) event.window.data1 /
-                        (double) current_w) * scaleFactor;
+                        (double) current_w) * scaleFactorFloat;
                         current_w = event.window.data1;
                         requestResize = 1;
                     }
@@ -2853,12 +2830,6 @@ void PLATFORM_Initialise(int *argc, char *argv[])
         else if (strcmp(argv[i], "-windowed") == 0) {
             FULLSCREEN = 0;
         }
-        else if (strcmp(argv[i], "-double") == 0) {
-            DOUBLESIZE= 1;
-        }
-        else if (strcmp(argv[i], "-single") == 0) {
-            DOUBLESIZE = 0;
-        }
         else {
             if (strcmp(argv[i], "-help") == 0) {
                 help_only = TRUE;
@@ -3130,7 +3101,7 @@ void Atari_DisplayScreen(UBYTE * screen)
     static int bit3Frame = 0;
     SDL_Rect rect;
 	
-    if (FULLSCREEN && lockFullscreenSize) {
+    if (FULLSCREEN) {
         width = Screen_WIDTH - 2 * 24 - 2 * 8;
         jumped = 24 + 8;
         }
@@ -3267,23 +3238,23 @@ void Atari_DisplayScreen(UBYTE * screen)
     SDL_RenderCopy(renderer, texture, NULL, &rect);
 
     // Add the scanlines if we are in that mode
-    if (SCALE_MODE == SCANLINE_SCALE && DOUBLESIZE)
+    if (SCALE_MODE == SCANLINE_SCALE)
         {
         int rows = 0;
         SDL_Rect scanlineRect;
         
-        SDL_RenderSetScale(renderer, scaleFactor, 1);
+        SDL_RenderSetScale(renderer, scaleFactorFloat, 1);
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 
         for (rows = 0; rows < MainScreen->h; rows ++)
             {
             scanlineRect.x = 0;
                 scanlineRect.w = screen_width;
-            scanlineRect.y = rows*scaleFactor+scaleFactor;
+            scanlineRect.y = rows*scaleFactorFloat+scaleFactorFloat;
             scanlineRect.h = 1;
             SDL_RenderFillRect(renderer, &scanlineRect);
             }
-        SDL_RenderSetScale(renderer, scaleFactor, scaleFactor);
+        SDL_RenderSetScale(renderer, scaleFactorFloat, scaleFactorFloat);
         }
 
     SDL_RenderPresent(renderer);
@@ -4494,11 +4465,6 @@ void CountFPS()
 *-----------------------------------------------------------------------------*/
 void ProcessMacMenus()
 {
-    if (requestDoubleSizeChange) {
-        SwitchDoubleSize(requestDoubleSizeChange);
-        requestDoubleSizeChange = 0;
-		UpdateMediaManagerInfo();
-        }
     if (requestFullScreenChange) {
          SwitchFullscreen();
          requestFullScreenChange = 0;
@@ -4880,10 +4846,7 @@ void ProcessMacPrefsChange()
     SetSoundManagerEnable(sound_enabled);
     SetSoundManagerStereo(POKEYSND_stereo_enabled);
     SetSoundManagerRecording(SndSave_IsSoundFileOpen());
-	if (!DOUBLESIZE)
-		SetDisplayManagerDoubleSize(1);
-	else
-		SetDisplayManagerDoubleSize(scaleFactor);
+    SetDisplayManagerDoubleSize(scaleFactor);
     SetDisplayManagerWidthMode(WIDTH_MODE);
     SetDisplayManagerFps(Screen_show_atari_speed);
     SetDisplayManagerScaleMode(SCALE_MODE);
@@ -5113,7 +5076,8 @@ static void SDL_Atari_CX85(void)
 
 void DrawSelectionRectangle(int orig_x, int orig_y, int copy_x, int copy_y)
 {
-	int i,y,scale;
+    int i,y;
+    double scale;
 
 	if (copy_x < orig_x) {
 		int swap_x;
@@ -5130,10 +5094,7 @@ void DrawSelectionRectangle(int orig_x, int orig_y, int copy_x, int copy_y)
 		orig_y = swap_y;
 	}
 	
-	if (!DOUBLESIZE)
-		scale = 1;
-	else
-		scale = scaleFactor;		
+    scale = scaleFactorFloat;
 	
 	if (SCALE_MODE==NORMAL_SCALE || SCALE_MODE == SCANLINE_SCALE ||
         SCALE_MODE==SMOOTH_SCALE) {
@@ -5142,10 +5103,10 @@ void DrawSelectionRectangle(int orig_x, int orig_y, int copy_x, int copy_y)
 		
 		pitch2 = MainScreen->pitch / 2;
 
-		orig_x /= scale;
-		orig_y /= scale;
-		copy_x /= scale;
-		copy_y /= scale;
+		orig_x = (double) orig_x/scale;
+		orig_y = (double) orig_y/scale;
+		copy_x = (double) copy_x/scale;
+		copy_y = (double) copy_y/scale;
 		
 		start16 = (Uint16 *) MainScreen->pixels + 
 		(orig_y * pitch2) + orig_x;
@@ -5178,13 +5139,9 @@ void ProcessCopySelection(int *first_row, int *last_row, int selectAll)
 	static int orig_y = 0;
 	int copy_x, copy_y;
 	static Uint8 mouse = 0;
-	int scale = 1;
+    double scale = 1.0;
 	
-	if (!DOUBLESIZE)
-		scale = 1;
-	else {
-		scale = scaleFactor;	
-	}
+    scale = scaleFactorFloat;
 	
 	if (selectAll) {
 		orig_x = 0;
@@ -5207,14 +5164,6 @@ void ProcessCopySelection(int *first_row, int *last_row, int selectAll)
 			return;		
 		}
 	}
-
-	if (DOUBLESIZE) {
-		copy_x /= scale;
-		copy_y /= scale;
-		copy_x *= scale;
-		copy_y *= scale;
-	}
-	
 	*first_row = 0;
 	*last_row = Screen_HEIGHT - 1;
 	full_display = FULL_DISPLAY_COUNT;
@@ -5225,10 +5174,10 @@ void ProcessCopySelection(int *first_row, int *last_row, int selectAll)
 				copyStatus = COPY_DEFINED;
 				orig_x = 0;
 				orig_y = 0;
-				selectionStartX = orig_x/scale; 
-				selectionStartY = orig_y/scale;
-				selectionEndX = copy_x/scale;
-				selectionEndY = copy_y/scale;
+				selectionStartX = (double)orig_x/scale;
+				selectionStartY = (double)orig_y/scale;
+				selectionEndX = (double)copy_x/scale;
+				selectionEndY = (double)copy_y/scale;
 				DrawSelectionRectangle(orig_x, orig_y, copy_x, copy_y);
 			}
 			else if (mouse & SDL_BUTTON(1) ) {
@@ -5245,19 +5194,19 @@ void ProcessCopySelection(int *first_row, int *last_row, int selectAll)
 					copyStatus = COPY_IDLE;
 				} else {
 					copyStatus = COPY_DEFINED;
-					selectionStartX = orig_x/scale; 
-					selectionStartY = orig_y/scale;
-					selectionEndX = copy_x/scale;
-					selectionEndY = copy_y/scale;
+					selectionStartX = (double)orig_x/scale;
+					selectionStartY = (double)orig_y/scale;
+					selectionEndX = (double)copy_x/scale;
+					selectionEndY = (double)copy_y/scale;
 				}
 			}
 			break;
 		case COPY_DEFINED:
 			if (selectAll){
-				selectionStartX = orig_x/scale; 
-				selectionStartY = orig_y/scale;
-				selectionEndX = copy_x/scale;
-				selectionEndY = copy_y/scale;
+				selectionStartX = (double)orig_x/scale;
+				selectionStartY = (double)orig_y/scale;
+				selectionEndX = (double)copy_x/scale;
+				selectionEndY = (double)copy_y/scale;
 				DrawSelectionRectangle(orig_x, orig_y, copy_x, copy_y);
 			} else if (mouse & SDL_BUTTON(1)) {
 				copyStatus = COPY_STARTED;
@@ -5327,10 +5276,7 @@ int SDL_main(int argc, char **argv)
     SetSoundManagerEnable(sound_enabled);
     SetSoundManagerStereo(POKEYSND_stereo_enabled);
     SetSoundManagerRecording(SndSave_IsSoundFileOpen());
-	if (!DOUBLESIZE)
-		SetDisplayManagerDoubleSize(1);
-	else
-		SetDisplayManagerDoubleSize(scaleFactor);
+    SetDisplayManagerDoubleSize(scaleFactor);
     SetDisplayManagerWidthMode(WIDTH_MODE);
     SetDisplayManagerFps(Screen_show_atari_speed);
     SetDisplayManagerScaleMode(SCALE_MODE);

@@ -50,7 +50,6 @@ extern int paletteColorShift;
 extern int FULLSCREEN;
 extern int PLATFORM_80col;
 extern int OPENGL;
-extern int lockFullscreenSize;
 extern int FULLSCREEN_MONITOR;
 extern int fullForeRed;
 extern int fullForeGreen;
@@ -58,9 +57,9 @@ extern int fullForeBlue;
 extern int fullBackRed;
 extern int fullBackGreen;
 extern int fullBackBlue;
-extern int DOUBLESIZE;
 extern int SCALE_MODE;
 extern int scaleFactor;
+extern double scaleFactorFloat;
 extern int WIDTH_MODE;
 extern int Screen_show_atari_speed;
 extern int Screen_show_disk_led;
@@ -283,9 +282,9 @@ void saveMediaPrefs() {
 
 void savePrefs() {
 	prefssave.fullScreen = FULLSCREEN; 
-    prefssave.doubleSize = DOUBLESIZE; 
     prefssave.scaleFactor = scaleFactor;
-    prefssave.widthMode = WIDTH_MODE; 
+    prefssave.scaleFactorFloat = scaleFactorFloat;
+    prefssave.widthMode = WIDTH_MODE;
 	prefssave.scaleMode = SCALE_MODE;
     prefssave.showFPS = Screen_show_atari_speed;
 	prefssave.ledStatus = Screen_show_disk_led;
@@ -623,9 +622,7 @@ void CalculatePrefsChanged()
 	int new_mosaic = 0;
 
     if ((FULLSCREEN != prefs.fullScreen) ||
-        (DOUBLESIZE != prefs.doubleSize) ||
-        (WIDTH_MODE != prefs.widthMode) ||
-        ((scaleFactor != prefs.scaleFactor) && DOUBLESIZE))
+        (WIDTH_MODE != prefs.widthMode))
         displaySizeChanged = TRUE;
     else
         displaySizeChanged = FALSE;
@@ -800,11 +797,7 @@ int loadMacPrefs(int firstTime)
 
     FULLSCREEN = prefs.fullScreen;
     OPENGL = prefs.openGl;
-    lockFullscreenSize = prefs.lockFullscreenSize;
-	if (lockFullscreenSize)
-		FULLSCREEN_MONITOR = prefs.fullscreenMonitor;
-	else
-		FULLSCREEN_MONITOR = 0;
+
 	fullForeRed = prefs.fullForeRed;
 	fullForeGreen = prefs.fullForeGreen;
 	fullForeBlue = prefs.fullForeBlue;
@@ -812,8 +805,8 @@ int loadMacPrefs(int firstTime)
 	fullBackGreen = prefs.fullBackGreen;
 	fullBackBlue = prefs.fullBackBlue;
     Atari800_collisions_in_skipped_frames = prefs.spriteCollisions;
-    DOUBLESIZE = prefs.doubleSize;
     scaleFactor = prefs.scaleFactor;
+    scaleFactorFloat = prefs.scaleFactorFloat;
 	SCALE_MODE = prefs.scaleMode; 
     WIDTH_MODE = prefs.widthMode; 
     Screen_show_atari_speed = prefs.showFPS;

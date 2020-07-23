@@ -28,6 +28,7 @@
 #define FullscreenBackGreen @"FullscreenBackGreen"
 #define FullscreenBackAlpha @"FullscreenBackAlpha"
 #define ScaleFactor @"ScaleFactor"
+#define ScaleFactorFloat @"ScaleFactorFloat"
 #define DoubleSize @"DoubleSize"
 #define ScaleMode @"ScaleMode"
 #define WidthMode @"WidthMode"
@@ -286,9 +287,7 @@
     IBOutlet id diskImageDirField;
     IBOutlet id diskSetDirField;
 	IBOutlet id spriteCollisionsButton;
-    IBOutlet id lockFullscreenSizeButton;
-    IBOutlet id fullscreenMonitorButton;
-	IBOutlet id fullscreenForegroundPot;
+ 	IBOutlet id fullscreenForegroundPot;
     IBOutlet id fullscreenForegroundRed;
     IBOutlet id fullscreenForegroundGreen;
     IBOutlet id fullscreenForegroundBlue;

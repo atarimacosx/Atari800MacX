@@ -15,8 +15,6 @@
 
 extern void SwitchFullscreen(void);
 extern void PLATFORM_Switch80Col(void);
-extern int requestDoubleSizeChange;
-extern int DOUBLESIZE;
 extern int SCALE_MODE;
 extern int scaleFactor;
 extern int requestWidthModeChange;
@@ -334,14 +332,6 @@ static DisplayManager *sharedInstance = nil;
 - (void) disableBit3
 {
     [bit3ModeItem setTarget:nil];
-}
-
-/*------------------------------------------------------------------------------
-*  doubleSize - This method handles the single/double size menu selection.
-*-----------------------------------------------------------------------------*/
-- (IBAction)doubleSize:(id)sender
-{
-    requestDoubleSizeChange = [sender tag];
 }
 
 /*------------------------------------------------------------------------------

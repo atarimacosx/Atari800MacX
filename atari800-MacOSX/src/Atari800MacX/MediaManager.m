@@ -79,14 +79,12 @@ extern void CalcMachineTypeRam(int type, int *machineType, int *ramSize,
 extern int machine_switch_type;
 extern void Atari_DisplayScreen(UBYTE * screen);
 extern int requestMachineTypeChange;
-extern int requestDoubleSizeChange;
 extern int requestScaleModeChange;
 extern int requestWidthModeChange;
 extern int ANTIC_artif_mode;
 extern int WIDTH_MODE;
 extern int scaleFactor;
 extern int SCALE_MODE;
-extern int DOUBLESIZE;
 extern int Atari800_machine_type;
 extern int MEMORY_ram_size;
 extern int UI_alt_function;
@@ -454,10 +452,7 @@ NSImage *disketteImage;
 		
 	[machineTypePulldown selectItemAtIndex:index];
 	[scaleModePulldown selectItemAtIndex:SCALE_MODE];
-	if (DOUBLESIZE)
-		[scaleSizePulldown selectItemAtIndex:scaleFactor-1];
-	else
-		[scaleSizePulldown selectItemAtIndex:0];
+    [scaleSizePulldown selectItemAtIndex:0];
 	[widthModePulldown selectItemAtIndex:WIDTH_MODE];
 	[artifactModePulldown selectItemAtIndex:ANTIC_artif_mode];
 	[self updateMediaStatusWindow];
@@ -2440,11 +2435,6 @@ NSImage *disketteImage;
 - (IBAction)machineTypeChange:(id)sender
 {
 	requestMachineTypeChange = [sender indexOfSelectedItem] + 1;
-}
-
-- (IBAction)scaleSizeChange:(id)sender
-{
-    requestDoubleSizeChange = [sender indexOfSelectedItem] + 1;
 }
 
 - (IBAction)scaleModeChange:(id)sender

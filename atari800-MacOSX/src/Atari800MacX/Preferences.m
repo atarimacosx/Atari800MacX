@@ -195,8 +195,9 @@ static NSDictionary *defaultValues() {
                 [NSNumber numberWithFloat:1.0],FullscreenBackAlpha,
                 [NSNumber numberWithBool:NO], DoubleSize, 
                 [NSNumber numberWithInt:0], ScaleMode, 
-                [NSNumber numberWithInt:2], ScaleFactor, 
-                [NSNumber numberWithInt:1], WidthMode, 
+                [NSNumber numberWithInt:2], ScaleFactor,
+                [NSNumber numberWithFloat:2.0], ScaleFactorFloat,
+                [NSNumber numberWithInt:1], WidthMode,
                 [NSNumber numberWithInt:0], TvMode, 
                 [NSNumber numberWithFloat:1.0], EmulationSpeed,
                 [NSNumber numberWithInt:1], RefreshRatio, 
@@ -724,8 +725,6 @@ static Preferences *sharedInstance = nil;
     [fullScreenMatrix selectCellWithTag:[[displayedValues objectForKey:FullScreen] boolValue] ? 1 : 0];
     [openglMatrix selectCellWithTag:[[displayedValues objectForKey:OpenGl] boolValue] ? 1 : 0];
     [openglMatrix setEnabled:NO];
-    [lockFullscreenSizeButton setState:[[displayedValues objectForKey:LockFullscreenSize] boolValue] ? NSOnState : NSOffState];
-    [fullscreenMonitorButton setState:[[displayedValues objectForKey:FullscreenMonitor] boolValue] ? NSOnState : NSOffState];
     [fullscreenForegroundRed setIntValue:[[displayedValues objectForKey:FullscreenForeRed] floatValue]*255];
     [fullscreenForegroundGreen setIntValue:[[displayedValues objectForKey:FullscreenForeGreen] floatValue]*255];
     [fullscreenForegroundBlue setIntValue:[[displayedValues objectForKey:FullscreenForeBlue] floatValue]*255];
@@ -1499,30 +1498,13 @@ static Preferences *sharedInstance = nil;
 
     [displayedValues setObject:[[fullScreenMatrix selectedCell] tag] ? yes : no forKey:FullScreen];
     [displayedValues setObject:[[openglMatrix selectedCell] tag] ? yes : no forKey:OpenGl];
-    if ([lockFullscreenSizeButton state] == NSOnState) {
-        [displayedValues setObject:yes forKey:LockFullscreenSize];
-		[fullscreenMonitorButton setEnabled:YES];
-        [fullscreenForegroundRed setEnabled:YES];
-        [fullscreenForegroundGreen setEnabled:YES];
-        [fullscreenForegroundBlue setEnabled:YES];
-        [fullscreenBackgroundRed setEnabled:YES];
-        [fullscreenBackgroundBlue setEnabled:YES];
-        [fullscreenBackgroundGreen setEnabled:YES];
-		}
-    else {
-        [displayedValues setObject:no forKey:LockFullscreenSize];
- 		[fullscreenMonitorButton setEnabled:NO];
-        [fullscreenForegroundRed setEnabled:NO];
-        [fullscreenForegroundGreen setEnabled:NO];
-        [fullscreenForegroundBlue setEnabled:NO];
-        [fullscreenBackgroundRed setEnabled:NO];
-        [fullscreenBackgroundGreen setEnabled:NO];
-        [fullscreenBackgroundBlue setEnabled:NO];
-		}
-    if ([fullscreenMonitorButton state] == NSOnState)
-        [displayedValues setObject:yes forKey:FullscreenMonitor];
-    else
-        [displayedValues setObject:no forKey:FullscreenMonitor];
+    [fullscreenForegroundRed setEnabled:YES];
+    [fullscreenForegroundGreen setEnabled:YES];
+    [fullscreenForegroundBlue setEnabled:YES];
+    [fullscreenBackgroundRed setEnabled:YES];
+    [fullscreenBackgroundBlue setEnabled:YES];
+    [fullscreenBackgroundGreen setEnabled:YES];
+    [displayedValues setObject:yes forKey:FullscreenMonitor];
     penRed = ((float) [fullscreenForegroundRed intValue])/255.0;
     penGreen = ((float) [fullscreenForegroundGreen intValue])/255.0;
     penBlue = ((float) [fullscreenForegroundBlue intValue])/255.0;
@@ -3324,8 +3306,6 @@ static Preferences *sharedInstance = nil;
     prefs = getPrefStorage();
     prefs->fullScreen = [[curValues objectForKey:FullScreen] intValue]; 
     prefs->openGl = [[curValues objectForKey:OpenGl] intValue]; 
-    prefs->lockFullscreenSize = [[curValues objectForKey:LockFullscreenSize] intValue]; 
-    prefs->fullscreenMonitor = [[curValues objectForKey:FullscreenMonitor] intValue];
 	prefs->fullForeRed = (int) ([[curValues objectForKey:FullscreenForeRed] floatValue] * 255);
 	prefs->fullForeGreen = (int) ([[curValues objectForKey:FullscreenForeGreen] floatValue] * 255);
 	prefs->fullForeBlue = (int) ([[curValues objectForKey:FullscreenForeBlue] floatValue] * 255);
@@ -3334,8 +3314,9 @@ static Preferences *sharedInstance = nil;
 	prefs->fullBackBlue = (int) ([[curValues objectForKey:FullscreenBackBlue] floatValue] * 255);
     prefs->spriteCollisions = [[curValues objectForKey:SpriteCollisions] intValue]; 
     prefs->doubleSize = [[curValues objectForKey:DoubleSize] intValue]; 
-    prefs->scaleFactor = [[curValues objectForKey:ScaleFactor] intValue]; 
-    prefs->widthMode = [[curValues objectForKey:WidthMode] intValue]; 
+    prefs->scaleFactor = [[curValues objectForKey:ScaleFactor] intValue];
+    prefs->scaleFactorFloat = [[curValues objectForKey:ScaleFactorFloat] floatValue];
+    prefs->widthMode = [[curValues objectForKey:WidthMode] intValue];
 	prefs->scaleMode = [[curValues objectForKey:ScaleMode] intValue];
     prefs->tvMode = [[curValues objectForKey:TvMode] intValue]; 
     prefs->emulationSpeed = [[curValues objectForKey:EmulationSpeed] floatValue]; 
@@ -3603,6 +3584,7 @@ static Preferences *sharedInstance = nil;
 
     [displayedValues setObject:prefssave->fullScreen ? yes : no forKey:FullScreen];
     [displayedValues setObject:prefssave->doubleSize ? yes : no forKey:DoubleSize];
+    [displayedValues setObject:[NSNumber numberWithDouble:prefssave->scaleFactorFloat] forKey:ScaleFactorFloat];
     switch(prefssave->scaleFactor) {
         case 1:
             [displayedValues setObject:one forKey:ScaleFactor];
@@ -4697,6 +4679,7 @@ static Preferences *sharedInstance = nil;
     getBoolDefault(DoubleSize);
     getIntDefault(ScaleMode);
     getIntDefault(ScaleFactor);
+    getFloatDefault(ScaleFactorFloat);
     getIntDefault(WidthMode);
     getIntDefault(TvMode);
     getFloatDefault(EmulationSpeed);
@@ -4972,6 +4955,7 @@ static Preferences *sharedInstance = nil;
 	setFloatDefault(FullscreenBackAlpha); 
     setBoolDefault(DoubleSize);
     setIntDefault(ScaleMode);
+    setFloatDefault(ScaleFactorFloat);
     setIntDefault(ScaleFactor);
     setIntDefault(WidthMode);
     setIntDefault(TvMode);
@@ -5230,6 +5214,7 @@ static Preferences *sharedInstance = nil;
     setConfig(DoubleSize);
     setConfig(ScaleMode);
     setConfig(ScaleFactor);
+    setConfig(ScaleFactorFloat);
     setConfig(WidthMode);
     setConfig(TvMode);
     setConfig(EmulationSpeed);
@@ -5597,6 +5582,7 @@ static Preferences *sharedInstance = nil;
     getConfig(DoubleSize);
     getConfig(ScaleMode);
     getConfig(ScaleFactor);
+    getConfig(ScaleFactorFloat);
     getConfig(WidthMode);
     getConfig(TvMode);
     getConfig(EmulationSpeed);

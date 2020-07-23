@@ -131,7 +131,6 @@
                 <outlet property="fullscreenForegroundBlue" destination="5uP-qL-9hB" id="SE3-fg-Jma"/>
                 <outlet property="fullscreenForegroundGreen" destination="Rbu-cX-dUd" id="Vw3-y2-E7Y"/>
                 <outlet property="fullscreenForegroundRed" destination="dO9-c6-crE" id="HSj-zV-QcU"/>
-                <outlet property="fullscreenMonitorButton" destination="4246" id="JXk-bU-dxf"/>
                 <outlet property="gamepad1ConfigPulldown" destination="3692" id="3746"/>
                 <outlet property="gamepad2ConfigPulldown" destination="3723" id="3747"/>
                 <outlet property="gamepad3ConfigPulldown" destination="3726" id="3748"/>
@@ -212,7 +211,6 @@
                 <outlet property="leftJoyUpLeftPulldown" destination="2019" id="2723"/>
                 <outlet property="leftJoyUpPulldown" destination="1254" id="2722"/>
                 <outlet property="leftJoyUpRightPulldown" destination="2112" id="3542"/>
-                <outlet property="lockFullscreenSizeButton" destination="3603" id="3604"/>
                 <outlet property="mioRomFileField" destination="8359" id="8369"/>
                 <outlet property="mioScsiDiskFileField" destination="9591" id="9596"/>
                 <outlet property="mosaicMemSizePulldown" destination="7120" id="8366"/>
@@ -461,17 +459,6 @@
                                                         </view>
                                                         <font key="titleFont" metaFont="system"/>
                                                     </box>
-                                                    <button fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3603">
-                                                        <rect key="frame" x="21" y="76" width="292" height="18"/>
-                                                        <autoresizingMask key="autoresizingMask"/>
-                                                        <buttonCell key="cell" type="check" title="Fullscreen Always 640x480" bezelStyle="regularSquare" imagePosition="leading" alignment="left" inset="2" id="12909">
-                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                            <font key="font" metaFont="system"/>
-                                                        </buttonCell>
-                                                        <connections>
-                                                            <action selector="miscChanged:" target="-2" id="3607"/>
-                                                        </connections>
-                                                    </button>
                                                     <box fixedFrame="YES" title="Renderer" translatesAutoresizingMaskIntoConstraints="NO" id="4235">
                                                         <rect key="frame" x="153" y="279" width="153" height="64"/>
                                                         <autoresizingMask key="autoresizingMask"/>
@@ -509,19 +496,8 @@
                                                         </view>
                                                         <font key="titleFont" metaFont="system"/>
                                                     </box>
-                                                    <button fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4246">
-                                                        <rect key="frame" x="43" y="55" width="269" height="18"/>
-                                                        <autoresizingMask key="autoresizingMask"/>
-                                                        <buttonCell key="cell" type="check" title="Use Fullscreen Monitor" bezelStyle="regularSquare" imagePosition="leading" alignment="left" inset="2" id="12910">
-                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                            <font key="font" metaFont="system"/>
-                                                        </buttonCell>
-                                                        <connections>
-                                                            <action selector="miscChanged:" target="-2" id="4248"/>
-                                                        </connections>
-                                                    </button>
                                                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4251">
-                                                        <rect key="frame" x="63" y="8" width="114" height="14"/>
+                                                        <rect key="frame" x="37" y="20" width="114" height="14"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" title="Background" id="12911">
                                                             <font key="font" metaFont="message" size="11"/>
@@ -530,7 +506,7 @@
                                                         </textFieldCell>
                                                     </textField>
                                                     <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Rbu-cX-dUd">
-                                                        <rect key="frame" x="216" y="32" width="41" height="22"/>
+                                                        <rect key="frame" x="190" y="44" width="41" height="22"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="mzJ-zw-YG9">
                                                             <numberFormatter key="formatter" formatterBehavior="10_0" positiveFormat="0" negativeFormat="-0" localizesFormat="NO" hasThousandSeparators="NO" thousandSeparator="," id="8pV-BR-S45">
@@ -553,7 +529,7 @@
                                                         </connections>
                                                     </textField>
                                                     <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="5uP-qL-9hB">
-                                                        <rect key="frame" x="276" y="32" width="41" height="22"/>
+                                                        <rect key="frame" x="250" y="44" width="41" height="22"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="Hwo-tQ-UNd">
                                                             <numberFormatter key="formatter" formatterBehavior="10_0" positiveFormat="0" negativeFormat="-0" localizesFormat="NO" hasThousandSeparators="NO" thousandSeparator="," id="aYl-7H-0Kn">
@@ -576,7 +552,7 @@
                                                         </connections>
                                                     </textField>
                                                     <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Fxi-cj-wEB">
-                                                        <rect key="frame" x="150" y="4" width="41" height="22"/>
+                                                        <rect key="frame" x="124" y="16" width="41" height="22"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="x0O-5A-Zi9">
                                                             <numberFormatter key="formatter" formatterBehavior="10_0" positiveFormat="0" negativeFormat="-0" localizesFormat="NO" hasThousandSeparators="NO" thousandSeparator="," id="gan-io-Hga">
@@ -599,7 +575,7 @@
                                                         </connections>
                                                     </textField>
                                                     <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mwd-9P-XQ0">
-                                                        <rect key="frame" x="216" y="5" width="41" height="22"/>
+                                                        <rect key="frame" x="190" y="17" width="41" height="22"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="Jwg-Gf-RAM">
                                                             <numberFormatter key="formatter" formatterBehavior="10_0" positiveFormat="0" negativeFormat="-0" localizesFormat="NO" hasThousandSeparators="NO" thousandSeparator="," id="2XG-R1-XNJ">
@@ -622,7 +598,7 @@
                                                         </connections>
                                                     </textField>
                                                     <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="5uh-hy-ufD">
-                                                        <rect key="frame" x="276" y="5" width="41" height="22"/>
+                                                        <rect key="frame" x="250" y="17" width="41" height="22"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="Jg6-Lv-uMB">
                                                             <numberFormatter key="formatter" formatterBehavior="10_0" positiveFormat="0" negativeFormat="-0" localizesFormat="NO" hasThousandSeparators="NO" thousandSeparator="," id="LE7-fQ-tbn">
@@ -645,7 +621,7 @@
                                                         </connections>
                                                     </textField>
                                                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4252">
-                                                        <rect key="frame" x="63" y="35" width="68" height="14"/>
+                                                        <rect key="frame" x="37" y="47" width="68" height="14"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" title="Foreground" id="12912">
                                                             <font key="font" metaFont="message" size="11"/>
@@ -654,7 +630,7 @@
                                                         </textFieldCell>
                                                     </textField>
                                                     <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dO9-c6-crE">
-                                                        <rect key="frame" x="150" y="32" width="41" height="22"/>
+                                                        <rect key="frame" x="124" y="44" width="41" height="22"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="4Hq-VQ-Gwv">
                                                             <numberFormatter key="formatter" formatterBehavior="10_0" positiveFormat="0" negativeFormat="-0" localizesFormat="NO" hasThousandSeparators="NO" thousandSeparator="," id="pmn-hz-nfs">
@@ -677,7 +653,7 @@
                                                         </connections>
                                                     </textField>
                                                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="nWH-9l-zx0">
-                                                        <rect key="frame" x="138" y="34" width="25" height="17"/>
+                                                        <rect key="frame" x="112" y="46" width="25" height="17"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="R" id="8RU-hC-Tp5">
                                                             <font key="font" metaFont="system"/>
@@ -686,7 +662,7 @@
                                                         </textFieldCell>
                                                     </textField>
                                                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="zhB-i9-5p2">
-                                                        <rect key="frame" x="202" y="35" width="25" height="17"/>
+                                                        <rect key="frame" x="176" y="47" width="25" height="17"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="G" id="fsu-f5-eap">
                                                             <font key="font" metaFont="system"/>
@@ -695,7 +671,7 @@
                                                         </textFieldCell>
                                                     </textField>
                                                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Cyu-gQ-gTW">
-                                                        <rect key="frame" x="263" y="35" width="25" height="17"/>
+                                                        <rect key="frame" x="237" y="47" width="25" height="17"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="B" id="c3B-YE-dFV">
                                                             <font key="font" metaFont="system"/>
@@ -704,7 +680,7 @@
                                                         </textFieldCell>
                                                     </textField>
                                                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="LH2-Eg-pM1">
-                                                        <rect key="frame" x="138" y="9" width="25" height="17"/>
+                                                        <rect key="frame" x="112" y="21" width="25" height="17"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="R" id="WK3-d7-osF">
                                                             <font key="font" metaFont="system"/>
@@ -713,7 +689,7 @@
                                                         </textFieldCell>
                                                     </textField>
                                                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="CjM-3L-4Bb">
-                                                        <rect key="frame" x="202" y="10" width="25" height="17"/>
+                                                        <rect key="frame" x="176" y="22" width="25" height="17"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="G" id="dCE-CN-Kwd">
                                                             <font key="font" metaFont="system"/>
@@ -722,7 +698,7 @@
                                                         </textFieldCell>
                                                     </textField>
                                                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="hbY-hB-yhU">
-                                                        <rect key="frame" x="263" y="9" width="25" height="17"/>
+                                                        <rect key="frame" x="237" y="21" width="25" height="17"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="B" id="FLF-Wa-NZL">
                                                             <font key="font" metaFont="system"/>
@@ -2968,7 +2944,7 @@
                                                                 <autoresizingMask key="autoresizingMask"/>
                                                                 <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" id="Bue-t5-HFL">
                                                                     <font key="font" metaFont="system"/>
-                                                                    <mutableString key="title">Note 1:  The ATASCII Printer must be Reset for changes here to take effect. Note 2:  The default ATASII font included in the applicaiton is named AtariClassic-Regular and it is the default selection.  If you would like to use another font, it must have the Atari characters starting at Unicode 0xE000, like the fonts found here: https://atari8bit.net/atari-fonts/.   (AtarClassic font can be found here:  http://members.bitstream.net/marksim/atarimac/fonts.html)</mutableString>
+                                                                    <string key="title">Note 1:  The ATASCII Printer must be Reset for changes here to take effect. Note 2:  The default ATASII font included in the applicaiton is named AtariClassic-Regular and it is the default selection.  If you would like to use another font, it must have the Atari characters starting at Unicode 0xE000, like the fonts found here: https://atari8bit.net/atari-fonts/.   (AtarClassic font can be found here:  http://members.bitstream.net/marksim/atarimac/fonts.html)</string>
                                                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                 </textFieldCell>
