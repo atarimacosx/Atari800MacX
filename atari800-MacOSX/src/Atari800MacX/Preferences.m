@@ -51,7 +51,6 @@ extern EPSON_PREF prefsEpson;
 extern ATASCII_PREF prefsAtascii;
 extern int FULLSCREEN;
 extern int UI_alt_function;
-extern int requestFullScreenUI;
 extern int diskDriveSound;
 
 extern char atari_config_dir[FILENAME_MAX];
@@ -183,16 +182,6 @@ static NSDictionary *defaultValues() {
         dict = [[NSDictionary alloc] initWithObjectsAndKeys:
                 [NSNumber numberWithBool:NO], FullScreen, 
                 [NSNumber numberWithBool:YES], OpenGl, 
-                [NSNumber numberWithBool:YES], LockFullscreenSize, 
-                [NSNumber numberWithBool:YES], FullscreenMonitor, 
-                [NSNumber numberWithFloat:0.0],FullscreenForeRed,
-                [NSNumber numberWithFloat:0.0],FullscreenForeBlue,
-                [NSNumber numberWithFloat:0.8],FullscreenForeGreen,
-                [NSNumber numberWithFloat:1.0],FullscreenForeAlpha,
-                [NSNumber numberWithFloat:0.0],FullscreenBackRed,
-                [NSNumber numberWithFloat:0.0],FullscreenBackBlue,
-                [NSNumber numberWithFloat:0.0],FullscreenBackGreen,
-                [NSNumber numberWithFloat:1.0],FullscreenBackAlpha,
                 [NSNumber numberWithInt:0], ScaleMode,
                 [NSNumber numberWithInt:2], ScaleFactor,
                 [NSNumber numberWithFloat:2.0], ScaleFactorFloat,
@@ -724,12 +713,6 @@ static Preferences *sharedInstance = nil;
     [fullScreenMatrix selectCellWithTag:[[displayedValues objectForKey:FullScreen] boolValue] ? 1 : 0];
     [openglMatrix selectCellWithTag:[[displayedValues objectForKey:OpenGl] boolValue] ? 1 : 0];
     [openglMatrix setEnabled:NO];
-    [fullscreenForegroundRed setIntValue:[[displayedValues objectForKey:FullscreenForeRed] floatValue]*255];
-    [fullscreenForegroundGreen setIntValue:[[displayedValues objectForKey:FullscreenForeGreen] floatValue]*255];
-    [fullscreenForegroundBlue setIntValue:[[displayedValues objectForKey:FullscreenForeBlue] floatValue]*255];
-    [fullscreenBackgroundRed setIntValue:[[displayedValues objectForKey:FullscreenBackRed] floatValue]*255];
-    [fullscreenBackgroundGreen setIntValue:[[displayedValues objectForKey:FullscreenBackGreen] floatValue]*255];
-    [fullscreenBackgroundBlue setIntValue:[[displayedValues objectForKey:FullscreenBackBlue] floatValue]*255];
     [scaleModeMatrix  selectCellWithTag:[[displayedValues objectForKey:ScaleMode] intValue]];
     [widthModeMatrix  selectCellWithTag:[[displayedValues objectForKey:WidthMode] intValue]];
     [tvModeMatrix  selectCellWithTag:[[displayedValues objectForKey:TvMode] intValue]];
@@ -1450,7 +1433,7 @@ static Preferences *sharedInstance = nil;
     double aFloat;
     int mouseCount = 0;
     int firstMouse = 0;
-    float penRed, penBlue, penGreen, penAlpha;
+    float penRed, penBlue, penGreen;
     int type, typever4;
     
     static NSNumber *yes = nil;
@@ -1493,29 +1476,6 @@ static Preferences *sharedInstance = nil;
 
     [displayedValues setObject:[[fullScreenMatrix selectedCell] tag] ? yes : no forKey:FullScreen];
     [displayedValues setObject:[[openglMatrix selectedCell] tag] ? yes : no forKey:OpenGl];
-    [fullscreenForegroundRed setEnabled:YES];
-    [fullscreenForegroundGreen setEnabled:YES];
-    [fullscreenForegroundBlue setEnabled:YES];
-    [fullscreenBackgroundRed setEnabled:YES];
-    [fullscreenBackgroundBlue setEnabled:YES];
-    [fullscreenBackgroundGreen setEnabled:YES];
-    [displayedValues setObject:yes forKey:FullscreenMonitor];
-    penRed = ((float) [fullscreenForegroundRed intValue])/255.0;
-    penGreen = ((float) [fullscreenForegroundGreen intValue])/255.0;
-    penBlue = ((float) [fullscreenForegroundBlue intValue])/255.0;
-    penAlpha = 0.0;
-	[displayedValues setObject:[NSNumber numberWithFloat:penRed] forKey:FullscreenForeRed];
-	[displayedValues setObject:[NSNumber numberWithFloat:penBlue] forKey:FullscreenForeBlue];
-	[displayedValues setObject:[NSNumber numberWithFloat:penGreen] forKey:FullscreenForeGreen];
-	[displayedValues setObject:[NSNumber numberWithFloat:penAlpha] forKey:FullscreenForeAlpha];
-    penRed = ((float) [fullscreenBackgroundRed intValue])/255.0;
-    penGreen = ((float) [fullscreenBackgroundGreen intValue])/255.0;
-    penBlue = ((float) [fullscreenBackgroundBlue intValue])/255.0;
-    penAlpha = 0.0;
-	[displayedValues setObject:[NSNumber numberWithFloat:penRed] forKey:FullscreenBackRed];
-	[displayedValues setObject:[NSNumber numberWithFloat:penBlue] forKey:FullscreenBackBlue];
-	[displayedValues setObject:[NSNumber numberWithFloat:penGreen] forKey:FullscreenBackGreen];
-	[displayedValues setObject:[NSNumber numberWithFloat:penAlpha] forKey:FullscreenBackAlpha];
 	switch([[scaleModeMatrix selectedCell] tag]) {
         case 0:
 		default:
@@ -3282,13 +3242,7 @@ static Preferences *sharedInstance = nil;
     prefs = getPrefStorage();
     prefs->fullScreen = [[curValues objectForKey:FullScreen] intValue]; 
     prefs->openGl = [[curValues objectForKey:OpenGl] intValue]; 
-	prefs->fullForeRed = (int) ([[curValues objectForKey:FullscreenForeRed] floatValue] * 255);
-	prefs->fullForeGreen = (int) ([[curValues objectForKey:FullscreenForeGreen] floatValue] * 255);
-	prefs->fullForeBlue = (int) ([[curValues objectForKey:FullscreenForeBlue] floatValue] * 255);
-	prefs->fullBackRed = (int) ([[curValues objectForKey:FullscreenBackRed] floatValue] * 255);
-	prefs->fullBackGreen = (int) ([[curValues objectForKey:FullscreenBackGreen] floatValue] * 255);
-	prefs->fullBackBlue = (int) ([[curValues objectForKey:FullscreenBackBlue] floatValue] * 255);
-    prefs->spriteCollisions = [[curValues objectForKey:SpriteCollisions] intValue]; 
+    prefs->spriteCollisions = [[curValues objectForKey:SpriteCollisions] intValue];
     prefs->scaleFactor = [[curValues objectForKey:ScaleFactor] intValue];
     prefs->scaleFactorFloat = [[curValues objectForKey:ScaleFactorFloat] floatValue];
     prefs->widthMode = [[curValues objectForKey:WidthMode] intValue];
@@ -4640,16 +4594,6 @@ static Preferences *sharedInstance = nil;
     NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithCapacity:10];
     getBoolDefault(FullScreen);
     getBoolDefault(OpenGl);
-    getBoolDefault(LockFullscreenSize);
-    getBoolDefault(FullscreenMonitor);
-	getFloatDefault(FullscreenForeRed); 
-	getFloatDefault(FullscreenForeBlue); 
-	getFloatDefault(FullscreenForeGreen); 
-	getFloatDefault(FullscreenForeAlpha); 
-	getFloatDefault(FullscreenBackRed); 
-	getFloatDefault(FullscreenBackBlue); 
-	getFloatDefault(FullscreenBackGreen); 
-	getFloatDefault(FullscreenBackAlpha); 
     getIntDefault(ScaleMode);
     getIntDefault(ScaleFactor);
     getFloatDefault(ScaleFactorFloat);
@@ -4916,16 +4860,6 @@ static Preferences *sharedInstance = nil;
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     setBoolDefault(FullScreen);
     setBoolDefault(OpenGl);
-    setBoolDefault(LockFullscreenSize);
-    setBoolDefault(FullscreenMonitor);
-	setFloatDefault(FullscreenForeRed); 
-	setFloatDefault(FullscreenForeBlue); 
-	setFloatDefault(FullscreenForeGreen); 
-	setFloatDefault(FullscreenForeAlpha); 
-	setFloatDefault(FullscreenBackRed); 
-	setFloatDefault(FullscreenBackBlue); 
-	setFloatDefault(FullscreenBackGreen); 
-	setFloatDefault(FullscreenBackAlpha); 
     setIntDefault(ScaleMode);
     setFloatDefault(ScaleFactorFloat);
     setIntDefault(ScaleFactor);
@@ -5173,16 +5107,6 @@ static Preferences *sharedInstance = nil;
 	[dict setDictionary:curValues];
     setConfig(FullScreen);
     setConfig(OpenGl);
-    setConfig(LockFullscreenSize);
-    setConfig(FullscreenMonitor);
-	setConfig(FullscreenForeRed); 
-	setConfig(FullscreenForeBlue); 
-	setConfig(FullscreenForeGreen); 
-	setConfig(FullscreenForeAlpha); 
-	setConfig(FullscreenBackRed); 
-	setConfig(FullscreenBackBlue); 
-	setConfig(FullscreenBackGreen); 
-	setConfig(FullscreenBackAlpha); 
     setConfig(ScaleMode);
     setConfig(ScaleFactor);
     setConfig(ScaleFactorFloat);
@@ -5425,12 +5349,6 @@ static Preferences *sharedInstance = nil;
 - (void)saveConfiguration:(id)sender {
 	NSString *filename;
 	
-    if (FULLSCREEN) {
-        UI_alt_function = UI_MENU_SAVECFG;
-        requestFullScreenUI = 1;
-        return;
-    }
-    
 	filename = [self saveFileInDirectory:[NSString stringWithCString:atari_config_dir  encoding:NSASCIIStringEncoding]:@"a8c"];
 	if (filename != nil)
 		[self saveConfigurationData:filename];
@@ -5458,12 +5376,6 @@ static Preferences *sharedInstance = nil;
 - (int)loadConfiguration:(id)sender {
     NSString *filename;
 	NSOpenPanel *openPanel;
-
-    if (FULLSCREEN) {
-        UI_alt_function = UI_MENU_LOADCFG;
-        requestFullScreenUI = 1;
-        return 0;
-    }
 
 	openPanel = [NSOpenPanel openPanel];
 	[openPanel setCanChooseDirectories:NO];
@@ -5540,16 +5452,6 @@ static Preferences *sharedInstance = nil;
 
     getConfig(FullScreen);
     getConfig(OpenGl);
-    getConfig(LockFullscreenSize);
-    getConfig(FullscreenMonitor);
-	getConfig(FullscreenForeRed); 
-	getConfig(FullscreenForeBlue); 
-	getConfig(FullscreenForeGreen); 
-	getConfig(FullscreenForeAlpha); 
-	getConfig(FullscreenBackRed); 
-	getConfig(FullscreenBackBlue); 
-	getConfig(FullscreenBackGreen); 
-	getConfig(FullscreenBackAlpha); 
     getConfig(ScaleMode);
     getConfig(ScaleFactor);
     getConfig(ScaleFactorFloat);

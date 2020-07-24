@@ -17,16 +17,6 @@
 /* Keys in the dictionary... */
 #define FullScreen @"FullScreen"
 #define OpenGl @"OpenGl"
-#define LockFullscreenSize @"LockFullscreenSize"
-#define FullscreenMonitor @"FullscreenMonitor"
-#define FullscreenForeRed @"FullscreenForeRed"
-#define FullscreenForeBlue @"FullscreenForeBlue"
-#define FullscreenForeGreen @"FullscreenForeGreen"
-#define FullscreenForeAlpha @"FullscreenForeAlpha"
-#define FullscreenBackRed @"FullscreenBackRed"
-#define FullscreenBackBlue @"FullscreenBackBlue"
-#define FullscreenBackGreen @"FullscreenBackGreen"
-#define FullscreenBackAlpha @"FullscreenBackAlpha"
 #define ScaleFactor @"ScaleFactor"
 #define ScaleFactorFloat @"ScaleFactorFloat"
 #define ScaleMode @"ScaleMode"
@@ -286,14 +276,6 @@
     IBOutlet id diskImageDirField;
     IBOutlet id diskSetDirField;
 	IBOutlet id spriteCollisionsButton;
- 	IBOutlet id fullscreenForegroundPot;
-    IBOutlet id fullscreenForegroundRed;
-    IBOutlet id fullscreenForegroundGreen;
-    IBOutlet id fullscreenForegroundBlue;
-	IBOutlet id fullscreenBackgroundPot;
-    IBOutlet id fullscreenBackgroundRed;
-    IBOutlet id fullscreenBackgroundGreen;
-    IBOutlet id fullscreenBackgroundBlue;
     IBOutlet id scaleFactorMatrix;
 	IBOutlet id scaleModeMatrix;
 	IBOutlet id ledStatusButton;

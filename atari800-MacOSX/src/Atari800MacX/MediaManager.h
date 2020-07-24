@@ -140,7 +140,6 @@
 	IBOutlet id xep80Button;
 	IBOutlet id machineTypePulldown;
 	IBOutlet id scaleModePulldown;
-	IBOutlet id scaleSizePulldown;
 	IBOutlet id widthModePulldown;
 	IBOutlet id artifactModePulldown;
 	int numChecked;
@@ -222,7 +221,6 @@
 - (void)setDisableBasicButton:(int)limit;
 - (void)closeKeyWindow:(id)sender;
 - (IBAction)machineTypeChange:(id)sender;
-- (IBAction)scaleSizeChange:(id)sender;
 - (IBAction)scaleModeChange:(id)sender;
 - (IBAction)widthModeChange:(id)sender;
 - (IBAction)artifactModeChange:(id)sender;

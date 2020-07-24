@@ -55,12 +55,9 @@ extern int cycles[256];
 
 extern UBYTE *atarixe_memory;
 extern ULONG atarixe_memory_size;
-extern int FULLSCREEN_MONITOR;
 extern int FULLSCREEN;
 extern int ControlManagerMonitorPrintf(const char *format, ...);
 extern int ControlManagerMonitorPuts(const char *string);
-extern int FullscreenGUIPrintf(const char *format, ...);
-extern int FullscreenGUIPuts(const char *string);
 #ifdef MACOSX_MON_ENHANCEMENTS
 extern int BreakpointsControllerGetBreakpointNumForConditionNum(int num);
 extern void BreakpointsControllerSetDirty(void);
@@ -74,18 +71,12 @@ static void mon_printf(const char *format,...)
     va_start(arguments, format);  
     
 	vsprintf(string, format, arguments);
-	if (FULLSCREEN && FULLSCREEN_MONITOR)
-		FullscreenGUIPrintf(string);
-	else
-		ControlManagerMonitorPrintf(string);
+    ControlManagerMonitorPrintf(string);
 }
 
 static void mon_puts(const char *string)
 {
-	if (FULLSCREEN && FULLSCREEN_MONITOR)
-		FullscreenGUIPuts(string);
-	else
-		ControlManagerMonitorPuts(string);
+    mon_printf("%s",string);
 }
 
 int MONITOR_histon = FALSE;

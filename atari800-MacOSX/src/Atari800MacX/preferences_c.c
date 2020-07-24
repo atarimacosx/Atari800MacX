@@ -50,13 +50,6 @@ extern int paletteColorShift;
 extern int FULLSCREEN;
 extern int PLATFORM_80col;
 extern int OPENGL;
-extern int FULLSCREEN_MONITOR;
-extern int fullForeRed;
-extern int fullForeGreen;
-extern int fullForeBlue;
-extern int fullBackRed;
-extern int fullBackGreen;
-extern int fullBackBlue;
 extern int SCALE_MODE;
 extern int scaleFactor;
 extern double scaleFactorFloat;
@@ -187,8 +180,6 @@ int patchFlagsChanged;
 int keyboardJoystickChanged;
 int hardDiskChanged;
 int osRomsChanged;
-int fullscreenGuiColorsChanged;
-int fullscreenCrashColorsChanged;
 int af80EnabledChanged;
 int bit3EnabledChanged;
 int xep80EnabledChanged;
@@ -751,20 +742,6 @@ void CalculatePrefsChanged()
         hifiSoundChanged = FALSE;
 #endif		
 
-	if ((fullForeRed != prefs.fullForeRed) ||
-	    (fullForeGreen != prefs.fullForeGreen) ||
-	    (fullForeBlue != prefs.fullForeBlue) ||
-	    (fullBackRed != prefs.fullForeRed) ||
-	    (fullBackGreen != prefs.fullBackGreen) ||
-	    (fullBackBlue != prefs.fullBackBlue)) {
-		fullscreenGuiColorsChanged = TRUE;
-		fullscreenCrashColorsChanged = TRUE;
-		}
-	else {
-		fullscreenGuiColorsChanged = FALSE;
-		fullscreenCrashColorsChanged = FALSE;
-		}
-
 	if (currPrinter != prefs.currPrinter)
 		PrintOutputControllerSelectPrinter(prefs.currPrinter);
 	
@@ -798,12 +775,6 @@ int loadMacPrefs(int firstTime)
     FULLSCREEN = prefs.fullScreen;
     OPENGL = prefs.openGl;
 
-	fullForeRed = prefs.fullForeRed;
-	fullForeGreen = prefs.fullForeGreen;
-	fullForeBlue = prefs.fullForeBlue;
-	fullBackRed = prefs.fullBackRed;
-	fullBackGreen = prefs.fullBackGreen;
-	fullBackBlue = prefs.fullBackBlue;
     Atari800_collisions_in_skipped_frames = prefs.spriteCollisions;
     scaleFactor = prefs.scaleFactor;
     scaleFactorFloat = prefs.scaleFactorFloat;

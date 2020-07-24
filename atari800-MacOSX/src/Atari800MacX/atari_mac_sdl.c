@@ -99,13 +99,6 @@ int paletteColorShift = 40;
 static int SDL_ATARI_BPP = 0;   // 0 - autodetect
 int OPENGL = 1;
 int FULLSCREEN;
-int FULLSCREEN_MONITOR = 1;
-int fullForeRed;
-int fullForeGreen;
-int fullForeBlue;
-int fullBackRed;
-int fullBackGreen;
-int fullBackBlue;
 int SCALE_MODE;
 double scaleFactor = 3;
 double scaleFactorFloat = 2.0;
@@ -234,6 +227,7 @@ extern void SDLMainSelectAll(void);
 extern void AboutBoxScroll(void);
 extern void Atari800WindowCreate(NSWindow *window);
 extern void Atari800WindowAspectSet(int w, int h);
+extern void Atari800WindowFullscreen();
 extern void Atari800OriginSet(void);
 extern void Atari800WindowCenter(void);
 extern void Atari800WindowDisplay(void);
@@ -808,7 +802,7 @@ void SetVideoMode(int w, int h, int bpp)
         MainGLScreen = SDL_CreateWindow(windowCaption,
                                         SDL_WINDOWPOS_UNDEFINED,
                                         SDL_WINDOWPOS_UNDEFINED,
-                                        w, h, SDL_WINDOW_FULLSCREEN |  SDL_WINDOW_ALLOW_HIGHDPI);
+                                        w, h, SDL_WINDOW_FULLSCREEN_DESKTOP |  SDL_WINDOW_ALLOW_HIGHDPI);
         SDL_SetHint(SDL_HINT_RENDER_DRIVER, "metal");
         renderer = SDL_CreateRenderer(MainGLScreen, -1, 0);
         if ((AF80_enabled || BIT3_enabled) && PLATFORM_80col)
@@ -822,22 +816,16 @@ void SetVideoMode(int w, int h, int bpp)
         SDL_GetWindowWMInfo(MainGLScreen, &wmInfo);
         Atari800WindowCreate(wmInfo.info.cocoa.window);
 
-        // Set the HW Scaling for OPENGL properly
-        w = w / 2;
-        h = h / 2;
-        /* Save the values in case we need to go back to them after entering the monitor */
-        Log_print("Going Fullscreen at %d %d",w,h);
-
-        fullscreenWidth = w;
-        fullscreenHeight = h;
+        fullscreenWidth = w / 2;
+        fullscreenHeight = h / 2;
 
         // Delete the old textures
         if(MainScreen)
             SDL_FreeSurface(MainScreen);
 
         // Create the SDL texture
-        texture_w = power_of_two(w);
-        texture_h = power_of_two(h);
+        texture_w = power_of_two(1024);
+        texture_h = power_of_two(512);
         MainScreen = SDL_CreateRGBSurface(0, texture_w, texture_h, 16,
                         0x0000F800, 0x000007E0, 0x0000001F, 0x00000000);
         
@@ -869,7 +857,12 @@ void SetVideoMode(int w, int h, int bpp)
         current_h = h;
         SDL_SetHint(SDL_HINT_RENDER_DRIVER, "metal");
         renderer = SDL_CreateRenderer(MainGLScreen, -1, 0);
-        SDL_RenderSetScale(renderer, scaleFactorFloat, scaleFactorFloat);
+        if (PLATFORM_80col && BIT3_enabled)
+            // 640 x 240 to
+            // 336x240
+            SDL_RenderSetScale(renderer, ((double) 336/ (double) 640 ) * scaleFactorFloat/2.0, scaleFactorFloat);
+        else
+            SDL_RenderSetScale(renderer, scaleFactorFloat, scaleFactorFloat);
         
         // Save Mac Window for later use
         SDL_SysWMinfo wmInfo;
@@ -883,16 +876,12 @@ void SetVideoMode(int w, int h, int bpp)
         else
             Atari800WindowAspectSet(384,240);
 
-        // Set the HW Scaling for OPENGL properly
-        w /= scaleFactorFloat;
-        h /= scaleFactorFloat;
-
         // Delete the old textures
         if(MainScreen)
             SDL_FreeSurface(MainScreen);
 
-        texture_w = power_of_two(w);
-        texture_h = power_of_two(h);
+        texture_w = power_of_two(1024);
+        texture_h = power_of_two(512);
         // Create the SDL texture
         MainScreen = SDL_CreateRGBSurface(0, texture_w, texture_h, 16,
                         0x0000F800, 0x000007E0, 0x0000001F, 0x00000000);
@@ -1056,8 +1045,14 @@ void SwitchFullscreen()
 void PLATFORM_Switch80Col(void)
 {
     PLATFORM_80col = 1 - PLATFORM_80col;
-    SetNewVideoMode(our_width, our_height,
-                    MainScreen->format->BitsPerPixel);
+    //SetNewVideoMode(our_width, our_height,
+    //                MainScreen->format->BitsPerPixel);
+    if (PLATFORM_80col && BIT3_enabled)
+        // 640 x 240 to
+        // 336x240
+        SDL_RenderSetScale(renderer, ((double) 336/ (double) 640 ) * scaleFactorFloat, scaleFactorFloat);
+    else
+        SDL_RenderSetScale(renderer, scaleFactorFloat, scaleFactorFloat);
     Atari_DisplayScreen((UBYTE *) Screen_atari);
     CreateWindowCaption();
     if (!FULLSCREEN)
@@ -2380,7 +2375,7 @@ int Atari_Keyboard_International(void)
             else
                 return AKEY_RETURN;
         case SDLK_F9:
-            printf("%d\n",FullscreenCrashGUIRun(renderer));
+            //printf("%d\n",FullscreenCrashGUIRun(renderer));
             return AKEY_EXIT;
         case SDLK_F1:
             return AKEY_UI;
@@ -2867,37 +2862,15 @@ int PLATFORM_Exit(int run_monitor)
     int action;
 
     if (run_monitor) {
-        if (FULLSCREEN) {
-			if (!FULLSCREEN_MONITOR)
-				// Need to bring us back from Fullscreen 
-				SwitchFullscreen();
-            }
         if (requestMonitor || !CPU_cim_encountered) {
             /* run the monitor....*/ 
-            if (FULLSCREEN && FULLSCREEN_MONITOR) {
-				restart = FullscreenGUIRun(renderer, MainGLScreen);
-				memset(Screen_atari, 0, (Screen_HEIGHT * Screen_WIDTH));
-				memset(Screen_atari_b, 0, (Screen_HEIGHT * Screen_WIDTH));
-				requestMonitor = FALSE;
-				CPU_cim_encountered = 0;
-				}
-			else
-				{
-				restart = ControlManagerMonitorRun();
-				requestMonitor = FALSE;
-				CPU_cim_encountered = 0;
-				}
+            restart = ControlManagerMonitorRun();
+            requestMonitor = FALSE;
+            CPU_cim_encountered = 0;
             }
         else {
             /* Run the crash dialogue */
-			if (FULLSCREEN && FULLSCREEN_MONITOR) { 
-				action = FullscreenCrashGUIRun(renderer);
-				memset(Screen_atari, 0, (Screen_HEIGHT * Screen_WIDTH));
-				memset(Screen_atari_b, 0, (Screen_HEIGHT * Screen_WIDTH));
-				}
-			else {
-				action = ControlManagerFatalError();
-				}
+            action = ControlManagerFatalError();
             if (action == 1) {
                 Atari800_Warmstart();
                 restart = TRUE;
@@ -2907,13 +2880,7 @@ int PLATFORM_Exit(int run_monitor)
                 restart = TRUE;
                 }
             else if (action == 3) {
-				if (FULLSCREEN && FULLSCREEN_MONITOR) { 
-					restart = FullscreenGUIRun(renderer, MainGLScreen);
-					memset(Screen_atari, 0, (Screen_HEIGHT * Screen_WIDTH));
-					}
-				else {
-					restart = ControlManagerMonitorRun();
-					}
+                restart = ControlManagerMonitorRun();
                 }
             else if (action == 4) {
                 CARTRIDGE_Remove();
@@ -4462,7 +4429,8 @@ void HandleResizeRequest()
 void ProcessMacMenus()
 {
     if (requestFullScreenChange) {
-         SwitchFullscreen();
+         copyStatus = COPY_IDLE;
+         Atari800WindowFullscreen();
          requestFullScreenChange = 0;
          }
     if (request80ColChange) {

@@ -3,7 +3,7 @@
  Mark Grebe <atarimacosx@gmail.com>
  
  */
-
+#if 0
 
 #include "FullscreenGui.h"
 #include "string.h"
@@ -353,3 +353,4 @@ void FullscreenGUIPuts(const char *string)
 }
 
 
+#endif

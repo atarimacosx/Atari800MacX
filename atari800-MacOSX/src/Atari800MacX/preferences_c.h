@@ -12,12 +12,6 @@
 typedef struct ATARI800MACX_PREF {
                 int fullScreen; 
 				int openGl;
-				int fullForeRed;
-				int fullForeGreen;
-				int fullForeBlue;
-				int fullBackRed;
-				int fullBackGreen;
-				int fullBackBlue;
                 int scaleFactor;
                 double scaleFactorFloat;
                 int widthMode;

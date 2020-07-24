@@ -88,7 +88,6 @@ extern int SCALE_MODE;
 extern int Atari800_machine_type;
 extern int MEMORY_ram_size;
 extern int UI_alt_function;
-extern int requestFullScreenUI;
 extern int diskDriveSound;
 
 /* Arrays which define the cartridge types for each size */
@@ -452,7 +451,6 @@ NSImage *disketteImage;
 		
 	[machineTypePulldown selectItemAtIndex:index];
 	[scaleModePulldown selectItemAtIndex:SCALE_MODE];
-    [scaleSizePulldown selectItemAtIndex:0];
 	[widthModePulldown selectItemAtIndex:WIDTH_MODE];
 	[artifactModePulldown selectItemAtIndex:ANTIC_artif_mode];
 	[self updateMediaStatusWindow];
@@ -530,12 +528,6 @@ NSImage *disketteImage;
     char cfilename[FILENAME_MAX];
     int cartSize;
 
-    if (FULLSCREEN) {
-        UI_alt_function = UI_MENU_CARTRIDGE;
-        requestFullScreenUI = 1;
-        return;
-    }
-    
     PauseAudio(1);
     filename = [self browseFileInDirectory:[NSString stringWithCString:atari_rom_dir encoding:NSASCIIStringEncoding]];
     if (filename != nil) {
@@ -1061,9 +1053,6 @@ NSImage *disketteImage;
     char cfilename[FILENAME_MAX];
     int diskMounted;
     
-    if (FULLSCREEN)
-        return;
-
     PauseAudio(1);
     readOnly = (SIO_drive_status[diskNum] == SIO_READ_ONLY ? TRUE : FALSE);
     filename = [self browseFileInDirectory:
@@ -1160,9 +1149,6 @@ NSImage *disketteImage;
     int diskMounted;
 	static NSString *num[8] = {@"1",@"2",@"3",@"4",@"5",@"6",@"7",@"8"};
     
-    if (FULLSCREEN)
-        return;
-    
     PauseAudio(1);
     readOnly = (SIO_drive_status[diskNum] == SIO_READ_ONLY ? TRUE : FALSE);
     filename = [self browseFileInDirectory:[NSString stringWithCString:atari_disk_dirs[0] encoding:NSASCIIStringEncoding]];
@@ -1192,9 +1178,6 @@ NSImage *disketteImage;
 {
     int diskNum = [sender tag] - 1;
 
-    if (FULLSCREEN)
-        return;
-    
     if (diskDriveSound)
         [[NSSound soundNamed:@"open810snd"] play];
     SIO_Dismount(diskNum + 1);
@@ -1207,9 +1190,6 @@ NSImage *disketteImage;
 *-----------------------------------------------------------------------------*/
 - (IBAction)diskRemoveKey:(int)diskNum
 {
-    if (FULLSCREEN)
-        return;
-    
     if (diskDriveSound)
         [[NSSound soundNamed:@"open810snd"] play];
     SIO_Dismount(diskNum );
@@ -1401,12 +1381,6 @@ NSImage *disketteImage;
     char exename[FILENAME_MAX+1];
     int ret = FALSE;
     
-    if (FULLSCREEN) {
-        UI_alt_function = UI_MENU_RUN;
-        requestFullScreenUI = 1;
-        return;
-    }
-    
     PauseAudio(1);
     filename = [self browseFileInDirectory:[NSString stringWithCString:atari_exe_dir encoding:NSASCIIStringEncoding]];
     if (filename != nil) {
@@ -1524,9 +1498,6 @@ NSImage *disketteImage;
 {
 	int driveNo;
 
-    if (FULLSCREEN)
-        return;
-    
     [diskFmtMatrix selectCellWithTag:0];
     [diskFmtCusBytesPulldown setEnabled:NO];
     [diskFmtCusSecField setEnabled:NO];
@@ -1556,12 +1527,6 @@ NSImage *disketteImage;
 {
 	int i;
 	
-    if (FULLSCREEN) {
-        UI_alt_function = UI_MENU_DISK;
-        requestFullScreenUI = 1;
-        return;
-    }
-
     [self updateInfo];
     PauseAudio(1);
 	numChecked = 0;
@@ -1586,9 +1551,6 @@ NSImage *disketteImage;
 {
 	NSString *filename;
 
-    if (FULLSCREEN)
-        return;
-    
     PauseAudio(1);
     filename = [self browseFileTypeInDirectory:
                   [NSString stringWithCString:atari_disk_dirs[0] encoding:NSASCIIStringEncoding]:
@@ -1619,9 +1581,6 @@ NSImage *disketteImage;
 	DiskEditorWindow *diskEditor;
 	NSString *errorString;
 
-    if (FULLSCREEN)
-        return;
-    
     PauseAudio(1);
     filename = [self browseFileTypeInDirectory:
                   [NSString stringWithCString:atari_disk_dirs[0] encoding:NSASCIIStringEncoding]:

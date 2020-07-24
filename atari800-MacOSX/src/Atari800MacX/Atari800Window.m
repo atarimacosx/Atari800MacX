@@ -25,6 +25,10 @@ void Atari800WindowAspectSet(int w, int h) {
     our_window.aspectRatio = NSMakeSize(w,h);
 }
 
+void Atari800WindowFullscreen() {
+    [our_window toggleFullScreen:nil];
+}
+
 void Atari800OriginSet() {
     [Atari800Window applicationWindowOriginSetPrefs];
 }

@@ -300,7 +300,7 @@ static DisplayManager *sharedInstance = nil;
 *-----------------------------------------------------------------------------*/
 - (IBAction)fullScreen:(id)sender
 {
-    requestFullScreenChange = 1;
+   requestFullScreenChange = 1;
 }
 
 /*------------------------------------------------------------------------------
