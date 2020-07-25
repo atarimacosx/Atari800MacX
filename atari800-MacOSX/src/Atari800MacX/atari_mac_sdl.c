@@ -771,10 +771,10 @@ Uint32 power_of_two(Uint32 input)
 *-----------------------------------------------------------------------------*/
 void InitializeWindow(int w, int h)
 {
+    Uint32 texture_w, texture_h;
+
     PauseAudio(1);
     Atari800OriginSave();
-
-    Uint32 texture_w, texture_h;
 
     // Get rid of old renderer
     if (renderer)
@@ -833,63 +833,10 @@ void InitializeWindow(int w, int h)
 *-----------------------------------------------------------------------------*/
 void InitializeVideo()
 {
-    int w, h;
-    float ww, hh;
-	
-    w = Screen_WIDTH;
-    h = Screen_HEIGHT;
+    int w = GetScreenWidth();
+    int h = Screen_HEIGHT;
 
-    // aspect ratio, floats needed
-    ww = w;
-    hh = h;
-    switch (WIDTH_MODE) {
-        case SHORT_WIDTH_MODE:
-            if (ww * 0.75 < hh)
-                hh = ww * 0.75;
-            else
-                ww = hh / 0.75;
-            Screen_visible_x2 = 352;
-            break;
-        case DEFAULT_WIDTH_MODE:
-            if (ww / 1.4 < hh)
-                hh = ww / 1.4;
-            else
-                ww = hh * 1.4;
-            Screen_visible_x2 = 360;
-            break;
-        case FULL_WIDTH_MODE:
-            if (ww / 1.6 < hh)
-                hh = ww / 1.6;
-            else
-                ww = hh * 1.6;
-            Screen_visible_x2 = 384;
-            break;
-        }
-    w = ww;
-    h = hh;
-    w = w / 8;
-    w = w * 8;
-    h = h / 8;
-    h = h * 8;
-    
     SDL_ShowCursor(SDL_ENABLE); // show mouse cursor
-
-    if (PLATFORM_80col) {
-        if (XEP80_enabled) {
-            w = XEP80_SCRN_WIDTH;
-            h = XEP80_SCRN_HEIGHT;
-            XEP80_first_row = 0;
-            XEP80_last_row = XEP80_SCRN_HEIGHT - 1;
-            }
-        else if (AF80_enabled) {
-            w = AF80_SCRN_WIDTH;
-            h = AF80_SCRN_HEIGHT;
-            }
-        else if (BIT3_enabled) {
-            w = BIT3_SCRN_WIDTH;
-            h = BIT3_SCRN_HEIGHT;
-            }
-        }
 
     InitializeWindow(scaleFactorFloat*(double)w, scaleFactorFloat*(double)h);
 
@@ -966,6 +913,7 @@ static void SetRenderScale(void)
 static void Switch80Col(void)
 {
     SetRenderScale();
+    full_display = FULL_DISPLAY_COUNT;
     Atari_DisplayScreen((UBYTE *) Screen_atari);
     CreateWindowCaption();
     SDL_SetWindowTitle(MainWindow, windowCaption);
@@ -974,7 +922,6 @@ static void Switch80Col(void)
 
 void PLATFORM_Switch80Col(void)
 {
-
     PLATFORM_80col = 1 - PLATFORM_80col;
     Switch80Col();
 }
@@ -4549,12 +4496,6 @@ void ProcessMacPrefsChange()
             Init_SDL_Joykeys();
         if (hardDiskChanged)
             Devices_H_Init();
-#if 0 /* enableHifiSound is deprecated from 4.2.2 on */    		
-        if (hifiSoundChanged) {
-            POKEYSND_DoInit();
-            Atari800_Coldstart();
-			}
-#endif		
         if (xep80EnabledChanged) {
             if (!XEP80_enabled && PLATFORM_80col)
                 PLATFORM_Switch80Col();
