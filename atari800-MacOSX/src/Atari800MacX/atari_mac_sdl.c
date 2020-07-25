@@ -123,6 +123,10 @@ int useAtariCursorKeys = 1;
 #define SCANLINE_SCALE 1
 #define SMOOTH_SCALE 2
 
+#define SCREEN_WIDTH_SHORT    (Screen_WIDTH - 2 * 24 - 2 * 8)
+#define SCREEN_WIDTH_DEFAULT  (Screen_WIDTH - 2 * 24)
+#define SCREEN_WIDTH_FULL     (Screen_WIDTH)
+
 /* Local variables that control the speed of emulation */
 int speed_limit = 1;
 double emulationSpeed = 1.0;
@@ -857,11 +861,11 @@ int GetScreenWidth(void)
     int width;
     
     if (WIDTH_MODE == SHORT_WIDTH_MODE)
-        width = 320;
+        width = SCREEN_WIDTH_SHORT;
     else if (WIDTH_MODE == DEFAULT_WIDTH_MODE)
-        width = 336;
+        width = SCREEN_WIDTH_DEFAULT;
     else
-        width = 384;
+        width = SCREEN_WIDTH_FULL;
 
     return width;
 }
@@ -882,11 +886,11 @@ void CalcWindowSize(int *width, int *height)
 void SetWindowAspectRatio(void)
 {
     if (WIDTH_MODE == SHORT_WIDTH_MODE)
-        Atari800WindowAspectSet(320,Screen_HEIGHT);
+        Atari800WindowAspectSet(SCREEN_WIDTH_SHORT,Screen_HEIGHT);
     else if (WIDTH_MODE == DEFAULT_WIDTH_MODE)
-        Atari800WindowAspectSet(336,Screen_HEIGHT);
+        Atari800WindowAspectSet(SCREEN_WIDTH_DEFAULT,Screen_HEIGHT);
     else
-        Atari800WindowAspectSet(384,Screen_HEIGHT);
+        Atari800WindowAspectSet(SCREEN_WIDTH_FULL,Screen_HEIGHT);
 }
 
 static void SetRenderScale(void)
@@ -2864,15 +2868,15 @@ void Atari_DisplayScreen(UBYTE * screen)
 	
     switch (WIDTH_MODE) {
         case SHORT_WIDTH_MODE:
-            width = Screen_WIDTH - 2 * 24 - 2 * 8;
+            width = SCREEN_WIDTH_SHORT;
             jumped = 24 + 8;
             break;
         case DEFAULT_WIDTH_MODE:
-            width = Screen_WIDTH - 2 * 24;
+            width = SCREEN_WIDTH_DEFAULT;
             jumped = 24;
             break;
         case FULL_WIDTH_MODE:
-            width = Screen_WIDTH;
+            width = SCREEN_WIDTH_FULL;
             jumped = 0;
             break;
         default:
