@@ -891,23 +891,38 @@ void SetWindowAspectRatio(void)
 
 static void SetRenderScale(void)
 {
-    int width;
-    
-    width = GetScreenWidth();
-
-    if (PLATFORM_80col) {
-        if (BIT3_enabled) {
-            SDL_RenderSetScale(renderer, ((double) width/ (double) BIT3_SCRN_WIDTH ) * scaleFactorFloat, ((double) Screen_HEIGHT/ (double) BIT3_SCRN_HEIGHT ) *scaleFactorFloat);
+    if (FULLSCREEN_MACOS) {
+        if (PLATFORM_80col) {
+            if (BIT3_enabled) {
+                SDL_RenderSetScale(renderer, (double) current_w/ (double) BIT3_SCRN_WIDTH, (double) current_h/ (double) BIT3_SCRN_HEIGHT);
+            }
+            else if (AF80_enabled) {
+                SDL_RenderSetScale(renderer, (double) current_w/ (double) AF80_SCRN_WIDTH, (double) current_h/ (double) AF80_SCRN_HEIGHT );
+            }
+            else if (XEP80_enabled) {
+                SDL_RenderSetScale(renderer, (double) current_w/ (double) XEP80_SCRN_WIDTH , (double) current_h/ (double) XEP80_SCRN_HEIGHT );
+            }
         }
-        else if (AF80_enabled) {
-            SDL_RenderSetScale(renderer, ((double) width/ (double) AF80_SCRN_WIDTH ) * scaleFactorFloat, ((double) Screen_HEIGHT/ (double) AF80_SCRN_HEIGHT ) * scaleFactorFloat);
-        }
-        else if (XEP80_enabled) {
-            SDL_RenderSetScale(renderer, ((double) width/ (double) XEP80_SCRN_WIDTH ) * scaleFactorFloat, ((double) Screen_HEIGHT/ (double) XEP80_SCRN_HEIGHT ) *scaleFactorFloat);
-        }
+        else
+            SDL_RenderSetScale(renderer, scaleFactorFloat, scaleFactorFloat);
     }
-    else
-        SDL_RenderSetScale(renderer, scaleFactorFloat, scaleFactorFloat);
+    else {
+        int width = GetScreenWidth();
+
+        if (PLATFORM_80col) {
+            if (BIT3_enabled) {
+                SDL_RenderSetScale(renderer, ((double) width/ (double) BIT3_SCRN_WIDTH ) * scaleFactorFloat, ((double) Screen_HEIGHT/ (double) BIT3_SCRN_HEIGHT ) *scaleFactorFloat);
+            }
+            else if (AF80_enabled) {
+                SDL_RenderSetScale(renderer, ((double) width/ (double) AF80_SCRN_WIDTH ) * scaleFactorFloat, ((double) Screen_HEIGHT/ (double) AF80_SCRN_HEIGHT ) * scaleFactorFloat);
+            }
+            else if (XEP80_enabled) {
+                SDL_RenderSetScale(renderer, ((double) width/ (double) XEP80_SCRN_WIDTH ) * scaleFactorFloat, ((double) Screen_HEIGHT/ (double) XEP80_SCRN_HEIGHT ) *scaleFactorFloat);
+            }
+        }
+        else
+            SDL_RenderSetScale(renderer, scaleFactorFloat, scaleFactorFloat);
+    }
 }
 
 static void Switch80Col(void)
@@ -2982,7 +2997,9 @@ void Atari_DisplayScreen(UBYTE * screen)
         {
         int rows = 0;
         SDL_Rect scanlineRect;
+        float oldScaleX, oldScaleY;
         
+        SDL_RenderGetScale(renderer, &oldScaleX, &oldScaleY);
         SDL_RenderSetScale(renderer, scaleFactorFloat, 1);
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 
@@ -2994,7 +3011,7 @@ void Atari_DisplayScreen(UBYTE * screen)
             scanlineRect.h = 1;
             SDL_RenderFillRect(renderer, &scanlineRect);
             }
-        SDL_RenderSetScale(renderer, scaleFactorFloat, scaleFactorFloat);
+        SDL_RenderSetScale(renderer, oldScaleX, oldScaleY);
         }
 
     SDL_RenderPresent(renderer);
