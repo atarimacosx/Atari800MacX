@@ -13,7 +13,6 @@
 #import "bit3.h"
 #import "xep80.h"
 
-extern void SwitchFullscreen(void);
 extern void PLATFORM_Switch80Col(void);
 extern int SCALE_MODE;
 extern int scaleFactor;

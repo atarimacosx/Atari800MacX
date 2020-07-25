@@ -3,12 +3,29 @@
    version = "1.0">
    <ContextStates>
       <ContextState
+         contextName = "-[Preferences transferValuesToEmulator]:Preferences.m">
+      </ContextState>
+      <ContextState
          contextName = "CalcPalette:atari_mac_sdl.c">
          <PersistentStrings>
             <PersistentString
                value = "(SDL_PixelFormatEnum)Format32-&gt;format">
             </PersistentString>
          </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "HandleResizeRequest:atari_mac_sdl.c">
+         <PersistentStrings>
+            <PersistentString
+               value = "current_h">
+            </PersistentString>
+            <PersistentString
+               value = "requested_h">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "loadMacPrefs:preferences_c.c">
       </ContextState>
    </ContextStates>
 </VariablesViewState>

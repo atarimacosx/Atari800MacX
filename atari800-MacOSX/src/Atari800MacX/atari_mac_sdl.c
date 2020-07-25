@@ -97,7 +97,7 @@ int paletteWhite = 0xf0;
 int paletteIntensity = 80;
 int paletteColorShift = 40;
 static int SDL_ATARI_BPP = 0;   // 0 - autodetect
-int FULLSCREEN;
+//int FULLSCREEN;
 int FULLSCREEN_MACOS;
 int SCALE_MODE;
 double scaleFactor = 3;
@@ -772,62 +772,60 @@ void SetVideoMode(int w, int h, int bpp)
     PauseAudio(1);
     Atari800OriginSave();
 
-   {
-        Uint32 texture_w, texture_h;
+    Uint32 texture_w, texture_h;
 
-        // Get rid of old renderer
-        if (renderer)
-            SDL_DestroyRenderer(renderer);
-        
-        // Delete the old window, if it exists
-        if (MainGLScreen) {
-            Atari800OriginSave();
-            SDL_DestroyWindow(MainGLScreen);
-        }
-        
-        MainGLScreen = SDL_CreateWindow(windowCaption,
-                                        SDL_WINDOWPOS_UNDEFINED,
-                                        SDL_WINDOWPOS_UNDEFINED,
-                                        w, h, SDL_WINDOW_RESIZABLE);
-        current_w = w;
-        current_h = h;
-        SDL_SetHint(SDL_HINT_RENDER_DRIVER, "metal");
-        renderer = SDL_CreateRenderer(MainGLScreen, -1, 0);
-        if (PLATFORM_80col && BIT3_enabled)
-            // 640 x 240 to
-            // 336x240
-            SDL_RenderSetScale(renderer, ((double) 336/ (double) 640 ) * scaleFactorFloat/2.0, scaleFactorFloat);
-        else
-            SDL_RenderSetScale(renderer, scaleFactorFloat, scaleFactorFloat);
-        
-        // Save Mac Window for later use
-        SDL_SysWMinfo wmInfo;
-        SDL_VERSION(&wmInfo.version);
-        SDL_GetWindowWMInfo(MainGLScreen, &wmInfo);
-        Atari800WindowCreate(wmInfo.info.cocoa.window);
-        if (WIDTH_MODE == SHORT_WIDTH_MODE)
-            Atari800WindowAspectSet(320,240);
-        else if (WIDTH_MODE == DEFAULT_WIDTH_MODE)
-            Atari800WindowAspectSet(336,240);
-        else
-            Atari800WindowAspectSet(384,240);
+    // Get rid of old renderer
+    if (renderer)
+        SDL_DestroyRenderer(renderer);
+    
+    // Delete the old window, if it exists
+    if (MainGLScreen) {
+        Atari800OriginSave();
+        SDL_DestroyWindow(MainGLScreen);
+    }
+    
+    MainGLScreen = SDL_CreateWindow(windowCaption,
+                                    SDL_WINDOWPOS_UNDEFINED,
+                                    SDL_WINDOWPOS_UNDEFINED,
+                                    w, h, SDL_WINDOW_RESIZABLE);
+    current_w = w;
+    current_h = h;
+    SDL_SetHint(SDL_HINT_RENDER_DRIVER, "metal");
+    renderer = SDL_CreateRenderer(MainGLScreen, -1, 0);
+    if (PLATFORM_80col && BIT3_enabled)
+        // 640 x 240 to
+        // 336x240
+        SDL_RenderSetScale(renderer, ((double) 336/ (double) 640 ) * scaleFactorFloat/2.0, scaleFactorFloat);
+    else
+        SDL_RenderSetScale(renderer, scaleFactorFloat, scaleFactorFloat);
+    
+    // Save Mac Window for later use
+    SDL_SysWMinfo wmInfo;
+    SDL_VERSION(&wmInfo.version);
+    SDL_GetWindowWMInfo(MainGLScreen, &wmInfo);
+    Atari800WindowCreate(wmInfo.info.cocoa.window);
+    if (WIDTH_MODE == SHORT_WIDTH_MODE)
+        Atari800WindowAspectSet(320,240);
+    else if (WIDTH_MODE == DEFAULT_WIDTH_MODE)
+        Atari800WindowAspectSet(336,240);
+    else
+        Atari800WindowAspectSet(384,240);
 
-        // Delete the old textures
-        if(MainScreen)
-            SDL_FreeSurface(MainScreen);
+    // Delete the old textures
+    if(MainScreen)
+        SDL_FreeSurface(MainScreen);
 
-        texture_w = power_of_two(1024);
-        texture_h = power_of_two(512);
-        // Create the SDL texture
-        MainScreen = SDL_CreateRGBSurface(0, texture_w, texture_h, 16,
-                        0x0000F800, 0x000007E0, 0x0000001F, 0x00000000);
+    texture_w = power_of_two(1024);
+    texture_h = power_of_two(512);
+    // Create the SDL texture
+    MainScreen = SDL_CreateRGBSurface(0, texture_w, texture_h, 16,
+                    0x0000F800, 0x000007E0, 0x0000001F, 0x00000000);
 
-        // Make sure the screens are cleared to black
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-        SDL_RenderClear(renderer);
+    // Make sure the screens are cleared to black
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    SDL_RenderClear(renderer);
 
-        Atari800OriginRestore();
-        }
+    Atari800OriginRestore();
 
     PauseAudio(0);
         
@@ -922,7 +920,7 @@ void SetNewVideoMode(int w, int h, int bpp)
 
     SetPalette();
     
-    if (GRAB_MOUSE || FULLSCREEN)
+    if (GRAB_MOUSE)
         SDL_SetRelativeMouseMode(SDL_TRUE);
     else
         SDL_SetRelativeMouseMode(SDL_FALSE);
@@ -932,15 +930,40 @@ void SetNewVideoMode(int w, int h, int bpp)
         memset(Screen_atari_b, 0, (Screen_HEIGHT * Screen_WIDTH));
 }
 
+int GetScreenWidth(void)
+{
+    int width;
+    
+    if (WIDTH_MODE == SHORT_WIDTH_MODE)
+        width = 320;
+    else if (WIDTH_MODE == DEFAULT_WIDTH_MODE)
+        width = 336;
+    else
+        width = 384;
+
+    return width;
+}
+
 void PLATFORM_Switch80Col(void)
 {
+    int width;
+    
     PLATFORM_80col = 1 - PLATFORM_80col;
     //SetNewVideoMode(our_width, our_height,
     //                MainScreen->format->BitsPerPixel);
-    if (PLATFORM_80col && BIT3_enabled)
-        // 640 x 240 to
-        // 336x240
-        SDL_RenderSetScale(renderer, ((double) 336/ (double) 640 ) * scaleFactorFloat, scaleFactorFloat);
+    width = GetScreenWidth();
+
+    if (PLATFORM_80col) {
+        if (BIT3_enabled) {
+            SDL_RenderSetScale(renderer, ((double) width/ (double) BIT3_SCRN_WIDTH ) * scaleFactorFloat, ((double) Screen_HEIGHT/ (double) BIT3_SCRN_HEIGHT ) *scaleFactorFloat);
+        }
+        else if (AF80_enabled) {
+            SDL_RenderSetScale(renderer, ((double) width/ (double) AF80_SCRN_WIDTH ) * scaleFactorFloat, ((double) Screen_HEIGHT/ (double) AF80_SCRN_HEIGHT ) * scaleFactorFloat);
+        }
+        else if (XEP80_enabled) {
+            SDL_RenderSetScale(renderer, ((double) width/ (double) XEP80_SCRN_WIDTH ) * scaleFactorFloat, ((double) Screen_HEIGHT/ (double) XEP80_SCRN_HEIGHT ) *scaleFactorFloat);
+        }
+    }
     else
         SDL_RenderSetScale(renderer, scaleFactorFloat, scaleFactorFloat);
     Atari_DisplayScreen((UBYTE *) Screen_atari);
@@ -2637,20 +2660,10 @@ void PLATFORM_Initialise(int *argc, char *argv[])
             no_joystick = 1;
             i++;
         }
-        else if (strcmp(argv[i], "-fullscreen") == 0) {
-            FULLSCREEN = 1;
-        }
-        else if (strcmp(argv[i], "-windowed") == 0) {
-            FULLSCREEN = 0;
-        }
-        else {
+       else {
             if (strcmp(argv[i], "-help") == 0) {
                 help_only = TRUE;
                 Log_print("\t-nojoystick      Disable joystick");
-                Log_print("\t-fullscreen      Run fullscreen");
-                Log_print("\t-windowed        Run in window");
-                Log_print("\t-double          Run double size mode");
-                Log_print("\t-single          Run single size mode");
             }
             argv[j++] = argv[i];
         }
@@ -4197,10 +4210,18 @@ void CountFPS()
 
 void HandleResizeRequest()
 {
-    scaleFactorFloat = ((double) requested_w /
-                        (double) current_w) * scaleFactorFloat;
     FULLSCREEN_MACOS = Atari800WindowIsFullscreen();
-    SDL_RenderSetScale(renderer, scaleFactorFloat, scaleFactorFloat);
+    if (FULLSCREEN_MACOS) {
+        SDL_RenderSetScale(renderer, (double) requested_w /
+        (double) GetScreenWidth(), (double) requested_h/ 240.0);
+    }
+    else {
+        scaleFactorFloat = ((double) requested_w /
+                            (double) GetScreenWidth());
+        //scaleFactorFloat = ((double) requested_w /
+        //                    (double) current_w) * scaleFactorFloat;
+        SDL_RenderSetScale(renderer, scaleFactorFloat, scaleFactorFloat);
+        }
     current_w = requested_w;
     current_h = requested_h;
 }

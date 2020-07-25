@@ -174,10 +174,10 @@
             filePath = "atari_mac_sdl.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2780"
-            endingLineNumber = "2780"
-            landmarkName = "unknown"
-            landmarkType = "0">
+            startingLineNumber = "2793"
+            endingLineNumber = "2793"
+            landmarkName = "DisplayAF80WithoutScaling16bpp(first_row, last_row, blink)"
+            landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -206,8 +206,8 @@
             filePath = "atari_mac_sdl.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "849"
-            endingLineNumber = "849"
+            startingLineNumber = "847"
+            endingLineNumber = "847"
             landmarkName = "SetNewVideoMode(w, h, bpp)"
             landmarkType = "9">
          </BreakpointContent>
@@ -222,8 +222,8 @@
             filePath = "atari_mac_sdl.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1468"
-            endingLineNumber = "1468"
+            startingLineNumber = "1491"
+            endingLineNumber = "1491"
             landmarkName = "Atari_Keyboard_International()"
             landmarkType = "9">
          </BreakpointContent>
