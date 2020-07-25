@@ -96,8 +96,6 @@ int paletteBlack = 0;
 int paletteWhite = 0xf0;
 int paletteIntensity = 80;
 int paletteColorShift = 40;
-static int SDL_ATARI_BPP = 0;   // 0 - autodetect
-//int FULLSCREEN;
 int FULLSCREEN_MACOS;
 int SCALE_MODE;
 double scaleFactor = 3;
@@ -322,6 +320,7 @@ void HandleResizeRequest(void);
 int  GetScreenWidth(void);
 void CalcWindowSize(int *width, int *height);
 void SetWindowAspectRatio(void);
+static void SetRenderScale(void);
 
 // joystick emulation - Future enhancement will allow user to set these in 
 //   Preferences.
@@ -501,7 +500,7 @@ static int callbacktick = 0;
 
 // video
 SDL_Surface *MainScreen = NULL;
-SDL_Window *MainGLScreen = NULL;
+SDL_Window *MainWindow = NULL;
 SDL_Surface *MonitorGLScreen = NULL;
 SDL_Renderer *renderer = NULL;
 SDL_Texture *texture = NULL;
@@ -510,7 +509,7 @@ int screenSwitchEnabled = 1;
 SDL_Color colors[256];          // palette
 Uint16 Palette16[256];          // 16-bit palette
 Uint32 Palette32[256];          // 32-bit palette
-static int our_width, our_height, our_bpp; // The variables for storing screen width
+static int our_width, our_height; // The variables for storing screen width
 char windowCaption[80];
 int selectionStartX = 0;
 int selectionStartY = 0;
@@ -768,9 +767,9 @@ Uint32 power_of_two(Uint32 input)
     }
 
 /*------------------------------------------------------------------------------
-*  SetVideoMode - Call to set new video mode, using SDL functions.
+*  InitializeWindow - Call to set new video mode, using SDL functions.
 *-----------------------------------------------------------------------------*/
-void SetVideoMode(int w, int h, int bpp)
+void InitializeWindow(int w, int h)
 {
     PauseAudio(1);
     Atari800OriginSave();
@@ -782,30 +781,25 @@ void SetVideoMode(int w, int h, int bpp)
         SDL_DestroyRenderer(renderer);
     
     // Delete the old window, if it exists
-    if (MainGLScreen) {
+    if (MainWindow) {
         Atari800OriginSave();
-        SDL_DestroyWindow(MainGLScreen);
+        SDL_DestroyWindow(MainWindow);
     }
     
-    MainGLScreen = SDL_CreateWindow(windowCaption,
+    MainWindow = SDL_CreateWindow(windowCaption,
                                     SDL_WINDOWPOS_UNDEFINED,
                                     SDL_WINDOWPOS_UNDEFINED,
                                     w, h, SDL_WINDOW_RESIZABLE);
     current_w = w;
     current_h = h;
     SDL_SetHint(SDL_HINT_RENDER_DRIVER, "metal");
-    renderer = SDL_CreateRenderer(MainGLScreen, -1, 0);
-    if (PLATFORM_80col && BIT3_enabled)
-        // 640 x 240 to
-        // 336x240
-        SDL_RenderSetScale(renderer, ((double) 336/ (double) 640 ) * scaleFactorFloat/2.0, scaleFactorFloat);
-    else
-        SDL_RenderSetScale(renderer, scaleFactorFloat, scaleFactorFloat);
+    renderer = SDL_CreateRenderer(MainWindow, -1, 0);
+    SetRenderScale();
     
     // Save Mac Window for later use
     SDL_SysWMinfo wmInfo;
     SDL_VERSION(&wmInfo.version);
-    SDL_GetWindowWMInfo(MainGLScreen, &wmInfo);
+    SDL_GetWindowWMInfo(MainWindow, &wmInfo);
     Atari800WindowCreate(wmInfo.info.cocoa.window);
     SetWindowAspectRatio();
 
@@ -827,94 +821,77 @@ void SetVideoMode(int w, int h, int bpp)
 
     PauseAudio(0);
         
-    if (MainScreen == NULL) {
-        Log_print("Setting Video Mode: %ix%ix%i FAILED", w, h, bpp);
+    if (MainScreen == NULL || MainWindow == NULL) {
+        Log_print("Setting Video Mode: %ix%ix%i FAILED", w, h);
         Log_flushlog();
         exit(-1);
         }
 }
 
 /*------------------------------------------------------------------------------
-*  SetNewVideoMode - Call used when emulator changes video size or windowed/full
-*    screen.
+*  InitializeVideo - Call to initialze Video and Windows
 *-----------------------------------------------------------------------------*/
-void SetNewVideoMode(int w, int h, int bpp)
+void InitializeVideo()
 {
+    int w, h;
     float ww, hh;
 	
-    if ((h < Screen_HEIGHT) || (w < Screen_WIDTH)) {
-        h = Screen_HEIGHT;
-        w = Screen_WIDTH;
-        }
+    w = Screen_WIDTH;
+    h = Screen_HEIGHT;
 
     // aspect ratio, floats needed
     ww = w;
     hh = h;
-    {
-        switch (WIDTH_MODE) {
-            case SHORT_WIDTH_MODE:
-                if (ww * 0.75 < hh)
-                    hh = ww * 0.75;
-                else
-                    ww = hh / 0.75;
-				Screen_visible_x2 = 352;
-                break;
-            case DEFAULT_WIDTH_MODE:
-                if (ww / 1.4 < hh)
-                    hh = ww / 1.4;
-                else
-                    ww = hh * 1.4;
-				Screen_visible_x2 = 360;
-                break;
-            case FULL_WIDTH_MODE:
-                if (ww / 1.6 < hh)
-                    hh = ww / 1.6;
-                else
-                    ww = hh * 1.6;
-				Screen_visible_x2 = 384;
-                break;
+    switch (WIDTH_MODE) {
+        case SHORT_WIDTH_MODE:
+            if (ww * 0.75 < hh)
+                hh = ww * 0.75;
+            else
+                ww = hh / 0.75;
+            Screen_visible_x2 = 352;
+            break;
+        case DEFAULT_WIDTH_MODE:
+            if (ww / 1.4 < hh)
+                hh = ww / 1.4;
+            else
+                ww = hh * 1.4;
+            Screen_visible_x2 = 360;
+            break;
+        case FULL_WIDTH_MODE:
+            if (ww / 1.6 < hh)
+                hh = ww / 1.6;
+            else
+                ww = hh * 1.6;
+            Screen_visible_x2 = 384;
+            break;
+        }
+    w = ww;
+    h = hh;
+    w = w / 8;
+    w = w * 8;
+    h = h / 8;
+    h = h * 8;
+    
+    SDL_ShowCursor(SDL_ENABLE); // show mouse cursor
+
+    if (PLATFORM_80col) {
+        if (XEP80_enabled) {
+            w = XEP80_SCRN_WIDTH;
+            h = XEP80_SCRN_HEIGHT;
+            XEP80_first_row = 0;
+            XEP80_last_row = XEP80_SCRN_HEIGHT - 1;
+            }
+        else if (AF80_enabled) {
+            w = AF80_SCRN_WIDTH;
+            h = AF80_SCRN_HEIGHT;
+            }
+        else if (BIT3_enabled) {
+            w = BIT3_SCRN_WIDTH;
+            h = BIT3_SCRN_HEIGHT;
             }
         }
-        w = ww;
-        h = hh;
-        w = w / 8;
-        w = w * 8;
-        h = h / 8;
-        h = h * 8;
-        
-        SDL_ShowCursor(SDL_ENABLE); // show mouse cursor 
 
-        if (PLATFORM_80col) {
-            if (XEP80_enabled) {
-                w = XEP80_SCRN_WIDTH;
-                h = XEP80_SCRN_HEIGHT;
-                XEP80_first_row = 0;
-                XEP80_last_row = XEP80_SCRN_HEIGHT - 1;
-                }
-            else if (AF80_enabled) {
-                w = AF80_SCRN_WIDTH;
-                h = AF80_SCRN_HEIGHT;
-                }
-            else if (BIT3_enabled) {
-                w = BIT3_SCRN_WIDTH;
-                h = BIT3_SCRN_HEIGHT;
-                }
-            }
-
-        SetVideoMode(scaleFactorFloat*(double)w, scaleFactorFloat*(double)h, bpp);
-
-        SDL_ATARI_BPP = 32;
-
-        if (bpp == 0) {
-            Log_print("detected %ibpp", SDL_ATARI_BPP);
-
-        if ((SDL_ATARI_BPP != 8) && (SDL_ATARI_BPP != 16)
-            && (SDL_ATARI_BPP != 32)) {
-            Log_print
-                ("it's unsupported, so setting 8bit mode (slow conversion)");
-            SetVideoMode(w, h, 8);
-            }
-        }
+    InitializeWindow(scaleFactorFloat*(double)w, scaleFactorFloat*(double)h);
 
     SetPalette();
     
@@ -991,7 +968,7 @@ static void Switch80Col(void)
     SetRenderScale();
     Atari_DisplayScreen((UBYTE *) Screen_atari);
     CreateWindowCaption();
-    SDL_SetWindowTitle(MainGLScreen, windowCaption);
+    SDL_SetWindowTitle(MainWindow, windowCaption);
     copyStatus = COPY_IDLE;
 }
 
@@ -1027,7 +1004,7 @@ void SwitchShowFps()
 {
     Screen_show_atari_speed = 1 - Screen_show_atari_speed;
     if (!Screen_show_atari_speed)
-        SDL_SetWindowTitle(MainGLScreen, windowCaption);
+        SDL_SetWindowTitle(MainWindow, windowCaption);
     SetDisplayManagerFps(Screen_show_atari_speed);
 }
 
@@ -1059,7 +1036,7 @@ void SwitchWidth(int width)
     WIDTH_MODE = width;
     CalcWindowSize(&w, &h);
     SetWindowAspectRatio();
-    SDL_SetWindowSize(MainGLScreen, w, h);
+    SDL_SetWindowSize(MainWindow, w, h);
     full_display = FULL_DISPLAY_COUNT;
     Atari_DisplayScreen((UBYTE *) Screen_atari);
 	SetDisplayManagerWidthMode(width);
@@ -2679,7 +2656,6 @@ void PLATFORM_Initialise(int *argc, char *argv[])
     no_joystick = 0;
     our_width = Screen_WIDTH;
     our_height = Screen_HEIGHT;
-    our_bpp = SDL_ATARI_BPP;
 
     for (i = j = 1; i < *argc; i++) {
                 if (strcmp(argv[i], "-nojoystick") == 0) {
@@ -2711,7 +2687,7 @@ void PLATFORM_Initialise(int *argc, char *argv[])
     if (help_only)
         return;     /* return before changing the gfx mode */
     
-    SetNewVideoMode(our_width, our_height, our_bpp);
+    InitializeVideo();
     Atari800OriginSet();
     CalcPalette();
     SetPalette();
@@ -4228,7 +4204,7 @@ void CountFPS()
             strcpy(title,windowCaption);
             sprintf(count," - %3d fps",shortframes);
             strcat(title,count);
-            SDL_SetWindowTitle(MainGLScreen, title);
+            SDL_SetWindowTitle(MainWindow, title);
             shortframes = 0;
 			}
         }
@@ -4359,7 +4335,7 @@ void ProcessMacMenus()
         Atari800_InitialiseMachine();
 		Atari800_Coldstart();
         CreateWindowCaption();
-        SDL_SetWindowTitle(MainGLScreen, windowCaption);
+        SDL_SetWindowTitle(MainWindow, windowCaption);
         Atari_DisplayScreen((UBYTE *) Screen_atari);
 		requestMachineTypeChange = 0;
 		SetControlManagerMachineType(Atari800_machine_type, MEMORY_ram_size);
@@ -4435,7 +4411,7 @@ void ProcessMacMenus()
         }
     if (requestCaptionChange) {
         CreateWindowCaption();
-        SDL_SetWindowTitle(MainGLScreen, windowCaption);
+        SDL_SetWindowTitle(MainWindow, windowCaption);
 		SetControlManagerMachineType(Atari800_machine_type, MEMORY_ram_size);
         requestCaptionChange = 0;
         }
@@ -4523,7 +4499,7 @@ void ProcessMacPrefsChange()
         if (showfpsChanged)
             {
 			if (!Screen_show_atari_speed)
-                SDL_SetWindowTitle(MainGLScreen, windowCaption);
+                SDL_SetWindowTitle(MainWindow, windowCaption);
 			SetDisplayManagerFps(Screen_show_atari_speed);
             }
 		if (scaleModeChanged)
@@ -4559,7 +4535,7 @@ void ProcessMacPrefsChange()
             memset(Screen_atari_b, 0, (Screen_HEIGHT * Screen_WIDTH));
             Atari800_InitialiseMachine();
             CreateWindowCaption();
-            SDL_SetWindowTitle(MainGLScreen, windowCaption);
+            SDL_SetWindowTitle(MainWindow, windowCaption);
             if (Atari800_machine_type == Atari800_MACHINE_5200)
                 Atari_DisplayScreen((UBYTE *) Screen_atari_b);
             }
@@ -4919,7 +4895,7 @@ void ProcessCopySelection(int *first_row, int *last_row, int selectAll)
 		orig_x = 0;
 		orig_y = 0;
         int win_x, win_y;
-        SDL_GetWindowSize(MainGLScreen, &win_x, &win_y);
+        SDL_GetWindowSize(MainWindow, &win_x, &win_y);
         copy_x = win_x - 1;
         copy_y = win_y - 1;
 	} else {
@@ -5029,7 +5005,7 @@ int SDL_main(int argc, char **argv)
         return 3;
 
     CreateWindowCaption();
-    SDL_SetWindowTitle(MainGLScreen, windowCaption);
+    SDL_SetWindowTitle(MainWindow, windowCaption);
 
     if (useBuiltinPalette) {
         Colours_Generate(paletteBlack, paletteWhite, paletteIntensity, paletteColorShift);
