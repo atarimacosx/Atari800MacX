@@ -51,6 +51,7 @@ extern EPSON_PREF prefsEpson;
 extern ATASCII_PREF prefsAtascii;
 extern int UI_alt_function;
 extern int diskDriveSound;
+extern int FULLSCREEN_MACOS;
 
 extern char atari_config_dir[FILENAME_MAX];
 
@@ -519,9 +520,10 @@ static Preferences *sharedInstance = nil;
 		origin.y -= kGraphicalDrawerSize;
 	[displayedValues setObject:[NSNumber numberWithFloat:origin.y] forKey:MonitorY];
 	origin = [Atari800Window applicationWindowOriginSave];
-	[displayedValues setObject:[NSNumber numberWithFloat:origin.x] forKey:ApplicationWindowX];
-	[displayedValues setObject:[NSNumber numberWithFloat:origin.y] forKey:ApplicationWindowY];
-
+    if (!FULLSCREEN_MACOS) {
+        [displayedValues setObject:[NSNumber numberWithFloat:origin.x] forKey:ApplicationWindowX];
+        [displayedValues setObject:[NSNumber numberWithFloat:origin.y] forKey:ApplicationWindowY];
+    }
 
 	// Get the changed prefs back from emulator
 	savePrefs();

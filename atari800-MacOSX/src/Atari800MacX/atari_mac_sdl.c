@@ -96,7 +96,7 @@ int paletteBlack = 0;
 int paletteWhite = 0xf0;
 int paletteIntensity = 80;
 int paletteColorShift = 40;
-int FULLSCREEN_MACOS;
+int FULLSCREEN_MACOS = 0;
 int SCALE_MODE;
 double scaleFactor = 3;
 double scaleFactorFloat = 2.0;
