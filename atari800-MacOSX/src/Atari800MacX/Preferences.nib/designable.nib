@@ -124,7 +124,6 @@
                 <outlet property="exeFileSelectButton" destination="530" id="4283"/>
                 <outlet property="externalPaletteButton" destination="790" id="791"/>
                 <outlet property="fpsButton" destination="775" id="777"/>
-                <outlet property="fullScreenMatrix" destination="264" id="290"/>
                 <outlet property="gamepad1ConfigPulldown" destination="3692" id="3746"/>
                 <outlet property="gamepad2ConfigPulldown" destination="3723" id="3747"/>
                 <outlet property="gamepad3ConfigPulldown" destination="3726" id="3748"/>
@@ -287,43 +286,6 @@
                                                 <rect key="frame" x="3" y="3" width="320" height="344"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
-                                                    <box fixedFrame="YES" title="Display Mode" translatesAutoresizingMaskIntoConstraints="NO" id="279">
-                                                        <rect key="frame" x="20" y="279" width="131" height="64"/>
-                                                        <autoresizingMask key="autoresizingMask"/>
-                                                        <view key="contentView" id="cMS-wQ-3tI">
-                                                            <rect key="frame" x="3" y="3" width="125" height="44"/>
-                                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                            <subviews>
-                                                                <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="264">
-                                                                    <rect key="frame" x="15" y="4" width="91" height="38"/>
-                                                                    <autoresizingMask key="autoresizingMask"/>
-                                                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                                    <size key="cellSize" width="91" height="18"/>
-                                                                    <size key="intercellSpacing" width="4" height="2"/>
-                                                                    <buttonCell key="prototype" type="radio" title="Radio" imagePosition="leading" alignment="left" inset="2" id="13267">
-                                                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                                        <font key="font" metaFont="system"/>
-                                                                    </buttonCell>
-                                                                    <cells>
-                                                                        <column>
-                                                                            <buttonCell type="radio" title="Windowed" bezelStyle="regularSquare" imagePosition="leading" alignment="left" state="on" inset="2" id="266">
-                                                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                                                <font key="font" metaFont="system"/>
-                                                                            </buttonCell>
-                                                                            <buttonCell type="radio" title="Full Screen" bezelStyle="regularSquare" imagePosition="leading" alignment="left" tag="1" inset="2" id="265">
-                                                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                                                <font key="font" metaFont="system"/>
-                                                                            </buttonCell>
-                                                                        </column>
-                                                                    </cells>
-                                                                    <connections>
-                                                                        <action selector="miscChanged:" target="-2" id="287"/>
-                                                                    </connections>
-                                                                </matrix>
-                                                            </subviews>
-                                                        </view>
-                                                        <font key="titleFont" metaFont="system"/>
-                                                    </box>
                                                     <box fixedFrame="YES" title="Display Width" translatesAutoresizingMaskIntoConstraints="NO" id="283">
                                                         <rect key="frame" x="17" y="165" width="288" height="88"/>
                                                         <autoresizingMask key="autoresizingMask"/>

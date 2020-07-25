@@ -73,7 +73,6 @@ extern int mediaStatusWindowOpen;
 extern int currPrinter;
 extern int Devices_enable_d_patch;
 extern int Devices_enable_p_patch;
-extern int FULLSCREEN;
 extern void CalcMachineTypeRam(int type, int *machineType, int *ramSize,
 							   int *axlon, int *mosaic);
 extern int machine_switch_type;
@@ -280,7 +279,7 @@ NSImage *disketteImage;
 {
 	static int firstTime = 1;
 
-	if (firstTime && !FULLSCREEN) {
+	if (firstTime) {
 		[[d1DiskImageView window] setFrameOrigin:[[Preferences sharedInstance] mediaStatusOrigin]];
 		firstTime = 0;
 		}

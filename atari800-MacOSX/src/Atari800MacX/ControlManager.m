@@ -64,10 +64,8 @@ extern int startFunctionPressed;
 extern int selectFunctionPressed;
 extern int optionFunctionPressed;
 extern int inverseFunctionPressed;
-extern int FULLSCREEN;
 extern int MONITOR_break_run_to_here;
 extern int UI_alt_function;
-extern int requestFullScreenUI;
 
 /* Functions which provide an interface for C code to call this object's shared Instance functions */
 void SetControlManagerLimit(int limit) {
@@ -594,13 +592,7 @@ static int monitorRunFirstTime = 1;
 - (IBAction)loadState:(id)sender
 {
     NSString *filename;
-    
-    if (FULLSCREEN) {
-        UI_alt_function = UI_MENU_LOADSTATE;
-        requestFullScreenUI = 1;
-        return;
-    }
-    
+        
     PauseAudio(1);
     filename = [self browseFileInDirectory:[NSString stringWithCString:atari_state_dir encoding:NSASCIIStringEncoding]];
     if (filename != nil) {
@@ -641,12 +633,6 @@ static int monitorRunFirstTime = 1;
 - (IBAction)saveState:(id)sender
 {
     NSString *filename;
-    
-    if (FULLSCREEN) {
-        UI_alt_function = UI_MENU_SAVESTATE;
-        requestFullScreenUI = 1;
-        return;
-    }
     
     PauseAudio(1);
     filename = [self saveFileInDirectory:[NSString stringWithCString:atari_state_dir encoding:NSASCIIStringEncoding]:@"a8s"];
@@ -835,7 +821,7 @@ static int monitorRunFirstTime = 1;
 {
 	static int firstTime = 1;
 
-	if (firstTime && !FULLSCREEN) {
+	if (firstTime) {
 		[[startButton window] setFrameOrigin:[[Preferences sharedInstance] functionKeysOrigin]];
 		firstTime = 0;
 		}

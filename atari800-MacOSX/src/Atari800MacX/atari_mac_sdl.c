@@ -29,7 +29,7 @@
 
 
 #include <SDL.h>
-#include <SDL_opengl.h>
+
 #include <SDL_syswm.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -97,8 +97,8 @@ int paletteWhite = 0xf0;
 int paletteIntensity = 80;
 int paletteColorShift = 40;
 static int SDL_ATARI_BPP = 0;   // 0 - autodetect
-int OPENGL = 1;
 int FULLSCREEN;
+int FULLSCREEN_MACOS;
 int SCALE_MODE;
 double scaleFactor = 3;
 double scaleFactorFloat = 2.0;
@@ -138,7 +138,6 @@ int pauseEmulator = 0;
 /* Semaphore flags used for signalling between the Objective-C menu managers and the emulator. */
 int requestWidthModeChange = 0;
 int requestFullScreenChange = 0;
-int requestFullScreenUI = 0;
 int request80ColChange = 0;
 int request80ColModeChange = 0;
 int requestGrabMouse = 0;
@@ -189,12 +188,10 @@ extern char sio_filename[8][FILENAME_MAX];
 extern int refresh_rate;
 extern double deltatime;
 double real_deltatime;
-extern int UI_alt_function;
 extern UBYTE CPU_cim_encountered;
 
 /* Externs from preferences_c.c which indicate if user has changed certain preferences */
 extern int displaySizeChanged;
-extern int openGlChanged;
 extern int showfpsChanged;
 extern int scaleModeChanged;
 extern int artifChanged;
@@ -228,6 +225,7 @@ extern void AboutBoxScroll(void);
 extern void Atari800WindowCreate(NSWindow *window);
 extern void Atari800WindowAspectSet(int w, int h);
 extern void Atari800WindowFullscreen();
+extern int  Atari800WindowIsFullscreen();
 extern void Atari800OriginSet(void);
 extern void Atari800WindowCenter(void);
 extern void Atari800WindowDisplay(void);
@@ -235,7 +233,7 @@ extern void Atari800OriginSave(void);
 extern void Atari800OriginRestore(void);
 extern int  Atari800IsKeyWindow(void);
 extern void Atari800MakeKeyWindow();
-extern int Atari800GetCopyData(int startx, int endx, int starty, int endy, unsigned char *data);
+extern int  Atari800GetCopyData(int startx, int endx, int starty, int endy, unsigned char *data);
 extern void UpdateMediaManagerInfo(void);
 extern void MediaManagerRunDiskManagement(void);
 extern void MediaManagerRunDiskEditor(void);
@@ -279,8 +277,6 @@ extern void ControlManagerShowHelp(void);
 extern int ControlManagerMonitorRun(void);
 extern void ControlManagerFunctionKeysWindowShow(void);
 extern int PasteManagerGetChar(unsigned short *character);
-extern int FullscreenGUIRun(SDL_Renderer *renderer, SDL_Window *windows);
-extern int FullscreenCrashGUIRun(SDL_Renderer *renderer);
 extern void SetSoundManagerEnable(int soundEnabled);
 extern void SetSoundManagerStereo(int soundStereo);
 extern void SetSoundManagerRecording(int soundRecording);
@@ -506,12 +502,7 @@ SDL_Window *MainGLScreen = NULL;
 SDL_Surface *MonitorGLScreen = NULL;
 SDL_Renderer *renderer = NULL;
 SDL_Texture *texture = NULL;
-GLuint MainScreenID;
-GLuint MonitorScreenID = 0;
-GLfloat texCoord[4];
 int screenSwitchEnabled = 1;
-int fullscreenWidth;
-int fullscreenHeight;
 
 SDL_Color colors[256];          // palette
 Uint16 Palette16[256];          // 16-bit palette
@@ -778,64 +769,10 @@ Uint32 power_of_two(Uint32 input)
 *-----------------------------------------------------------------------------*/
 void SetVideoMode(int w, int h, int bpp)
 {
-    static int wasFullscreen = 0;
-	static int wasOpenGl = 0;
-    
     PauseAudio(1);
-	if (!wasFullscreen)
-		Atari800OriginSave();
+    Atari800OriginSave();
 
-    if (FULLSCREEN) {
-        wasFullscreen = 1;
-        Uint32 texture_w, texture_h;
-        
-        // Get rid of old renderer
-        if (renderer)
-            SDL_DestroyRenderer(renderer);
-    
-        // Delete the old window, if it exists
-        if (MainGLScreen)
-            SDL_DestroyWindow(MainGLScreen);
-    
-        Log_print("Going Fullscreen at %d %d",w,h);
-        // Create new window
-        MainGLScreen = SDL_CreateWindow(windowCaption,
-                                        SDL_WINDOWPOS_UNDEFINED,
-                                        SDL_WINDOWPOS_UNDEFINED,
-                                        w, h, SDL_WINDOW_FULLSCREEN_DESKTOP |  SDL_WINDOW_ALLOW_HIGHDPI);
-        SDL_SetHint(SDL_HINT_RENDER_DRIVER, "metal");
-        renderer = SDL_CreateRenderer(MainGLScreen, -1, 0);
-        if ((AF80_enabled || BIT3_enabled) && PLATFORM_80col)
-            SDL_RenderSetScale(renderer, 4.0, 4.0);
-        else
-            SDL_RenderSetScale(renderer, 2.0, 2.0);
-
-        // Save Mac Window for later use
-        SDL_SysWMinfo wmInfo;
-        SDL_VERSION(&wmInfo.version);
-        SDL_GetWindowWMInfo(MainGLScreen, &wmInfo);
-        Atari800WindowCreate(wmInfo.info.cocoa.window);
-
-        fullscreenWidth = w / 2;
-        fullscreenHeight = h / 2;
-
-        // Delete the old textures
-        if(MainScreen)
-            SDL_FreeSurface(MainScreen);
-
-        // Create the SDL texture
-        texture_w = power_of_two(1024);
-        texture_h = power_of_two(512);
-        MainScreen = SDL_CreateRGBSurface(0, texture_w, texture_h, 16,
-                        0x0000F800, 0x000007E0, 0x0000001F, 0x00000000);
-        
-        // Make sure the screens are cleared to black
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-        SDL_RenderClear(renderer);
-
-        wasOpenGl = TRUE;
-        }
-    else {
+   {
         Uint32 texture_w, texture_h;
 
         // Get rid of old renderer
@@ -844,8 +781,7 @@ void SetVideoMode(int w, int h, int bpp)
         
         // Delete the old window, if it exists
         if (MainGLScreen) {
-            if (!wasFullscreen)
-                Atari800OriginSave();
+            Atari800OriginSave();
             SDL_DestroyWindow(MainGLScreen);
         }
         
@@ -890,18 +826,7 @@ void SetVideoMode(int w, int h, int bpp)
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
 
-        wasOpenGl = TRUE;
-			
-        if (!FULLSCREEN && wasFullscreen) {
-            wasFullscreen = 0;
-            usleep(1000000); // Wait for Sceen redraw so new SDL Window is open
-			if (mediaStatusWindowOpen)
-				MediaManagerStatusWindowShow();
-			if (functionKeysWindowOpen)
-				ControlManagerFunctionKeysWindowShow();
-            }
-        if (!FULLSCREEN)
-            Atari800OriginRestore();
+        Atari800OriginRestore();
         }
 
     PauseAudio(0);
@@ -929,14 +854,7 @@ void SetNewVideoMode(int w, int h, int bpp)
     // aspect ratio, floats needed
     ww = w;
     hh = h;
-    if (FULLSCREEN) {
-        if (ww * 0.75 < hh)
-            hh = ww * 0.75;
-        else
-            ww = hh / 0.75;
-		Screen_visible_x2 = 352;
-        }
-    else {
+    {
         switch (WIDTH_MODE) {
             case SHORT_WIDTH_MODE:
                 if (ww * 0.75 < hh)
@@ -987,10 +905,7 @@ void SetNewVideoMode(int w, int h, int bpp)
                 }
             }
 
-        if (FULLSCREEN)
-            SetVideoMode(2*w, 2*h, bpp);
-        else
-			SetVideoMode(scaleFactorFloat*(double)w, scaleFactorFloat*(double)h, bpp);
+        SetVideoMode(scaleFactorFloat*(double)w, scaleFactorFloat*(double)h, bpp);
 
         SDL_ATARI_BPP = 32;
 
@@ -1012,34 +927,9 @@ void SetNewVideoMode(int w, int h, int bpp)
     else
         SDL_SetRelativeMouseMode(SDL_FALSE);
     
-    if (FULLSCREEN) {
-        int win_x, win_y;
-        SDL_GetWindowSize(MainGLScreen, &win_x, &win_y);
-        SDL_WarpMouseInWindow(MainGLScreen, win_x/2, win_y/2);
-    }
-        
     /* Clear the alternate page, so the first redraw is entire screen */
     if (Screen_atari_b)
         memset(Screen_atari_b, 0, (Screen_HEIGHT * Screen_WIDTH));
-}
-
-/*------------------------------------------------------------------------------
-*  SwitchFullscreen - Called by user interface to switch between Fullscreen and 
-*    windowed modes.
-*-----------------------------------------------------------------------------*/
-void SwitchFullscreen()
-{
-    FULLSCREEN = 1 - FULLSCREEN;
-    if (!FULLSCREEN) {
-        CreateWindowCaption();
-        UpdateMediaManagerInfo();
-        SetSoundManagerStereo(POKEYSND_stereo_enabled);
-        SetSoundManagerRecording(SndSave_IsSoundFileOpen());
-        }
-    SetNewVideoMode(our_width, our_height,
-                    MainScreen->format->BitsPerPixel);
-    Atari_DisplayScreen((UBYTE *) Screen_atari);
-	copyStatus = COPY_IDLE;
 }
 
 void PLATFORM_Switch80Col(void)
@@ -1055,8 +945,7 @@ void PLATFORM_Switch80Col(void)
         SDL_RenderSetScale(renderer, scaleFactorFloat, scaleFactorFloat);
     Atari_DisplayScreen((UBYTE *) Screen_atari);
     CreateWindowCaption();
-    if (!FULLSCREEN)
-        SDL_SetWindowTitle(MainGLScreen, windowCaption);
+    SDL_SetWindowTitle(MainGLScreen, windowCaption);
     copyStatus = COPY_IDLE;
 }
 
@@ -1066,8 +955,7 @@ void PLATFORM_Switch80ColMode(void)
                     MainScreen->format->BitsPerPixel);
     Atari_DisplayScreen((UBYTE *) Screen_atari);
     CreateWindowCaption();
-    if (!FULLSCREEN)
-        SDL_SetWindowTitle(MainGLScreen, windowCaption);
+    SDL_SetWindowTitle(MainGLScreen, windowCaption);
     copyStatus = COPY_IDLE;
 }
 
@@ -1092,7 +980,7 @@ void SwitchScaleMode(int scaleMode)
 void SwitchShowFps()
 {
     Screen_show_atari_speed = 1 - Screen_show_atari_speed;
-    if (!Screen_show_atari_speed && !FULLSCREEN)
+    if (!Screen_show_atari_speed)
         SDL_SetWindowTitle(MainGLScreen, windowCaption);
     SetDisplayManagerFps(Screen_show_atari_speed);
 }
@@ -1121,12 +1009,10 @@ void SwitchGrabMouse()
 void SwitchWidth(int width)
 {
     WIDTH_MODE = width;
-    if (!FULLSCREEN) {
-        SetNewVideoMode(our_width, our_height,
-                        MainScreen->format->BitsPerPixel);
-		full_display = FULL_DISPLAY_COUNT;
-        Atari_DisplayScreen((UBYTE *) Screen_atari);
-     }
+    SetNewVideoMode(our_width, our_height,
+                    MainScreen->format->BitsPerPixel);
+    full_display = FULL_DISPLAY_COUNT;
+    Atari_DisplayScreen((UBYTE *) Screen_atari);
 	SetDisplayManagerWidthMode(width);
 	copyStatus = COPY_IDLE;
 }
@@ -1415,11 +1301,6 @@ int Atari_Keyboard_International(void)
     if (inverseFunctionPressed) {
         inverseFunctionPressed = 0;
         return AKEY_ATARI;
-    }
-    
-    if (requestFullScreenUI) {
-        requestFullScreenUI = 0;
-        return AKEY_UI;
     }
     
     if (pasteState != PASTE_IDLE) {
@@ -1740,7 +1621,6 @@ int Atari_Keyboard_International(void)
      here.  The reason for this, is due to the SDL lib construction,
      all key events go to the SDL app, so the menus don't handle them
      directly */
-    UI_alt_function = -1;
     if (kbhits[SDL_SCANCODE_LGUI]) {
         if (key_pressed) {
             switch(lastkey) {
@@ -1756,27 +1636,16 @@ int Atari_Keyboard_International(void)
                     }
                     break;
                 case SDLK_COMMA:
-                    if (!FULLSCREEN)
-                        RunPreferences();
+                    RunPreferences();
                     break;
                 case SDLK_k:
                     SwitchShowFps();
                     break;
                 case SDLK_r:
-                    if (FULLSCREEN)
-                        UI_alt_function = UI_MENU_RUN;
-                    else
-                        MediaManagerLoadExe();
-                    break;
-                case SDLK_y:
-                    if (FULLSCREEN)
-                        UI_alt_function = UI_MENU_SYSTEM;
+                    MediaManagerLoadExe();
                     break;
                 case SDLK_u:
-                    if (FULLSCREEN)
-                        UI_alt_function = UI_MENU_SOUND;
-                    else
-                        SoundManagerStereoDo();
+                    SoundManagerStereoDo();
                     break;
                 case SDLK_RIGHTBRACKET:
                     SoundManagerIncreaseVolume();
@@ -1788,72 +1657,43 @@ int Atari_Keyboard_International(void)
                     ControlManagerPauseEmulator();
                     break;
                 case SDLK_t:
-                    if (FULLSCREEN)
-                        UI_alt_function = UI_MENU_SOUND_RECORDING;
-                    else
-                        SoundManagerRecordingDo();
+                    SoundManagerRecordingDo();
                     break;
                 case SDLK_a:
-                    if (FULLSCREEN)
-                        UI_alt_function = UI_MENU_ABOUT;
-                    else
-                        requestSelectAll = 1; //SDLMainSelectAll();
+                    requestSelectAll = 1; //SDLMainSelectAll();
                     break;
                 case SDLK_s:
-                    if (FULLSCREEN)
-                        UI_alt_function = UI_MENU_SAVESTATE;
-                    else {
-                        if (INPUT_key_shift)
-                            PreferencesSaveConfiguration();
-                        else
-                            ControlManagerSaveState();
-                    }
-                    break;
-                case SDLK_d:
-                    if (FULLSCREEN)
-                        UI_alt_function = UI_MENU_DISK;
+                    if (INPUT_key_shift)
+                        PreferencesSaveConfiguration();
                     else
-                        MediaManagerRunDiskManagement();
+                        ControlManagerSaveState();
+                     break;
+                case SDLK_d:
+                    MediaManagerRunDiskManagement();
                     break;
                 case SDLK_e:
-                    if (!FULLSCREEN) {
-                        if (INPUT_key_shift)
-                            MediaManagerRunSectorEditor();
-                        else
-                            MediaManagerRunDiskEditor();
-                    }
+                    if (INPUT_key_shift)
+                        MediaManagerRunSectorEditor();
+                    else
+                        MediaManagerRunDiskEditor();
                     break;
                 case SDLK_n:
-                    if (!FULLSCREEN)
-                        MediaManagerShowCreatePanel();
+                    MediaManagerShowCreatePanel();
                     break;
                 case SDLK_w:
-                    if (!FULLSCREEN)
-                        SDLMainCloseWindow();
+                    SDLMainCloseWindow();
                     break;
                 case SDLK_l:
-                    if (FULLSCREEN) {
-                        if (INPUT_key_shift)
-                            UI_alt_function = UI_MENU_LOADCFG;
-                        else
-                            UI_alt_function = UI_MENU_LOADSTATE;
-                    }
-                    else {
-                        if (INPUT_key_shift)
-                            PreferencesLoadConfiguration();
-                        else
-                            ControlManagerLoadState();
-                    }
+                    if (INPUT_key_shift)
+                        PreferencesLoadConfiguration();
+                    else
+                        ControlManagerLoadState();
                     break;
                 case SDLK_o:
-                    if (FULLSCREEN)
-                        UI_alt_function = UI_MENU_CARTRIDGE;
-                    else {
-                        if (INPUT_key_shift)
-                            MediaManagerRemoveCartridge();
-                        else
-                            MediaManagerInsertCartridge();
-                    }
+                    if (INPUT_key_shift)
+                        MediaManagerRemoveCartridge();
+                    else
+                        MediaManagerInsertCartridge();
                     break;
                 case SDLK_BACKSLASH:
                     return AKEY_PBI_BB_MENU;
@@ -1865,7 +1705,6 @@ int Atari_Keyboard_International(void)
                 case SDLK_6:
                 case SDLK_7:
                 case SDLK_8:
-                    if (!FULLSCREEN) {
                         if (CONTROL)
                             MediaManagerRemoveDisk(lastkey - SDLK_1 + 1);
                         else if (key_option & (lastkey <= SDLK_7))
@@ -1875,14 +1714,10 @@ int Atari_Keyboard_International(void)
                         }
                         else
                             MediaManagerInsertDisk(lastkey - SDLK_1 + 1);
-                    }
-                    else if (key_option & (lastkey == SDLK_8))
-                        requestScaleModeChange = 1;
                     break;
                 case SDLK_0:
-                    if (!FULLSCREEN)
-                        if (CONTROL)
-                            MediaManagerRemoveDisk(0);
+                    if (CONTROL)
+                        MediaManagerRemoveDisk(0);
                     if (key_option)
                         requestScaleModeChange = 3;
                     break;
@@ -1920,10 +1755,7 @@ int Atari_Keyboard_International(void)
         }
         
         key_pressed = 0;
-        if (UI_alt_function != -1)
-            return AKEY_UI;
-        else
-            return AKEY_NONE;
+        return AKEY_NONE;
     }
     
     
@@ -2251,8 +2083,7 @@ int Atari_Keyboard_International(void)
                 key_pressed = 0;
                 return AKEY_SCREENSHOT;
             case SDLK_F6:
-                if (!FULLSCREEN)
-                    SwitchGrabMouse();
+                SwitchGrabMouse();
                 key_pressed = 0;
                 return AKEY_NONE;
             case SDLK_INSERT:
@@ -2842,8 +2673,7 @@ void PLATFORM_Initialise(int *argc, char *argv[])
         return;     /* return before changing the gfx mode */
     
     SetNewVideoMode(our_width, our_height, our_bpp);
-	if (!FULLSCREEN)
-        Atari800OriginSet();
+    Atari800OriginSet();
     CalcPalette();
     SetPalette();
     
@@ -3055,12 +2885,7 @@ void Atari_DisplayScreen(UBYTE * screen)
     static int bit3Frame = 0;
     SDL_Rect rect;
 	
-    if (FULLSCREEN) {
-        width = Screen_WIDTH - 2 * 24 - 2 * 8;
-        jumped = 24 + 8;
-        }
-    else {
-        switch (WIDTH_MODE) {
+    switch (WIDTH_MODE) {
         case SHORT_WIDTH_MODE:
             width = Screen_WIDTH - 2 * 24 - 2 * 8;
             jumped = 24 + 8;
@@ -3079,7 +2904,6 @@ void Atari_DisplayScreen(UBYTE * screen)
             exit(-1);
             break;
         }
-    }
 	
     if (PLATFORM_80col && XEP80_enabled) {
 		width = XEP80_SCRN_WIDTH;
@@ -3157,7 +2981,7 @@ void Atari_DisplayScreen(UBYTE * screen)
     }
     
     // If not in mouse emulation or Fullscreen, check for copy selection
-	if (!FULLSCREEN && INPUT_mouse_mode == INPUT_MOUSE_OFF)
+	if (INPUT_mouse_mode == INPUT_MOUSE_OFF)
 		ProcessCopySelection(&first_row, &last_row, requestSelectAll);
 	requestSelectAll = 0;
 	
@@ -4353,18 +4177,6 @@ void CountFPS()
     static int ticks1 = 0, ticks2, shortframes, fps;
 	char title[40];
     char count[20];
-	static UBYTE SpeedLED[] = {
-	0x1f, 0x1b, 0x15, 0x15, 0x15, 0x1b, 0x1f, /* 0 */
-	0x1f, 0x1b, 0x13, 0x1b, 0x1b, 0x1b, 0x1f, /* 1 */
-	0x1f, 0x13, 0x1d, 0x1b, 0x17, 0x11, 0x1f, /* 2 */
-	0x1f, 0x13, 0x1d, 0x1b, 0x1d, 0x13, 0x1f, /* 3 */
-	0x1f, 0x1d, 0x19, 0x15, 0x11, 0x1d, 0x1f, /* 4 */
-	0x1f, 0x11, 0x17, 0x11, 0x1d, 0x13, 0x1f, /* 5 */
-	0x1f, 0x1b, 0x17, 0x13, 0x15, 0x1b, 0x1f, /* 6 */
-	0x1f, 0x11, 0x1d, 0x1b, 0x1b, 0x1b, 0x1f, /* 7 */
-	0x1f, 0x1b, 0x15, 0x1b, 0x15, 0x1b, 0x1f, /* 8 */
-	0x1f, 0x1b, 0x15, 0x19, 0x1d, 0x1b, 0x1f  /* 9 */
-	};
         
     if (Screen_show_atari_speed) {    
         if (ticks1 == 0)
@@ -4374,49 +4186,20 @@ void CountFPS()
         if (ticks2 - ticks1 > 1000) {
             ticks1 = ticks2;
 			fps = shortframes;
-			if (!FULLSCREEN) {
-				strcpy(title,windowCaption);
-				sprintf(count," - %3d fps",shortframes);
-				strcat(title,count);
-                SDL_SetWindowTitle(MainGLScreen, title);
-
-				}
+            strcpy(title,windowCaption);
+            sprintf(count," - %3d fps",shortframes);
+            strcat(title,count);
+            SDL_SetWindowTitle(MainGLScreen, title);
             shortframes = 0;
 			}
-		if (FULLSCREEN)
-				{
-				char speed[4];
-				UBYTE mask  = 1 << (SPEEDLED_FONT_WIDTH - 1);
-				int x, y;
-				int len, i;
-				UBYTE *source;
-				UBYTE *target;
-
-				sprintf(speed, "%d", fps);
-				len = strlen(speed);
-
-				for (i = 0; i < len; i++)
-					{
-					source = SpeedLED + (speed[i] - '0') * SPEEDLED_FONT_HEIGHT;
-					target = ((UBYTE *) Screen_atari) + 32 +
-						((Screen_visible_y2 - SPEEDLED_FONT_HEIGHT) * Screen_WIDTH) +
-						(i * SPEEDLED_FONT_WIDTH);
-
-					for (y = 0; y < SPEEDLED_FONT_HEIGHT; y++) {
-						for (x = 0; x < SPEEDLED_FONT_WIDTH; x++)
-							*target++ = (UBYTE)(*source & mask >> x ? SPEEDLED_COLOR : 0);
-						target += Screen_WIDTH - SPEEDLED_FONT_WIDTH;
-						++source;
-						}
-					}
-				}
-            }
+        }
 }
 
 void HandleResizeRequest()
 {
     scaleFactorFloat = ((double) requested_w /
                         (double) current_w) * scaleFactorFloat;
+    FULLSCREEN_MACOS = Atari800WindowIsFullscreen();
     SDL_RenderSetScale(renderer, scaleFactorFloat, scaleFactorFloat);
     current_w = requested_w;
     current_h = requested_h;
@@ -4694,17 +4477,9 @@ void ProcessMacPrefsChange()
 				MainScreen->format->BitsPerPixel);
             Atari_DisplayScreen((UBYTE *) Screen_atari);
             }
-        if (openGlChanged)
-            {
-			SetNewVideoMode(our_width, our_height,
-				MainScreen->format->BitsPerPixel);
-			CalcPalette();
-			SetPalette();
-            Atari_DisplayScreen((UBYTE *) Screen_atari);
-            }
         if (showfpsChanged)
             {
-			if (!Screen_show_atari_speed && !FULLSCREEN)
+			if (!Screen_show_atari_speed)
                 SDL_SetWindowTitle(MainGLScreen, windowCaption);
 			SetDisplayManagerFps(Screen_show_atari_speed);
             }
@@ -5276,9 +5051,9 @@ int SDL_main(int argc, char **argv)
 
     if (fileToLoad) 
         SDLMainLoadStartupFile();
-	if (mediaStatusWindowOpen && !FULLSCREEN)
+	if (mediaStatusWindowOpen)
 		MediaManagerStatusWindowShow();
-	if (functionKeysWindowOpen && !FULLSCREEN)
+	if (functionKeysWindowOpen)
 		ControlManagerFunctionKeysWindowShow();
 	Atari800MakeKeyWindow();
 
@@ -5348,33 +5123,6 @@ int SDL_main(int argc, char **argv)
 				GTIA_consol_table[1] = GTIA_consol_table[2] = 0x0b;
 				}
             Atari800_Warmstart();
-            break;
-        case AKEY_UI:
-            if (FULLSCREEN) {
-				int was_xep80;
-                PauseAudio(1);
-				if (speed_limit == 0) { 
-					deltatime = real_deltatime;
-#ifdef SYNCHRONIZED_SOUND			 
-					init_mzpokeysnd_sync();
-#endif			 
-				}
-				was_xep80 = PLATFORM_80col;
-				if (was_xep80)
-					PLATFORM_Switch80Col();
-                UI_Run();
-				if (speed_limit == 0) { 
-					deltatime = DELTAFAST;
-#ifdef SYNCHRONIZED_SOUND			 
-					init_mzpokeysnd_sync();
-#endif			 
-				}
-				if (was_xep80)
-					PLATFORM_Switch80Col();
-				memset(Screen_atari_b, 0, (Screen_HEIGHT * Screen_WIDTH));
-				Atari_DisplayScreen((UBYTE *) Screen_atari);
-                PauseAudio(0);
-                }
             break;
         case AKEY_SCREENSHOT:
             Save_TIFF_file(Find_TIFF_name());
@@ -5520,7 +5268,7 @@ int SDL_main(int argc, char **argv)
             Devices_Frame();
             GTIA_Frame();
             ANTIC_Frame(TRUE);
-			if (mediaStatusWindowOpen && !FULLSCREEN)
+			if (mediaStatusWindowOpen)
 				MAC_LED_Frame();
 			if (mediaStatusWindowOpen)
 				Casette_Frame();

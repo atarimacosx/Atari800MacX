@@ -15,8 +15,6 @@
 #import "preferences_c.h"
 
 /* Keys in the dictionary... */
-#define FullScreen @"FullScreen"
-#define OpenGl @"OpenGl"
 #define ScaleFactor @"ScaleFactor"
 #define ScaleFactorFloat @"ScaleFactorFloat"
 #define ScaleMode @"ScaleMode"
@@ -344,7 +342,6 @@
 	IBOutlet id muteAudioButton;
     IBOutlet id diskDriveSoundButton;
     IBOutlet id exeFileDirField;
-    IBOutlet id fullScreenMatrix;
     IBOutlet id fpsButton;
     IBOutlet id imageDirField;
     IBOutlet id printDirField;
@@ -427,7 +424,6 @@
     IBOutlet id mouseHOffsetField;
     IBOutlet id mouseVOffsetField;
     IBOutlet id mouseInertiaField;
-	IBOutlet id openglMatrix;
     IBOutlet id paletteChooseButton;
     IBOutlet id paletteField;
     IBOutlet id gamepadConfigPulldown;

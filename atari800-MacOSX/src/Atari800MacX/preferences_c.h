@@ -10,8 +10,6 @@
 #include "stdio.h"
 
 typedef struct ATARI800MACX_PREF {
-                int fullScreen; 
-				int openGl;
                 int scaleFactor;
                 double scaleFactorFloat;
                 int widthMode;
@@ -162,7 +160,6 @@ typedef struct ATARI800MACX_PREF {
 } ATARI800MACX_PREF;
 
 typedef struct ATARI800MACX_PREFSAVE {
-                int fullScreen; 
                 int scaleFactor;
                 double scaleFactorFloat;
                 int widthMode; 

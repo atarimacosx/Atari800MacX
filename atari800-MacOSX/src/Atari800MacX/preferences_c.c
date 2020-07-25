@@ -47,9 +47,7 @@ extern int paletteBlack;
 extern int paletteWhite;
 extern int paletteIntensity;
 extern int paletteColorShift;
-extern int FULLSCREEN;
 extern int PLATFORM_80col;
-extern int OPENGL;
 extern int SCALE_MODE;
 extern int scaleFactor;
 extern double scaleFactorFloat;
@@ -170,7 +168,6 @@ static ATARI800MACX_PREF prefs, lastPrefs;
 static ATARI800MACX_PREFSAVE prefssave;
 /* Variables used to determine what has changed after a preferences update */
 int displaySizeChanged;
-int openGlChanged;
 int scaleModeChanged;
 int showfpsChanged;
 int artifChanged;
@@ -272,7 +269,6 @@ void saveMediaPrefs() {
 }
 
 void savePrefs() {
-	prefssave.fullScreen = FULLSCREEN; 
     prefssave.scaleFactor = scaleFactor;
     prefssave.scaleFactorFloat = scaleFactorFloat;
     prefssave.widthMode = WIDTH_MODE;
@@ -612,16 +608,10 @@ void CalculatePrefsChanged()
 	int new_axlon = 0;
 	int new_mosaic = 0;
 
-    if ((FULLSCREEN != prefs.fullScreen) ||
-        (WIDTH_MODE != prefs.widthMode))
+    if (WIDTH_MODE != prefs.widthMode)
         displaySizeChanged = TRUE;
     else
         displaySizeChanged = FALSE;
-		
-    if (OPENGL != prefs.openGl)
-        openGlChanged = TRUE;
-    else
-        openGlChanged = FALSE;
 		
     if (Screen_show_atari_speed != prefs.showFPS)
         showfpsChanged = TRUE;
@@ -771,9 +761,6 @@ int loadMacPrefs(int firstTime)
     int i,j;
     printf("-----------------------------------\n");
 
-
-    FULLSCREEN = prefs.fullScreen;
-    OPENGL = prefs.openGl;
 
     Atari800_collisions_in_skipped_frames = prefs.spriteCollisions;
     scaleFactor = prefs.scaleFactor;

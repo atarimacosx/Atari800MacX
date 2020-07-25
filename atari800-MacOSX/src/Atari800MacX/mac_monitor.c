@@ -55,7 +55,6 @@ extern int cycles[256];
 
 extern UBYTE *atarixe_memory;
 extern ULONG atarixe_memory_size;
-extern int FULLSCREEN;
 extern int ControlManagerMonitorPrintf(const char *format, ...);
 extern int ControlManagerMonitorPuts(const char *string);
 #ifdef MACOSX_MON_ENHANCEMENTS

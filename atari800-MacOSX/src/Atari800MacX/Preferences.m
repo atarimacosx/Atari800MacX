@@ -49,7 +49,6 @@ extern ATARI825_PREF prefs825;
 extern ATARI1020_PREF prefs1020;
 extern EPSON_PREF prefsEpson;
 extern ATASCII_PREF prefsAtascii;
-extern int FULLSCREEN;
 extern int UI_alt_function;
 extern int diskDriveSound;
 
@@ -180,8 +179,6 @@ static NSDictionary *defaultValues() {
     
     if (!dict) {
         dict = [[NSDictionary alloc] initWithObjectsAndKeys:
-                [NSNumber numberWithBool:NO], FullScreen, 
-                [NSNumber numberWithBool:YES], OpenGl, 
                 [NSNumber numberWithInt:0], ScaleMode,
                 [NSNumber numberWithInt:2], ScaleFactor,
                 [NSNumber numberWithFloat:2.0], ScaleFactorFloat,
@@ -591,8 +588,6 @@ static Preferences *sharedInstance = nil;
     int i,numberGamepadConfigs;
     int currNumConfigs;
   
-    if (FULLSCREEN)
-        return;
 	/* Transfer the changed prefs values back from emulator */
 	savePrefs();
 	[self commitDisplayedValues];
@@ -710,9 +705,6 @@ static Preferences *sharedInstance = nil;
 
     if (!prefTabView) return;	/* UI hasn't been loaded... */
 
-    [fullScreenMatrix selectCellWithTag:[[displayedValues objectForKey:FullScreen] boolValue] ? 1 : 0];
-    [openglMatrix selectCellWithTag:[[displayedValues objectForKey:OpenGl] boolValue] ? 1 : 0];
-    [openglMatrix setEnabled:NO];
     [scaleModeMatrix  selectCellWithTag:[[displayedValues objectForKey:ScaleMode] intValue]];
     [widthModeMatrix  selectCellWithTag:[[displayedValues objectForKey:WidthMode] intValue]];
     [tvModeMatrix  selectCellWithTag:[[displayedValues objectForKey:TvMode] intValue]];
@@ -1474,8 +1466,6 @@ static Preferences *sharedInstance = nil;
         fourteen = [[NSNumber alloc] initWithInt:14];
     }
 
-    [displayedValues setObject:[[fullScreenMatrix selectedCell] tag] ? yes : no forKey:FullScreen];
-    [displayedValues setObject:[[openglMatrix selectedCell] tag] ? yes : no forKey:OpenGl];
 	switch([[scaleModeMatrix selectedCell] tag]) {
         case 0:
 		default:
@@ -3240,8 +3230,6 @@ static Preferences *sharedInstance = nil;
     NSString *buttonKey, *button5200Key;
     
     prefs = getPrefStorage();
-    prefs->fullScreen = [[curValues objectForKey:FullScreen] intValue]; 
-    prefs->openGl = [[curValues objectForKey:OpenGl] intValue]; 
     prefs->spriteCollisions = [[curValues objectForKey:SpriteCollisions] intValue];
     prefs->scaleFactor = [[curValues objectForKey:ScaleFactor] intValue];
     prefs->scaleFactorFloat = [[curValues objectForKey:ScaleFactorFloat] floatValue];
@@ -3511,7 +3499,6 @@ static Preferences *sharedInstance = nil;
         thirteen = [[NSNumber alloc] initWithInt:13];
     }
 
-    [displayedValues setObject:prefssave->fullScreen ? yes : no forKey:FullScreen];
     [displayedValues setObject:[NSNumber numberWithDouble:prefssave->scaleFactorFloat] forKey:ScaleFactorFloat];
     switch(prefssave->scaleFactor) {
         case 1:
@@ -4592,8 +4579,6 @@ static Preferences *sharedInstance = nil;
     
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithCapacity:10];
-    getBoolDefault(FullScreen);
-    getBoolDefault(OpenGl);
     getIntDefault(ScaleMode);
     getIntDefault(ScaleFactor);
     getFloatDefault(ScaleFactorFloat);
@@ -4858,8 +4843,6 @@ static Preferences *sharedInstance = nil;
 /* Save preferences to system defaults */
 + (void)savePreferencesToDefaults:(NSDictionary *)dict {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    setBoolDefault(FullScreen);
-    setBoolDefault(OpenGl);
     setIntDefault(ScaleMode);
     setFloatDefault(ScaleFactorFloat);
     setIntDefault(ScaleFactor);
@@ -5105,8 +5088,6 @@ static Preferences *sharedInstance = nil;
 	[self commitDisplayedValues];
 	dict = [[NSMutableDictionary alloc] initWithCapacity:100];
 	[dict setDictionary:curValues];
-    setConfig(FullScreen);
-    setConfig(OpenGl);
     setConfig(ScaleMode);
     setConfig(ScaleFactor);
     setConfig(ScaleFactorFloat);
@@ -5450,8 +5431,6 @@ static Preferences *sharedInstance = nil;
 		return;
 	}
 
-    getConfig(FullScreen);
-    getConfig(OpenGl);
     getConfig(ScaleMode);
     getConfig(ScaleFactor);
     getConfig(ScaleFactorFloat);

@@ -29,6 +29,10 @@ void Atari800WindowFullscreen() {
     [our_window toggleFullScreen:nil];
 }
 
+int Atari800WindowIsFullscreen() {
+    return (([our_window styleMask] & NSWindowStyleMaskFullScreen) == NSWindowStyleMaskFullScreen);
+}
+
 void Atari800OriginSet() {
     [Atari800Window applicationWindowOriginSetPrefs];
 }
