@@ -319,6 +319,9 @@ void PauseAudio(int pause);
 void CreateWindowCaption(void);
 void ProcessCopySelection(int *first_row, int *last_row, int selectAll);
 void HandleResizeRequest(void);
+int  GetScreenWidth(void);
+void CalcWindowSize(int *width, int *height);
+void SetWindowAspectRatio(void);
 
 // joystick emulation - Future enhancement will allow user to set these in 
 //   Preferences.
@@ -804,12 +807,7 @@ void SetVideoMode(int w, int h, int bpp)
     SDL_VERSION(&wmInfo.version);
     SDL_GetWindowWMInfo(MainGLScreen, &wmInfo);
     Atari800WindowCreate(wmInfo.info.cocoa.window);
-    if (WIDTH_MODE == SHORT_WIDTH_MODE)
-        Atari800WindowAspectSet(320,240);
-    else if (WIDTH_MODE == DEFAULT_WIDTH_MODE)
-        Atari800WindowAspectSet(336,240);
-    else
-        Atari800WindowAspectSet(384,240);
+    SetWindowAspectRatio();
 
     // Delete the old textures
     if(MainScreen)
@@ -944,13 +942,33 @@ int GetScreenWidth(void)
     return width;
 }
 
-void PLATFORM_Switch80Col(void)
+void CalcWindowSize(int *width, int *height)
+{
+    int sWidth = GetScreenWidth();
+    
+    *width = (double) sWidth * scaleFactorFloat;
+    *height = (double) Screen_HEIGHT * scaleFactorFloat;
+    
+    *width *= 8;
+    *width /= 8;
+    *height *= 8;
+    *height /= 8;
+}
+
+void SetWindowAspectRatio(void)
+{
+    if (WIDTH_MODE == SHORT_WIDTH_MODE)
+        Atari800WindowAspectSet(320,Screen_HEIGHT);
+    else if (WIDTH_MODE == DEFAULT_WIDTH_MODE)
+        Atari800WindowAspectSet(336,Screen_HEIGHT);
+    else
+        Atari800WindowAspectSet(384,Screen_HEIGHT);
+}
+
+static void SetRenderScale(void)
 {
     int width;
     
-    PLATFORM_80col = 1 - PLATFORM_80col;
-    //SetNewVideoMode(our_width, our_height,
-    //                MainScreen->format->BitsPerPixel);
     width = GetScreenWidth();
 
     if (PLATFORM_80col) {
@@ -966,20 +984,27 @@ void PLATFORM_Switch80Col(void)
     }
     else
         SDL_RenderSetScale(renderer, scaleFactorFloat, scaleFactorFloat);
+}
+
+static void Switch80Col(void)
+{
+    SetRenderScale();
     Atari_DisplayScreen((UBYTE *) Screen_atari);
     CreateWindowCaption();
     SDL_SetWindowTitle(MainGLScreen, windowCaption);
     copyStatus = COPY_IDLE;
 }
 
+void PLATFORM_Switch80Col(void)
+{
+
+    PLATFORM_80col = 1 - PLATFORM_80col;
+    Switch80Col();
+}
+
 void PLATFORM_Switch80ColMode(void)
 {
-    SetNewVideoMode(our_width, our_height,
-                    MainScreen->format->BitsPerPixel);
-    Atari_DisplayScreen((UBYTE *) Screen_atari);
-    CreateWindowCaption();
-    SDL_SetWindowTitle(MainGLScreen, windowCaption);
-    copyStatus = COPY_IDLE;
+    Switch80Col();
 }
 
 /*------------------------------------------------------------------------------
@@ -990,8 +1015,6 @@ void SwitchScaleMode(int scaleMode)
 {
 	SCALE_MODE = scaleMode;
 	SetDisplayManagerScaleMode(scaleMode);
-	SetNewVideoMode(our_width, our_height,
-                    MainScreen->format->BitsPerPixel);
 	full_display = FULL_DISPLAY_COUNT;
     Atari_DisplayScreen((UBYTE *) Screen_atari);
 }
@@ -1031,9 +1054,12 @@ void SwitchGrabMouse()
 *-----------------------------------------------------------------------------*/
 void SwitchWidth(int width)
 {
+    int w, h;
+    
     WIDTH_MODE = width;
-    SetNewVideoMode(our_width, our_height,
-                    MainScreen->format->BitsPerPixel);
+    CalcWindowSize(&w, &h);
+    SetWindowAspectRatio();
+    SDL_SetWindowSize(MainGLScreen, w, h);
     full_display = FULL_DISPLAY_COUNT;
     Atari_DisplayScreen((UBYTE *) Screen_atari);
 	SetDisplayManagerWidthMode(width);
@@ -4213,13 +4239,11 @@ void HandleResizeRequest()
     FULLSCREEN_MACOS = Atari800WindowIsFullscreen();
     if (FULLSCREEN_MACOS) {
         SDL_RenderSetScale(renderer, (double) requested_w /
-        (double) GetScreenWidth(), (double) requested_h/ 240.0);
+        (double) GetScreenWidth(), (double) requested_h/ (double) Screen_HEIGHT);
     }
     else {
         scaleFactorFloat = ((double) requested_w /
                             (double) GetScreenWidth());
-        //scaleFactorFloat = ((double) requested_w /
-        //                    (double) current_w) * scaleFactorFloat;
         SDL_RenderSetScale(renderer, scaleFactorFloat, scaleFactorFloat);
         }
     current_w = requested_w;
@@ -4494,9 +4518,7 @@ void ProcessMacPrefsChange()
         loadMacPrefs(FALSE);
         if (displaySizeChanged)
             {
-			SetNewVideoMode(our_width, our_height,
-				MainScreen->format->BitsPerPixel);
-            Atari_DisplayScreen((UBYTE *) Screen_atari);
+            SwitchWidth(WIDTH_MODE);
             }
         if (showfpsChanged)
             {
@@ -4506,11 +4528,7 @@ void ProcessMacPrefsChange()
             }
 		if (scaleModeChanged)
 			{
-			memset(Screen_atari, 0, (Screen_HEIGHT * Screen_WIDTH));
-			SetDisplayManagerScaleMode(SCALE_MODE);
-			SetNewVideoMode(our_width, our_height,
-                    MainScreen->format->BitsPerPixel);
-			Atari_DisplayScreen((UBYTE *) Screen_atari);
+            SwitchScaleMode(SCALE_MODE);
 			}
         if (artifChanged)
             {
