@@ -49,7 +49,15 @@
 #include "log.h"
 #include "input.h"
 #include "pbi.h"
-#include "emuio.h"
+
+#ifdef POKEYREC
+#include "pokeyrec.h"
+#endif
+
+#ifdef VOICEBOX
+#include "voicebox.h"
+#include "votraxsnd.h"
+#endif
 
 #ifdef POKEY_UPDATE
 void pokey_update(void);
@@ -89,7 +97,7 @@ void POKEY_SetRandomCounter(ULONG value)
 	random_scanline_counter = value;
 }
 
-UBYTE POKEY_GetByte(UWORD addr)
+UBYTE POKEY_GetByte(UWORD addr, int no_side_effects)
 {
 	UBYTE byte = 0xff;
 
@@ -144,6 +152,11 @@ UBYTE POKEY_GetByte(UWORD addr)
 		break;
 	case POKEY_OFFSET_SKSTAT:
 		byte = POKEY_SKSTAT + (CASSETTE_IOLineStatus() << 4);
+#ifdef VOICEBOX
+		if (VOICEBOX_enabled) {
+			byte = POKEY_SKSTAT + (VOTRAXSND_busy  << 4);
+		}
+#endif
 		break;
 	case 0x0C:
 		byte = Emuio_ReadByte();
@@ -234,13 +247,7 @@ void POKEY_PutByte(UWORD addr, UBYTE byte)
 		printf("WR: IRQEN = %x, PC = %x\n", POKEY_IRQEN, PC);
 #endif
 		POKEY_IRQST |= ~byte & 0xf7;	/* Reset disabled IRQs except XMTDONE */
-		if (POKEY_IRQEN & 0x20) {
-			SLONG delay;
-			delay = CASSETTE_GetInputIRQDelay();
-			if (delay > 0)
-				POKEY_DELAYED_SERIN_IRQ = delay;
-		}
-		if ((~POKEY_IRQST & POKEY_IRQEN) == 0 && PBI_IRQ == 0)
+		if ((~POKEY_IRQST & POKEY_IRQEN) == 0 && PBI_IRQ == 0 && PIA_IRQ == 0)
 			CPU_IRQ = 0;
 		else
 			CPU_GenerateIRQ();
@@ -253,6 +260,9 @@ void POKEY_PutByte(UWORD addr, UBYTE byte)
 			pot_scanline = 0;	/* slow pot mode */
 		break;
 	case POKEY_OFFSET_SEROUT:
+#ifdef VOICEBOX
+		VOICEBOX_SEROUTPutByte(byte);
+#endif
 		if ((POKEY_SKCTL & 0x70) == 0x20 && POKEY_siocheck())
 			SIO_PutByte(byte);
 		/* check if cassette 2-tone mode has been enabled */
@@ -291,10 +301,22 @@ void POKEY_PutByte(UWORD addr, UBYTE byte)
 #endif
 		break;
 	case POKEY_OFFSET_SKCTL:
+#ifdef VOICEBOX
+		VOICEBOX_SKCTLPutByte(byte);
+#endif
 		POKEY_SKCTL = byte;
 		POKEYSND_Update(POKEY_OFFSET_SKCTL, byte, 0, SOUND_GAIN);
 		if (byte & 4)
 			pot_scanline = 228;	/* fast pot mode - return results immediately */
+		if ((byte & 0x03) == 0) {
+			/* POKEY reset. */
+			/* Stop serial IO. */
+			POKEY_DELAYED_SERIN_IRQ = 0;
+			POKEY_DELAYED_SEROUT_IRQ = 0;
+			POKEY_DELAYED_XMTDONE_IRQ = 0;
+			CASSETTE_ResetPOKEY();
+			/* TODO other registers should also be reset. */
+		}
 		break;
 	case 0x0C:
 		Emuio_WriteByte(byte);
@@ -352,7 +374,7 @@ void POKEY_PutByte(UWORD addr, UBYTE byte)
 	}
 }
 
-void POKEY_Initialise(int *argc, char *argv[])
+int POKEY_Initialise(int *argc, char *argv[])
 {
 	int i;
 	ULONG reg;
@@ -405,7 +427,7 @@ void POKEY_Initialise(int *argc, char *argv[])
 #endif
 	{
 		random_scanline_counter =
-#ifdef WIN32
+#ifdef HAVE_WINDOWS_H
 		GetTickCount() % POKEY_POLY17_SIZE;
 #elif defined(HAVE_TIME)
 		time(NULL) % POKEY_POLY17_SIZE;
@@ -413,10 +435,12 @@ void POKEY_Initialise(int *argc, char *argv[])
 		0;
 #endif
 	}
-#if !defined(BASIC) && !defined(MACOSX)
+#ifndef BASIC
+#if 0 //MDGToDo
 	if (INPUT_Recording()) {
 		INPUT_RecordInt(random_scanline_counter);
 	}
+#endif
 #endif
 }
 
@@ -433,6 +457,10 @@ void POKEY_Frame(void)
 
 void POKEY_Scanline(void)
 {
+#ifdef POKEYREC
+    POKEYREC_Recorder();
+#endif
+
 #ifdef POKEY_UPDATE
 	pokey_update();
 #endif
@@ -447,21 +475,28 @@ void POKEY_Scanline(void)
 						/* but it looks to be the best place to put it. */
 #endif
 
+	/* on nonpatched i/o-operation, enable the cassette timing */
+	if (!ESC_enable_sio_patch) {
+		if (CASSETTE_AddScanLine())
+			POKEY_DELAYED_SERIN_IRQ = 1;
+	}
+
+	if ((POKEY_SKCTL & 0x03) == 0)
+		/* Don't process timers when POKEY is in reset mode. */
+		return;
+
 	if (pot_scanline < 228)
 		pot_scanline++;
 
 	random_scanline_counter += ANTIC_LINE_C;
 
-	/* on nonpatched i/o-operation, enable the cassette timing */
-	if (!ESC_enable_sio_patch)
-		CASSETTE_AddScanLine();
-
 	if (POKEY_DELAYED_SERIN_IRQ > 0) {
 		if (--POKEY_DELAYED_SERIN_IRQ == 0) {
+			/* Load a byte to SERIN - even when the IRQ is disabled. */
+			POKEY_SERIN = SIO_GetByte();
 			if (POKEY_IRQEN & 0x20) {
 				if (POKEY_IRQST & 0x20) {
 					POKEY_IRQST &= 0xdf;
-					POKEY_SERIN = SIO_GetByte();
 #ifdef DEBUG2
 					printf("SERIO: SERIN Interrupt triggered, bytevalue %02x\n", POKEY_SERIN);
 #endif
@@ -469,14 +504,14 @@ void POKEY_Scanline(void)
 				else {
 					POKEY_SKSTAT &= 0xdf;
 #ifdef DEBUG2
-					printf("SERIO: SERIN Interrupt triggered\n");
+					printf("SERIO: SERIN Interrupt triggered, bytevalue %02x\n", POKEY_SERIN);
 #endif
 				}
 				CPU_GenerateIRQ();
 			}
 #ifdef DEBUG2
 			else {
-				printf("SERIO: SERIN Interrupt missed\n");
+				printf("SERIO: SERIN Interrupt missed, bytevalue %02x\n", POKEY_SERIN);
 			}
 #endif
 		}
@@ -618,6 +653,7 @@ void POKEY_StateSave(void)
 	int shift_key = 0;
 	int keypressed = 0;
 
+	STATESAV_TAG(pokey);
 	StateSav_SaveUBYTE(&POKEY_KBCODE, 1);
 	StateSav_SaveUBYTE(&POKEY_IRQST, 1);
 	StateSav_SaveUBYTE(&POKEY_IRQEN, 1);

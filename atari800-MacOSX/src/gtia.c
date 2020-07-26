@@ -26,10 +26,12 @@
 #include <string.h>
 
 #include "antic.h"
+#include "binload.h"
 #include "cassette.h"
+#include "cpu.h"
 #include "gtia.h"
-#ifndef BASIC
 #include "input.h"
+#ifndef BASIC
 #include "statesav.h"
 #endif
 #include "pokeysnd.h"
@@ -79,8 +81,8 @@ UBYTE GTIA_GRACTL;
 /* Internal GTIA state ----------------------------------------------------- */
 
 int GTIA_speaker;
-int GTIA_consol_index = 0;
-UBYTE GTIA_consol_table[3];
+int GTIA_consol_override = 0;
+static UBYTE consol;
 UBYTE consol_mask;
 UBYTE GTIA_TRIG[4];
 UBYTE GTIA_TRIG_latch[4];
@@ -127,13 +129,13 @@ int collision_curpos;
  */
 int hitclr_pos;
 #else
-#define P1PL_T P1PL
-#define P2PL_T P2PL
-#define P3PL_T P3PL
-#define M0PL_T M0PL
-#define M1PL_T M1PL
-#define M2PL_T M2PL
-#define M3PL_T M3PL
+#define P1PL_T GTIA_P1PL
+#define P2PL_T GTIA_P2PL
+#define P3PL_T GTIA_P3PL
+#define M0PL_T GTIA_M0PL
+#define M1PL_T GTIA_M1PL
+#define M2PL_T GTIA_M2PL
+#define M3PL_T GTIA_M3PL
 #endif /* NEW_CYCLE_EXACT */
 
 static UBYTE *hposp_ptr[4];
@@ -219,7 +221,7 @@ static void setup_gtia9_11(void) {
 
 /* Initialization ---------------------------------------------------------- */
 
-void GTIA_Initialise(int *argc, char *argv[])
+int GTIA_Initialise(int *argc, char *argv[])
 {
 #if !defined(BASIC) && !defined(CURSES_BASIC)
 	int i;
@@ -247,6 +249,9 @@ void GTIA_Initialise(int *argc, char *argv[])
 	for (i = 0; i < 32; i++)
 		GTIA_PutByte((UWORD) i, 0);
 #endif /* !defined(BASIC) && !defined(CURSES_BASIC) */
+
+	(void)argc; (void)argv;  /* prevent "unused parameter" warnings */
+	return TRUE;
 }
 
 #ifdef NEW_CYCLE_EXACT
@@ -413,13 +418,10 @@ void GTIA_NewPmScanline(void)
 void GTIA_Frame(void)
 {
 #ifdef BASIC
-	int consol = 0xf;
+	consol = 0xf;
 #else
-	int consol = INPUT_key_consol | 0x08;
+	consol = INPUT_key_consol | 0x08;
 #endif
-
-	GTIA_consol_table[0] = consol;
-	GTIA_consol_table[1] = GTIA_consol_table[2] &= consol;
 
 	if (GTIA_GRACTL & 4) {
 		GTIA_TRIG_latch[0] &= GTIA_TRIG[0];
@@ -429,45 +431,85 @@ void GTIA_Frame(void)
 	}
 }
 
-UBYTE GTIA_GetByte(UWORD addr)
+UBYTE GTIA_GetByte(UWORD addr, int no_side_effects)
 {
 	switch (addr & 0x1f) {
 	case GTIA_OFFSET_M0PF:
+#ifdef NEW_CYCLE_EXACT
+	if (ANTIC_DRAWING_SCREEN) {
+			ANTIC_UpdateScanline();
+	}
+#endif
 		return (((PF0PM & 0x10) >> 4)
 		      + ((PF1PM & 0x10) >> 3)
 		      + ((PF2PM & 0x10) >> 2)
 		      + ((PF3PM & 0x10) >> 1)) & GTIA_collisions_mask_missile_playfield;
 	case GTIA_OFFSET_M1PF:
+#ifdef NEW_CYCLE_EXACT
+	if (ANTIC_DRAWING_SCREEN) {
+			ANTIC_UpdateScanline();
+	}
+#endif
 		return (((PF0PM & 0x20) >> 5)
 		      + ((PF1PM & 0x20) >> 4)
 		      + ((PF2PM & 0x20) >> 3)
 		      + ((PF3PM & 0x20) >> 2)) & GTIA_collisions_mask_missile_playfield;
 	case GTIA_OFFSET_M2PF:
+#ifdef NEW_CYCLE_EXACT
+	if (ANTIC_DRAWING_SCREEN) {
+			ANTIC_UpdateScanline();
+	}
+#endif
 		return (((PF0PM & 0x40) >> 6)
 		      + ((PF1PM & 0x40) >> 5)
 		      + ((PF2PM & 0x40) >> 4)
 		      + ((PF3PM & 0x40) >> 3)) & GTIA_collisions_mask_missile_playfield;
 	case GTIA_OFFSET_M3PF:
+#ifdef NEW_CYCLE_EXACT
+	if (ANTIC_DRAWING_SCREEN) {
+			ANTIC_UpdateScanline();
+	}
+#endif
 		return (((PF0PM & 0x80) >> 7)
 		      + ((PF1PM & 0x80) >> 6)
 		      + ((PF2PM & 0x80) >> 5)
 		      + ((PF3PM & 0x80) >> 4)) & GTIA_collisions_mask_missile_playfield;
 	case GTIA_OFFSET_P0PF:
+#ifdef NEW_CYCLE_EXACT
+	if (ANTIC_DRAWING_SCREEN) {
+			ANTIC_UpdateScanline();
+	}
+#endif
 		return ((PF0PM & 0x01)
 		      + ((PF1PM & 0x01) << 1)
 		      + ((PF2PM & 0x01) << 2)
 		      + ((PF3PM & 0x01) << 3)) & GTIA_collisions_mask_player_playfield;
 	case GTIA_OFFSET_P1PF:
+#ifdef NEW_CYCLE_EXACT
+	if (ANTIC_DRAWING_SCREEN) {
+			ANTIC_UpdateScanline();
+	}
+#endif
 		return (((PF0PM & 0x02) >> 1)
 		      + (PF1PM & 0x02)
 		      + ((PF2PM & 0x02) << 1)
 		      + ((PF3PM & 0x02) << 2)) & GTIA_collisions_mask_player_playfield;
 	case GTIA_OFFSET_P2PF:
+#ifdef NEW_CYCLE_EXACT
+	if (ANTIC_DRAWING_SCREEN) {
+			ANTIC_UpdateScanline();
+	}
+#endif
 		return (((PF0PM & 0x04) >> 2)
 		      + ((PF1PM & 0x04) >> 1)
 		      + (PF2PM & 0x04)
 		      + ((PF3PM & 0x04) << 1)) & GTIA_collisions_mask_player_playfield;
 	case GTIA_OFFSET_P3PF:
+#ifdef NEW_CYCLE_EXACT
+	if (ANTIC_DRAWING_SCREEN) {
+			ANTIC_UpdateScanline();
+	}
+#endif
 		return (((PF0PM & 0x08) >> 3)
 		      + ((PF1PM & 0x08) >> 2)
 		      + ((PF2PM & 0x08) >> 1)
@@ -517,13 +559,27 @@ UBYTE GTIA_GetByte(UWORD addr)
 		return (Atari800_tv_mode == Atari800_TV_PAL) ? 0x01 : 0x0f;
 	case GTIA_OFFSET_CONSOL:
 		{
-			UBYTE byte = GTIA_consol_table[GTIA_consol_index] & consol_mask;
-			if (GTIA_consol_index > 0) {
-				GTIA_consol_index--;
-				if (GTIA_consol_index == 0 && CASSETTE_hold_start) {
-					/* press Space after Start to start cassette boot */
-					CASSETTE_press_space = 1;
-					CASSETTE_hold_start = CASSETTE_hold_start_on_reboot;
+			UBYTE byte = consol & consol_mask;
+			if (!no_side_effects && GTIA_consol_override > 0) {
+				/* Check if we're called from outside OS. This avoids sending
+				   console keystrokes to diagnostic cartridges. */
+				if (CPU_regPC < 0xc000)
+					/* Not from OS. Disable console override. */
+					GTIA_consol_override = 0;
+				else {
+				--GTIA_consol_override;
+					if ((Atari800_machine_type = Atari800_MACHINE_XLXE) && Atari800_disable_basic && !BINLOAD_loading_basic)
+						/* Only for XL/XE - hold Option during reboot. */
+						byte &= ~INPUT_CONSOL_OPTION;
+					if (CASSETTE_hold_start && Atari800_machine_type != Atari800_MACHINE_5200) {
+						/* Only for the computers - hold Start during reboot. */
+						byte &= ~INPUT_CONSOL_START;
+						if (GTIA_consol_override == 0) {
+							/* press Space after Start to start cassette boot. */
+							CASSETTE_press_space = 1;
+							CASSETTE_hold_start = CASSETTE_hold_start_on_reboot;
+						}
+					}
 				}
 			}
 			return byte;
@@ -1117,14 +1173,6 @@ void GTIA_PutByte(UWORD addr, UBYTE byte)
 		UPDATE_PM_CYCLE_EXACT
 		break;
 	case GTIA_OFFSET_PRIOR:
-#ifdef NEW_CYCLE_EXACT
-#ifndef NO_GTIA11_DELAY
-		/* update prior change ring buffer */
-  		ANTIC_prior_curpos = (ANTIC_prior_curpos + 1) % ANTIC_PRIOR_BUF_SIZE;
-		ANTIC_prior_pos_buf[ANTIC_prior_curpos] = ANTIC_XPOS * 2 - 37 + 2;
-		ANTIC_prior_val_buf[ANTIC_prior_curpos] = byte;
-#endif
-#endif
 		ANTIC_SetPrior(byte);
 		GTIA_PRIOR = byte;
 		if (byte & 0x40)
@@ -1155,6 +1203,7 @@ void GTIA_StateSave(void)
 {
 	int next_console_value = 7;
 
+	STATESAV_TAG(gtia);
 	StateSav_SaveUBYTE(&GTIA_HPOSP0, 1);
 	StateSav_SaveUBYTE(&GTIA_HPOSP1, 1);
 	StateSav_SaveUBYTE(&GTIA_HPOSP2, 1);
@@ -1201,9 +1250,10 @@ void GTIA_StateSave(void)
 	StateSav_SaveUBYTE(&consol_mask, 1);
 	StateSav_SaveINT(&GTIA_speaker, 1);
 	StateSav_SaveINT(&next_console_value, 1);
+	StateSav_SaveUBYTE(GTIA_TRIG_latch, 4);
 }
 
-void GTIA_StateRead(void)
+void GTIA_StateRead(UBYTE version)
 {
 	int next_console_value;	/* ignored */
 
@@ -1253,6 +1303,8 @@ void GTIA_StateRead(void)
 	StateSav_ReadUBYTE(&consol_mask, 1);
 	StateSav_ReadINT(&GTIA_speaker, 1);
 	StateSav_ReadINT(&next_console_value, 1);
+	if (version >= 7)
+		StateSav_ReadUBYTE(GTIA_TRIG_latch, 4);
 
 	GTIA_PutByte(GTIA_OFFSET_HPOSP0, GTIA_HPOSP0);
 	GTIA_PutByte(GTIA_OFFSET_HPOSP1, GTIA_HPOSP1);

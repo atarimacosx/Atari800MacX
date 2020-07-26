@@ -214,7 +214,8 @@ int disable_all_basic = 1;
 extern int currPrinter;
 extern int bbRequested;
 extern int mioRequested;
-
+extern int PREFS_axlon_num_banks;
+extern int PREFS_mosaic_num_banks;
 
 /* Routines used to interface with Cocoa objects */
 extern void SDLMainActivate(void);
@@ -4289,6 +4290,7 @@ void ProcessMacMenus()
 		}
 	if (requestMachineTypeChange) {
 		int compositeType, type, ver4type;
+        int axlon_enabled, mosaic_enabled;
 		
 		type = PreferencesTypeFromIndex((requestMachineTypeChange-1),&ver4type);
 		if (ver4type == -1)
@@ -4296,9 +4298,18 @@ void ProcessMacMenus()
 		else
 			compositeType = 14+ver4type;
 		CalcMachineTypeRam(compositeType, &Atari800_machine_type, 
-						   &MEMORY_ram_size, &MEMORY_axlon_enabled,
-						   &MEMORY_mosaic_enabled);
-		
+						   &MEMORY_ram_size, &axlon_enabled,
+						   &mosaic_enabled);
+        if (!axlon_enabled)
+            MEMORY_axlon_num_banks = 0;
+        else
+            MEMORY_axlon_num_banks = PREFS_axlon_num_banks;
+
+        if (!mosaic_enabled)
+            MEMORY_mosaic_num_banks = 0;
+        else
+            MEMORY_mosaic_num_banks = PREFS_mosaic_num_banks;
+
         memset(Screen_atari, 0, (Screen_HEIGHT * Screen_WIDTH));
         Atari800_InitialiseMachine();
 		Atari800_Coldstart();
@@ -4362,8 +4373,7 @@ void ProcessMacMenus()
 	    if (Atari800_disable_basic && disable_all_basic) {
 			/* Disable basic on a warmstart, even though the real atarixl
 			   didn't work this way */
-			GTIA_consol_index = 2;
-			GTIA_consol_table[1] = GTIA_consol_table[2] = 0x0b;
+			GTIA_consol_override = 2;
 			}
         Atari800_Warmstart();
         requestWarmReset = 0;
@@ -4641,12 +4651,12 @@ void CreateWindowCaption()
             break;
         }
     
-	if (MEMORY_axlon_enabled)
+	if (MEMORY_axlon_num_banks > 0)
         sprintf(windowCaption, "%s Axlon %dK%s", machineType,
-				((MEMORY_axlon_bankmask + 1) * 16) + 32,xep80String);
-	else if (MEMORY_mosaic_enabled)
+				((MEMORY_axlon_num_banks) * 16) + 32,xep80String);
+	else if (MEMORY_mosaic_num_banks > 0)
         sprintf(windowCaption, "%s Mosaic %dK%s", machineType,
-				((MEMORY_mosaic_maxbank + 1) * 4) + 48,xep80String);
+				((MEMORY_mosaic_num_banks) * 4) + 48,xep80String);
     else if (MEMORY_ram_size == MEMORY_RAM_320_RAMBO)
         sprintf(windowCaption, "%s 320K RAMBO%s", machineType,xep80String);
     else if (MEMORY_ram_size == MEMORY_RAM_320_COMPY_SHOP)
@@ -5096,8 +5106,7 @@ int SDL_main(int argc, char **argv)
 			if (Atari800_disable_basic && disable_all_basic) {
 				/* Disable basic on a warmstart, even though the real atarixl
 					didn't work this way */
-				GTIA_consol_index = 2;
-				GTIA_consol_table[1] = GTIA_consol_table[2] = 0x0b;
+                GTIA_consol_override = 2;
 				}
             Atari800_Warmstart();
             break;

@@ -49,7 +49,7 @@ extern int ANTIC_xpos_limit;
 extern unsigned int ANTIC_screenline_cpu_clock;
 
 /* Current main clock value. */
-#define ANTIC_CPU_CLOCK (ANTIC_screenline_cpu_clock + ANTIC_xpos)
+#define ANTIC_CPU_CLOCK (ANTIC_screenline_cpu_clock + ANTIC_XPOS)
 
 #define ANTIC_NMIST_C	6
 #define ANTIC_NMI_C	12
@@ -71,10 +71,10 @@ extern int ANTIC_artif_new;
 extern UBYTE ANTIC_PENH_input;
 extern UBYTE ANTIC_PENV_input;
 
-void ANTIC_Initialise(int *argc, char *argv[]);
+int ANTIC_Initialise(int *argc, char *argv[]);
 void ANTIC_Reset(void);
 void ANTIC_Frame(int draw_display);
-UBYTE ANTIC_GetByte(UWORD addr);
+UBYTE ANTIC_GetByte(UWORD addr, int no_side_effects);
 void ANTIC_PutByte(UWORD addr, UBYTE byte);
 
 UBYTE ANTIC_GetDLByte(UWORD *paddr);
@@ -122,16 +122,16 @@ extern const int *ANTIC_cpu2antic_ptr;
 extern const int *ANTIC_antic2cpu_ptr;
 void ANTIC_UpdateScanline(void);
 void ANTIC_UpdateScanlinePrior(UBYTE byte);
-#ifndef NO_GTIA11_DELAY
-extern int ANTIC_prior_curpos;
-#define ANTIC_PRIOR_BUF_SIZE 40
-extern UBYTE ANTIC_prior_val_buf[ANTIC_PRIOR_BUF_SIZE];
-extern int ANTIC_prior_pos_buf[ANTIC_PRIOR_BUF_SIZE];
-#endif /* NO_GTIA11_DELAY */
 
 #define ANTIC_XPOS ( ANTIC_DRAWING_SCREEN ? ANTIC_cpu2antic_ptr[ANTIC_xpos] : ANTIC_xpos )
 #else
 #define ANTIC_XPOS ANTIC_xpos
 #endif /* NEW_CYCLE_EXACT */
+
+#ifndef NO_SIMPLE_PAL_BLENDING
+/* Set to 1 to enable simplified emulation of PAL blending, that uses only
+   the standard 8-bit palette. */
+extern int ANTIC_pal_blending;
+#endif /* NO_SIMPLE_PAL_BLENDING */
 
 #endif /* ANTIC_H_ */

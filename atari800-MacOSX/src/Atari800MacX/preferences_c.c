@@ -158,6 +158,9 @@ char atari_state_dir[FILENAME_MAX];
 char atari_config_dir[FILENAME_MAX];
 int  refresh_rate;
 
+int PREFS_axlon_num_banks;
+int PREFS_mosaic_num_banks;
+
 /* Variables used for boot devices */
 int prefsArgc = 0;
 char *prefsArgv[15];
@@ -298,7 +301,7 @@ void savePrefs() {
 	prefssave.enableRPatch = Devices_enable_r_patch;
 		
 	prefssave.atariType = CalcAtariType(Atari800_machine_type, MEMORY_ram_size,
-										MEMORY_axlon_enabled, MEMORY_mosaic_enabled);
+										MEMORY_axlon_num_banks > 0, MEMORY_mosaic_num_banks > 0);
 
 	prefssave.currPrinter = currPrinter;
 	prefssave.artifactingMode = ANTIC_artif_mode;
@@ -652,10 +655,10 @@ void CalculatePrefsChanged()
 					   &new_axlon, &new_mosaic);
     if ((Atari800_machine_type != new_machine_type) ||
         (MEMORY_ram_size != new_ram_size) ||
-		(MEMORY_axlon_enabled != new_axlon) ||
-		(MEMORY_mosaic_enabled != new_mosaic) ||
-		(MEMORY_axlon_bankmask != prefs.axlonBankMask) ||
-		(MEMORY_mosaic_maxbank != prefs.mosaicMaxBank) ||
+		((MEMORY_axlon_num_banks > 0) != new_axlon) ||
+		((MEMORY_mosaic_num_banks > 0) != new_mosaic) ||
+		((MEMORY_axlon_num_banks - 1) != prefs.axlonBankMask) ||
+		((MEMORY_mosaic_num_banks - 1) != prefs.mosaicMaxBank) ||
 		(bbRequested != prefs.blackBoxEnabled) ||
 		(mioRequested != prefs.mioEnabled))
         machineTypeChanged = TRUE;
@@ -760,7 +763,8 @@ int loadMacPrefs(int firstTime)
 {
     int i,j;
     printf("-----------------------------------\n");
-
+    int axlon_enabled;
+    int mosaic_enabled;
 
     Atari800_collisions_in_skipped_frames = prefs.spriteCollisions;
     scaleFactor = prefs.scaleFactor;
@@ -791,9 +795,19 @@ int loadMacPrefs(int firstTime)
     paletteColorShift = prefs.colorShift; 
     strcpy(paletteFilename, prefs.paletteFile);
     CalcMachineTypeRam(prefs.atariType, &Atari800_machine_type, &MEMORY_ram_size,
-					   &MEMORY_axlon_enabled, &MEMORY_mosaic_enabled);
-	MEMORY_axlon_bankmask = prefs.axlonBankMask;
-	MEMORY_mosaic_maxbank = prefs.mosaicMaxBank;
+					   &axlon_enabled, &mosaic_enabled);
+    if (axlon_enabled) {
+        MEMORY_axlon_num_banks = prefs.axlonBankMask + 1;
+        PREFS_axlon_num_banks = MEMORY_axlon_num_banks;
+        }
+    else
+        MEMORY_axlon_num_banks = 0;
+    if (mosaic_enabled) {
+        MEMORY_mosaic_num_banks = prefs.mosaicMaxBank + 1;
+        PREFS_mosaic_num_banks = MEMORY_mosaic_num_banks;
+    }
+    else
+        MEMORY_mosaic_num_banks = 0;
 
     strcpy(af80_rom_filename, prefs.af80RomFile);
     strcpy(af80_charset_filename, prefs.af80CharsetFile);

@@ -433,8 +433,8 @@ static int monitorRunFirstTime = 1;
 {
 	int i, type, index, ver4type;
 	type = CalcAtariType(machineType, ramSize,
-						 MEMORY_axlon_enabled, MEMORY_mosaic_enabled);
-	
+						 MEMORY_axlon_num_banks > 0, MEMORY_mosaic_num_banks > 0);
+    
 	if (type > 13) {
 		ver4type = type - 14;
 		type = 0;

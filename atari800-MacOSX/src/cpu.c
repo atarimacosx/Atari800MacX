@@ -159,8 +159,8 @@ void CPU_PutStatus(void)
 #ifndef PAGED_ATTRIB
 #define RMW_GetByte(x, addr) \
 	if (MEMORY_attrib[addr] == MEMORY_HARDWARE) { \
-		x = MEMORY_HwGetByte(addr); \
-		if ((addr & 0xef00) == 0xc000) { \
+		x = MEMORY_HwGetByte(addr, FALSE); \
+		if ((addr & 0xed00) == 0xc000) { \
 			ANTIC_xpos--; \
 			MEMORY_HwPutByte(addr, x); \
 			ANTIC_xpos++; \
@@ -170,7 +170,7 @@ void CPU_PutStatus(void)
 #else /* PAGED_ATTRIB */
 #define RMW_GetByte(x, addr) \
 	x = MEMORY_GetByte(addr); \
-	if ((addr & 0xef00) == 0xc000) { \
+	if ((addr & 0xed00) == 0xc000) { \
 		ANTIC_xpos--; \
 		MEMORY_PutByte(addr, x); \
 		ANTIC_xpos++; \
@@ -600,6 +600,11 @@ void CPU_GO(int limit)
 	CPUCHECKIRQ;
 
 	while (ANTIC_xpos < ANTIC_xpos_limit) {
+#ifdef MONITOR_PROFILE
+		int old_xpos = ANTIC_xpos;
+		UWORD old_PC = GET_PC();
+#endif
+
 
 #ifdef MONITOR_BREAKPOINTS
 	breakpoint_return:
@@ -756,13 +761,14 @@ void CPU_GO(int limit)
 			}
 			for (i = 0; i < MONITOR_breakpoint_table_size; i++) {
 				int cond;
-				int value;
+				int value, m_addr;
 				if (!MONITOR_breakpoint_table[i].enabled)
 					continue; /* skip */
 				cond = MONITOR_breakpoint_table[i].condition;
 				if (cond == MONITOR_BREAKPOINT_OR)
 					break; /* fire */
 				value = MONITOR_breakpoint_table[i].value;
+				m_addr = MONITOR_breakpoint_table[i].m_addr;
 				if (cond == MONITOR_BREAKPOINT_FLAG_CLEAR) {
 					switch (value) {
 					case CPU_N_FLAG:
@@ -848,6 +854,9 @@ void CPU_GO(int limit)
 							goto cond_failed;
 						val = addr;
 						break;
+					case MONITOR_BREAKPOINT_MEMORY >> 3:
+						val = MEMORY_SafeGetByte(m_addr);
+						break;
 					default:
 						/* shouldn't happen */
 						continue;
@@ -884,6 +893,8 @@ void CPU_GO(int limit)
 
 #ifdef MONITOR_PROFILE
 		CPU_instruction_count[insn]++;
+		MONITOR_coverage[old_PC = PC - 1].count++;
+		MONITOR_coverage_insns++;
 #endif
 
 #ifdef PREFETCH_CODE
@@ -1693,7 +1704,7 @@ void CPU_GO(int limit)
 
 	OPCODE(8b)				/* ANE #ab [unofficial - A AND X AND (Mem OR $EF) to Acc] (Fox) */
 		data = IMMEDIATE;
-		N = Z = A & X & data;
+		Z = N = A & X & data;
 		A &= X & (data | 0xef);
 		DONE
 
@@ -1729,10 +1740,14 @@ void CPU_GO(int limit)
 	OPCODE(93)				/* SHA (ab),y [unofficial, UNSTABLE - Store A AND X AND (H+1) ?] (Fox) */
 		/* It seems previous memory value is important - also in 9f */
 		ZPAGE;
-		data = MEMORY_dGetByte((UBYTE) (addr + 1));	/* Get high byte from zpage */
-		data = A & X & (data + 1);
-		addr = MEMORY_dGetWord(addr) + Y;
-		MEMORY_PutByte(addr, data);
+		addr = zGetWord(addr);
+		data = A & X & ((addr >> 8) + 1);
+		if ((addr & 0xff) + Y > 0xff) { /* if it crosses a page */
+			MEMORY_PutByte(((addr + Y) & 0xff) | (data << 8), data);
+		}
+		else {
+			MEMORY_PutByte(addr + Y, data);
+		}
 		DONE
 
 	OPCODE(94)				/* STY ab,x */
@@ -1775,8 +1790,12 @@ void CPU_GO(int limit)
 		ABSOLUTE;
 		S = A & X;
 		data = S & ((addr >> 8) + 1);
-		addr += Y;
-		MEMORY_PutByte(addr, data);
+		if ((addr & 0xff) + Y > 0xff) { /* if it crosses a page */
+			MEMORY_PutByte(((addr + Y) & 0xff) | (data << 8), data);
+		}
+		else {
+			MEMORY_PutByte(addr + Y, data);
+		}
 		DONE
 
 	OPCODE(9c)				/* SHY abcd,x [unofficial - Store Y and (H+1)] (Fox) */
@@ -1784,8 +1803,12 @@ void CPU_GO(int limit)
 		ABSOLUTE;
 		/* MPC 05/24/00 */
 		data = Y & ((UBYTE) ((addr >> 8) + 1));
-		addr += X;
-		MEMORY_PutByte(addr, data);
+		if ((addr & 0xff) + X > 0xff) { /* if it crosses a page */
+			MEMORY_PutByte(((addr + X) & 0xff) | (data << 8), data);
+		}
+		else {
+			MEMORY_PutByte(addr + X, data);
+		}
 		DONE
 
 	OPCODE(9d)				/* STA abcd,x */
@@ -1798,15 +1821,23 @@ void CPU_GO(int limit)
 		ABSOLUTE;
 		/* MPC 05/24/00 */
 		data = X & ((UBYTE) ((addr >> 8) + 1));
-		addr += Y;
-		MEMORY_PutByte(addr, data);
+		if ((addr & 0xff) + Y > 0xff) { /* if it crosses a page */
+			MEMORY_PutByte(((addr + Y) & 0xff) | (data << 8), data);
+		}
+		else {
+			MEMORY_PutByte(addr + Y, data);
+		}
 		DONE
 
 	OPCODE(9f)				/* SHA abcd,y [unofficial, UNSTABLE - Store A AND X AND (H+1) ?] (Fox) */
 		ABSOLUTE;
 		data = A & X & ((addr >> 8) + 1);
-		addr += Y;
-		MEMORY_PutByte(addr, data);
+		if ((addr & 0xff) + Y > 0xff) { /* if it crosses a page */
+			MEMORY_PutByte(((addr + Y) & 0xff) | (data << 8), data);
+		}
+		else {
+			MEMORY_PutByte(addr + Y, data);
+		}
 		DONE
 
 	OPCODE(a0)				/* LDY #ab */
@@ -2075,8 +2106,6 @@ void CPU_GO(int limit)
 	OPCODE(d5)				/* CMP ab,x */
 		ZPAGE_X;
 		CMP(MEMORY_dGetByte(addr));
-		Z = N = A - data;
-		C = (A >= data);
 		DONE
 
 	OPCODE(d6)				/* DEC ab,x */
@@ -2357,8 +2386,8 @@ void CPU_GO(int limit)
 			/* Decimal mode */
 			unsigned int tmp;
 			tmp = (A & 0x0f) + (data & 0x0f) + C;
-			if (tmp >= 10)
-				tmp = (tmp - 10) | 0x10;
+			if (tmp >= 0x0a)
+				tmp = ((tmp + 0x06) & 0x0f) + 0x10;
 			tmp += (A & 0xf0) + (data & 0xf0);
 
 			Z = A + data + C;
@@ -2371,7 +2400,7 @@ void CPU_GO(int limit)
 				CPU_SetV;
 #endif
 
-			if (tmp > 0x9f)
+			if (tmp >= 0xa0)
 				tmp += 0x60;
 			C = tmp > 0xff;
 			A = (UBYTE) tmp;
@@ -2386,40 +2415,35 @@ void CPU_GO(int limit)
 			tmp = A - data - 1 + C;
 			C = tmp < 0x100;
 #ifndef NO_V_FLAG_VARIABLE
-			V = ((A ^ tmp) & 0x80) && ((A ^ data) & 0x80);
+			V = ((A ^ data) & 0x80) && ((A ^ tmp) & 0x80);
 #else
 			CPU_ClrV;
-			if (((A ^ tmp) & 0x80) && ((A ^ data) & 0x80))
+			if (((A ^ data) & 0x80) && ((A ^ tmp) & 0x80))
 				CPU_SetV;
 #endif
 			Z = N = A = (UBYTE) tmp;
 		}
 		else {
 			/* Decimal mode */
-			unsigned int al, ah, tmp;
-			/* tmp = A - data - !C; */
-			tmp = A - data - 1 + C;
-			/* al = (A & 0x0f) - (data & 0x0f) - !C; */
-			al = (A & 0x0f) - (data & 0x0f) - 1 + C;	/* Calculate lower nybble */
-			ah = (A >> 4) - (data >> 4);		/* Calculate upper nybble */
-			if (al & 0x10) {
-				al -= 6;	/* BCD fixup for lower nybble */
-				ah--;
-			}
-			if (ah & 0x10)
-				ah -= 6;	/* BCD fixup for upper nybble */
+			unsigned int tmp;
+			tmp = (A & 0x0f) - (data & 0x0f) - 1 + C;
+			if (tmp & 0x10)
+				tmp = ((tmp - 0x06) & 0x0f) - 0x10;
+			tmp += (A & 0xf0) - (data & 0xf0);
+			if (tmp & 0x100)
+				tmp -= 0x60;
 
-			C = tmp < 0x100;			/* Set flags */
+			Z = N = A - data - 1 + C;
 #ifndef NO_V_FLAG_VARIABLE
-			V = ((A ^ tmp) & 0x80) && ((A ^ data) & 0x80);
+			V = ((A ^ data) & 0x80) && ((A ^ Z) & 0x80);
 #else
 			CPU_ClrV;
-			if (((A ^ tmp) & 0x80) && ((A ^ data) & 0x80))
+			if (((A ^ data) & 0x80) && ((A ^ Z) & 0x80))
 				CPU_SetV;
 #endif
-			Z = N = (UBYTE) tmp;
+			C = ((unsigned int) (A - data - 1 + C)) <= 0xff;
 
-			A = (ah << 4) + (al & 0x0f);	/* Compose result */
+			A = tmp;
 		}
 		DONE
 
@@ -2427,6 +2451,14 @@ void CPU_GO(int limit)
 	}
 #else
 	next:
+#endif
+
+#ifdef MONITOR_PROFILE
+		{
+			int cyc = ANTIC_xpos - old_xpos;
+			MONITOR_coverage[old_PC].cycles += cyc;
+			MONITOR_coverage_cycles += cyc;
+		}
 #endif
 
 #ifdef MONITOR_BREAK

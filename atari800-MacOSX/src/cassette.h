@@ -39,7 +39,8 @@ int CASSETTE_GetInputIRQDelay(void);
 int CASSETTE_IsSaveFile(void);
 void CASSETTE_PutByte(int byte);
 void CASSETTE_TapeMotor(int onoff);
-void CASSETTE_AddScanLine(void);
+int CASSETTE_AddScanLine(void);
 extern UBYTE CASSETTE_buffer[4096];
+void CASSETTE_ResetPOKEY(void);
 
 #endif /* CASSETTE_H_ */

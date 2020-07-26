@@ -88,6 +88,8 @@ extern int Atari800_machine_type;
 extern int MEMORY_ram_size;
 extern int UI_alt_function;
 extern int diskDriveSound;
+extern int PREFS_axlon_num_banks;
+extern int PREFS_mosaic_num_banks;
 
 /* Arrays which define the cartridge types for each size */
 static int CART8KTYPES[] = {CARTRIDGE_STD_8, CARTRIDGE_5200_8, CARTRIDGE_RIGHT_8, CARTRIDGE_PHOENIX_8};
@@ -439,7 +441,7 @@ NSImage *disketteImage;
             }
 	
 	type = CalcAtariType(Atari800_machine_type, MEMORY_ram_size,
-						 MEMORY_axlon_enabled, MEMORY_mosaic_enabled);
+						 MEMORY_axlon_num_banks > 0, MEMORY_mosaic_num_banks > 0);
 	if (type > 13) {
 		ver4type = type - 14;
 		type = 0;
@@ -526,6 +528,7 @@ NSImage *disketteImage;
     NSString *filename;
     char cfilename[FILENAME_MAX];
     int cartSize;
+    int axlon_enabled, mosaic_enabled;
 
     PauseAudio(1);
     filename = [self browseFileInDirectory:[NSString stringWithCString:atari_rom_dir encoding:NSASCIIStringEncoding]];
@@ -544,8 +547,17 @@ NSImage *disketteImage;
                 }
             else if (!for5200 && Atari800_machine_type == Atari800_MACHINE_5200) {
 				CalcMachineTypeRam(machine_switch_type, &Atari800_machine_type, 
-								   &MEMORY_ram_size, &MEMORY_axlon_enabled,
-								   &MEMORY_axlon_enabled);
+								   &MEMORY_ram_size, &axlon_enabled,
+								   &mosaic_enabled);
+                if (!axlon_enabled)
+                    MEMORY_axlon_num_banks = 0;
+                else
+                    MEMORY_axlon_num_banks = PREFS_axlon_num_banks;
+
+                if (!mosaic_enabled)
+                    MEMORY_mosaic_num_banks = 0;
+                else
+                    MEMORY_mosaic_num_banks = PREFS_mosaic_num_banks;
                 Atari800_InitialiseMachine();
                 requestCaptionChange = 1;
                 }
@@ -589,6 +601,7 @@ NSImage *disketteImage;
 {
     char cfilename[FILENAME_MAX];
     int cartSize;
+    int axlon_enabled, mosaic_enabled;
 
     if (filename != nil) {
         [filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
@@ -606,8 +619,17 @@ NSImage *disketteImage;
                 }
             else if (!for5200 && Atari800_machine_type == Atari800_MACHINE_5200) {
 				CalcMachineTypeRam(machine_switch_type, &Atari800_machine_type, 
-								   &MEMORY_ram_size, &MEMORY_axlon_enabled,
-								   &MEMORY_axlon_enabled);
+								   &MEMORY_ram_size, &axlon_enabled,
+								   &mosaic_enabled);
+                if (!axlon_enabled)
+                    MEMORY_axlon_num_banks = 0;
+                else
+                    MEMORY_axlon_num_banks = PREFS_axlon_num_banks;
+
+                if (!mosaic_enabled)
+                    MEMORY_mosaic_num_banks = 0;
+                else
+                    MEMORY_mosaic_num_banks = PREFS_mosaic_num_banks;
                 Atari800_InitialiseMachine();
                 requestCaptionChange = 1;
                 }
@@ -799,12 +821,22 @@ NSImage *disketteImage;
 *-----------------------------------------------------------------------------*/
 - (void)changeToComputer
 {
+    int axlon_enabled, mosaic_enabled;
 	CARTRIDGE_Remove();
 	
 	CalcMachineTypeRam(machine_switch_type, &Atari800_machine_type, 
-					   &MEMORY_ram_size, &MEMORY_axlon_enabled,
-					   &MEMORY_axlon_enabled);
+					   &MEMORY_ram_size, &axlon_enabled,
+					   &mosaic_enabled);
 	
+    if (!axlon_enabled)
+        MEMORY_axlon_num_banks = 0;
+    else
+        MEMORY_axlon_num_banks = PREFS_axlon_num_banks;
+
+    if (!mosaic_enabled)
+        MEMORY_mosaic_num_banks = 0;
+    else
+        MEMORY_mosaic_num_banks = PREFS_mosaic_num_banks;
 	memset(Screen_atari, 0, (Screen_HEIGHT * Screen_WIDTH));
 	Atari_DisplayScreen((UBYTE *) Screen_atari);
     Atari800_InitialiseMachine();

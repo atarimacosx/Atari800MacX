@@ -191,7 +191,7 @@ void Atari800_Warmstart(void)
 	if (Atari800_machine_type == Atari800_MACHINE_OSA || Atari800_machine_type == Atari800_MACHINE_OSB) {
 		/* A real Axlon homebanks on reset */
 		/* XXX: what does Mosaic do? */
-		if (MEMORY_axlon_enabled) MEMORY_PutByte(0xcfff, 0);
+		if (MEMORY_axlon_num_banks > 0) MEMORY_PutByte(0xcfff, 0);
 		/* RESET key in 400/800 does not reset chips,
 		   but only generates RNMI interrupt */
 		ANTIC_NMIST = 0x3f;
@@ -249,25 +249,18 @@ void Atari800_Coldstart(void)
 	MEMORY_dPutByte(0x244, 1);
 	/* handle Option key (disable BASIC in XL/XE)
 	   and Start key (boot from cassette) */
-	GTIA_consol_index = 2;
-	GTIA_consol_table[2] = 0x0f;
-	if (Atari800_disable_basic && !BINLOAD_loading_basic) {
-		/* hold Option during reboot */
-		GTIA_consol_table[2] &= ~INPUT_CONSOL_OPTION;
+	GTIA_consol_override = 2;
+#ifdef AF80
+	if (AF80_enabled) {
+		AF80_Reset();
+		AF80_InsertRightCartridge();
 	}
-	if (CASSETTE_hold_start) {
-		/* hold Start during reboot */
-		GTIA_consol_table[2] &= ~INPUT_CONSOL_START;
+#endif
+#ifdef BIT3
+	if (BIT3_enabled) {
+		BIT3_Reset();
 	}
-	GTIA_consol_table[1] = GTIA_consol_table[2];
-	Devices_WarmCold_Start();
-    if (AF80_enabled) {
-        AF80_Reset();
-        AF80_InsertRightCartridge();
-    }
-    if (BIT3_enabled) {
-        BIT3_Reset();
-    }
+#endif
 }
 
 int Atari800_LoadImage(const char *filename, UBYTE *buffer, int nbytes)
@@ -573,13 +566,12 @@ int Atari800_Initialise(int *argc, char *argv[])
 			}
 			else if (strcmp(argv[i], "-mosaic") == 0) {
 				int total_ram = Util_sscandec(argv[++i]);
-				MEMORY_mosaic_enabled = TRUE;
-				MEMORY_mosaic_maxbank = (total_ram - 48)/4 - 1;
-				if (((total_ram - 48) % 4 != 0) || (MEMORY_mosaic_maxbank > 0x3e) || (MEMORY_mosaic_maxbank < 0)) {
+				MEMORY_mosaic_num_banks = (total_ram - 48)/4;
+				if (((total_ram - 48) % 4 != 0) || (MEMORY_mosaic_num_banks > 0x3f) || (MEMORY_mosaic_num_banks < 0)) {
 					Log_print("Invalid Mosaic total RAM size");
 					return FALSE;
 				}
-				if (MEMORY_axlon_enabled) {
+				if (MEMORY_axlon_num_banks > 0) {
 					Log_print("Axlon and Mosaic can not both be enabled, because they are incompatible");
 					return FALSE;
 				}
@@ -587,16 +579,15 @@ int Atari800_Initialise(int *argc, char *argv[])
 			else if (strcmp(argv[i], "-axlon") == 0) {
 				int total_ram = Util_sscandec(argv[++i]);
 				int banks = ((total_ram) - 32) / 16;
-				MEMORY_axlon_enabled = TRUE;
 				if (((total_ram - 32) % 16 != 0) || ((banks != 8) && (banks != 16) && (banks != 32) && (banks != 64) && (banks != 128) && (banks != 256))) {
 					Log_print("Invalid Axlon total RAM size");
 					return FALSE;
 				}
-				if (MEMORY_mosaic_enabled) {
+				if (MEMORY_mosaic_num_banks > 0) {
 					Log_print("Axlon and Mosaic can not both be enabled, because they are incompatible");
 					return FALSE;
 				}
-				MEMORY_axlon_bankmask = banks - 1;
+				MEMORY_axlon_num_banks = banks;
 			}
 			else if (strcmp(argv[i], "-axlon0f") == 0) {
 				MEMORY_axlon_0f_mirror = TRUE;
@@ -853,8 +844,8 @@ int Atari800_Initialise(int *argc, char *argv[])
 	/* Load state file */
 	if (state_file != NULL) {
 		if (StateSav_ReadAtariState(state_file, "rb"))
-			/* Don't press Option */
-			GTIA_consol_table[1] = GTIA_consol_table[2] = 0x0f;
+			/* Don't press Start nor Option */
+			GTIA_consol_override = 0;
 	}
 #endif
 
@@ -937,80 +928,6 @@ int Atari800_Exit(int run_monitor)
 	return restart;
 }
 
-#ifndef PAGED_ATTRIB
-UBYTE Atari800_GetByte(UWORD addr)
-{
-	UBYTE byte = 0xff;
-	switch (addr & 0xff00) {
-	case 0x4f00:
-	case 0x8f00:
-		CARTRIDGE_BountyBob1(addr);
-		byte = 0;
-		break;
-	case 0x5f00:
-	case 0x9f00:
-		CARTRIDGE_BountyBob2(addr);
-		byte = 0;
-		break;
-	case 0xd000:				/* GTIA */
-	case 0xc000:				/* GTIA - 5200 */
-		byte = GTIA_GetByte(addr);
-		break;
-	case 0xd200:				/* POKEY */
-	case 0xe800:				/* POKEY - 5200 */
-	case 0xeb00:				/* POKEY - 5200 */
-		byte = POKEY_GetByte(addr);
-		break;
-	case 0xd300:				/* PIA */
-		byte = PIA_GetByte(addr);
-		break;
-	case 0xd400:				/* ANTIC */
-		byte = ANTIC_GetByte(addr);
-		break;
-	case 0xd500:				/* bank-switching cartridges, RTIME-8 */
-		byte = CARTRIDGE_GetByte(addr);
-		break;
-	default:
-		break;
-	}
-
-	return byte;
-}
-
-void Atari800_PutByte(UWORD addr, UBYTE byte)
-{
-	switch (addr & 0xff00) {
-	case 0x4f00:
-	case 0x8f00:
-		CARTRIDGE_BountyBob1(addr);
-		break;
-	case 0x5f00:
-	case 0x9f00:
-		CARTRIDGE_BountyBob2(addr);
-		break;
-	case 0xd000:				/* GTIA */
-	case 0xc000:				/* GTIA - 5200 */
-		GTIA_PutByte(addr, byte);
-		break;
-	case 0xd200:				/* POKEY */
-	case 0xe800:				/* POKEY - 5200 AAA added other pokey space */
-	case 0xeb00:				/* POKEY - 5200 */
-		POKEY_PutByte(addr, byte);
-		break;
-	case 0xd300:				/* PIA */
-		PIA_PutByte(addr, byte);
-		break;
-	case 0xd400:				/* ANTIC */
-		ANTIC_PutByte(addr, byte);
-		break;
-	case 0xd500:				/* bank-switching cartridges, RTIME-8 */
-		CARTRIDGE_PutByte(addr, byte);
-		break;
-	default:
-		break;
-	}
-}
-#endif 
 
 #ifndef __PLUS
 

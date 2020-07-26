@@ -563,6 +563,14 @@ static int SetNextByteTime_POKEY(int adjust)
 	return 0;
 }
 
+void CASSETTE_ResetPOKEY(void)
+{
+	/* Resetting POKEY stops any serial transmission. */
+	// MDGToDo pending_serin = FALSE;
+	// MDGToDo pending_serin_byte = 0xff;
+}
+
+
 /* Get the byte for which the serial data ready int has been triggered */
 int CASSETTE_GetByte(void)
 {
@@ -723,6 +731,16 @@ void CASSETTE_TapeMotor(int onoff)
 	}
 }
 
+int CASSETTE_AddScanLine(void)
+{
+    /* increment elapsed cassette time */
+    if (0) { // MDGToDo CASSETTE_record) {
+        CassetteWrite(114);
+        return FALSE;
+    } else
+        return 114;//MDGToDo CassetteRead(114);
+}
+#if 0 //MDGToDo
 void CASSETTE_AddScanLine(void)
 {
 	int tmp;
@@ -743,3 +761,4 @@ void CASSETTE_AddScanLine(void)
 		}
 	}
 }
+#endif

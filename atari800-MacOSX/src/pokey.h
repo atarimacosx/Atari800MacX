@@ -55,9 +55,9 @@ extern UBYTE POKEY_POT_input[8];
 
 ULONG POKEY_GetRandomCounter(void);
 void POKEY_SetRandomCounter(ULONG value);
-UBYTE POKEY_GetByte(UWORD addr);
+UBYTE POKEY_GetByte(UWORD addr, int no_side_effects);
 void POKEY_PutByte(UWORD addr, UBYTE byte);
-void POKEY_Initialise(int *argc, char *argv[]);
+int POKEY_Initialise(int *argc, char *argv[]);
 void POKEY_Frame(void);
 void POKEY_Scanline(void);
 void POKEY_StateSave(void);
