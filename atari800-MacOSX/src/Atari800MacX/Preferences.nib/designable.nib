@@ -1363,6 +1363,7 @@
                                                                     <menuItem title="    64KB (One Mosaic 64KB Card)" state="on" id="7125"/>
                                                                     <menuItem title="  128KB (Two Mosaic 64KB Cards)" id="7124"/>
                                                                     <menuItem title="  192KB (Three Mosaic 64KB Cards)" id="7144"/>
+                                                                    <menuItem title="  256KB (Four Mosaic 64KB Cards)" id="0uz-Y0-9ZZ"/>
                                                                 </items>
                                                             </menu>
                                                         </popUpButtonCell>
