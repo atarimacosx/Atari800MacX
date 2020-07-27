@@ -4713,10 +4713,10 @@ void MAC_LED_Frame(void)
 void Casette_Frame(void)
 {
 	static int last_block = 0;
-	
-	if (cassette_current_block != last_block) {
-		MediaManagerCassSliderUpdate(cassette_current_block);
-		last_block = cassette_current_block;
+    int current_block = CASSETTE_GetPosition();
+	if (current_block != last_block) {
+		MediaManagerCassSliderUpdate(current_block);
+		last_block = current_block;
 		}
 }
 

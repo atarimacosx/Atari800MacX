@@ -299,6 +299,8 @@
 		2DE6EB8024CE197000A55386 /* altirraos_800.h in Headers */ = {isa = PBXBuildFile; fileRef = 2DE6EB7824CE197000A55386 /* altirraos_800.h */; };
 		2DE6EB8124CE197000A55386 /* altirra_5200_os.h in Headers */ = {isa = PBXBuildFile; fileRef = 2DE6EB7924CE197000A55386 /* altirra_5200_os.h */; };
 		2DE6EB8224CE197000A55386 /* altirraos_xl.c in Sources */ = {isa = PBXBuildFile; fileRef = 2DE6EB7A24CE197000A55386 /* altirraos_xl.c */; };
+		2DE6EB8524CE6BCB00A55386 /* img_tape.c in Sources */ = {isa = PBXBuildFile; fileRef = 2DE6EB8324CE6BCA00A55386 /* img_tape.c */; };
+		2DE6EB8624CE6BCB00A55386 /* img_tape.h in Headers */ = {isa = PBXBuildFile; fileRef = 2DE6EB8424CE6BCB00A55386 /* img_tape.h */; };
 		2DEDFBF411FE4C18008B815C /* emuio.c in Sources */ = {isa = PBXBuildFile; fileRef = 2DEDFBF211FE4C18008B815C /* emuio.c */; };
 		2DEDFBF511FE4C18008B815C /* emuio.h in Headers */ = {isa = PBXBuildFile; fileRef = 2DEDFBF311FE4C18008B815C /* emuio.h */; };
 		2DEF29230FDCBE6E00660E07 /* PasteWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = 2DEF29210FDCBE6E00660E07 /* PasteWindow.h */; };
@@ -570,6 +572,8 @@
 		2DE6EB7824CE197000A55386 /* altirraos_800.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = altirraos_800.h; sourceTree = "<group>"; };
 		2DE6EB7924CE197000A55386 /* altirra_5200_os.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = altirra_5200_os.h; sourceTree = "<group>"; };
 		2DE6EB7A24CE197000A55386 /* altirraos_xl.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = altirraos_xl.c; sourceTree = "<group>"; };
+		2DE6EB8324CE6BCA00A55386 /* img_tape.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = img_tape.c; path = ../img_tape.c; sourceTree = "<group>"; };
+		2DE6EB8424CE6BCB00A55386 /* img_tape.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = img_tape.h; path = ../img_tape.h; sourceTree = "<group>"; };
 		2DE8B9FD07ECCF75001E5BDE /* EpsonFX80Simulator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EpsonFX80Simulator.h; sourceTree = "<group>"; };
 		2DE8B9FE07ECCF75001E5BDE /* EpsonFX80Simulator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EpsonFX80Simulator.m; sourceTree = "<group>"; };
 		2DE8BB7507ED301C001E5BDE /* PrintProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrintProtocol.h; sourceTree = "<group>"; };
@@ -885,6 +889,8 @@
 				F5558344030EF4CD01A8C8B4 /* gtia.h */,
 				F5558345030EF4CD01A8C8B4 /* gtia.c */,
 				F5558342030EF4CD01A8C8B4 /* input.h */,
+				2DE6EB8324CE6BCA00A55386 /* img_tape.c */,
+				2DE6EB8424CE6BCB00A55386 /* img_tape.h */,
 				F5558340030EF4CD01A8C8B4 /* list.h */,
 				F5558341030EF4CD01A8C8B4 /* list.c */,
 				F555833E030EF4CD01A8C8B4 /* log.h */,
@@ -1173,6 +1179,7 @@
 				2D037E351001124F0045DB8E /* PastePanel.h in Headers */,
 				2DE6EB7D24CE197000A55386 /* altirraos_xl.h in Headers */,
 				2D82CFFD100591880014FE90 /* PasteWindowPanel.h in Headers */,
+				2DE6EB8624CE6BCB00A55386 /* img_tape.h in Headers */,
 				2DC051B3106962C600B9657B /* MemoryEditorAsciiFieldCell.h in Headers */,
 				2DC051B5106962C600B9657B /* MemoryEditorByteFieldCell.h in Headers */,
 				2DC051B7106962C600B9657B /* MemoryEditorDataSource.h in Headers */,
@@ -1415,6 +1422,7 @@
 				2DC051B4106962C600B9657B /* MemoryEditorAsciiFieldCell.m in Sources */,
 				2DC051B6106962C600B9657B /* MemoryEditorByteFieldCell.m in Sources */,
 				2DC051B8106962C600B9657B /* MemoryEditorDataSource.m in Sources */,
+				2DE6EB8524CE6BCB00A55386 /* img_tape.c in Sources */,
 				2D587363106A8415002428EF /* ByteTextField.m in Sources */,
 				2D587369106A85EA002428EF /* WordTextField.m in Sources */,
 				2DC223D4106B04A20096626C /* DisasmDataSource.m in Sources */,

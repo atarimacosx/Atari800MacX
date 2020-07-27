@@ -431,7 +431,7 @@ NSImage *disketteImage;
             [removeSecondCartItem setTarget:nil];
         else
             [removeSecondCartItem setTarget:self];
-        if ((strcmp(cassette_filename, "None") == 0) || (strlen(cassette_filename) == 0)) {
+        if ((strcmp(CASSETTE_filename, "None") == 0) || (strlen(CASSETTE_filename) == 0)) {
             [removeCassItem setTarget:nil];
             [rewindCassItem setTarget:nil];
             }
@@ -813,7 +813,7 @@ NSImage *disketteImage;
 *-----------------------------------------------------------------------------*/
 - (IBAction)cassRewind:(id)sender
 {
-    cassette_current_block = 1;
+    CASSETTE_Seek(1);
 }
 
 /*------------------------------------------------------------------------------
@@ -1062,7 +1062,7 @@ NSImage *disketteImage;
             }
         else {
             fclose(image);
-			if ((strcmp(cassette_filename, "None") == 0) || (strlen(cassette_filename) == 0))
+			if ((strcmp(CASSETTE_filename, "None") == 0) || (strlen(CASSETTE_filename) == 0))
 				CASSETTE_Remove();
 			ret = CASSETTE_Insert(cfilename);
 			if (! ret) 
@@ -1736,7 +1736,7 @@ NSImage *disketteImage;
 *-----------------------------------------------------------------------------*/
 - (IBAction)cassStatusChange:(id)sender
 {
-	if ((strcmp(cassette_filename, "None") == 0) || (strlen(cassette_filename) == 0)) {
+	if ((strcmp(CASSETTE_filename, "None") == 0) || (strlen(CASSETTE_filename) == 0)) {
 		[self cassInsert:self];
 		}
 	else {
@@ -2146,7 +2146,7 @@ NSImage *disketteImage;
 			[cartImageSecondInsertButton setTransparent:YES];
 			}
 
-		if (cassette_file == NULL) {
+		if (CASSETTE_status == CASSETTE_STATUS_NONE) {
 			[cassImageNameField setStringValue:@"Empty"];
 			[cassImageInsertButton setTitle:@"Insert"];
 			[cassImageView setImage:off410Image];
@@ -2158,8 +2158,10 @@ NSImage *disketteImage;
 			[cassImageSliderMaxField setEnabled:NO];
 			}
 		else {
-			ptr = cassette_filename + strlen(cassette_filename) - 1;
-			while (ptr > cassette_filename) {
+            int current_block = CASSETTE_GetPosition();
+            int max_block = CASSETTE_GetSize();
+			ptr = CASSETTE_filename + strlen(CASSETTE_filename) - 1;
+			while (ptr > CASSETTE_filename) {
 				if (*ptr == '/') {
 					ptr++;
 					break;
@@ -2169,11 +2171,11 @@ NSImage *disketteImage;
 			[cassImageNameField setStringValue:[NSString stringWithCString:ptr encoding:NSASCIIStringEncoding]];
 			[cassImageInsertButton setTitle:@"Eject"];
 			[cassImageView setImage:on410Image];
-			printf("In UMSW curr=%d max=%d\n",cassette_current_block, cassette_max_block);
-			[cassImageSliderCurrField setIntValue:cassette_current_block];
-			[cassImageSliderMaxField  setIntValue:cassette_max_block];
-			[cassImageSlider setMaxValue:(float)cassette_max_block];
-			[cassImageSlider setIntValue:cassette_current_block];
+			printf("In UMSW curr=%d max=%d\n",current_block, max_block);
+			[cassImageSliderCurrField setIntValue:current_block];
+			[cassImageSliderMaxField  setIntValue:max_block];
+			[cassImageSlider setMaxValue:(float)max_block];
+			[cassImageSlider setIntValue:current_block];
 			[cassImageSlider setEnabled:YES];
 			[cassImageSliderCurrField setEnabled:YES];
 			[cassImageSliderMaxField setEnabled:YES];
@@ -2186,15 +2188,10 @@ NSImage *disketteImage;
 *-----------------------------------------------------------------------------*/
 - (IBAction)cassSliderChange:(id)sender
 {
-	char tempName[FILENAME_MAX];
-	
-	cassette_current_block = [cassImageSlider intValue];
-	if (cassette_savefile) {
-		strcpy(tempName,cassette_filename);
-		CASSETTE_Remove();
-		CASSETTE_Insert(tempName);
-		}
-	[cassImageSliderCurrField setIntValue:cassette_current_block];
+    CASSETTE_Seek([cassImageSlider intValue]);
+
+    int current_block = CASSETTE_GetPosition();
+	[cassImageSliderCurrField setIntValue:current_block];
 	[self updateInfo];
 }
 
@@ -2204,10 +2201,13 @@ NSImage *disketteImage;
 *-----------------------------------------------------------------------------*/
 - (void)cassSliderUpdate:(int)block
 {
-	[cassImageSliderCurrField setIntValue:block];
-	[cassImageSliderMaxField  setIntValue:cassette_max_block];
-	[cassImageSlider setMaxValue:(float)cassette_max_block];
-	[cassImageSlider setIntValue:block];
+    int current_block = CASSETTE_GetPosition();
+    int max_block = CASSETTE_GetSize();
+    
+	[cassImageSliderCurrField setIntValue:current_block];
+	[cassImageSliderMaxField  setIntValue:max_block];
+	[cassImageSlider setMaxValue:(float)max_block];
+	[cassImageSlider setIntValue:current_block];
 }
 
 /*------------------------------------------------------------------------------

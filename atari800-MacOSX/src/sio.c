@@ -1292,47 +1292,26 @@ void SIO_Handler(void)
 	}
 	/* cassette i/o */
 	else if (MEMORY_dGetByte(0x300) == 0x60) {
-		int storagelength = 0;
 		UBYTE gaps = MEMORY_dGetByte(0x30b);
 		switch (cmd){
 		case 0x52:	/* read */
 			/* set expected Gap */
 			CASSETTE_AddGap(gaps == 0 ? 2000 : 160);
-			SIO_last_op = SIO_LAST_READ;
-			SIO_last_drive = 0x61;
-			SIO_last_op_time = 0x10;
 			/* get record from storage medium */
-			storagelength = CASSETTE_Read();
-			if (storagelength - 1 != length)	/* includes -1 as error */
-				result = 'E';
-			else
+			if (CASSETTE_ReadToMemory(data, length))
 				result = 'C';
-			/* check checksum */
-			if (CASSETTE_buffer[length] != SIO_ChkSum(CASSETTE_buffer, length))
+			else
 				result = 'E';
-			/* if all went ok, copy to Atari */
-			if (result == 'C')
-				MEMORY_CopyToMem(CASSETTE_buffer, data, length);
 			break;
-		case 0x57:	/* write */
-			SIO_last_op = SIO_LAST_WRITE;
-			SIO_last_drive = 0x61;
-			SIO_last_op_time = 0x10;
-			/* put record into buffer */
-			MEMORY_CopyFromMem(data, CASSETTE_buffer, length);
-			/* eval checksum over buffer data */
-			CASSETTE_buffer[length] = SIO_ChkSum(CASSETTE_buffer, length);
+		case 0x50:	/* put (used by AltirraOS) */
+		case 0x57:	/* write (used by Atari OS) */
 			/* add pregap length */
 			CASSETTE_AddGap(gaps == 0 ? 3000 : 260);
 			/* write full record to storage medium */
-			storagelength = CASSETTE_Write(length + 1);
-#ifdef MACOSX
-			UpdateMediaManagerInfo();
-#endif			
-			if (storagelength - 1 != length)	/* includes -1 as error */
-				result = 'E';
-			else
+			if (CASSETTE_WriteFromMemory(data, length))
 				result = 'C';
+			else
+				result = 'E';
 			break;
 		default:
 			result = 'N';
@@ -1363,6 +1342,19 @@ void SIO_Handler(void)
 	MEMORY_dPutByte(0x0303, CPU_regY);
 	MEMORY_dPutByte(0x42,0);
 	CPU_SetC;
+
+	/* After each SIO operation a routine called SENDDS ($EC5F in OSB) is
+	   invoked, which, among other functions, silences the sound
+	   generators. With SIO patch we don't call SIOV and in effect SENDDS
+	   is not called either, but this causes a problem with tape saving.
+	   During tape saving sound generators are enabled before calling
+	   SIOV, but are not disabled later (no call to SENDDS). The effect is
+	   that after saving to tape the unwanted SIO sounds are left audible.
+	   To avoid the problem, we silence the sound registers by hand. */
+	POKEY_PutByte(POKEY_OFFSET_AUDC1, 0);
+	POKEY_PutByte(POKEY_OFFSET_AUDC2, 0);
+	POKEY_PutByte(POKEY_OFFSET_AUDC3, 0);
+	POKEY_PutByte(POKEY_OFFSET_AUDC4, 0);
 }
 
 UBYTE SIO_ChkSum(const UBYTE *buffer, int length)
@@ -1537,53 +1529,6 @@ static UBYTE Command_Frame(void)
 	}
 }
 
-/* Enable/disable the Tape Motor */
-void SIO_TapeMotor(int onoff)
-{
-	/* if sio is patched, do not do anything */
-	if (ESC_enable_sio_patch)
-		return;
-	if (onoff) {
-		/* set frame to cassette frame, if not */
-		/* in a transfer with an intelligent peripheral */
-		if (TransferStatus == SIO_NoFrame || (TransferStatus & 0xfe) == SIO_CasRead) {
-			if (CASSETTE_IsSaveFile()) {
-				TransferStatus = SIO_CasWrite;
-				CASSETTE_TapeMotor(onoff);
-				SIO_last_op = SIO_LAST_WRITE;
-			}
-			else {
-				TransferStatus = SIO_CasRead;
-				CASSETTE_TapeMotor(onoff);
-				POKEY_DELAYED_SERIN_IRQ = CASSETTE_GetInputIRQDelay();
-				SIO_last_op = SIO_LAST_READ;
-			};
-			SIO_last_drive = 0x60;
-			SIO_last_op_time = 0x10;
-		}
-		else {
-			CASSETTE_TapeMotor(onoff);
-		}
-	}
-	else {
-		/* set frame to none */
-		if (TransferStatus == SIO_CasWrite) {
-			TransferStatus = SIO_NoFrame;
-			CASSETTE_TapeMotor(onoff);
-		}
-		else if (TransferStatus == SIO_CasRead) {
-			TransferStatus = SIO_NoFrame;
-			CASSETTE_TapeMotor(onoff);
-			POKEY_DELAYED_SERIN_IRQ = 0; /* off */
-		}
-		else {
-			CASSETTE_TapeMotor(onoff);
-			POKEY_DELAYED_SERIN_IRQ = 0; /* off */
-		}
-		SIO_last_op_time = 0;
-	}
-}
-
 /* Enable/disable the command frame */
 void SIO_SwitchCommandFrame(int onoff)
 {
@@ -1734,11 +1679,8 @@ int SIO_GetByte(void)
 			TransferStatus = SIO_NoFrame;
 		}
 		break;
-	case SIO_CasRead:
-		byte = CASSETTE_GetByte();
-		POKEY_DELAYED_SERIN_IRQ = CASSETTE_GetInputIRQDelay();
-		break;
 	default:
+		byte = CASSETTE_GetByte();
 		break;
 	}
 	return byte;

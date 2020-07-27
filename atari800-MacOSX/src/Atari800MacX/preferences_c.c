@@ -259,15 +259,15 @@ ATARI800MACX_PREF *getPrefStorage(void) {
 void saveMediaPrefs() {
 	if (CARTRIDGE_type == CARTRIDGE_NONE) {
 		if (CARTRIDGE_second_type == CARTRIDGE_NONE) 
-			SaveMedia(SIO_filename, cassette_filename, "", "");
+			SaveMedia(SIO_filename, CASSETTE_filename, "", "");
 		else
-			SaveMedia(SIO_filename, cassette_filename, "", second_cart_filename);
+			SaveMedia(SIO_filename, CASSETTE_filename, "", second_cart_filename);
 	}
 	else {
 		if (CARTRIDGE_second_type == CARTRIDGE_NONE) 
-			SaveMedia(SIO_filename, cassette_filename, cart_filename, "");
+			SaveMedia(SIO_filename, CASSETTE_filename, cart_filename, "");
 		else
-			SaveMedia(SIO_filename, cassette_filename, cart_filename, second_cart_filename);
+			SaveMedia(SIO_filename, CASSETTE_filename, cart_filename, second_cart_filename);
 	}
 }
 
@@ -315,15 +315,15 @@ void savePrefs() {
         {
 		if (CARTRIDGE_type == CARTRIDGE_NONE) {
 			if (CARTRIDGE_second_type == CARTRIDGE_NONE) 
-				SaveMedia(SIO_filename, cassette_filename, "", "");
+				SaveMedia(SIO_filename, CASSETTE_filename, "", "");
 			else
-				SaveMedia(SIO_filename, cassette_filename, "", second_cart_filename);
+				SaveMedia(SIO_filename, CASSETTE_filename, "", second_cart_filename);
 		}
 		else {
 			if (CARTRIDGE_second_type == CARTRIDGE_NONE) 
-				SaveMedia(SIO_filename, cassette_filename, cart_filename, "");
+				SaveMedia(SIO_filename, CASSETTE_filename, cart_filename, "");
 			else
-				SaveMedia(SIO_filename, cassette_filename, cart_filename, second_cart_filename);
+				SaveMedia(SIO_filename, CASSETTE_filename, cart_filename, second_cart_filename);
 		}
     }
 	if (saveCurrentMedia)
