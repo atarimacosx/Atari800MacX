@@ -196,6 +196,27 @@ int Util_sscandec(const char *s)
 	}
 }
 
+int Util_sscansdec(char const *s, int *dest)
+{
+    int minus = FALSE;
+
+    if (s == NULL || dest == NULL) return FALSE;
+
+    switch(*s) {
+    case '-':
+        minus = TRUE;
+        /* Fallthrough! */
+    case '+':
+        ++s;
+    }
+    *dest = Util_sscandec(s);
+    if (*dest == -1)
+        return FALSE;
+    if (minus)
+        *dest = -*dest;
+    return TRUE;
+}
+
 int Util_sscanhex(const char *s)
 {
 	int result;

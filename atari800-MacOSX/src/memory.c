@@ -1121,7 +1121,7 @@ UBYTE MEMORY_HwGetByte(UWORD addr, int no_side_effects)
 		byte = ANTIC_GetByte(addr, no_side_effects);
 		break;
 	case 0xd500:				/* bank-switching cartridges, RTIME-8 */
-        byte = CARTRIDGE_GetByte(addr); //MDGToDo , no_side_effects);
+        byte = CARTRIDGE_GetByte(addr, no_side_effects);
 		break;
 	case 0xff00:				/* Mosaic memory expansion for 400/800 */
 		byte = MosaicGetByte(addr, no_side_effects);

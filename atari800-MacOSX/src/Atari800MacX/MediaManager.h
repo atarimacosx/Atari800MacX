@@ -77,6 +77,8 @@
     IBOutlet id error2Button;
     IBOutlet id error2Field1;
     IBOutlet id error2Field2;
+    IBOutlet id cart2KMatrix;
+    IBOutlet id cart4KMatrix;
     IBOutlet id cart8KMatrix;
     IBOutlet id cart16KMatrix;
     IBOutlet id cart32KMatrix;
@@ -86,6 +88,11 @@
     IBOutlet id cart256KMatrix;
     IBOutlet id cart512KMatrix;
     IBOutlet id cart1024KMatrix;
+    IBOutlet id cart2048KMatrix;
+    IBOutlet id cart4096KMatrix;
+    IBOutlet id cart32MMatrix;
+    IBOutlet id cart64MMatrix;
+    IBOutlet id cart128MMatrix;
 	IBOutlet id d1DiskImageInsertButton;
 	IBOutlet id d1DiskImageNameField;
 	IBOutlet id d1DiskImageNumberField;

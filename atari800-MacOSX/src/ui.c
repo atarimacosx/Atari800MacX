@@ -599,7 +599,7 @@ static void CartManagement(void)
 	for (;;) {
 		static char cart_filename[FILENAME_MAX] = "";
 		
-		if (CARTRIDGE_type != CARTRIDGE_SDX_64 && CARTRIDGE_type != CARTRIDGE_SDX_128) {
+        if (0) { // ToDoMDG CARTRIDGE_type != CARTRIDGE_SDX_64 && CARTRIDGE_type != CARTRIDGE_SDX_128) {
 			option = UI_driver->fSelect("Cartridge Management", 0, option, menu_array, NULL);
 		}
 		else
@@ -754,11 +754,12 @@ static void CartManagement(void)
 					break;
 				default:
 					/* r > 0 */
-					CARTRIDGE_type = UI_SelectCartType(r);
+					// ToDoMDG CARTRIDGE_type = UI_SelectCartType(r);
 					break;
 				}
-				if (CARTRIDGE_type != CARTRIDGE_NONE) {
-					int for5200 = CARTRIDGE_IsFor5200(CARTRIDGE_type);
+                if (0) { // ToDoMDG CARTRIDGE_type != CARTRIDGE_NONE) {
+					// ToDoMDG int for5200 = CARTRIDGE_IsFor5200(CARTRIDGE_type);
+                    int for5200;
 					if (for5200 && Atari800_machine_type != Atari800_MACHINE_5200) {
 						Atari800_machine_type = Atari800_MACHINE_5200;
 						MEMORY_ram_size = 16;
@@ -800,7 +801,7 @@ static void CartManagement(void)
 					break;
 				default:
 					/* r > 0 */
-					CARTRIDGE_second_type = UI_SelectCartType(r);
+					// ToDoMDG CARTRIDGE_second_type = UI_SelectCartType(r);
 					break;
 				}
 				return;

@@ -470,7 +470,7 @@ int StateSav_ReadAtariState(const char *filename, const char *mode)
 
     Atari800_StateRead();//MDGToDo StateVersion);
 	if (StateVersion >= 4) {
-        CARTRIDGE_StateRead();//MDGToDo StateVersion);
+        CARTRIDGE_StateRead(StateVersion);//MDGToDo StateVersion);
 		SIO_StateRead();
 	}
 	ANTIC_StateRead();

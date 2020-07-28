@@ -5249,7 +5249,7 @@ int SDL_main(int argc, char **argv)
         }
 
         /* If emulator isn't paused, and 5200 has a cartridge */
-        if (!pauseEmulator && !((Atari800_machine_type == Atari800_MACHINE_5200) && (CARTRIDGE_type == CARTRIDGE_NONE))) {
+        if (!pauseEmulator && !((Atari800_machine_type == Atari800_MACHINE_5200) && (CARTRIDGE_main.type == CARTRIDGE_NONE))) {
 			PBI_BB_Frame(); /* just to make the menu key go up automatically */
             Devices_Frame();
             GTIA_Frame();
@@ -5277,7 +5277,7 @@ int SDL_main(int argc, char **argv)
 				Atari_DisplayScreen((UBYTE *) Screen_atari);
 				}
             }
-        else if ((Atari800_machine_type == Atari800_MACHINE_5200) && (CARTRIDGE_type == CARTRIDGE_NONE)){
+        else if ((Atari800_machine_type == Atari800_MACHINE_5200) && (CARTRIDGE_main.type == CARTRIDGE_NONE)){
             /* Clear the screen if we are in 5200 mode, with no cartridge */
             BasicUIInit();
             memset(Screen_atari_b, 0, (Screen_HEIGHT * Screen_WIDTH));

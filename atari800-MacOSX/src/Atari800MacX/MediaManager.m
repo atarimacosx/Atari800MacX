@@ -56,15 +56,12 @@ typedef struct {
 
 extern void PauseAudio(int pause);
 extern int CalcAtariType(int machineType, int ramSize, int axlon, int mosaic);
-extern char cart_filename[FILENAME_MAX];
-extern char second_cart_filename[FILENAME_MAX];
 extern char atari_disk_dirs[][FILENAME_MAX];
 extern char atari_diskset_dir[FILENAME_MAX];
 extern char atari_rom_dir[FILENAME_MAX];
 extern char atari_exe_dir[FILENAME_MAX];
 extern char atari_cass_dir[FILENAME_MAX];
 extern int cart_type;
-extern int CARTRIDGE_second_type;
 extern int requestCaptionChange;
 extern int requestArtifChange;
 extern int request80ColChange;
@@ -92,18 +89,38 @@ extern int PREFS_axlon_num_banks;
 extern int PREFS_mosaic_num_banks;
 
 /* Arrays which define the cartridge types for each size */
-static int CART8KTYPES[] = {CARTRIDGE_STD_8, CARTRIDGE_5200_8, CARTRIDGE_RIGHT_8, CARTRIDGE_PHOENIX_8};
-static int CART16KTYPES[] = {CARTRIDGE_STD_16, CARTRIDGE_OSS_16, CARTRIDGE_5200_EE_16, 
-                             CARTRIDGE_OSS2_16, CARTRIDGE_5200_NS_16, CARTRIDGE_MEGA_16, CARTRIDGE_BLIZZARD_16};
+static int CART2KTYPES[] = {CARTRIDGE_STD_2};
+static int CART4KTYPES[] = {CARTRIDGE_BLIZZARD_4, CARTRIDGE_STD_4, CARTRIDGE_RIGHT_4};
+static int CART8KTYPES[] = {CARTRIDGE_STD_8, CARTRIDGE_5200_8, CARTRIDGE_RIGHT_8,
+                            CARTRIDGE_PHOENIX_8, CARTRIDGE_OSS_8, CARTRIDGE_LOW_BANK_8};
+static int CART16KTYPES[] = {CARTRIDGE_STD_16, CARTRIDGE_OSS_034M_16, CARTRIDGE_5200_EE_16,
+                             CARTRIDGE_OSS_M091_16, CARTRIDGE_5200_NS_16, CARTRIDGE_MEGA_16,
+                             CARTRIDGE_BLIZZARD_16, CARTRIDGE_OSS_043M_16};
 static int CART32KTYPES[] = {CARTRIDGE_5200_32, CARTRIDGE_DB_32, CARTRIDGE_XEGS_32, 
-                             CARTRIDGE_WILL_32, CARTRIDGE_MEGA_32, CARTRIDGE_SWXEGS_32};
+                             CARTRIDGE_WILL_32, CARTRIDGE_MEGA_32, CARTRIDGE_SWXEGS_32,
+                             CARTRIDGE_AST_32, CARTRIDGE_ULTRACART_32, CARTRIDGE_BLIZZARD_32,
+                             CARTRIDGE_ADAWLIAH_32};
 static int CART40KTYPES[] = {CARTRIDGE_5200_40, CARTRIDGE_BBSB_40};
-static int CART64KTYPES[] = {CARTRIDGE_WILL_64, CARTRIDGE_EXP_64, CARTRIDGE_DIAMOND_64, 
-                             CARTRIDGE_SDX_64, CARTRIDGE_XEGS_64, CARTRIDGE_MEGA_64, CARTRIDGE_SWXEGS_64};
-static int CART128KTYPES[] = {CARTRIDGE_XEGS_128, CARTRIDGE_ATRAX_128, CARTRIDGE_MEGA_128, CARTRIDGE_SWXEGS_128, CARTRIDGE_ATMAX_128, CARTRIDGE_SDX_128};
-static int CART256KTYPES[] = {CARTRIDGE_XEGS_256, CARTRIDGE_MEGA_256, CARTRIDGE_SWXEGS_256};
-static int CART512KTYPES[] = {CARTRIDGE_XEGS_512, CARTRIDGE_MEGA_512, CARTRIDGE_SWXEGS_512};
-static int CART1024KTYPES[] = {CARTRIDGE_XEGS_1024, CARTRIDGE_MEGA_1024, CARTRIDGE_SWXEGS_1024, CARTRIDGE_ATMAX_1024};
+static int CART64KTYPES[] = {CARTRIDGE_WILL_64, CARTRIDGE_EXP_64, CARTRIDGE_DIAMOND_64,
+                             CARTRIDGE_SDX_64, CARTRIDGE_XEGS_07_64, CARTRIDGE_MEGA_64,
+                             CARTRIDGE_SWXEGS_64, CARTRIDGE_ATRAX_SDX_64,
+                             CARTRIDGE_TURBOSOFT_64, CARTRIDGE_XEGS_8F_64,
+                             CARTRIDGE_ADAWLIAH_64};
+static int CART128KTYPES[] = {CARTRIDGE_XEGS_128, CARTRIDGE_ATRAX_128, CARTRIDGE_MEGA_128,
+                              CARTRIDGE_SWXEGS_128, CARTRIDGE_ATMAX_128, CARTRIDGE_SDX_128,
+                              CARTRIDGE_ATRAX_SDX_128, CARTRIDGE_TURBOSOFT_128, CARTRIDGE_SIC_128,
+                              CARTRIDGE_ATRAX_128};
+static int CART256KTYPES[] = {CARTRIDGE_XEGS_256, CARTRIDGE_MEGA_256, CARTRIDGE_SWXEGS_256,
+                              CARTRIDGE_SIC_256};
+static int CART512KTYPES[] = {CARTRIDGE_XEGS_512, CARTRIDGE_MEGA_512, CARTRIDGE_SWXEGS_512,
+                              CARTRIDGE_SIC_512};
+static int CART1024KTYPES[] = {CARTRIDGE_XEGS_1024, CARTRIDGE_MEGA_1024, CARTRIDGE_SWXEGS_1024,
+                               CARTRIDGE_ATMAX_1024};
+static int CART2048KTYPES[] = {CARTRIDGE_MEGAMAX_2048, CARTRIDGE_MEGA_2048};
+static int CART4096KTYPES[] = {CARTRIDGE_MEGA_4096};
+static int CART32MTYPES[] = {CARTRIDGE_THECART_32M};
+static int CART64MTYPES[] = {CARTRIDGE_THECART_64M};
+static int CART128MTYPES[] = {CARTRIDGE_THECART_128M};
 
 int showUpperDrives = 0;
 
@@ -224,7 +241,11 @@ NSImage *disketteImage;
 	[[d1DiskField window] setMenu:nil];
 	[[errorButton window] setExcludedFromWindowsMenu:YES];
 	[[errorButton window] setMenu:nil];
-	[[cart8KMatrix window] setExcludedFromWindowsMenu:YES];
+    [[cart2KMatrix window] setExcludedFromWindowsMenu:YES];
+    [[cart2KMatrix window] setMenu:nil];
+    [[cart4KMatrix window] setExcludedFromWindowsMenu:YES];
+    [[cart4KMatrix window] setMenu:nil];
+    [[cart8KMatrix window] setExcludedFromWindowsMenu:YES];
 	[[cart8KMatrix window] setMenu:nil];
 	[[cart16KMatrix window] setExcludedFromWindowsMenu:YES];
 	[[cart16KMatrix window] setMenu:nil];
@@ -240,8 +261,18 @@ NSImage *disketteImage;
 	[[cart256KMatrix window] setMenu:nil];
 	[[cart512KMatrix window] setExcludedFromWindowsMenu:YES];
 	[[cart512KMatrix window] setMenu:nil];
-	[[cart1024KMatrix window] setExcludedFromWindowsMenu:YES];
-	[[cart1024KMatrix window] setMenu:nil];
+    [[cart1024KMatrix window] setExcludedFromWindowsMenu:YES];
+    [[cart1024KMatrix window] setMenu:nil];
+    [[cart2048KMatrix window] setExcludedFromWindowsMenu:YES];
+    [[cart2048KMatrix window] setMenu:nil];
+    [[cart4096KMatrix window] setExcludedFromWindowsMenu:YES];
+    [[cart4096KMatrix window] setMenu:nil];
+    [[cart32MMatrix window] setExcludedFromWindowsMenu:YES];
+    [[cart32MMatrix window] setMenu:nil];
+    [[cart64MMatrix window] setExcludedFromWindowsMenu:YES];
+    [[cart64MMatrix window] setMenu:nil];
+    [[cart128MMatrix window] setExcludedFromWindowsMenu:YES];
+    [[cart128MMatrix window] setMenu:nil];
 	[[d1DiskImageView window] setExcludedFromWindowsMenu:NO];
 	
     off810Image = [NSImage imageNamed:@"atari810off"];
@@ -419,15 +450,16 @@ NSImage *disketteImage;
             [removeMenu setTarget:nil];
         else 
             [removeMenu setTarget:self];
-        if (CARTRIDGE_type == CARTRIDGE_NONE)
+    if (CARTRIDGE_main.type == CARTRIDGE_NONE)
             [removeCartItem setTarget:nil];
         else
             [removeCartItem setTarget:self];
-		if (CARTRIDGE_type == CARTRIDGE_SDX_64 || CARTRIDGE_type == CARTRIDGE_SDX_128)
+    if (CARTRIDGE_main.type == CARTRIDGE_SDX_64 || CARTRIDGE_main.type == CARTRIDGE_SDX_128 ||
+        CARTRIDGE_main.type == CARTRIDGE_ATRAX_SDX_64 || CARTRIDGE_main.type == CARTRIDGE_ATRAX_SDX_128)
             [insertSecondCartItem setTarget:self];
         else
             [insertSecondCartItem setTarget:nil];
-        if (CARTRIDGE_second_type == CARTRIDGE_NONE)
+        if (CARTRIDGE_piggyback.type == CARTRIDGE_NONE)
             [removeSecondCartItem setTarget:nil];
         else
             [removeSecondCartItem setTarget:self];
@@ -535,33 +567,7 @@ NSImage *disketteImage;
     if (filename != nil) {
         [filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
         cartSize = CARTRIDGE_Insert(cfilename);
-        if (cartSize > 0) 
-            CARTRIDGE_type = [self cartSelect:cartSize];
-        if (CARTRIDGE_type != CARTRIDGE_NONE) {
-            int for5200 = CARTRIDGE_IsFor5200(CARTRIDGE_type);
-            if (for5200 && Atari800_machine_type != Atari800_MACHINE_5200) {
-                Atari800_machine_type = Atari800_MACHINE_5200;
-                MEMORY_ram_size = 16;
-                Atari800_InitialiseMachine();
-                requestCaptionChange = 1;
-                }
-            else if (!for5200 && Atari800_machine_type == Atari800_MACHINE_5200) {
-				CalcMachineTypeRam(machine_switch_type, &Atari800_machine_type, 
-								   &MEMORY_ram_size, &axlon_enabled,
-								   &mosaic_enabled);
-                if (!axlon_enabled)
-                    MEMORY_axlon_num_banks = 0;
-                else
-                    MEMORY_axlon_num_banks = PREFS_axlon_num_banks;
 
-                if (!mosaic_enabled)
-                    MEMORY_mosaic_num_banks = 0;
-                else
-                    MEMORY_mosaic_num_banks = PREFS_mosaic_num_banks;
-                Atari800_InitialiseMachine();
-                requestCaptionChange = 1;
-                }
-            }
 		memset(Screen_atari, 0, (Screen_HEIGHT * Screen_WIDTH));
 		Atari_DisplayScreen((UBYTE *) Screen_atari);
         Atari800_Coldstart();
@@ -587,7 +593,7 @@ NSImage *disketteImage;
         [filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
         cartSize = CARTRIDGE_Insert_Second(cfilename);
         if (cartSize > 0) 
-            CARTRIDGE_second_type = [self cartSelect:cartSize];
+            CARTRIDGE_piggyback.type = [self cartSelect:cartSize];
         }
     [self updateInfo];
     PauseAudio(0);
@@ -606,34 +612,6 @@ NSImage *disketteImage;
     if (filename != nil) {
         [filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
         cartSize = CARTRIDGE_Insert(cfilename);
-        if (cartSize > 0) {
-            CARTRIDGE_type = [self cartSelect:cartSize];
-            }
-        if (CARTRIDGE_type != CARTRIDGE_NONE) {
-            int for5200 = CARTRIDGE_IsFor5200(CARTRIDGE_type);
-            if (for5200 && Atari800_machine_type != Atari800_MACHINE_5200) {
-                Atari800_machine_type = Atari800_MACHINE_5200;
-                MEMORY_ram_size = 16;
-                Atari800_InitialiseMachine();
-                requestCaptionChange = 1;
-                }
-            else if (!for5200 && Atari800_machine_type == Atari800_MACHINE_5200) {
-				CalcMachineTypeRam(machine_switch_type, &Atari800_machine_type, 
-								   &MEMORY_ram_size, &axlon_enabled,
-								   &mosaic_enabled);
-                if (!axlon_enabled)
-                    MEMORY_axlon_num_banks = 0;
-                else
-                    MEMORY_axlon_num_banks = PREFS_axlon_num_banks;
-
-                if (!mosaic_enabled)
-                    MEMORY_mosaic_num_banks = 0;
-                else
-                    MEMORY_mosaic_num_banks = PREFS_mosaic_num_banks;
-                Atari800_InitialiseMachine();
-                requestCaptionChange = 1;
-                }
-            }
 		memset(Screen_atari, 0, (Screen_HEIGHT * Screen_WIDTH));
 		Atari_DisplayScreen((UBYTE *) Screen_atari);
         Atari800_Coldstart();
@@ -671,6 +649,12 @@ NSImage *disketteImage;
     NSWindow *theWindow;
 
     switch (cartSize) {
+        case 2:
+            theWindow = [cart2KMatrix window];
+            break;
+        case 4:
+            theWindow = [cart4KMatrix window];
+            break;
         case 8:
             theWindow = [cart8KMatrix window];
             break;
@@ -698,6 +682,21 @@ NSImage *disketteImage;
         case 1024:
             theWindow = [cart1024KMatrix window];
             break;
+        case 2048:
+            theWindow = [cart2048KMatrix window];
+            break;
+        case 4096:
+            theWindow = [cart4096KMatrix window];
+            break;
+        case 32768:
+            theWindow = [cart32MMatrix window];
+            break;
+        case 65536:
+            theWindow = [cart64MMatrix window];
+            break;
+        case 131072:
+            theWindow = [cart128MMatrix window];
+            break;
         default:
             return(CARTRIDGE_NONE);
         }
@@ -715,6 +714,12 @@ NSImage *disketteImage;
     int cartType;
     
     switch(cartSize) {
+        case 2:
+            cartType = CART2KTYPES[[[cart2KMatrix selectedCell] tag]];
+            break;
+        case 4:
+            cartType = CART4KTYPES[[[cart4KMatrix selectedCell] tag]];
+            break;
         case 8:
             cartType = CART8KTYPES[[[cart8KMatrix selectedCell] tag]];
             break;
@@ -741,6 +746,21 @@ NSImage *disketteImage;
             break;
         case 1024:
             cartType = CART1024KTYPES[[[cart1024KMatrix selectedCell] tag]];
+            break;
+        case 2048:
+            cartType = CART2048KTYPES[[[cart2048KMatrix selectedCell] tag]];
+            break;
+        case 4096:
+            cartType = CART4096KTYPES[[[cart4096KMatrix selectedCell] tag]];
+            break;
+        case 32768:
+            cartType = CART32MTYPES[[[cart32MMatrix selectedCell] tag]];
+            break;
+        case 65536:
+            cartType = CART64MTYPES[[[cart64MMatrix selectedCell] tag]];
+            break;
+        case 131072:
+            cartType = CART128MTYPES[[[cart128MMatrix selectedCell] tag]];
             break;
         default:
             cartType = 0;
@@ -1749,7 +1769,7 @@ NSImage *disketteImage;
 *-----------------------------------------------------------------------------*/
 - (IBAction)cartStatusChange:(id)sender
 {
-	if (CARTRIDGE_type == CARTRIDGE_NONE) {
+    if (CARTRIDGE_main.type == CARTRIDGE_NONE) {
 		[self cartInsert:self];
 		}
 	else {
@@ -1763,7 +1783,7 @@ NSImage *disketteImage;
 *-----------------------------------------------------------------------------*/
 - (IBAction)cartSecondStatusChange:(id)sender
 {
-	if (CARTRIDGE_second_type == CARTRIDGE_NONE) {
+    if (CARTRIDGE_piggyback.type == CARTRIDGE_NONE) {
 		[self cartSecondInsert:self];
 		}
 	else {
@@ -2096,14 +2116,14 @@ NSImage *disketteImage;
 			break;
 		}
 		
-		if (CARTRIDGE_type == CARTRIDGE_NONE) {
+    if (CARTRIDGE_main.type == CARTRIDGE_NONE) {
 			[cartImageNameField setStringValue:@"Empty"];
 			[cartImageInsertButton setTitle:@"Insert"];
 			[cartImageView setImage:offCartImage];
 			}
 		else {
-			ptr = cart_filename + strlen(cart_filename) - 1;
-			while (ptr > cart_filename) {
+            ptr = CARTRIDGE_main.filename + strlen(CARTRIDGE_main.filename) - 1;
+			while (ptr > CARTRIDGE_main.filename) {
 				if (*ptr == '/') {
 					ptr++;
 					break;
@@ -2115,17 +2135,18 @@ NSImage *disketteImage;
 			[cartImageView setImage:onCartImage];
 			}
 
-		if (CARTRIDGE_type == CARTRIDGE_SDX_64 || CARTRIDGE_type == CARTRIDGE_SDX_128)
+        if (CARTRIDGE_main.type == CARTRIDGE_SDX_64 || CARTRIDGE_main.type == CARTRIDGE_SDX_128 ||
+            CARTRIDGE_main.type == CARTRIDGE_ATRAX_SDX_64 || CARTRIDGE_main.type == CARTRIDGE_ATRAX_SDX_128)
 			{
-			if (CARTRIDGE_second_type == CARTRIDGE_NONE) {
+            if (CARTRIDGE_piggyback.type == CARTRIDGE_NONE) {
 				[cartImageSecondNameField setStringValue:@""];
 				[cartImageSecondInsertButton setTitle:@"Insert 2"];
 				[cartImageSecondInsertButton setEnabled:YES];
 				[cartImageSecondInsertButton setTransparent:NO];
 				}
 			else {
-				ptr = second_cart_filename + strlen(second_cart_filename) - 1;
-				while (ptr > second_cart_filename) {
+                ptr = CARTRIDGE_piggyback.filename + strlen(CARTRIDGE_piggyback.filename) - 1;
+				while (ptr > CARTRIDGE_piggyback.filename) {
 					if (*ptr == '/') {
 						ptr++;
 						break;

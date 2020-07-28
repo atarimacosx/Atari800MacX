@@ -28,6 +28,7 @@
 #include <stdlib.h>
 #include <string.h>
 #ifdef HAVE_SIGNAL_H
+biteme!
 #include <signal.h>
 #endif
 #ifdef TIME_WITH_SYS_TIME
@@ -88,20 +89,14 @@
 #include "sio.h"
 #include "ui.h"
 #include "util.h"
-#if !defined(BASIC) && !defined(CURSES_BASIC)
 #include "colours.h"
 #include "screen.h"
-#endif
-#ifndef BASIC
 #include "statesav.h"
 
-#ifdef MACOSX
 extern double emulationSpeed;
 void loadMacPrefs(int firstTime);
 void MacSoundReset(void);
 void MacCapsLockStateReset(void);
-#endif
-#endif /* BASIC */
 #if defined(SOUND) && !defined(__PLUS)
 #include "pokeysnd.h"
 #include "sndsave.h"
@@ -110,20 +105,6 @@ void MacCapsLockStateReset(void);
 #ifdef R_IO_DEVICE
 #include "rdevice.h"
 #endif
-#ifdef __PLUS
-#ifdef _WX_
-#include "export.h"
-#else /* _WX_ */
-#include "globals.h"
-#include "macros.h"
-#include "display_win.h"
-#include "misc_win.h"
-#include "registry.h"
-#include "timing.h"
-#include "FileService.h"
-#include "Helpers.h"
-#endif /* _WX_ */
-#endif /* __PLUS */
 #ifdef PBI_BB
 #include "pbi_bb.h"
 #endif
@@ -133,10 +114,8 @@ void MacCapsLockStateReset(void);
 #ifdef XEP80_EMULATION
 #include "xep80.h"
 #endif
-#ifdef MACOSX
-int machine_switch_type = 7;
-#endif
 
+int machine_switch_type = 7;
 int Atari800_machine_type = Atari800_MACHINE_XLXE;
 int Atari800_tv_mode = Atari800_TV_PAL;
 int Atari800_disable_basic = TRUE;
@@ -148,32 +127,11 @@ int Atari800_nframes = 0;
 int Atari800_refresh_rate = 1;
 int Atari800_collisions_in_skipped_frames = FALSE;
 
-#ifdef MACOSX
 double deltatime;
-#endif
 double fps;
 int percent_atari_speed = 100;
-#ifdef BENCHMARK
-static double benchmark_start_time;
-static double Atari_time(void);
-#endif
 
 int emuos_mode = 1;	/* 0 = never use EmuOS, 1 = use EmuOS if real OS not available, 2 = always use EmuOS */
-
-#ifdef HAVE_SIGNAL
-static RETSIGTYPE sigint_handler(int num)
-{
-	int restart;
-
-	restart = Atari800_Exit(TRUE);
-	if (restart) {
-		signal(SIGINT, sigint_handler);
-		return;
-	}
-
-	exit(0);
-}
-#endif
 
 void Atari800_Warmstart(void)
 {
@@ -207,9 +165,6 @@ void Atari800_Warmstart(void)
 		/* note: POKEY and GTIA have no Reset pin */
 	}
 	Devices_WarmCold_Start();
-#ifdef __PLUS
-	HandleResetEvent();
-#endif
 }
 
 void Atari800_Coldstart(void)
@@ -240,11 +195,8 @@ void Atari800_Coldstart(void)
         if (!PLATFORM_80col)
             PLATFORM_Switch80Col();
     }
-#ifdef __PLUS
-	HandleResetEvent();
-#endif
 	/* reset cartridge to power-up state */
-	CARTRIDGE_Start();
+    CARTRIDGE_ColdStart();
 	/* set Atari OS Coldstart flag */
 	MEMORY_dPutByte(0x244, 1);
 	/* handle Option key (disable BASIC in XL/XE)
@@ -365,100 +317,6 @@ int Atari800_Initialise(int *argc, char *argv[])
 #ifndef BASIC
 	const char *state_file = NULL;
 #endif
-#ifdef __PLUS
-	/* Atari800Win PLus doesn't use configuration files,
-	   it reads configuration from the Registry */
-#ifndef _WX_
-	int bUpdateRegistry = (*argc > 1);
-#endif
-	int bTapeFile = FALSE;
-	int nCartType = CARTRIDGE_type;
-
-	/* It is necessary because of the CARTRIDGE_Start (there must not be the
-	   registry-read value available at startup) */
-	CARTRIDGE_type = CARTRIDGE_NONE;
-
-#ifndef _WX_
-	/* Print the time info in the "Log file" window */
-	Misc_PrintTime();
-
-	/* Force screen refreshing */
-	g_nTestVal = _GetRefreshRate() - 1;
-
-	g_ulAtariState = ATARI_UNINITIALIZED;
-#endif /* _WX_ */
-#elif defined(MACOSX)
-
-#else /* __PLUS */
-	const char *rtconfig_filename = NULL;
-	int got_config;
-	int help_only = FALSE;
-
-	if (*argc > 1) {
-		for (i = j = 1; i < *argc; i++) {
-			if (strcmp(argv[i], "-config") == 0) {
-				rtconfig_filename = argv[++i];
-			}
-			else if (strcmp(argv[i], "-v") == 0 ||
-					 strcmp(argv[i], "-version") == 0 ||
-					 strcmp(argv[i], "--version") == 0) {
-				printf("%s\n", Atari800_TITLE);
-				return FALSE;
-			}
-			else if (strcmp(argv[i], "--usage") == 0 ||
-					 strcmp(argv[i], "--help") == 0) {
-				argv[j++] = "-help";
-			}
-			else if (strcmp(argv[i], "-verbose") == 0) {
-				verbose = TRUE;
-			}
-			else {
-				argv[j++] = argv[i];
-			}
-		}
-		*argc = j;
-	}
-	got_config = CFG_LoadConfig(rtconfig_filename);
-
-	/* try to find ROM images if the configuration file is not found
-	   or it does not specify some ROM paths (blank paths count as specified) */
-	CFG_FindROMImages("", TRUE); /* current directory */
-#if defined(unix) || defined(__unix__) || defined(__linux__)
-	CFG_FindROMImages("/usr/share/atari800", TRUE);
-#endif
-	if (*argc > 0 && argv[0] != NULL) {
-		char atari800_exe_dir[FILENAME_MAX];
-		char atari800_exe_rom_dir[FILENAME_MAX];
-		/* the directory of the Atari800 program */
-		Util_splitpath(argv[0], atari800_exe_dir, NULL);
-		CFG_FindROMImages(atari800_exe_dir, TRUE);
-		/* "rom" and "ROM" subdirectories of this directory */
-		Util_catpath(atari800_exe_rom_dir, atari800_exe_dir, "rom");
-		CFG_FindROMImages(atari800_exe_rom_dir, TRUE);
-/* skip "ROM" on systems that are known to be case-insensitive */
-#if !defined(DJGPP) && !defined(WIN32)
-		Util_catpath(atari800_exe_rom_dir, atari800_exe_dir, "ROM");
-		CFG_FindROMImages(atari800_exe_rom_dir, TRUE);
-#endif
-	}
-	/* finally if nothing is found, set some defaults to make
-	   the configuration file easier to edit */
-	if (Util_filenamenotset(CFG_osa_filename))
-		strcpy(CFG_osa_filename, "atariosa.rom");
-	if (Util_filenamenotset(CFG_osb_filename))
-		strcpy(CFG_osb_filename, "atariosb.rom");
-	if (Util_filenamenotset(CFG_xlxe_filename))
-		strcpy(CFG_xlxe_filename, "atarixl.rom");
-	if (Util_filenamenotset(CFG_5200_filename))
-		strcpy(CFG_5200_filename, "5200.rom");
-	if (Util_filenamenotset(CFG_basic_filename))
-		strcpy(CFG_basic_filename, "ataribas.rom");
-
-	/* if no configuration file read, try to save one with the defaults */
-	if (!got_config)
-		CFG_WriteConfig();
-
-#endif /* __PLUS */
 
 	for (i = j = 1; i < *argc; i++) {
 		if (strcmp(argv[i], "-atari") == 0) {
@@ -625,10 +483,6 @@ int Atari800_Initialise(int *argc, char *argv[])
 				/* all options known to main module tried but none matched */
 
 				if (strcmp(argv[i], "-help") == 0) {
-#if !defined(__PLUS) && !defined(MACOSX)
-					help_only = TRUE;
-					Log_print("\t-config <file>   Specify Alternate Configuration File");
-#endif
 					Log_print("\t-atari           Emulate Atari 800");
 					Log_print("\t-xl              Emulate Atari 800XL");
 					Log_print("\t-xe              Emulate Atari 130XE");
@@ -686,17 +540,13 @@ int Atari800_Initialise(int *argc, char *argv[])
 		deltatime = (1.0 / Atari800_FPS_NTSC) / emulationSpeed;
 #endif
 
-#if !defined(BASIC) && !defined(CURSES_BASIC)
 	Colours_Initialise(argc, argv);
-#endif
 	Devices_Initialise(argc, argv);
 	RTIME_Initialise(argc, argv);
 	SIO_Initialise (argc, argv);
 	CASSETTE_Initialise(argc, argv);
 	PBI_Initialise(argc,argv);
-#ifndef BASIC
 	INPUT_Initialise(argc, argv);
-#endif
 #ifdef XEP80_EMULATION
     XEP80_Initialise(argc, argv);
 #endif
@@ -706,41 +556,17 @@ int Atari800_Initialise(int *argc, char *argv[])
 #ifdef BIT3_EMULATION
     BIT3_Initialise(argc, argv);
 #endif
-#ifndef DONT_DISPLAY
 	/* Platform Specific Initialisation */
 	PLATFORM_Initialise(argc, argv);
-#endif
-#if !defined(BASIC) && !defined(CURSES_BASIC)
 	Screen_Initialise(argc, argv);
-#endif
 	/* Initialise Custom Chips */
 	ANTIC_Initialise(argc, argv);
 	GTIA_Initialise(argc, argv);
 	PIA_Initialise(argc, argv);
 	POKEY_Initialise(argc, argv);
 
-#ifndef __PLUS
-
-#ifndef MACOSX
-	if (help_only) {
-		Atari800_Exit(FALSE);
-		return FALSE;
-	}
-#endif	
-
 	/* Configure Atari System */
 	Atari800_InitialiseMachine();
-#else /* __PLUS */
-
-	if (!InitialiseMachine()) {
-#ifndef _WX_
-		if (bUpdateRegistry)
-			WriteAtari800Registry();
-#endif
-		return FALSE;
-	}
-
-#endif /* __PLUS */
 
 	/* Auto-start files left on the command line */
 	j = 1; /* diskno */
@@ -769,7 +595,7 @@ int Atari800_Initialise(int *argc, char *argv[])
 
 	/* Install requested ROM cartridge */
 	if (rom_filename) {
-		int r = CARTRIDGE_Insert(rom_filename);
+		int r = CARTRIDGE_InsertAutoReboot(rom_filename);
 		if (r < 0) {
 			Log_print("Error inserting cartridge \"%s\": %s", rom_filename,
 			r == CARTRIDGE_CANT_OPEN ? "Can't open file" :
@@ -778,40 +604,14 @@ int Atari800_Initialise(int *argc, char *argv[])
 			"Unknown error");
 		}
 		if (r > 0) {
-#ifdef BASIC
-			Log_print("Raw cartridge images not supported in BASIC version!");
-#else /* BASIC */
-
-#ifndef __PLUS
 			UI_is_active = TRUE;
-			CARTRIDGE_type = UI_SelectCartType(r);
+            CARTRIDGE_SetType(&CARTRIDGE_main, UI_SelectCartType(CARTRIDGE_main.size));
 			UI_is_active = FALSE;
-#else /* __PLUS */
-			CARTRIDGE_type = (CARTRIDGE_NONE == nCartType ? UI_SelectCartType(r) : nCartType);
-#endif /* __PLUS */
-			CARTRIDGE_Start();
-
-#endif /* BASIC */
 		}
-#ifndef __PLUS
-		if (CARTRIDGE_type != CARTRIDGE_NONE) {
-			int for5200 = CARTRIDGE_IsFor5200(CARTRIDGE_type);
-			if (for5200 && Atari800_machine_type != Atari800_MACHINE_5200) {
-				Atari800_machine_type = Atari800_MACHINE_5200;
-				MEMORY_ram_size = 16;
-				Atari800_InitialiseMachine();
-			}
-			else if (!for5200 && Atari800_machine_type == Atari800_MACHINE_5200) {
-				Atari800_machine_type = Atari800_MACHINE_XLXE;
-				MEMORY_ram_size = 64;
-				Atari800_InitialiseMachine();
-			}
-		}
-#endif /* __PLUS */
 	}
 
 	/* Install requested second ROM cartridge, if first is SpartaX */
-	if (((CARTRIDGE_type == CARTRIDGE_SDX_64) || (CARTRIDGE_type == CARTRIDGE_SDX_128)) && rom2_filename) {
+    if (((CARTRIDGE_main.type == CARTRIDGE_SDX_64) || (CARTRIDGE_main.type == CARTRIDGE_SDX_128) || (CARTRIDGE_main.type == CARTRIDGE_ATRAX_SDX_64) || (CARTRIDGE_main.type == CARTRIDGE_ATRAX_SDX_128)) && rom2_filename) {
 		int r = CARTRIDGE_Insert_Second(rom2_filename);
 		if (r < 0) {
 			Log_print("Error inserting cartridge \"%s\": %s", rom2_filename,
@@ -821,18 +621,9 @@ int Atari800_Initialise(int *argc, char *argv[])
 			"Unknown error");
 		}
 		if (r > 0) {
-#ifdef BASIC
-			Log_print("Raw cartridge images not supported in BASIC version!");
-#else /* BASIC */
-
-#ifndef __PLUS
 			UI_is_active = TRUE;
-			CARTRIDGE_second_type = UI_SelectCartType(r);
+            CARTRIDGE_SetType(&CARTRIDGE_piggyback, UI_SelectCartType(CARTRIDGE_piggyback.size));
 			UI_is_active = FALSE;
-#else /* __PLUS */
-			CARTRIDGE_second_type = (CARTRIDGE_NONE == nCartType ? SelectCartType(r) : nCartType);
-#endif /* __PLUS */
-#endif /* BASIC */
 		}
 	}
 	
@@ -840,33 +631,13 @@ int Atari800_Initialise(int *argc, char *argv[])
 	if (run_direct != NULL)
 		BINLOAD_Loader(run_direct);
 
-#ifndef BASIC
 	/* Load state file */
 	if (state_file != NULL) {
 		if (StateSav_ReadAtariState(state_file, "rb"))
 			/* Don't press Start nor Option */
 			GTIA_consol_override = 0;
 	}
-#endif
 
-#ifdef HAVE_SIGNAL
-	/* Install CTRL-C Handler */
-	signal(SIGINT, sigint_handler);
-#endif
-
-#ifdef __PLUS
-#ifndef _WX_
-	/* Update the Registry if any parameters were specified */
-	if (bUpdateRegistry)
-		WriteAtari800Registry();
-	Timer_Start(FALSE);
-#endif /* _WX_ */
-	g_ulAtariState &= ~ATARI_UNINITIALIZED;
-#endif /* __PLUS */
-
-#ifdef BENCHMARK
-	benchmark_start_time = Atari_time();
-#endif
 	return TRUE;
 }
 
@@ -881,40 +652,10 @@ int Atari800_Exit(int run_monitor)
 {
 	int restart;
 
-#ifdef __PLUS
-	if (CPU_cim_encountered)
-		g_ulAtariState |= ATARI_CRASHED;
-#endif
-
-#ifdef STAT_UNALIGNED_WORDS
-	printf("(ptr&7) Screen_atari  pm_scanline  _____ memory ______  memory (aligned addr)\n");
-	printf("          32-bit W      32-bit R   16-bit R   16-bit W   16-bit R   16-bit W\n");
-	{
-		unsigned int sums[6] = {0, 0, 0, 0, 0, 0};
-		int i;
-		for (i = 0; i < 8; i++) {
-			printf("%6d%12u%14u%11u%11u%11u%11u\n", i,
-				Screen_atari_write_long_stat[i], pm_scanline_read_long_stat[i],
-				memory_read_word_stat[i], memory_write_word_stat[i],
-				memory_read_aligned_word_stat[i], memory_write_aligned_word_stat[i]);
-			sums[0] += Screen_atari_write_long_stat[i];
-			sums[1] += pm_scanline_read_long_stat[i];
-			sums[2] += memory_read_word_stat[i];
-			sums[3] += memory_write_word_stat[i];
-			sums[4] += memory_read_aligned_word_stat[i];
-			sums[5] += memory_write_aligned_word_stat[i];
-		}
-		printf("total:%12u%14u%11u%11u%11u%11u\n",
-			sums[0], sums[1], sums[2], sums[3], sums[4], sums[5]);
-	}
-#endif /* STAT_UNALIGNED_WORDS */
 	restart = PLATFORM_Exit(run_monitor);
-#ifndef __PLUS
 	if (!restart) {
 		SIO_Exit();	/* umount disks, so temporary files are deleted */
-#ifndef BASIC
 		INPUT_Exit();	/* finish event recording */
-#endif
 #ifdef R_IO_DEVICE
 		RDevice_Exit(); /* R: Device cleanup */
 #endif
@@ -924,100 +665,31 @@ int Atari800_Exit(int run_monitor)
         AF80_Exit();
         BIT3_Exit();
 	}
-#endif /* __PLUS */
 	return restart;
 }
 
-
-#ifndef __PLUS
-
-#ifdef PS2
-
-double Atari_time(void);
-void Atari_sleep(double s);
-
-#else /* PS2 */
-
 static double Atari_time(void)
 {
-#ifdef SDL
-	return SDL_GetTicks() * 1e-3;
-#elif defined(WIN32)
-	return GetTickCount() * 1e-3;
-#elif defined(DJGPP)
-	/* DJGPP has gettimeofday, but it's not more accurate than uclock */
-	return uclock() * (1.0 / UCLOCKS_PER_SEC);
-#elif defined(HAVE_GETTIMEOFDAY)
 	struct timeval tp;
 	gettimeofday(&tp, NULL);
 	return tp.tv_sec + 1e-6 * tp.tv_usec;
-#elif defined(HAVE_UCLOCK)
-	return uclock() * (1.0 / UCLOCKS_PER_SEC);
-#elif defined(HAVE_CLOCK)
-	return clock() * (1.0 / CLK_TCK);
-#else
-#error No function found for Atari_time()
-#endif
 }
-
-
-#ifndef USE_CLOCK
 
 void Atari_sleep(double s)
 {
 	if (s > 0) {
-#ifdef WIN32
-		Sleep((DWORD) (s * 1e3));
-#elif defined(DJGPP)
-		/* DJGPP has usleep and select, but they don't work that good */
-		/* XXX: find out why */
-		double curtime = Atari_time();
-		while ((curtime + s) > Atari_time());
-#elif defined(HAVE_NANOSLEEP)
-		struct timespec ts;
-		ts.tv_sec = 0;
-		ts.tv_nsec = s * 1e9;
-		nanosleep(&ts, NULL);
-#elif defined(HAVE_USLEEP)
 		usleep(s * 1e6);
-#elif defined(__BEOS__)
-		/* added by Walter Las for BeOS */
-		snooze(s * 1e6);
-#elif defined(__EMX__)
-		/* added by Brian Smith for os/2 */
-		DosSleep(s);
-#elif defined(HAVE_SELECT)
-		/* linux */
-		struct timeval tp;
-		tp.tv_sec = 0;
-		tp.tv_usec = s * 1e6;
-		select(1, NULL, NULL, NULL, &tp);
-#else
-		double curtime = Atari_time();
-		while ((curtime + s) > Atari_time());
-#endif
 	}
 }
 
-#endif /* USE_CLOCK */
-
-#endif /* PS2 */
-
-#ifdef MACOSX
 void Atari800_Sync(void)
 {
 	static double lasttime = 0;
 	double local_deltatime;
 	double curtime;
 	double sleeptime;
-#ifdef SYNCHRONIZED_SOUND
 	local_deltatime = deltatime * PLATFORM_AdjustSpeed();
-//	printf("%f %f %f\n",deltatime, local_deltatime,lasttime-Atari_time());
-#endif
 	lasttime += local_deltatime;
-#ifdef SUPPORTS_PLATFORM_SLEEP
-	PLATFORM_Sleep(lasttime - Atari_time());
-#else
 	sleeptime = lasttime - Atari_time();
 	if (sleeptime > 1.0) {
 		Log_print("Large positive sleeptime (%f), correcting to 1.0",sleeptime);
@@ -1025,196 +697,11 @@ void Atari800_Sync(void)
 	}
 	
 	Atari_sleep(sleeptime);
-#endif
 	curtime = Atari_time();
 	
 	if ((lasttime + local_deltatime) < curtime)
 		lasttime = curtime;
 }
-#else
-void Atari800_Sync(void)
-{
-	static double lasttime = 0;
-	double deltatime = 1.0 / ((Atari800_tv_mode == Atari800_TV_PAL) ? Atari800_FPS_PAL : Atari800_FPS_NTSC);
-	double curtime;
-#ifdef SYNCHRONIZED_SOUND
-	deltatime *= PLATFORM_AdjustSpeed();
-#endif
-#ifdef ALTERNATE_SYNC_WITH_HOST
-	if (! UI_is_active)
-		deltatime *= Atari800_refresh_rate;
-#endif
-	lasttime += deltatime;
-#ifdef SUPPORTS_PLATFORM_SLEEP
-	PLATFORM_Sleep(lasttime - Atari_time());
-#else
-	Atari_sleep(lasttime - Atari_time());
-#endif
-	curtime = Atari_time();
-	
-	if ((lasttime + deltatime) < curtime)
-		lasttime = curtime;
-}
-#endif
-
-#ifdef USE_CURSES
-void curses_clear_screen(void);
-#endif
-
-#if defined(BASIC) || defined(VERY_SLOW) || defined(CURSES_BASIC)
-
-#ifdef CURSES_BASIC
-void curses_display_line(int anticmode, const UBYTE *screendata);
-#endif
-
-static int scanlines_to_dl;
-
-/* steal cycles and generate DLI */
-static void basic_antic_scanline(void)
-{
-	static UBYTE IR = 0;
-	static const UBYTE mode_scanlines[16] =
-		{ 0, 0, 8, 10, 8, 16, 8, 16, 8, 4, 4, 2, 1, 2, 1, 1 };
-	static const UBYTE mode_bytes[16] =
-		{ 0, 0, 40, 40, 40, 40, 20, 20, 10, 10, 20, 20, 20, 40, 40, 40 };
-	static const UBYTE font40_cycles[4] = { 0, 32, 40, 47 };
-	static const UBYTE font20_cycles[4] = { 0, 16, 20, 24 };
-#ifdef CURSES_BASIC
-	static int scanlines_to_curses_display = 0;
-	static UWORD screenaddr = 0;
-	static UWORD newscreenaddr = 0;
-#endif
-
-	int bytes = 0;
-	if (--scanlines_to_dl <= 0) {
-		if (ANTIC_DMACTL & 0x20) {
-			IR = ANTIC_GetDLByte(&ANTIC_dlist);
-			ANTIC_xpos++;
-		}
-		else
-			IR &= 0x7f;	/* repeat last instruction, but don't generate DLI */
-		switch (IR & 0xf) {
-		case 0:
-			scanlines_to_dl = ((IR >> 4) & 7) + 1;
-			break;
-		case 1:
-			if (ANTIC_DMACTL & 0x20) {
-				ANTIC_dlist = ANTIC_GetDLWord(&ANTIC_dlist);
-				ANTIC_xpos += 2;
-			}
-			scanlines_to_dl = (IR & 0x40) ? 1024 /* no more DL in this frame */ : 1;
-			break;
-		default:
-			if (IR & 0x40 && ANTIC_DMACTL & 0x20) {
-#ifdef CURSES_BASIC
-				screenaddr =
-#endif
-					ANTIC_GetDLWord(&ANTIC_dlist);
-				ANTIC_xpos += 2;
-			}
-			/* can't steal cycles now, because DLI must come first */
-			/* just an approximation: doesn't check HSCROL */
-			switch (ANTIC_DMACTL & 3) {
-			case 1:
-				bytes = mode_bytes[IR & 0xf] * 8 / 10;
-				break;
-			case 2:
-				bytes = mode_bytes[IR & 0xf];
-				break;
-			case 3:
-				bytes = mode_bytes[IR & 0xf] * 12 / 10;
-				break;
-			default:
-				break;
-			}
-#ifdef CURSES_BASIC
-			/* Normally, we would call curses_display_line here,
-			   and not use scanlines_to_curses_display at all.
-			   That would however cause incorrect color of the "MEMORY"
-			   menu item in Self Test - it isn't set properly
-			   in the first scanline. We therefore postpone
-			   curses_display_line call to the next scanline. */
-			scanlines_to_curses_display = 2;
-			newscreenaddr = screenaddr + bytes;
-#endif
-			/* just an approximation: doesn't check VSCROL */
-			scanlines_to_dl = mode_scanlines[IR & 0xf];
-			break;
-		}
-	}
-	if (scanlines_to_dl == 1 && (IR & 0x80)) {
-		CPU_GO(ANTIC_NMIST_C);
-		ANTIC_NMIST = 0x9f;
-		if (ANTIC_NMIEN & 0x80) {
-			CPU_GO(ANTIC_NMI_C);
-			CPU_NMI();
-		}
-	}
-#ifdef CURSES_BASIC
-	if (--scanlines_to_curses_display == 0) {
-		curses_display_line(IR & 0xf, MEMORY_mem + screenaddr);
-		/* 4k wrap */
-		if (((screenaddr ^ newscreenaddr) & 0x1000) != 0)
-			screenaddr = newscreenaddr - 0x1000;
-		else
-			screenaddr = newscreenaddr;
-	}
-#endif
-	ANTIC_xpos += bytes;
-	/* steal cycles in font modes */
-	switch (IR & 0xf) {
-	case 2:
-	case 3:
-	case 4:
-	case 5:
-		ANTIC_xpos += font40_cycles[ANTIC_DMACTL & 3];
-		break;
-	case 6:
-	case 7:
-		ANTIC_xpos += font20_cycles[ANTIC_DMACTL & 3];
-		break;
-	default:
-		break;
-	}
-}
-
-#define BASIC_LINE CPU_GO(ANTIC_LINE_C); ANTIC_xpos -= ANTIC_LINE_C - ANTIC_DMAR; ANTIC_screenline_cpu_clock += ANTIC_LINE_C; ANTIC_ypos++
-
-static void basic_frame(void)
-{
-	/* scanlines 0 - 7 */
-	ANTIC_ypos = 0;
-	do {
-		POKEY_Scanline();		/* check and generate IRQ */
-		BASIC_LINE;
-	} while (ANTIC_ypos < 8);
-
-	scanlines_to_dl = 1;
-	/* scanlines 8 - 247 */
-	do {
-		POKEY_Scanline();		/* check and generate IRQ */
-		basic_antic_scanline();
-		BASIC_LINE;
-	} while (ANTIC_ypos < 248);
-
-	/* scanline 248 */
-	POKEY_Scanline();			/* check and generate IRQ */
-	CPU_GO(ANTIC_NMIST_C);
-	ANTIC_NMIST = 0x5f;				/* Set VBLANK */
-	if (ANTIC_NMIEN & 0x40) {
-		CPU_GO(ANTIC_NMI_C);
-		CPU_NMI();
-	}
-	BASIC_LINE;
-
-	/* scanlines 249 - 261(311) */
-	do {
-		POKEY_Scanline();		/* check and generate IRQ */
-		BASIC_LINE;
-	} while (ANTIC_ypos < Atari800_tv_mode);
-}
-
-#endif /* defined(BASIC) || defined(VERY_SLOW) || defined(CURSES_BASIC) */
 
 void Atari800_Frame(void)
 {
@@ -1239,14 +726,12 @@ void Atari800_Frame(void)
 		Sound_Continue();
 #endif
 		break;
-#ifndef CURSES_BASIC
 	case AKEY_SCREENSHOT:
 		Screen_SaveNextScreenshot(FALSE);
 		break;
 	case AKEY_SCREENSHOT_INTERLACE:
 		Screen_SaveNextScreenshot(TRUE);
 		break;
-#endif /* CURSES_BASIC */
 	case AKEY_PBI_BB_MENU:
 #ifdef PBI_BB
 		PBI_BB_Menu();
@@ -1264,66 +749,29 @@ void Atari800_Frame(void)
 	PBI_XLD_VFrame(); /* for the Votrax */
 #endif
 	Devices_Frame();
-#ifndef BASIC
 	INPUT_Frame();
-#endif
 	GTIA_Frame();
 
-#ifdef BASIC
-	basic_frame();
-#else /* BASIC */
 	if (++refresh_counter >= Atari800_refresh_rate) {
 		refresh_counter = 0;
-#ifdef USE_CURSES
-		curses_clear_screen();
-#endif
-#ifdef CURSES_BASIC
-		basic_frame();
-#else
 		ANTIC_Frame(TRUE);
 		INPUT_DrawMousePointer();
 		Screen_DrawAtariSpeed(Atari_time());
 		Screen_DrawDiskLED();
-#endif /* CURSES_BASIC */
-#ifdef DONT_DISPLAY
-		Atari800_display_screen = FALSE;
-#else
 		Atari800_display_screen = TRUE;
-#endif /* DONT_DISPLAY */
 	}
 	else {
-#if defined(VERY_SLOW) || defined(CURSES_BASIC)
-		basic_frame();
-#else
 		ANTIC_Frame(Atari800_collisions_in_skipped_frames);
-#endif
 		Atari800_display_screen = FALSE;
 	}
-#endif /* BASIC */
 	POKEY_Frame();
 #ifdef SOUND
 	Sound_Update();
 #endif
 	Atari800_nframes++;
-#ifdef BENCHMARK
-	if (Atari800_nframes >= BENCHMARK) {
-		double benchmark_time = Atari_time() - benchmark_start_time;
-		Atari800_Exit(FALSE);
-		printf("%d frames emulated in %.2f seconds\n", BENCHMARK, benchmark_time);
-		exit(0);
-	}
-#else
 
-#ifdef ALTERNATE_SYNC_WITH_HOST
-	if (refresh_counter == 0)
-#endif
-		Atari800_Sync();
-#endif /* BENCHMARK */
+    Atari800_Sync();
 }
-
-#endif /* __PLUS */
-
-#ifndef BASIC
 
 void Atari800_StateSave(void)
 {
@@ -1414,9 +862,6 @@ void Atari800_StateRead(void)
 	new_tv_mode = (temp == 0) ? Atari800_TV_PAL : Atari800_TV_NTSC;
 	if (new_tv_mode != Atari800_tv_mode) {
 		Atari800_tv_mode = new_tv_mode;
-#ifndef MACOSX		
-		Colours_InitialiseMachine();
-#endif		
 	}
 
 	StateSav_ReadUBYTE(&temp, 1);
@@ -1476,4 +921,7 @@ void Atari800_StateRead(void)
 	/* XXX: what about patches? */
 }
 
-#endif
+void Atari800_SetMachineType(int type)
+{
+    Atari800_machine_type = type;
+}

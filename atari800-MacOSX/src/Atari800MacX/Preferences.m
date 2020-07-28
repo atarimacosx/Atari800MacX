@@ -52,6 +52,16 @@ extern ATASCII_PREF prefsAtascii;
 extern int UI_alt_function;
 extern int diskDriveSound;
 extern int FULLSCREEN_MACOS;
+typedef struct CARTRIDGE_image_t {
+    int type;
+    int state; /* Cartridge's state, such as selected bank or switch on/off. */
+    int size; /* Size of the image, in kilobytes */
+    unsigned char *image;
+    char filename[FILENAME_MAX];
+} CARTRIDGE_image_t;
+
+extern CARTRIDGE_image_t CARTRIDGE_main;
+extern CARTRIDGE_image_t CARTRIDGE_piggyback;
 
 extern char atari_config_dir[FILENAME_MAX];
 
@@ -3761,9 +3771,9 @@ static Preferences *sharedInstance = nil;
 		[displayedValues setObject:no forKey:CassFileEnabled];
 		[displayedValues setObject:@"" forKey:CassFile];
 		}
-	if (strlen(cart_filename) != 0) {
+    if (strlen(CARTRIDGE_main.filename) != 0) {
 		[displayedValues setObject:yes forKey:CartFileEnabled];
-		[displayedValues setObject:[NSString stringWithCString:cart_filename encoding:NSASCIIStringEncoding] forKey:CartFile];
+		[displayedValues setObject:[NSString stringWithCString:CARTRIDGE_main.filename encoding:NSASCIIStringEncoding] forKey:CartFile];
 		}
 	else {
 		[displayedValues setObject:no forKey:CartFileEnabled];

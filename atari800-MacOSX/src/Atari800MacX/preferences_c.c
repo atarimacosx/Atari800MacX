@@ -129,8 +129,6 @@ extern int POKEYSND_console_sound_enabled;
 extern char Devices_atari_h_dir[4][FILENAME_MAX];
 extern int Devices_h_read_only;
 extern char Devices_print_command[256];
-extern char cart_filename[FILENAME_MAX];
-extern char second_cart_filename[FILENAME_MAX];
 
 extern char bb_rom_filename[FILENAME_MAX];
 extern char mio_rom_filename[FILENAME_MAX];
@@ -257,17 +255,17 @@ ATARI800MACX_PREF *getPrefStorage(void) {
     }
 
 void saveMediaPrefs() {
-	if (CARTRIDGE_type == CARTRIDGE_NONE) {
-		if (CARTRIDGE_second_type == CARTRIDGE_NONE) 
+    if (CARTRIDGE_main.type == CARTRIDGE_NONE) {
+        if (CARTRIDGE_piggyback.type == CARTRIDGE_NONE)
 			SaveMedia(SIO_filename, CASSETTE_filename, "", "");
 		else
-			SaveMedia(SIO_filename, CASSETTE_filename, "", second_cart_filename);
+            SaveMedia(SIO_filename, CASSETTE_filename, "", CARTRIDGE_piggyback.filename);
 	}
 	else {
-		if (CARTRIDGE_second_type == CARTRIDGE_NONE) 
-			SaveMedia(SIO_filename, CASSETTE_filename, cart_filename, "");
+		if (CARTRIDGE_piggyback.type == CARTRIDGE_NONE)
+			SaveMedia(SIO_filename, CASSETTE_filename, CARTRIDGE_main.filename, "");
 		else
-			SaveMedia(SIO_filename, CASSETTE_filename, cart_filename, second_cart_filename);
+			SaveMedia(SIO_filename, CASSETTE_filename, CARTRIDGE_main.filename, CARTRIDGE_piggyback.filename);
 	}
 }
 
@@ -313,17 +311,17 @@ void savePrefs() {
 	ReturnPreferences(&prefssave);
 	if (saveCurrentMedia)
         {
-		if (CARTRIDGE_type == CARTRIDGE_NONE) {
-			if (CARTRIDGE_second_type == CARTRIDGE_NONE) 
+        if (CARTRIDGE_main.type == CARTRIDGE_NONE) {
+            if (CARTRIDGE_piggyback.type == CARTRIDGE_NONE)
 				SaveMedia(SIO_filename, CASSETTE_filename, "", "");
 			else
-				SaveMedia(SIO_filename, CASSETTE_filename, "", second_cart_filename);
+                SaveMedia(SIO_filename, CASSETTE_filename, "", CARTRIDGE_piggyback.filename);
 		}
 		else {
-			if (CARTRIDGE_second_type == CARTRIDGE_NONE) 
-				SaveMedia(SIO_filename, CASSETTE_filename, cart_filename, "");
+			if (CARTRIDGE_piggyback.type == CARTRIDGE_NONE) 
+				SaveMedia(SIO_filename, CASSETTE_filename, CARTRIDGE_main.filename, "");
 			else
-				SaveMedia(SIO_filename, CASSETTE_filename, cart_filename, second_cart_filename);
+				SaveMedia(SIO_filename, CASSETTE_filename, CARTRIDGE_main.filename, CARTRIDGE_piggyback.filename);
 		}
     }
 	if (saveCurrentMedia)
