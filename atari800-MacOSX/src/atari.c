@@ -225,6 +225,7 @@ void Atari800_Coldstart(void)
 		BIT3_Reset();
 	}
 #endif
+    Devices_WarmCold_Start();
 }
 
 int Atari800_LoadImage(const char *filename, UBYTE *buffer, int nbytes)

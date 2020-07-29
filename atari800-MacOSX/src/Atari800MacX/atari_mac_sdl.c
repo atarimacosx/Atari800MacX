@@ -3964,7 +3964,6 @@ void SDL_Atari_Mouse(Uint8 *s, Uint8 *t)
             i = -mouse_move_y;
 
         {
-            UBYTE stick = INPUT_STICK_CENTRE;
             if (i > 0) {
                 i += (1 << MOUSE_SHIFT) - 1;
                 i >>= MOUSE_SHIFT;
@@ -3972,7 +3971,7 @@ void SDL_Atari_Mouse(Uint8 *s, Uint8 *t)
                     max_scanline_counter = scanline_counter = 5;
                 else
                     max_scanline_counter = scanline_counter = Atari800_tv_mode / i;
-                stick = mouse_step();
+                mouse_step();
             }
             if (INPUT_mouse_mode == INPUT_MOUSE_TRAK) {
                 /* bit 3 toggles - vertical movement, bit 2 = 0 - up */
@@ -5205,24 +5204,18 @@ int SDL_main(int argc, char **argv)
 		PIA_PORT_input[0] = 0xf0 | STICK[joy_multijoy_no];
 		PIA_PORT_input[1] = 0xff;
 		GTIA_TRIG[0] = TRIG_input[joy_multijoy_no];
-		GTIA_TRIG[2] = GTIA_TRIG[1] = 1;
-		// MDG - Fixme - need to add Spartados piggyback cartridge here.
-		GTIA_TRIG[3] = Atari800_machine_type == Atari800_MACHINE_XLXE ? MEMORY_cartA0BF_enabled : 1;
+        GTIA_TRIG[1] = 1;
 	}
 	else {
 		GTIA_TRIG[0] = TRIG_input[0];
 		GTIA_TRIG[1] = TRIG_input[1];
-		if (Atari800_machine_type == Atari800_MACHINE_XLXE) {
-			GTIA_TRIG[2] = 1;
-			GTIA_TRIG[3] = MEMORY_cartA0BF_enabled;
-		}
-		else {
-			GTIA_TRIG[2] = TRIG_input[2];
-			GTIA_TRIG[3] = TRIG_input[3];
-		}
 		PIA_PORT_input[0] = (STICK[1] << 4) | STICK[0];
 		PIA_PORT_input[1] = (STICK[3] << 4) | STICK[2];
 	}
+    if (Atari800_machine_type != Atari800_MACHINE_XLXE) {
+        GTIA_TRIG[2] = TRIG_input[2];
+        GTIA_TRIG[3] = TRIG_input[3];
+    }
 
         /* switch between screens to enable delta output */
 		if (screenSwitchEnabled) {

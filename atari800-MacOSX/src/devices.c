@@ -683,6 +683,7 @@ int Devices_Initialise(int *argc, char *argv[])
 	return TRUE;
 }
 
+#ifdef ATARI800MACX
 void Devices_WarmCold_Start(void)
 {
 	int i;
@@ -699,6 +700,12 @@ void Devices_WarmCold_Start(void)
 		d_is_default[i] = FALSE;
 #endif
 	
+}
+#endif
+
+void Devices_Exit(void)
+{
+	Devices_H_CloseAll();
 }
 
 #define IS_DIR_SEP(c) ((c) == '/' || (c) == '\\' || (c) == ':' || (c) == '>')

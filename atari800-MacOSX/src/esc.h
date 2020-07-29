@@ -65,6 +65,7 @@ enum ESC_t {
 	ESC_HHSPEC = 0xc5,
 	ESC_HHINIT = 0xc6,
 
+#ifdef ATARI800MACX
 #ifdef D_PATCH	
 	/* D: device. */
 	ESC_DOPEN = 0xc8,
@@ -75,7 +76,7 @@ enum ESC_t {
 	ESC_DSPEC = 0xce,
 	ESC_DINIT = 0xcf,
 #endif	
-
+#endif
 	/* B: device. */
 	ESC_BOPEN = 0xe0,
 	ESC_BCLOS = 0xe1,

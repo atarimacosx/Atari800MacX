@@ -14,8 +14,10 @@ UWORD Devices_SkipDeviceName(void);
 extern int Devices_enable_h_patch;
 extern int Devices_enable_p_patch;
 extern int Devices_enable_r_patch;
+#ifdef ATARI800MACX
 #ifdef D_PATCH	
 extern int Devices_enable_d_patch;
+#endif
 #endif
 
 extern char Devices_atari_h_dir[4][FILENAME_MAX];
@@ -82,6 +84,7 @@ extern struct DEV_B dev_b_status;
 
 UWORD Devices_UpdateHATABSEntry(char device, UWORD entry_address, UWORD table_address);
 void Devices_RemoveHATABSEntry(char device, UWORD entry_address, UWORD table_address);
+#ifdef ATARI800MACX
 void Devices_WarmCold_Start(void);
-
+#endif
 #endif /* DEVICES_H_ */
