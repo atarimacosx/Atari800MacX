@@ -103,6 +103,10 @@
 		2D9627AB106C3CD90081F384 /* CurrentLine.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D9627AA106C3CD90081F384 /* CurrentLine.png */; };
 		2D9627CB106C43700081F384 /* BreakpointCurrentLine.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D9627CA106C43700081F384 /* BreakpointCurrentLine.png */; };
 		2DA5816309C5F38700331696 /* devices.c in Sources */ = {isa = PBXBuildFile; fileRef = 2DA5816209C5F38700331696 /* devices.c */; };
+		2DA5F7BD24D090E3002EBBFA /* sysrom.c in Sources */ = {isa = PBXBuildFile; fileRef = 2DA5F7BB24D090E2002EBBFA /* sysrom.c */; };
+		2DA5F7BE24D090E3002EBBFA /* sysrom.h in Headers */ = {isa = PBXBuildFile; fileRef = 2DA5F7BC24D090E3002EBBFA /* sysrom.h */; };
+		2DA5F7C124D09122002EBBFA /* crc32.c in Sources */ = {isa = PBXBuildFile; fileRef = 2DA5F7BF24D09122002EBBFA /* crc32.c */; };
+		2DA5F7C224D09122002EBBFA /* crc32.h in Headers */ = {isa = PBXBuildFile; fileRef = 2DA5F7C024D09122002EBBFA /* crc32.h */; };
 		2DA74FB110782987008F0171 /* WatchTableView.h in Headers */ = {isa = PBXBuildFile; fileRef = 2DA74FAF10782987008F0171 /* WatchTableView.h */; };
 		2DA74FB210782987008F0171 /* WatchTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DA74FB010782987008F0171 /* WatchTableView.m */; };
 		2DAEDAEB09B69AED005FF181 /* SDLMain.h in Headers */ = {isa = PBXBuildFile; fileRef = F5A47A9D01A0482F01D3D55B /* SDLMain.h */; };
@@ -508,6 +512,10 @@
 		2D9B7BC007F618C80059298E /* PrintableGraphics.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PrintableGraphics.m; sourceTree = "<group>"; };
 		2DA416410844552E00EA7648 /* PrintOutputConfirm.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = PrintOutputConfirm.nib; sourceTree = SOURCE_ROOT; };
 		2DA5816209C5F38700331696 /* devices.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = devices.c; path = ../devices.c; sourceTree = SOURCE_ROOT; };
+		2DA5F7BB24D090E2002EBBFA /* sysrom.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = sysrom.c; path = ../sysrom.c; sourceTree = "<group>"; };
+		2DA5F7BC24D090E3002EBBFA /* sysrom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sysrom.h; path = ../sysrom.h; sourceTree = "<group>"; };
+		2DA5F7BF24D09122002EBBFA /* crc32.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = crc32.c; path = ../crc32.c; sourceTree = "<group>"; };
+		2DA5F7C024D09122002EBBFA /* crc32.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = crc32.h; path = ../crc32.h; sourceTree = "<group>"; };
 		2DA74FAF10782987008F0171 /* WatchTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WatchTableView.h; sourceTree = SOURCE_ROOT; };
 		2DA74FB010782987008F0171 /* WatchTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WatchTableView.m; sourceTree = SOURCE_ROOT; };
 		2DAB84EE07E39A9700599B16 /* PrintOutputController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = PrintOutputController.h; sourceTree = "<group>"; };
@@ -877,6 +885,8 @@
 				2D14CDFD0FFEEEDF00E60EAA /* copydata.c */,
 				F555834B030EF4CD01A8C8B4 /* cpu.h */,
 				F555834C030EF4CD01A8C8B4 /* cpu.c */,
+				2DA5F7BF24D09122002EBBFA /* crc32.c */,
+				2DA5F7C024D09122002EBBFA /* crc32.h */,
 				2DFF9C7504008D8200A8C8B4 /* cycle_map.c */,
 				2DFF9C7604008D8200A8C8B4 /* cycle_map.h */,
 				2DA5816209C5F38700331696 /* devices.c */,
@@ -936,6 +946,8 @@
 				2D16681C0F51F0A200A78B94 /* sndsave.h */,
 				F555836C030EF4CD01A8C8B4 /* statesav.h */,
 				2DF39C940A07024E00206A1B /* statesav.c */,
+				2DA5F7BB24D090E2002EBBFA /* sysrom.c */,
+				2DA5F7BC24D090E3002EBBFA /* sysrom.h */,
 				2D3D18AB052BD6E600A8C8B4 /* remez.c */,
 				2D3D18AC052BD6E600A8C8B4 /* remez.h */,
 				F555835B030EF4CD01A8C8B4 /* rtime.h */,
@@ -1105,7 +1117,9 @@
 				2D0CA96D24B176360089AC88 /* AtasciiPrinter.h in Headers */,
 				2DAEDB0509B69AED005FF181 /* prompts.h in Headers */,
 				2DAEDB0609B69AED005FF181 /* Preferences.h in Headers */,
+				2DA5F7C224D09122002EBBFA /* crc32.h in Headers */,
 				2DAEDB0709B69AED005FF181 /* preferences_c.h in Headers */,
+				2DA5F7BE24D090E3002EBBFA /* sysrom.h in Headers */,
 				2DAEDB0809B69AED005FF181 /* MediaManager.h in Headers */,
 				2DAEDB0909B69AED005FF181 /* DisplayManager.h in Headers */,
 				2DAEDB0A09B69AED005FF181 /* ControlManager.h in Headers */,
@@ -1396,6 +1410,7 @@
 				2DAEDBC509B69AED005FF181 /* rdevice.c in Sources */,
 				2DA5816309C5F38700331696 /* devices.c in Sources */,
 				2DF39C950A07024E00206A1B /* statesav.c in Sources */,
+				2DA5F7C124D09122002EBBFA /* crc32.c in Sources */,
 				2DDF9C3721D6FBE500A56FB4 /* MessagesWindow.m in Sources */,
 				2DDD84500AAA01CC00DE182D /* KeyMapper.m in Sources */,
 				2DBDFE4D246F98780078B335 /* Atari800GampepadWindow.m in Sources */,
@@ -1439,6 +1454,7 @@
 				2D1A748B107A66C0000049E3 /* MemoryEditorTableView.m in Sources */,
 				2D0BA11B107D6EF000DEF450 /* LabelDataSource.m in Sources */,
 				2D0BA126107D724600DEF450 /* Label.m in Sources */,
+				2DA5F7BD24D090E3002EBBFA /* sysrom.c in Sources */,
 				2D0325D010853FC200983A3E /* PiaDataSource.m in Sources */,
 				2D0325F710854BEB00983A3E /* RegDataSource.m in Sources */,
 				2D0326971085649200983A3E /* AnticDataSource.m in Sources */,

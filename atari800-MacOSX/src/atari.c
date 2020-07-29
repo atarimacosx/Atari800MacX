@@ -92,6 +92,7 @@ biteme!
 #include "colours.h"
 #include "screen.h"
 #include "statesav.h"
+#include "sysrom.h"
 
 extern double emulationSpeed;
 void loadMacPrefs(int firstTime);
@@ -241,6 +242,9 @@ int Atari800_LoadImage(const char *filename, UBYTE *buffer, int nbytes)
 		memcpy(MEMORY_os + (padding), emuos_h, 0x2000); \
 	} while (0)
 
+
+char OSType[FILENAME_MAX];
+
 static int load_roms(void)
 {
 	switch (Atari800_machine_type) {
@@ -284,6 +288,8 @@ static int load_roms(void)
 			else if (!Atari800_LoadImage(CFG_basic_filename, MEMORY_basic, 0x2000))
 				return FALSE;
 		}
+        int osType = SYSROM_FindType(SYSROM_800_CUSTOM, CFG_xlxe_filename, OSType);
+        Log_print("Rom is %d - %s",osType, OSType);
 		MEMORY_xe_bank = 0;
 		break;
 	case Atari800_MACHINE_5200:
@@ -294,6 +300,7 @@ static int load_roms(void)
 	return TRUE;
 }
 
+
 int Atari800_InitialiseMachine(void)
 {
 #if !defined(BASIC) && !defined(CURSES_BASIC) && !defined(MACOSX)
@@ -302,6 +309,8 @@ int Atari800_InitialiseMachine(void)
 	ESC_ClearAll();
 	if (!load_roms())
 		return FALSE;
+    // MDGToDo Atari800_UpdateKeyboardDetached();
+    //Atari800_UpdateJumper();
 	MEMORY_InitialiseMachine();
 	Devices_UpdatePatches();
 	return TRUE;

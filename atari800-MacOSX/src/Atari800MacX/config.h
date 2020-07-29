@@ -348,3 +348,7 @@
 #define PBI_MIO
 
 #define PBI_BB
+
+#define EMUOS_ALTIRRA       1
+
+#define ATARI800MACX

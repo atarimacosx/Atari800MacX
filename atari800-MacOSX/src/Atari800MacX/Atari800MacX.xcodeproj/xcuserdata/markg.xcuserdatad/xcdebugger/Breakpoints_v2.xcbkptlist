@@ -14,8 +14,8 @@
             filePath = "Preferences.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2675"
-            endingLineNumber = "2675"
+            startingLineNumber = "2776"
+            endingLineNumber = "2776"
             landmarkName = "-browseFile"
             landmarkType = "7">
          </BreakpointContent>
@@ -190,8 +190,8 @@
             filePath = "Preferences.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "626"
-            endingLineNumber = "626"
+            startingLineNumber = "700"
+            endingLineNumber = "700"
             landmarkName = "-showPanel:"
             landmarkType = "7">
          </BreakpointContent>
@@ -254,10 +254,26 @@
             filePath = "Preferences.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "3773"
-            endingLineNumber = "3773"
+            startingLineNumber = "3921"
+            endingLineNumber = "3921"
             landmarkName = "-saveCurrentMedia::::"
             landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "B7469C42-AA73-42AA-9470-DCAE2B9EA0FB"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../sysrom.c"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "186"
+            endingLineNumber = "186"
+            landmarkName = "SYSROM_FindType(defaultType, filename, romTypeName)"
+            landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

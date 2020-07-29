@@ -92,6 +92,75 @@ static int indicies[NUM_TOTAL_TYPES] =
 static int axlonBankMasks[] = {3,7,15,31,63,127,255,0};
 static int mosaicBankMaxs[] = {3,19,35,51,0};
 
+/* Note: this is duplicted with sysrom.h as due
+   to type conflicts we cannot include that file */
+/* ROM IDs for all supported ROM images. */
+enum {
+    /* --- OS ROMs from released Atari computers --- */
+    /* OS rev. A (1979) from early NTSC 400/800. Part no. C012499A + C014599A + C012399B */
+    SYSROM_A_NTSC,
+    /* OS rev. A (1979) from PAL 400/800. Part no. C015199 + C015299 + C012399B */
+    SYSROM_A_PAL,
+    /* OS rev. B (1981) from late NTSC 400/800. Part no. C012499B + C014599B + C012399B */
+    SYSROM_B_NTSC,
+    /* OS rev. 10 (1982-10-26) from 1200XL. Part no. C060616A + C060617A */
+    SYSROM_AA00R10,
+    /* OS rev. 11 (1982-12-23) from 1200XL. Part no. C060616B + C060617B */
+    SYSROM_AA01R11,
+    /* OS rev. 1 (1983-03-11) from 600XL. Part no. C062024 */
+    SYSROM_BB00R1,
+    /* OS rev. 2 (1983-05-10) from 800XL and early 65XE/130XE. Part no. C061598B */
+    SYSROM_BB01R2,
+    /* OS rev. 3 (1984-03-23) from prototype 1450XLD. Known as 1540OS3.V0 and 1450R3V0.ROM */
+    SYSROM_BB02R3,
+    /* OS rev. 3 ver. 4 (1984-06-21) from prototype 1450XLD. Known as os1450.128 and 1450R3VX.ROM */
+    SYSROM_BB02R3V4,
+    /* OS rev. 5 ver. 0 (1984-09-06) compiled from sources:
+       http://www.atariage.com/forums/topic/78579-a800ossrc/page__view__findpost__p__961535 */
+    SYSROM_CC01R4,
+    /* OS rev. 3 (1985-03-01) from late 65XE/130XE. Part no. C300717 */
+    SYSROM_BB01R3,
+    /* OS rev. 4 (1987-05-07) from XEGS - OS only. Part no. C101687 (2nd half) */
+    SYSROM_BB01R4_OS,
+    /* OS rev. 59 (1987-07-21) from Arabic 65XE. Part no. C101700 */
+    SYSROM_BB01R59,
+    /* OS rev. 59 (1987-07-21) from Kevin Savetz' Arabic 65XE (prototype?):
+       http://www.savetz.com/vintagecomputers/arabic65xe/ */
+    SYSROM_BB01R59A,
+    /* --- BIOS ROMs from Atari 5200 --- */
+    /* BIOS from 4-port and early 2-port 5200 (1982). Part no. C019156 */
+    SYSROM_5200,
+    /* BIOS from late 2-port 5200 (1983). Part no. C019156A */
+    SYSROM_5200A,
+    /* --- Atari BASIC ROMs --- */
+    /* Rev. A (1979), sold on cartridge. Part no. C012402 + C014502 */
+    SYSROM_BASIC_A,
+    /* Rev. B (1983), from 600XL/early 800XL, also on cartridge. Part no. C060302A */
+    SYSROM_BASIC_B,
+    /* Rev. C (1984), from late 800XL and all XE/XEGS, also on cartridge, Part no. C024947A */
+    SYSROM_BASIC_C,
+    /* builtin XEGS Missile Command. Part no. C101687 (1st quarter) */
+    SYSROM_XEGAME,
+    /* --- Custom ROMs --- */
+    SYSROM_800_CUSTOM, /* Custom 400/800 OS */
+    SYSROM_XL_CUSTOM, /* Custom XL/XE OS */
+    SYSROM_5200_CUSTOM, /* Custom 5200 BIOS */
+    SYSROM_BASIC_CUSTOM,/* Custom BASIC */
+    SYSROM_XEGAME_CUSTOM, /* Custom XEGS game */
+    SYSROM_LOADABLE_SIZE, /* Number of OS ROM loadable from file */
+#if EMUOS_ALTIRRA
+    /* --- Built-in free replacement OSes from Altirra --- */
+    SYSROM_ALTIRRA_800 = SYSROM_LOADABLE_SIZE, /* AltirraOS 400/800 */
+    SYSROM_ALTIRRA_XL, /* AltirraOS XL/XE/XEGS */
+    SYSROM_ALTIRRA_5200, /* Altirra 5200 OS */
+    SYSROM_ALTIRRA_BASIC, /* ATBASIC */
+    SYSROM_SIZE, /* Number of available OS ROMs */
+#else /* !EMUOS_ALTIRRA */
+    SYSROM_SIZE = SYSROM_LOADABLE_SIZE, /* Number of available OS ROMs */
+#endif /* !EMUOS_ALTIRRA */
+    SYSROM_AUTO = SYSROM_SIZE /* Use to indicate that OS revision should be chosen automatically */
+};
+
 void RunPreferences() {
 
     [[Preferences sharedInstance] showPanel:[Preferences sharedInstance]];
@@ -236,6 +305,11 @@ static NSDictionary *defaultValues() {
                 @"",BlackBoxRomFile,
                 @"",BlackBoxScsiDiskFile,
                 @"",MioScsiDiskFile,
+                [NSNumber numberWithBool:NO], UseAltiraOSARom,
+                [NSNumber numberWithBool:NO], UseAltiraOSBRom,
+                [NSNumber numberWithBool:NO], UseAltiraXLRom,
+                [NSNumber numberWithBool:NO], UseAltira5200Rom,
+                [NSNumber numberWithBool:NO], UseAltiraBasicRom,
                 [NSNumber numberWithBool:YES], DisableBasic, 
                 [NSNumber numberWithBool:NO], DisableAllBasic, 
                 [NSNumber numberWithBool:YES], EnableSioPatch, 
@@ -644,6 +718,7 @@ static Preferences *sharedInstance = nil;
         [[prefTabView window] center];
         [[gamepadButton1 window] center];
         [[errorOKButton window] center];
+        [[identifyOKButton window] center];
         [[configNameField window] center];
         [[leftJoyUpPulldown window] center];
         [[padJoyUpPulldown window] center];
@@ -863,7 +938,13 @@ static Preferences *sharedInstance = nil;
     [xlRomFileField setStringValue:[displayedValues objectForKey:XlRomFile]];
     [basicRomFileField setStringValue:[displayedValues objectForKey:BasicRomFile]];
     [a5200RomFileField setStringValue:[displayedValues objectForKey:A5200RomFile]];
+    [useAlitrraOSARomButton setState:[[displayedValues objectForKey:UseAltiraOSARom] boolValue] ? NSOnState : NSOffState];
+    [useAlitrraOSBRomButton setState:[[displayedValues objectForKey:UseAltiraOSBRom] boolValue] ? NSOnState : NSOffState];
+    [useAlitrraXLRomButton setState:[[displayedValues objectForKey:UseAltiraXLRom] boolValue] ? NSOnState : NSOffState];
+    [useAlitrra5200RomButton setState:[[displayedValues objectForKey:UseAltira5200Rom] boolValue] ? NSOnState : NSOffState];
+    [useAlitrraBasicRomButton setState:[[displayedValues objectForKey:UseAltiraBasicRom] boolValue] ? NSOnState : NSOffState];
 
+    
     [diskImageDirField setStringValue:[displayedValues objectForKey:DiskImageDir]];
     [diskSetDirField setStringValue:[displayedValues objectForKey:DiskSetDir]];
     [cartImageDirField setStringValue:[displayedValues objectForKey:CartImageDir]];
@@ -2097,6 +2178,26 @@ static Preferences *sharedInstance = nil;
     [displayedValues setObject:[xlRomFileField stringValue] forKey:XlRomFile];
     [displayedValues setObject:[basicRomFileField stringValue] forKey:BasicRomFile];
     [displayedValues setObject:[a5200RomFileField stringValue] forKey:A5200RomFile];
+    if ([useAlitrraOSARomButton state] == NSOnState)
+        [displayedValues setObject:yes forKey:UseAltiraOSARom];
+    else
+        [displayedValues setObject:no forKey:UseAltiraOSARom];
+    if ([useAlitrraOSBRomButton state] == NSOnState)
+        [displayedValues setObject:yes forKey:UseAltiraOSBRom];
+    else
+        [displayedValues setObject:no forKey:UseAltiraOSBRom];
+    if ([useAlitrraXLRomButton state] == NSOnState)
+        [displayedValues setObject:yes forKey:UseAltiraXLRom];
+    else
+        [displayedValues setObject:no forKey:UseAltiraXLRom];
+    if ([useAlitrra5200RomButton state] == NSOnState)
+        [displayedValues setObject:yes forKey:UseAltira5200Rom];
+    else
+        [displayedValues setObject:no forKey:UseAltira5200Rom];
+    if ([useAlitrraBasicRomButton state] == NSOnState)
+        [displayedValues setObject:yes forKey:UseAltiraBasicRom];
+    else
+        [displayedValues setObject:no forKey:UseAltiraBasicRom];
 
     [displayedValues setObject:[diskImageDirField stringValue] forKey:DiskImageDir];
     [displayedValues setObject:[diskSetDirField stringValue] forKey:DiskSetDir];
@@ -2871,6 +2972,48 @@ static Preferences *sharedInstance = nil;
     [dir release];
 }
 
+- (IBAction)identifyRom:(id)sender {
+    NSString *romFilename;
+    char romCFilename[FILENAME_MAX];
+    int romDefault;
+    int osType;
+    char romTypeName[40];
+    
+    switch( [sender tag] ) {
+        case 0:
+            romFilename = [curValues objectForKey:OsARomFile];
+            romDefault = SYSROM_800_CUSTOM;
+            break;
+        case 1:
+            romFilename = [curValues objectForKey:OsBRomFile];
+            romDefault = SYSROM_800_CUSTOM;
+            break;
+        case 2:
+            romFilename = [curValues objectForKey:XlRomFile];
+            romDefault = SYSROM_XL_CUSTOM;
+            break;
+        case 3:
+            romFilename = [curValues objectForKey:A5200RomFile];
+            romDefault = SYSROM_5200_CUSTOM;
+            break;
+        case 4:
+            romFilename = [curValues objectForKey:BasicRomFile];
+            romDefault = SYSROM_BASIC_CUSTOM;
+            break;
+    }
+    
+    [romFilename getCString:romCFilename maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+    
+    osType = SYSROM_FindType(romDefault, romCFilename, romTypeName);
+
+    if (osType == -1)
+        [identifyLabel setStringValue:@"Error Identifying ROM"];
+    else
+        [identifyLabel setStringValue:[NSString stringWithCString:romTypeName encoding:NSASCIIStringEncoding]];
+    
+    [NSApp runModalForWindow:[identifyOKButton window]];
+}
+
 - (void)browseOsBRom:(id)sender {
     NSString *filename, *dir;
     
@@ -3316,6 +3459,11 @@ static Preferences *sharedInstance = nil;
 	prefs->mosaicMaxBank =  [[curValues objectForKey:MosaicMaxBank] intValue];
 	prefs->blackBoxEnabled = [[curValues objectForKey:BlackBoxEnabled] intValue];
 	prefs->mioEnabled = [[curValues objectForKey:MioEnabled] intValue];
+    prefs->useAltirraOSARom = [[curValues objectForKey:UseAltiraOSARom] intValue];
+    prefs->useAltirraOSBRom = [[curValues objectForKey:UseAltiraOSBRom] intValue];
+    prefs->useAltirraXLRom = [[curValues objectForKey:UseAltiraXLRom] intValue];
+    prefs->useAltirra5200Rom = [[curValues objectForKey:UseAltira5200Rom] intValue];
+    prefs->useAltirraBasicRom = [[curValues objectForKey:UseAltiraBasicRom] intValue];
     [[curValues objectForKey:AF80CharsetFile] getCString:prefs->af80CharsetFile maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
     [[curValues objectForKey:AF80RomFile] getCString:prefs->af80RomFile maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
     [[curValues objectForKey:Bit3CharsetFile] getCString:prefs->bit3CharsetFile maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
@@ -4126,6 +4274,11 @@ static Preferences *sharedInstance = nil;
     [[errorOKButton window] close];
     }
 
+- (IBAction)identifyRomOK:(id)sender {
+    [NSApp stopModal];
+    [[identifyOKButton window] close];
+    }
+
 - (void)gamepadButtonChange:(id)sender {
     int buttonNum;
 
@@ -4718,6 +4871,11 @@ static Preferences *sharedInstance = nil;
     getStringDefault(XlRomFile);
     getStringDefault(BasicRomFile);
     getStringDefault(A5200RomFile);
+    getBoolDefault(UseAltiraOSARom);
+    getBoolDefault(UseAltiraOSBRom);
+    getBoolDefault(UseAltiraXLRom);
+    getBoolDefault(UseAltira5200Rom);
+    getBoolDefault(UseAltiraBasicRom);
     getStringDefault(DiskImageDir);
     getStringDefault(DiskSetDir);
     getStringDefault(CartImageDir);
@@ -4978,6 +5136,11 @@ static Preferences *sharedInstance = nil;
     setStringDefault(XlRomFile);
     setStringDefault(BasicRomFile);
     setStringDefault(A5200RomFile);
+    setBoolDefault(UseAltiraOSARom);
+    setBoolDefault(UseAltiraOSBRom);
+    setBoolDefault(UseAltiraXLRom);
+    setBoolDefault(UseAltira5200Rom);
+    setBoolDefault(UseAltiraBasicRom);
     setStringDefault(DiskImageDir);
     setStringDefault(DiskSetDir);
     setStringDefault(CartImageDir);
@@ -5223,6 +5386,11 @@ static Preferences *sharedInstance = nil;
     setConfig(XlRomFile);
     setConfig(BasicRomFile);
     setConfig(A5200RomFile);
+    setConfig(UseAltiraOSARom);
+    setConfig(UseAltiraOSBRom);
+    setConfig(UseAltiraXLRom);
+    setConfig(UseAltira5200Rom);
+    setConfig(UseAltiraBasicRom);
     setConfig(DiskImageDir);
     setConfig(DiskSetDir);
     setConfig(CartImageDir);
@@ -5566,6 +5734,11 @@ static Preferences *sharedInstance = nil;
     getConfig(XlRomFile);
     getConfig(BasicRomFile);
     getConfig(A5200RomFile);
+    getConfig(UseAltiraOSARom);
+    getConfig(UseAltiraOSBRom);
+    getConfig(UseAltiraXLRom);
+    getConfig(UseAltira5200Rom);
+    getConfig(UseAltiraBasicRom);
     getConfig(DiskImageDir);
     getConfig(DiskSetDir);
     getConfig(CartImageDir);

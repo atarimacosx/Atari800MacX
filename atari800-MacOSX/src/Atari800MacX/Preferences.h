@@ -131,6 +131,11 @@
 #define HardDiskDir4 @"HardDiskDir4"
 #define HardDrivesReadOnly @"HardDrivesReadOnly"
 #define HPath @"HPath"
+#define UseAltiraOSARom @"UseAltiraOSARom"
+#define UseAltiraOSBRom @"UseAltiraOSARom"
+#define UseAltiraXLRom @"UseAltiraXLRom"
+#define UseAltira5200Rom @"UseAltira5200Rom"
+#define UseAltiraBasicRom @"UseAltiraBasicRom"
 #define OsARomFile @"OsARomFile"
 #define OsBRomFile @"OsBRomFile"
 #define XlRomFile @"XlRomFile"
@@ -352,6 +357,11 @@
     IBOutlet id hardDrivesReadOnlyButton;
     IBOutlet id hPathField;
     IBOutlet id intensityField;
+    IBOutlet id useAlitrraOSARomButton;
+    IBOutlet id useAlitrraOSBRomButton;
+    IBOutlet id useAlitrraXLRomButton;
+    IBOutlet id useAlitrra5200RomButton;
+    IBOutlet id useAlitrraBasicRomButton;
     IBOutlet id osARomFileField;
     IBOutlet id osBRomFileField;
     IBOutlet id af80CharsetRomFileField;
@@ -480,6 +490,8 @@
     IBOutlet id gamepadSelect4;
     IBOutlet id gamepadSelector;
     IBOutlet id errorOKButton;
+    IBOutlet id identifyOKButton;
+    IBOutlet id identifyLabel;
     IBOutlet id configNameField;
     IBOutlet id leftJoyUpPulldown;
     IBOutlet id leftJoyDownPulldown;
@@ -558,6 +570,8 @@
 - (IBAction)browseAF80Rom:(id)sender;
 - (IBAction)browseBit3CharsetRom:(id)sender;
 - (IBAction)browseBit3Rom:(id)sender;
+- (IBAction)identifyRom:(id)sender;
+- (IBAction)identifyRomOK:(id)sender;
 - (void)browseOsARom:(id)sender;
 - (void)browseOsBRom:(id)sender;
 - (void)browseXlRom:(id)sender; 
@@ -614,6 +628,7 @@
 - (void)identifyTest:(id)sender;
 - (void)configNameOK:(id)sender;
 - (void)errorOK:(id)sender;
+- (IBAction)identifyOK:(id)sender;
 - (void)leftJoyConfigure:(id)sender;
 - (void)leftJoyOK:(id)sender;
 - (void)padJoyConfigure:(id)sender;

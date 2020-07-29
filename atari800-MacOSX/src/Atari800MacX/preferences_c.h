@@ -81,6 +81,11 @@ typedef struct ATARI800MACX_PREF {
                 char xlRomFile[FILENAME_MAX]; 
                 char basicRomFile[FILENAME_MAX];
                 char a5200RomFile[FILENAME_MAX];
+                int  useAltirraOSARom;
+                int  useAltirraOSBRom;
+                int  useAltirraXLRom;
+                int  useAltirra5200Rom;
+                int  useAltirraBasicRom;
                 char diskImageDir[FILENAME_MAX];
                 char diskSetDir[FILENAME_MAX];
                 char cartImageDir[FILENAME_MAX];
