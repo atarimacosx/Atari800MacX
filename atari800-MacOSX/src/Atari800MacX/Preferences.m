@@ -160,6 +160,7 @@ enum {
 #endif /* !EMUOS_ALTIRRA */
     SYSROM_AUTO = SYSROM_SIZE /* Use to indicate that OS revision should be chosen automatically */
 };
+extern int SYSROM_FindType(int defaultType, char const *filename, char *romTypeName);
 
 void RunPreferences() {
 
@@ -2974,42 +2975,55 @@ static Preferences *sharedInstance = nil;
 
 - (IBAction)identifyRom:(id)sender {
     NSString *romFilename;
+    NSTextField *label;
     char romCFilename[FILENAME_MAX];
     int romDefault;
     int osType;
     char romTypeName[40];
+    int rom;
     
-    switch( [sender tag] ) {
+    for (rom = 0; rom < 5; rom ++) {
+    switch( rom ) {
         case 0:
             romFilename = [curValues objectForKey:OsARomFile];
+            label = identifyOSALabel;
             romDefault = SYSROM_800_CUSTOM;
             break;
         case 1:
             romFilename = [curValues objectForKey:OsBRomFile];
+            label = identifyOSBLabel;
             romDefault = SYSROM_800_CUSTOM;
             break;
         case 2:
             romFilename = [curValues objectForKey:XlRomFile];
+            label = identifyXLLabel;
             romDefault = SYSROM_XL_CUSTOM;
             break;
         case 3:
-            romFilename = [curValues objectForKey:A5200RomFile];
-            romDefault = SYSROM_5200_CUSTOM;
+            romFilename = [curValues objectForKey:BasicRomFile];
+            label = identify5200Label;
+            romDefault = SYSROM_BASIC_CUSTOM;
             break;
         case 4:
-            romFilename = [curValues objectForKey:BasicRomFile];
-            romDefault = SYSROM_BASIC_CUSTOM;
+            romFilename = [curValues objectForKey:A5200RomFile];
+            label = identifyBasicLabel;
+            romDefault = SYSROM_5200_CUSTOM;
             break;
     }
     
-    [romFilename getCString:romCFilename maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
-    
-    osType = SYSROM_FindType(romDefault, romCFilename, romTypeName);
+    if ([romFilename isEqual:@""])
+        [label setStringValue:@"ROM not set - Altirra Will Be Used"];
+    else {
+        [romFilename getCString:romCFilename maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+        
+        osType = SYSROM_FindType(romDefault, romCFilename, romTypeName);
 
-    if (osType == -1)
-        [identifyLabel setStringValue:@"Error Identifying ROM"];
-    else
-        [identifyLabel setStringValue:[NSString stringWithCString:romTypeName encoding:NSASCIIStringEncoding]];
+        if (osType == -1)
+            [label setStringValue:@"Error Identifying ROM - Altirra Will Be Used"];
+        else
+            [label setStringValue:[NSString stringWithCString:romTypeName encoding:NSASCIIStringEncoding]];
+        }
+    }
     
     [NSApp runModalForWindow:[identifyOKButton window]];
 }

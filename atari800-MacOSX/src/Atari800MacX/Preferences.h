@@ -491,7 +491,11 @@
     IBOutlet id gamepadSelector;
     IBOutlet id errorOKButton;
     IBOutlet id identifyOKButton;
-    IBOutlet id identifyLabel;
+    IBOutlet id identifyOSALabel;
+    IBOutlet id identifyOSBLabel;
+    IBOutlet id identifyXLLabel;
+    IBOutlet id identifyBasicLabel;
+    IBOutlet id identify5200Label;
     IBOutlet id configNameField;
     IBOutlet id leftJoyUpPulldown;
     IBOutlet id leftJoyDownPulldown;

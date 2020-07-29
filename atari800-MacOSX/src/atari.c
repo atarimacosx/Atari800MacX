@@ -66,6 +66,9 @@ biteme!
 
 #include "af80.h"
 #include "altirra_basic.h"
+#include "altirraos_800.h"
+#include "altirraos_xl.h"
+#include "altirra_5200_os.h"
 #include "akey.h"
 #include "antic.h"
 #include "atari.h"
@@ -126,6 +129,8 @@ int Atari800_useAlitrraOSBRom;
 int Atari800_useAlitrraXLRom;
 int Atari800_useAlitrra5200Rom;
 int Atari800_useAlitrraBasicRom;
+int Atari800_os_version = -1;
+int Atari800_basic_version = -1;
 
 int verbose = FALSE;
 
@@ -249,66 +254,102 @@ int Atari800_LoadImage(const char *filename, UBYTE *buffer, int nbytes)
 	} while (0)
 
 
-char OSType[FILENAME_MAX];
-
 static int load_roms(void)
 {
-	switch (Atari800_machine_type) {
-	case Atari800_MACHINE_OSA:
-		if (emuos_mode == 2)
-			COPY_EMUOS(0x0800);
-		else if (!Atari800_LoadImage(CFG_osa_filename, MEMORY_os, 0x2800)) {
-			if (emuos_mode == 1)
-				COPY_EMUOS(0x0800);
-			else
-				return FALSE;
-		}
-		else
-			MEMORY_have_basic = Atari800_LoadImage(CFG_basic_filename, MEMORY_basic, 0x2000);
-		break;
-	case Atari800_MACHINE_OSB:
-		if (emuos_mode == 2)
-			COPY_EMUOS(0x0800);
-		else if (!Atari800_LoadImage(CFG_osb_filename, MEMORY_os, 0x2800)) {
-			if (emuos_mode == 1)
-				COPY_EMUOS(0x0800);
-			else
-				return FALSE;
-		}
-		else
-			MEMORY_have_basic = Atari800_LoadImage(CFG_basic_filename, MEMORY_basic, 0x2000);
-		break;
-	case Atari800_MACHINE_XLXE:
-		if (emuos_mode == 2)
-			COPY_EMUOS(0x2000);
-		else if (!Atari800_LoadImage(CFG_xlxe_filename, MEMORY_os, 0x4000)) {
-			if (emuos_mode == 1)
-				COPY_EMUOS(0x2000);
-			else
-				return FALSE;
-		}
-		else {
-            if (Atari800_useAlitrraBasicRom) {
-                memcpy(MEMORY_basic, ROM_altirra_basic, 0x2000);
-                return FALSE;
-            } else {
-                /* if you really don't want built-in BASIC */
-                if (!strcmp(CFG_basic_filename,"none"))
-                    memset(MEMORY_basic, 0, 0x2000);
-                else if (!Atari800_LoadImage(CFG_basic_filename, MEMORY_basic, 0x2000))
-                    return FALSE;
-            }
-		}
-        int osType = SYSROM_FindType(SYSROM_800_CUSTOM, CFG_xlxe_filename, OSType);
-        Log_print("Rom is %d - %s",osType, OSType);
-		MEMORY_xe_bank = 0;
-		break;
-	case Atari800_MACHINE_5200:
-		if (!Atari800_LoadImage(CFG_5200_filename, MEMORY_os, 0x800))
-			return FALSE;
-		break;
-	}
-	return TRUE;
+    char OSType[FILENAME_MAX];
+    char *osFilename;
+    int osSize;
+    int loadBasic;
+    int defaultType;
+    int altirraType;
+    int useAltira;
+    const unsigned char *altirraRom;
+    char *altirraString;
+    char *machineString;
+
+    switch (Atari800_machine_type) {
+        case Atari800_MACHINE_OSA:
+        default:
+            osFilename = CFG_osa_filename;
+            defaultType = SYSROM_800_CUSTOM;
+            altirraType = SYSROM_ALTIRRA_800;
+            osSize = 0x2800;
+            loadBasic = TRUE;
+            useAltira = Atari800_useAlitrraOSARom;
+            altirraRom = ROM_altirraos_800;
+            altirraString = "Using Alitrra 800 OS";
+            machineString = "Loading ROMS for OSA Machine";
+            break;
+        case Atari800_MACHINE_OSB:
+            osFilename = CFG_osa_filename;
+            defaultType = SYSROM_800_CUSTOM;
+            altirraType = SYSROM_ALTIRRA_800;
+            osSize = 0x2800;
+            loadBasic = TRUE;
+            useAltira = Atari800_useAlitrraOSBRom;
+            altirraRom = ROM_altirraos_800;
+            altirraString = "Using Alitrra 800 OS";
+            machineString = "Loading ROMS for OSB Machine";
+            break;
+        case Atari800_MACHINE_XLXE:
+            osFilename = CFG_xlxe_filename;
+            defaultType = SYSROM_XL_CUSTOM;
+            altirraType = SYSROM_ALTIRRA_XL;
+            osSize = 0x4000;
+            loadBasic = TRUE;
+            useAltira = Atari800_useAlitrraXLRom;
+            altirraRom = ROM_altirraos_xl;
+            altirraString = "Using Alitrra XL/XE OS";
+            machineString = "Loading ROMS for XL/XE Machine";
+            break;
+        case Atari800_MACHINE_5200:
+            osFilename = CFG_5200_filename;
+            defaultType = SYSROM_5200_CUSTOM;
+            altirraType = SYSROM_ALTIRRA_5200;
+            osSize = 0x800;
+            loadBasic = FALSE;
+            useAltira = Atari800_useAlitrra5200Rom;
+            altirraRom = ROM_altirra_5200_os;
+            altirraString = "Using Alitrra 5200 OS";
+            machineString = "Loading ROMS for 5200 Machine";
+            break;
+    }
+    
+    Log_print(machineString);
+    if (useAltira) {
+        memcpy(MEMORY_os, altirraRom, osSize);
+        Atari800_os_version = altirraType;
+        Log_print(altirraString);
+        }
+    if (Atari800_LoadImage(osFilename, MEMORY_os, osSize)) {
+        Atari800_os_version = SYSROM_FindType(defaultType, osFilename, OSType);
+        Log_print("Loaded OS: %s",OSType);
+        }
+    else {
+        memcpy(MEMORY_os, altirraRom, osSize);
+        Atari800_os_version = altirraType;
+        Log_print(altirraString);
+    }
+    
+    if (!loadBasic)
+        return TRUE;
+
+    if (Atari800_useAlitrraBasicRom) {
+        memcpy(MEMORY_basic, ROM_altirra_basic, 0x2000);
+        Atari800_basic_version = SYSROM_ALTIRRA_BASIC;
+        Log_print("Using Alitrra BASIC");
+        }
+    if (Atari800_LoadImage(CFG_basic_filename, MEMORY_basic, 0x2000)) {
+        Atari800_basic_version = SYSROM_FindType(SYSROM_BASIC_CUSTOM, CFG_basic_filename, OSType);
+        Log_print("Loaded OS: %s",OSType);
+        }
+    else {
+        memcpy(MEMORY_basic, ROM_altirra_basic, 0x2000);
+        Atari800_basic_version = SYSROM_ALTIRRA_BASIC;
+        Log_print("Using Alitrra BASIC");
+    }
+
+    return TRUE;
 }
 
 

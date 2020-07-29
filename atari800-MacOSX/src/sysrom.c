@@ -115,6 +115,37 @@ SYSROM_t SYSROM_roms[SYSROM_SIZE] = {
 #endif /* EMUOS_ALTIRRA */
 };
 
+#ifdef ATARI800MACX
+/* Used in reading the config file to match option names. */
+static char const * const readable_strings[SYSROM_LOADABLE_SIZE] = {
+    "Atari 400/800 OS Version A - NTSC",
+    "Atari 400/800 OS Version A - PAL",
+    "Atari 400/800 OS Version B - NTSC",
+    "Atari XL/XE OS Version AA00R10",
+    "Atari XL/XE OS Version AA00R11",
+    "Atari XL/XE OS Version BB00R1",
+    "Atari XL/XE OS Version BB01R2",
+    "Atari XL/XE OS Version BB02R3",
+    "Atari XL/XE OS Version BB02R3V4",
+    "Atari XL/XE OS Version CC01R4",
+    "Atari XL/XE OS Version BB01R3",
+    "Atari XL/XE OS Version BB01R4",
+    "Atari XL/XE OS Version BB01R59",
+    "Atari XL/XE OS Version BB01R59A",
+    "Atari 5200 OS",
+    "Atari 5200 OS Version A",
+    "Atari BASIC Version A",
+    "Atari BASIC Version B",
+    "Atari BASIC Version C",
+    "Atari XE Game System OS",
+    "Atari 400/800 Custom OS",
+    "Atari XL/XE Custom OS",
+    "Atari 5200 Custom OS",
+    "Atari Custom BASIC",
+    "Atari XE Game System Custom OS",
+};
+#endif
+
 /* Used in reading the config file to match option names. */
 static char const * const cfg_strings[SYSROM_LOADABLE_SIZE] = {
     "ROM_OS_A_NTSC",
@@ -213,13 +244,13 @@ int SYSROM_FindType(int defaultType, char const *filename, char *romTypeName)
     for (id = 0; id < SYSROM_LOADABLE_SIZE; ++id) {
         if (SYSROM_roms[id].size == len
             && SYSROM_roms[id].crc32 != CRC_NULL && SYSROM_roms[id].crc32 == crc) {
-            strcpy(romTypeName, cfg_strings[id]);
+            strcpy(romTypeName, readable_strings[id]);
             return id;
         }
     }
     
     if (defaultType >= 0 && defaultType <= SYSROM_LOADABLE_SIZE) {
-        strcpy(romTypeName, cfg_strings[defaultType]);
+        strcpy(romTypeName, readable_strings[defaultType]);
         return defaultType;
     }
     else
