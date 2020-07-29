@@ -909,7 +909,7 @@ void Atari800_StateSave(void)
 	StateSav_SaveINT(&default_system, 1);
 }
 
-void Atari800_StateRead(void)
+void Atari800_StateRead(UBYTE version)
 {
 	int new_tv_mode;
 	/* these are all for compatibility with previous versions */

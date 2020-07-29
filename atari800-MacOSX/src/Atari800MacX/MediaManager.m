@@ -560,7 +560,6 @@ NSImage *disketteImage;
     NSString *filename;
     char cfilename[FILENAME_MAX];
     int cartSize;
-    int axlon_enabled, mosaic_enabled;
 
     PauseAudio(1);
     filename = [self browseFileInDirectory:[NSString stringWithCString:atari_rom_dir encoding:NSASCIIStringEncoding]];
@@ -607,7 +606,6 @@ NSImage *disketteImage;
 {
     char cfilename[FILENAME_MAX];
     int cartSize;
-    int axlon_enabled, mosaic_enabled;
 
     if (filename != nil) {
         [filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];

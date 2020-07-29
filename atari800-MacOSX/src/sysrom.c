@@ -144,7 +144,7 @@ static char const * const readable_strings[SYSROM_LOADABLE_SIZE] = {
     "Atari Custom BASIC",
     "Atari XE Game System Custom OS",
 };
-#endif
+#else
 
 /* Used in reading the config file to match option names. */
 static char const * const cfg_strings[SYSROM_LOADABLE_SIZE] = {
@@ -210,6 +210,7 @@ static char const * const cfg_strings_rev[SYSROM_SIZE+1] = {
 #endif /* EMUOS_ALTIRRA */
     "AUTO" /* SYSROM_AUTO */
 };
+#endif
 
 #ifdef ATARI800MACX
 int SYSROM_FindType(int defaultType, char const *filename, char *romTypeName)

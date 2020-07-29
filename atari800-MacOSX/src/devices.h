@@ -4,7 +4,7 @@
 #include <stdio.h> /* FILENAME_MAX */
 #include "atari.h" /* UWORD */
 
-void Devices_Initialise(int *argc, char *argv[]);
+int Devices_Initialise(int *argc, char *argv[]);
 int Devices_PatchOS(void);
 void Devices_Frame(void);
 void Devices_UpdatePatches(void);
@@ -31,6 +31,15 @@ void Devices_H_CloseAll(void);
 extern char Devices_print_command[256];
 
 int Devices_SetPrintCommand(const char *command);
+
+struct DEV_B
+{
+	char url[512];
+	int  pos;
+	int  ready;
+};
+extern struct DEV_B dev_b_status;
+
 
 #define	Devices_ICHIDZ	0x0020
 #define	Devices_ICDNOZ	0x0021

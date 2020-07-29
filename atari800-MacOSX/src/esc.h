@@ -73,8 +73,17 @@ enum ESC_t {
 	ESC_DWRIT = 0xcb,
 	ESC_DSTAT = 0xcc,
 	ESC_DSPEC = 0xce,
-	ESC_DINIT = 0xcf
+	ESC_DINIT = 0xcf,
 #endif	
+
+	/* B: device. */
+	ESC_BOPEN = 0xe0,
+	ESC_BCLOS = 0xe1,
+	ESC_BREAD = 0xe2,
+	ESC_BWRIT = 0xe3,
+	ESC_BSTAT = 0xe4,
+	ESC_BSPEC = 0xe5,
+	ESC_BINIT = 0xe6
 };
 
 /* A function called to handle an escape sequence. */
