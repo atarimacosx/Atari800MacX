@@ -119,6 +119,11 @@ extern int machine_switch_type;
 extern double emulationSpeed;
 extern int cx85_port;
 extern int useAtariCursorKeys;
+extern int Atari800_useAlitrraOSARom;
+extern int Atari800_useAlitrraOSBRom;
+extern int Atari800_useAlitrraXLRom;
+extern int Atari800_useAlitrra5200Rom;
+extern int Atari800_useAlitrraBasicRom;
 
 extern int Devices_enable_h_patch;
 extern int Devices_enable_d_patch;
@@ -916,6 +921,12 @@ int loadMacPrefs(int firstTime)
     strcpy(CFG_xlxe_filename, prefs.xlRomFile);
     strcpy(CFG_basic_filename, prefs.basicRomFile);
     strcpy(CFG_5200_filename, prefs.a5200RomFile);
+    Atari800_useAlitrraOSARom = prefs.useAltirraOSARom;
+    Atari800_useAlitrraOSBRom = prefs.useAltirraOSBRom;
+    Atari800_useAlitrraXLRom = prefs.useAltirraXLRom;
+    Atari800_useAlitrra5200Rom = prefs.useAltirra5200Rom;
+    Atari800_useAlitrraBasicRom = prefs.useAltirraBasicRom;
+
     strcpy(atari_disk_dirs[0], prefs.diskImageDir);
     strcpy(atari_diskset_dir,prefs.diskSetDir);
     strcpy(atari_rom_dir, prefs.cartImageDir);

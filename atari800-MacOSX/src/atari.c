@@ -65,6 +65,7 @@ biteme!
 #endif
 
 #include "af80.h"
+#include "altirra_basic.h"
 #include "akey.h"
 #include "antic.h"
 #include "atari.h"
@@ -120,6 +121,11 @@ int machine_switch_type = 7;
 int Atari800_machine_type = Atari800_MACHINE_XLXE;
 int Atari800_tv_mode = Atari800_TV_PAL;
 int Atari800_disable_basic = TRUE;
+int Atari800_useAlitrraOSARom;
+int Atari800_useAlitrraOSBRom;
+int Atari800_useAlitrraXLRom;
+int Atari800_useAlitrra5200Rom;
+int Atari800_useAlitrraBasicRom;
 
 int verbose = FALSE;
 
@@ -282,11 +288,16 @@ static int load_roms(void)
 				return FALSE;
 		}
 		else {
-			/* if you really don't want built-in BASIC */
-			if (!strcmp(CFG_basic_filename,"none"))
-				memset(MEMORY_basic, 0, 0x2000);
-			else if (!Atari800_LoadImage(CFG_basic_filename, MEMORY_basic, 0x2000))
-				return FALSE;
+            if (Atari800_useAlitrraBasicRom) {
+                memcpy(MEMORY_basic, ROM_altirra_basic, 0x2000);
+                return FALSE;
+            } else {
+                /* if you really don't want built-in BASIC */
+                if (!strcmp(CFG_basic_filename,"none"))
+                    memset(MEMORY_basic, 0, 0x2000);
+                else if (!Atari800_LoadImage(CFG_basic_filename, MEMORY_basic, 0x2000))
+                    return FALSE;
+            }
 		}
         int osType = SYSROM_FindType(SYSROM_800_CUSTOM, CFG_xlxe_filename, OSType);
         Log_print("Rom is %d - %s",osType, OSType);
