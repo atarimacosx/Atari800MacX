@@ -282,7 +282,7 @@ static int load_roms(void)
             machineString = "Loading ROMS for OSA Machine";
             break;
         case Atari800_MACHINE_OSB:
-            osFilename = CFG_osa_filename;
+            osFilename = CFG_osb_filename;
             defaultType = SYSROM_800_CUSTOM;
             altirraType = SYSROM_ALTIRRA_800;
             osSize = 0x2800;
