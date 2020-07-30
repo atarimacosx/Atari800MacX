@@ -55,20 +55,20 @@ static UBYTE *bb_ram;
 static UBYTE bb_rom_bank = 0;
 static int bb_rom_size;
 static int bb_rom_high_bit = 0x00;/*0x10*/
-#ifdef MACOSX
+#ifdef ATARI800MACX
 char bb_rom_filename[FILENAME_MAX] = Util_FILENAME_NOT_SET;
 #else
 static char bb_rom_filename[FILENAME_MAX] = Util_FILENAME_NOT_SET;
 #endif
 static UBYTE bb_PCR = 0; /* VIA Peripheral control register*/
 static int bb_scsi_enabled = FALSE;
-#ifdef MACOSX
+#ifdef ATARI800MACX
 char bb_scsi_disk_filename[FILENAME_MAX] = Util_FILENAME_NOT_SET;
 #else
 static char bb_scsi_disk_filename[FILENAME_MAX] = Util_FILENAME_NOT_SET;
 #endif
 
-#ifdef MACOSX
+#ifdef ATARI800MACX
 void init_bb(void)
 #else
 static void init_bb(void)

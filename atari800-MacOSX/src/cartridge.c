@@ -589,8 +589,12 @@ static void MapActiveCart(void)
 			/* No need to call SwitchBank(), return. */
 			return;
 		case CARTRIDGE_RIGHT_4:
+#ifdef ATARI800MACX
 			if ((Atari800_machine_type == Atari800_MACHINE_OSA) ||
                 (Atari800_machine_type == Atari800_MACHINE_OSB)){
+#else
+			if (Atari800_machine_type == Atari800_MACHINE_800) {
+#endif
 				MEMORY_Cart809fEnable();
 				MEMORY_dFillMem(0x8000, 0xff, 0x1000);
 				MEMORY_CopyROM(0x9000, 0x9fff, active_cart->image);
@@ -608,13 +612,16 @@ static void MapActiveCart(void)
 			/* No need to call SwitchBank(), return. */
 			return;
 		case CARTRIDGE_RIGHT_8:
+#ifdef ATARI800MACX
             if ((Atari800_machine_type == Atari800_MACHINE_OSA) ||
                 (Atari800_machine_type == Atari800_MACHINE_OSB)){
+#else
+			if (Atari800_machine_type == Atari800_MACHINE_800) {
+#endif
 				MEMORY_Cart809fEnable();
 				MEMORY_CopyROM(0x8000, 0x9fff, active_cart->image);
-                if ((!Atari800_disable_basic || BINLOAD_loading_basic) && MEMORY_have_basic) {
-                // MDGToDo if (!Atari800_builtin_basic
-                //        && (!Atari800_disable_basic || BINLOAD_loading_basic) && MEMORY_have_basic) {
+				if (!Atari800_builtin_basic
+				    && (!Atari800_disable_basic || BINLOAD_loading_basic) && MEMORY_have_basic) {
 					MEMORY_CartA0bfEnable();
 					MEMORY_CopyROM(0xa000, 0xbfff, MEMORY_basic);
 				}
@@ -653,11 +660,10 @@ static void MapActiveCart(void)
 			break;
 		default:
 			MEMORY_Cart809fDisable();
-            // MDGToDo if (!Atari800_builtin_basic
-            if ((Atari800_machine_type != Atari800_MACHINE_5200)
-            && (!Atari800_disable_basic || BINLOAD_loading_basic) && MEMORY_have_basic) {
-                MEMORY_CartA0bfEnable();
-                MEMORY_CopyROM(0xa000, 0xbfff, MEMORY_basic);
+			if (!Atari800_builtin_basic
+			&& (!Atari800_disable_basic || BINLOAD_loading_basic) && MEMORY_have_basic) {
+				MEMORY_CartA0bfEnable();
+				MEMORY_CopyROM(0xa000, 0xbfff, MEMORY_basic);
 			}
 			else
 				MEMORY_CartA0bfDisable();

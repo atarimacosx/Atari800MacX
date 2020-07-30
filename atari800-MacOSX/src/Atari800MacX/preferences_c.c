@@ -726,7 +726,12 @@ void CalculatePrefsChanged()
         (strcmp(bb_rom_filename, prefs.blackBoxRomFile) != 0) ||
 		(strcmp(mio_rom_filename, prefs.mioRomFile) != 0) ||
 		(strcmp(bb_scsi_disk_filename, prefs.blackBoxScsiDiskFile) != 0) ||
-		(strcmp(mio_scsi_disk_filename, prefs.mioScsiDiskFile) != 0))		
+		(strcmp(mio_scsi_disk_filename, prefs.mioScsiDiskFile) != 0) ||
+        (Atari800_useAlitrraOSARom != prefs.useAltirraOSARom) ||
+        (Atari800_useAlitrraOSBRom != prefs.useAltirraOSBRom) ||
+        (Atari800_useAlitrraXLRom != prefs.useAltirraXLRom) ||
+        (Atari800_useAlitrraBasicRom != prefs.useAltirraBasicRom) ||
+        (Atari800_useAlitrra5200Rom != prefs.useAltirra5200Rom))
 		osRomsChanged = TRUE;
 	else
 		osRomsChanged = FALSE;

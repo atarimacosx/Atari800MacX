@@ -510,8 +510,6 @@ int SIO_Mount(int diskno, const char *filename, int b_open_readonly)
 				(header.magic1*256 + header.magic2 == (file_length-16)/(128+12)) &&
 				header.seccountlo == 'P') {
 			pro_additional_info_t *info;
-			Log_print("Pro type '%c'",header.seccounthi);
-
 			/* .pro is read only for now */
 			if (!b_open_readonly) {
 				fclose(f);
@@ -1182,8 +1180,22 @@ void SIO_Handler(void)
 	}
 	/* A real atari just adds the bytes and 0xff. The result could wrap.*/
 	/* XL OS: E99D: LDA $0300 ADC $0301 ADC #$FF STA 023A */
+
+	/* The OS SIO routine copies decide ID do CDEVIC, command ID to CCOMND etc.
+	   This operation is not needed with the SIO patch enabled, but we perform
+	   it anyway, since some programs rely on that. (E.g. the E.T Phone Home!
+	   cartridge would crash with SIO patch enabled.)
+	   Note: While on a real XL OS the copying is done only for SIO devices
+	   (not for PBI ones), here we copy the values for all types of devices -
+	   it's probably harmless. */
+	MEMORY_dPutByte(0x023a, unit); /* sta CDEVIC */
+	MEMORY_dPutByte(0x023b, cmd); /* sta CCOMND */
+	MEMORY_dPutWordAligned(0x023c, sector); /* sta CAUX1; sta CAUX2 */
+
 	/* Disk 1 is ASCII '1' = 0x31 etc */
 	/* Disk 1 -> unit = 0 */
+	unit -= 0x31;
+
 	if (MEMORY_dGetByte(0x300) != 0x60 && unit < SIO_MAX_DRIVES && (SIO_drive_status[unit] != SIO_OFF || BINLOAD_start_binloading)) {	/* UBYTE range ! */
 #ifdef DEBUG
 		Log_print("SIO disk command is %02x %02x %02x %02x %02x   %02x %02x %02x %02x %02x %02x",
@@ -1320,21 +1332,24 @@ void SIO_Handler(void)
 
 	switch (result) {
 	case 0x00:					/* Device disabled, generate timeout */
-		CPU_regY = 138;
+		CPU_regY = 138; /* TIMOUT: peripheral device timeout error */
 		CPU_SetN;
 		break;
 	case 'A':					/* Device acknowledge */
 	case 'C':					/* Operation complete */
-		CPU_regY = 1;
+		CPU_regY = 1; /* SUCCES: successful operation */
 		CPU_ClrN;
 		break;
 	case 'N':					/* Device NAK */
-		CPU_regY = 144;
+		CPU_regY = 139; /* DNACK: device does not acknowledge command error */
 		CPU_SetN;
 		break;
 	case 'E':					/* Device error */
+		CPU_regY = 144; /* DERROR: device done (operation incomplete) error */
+		CPU_SetN;
+		break;
 	default:
-		CPU_regY = 146;
+		CPU_regY = 146; /* FNCNOT: function not implemented in handler error */
 		CPU_SetN;
 		break;
 	}
@@ -1625,10 +1640,8 @@ void SIO_PutByte(int byte)
 			Log_print("Invalid data frame!");
 		}
 		break;
-	case SIO_CasWrite:
-		CASSETTE_PutByte(byte);
-		break;
 	}
+	CASSETTE_PutByte(byte);
 	/* POKEY_DELAYED_SEROUT_IRQ = SIO_SEROUT_INTERVAL; */ /* already set in pokey.c */
 }
 
@@ -1636,6 +1649,7 @@ void SIO_PutByte(int byte)
 int SIO_GetByte(void)
 {
 	int byte = 0;
+
 	switch (TransferStatus) {
 	case SIO_StatusRead:
 		byte = Command_Frame();		/* Handle now the command */

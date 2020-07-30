@@ -3,7 +3,7 @@
 
 #include "atari.h"
 
-#ifdef MACOSX
+#ifdef ATARI800MACX
 char *SndSave_Find_AIFF_name( void );
 #endif
 int SndSave_IsSoundFileOpen(void);

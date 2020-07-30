@@ -131,6 +131,7 @@ int Atari800_useAlitrra5200Rom;
 int Atari800_useAlitrraBasicRom;
 int Atari800_os_version = -1;
 int Atari800_basic_version = -1;
+int Atari800_builtin_basic = TRUE;
 
 int verbose = FALSE;
 
@@ -192,6 +193,12 @@ void Atari800_Coldstart(void)
 	/* CPU_Reset() must be after PIA_Reset(),
 	   because Reset routine vector must be read from OS ROM */
 	CPU_Reset();
+    CARTRIDGE_ColdStart();
+    /* set Atari OS Coldstart flag */
+    MEMORY_dPutByte(0x244, 1);
+    /* handle Option key (disable BASIC in XL/XE)
+       and Start key (boot from cassette) */
+    GTIA_consol_override = 2;
 	/* note: POKEY and GTIA have no Reset pin */
     if (XEP80_enabled)
         XEP80_Reset();
@@ -207,13 +214,6 @@ void Atari800_Coldstart(void)
         if (!PLATFORM_80col)
             PLATFORM_Switch80Col();
     }
-	/* reset cartridge to power-up state */
-    CARTRIDGE_ColdStart();
-	/* set Atari OS Coldstart flag */
-	MEMORY_dPutByte(0x244, 1);
-	/* handle Option key (disable BASIC in XL/XE)
-	   and Start key (boot from cassette) */
-	GTIA_consol_override = 2;
 #ifdef AF80
 	if (AF80_enabled) {
 		AF80_Reset();
@@ -322,7 +322,7 @@ static int load_roms(void)
         Atari800_os_version = altirraType;
         Log_print(altirraString);
         }
-    if (Atari800_LoadImage(osFilename, MEMORY_os, osSize)) {
+    else if (Atari800_LoadImage(osFilename, MEMORY_os, osSize)) {
         Atari800_os_version = SYSROM_FindType(defaultType, osFilename, OSType);
         Log_print("Loaded OS: %s",OSType);
         }
@@ -332,15 +332,17 @@ static int load_roms(void)
         Log_print(altirraString);
     }
     
-    if (!loadBasic)
+    if (!loadBasic) {
+        MEMORY_have_basic = FALSE;
         return TRUE;
-
+    }
+    
     if (Atari800_useAlitrraBasicRom) {
         memcpy(MEMORY_basic, ROM_altirra_basic, 0x2000);
         Atari800_basic_version = SYSROM_ALTIRRA_BASIC;
         Log_print("Using Alitrra BASIC");
         }
-    if (Atari800_LoadImage(CFG_basic_filename, MEMORY_basic, 0x2000)) {
+    else if (Atari800_LoadImage(CFG_basic_filename, MEMORY_basic, 0x2000)) {
         Atari800_basic_version = SYSROM_FindType(SYSROM_BASIC_CUSTOM, CFG_basic_filename, OSType);
         Log_print("Loaded OS: %s",OSType);
         }
@@ -349,14 +351,15 @@ static int load_roms(void)
         Atari800_basic_version = SYSROM_ALTIRRA_BASIC;
         Log_print("Using Alitrra BASIC");
     }
-
+    
+    MEMORY_have_basic = TRUE;
     return TRUE;
 }
 
 
 int Atari800_InitialiseMachine(void)
 {
-#if !defined(BASIC) && !defined(CURSES_BASIC) && !defined(MACOSX)
+#if !defined(BASIC) && !defined(CURSES_BASIC) && !defined(ATARI800MACX)
 	Colours_InitialiseMachine();
 #endif
 	ESC_ClearAll();
