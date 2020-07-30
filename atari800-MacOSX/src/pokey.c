@@ -26,12 +26,15 @@
 #ifdef HAVE_TIME_H
 #include <time.h>
 #endif
-#ifdef WIN32
+#ifdef HAVE_WINDOWS_H
 #include <windows.h>
 #endif
 
 #include "atari.h"
 #include "cpu.h"
+#ifdef ATARI800MACX
+#include "emuio.h"
+#endif
 #include "esc.h"
 #include "pia.h"
 #include "pokey.h"
@@ -158,9 +161,11 @@ UBYTE POKEY_GetByte(UWORD addr, int no_side_effects)
 		}
 #endif
 		break;
+#ifdef ATARI800MACX
 	case 0x0C:
 		byte = Emuio_ReadByte();
 		break;
+#endif
 	}
 
 	return byte;
@@ -318,8 +323,10 @@ void POKEY_PutByte(UWORD addr, UBYTE byte)
 			/* TODO other registers should also be reset. */
 		}
 		break;
+#ifdef ATARI800MACX
 	case 0x0C:
 		Emuio_WriteByte(byte);
+#endif
 		break;
 #ifdef STEREO_SOUND
 	case POKEY_OFFSET_AUDC1 + POKEY_OFFSET_POKEY2:
@@ -419,7 +426,7 @@ int POKEY_Initialise(int *argc, char *argv[])
 		POKEY_poly17_lookup[i] = (UBYTE) (reg >> 1);
 	}
 
-#if !defined(BASIC) && !defined(MACOSX)
+#if !defined(BASIC) && !defined(ATARI800MACX)
 	if (INPUT_Playingback()) {
 		random_scanline_counter = INPUT_PlaybackInt();
 	}
@@ -436,12 +443,14 @@ int POKEY_Initialise(int *argc, char *argv[])
 #endif
 	}
 #ifndef BASIC
-#if 0 //MDGToDo
+#ifndef ATARI800MACX
 	if (INPUT_Recording()) {
 		INPUT_RecordInt(random_scanline_counter);
 	}
 #endif
 #endif
+
+	return TRUE;
 }
 
 void POKEY_Frame(void)

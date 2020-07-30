@@ -88,7 +88,7 @@ static UBYTE under_cartA0BF[8192];
 static int cart809F_enabled = FALSE;
 int MEMORY_cartA0BF_enabled = FALSE;
 
-#ifdef MACOSX
+#ifdef ATARI800MACX
 UBYTE *atarixe_memory = NULL;
 ULONG atarixe_memory_size = 0;
 #else
@@ -123,7 +123,11 @@ int MEMORY_enable_mapram = FALSE;
 static UBYTE *mapram_memory = NULL;
 
 static void alloc_axlon_memory(void){
+#ifdef ATARI800MACX
 	if (MEMORY_axlon_num_banks > 0 && (Atari800_machine_type == Atari800_MACHINE_OSA || Atari800_machine_type == Atari800_MACHINE_OSB)) {
+#else
+	if (MEMORY_axlon_num_banks > 0 && Atari800_machine_type == Atari800_MACHINE_800) {
+#endif
 		int size = MEMORY_axlon_num_banks * 0x4000;
 		if (axlon_ram == NULL || axlon_current_bankmask != MEMORY_axlon_num_banks - 1) {
 			axlon_current_bankmask = MEMORY_axlon_num_banks - 1;
@@ -140,7 +144,11 @@ static void alloc_axlon_memory(void){
 }
 
 static void alloc_mosaic_memory(void){
+#ifdef ATARI800MACX
 	if (MEMORY_mosaic_num_banks > 0 && (Atari800_machine_type == Atari800_MACHINE_OSA || Atari800_machine_type == Atari800_MACHINE_OSB)) {
+#else
+	if (MEMORY_mosaic_num_banks > 0 && Atari800_machine_type == Atari800_MACHINE_800) {
+#endif
 		int size = MEMORY_mosaic_num_banks * 0x1000;
 		if (mosaic_ram == NULL || mosaic_current_num_banks != MEMORY_mosaic_num_banks) {
 			mosaic_current_num_banks = MEMORY_mosaic_num_banks;
@@ -201,9 +209,15 @@ int MEMORY_SizeValid(int size)
 
 void MEMORY_InitialiseMachine(void)
 {
+#ifdef ATARI800MACX
 	int const os_size = (Atari800_machine_type == Atari800_MACHINE_OSA || Atari800_machine_type == Atari800_MACHINE_OSB) ? 0x2800
 	                    : Atari800_machine_type == Atari800_MACHINE_5200 ? 0x800
 	                    : 0x4000;
+#else
+	int const os_size = Atari800_machine_type == Atari800_MACHINE_800 ? 0x2800
+	                    : Atari800_machine_type == Atari800_MACHINE_5200 ? 0x800
+	                    : 0x4000;
+#endif
 	int const os_rom_start = 0x10000 - os_size;
 	ANTIC_xe_ptr = NULL;
 	cart809F_enabled = FALSE;
@@ -294,7 +308,11 @@ void MEMORY_InitialiseMachine(void)
 			MEMORY_SetROM(0xd800, 0xffff);
 #ifndef PAGED_ATTRIB
 			MEMORY_SetHARDWARE(0xd000, 0xd7ff);
+#ifdef ATARI800MACX
 			if ((Atari800_machine_type == Atari800_MACHINE_OSA || Atari800_machine_type == Atari800_MACHINE_OSB)) {
+#else
+			if (Atari800_machine_type == Atari800_MACHINE_800) {
+#endif
 				if (MEMORY_mosaic_num_banks > 0) MEMORY_SetHARDWARE(0xff00, 0xffff);
 				/* only 0xffc0-0xffff are used, but mark the whole
 				 * page to make state saving easier */
@@ -350,7 +368,11 @@ void MEMORY_StateSave(UBYTE SaveVerbose)
 	UBYTE byte;
 
 	/* Axlon/Mosaic for 400/800 */
+#ifdef ATARI800MACX
 	if ((Atari800_machine_type == Atari800_MACHINE_OSA || Atari800_machine_type == Atari800_MACHINE_OSB)) {
+#else
+	if (Atari800_machine_type == Atari800_MACHINE_800) {
+#endif
 		StateSav_SaveINT(&MEMORY_axlon_num_banks, 1);
 		if (MEMORY_axlon_num_banks > 0){
 			StateSav_SaveINT(&axlon_curbank, 1);
@@ -449,7 +471,11 @@ void MEMORY_StateRead(UBYTE SaveVerbose, UBYTE StateVersion)
 	UBYTE portb;
 
 	/* Axlon/Mosaic for 400/800 */
+#ifdef ATARI800MACX
 	if ((Atari800_machine_type == Atari800_MACHINE_OSA || Atari800_machine_type == Atari800_MACHINE_OSB) && StateVersion >= 5) {
+#else
+	if (Atari800_machine_type == Atari800_MACHINE_800 && StateVersion >= 5) {
+#endif
 		StateSav_ReadINT(&MEMORY_axlon_num_banks, 1);
 		if (MEMORY_axlon_num_banks > 0){
 			StateSav_ReadINT(&axlon_curbank, 1);
@@ -713,7 +739,7 @@ static UBYTE const * builtin_cart(UBYTE portb)
 	/* Normally BASIC is enabled by clearing bit 1 of PORTB, but it's disabled
 	   when using 576K and 1088K memory expansions, where bit 1 is used for
 	   selecting extended memory bank number. */
-	if ((Atari800_machine_type == Atari800_MACHINE_XLXE)  // MDGToDo
+	if (Atari800_builtin_basic
 	    && (portb & 0x02) == 0
 	    && ((portb & 0x10) != 0 || (MEMORY_ram_size != 576 && MEMORY_ram_size != 1088)))
 		return MEMORY_basic;
@@ -1121,7 +1147,7 @@ UBYTE MEMORY_HwGetByte(UWORD addr, int no_side_effects)
 		byte = ANTIC_GetByte(addr, no_side_effects);
 		break;
 	case 0xd500:				/* bank-switching cartridges, RTIME-8 */
-        byte = CARTRIDGE_GetByte(addr, no_side_effects);
+		byte = CARTRIDGE_GetByte(addr, no_side_effects);
 		break;
 	case 0xff00:				/* Mosaic memory expansion for 400/800 */
 		byte = MosaicGetByte(addr, no_side_effects);
