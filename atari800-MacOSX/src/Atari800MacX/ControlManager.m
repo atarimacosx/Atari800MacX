@@ -65,7 +65,6 @@ extern int selectFunctionPressed;
 extern int optionFunctionPressed;
 extern int inverseFunctionPressed;
 extern int MONITOR_break_run_to_here;
-extern int UI_alt_function;
 
 /* Functions which provide an interface for C code to call this object's shared Instance functions */
 void SetControlManagerLimit(int limit) {

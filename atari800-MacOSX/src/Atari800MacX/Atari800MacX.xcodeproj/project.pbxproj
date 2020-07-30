@@ -267,8 +267,6 @@
 		2DAEDBC509B69AED005FF181 /* rdevice.c in Sources */ = {isa = PBXBuildFile; fileRef = 2D10A79609B0E209001F913C /* rdevice.c */; };
 		2DAEDBC709B69AED005FF181 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		2DAEDBC809B69AED005FF181 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D9863E407BED49700596C6B /* IOKit.framework */; };
-		2DB0A03E0F523EC3007879C7 /* ui.c in Sources */ = {isa = PBXBuildFile; fileRef = 2DB0A03C0F523EC3007879C7 /* ui.c */; };
-		2DB0A03F0F523EC3007879C7 /* ui.h in Headers */ = {isa = PBXBuildFile; fileRef = 2DB0A03D0F523EC3007879C7 /* ui.h */; };
 		2DB0A0560F524110007879C7 /* ui_basic.c in Sources */ = {isa = PBXBuildFile; fileRef = 2DB0A0550F524110007879C7 /* ui_basic.c */; };
 		2DB0A0590F52413B007879C7 /* ui_basic.h in Headers */ = {isa = PBXBuildFile; fileRef = 2DB0A0580F52413B007879C7 /* ui_basic.h */; };
 		2DBBC09B0FDC448800FD54E5 /* PasteManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 2DBBC0990FDC448800FD54E5 /* PasteManager.h */; };
@@ -522,8 +520,6 @@
 		2DAB84EF07E39A9700599B16 /* PrintOutputController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = PrintOutputController.m; sourceTree = "<group>"; };
 		2DAB84FE07E39B9800599B16 /* PrintOutput.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = PrintOutput.nib; sourceTree = SOURCE_ROOT; };
 		2DAEDBD509B69AED005FF181 /* Atari800MacX.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Atari800MacX.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		2DB0A03C0F523EC3007879C7 /* ui.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ui.c; path = ../ui.c; sourceTree = SOURCE_ROOT; };
-		2DB0A03D0F523EC3007879C7 /* ui.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ui.h; path = ../ui.h; sourceTree = SOURCE_ROOT; };
 		2DB0A0550F524110007879C7 /* ui_basic.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ui_basic.c; path = ../ui_basic.c; sourceTree = SOURCE_ROOT; };
 		2DB0A0580F52413B007879C7 /* ui_basic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ui_basic.h; path = ../ui_basic.h; sourceTree = SOURCE_ROOT; };
 		2DB5530C05F297680083D2F2 /* DiskEditorDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DiskEditorDataSource.h; sourceTree = "<group>"; };
@@ -952,8 +948,6 @@
 				2D3D18AC052BD6E600A8C8B4 /* remez.h */,
 				F555835B030EF4CD01A8C8B4 /* rtime.h */,
 				F555835C030EF4CD01A8C8B4 /* rtime.c */,
-				2DB0A03C0F523EC3007879C7 /* ui.c */,
-				2DB0A03D0F523EC3007879C7 /* ui.h */,
 				2DB0A0550F524110007879C7 /* ui_basic.c */,
 				2DB0A0580F52413B007879C7 /* ui_basic.h */,
 				2DF405F409A811AE009B7D4C /* util.c */,
@@ -1181,7 +1175,6 @@
 				2D1668180F51F07000A78B94 /* esc.h in Headers */,
 				2D16681E0F51F0A200A78B94 /* sndsave.h in Headers */,
 				2D1668280F51F19900A78B94 /* afile.h in Headers */,
-				2DB0A03F0F523EC3007879C7 /* ui.h in Headers */,
 				2DB0A0590F52413B007879C7 /* ui_basic.h in Headers */,
 				2DE6EB8024CE197000A55386 /* altirraos_800.h in Headers */,
 				2D17D9760F537D860027F526 /* pbi_bb.h in Headers */,
@@ -1422,7 +1415,6 @@
 				2D16681A0F51F08700A78B94 /* sio.c in Sources */,
 				2D16681D0F51F0A200A78B94 /* sndsave.c in Sources */,
 				2D1668270F51F19900A78B94 /* afile.c in Sources */,
-				2DB0A03E0F523EC3007879C7 /* ui.c in Sources */,
 				2DB0A0560F524110007879C7 /* ui_basic.c in Sources */,
 				2D17D9750F537D860027F526 /* pbi_bb.c in Sources */,
 				2D17D9770F537D860027F526 /* pbi_mio.c in Sources */,

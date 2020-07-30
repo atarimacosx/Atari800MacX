@@ -747,7 +747,7 @@ static UBYTE const * builtin_cart(UBYTE portb)
 	   by setting bit 6 of PORTB, but it's disabled when using 320K and larger
 	   XE memory expansions, where bit 6 is used for selecting extended memory
 	   bank number. */
-#if 0 // MDGToDo
+#ifndef ATARI800MACX
 	if (Atari800_builtin_game
 	    && (portb & 0x40) == 0
 	    && ((portb & 0x10) != 0 || MEMORY_ram_size < 320))

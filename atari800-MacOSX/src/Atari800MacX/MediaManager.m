@@ -83,7 +83,6 @@ extern int scaleFactor;
 extern int SCALE_MODE;
 extern int Atari800_machine_type;
 extern int MEMORY_ram_size;
-extern int UI_alt_function;
 extern int diskDriveSound;
 extern int PREFS_axlon_num_banks;
 extern int PREFS_mosaic_num_banks;
@@ -191,6 +190,10 @@ void MediaManagerStatusWindowShow(void) {
 void MediaManager80ColMode(int xep80Enabled, int af80Enabled, int bit3Enabled, int col80) {
     [[MediaManager sharedInstance] set80ColMode:(xep80Enabled):(af80Enabled):(bit3Enabled):(col80)];
     }
+
+int MediaManagerCartSelect(int nKbytes) {
+    return([[MediaManager sharedInstance] cartSelect:(nKbytes)]);
+}
 
 @implementation MediaManager
 

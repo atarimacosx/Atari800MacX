@@ -41,17 +41,19 @@ char CFG_xlxe_filename[FILENAME_MAX] = Util_FILENAME_NOT_SET;
 char CFG_5200_filename[FILENAME_MAX] = Util_FILENAME_NOT_SET;
 char CFG_basic_filename[FILENAME_MAX] = Util_FILENAME_NOT_SET;
 
-#ifndef MACOSX
+#ifdef ATARI800MACX
 void CFG_FindROMImages(const char *directory, int only_if_not_set)
 {
 }
 
 int CFG_LoadConfig(const char *alternate_config_filename)
 {
+    return TRUE;
 }
 
 int CFG_WriteConfig(void)
 {
+    return TRUE;
 }
 #else
 void CFG_FindROMImages(const char *directory, int only_if_not_set)

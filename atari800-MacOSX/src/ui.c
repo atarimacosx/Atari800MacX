@@ -1,3 +1,4 @@
+#if 0
 /*
  * ui.c - main user interface
  *
@@ -2029,4 +2030,5 @@ int CrashMenu(void)
 		}
 	}
 }
+#endif
 #endif

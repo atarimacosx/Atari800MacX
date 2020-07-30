@@ -49,7 +49,6 @@ extern ATARI825_PREF prefs825;
 extern ATARI1020_PREF prefs1020;
 extern EPSON_PREF prefsEpson;
 extern ATASCII_PREF prefsAtascii;
-extern int UI_alt_function;
 extern int diskDriveSound;
 extern int FULLSCREEN_MACOS;
 typedef struct CARTRIDGE_image_t {

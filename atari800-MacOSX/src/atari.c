@@ -102,6 +102,7 @@ extern double emulationSpeed;
 void loadMacPrefs(int firstTime);
 void MacSoundReset(void);
 void MacCapsLockStateReset(void);
+int MediaManagerCartSelect(int nbytes);
 #if defined(SOUND) && !defined(__PLUS)
 #include "pokeysnd.h"
 #include "sndsave.h"
@@ -365,8 +366,10 @@ int Atari800_InitialiseMachine(void)
 	ESC_ClearAll();
 	if (!load_roms())
 		return FALSE;
-    // MDGToDo Atari800_UpdateKeyboardDetached();
-    //Atari800_UpdateJumper();
+#ifndef ATARI800MACX
+    Atari800_UpdateKeyboardDetached();
+    Atari800_UpdateJumper();
+#endif
 	MEMORY_InitialiseMachine();
 	Devices_UpdatePatches();
 	return TRUE;
@@ -669,9 +672,7 @@ int Atari800_Initialise(int *argc, char *argv[])
 			"Unknown error");
 		}
 		if (r > 0) {
-			UI_is_active = TRUE;
-            CARTRIDGE_SetType(&CARTRIDGE_main, UI_SelectCartType(CARTRIDGE_main.size));
-			UI_is_active = FALSE;
+            CARTRIDGE_SetType(&CARTRIDGE_main, MediaManagerCartSelect(CARTRIDGE_main.size));
 		}
 	}
 
@@ -686,9 +687,7 @@ int Atari800_Initialise(int *argc, char *argv[])
 			"Unknown error");
 		}
 		if (r > 0) {
-			UI_is_active = TRUE;
-            CARTRIDGE_SetType(&CARTRIDGE_piggyback, UI_SelectCartType(CARTRIDGE_piggyback.size));
-			UI_is_active = FALSE;
+            CARTRIDGE_SetType(&CARTRIDGE_piggyback, MediaManagerCartSelect(CARTRIDGE_piggyback.size));
 		}
 	}
 	
@@ -782,15 +781,6 @@ void Atari800_Frame(void)
 	case AKEY_EXIT:
 		Atari800_Exit(FALSE);
 		exit(0);
-	case AKEY_UI:
-#ifdef SOUND
-		Sound_Pause();
-#endif
-		UI_Run();
-#ifdef SOUND
-		Sound_Continue();
-#endif
-		break;
 	case AKEY_SCREENSHOT:
 		Screen_SaveNextScreenshot(FALSE);
 		break;

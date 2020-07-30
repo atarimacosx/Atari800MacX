@@ -1468,7 +1468,7 @@ int Atari_Keyboard_International(void)
                             return AKEY_NONE;
                         case 1:
                             text_key = Atari_International_Char_To_Key(text_input[0]);
-                            if ((lookup(SDL_IsJoyKeyTable, SDL_GetKeyFromName(text_input)) == 1) && keyjoyEnable && !key_option && !UI_is_active &&
+                            if ((lookup(SDL_IsJoyKeyTable, SDL_GetKeyFromName(text_input)) == 1) && keyjoyEnable && !key_option &&
                                 (pasteState == PASTE_IDLE))
                                 text_key =  AKEY_NONE;
                             if (text_key != AKEY_NONE) {
@@ -1482,7 +1482,7 @@ int Atari_Keyboard_International(void)
                     if (!SDLMainIsActive())
                         return AKEY_NONE;
                     lastkey = event.key.keysym.sym;
-                    if ((lookup(SDL_IsJoyKeyTable, event.key.keysym.scancode) == 1) && keyjoyEnable && !key_option && !UI_is_active &&
+                    if ((lookup(SDL_IsJoyKeyTable, event.key.keysym.scancode) == 1) && keyjoyEnable && !key_option &&
                         (pasteState == PASTE_IDLE))
                         return AKEY_NONE;
                     if (kbhits[SDL_SCANCODE_LGUI] ||
@@ -1902,7 +1902,7 @@ int Atari_Keyboard_International(void)
      First check to make sure it isn't an emulated joystick key,
      since if it is, it should be ignored.  */
     else {
-        if ((lookup(SDL_IsJoyKeyTable, lastkey) == 1) && keyjoyEnable && !key_option && !UI_is_active &&
+        if ((lookup(SDL_IsJoyKeyTable, lastkey) == 1) && keyjoyEnable && !key_option &&
             (pasteState == PASTE_IDLE))
             return AKEY_NONE;
         if (Atari800_machine_type == Atari800_MACHINE_5200)
@@ -2136,7 +2136,7 @@ int Atari_Keyboard_International(void)
     /* Handle the key translation for special characters
      First check to make sure it isn't an emulated joystick key,
      since if it is, it should be ignored.  */
-    if ((lookup(SDL_IsJoyKeyTable, lastkey) == 1) && keyjoyEnable && !key_option && !UI_is_active &&
+    if ((lookup(SDL_IsJoyKeyTable, lastkey) == 1) && keyjoyEnable && !key_option &&
         (pasteState == PASTE_IDLE))
         return AKEY_NONE;
     switch (lastkey) {
@@ -2204,12 +2204,12 @@ int Atari_Keyboard_International(void)
         case SDLK_F1:
             return AKEY_UI;
         case SDLK_LEFT:
-            if (useAtariCursorKeys == USE_ATARI_CURSOR_ARROW_ONLY && !UI_is_active) {
+            if (useAtariCursorKeys == USE_ATARI_CURSOR_ARROW_ONLY) {
                 if (INPUT_key_shift)
                     return AKEY_PLUS | AKEY_SHFT;
                 else
                     return AKEY_PLUS;
-            } else if (useAtariCursorKeys == USE_ATARI_CURSOR_FX && !UI_is_active) {
+            } else if (useAtariCursorKeys == USE_ATARI_CURSOR_FX) {
                 if (INPUT_key_shift)
                     return AKEY_F3 | AKEY_SHFT;
                 else
@@ -2221,12 +2221,12 @@ int Atari_Keyboard_International(void)
                     return AKEY_LEFT;
             }
         case SDLK_RIGHT:
-            if (useAtariCursorKeys == USE_ATARI_CURSOR_ARROW_ONLY && !UI_is_active) {
+            if (useAtariCursorKeys == USE_ATARI_CURSOR_ARROW_ONLY) {
                 if (INPUT_key_shift)
                     return AKEY_ASTERISK | AKEY_SHFT;
                 else
                     return AKEY_ASTERISK;
-            } else if (useAtariCursorKeys == USE_ATARI_CURSOR_FX && !UI_is_active) {
+            } else if (useAtariCursorKeys == USE_ATARI_CURSOR_FX) {
                 if (INPUT_key_shift)
                     return AKEY_F4 | AKEY_SHFT;
                 else
@@ -2238,12 +2238,12 @@ int Atari_Keyboard_International(void)
                     return AKEY_RIGHT;
             }
         case SDLK_UP:
-            if (useAtariCursorKeys == USE_ATARI_CURSOR_ARROW_ONLY && !UI_is_active) {
+            if (useAtariCursorKeys == USE_ATARI_CURSOR_ARROW_ONLY) {
                 if (INPUT_key_shift)
                     return AKEY_MINUS | AKEY_SHFT;
                 else
                     return AKEY_MINUS;
-            } else if (useAtariCursorKeys == USE_ATARI_CURSOR_FX && !UI_is_active) {
+            } else if (useAtariCursorKeys == USE_ATARI_CURSOR_FX) {
                 if (INPUT_key_shift)
                     return AKEY_F1 | AKEY_SHFT;
                 else
@@ -2255,12 +2255,12 @@ int Atari_Keyboard_International(void)
                     return AKEY_UP;
             }
         case SDLK_DOWN:
-            if (useAtariCursorKeys == USE_ATARI_CURSOR_ARROW_ONLY && !UI_is_active) {
+            if (useAtariCursorKeys == USE_ATARI_CURSOR_ARROW_ONLY) {
                 if (INPUT_key_shift)
                     return AKEY_EQUAL | AKEY_SHFT;
                 else
                     return AKEY_EQUAL;
-            } else if (useAtariCursorKeys == USE_ATARI_CURSOR_FX && !UI_is_active) {
+            } else if (useAtariCursorKeys == USE_ATARI_CURSOR_FX) {
                 if (INPUT_key_shift)
                     return AKEY_F2 | AKEY_SHFT;
                 else
