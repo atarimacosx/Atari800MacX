@@ -442,7 +442,7 @@ static int monitorRunFirstTime = 1;
 	}
 	index = [[Preferences sharedInstance] indexFromType:type :ver4type];
 	
-	for (i=0;i<19;i++) {
+	for (i=0;i<14;i++) {
 		if (i==index)
 			[[machineTypeMenu itemAtIndex:i] setState:NSOnState];
 		else

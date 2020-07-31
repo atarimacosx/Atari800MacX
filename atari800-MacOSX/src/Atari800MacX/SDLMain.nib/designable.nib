@@ -639,97 +639,72 @@ DQ
                             <menuItem title="Atari Machine Type" id="727">
                                 <menu key="submenu" title="Atari Machine Type" id="962">
                                     <items>
-                                        <menuItem title="Atari OS/A (16KB)" state="on" id="981">
-                                            <connections>
-                                                <action selector="changeMachineType:" target="524" id="986"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem title="Atari OS/A (48KB)" tag="1" id="978">
-                                            <connections>
-                                                <action selector="changeMachineType:" target="524" id="987"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem title="Atari OS/A (52KB)" tag="2" id="977">
-                                            <connections>
-                                                <action selector="changeMachineType:" target="524" id="988"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem title="Atari OS/A (Axlon Memory)" tag="3" id="967">
-                                            <connections>
-                                                <action selector="changeMachineType:" target="524" id="989"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem title="Atari OS/A (Mosaic Memory)" tag="4" id="966">
-                                            <connections>
-                                                <action selector="changeMachineType:" target="524" id="990"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem title="Atari OS/B (16KB)" tag="5" id="976">
+                                        <menuItem title="Atari 800 (16KB)" id="976">
                                             <connections>
                                                 <action selector="changeMachineType:" target="524" id="991"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Atari OS/B (48KB)" tag="6" id="975">
+                                        <menuItem title="Atari 800 (48KB)" tag="1" id="975">
                                             <connections>
                                                 <action selector="changeMachineType:" target="524" id="992"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Atari OS/B (52KB)" tag="7" id="974">
+                                        <menuItem title="Atari 800 (52KB)" tag="2" id="974">
                                             <connections>
                                                 <action selector="changeMachineType:" target="524" id="993"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Atari OS/B (Axlon Memory)" tag="8" id="965">
+                                        <menuItem title="Atari 800 (Axlon Memory)" tag="3" id="965">
                                             <connections>
                                                 <action selector="changeMachineType:" target="524" id="994"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Atari OS/B (Mosaic Memory)" tag="9" id="964">
+                                        <menuItem title="Atari 800 (Mosaic Memory)" tag="4" id="964">
                                             <connections>
                                                 <action selector="changeMachineType:" target="524" id="995"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Atari 600XL (16KB)" tag="10" id="973">
+                                        <menuItem title="Atari 600XL (16KB)" tag="5" id="973">
                                             <connections>
                                                 <action selector="changeMachineType:" target="524" id="996"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Atari 800XL (64KB)" tag="11" id="972">
+                                        <menuItem title="Atari 800XL (64KB)" tag="6" id="972">
                                             <connections>
                                                 <action selector="changeMachineType:" target="524" id="997"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Atari 130XE (128KB)" tag="12" id="971">
+                                        <menuItem title="Atari 130XE (128KB)" tag="7" id="971">
                                             <connections>
                                                 <action selector="changeMachineType:" target="524" id="998"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Atari 130XE (192KB)" tag="13" id="963">
+                                        <menuItem title="Atari 130XE (192KB)" tag="8" id="963">
                                             <connections>
                                                 <action selector="changeMachineType:" target="524" id="999"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Atari 320XE (320 KB RAMBO)" tag="14" id="980">
+                                        <menuItem title="Atari 320XE (320 KB RAMBO)" tag="9" id="980">
                                             <connections>
                                                 <action selector="changeMachineType:" target="524" id="1000"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Atari 320XE (320 KB COMPY SHOP)" tag="15" id="970">
+                                        <menuItem title="Atari 320XE (320 KB COMPY SHOP)" tag="10" id="970">
                                             <connections>
                                                 <action selector="changeMachineType:" target="524" id="1001"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Atari 576XE (576 KB)" tag="16" id="969">
+                                        <menuItem title="Atari 576XE (576 KB)" tag="11" id="969">
                                             <connections>
                                                 <action selector="changeMachineType:" target="524" id="1002"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Atari 1088XE (1088 KB)" tag="17" id="968">
+                                        <menuItem title="Atari 1088XE (1088 KB)" tag="12" id="968">
                                             <connections>
                                                 <action selector="changeMachineType:" target="524" id="1003"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Atari 5200 (16KB)" tag="18" id="979">
+                                        <menuItem title="Atari 5200 (16KB)" tag="13" id="979">
                                             <connections>
                                                 <action selector="changeMachineType:" target="524" id="1004"/>
                                             </connections>
