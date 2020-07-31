@@ -44,8 +44,7 @@
 
 /* Machine type. */
 enum {
-    Atari800_MACHINE_OSA,
-    Atari800_MACHINE_OSB,
+    Atari800_MACHINE_800,
     Atari800_MACHINE_XLXE,
     Atari800_MACHINE_5200,
     /* Number of values in the emumerator */

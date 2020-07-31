@@ -67,7 +67,7 @@ extern char atari_config_dir[FILENAME_MAX];
 static char workingDirectory[FILENAME_MAX], osromsDir[FILENAME_MAX], paletteDir[FILENAME_MAX];
 static char imageDirStr[FILENAME_MAX],printDirStr[FILENAME_MAX];
 static char hardDiskDir1Str[FILENAME_MAX], hardDiskDir2Str[FILENAME_MAX], hardDiskDir3Str[FILENAME_MAX];
-static char hardDiskDir4Str[FILENAME_MAX], osARomFileStr[FILENAME_MAX], osBRomFileStr[FILENAME_MAX];
+static char hardDiskDir4Str[FILENAME_MAX], osBRomFileStr[FILENAME_MAX];
 static char xlRomFileStr[FILENAME_MAX], basicRomFileStr[FILENAME_MAX], a5200RomFileStr[FILENAME_MAX];
 static char diskImageDirStr[FILENAME_MAX],diskSetDirStr[FILENAME_MAX], cartImageDirStr[FILENAME_MAX], cassImageDirStr[FILENAME_MAX];
 static char exeFileDirStr[FILENAME_MAX], savedStateDirStr[FILENAME_MAX], configDirStr[FILENAME_MAX];
@@ -242,8 +242,6 @@ static NSDictionary *defaultValues() {
     strcat(hardDiskDir4Str, "/HardDrive4");
     strcpy(osromsDir, workingDirectory);
     strcat(osromsDir, "/OSRoms");
-    strcpy(osARomFileStr, workingDirectory);
-    strcat(osARomFileStr, "/OSRoms/atariosa.rom");
     strcpy(osBRomFileStr, workingDirectory);
     strcat(osBRomFileStr, "/OSRoms/atariosb.rom");
     strcpy(xlRomFileStr, workingDirectory);
@@ -314,7 +312,6 @@ static NSDictionary *defaultValues() {
                 @"",BlackBoxRomFile,
                 @"",BlackBoxScsiDiskFile,
                 @"",MioScsiDiskFile,
-                [NSNumber numberWithBool:NO], UseAltiraOSARom,
                 [NSNumber numberWithBool:NO], UseAltiraOSBRom,
                 [NSNumber numberWithBool:NO], UseAltiraXLRom,
                 [NSNumber numberWithBool:NO], UseAltira5200Rom,
@@ -395,8 +392,7 @@ static NSDictionary *defaultValues() {
                 [NSString stringWithCString:hardDiskDir4Str encoding:NSASCIIStringEncoding], HardDiskDir4, 
                 [NSNumber numberWithBool:YES], HardDrivesReadOnly, 
                 @"H1:>DOS;>DOS",HPath,
-                [NSString stringWithCString:osARomFileStr encoding:NSASCIIStringEncoding], OsARomFile, 
-                [NSString stringWithCString:osBRomFileStr encoding:NSASCIIStringEncoding], OsBRomFile, 
+                [NSString stringWithCString:osBRomFileStr encoding:NSASCIIStringEncoding], OsBRomFile,
                 [NSString stringWithCString:xlRomFileStr encoding:NSASCIIStringEncoding], XlRomFile, 
                 [NSString stringWithCString:basicRomFileStr encoding:NSASCIIStringEncoding], BasicRomFile, 
                 [NSString stringWithCString:a5200RomFileStr encoding:NSASCIIStringEncoding], A5200RomFile, 
@@ -942,12 +938,10 @@ static Preferences *sharedInstance = nil;
     [hardDrivesReadOnlyButton setState:[[displayedValues objectForKey:HardDrivesReadOnly] boolValue] ? NSOnState : NSOffState];
     [hPathField setStringValue:[displayedValues objectForKey:HPath]];
 
-    [osARomFileField setStringValue:[displayedValues objectForKey:OsARomFile]];
     [osBRomFileField setStringValue:[displayedValues objectForKey:OsBRomFile]];
     [xlRomFileField setStringValue:[displayedValues objectForKey:XlRomFile]];
     [basicRomFileField setStringValue:[displayedValues objectForKey:BasicRomFile]];
     [a5200RomFileField setStringValue:[displayedValues objectForKey:A5200RomFile]];
-    [useAlitrraOSARomButton setState:[[displayedValues objectForKey:UseAltiraOSARom] boolValue] ? NSOnState : NSOffState];
     [useAlitrraOSBRomButton setState:[[displayedValues objectForKey:UseAltiraOSBRom] boolValue] ? NSOnState : NSOffState];
     [useAlitrraXLRomButton setState:[[displayedValues objectForKey:UseAltiraXLRom] boolValue] ? NSOnState : NSOffState];
     [useAlitrra5200RomButton setState:[[displayedValues objectForKey:UseAltira5200Rom] boolValue] ? NSOnState : NSOffState];
@@ -2182,15 +2176,10 @@ static Preferences *sharedInstance = nil;
         [displayedValues setObject:no forKey:HardDrivesReadOnly];
     [displayedValues setObject:[hPathField stringValue] forKey:HPath];
 
-    [displayedValues setObject:[osARomFileField stringValue] forKey:OsARomFile];
     [displayedValues setObject:[osBRomFileField stringValue] forKey:OsBRomFile];
     [displayedValues setObject:[xlRomFileField stringValue] forKey:XlRomFile];
     [displayedValues setObject:[basicRomFileField stringValue] forKey:BasicRomFile];
     [displayedValues setObject:[a5200RomFileField stringValue] forKey:A5200RomFile];
-    if ([useAlitrraOSARomButton state] == NSOnState)
-        [displayedValues setObject:yes forKey:UseAltiraOSARom];
-    else
-        [displayedValues setObject:no forKey:UseAltiraOSARom];
     if ([useAlitrraOSBRomButton state] == NSOnState)
         [displayedValues setObject:yes forKey:UseAltiraOSBRom];
     else
@@ -2921,18 +2910,6 @@ static Preferences *sharedInstance = nil;
 
 /* The following methods allow the user to choose the ROM files */
    
-- (void)browseOsARom:(id)sender {
-    NSString *filename, *dir;
-    
-    dir = [[NSString alloc] initWithCString:osromsDir encoding:NSASCIIStringEncoding];
-    filename = [self browseFileInDirectory:dir];
-    if (filename != nil) {
-        [osARomFileField setStringValue:filename];
-        [self miscChanged:self];
-        }
-    [dir release];
-    }
-    
 - (IBAction)browseAF80Rom:(id)sender {
     NSString *filename, *dir;
 
@@ -2990,13 +2967,8 @@ static Preferences *sharedInstance = nil;
     char romTypeName[40];
     int rom;
     
-    for (rom = 0; rom < 5; rom ++) {
+    for (rom = 1; rom < 5; rom ++) {
     switch( rom ) {
-        case 0:
-            romFilename = [curValues objectForKey:OsARomFile];
-            label = identifyOSALabel;
-            romDefault = SYSROM_800_CUSTOM;
-            break;
         case 1:
             romFilename = [curValues objectForKey:OsBRomFile];
             label = identifyOSBLabel;
@@ -3481,7 +3453,6 @@ static Preferences *sharedInstance = nil;
 	prefs->mosaicMaxBank =  [[curValues objectForKey:MosaicMaxBank] intValue];
 	prefs->blackBoxEnabled = [[curValues objectForKey:BlackBoxEnabled] intValue];
 	prefs->mioEnabled = [[curValues objectForKey:MioEnabled] intValue];
-    prefs->useAltirraOSARom = [[curValues objectForKey:UseAltiraOSARom] intValue];
     prefs->useAltirraOSBRom = [[curValues objectForKey:UseAltiraOSBRom] intValue];
     prefs->useAltirraXLRom = [[curValues objectForKey:UseAltiraXLRom] intValue];
     prefs->useAltirra5200Rom = [[curValues objectForKey:UseAltira5200Rom] intValue];
@@ -3502,7 +3473,6 @@ static Preferences *sharedInstance = nil;
   [[curValues objectForKey:HardDiskDir4] getCString:prefs->hardDiskDir[3] maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
   prefs->hardDrivesReadOnly = [[curValues objectForKey:HardDrivesReadOnly] intValue];
   [[curValues objectForKey:HPath] getCString:prefs->hPath maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
-  [[curValues objectForKey:OsARomFile] getCString:prefs->osARomFile maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
   [[curValues objectForKey:OsBRomFile] getCString:prefs->osBRomFile maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
   [[curValues objectForKey:XlRomFile] getCString:prefs->xlRomFile maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
   [[curValues objectForKey:BasicRomFile] getCString:prefs->basicRomFile maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
@@ -4888,12 +4858,10 @@ static Preferences *sharedInstance = nil;
     getStringDefault(HardDiskDir4);
     getBoolDefault(HardDrivesReadOnly);
     getStringDefault(HPath);
-    getStringDefault(OsARomFile);
     getStringDefault(OsBRomFile);
     getStringDefault(XlRomFile);
     getStringDefault(BasicRomFile);
     getStringDefault(A5200RomFile);
-    getBoolDefault(UseAltiraOSARom);
     getBoolDefault(UseAltiraOSBRom);
     getBoolDefault(UseAltiraXLRom);
     getBoolDefault(UseAltira5200Rom);
@@ -5153,12 +5121,10 @@ static Preferences *sharedInstance = nil;
     setStringDefault(HardDiskDir4);
     setBoolDefault(HardDrivesReadOnly);
     setStringDefault(HPath);
-    setStringDefault(OsARomFile);
     setStringDefault(OsBRomFile);
     setStringDefault(XlRomFile);
     setStringDefault(BasicRomFile);
     setStringDefault(A5200RomFile);
-    setBoolDefault(UseAltiraOSARom);
     setBoolDefault(UseAltiraOSBRom);
     setBoolDefault(UseAltiraXLRom);
     setBoolDefault(UseAltira5200Rom);
@@ -5403,12 +5369,10 @@ static Preferences *sharedInstance = nil;
     setConfig(HardDiskDir4);
     setConfig(HardDrivesReadOnly);
     setConfig(HPath);
-    setConfig(OsARomFile);
     setConfig(OsBRomFile);
     setConfig(XlRomFile);
     setConfig(BasicRomFile);
     setConfig(A5200RomFile);
-    setConfig(UseAltiraOSARom);
     setConfig(UseAltiraOSBRom);
     setConfig(UseAltiraXLRom);
     setConfig(UseAltira5200Rom);
@@ -5751,12 +5715,10 @@ static Preferences *sharedInstance = nil;
     getConfig(HardDiskDir4);
     getConfig(HardDrivesReadOnly);
     getConfig(HPath);
-    getConfig(OsARomFile);
     getConfig(OsBRomFile);
     getConfig(XlRomFile);
     getConfig(BasicRomFile);
     getConfig(A5200RomFile);
-    getConfig(UseAltiraOSARom);
     getConfig(UseAltiraOSBRom);
     getConfig(UseAltiraXLRom);
     getConfig(UseAltira5200Rom);

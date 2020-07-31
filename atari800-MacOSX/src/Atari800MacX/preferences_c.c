@@ -119,7 +119,6 @@ extern int machine_switch_type;
 extern double emulationSpeed;
 extern int cx85_port;
 extern int useAtariCursorKeys;
-extern int Atari800_useAlitrraOSARom;
 extern int Atari800_useAlitrraOSBRom;
 extern int Atari800_useAlitrraXLRom;
 extern int Atari800_useAlitrra5200Rom;
@@ -413,27 +412,7 @@ void loadPrefsBinaries() {
 
 int CalcAtariType(int machineType, int ramSize, int axlon, int mosaic)
 {
-	if (machineType == Atari800_MACHINE_OSA) {
-		if (axlon) {
-			if (ramSize == 48)
-				return 14;
-			else
-				return 0;
-		} else if (mosaic) {
-			if (ramSize == 48)
-				return 15;
-			else
-				return 0;
-		} else {
-			if (ramSize == 52)
-				return 2;
-			else if (ramSize == 48)
-				return 1;
-			else
-				return 0;
-		}
-	}
-	else if (machineType == Atari800_MACHINE_OSB) {
+	if (machineType == Atari800_MACHINE_800) {
 		if (axlon) {
 			if (ramSize == 48)
 				return 16;
@@ -490,37 +469,37 @@ void CalcMachineTypeRam(int type, int *machineType, int *ramSize,
 {
     switch(type) {
         case 0:
-            *machineType = Atari800_MACHINE_OSA;
+            *machineType = Atari800_MACHINE_800;
             *ramSize = 16;
 			*axlon = FALSE;
 			*mosaic = FALSE;
             break;
         case 1:
-            *machineType = Atari800_MACHINE_OSA;
+            *machineType = Atari800_MACHINE_800;
             *ramSize = 48;
 			*axlon = FALSE;
 			*mosaic = FALSE;
             break;
         case 2:
-            *machineType = Atari800_MACHINE_OSA;
+            *machineType = Atari800_MACHINE_800;
             *ramSize = 52;
 			*axlon = FALSE;
 			*mosaic = FALSE;
             break;
         case 3:
-            *machineType = Atari800_MACHINE_OSB;
+            *machineType = Atari800_MACHINE_800;
             *ramSize = 16;
 			*axlon = FALSE;
 			*mosaic = FALSE;
             break;
         case 4:
-            *machineType = Atari800_MACHINE_OSB;
+            *machineType = Atari800_MACHINE_800;
             *ramSize = 48;
 			*axlon = FALSE;
 			*mosaic = FALSE;
             break;
         case 5:
-            *machineType = Atari800_MACHINE_OSB;
+            *machineType = Atari800_MACHINE_800;
             *ramSize = 52;
 			*axlon = FALSE;
 			*mosaic = FALSE;
@@ -574,25 +553,25 @@ void CalcMachineTypeRam(int type, int *machineType, int *ramSize,
 			*mosaic = FALSE;
             break;
         case 14:
-            *machineType = Atari800_MACHINE_OSA;
+            *machineType = Atari800_MACHINE_800;
             *ramSize = 48;
 			*axlon = TRUE;
 			*mosaic = FALSE;
             break;
         case 15:
-            *machineType = Atari800_MACHINE_OSA;
+            *machineType = Atari800_MACHINE_800;
             *ramSize = 48;
 			*axlon = FALSE;
 			*mosaic = TRUE;
             break;
         case 16:
-            *machineType = Atari800_MACHINE_OSB;
+            *machineType = Atari800_MACHINE_800;
             *ramSize = 48;
 			*axlon = TRUE;
 			*mosaic = FALSE;
             break;
         case 17:
-            *machineType = Atari800_MACHINE_OSB;
+            *machineType = Atari800_MACHINE_800;
             *ramSize = 48;
 			*axlon = FALSE;
 			*mosaic = TRUE;
@@ -713,8 +692,7 @@ void CalculatePrefsChanged()
     else
         hardDiskChanged = FALSE;
 
-    if ((strcmp(CFG_osa_filename, prefs.osARomFile) !=0) ||
-		(strcmp(CFG_osb_filename, prefs.osBRomFile) !=0) ||
+    if ((strcmp(CFG_osb_filename, prefs.osBRomFile) !=0) ||
 		(strcmp(CFG_xlxe_filename, prefs.xlRomFile) !=0) ||
 		(strcmp(CFG_basic_filename, prefs.basicRomFile) !=0) ||
 		(strcmp(CFG_5200_filename, prefs.a5200RomFile) !=0) ||
@@ -727,7 +705,6 @@ void CalculatePrefsChanged()
 		(strcmp(mio_rom_filename, prefs.mioRomFile) != 0) ||
 		(strcmp(bb_scsi_disk_filename, prefs.blackBoxScsiDiskFile) != 0) ||
 		(strcmp(mio_scsi_disk_filename, prefs.mioScsiDiskFile) != 0) ||
-        (Atari800_useAlitrraOSARom != prefs.useAltirraOSARom) ||
         (Atari800_useAlitrraOSBRom != prefs.useAltirraOSBRom) ||
         (Atari800_useAlitrraXLRom != prefs.useAltirraXLRom) ||
         (Atari800_useAlitrraBasicRom != prefs.useAltirraBasicRom) ||
@@ -921,12 +898,10 @@ int loadMacPrefs(int firstTime)
     strcpy(Devices_atari_h_dir[3], prefs.hardDiskDir[3]);
     Devices_h_read_only = prefs.hardDrivesReadOnly;
     strcpy(Devices_h_exe_path, prefs.hPath);
-    strcpy(CFG_osa_filename, prefs.osARomFile);
     strcpy(CFG_osb_filename, prefs.osBRomFile);
     strcpy(CFG_xlxe_filename, prefs.xlRomFile);
     strcpy(CFG_basic_filename, prefs.basicRomFile);
     strcpy(CFG_5200_filename, prefs.a5200RomFile);
-    Atari800_useAlitrraOSARom = prefs.useAltirraOSARom;
     Atari800_useAlitrraOSBRom = prefs.useAltirraOSBRom;
     Atari800_useAlitrraXLRom = prefs.useAltirraXLRom;
     Atari800_useAlitrra5200Rom = prefs.useAltirra5200Rom;

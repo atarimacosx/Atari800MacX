@@ -589,12 +589,7 @@ static void MapActiveCart(void)
 			/* No need to call SwitchBank(), return. */
 			return;
 		case CARTRIDGE_RIGHT_4:
-#ifdef ATARI800MACX
-			if ((Atari800_machine_type == Atari800_MACHINE_OSA) ||
-                (Atari800_machine_type == Atari800_MACHINE_OSB)){
-#else
 			if (Atari800_machine_type == Atari800_MACHINE_800) {
-#endif
 				MEMORY_Cart809fEnable();
 				MEMORY_dFillMem(0x8000, 0xff, 0x1000);
 				MEMORY_CopyROM(0x9000, 0x9fff, active_cart->image);
@@ -612,12 +607,7 @@ static void MapActiveCart(void)
 			/* No need to call SwitchBank(), return. */
 			return;
 		case CARTRIDGE_RIGHT_8:
-#ifdef ATARI800MACX
-            if ((Atari800_machine_type == Atari800_MACHINE_OSA) ||
-                (Atari800_machine_type == Atari800_MACHINE_OSB)){
-#else
 			if (Atari800_machine_type == Atari800_MACHINE_800) {
-#endif
 				MEMORY_Cart809fEnable();
 				MEMORY_CopyROM(0x8000, 0x9fff, active_cart->image);
 				if (!Atari800_builtin_basic

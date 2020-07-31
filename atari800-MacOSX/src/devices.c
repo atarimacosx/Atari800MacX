@@ -2620,11 +2620,7 @@ static void Devices_RestoreHandler(UWORD address, UBYTE esc_code)
 {
 	ESC_Remove(esc_code);
 	/* restore original OS code */
-#ifdef ATARI800MACX
-	MEMORY_dCopyToMem(MEMORY_os - (((Atari800_machine_type == Atari800_MACHINE_OSA) || (Atari800_machine_type == Atari800_MACHINE_OSB))
-#else
 	MEMORY_dCopyToMem(MEMORY_os - (Atari800_machine_type == Atari800_MACHINE_800
-#endif
 	                               ? 0xd800
 	                               : 0xc000) + address,
 	                  address, 3);

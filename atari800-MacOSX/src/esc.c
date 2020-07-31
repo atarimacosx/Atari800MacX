@@ -299,11 +299,7 @@ void ESC_UpdatePatches(void)
 	/* Patch only if OS enabled. */
 	if (Atari800_machine_type != Atari800_MACHINE_5200 &&
 	    (Atari800_machine_type != Atari800_MACHINE_XLXE || (PIA_PORTB & 1) != 0)) {
-#ifdef ATARI800MACX
-        int const os_rom_start = ((Atari800_machine_type == Atari800_MACHINE_OSA) || (Atari800_machine_type == Atari800_MACHINE_OSB)) ? 0xd800 : 0xc000;
-#else
-        int const os_rom_start = Atari800_machine_type == Atari800_MACHINE_800 ? 0xd800 : 0xc000;
-#endif
+		int const os_rom_start = Atari800_machine_type == Atari800_MACHINE_800 ? 0xd800 : 0xc000;
 		/* Restore unpatched OS */
 		if (os_rom_start < 0xd000)
 			MEMORY_dCopyToMem(MEMORY_os, os_rom_start, 0xd000 - os_rom_start);

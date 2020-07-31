@@ -4633,11 +4633,8 @@ void CreateWindowCaption()
 		}
     
     switch(Atari800_machine_type) {
-        case Atari800_MACHINE_OSA:
-            machineType = "OSA";
-            break;
-        case Atari800_MACHINE_OSB:
-            machineType = "OSB";
+        case Atari800_MACHINE_800:
+            machineType = "400/800";
             break;
         case Atari800_MACHINE_XLXE:
             machineType = "XL/XE";

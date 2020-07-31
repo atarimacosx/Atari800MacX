@@ -125,7 +125,6 @@ int machine_switch_type = 7;
 int Atari800_machine_type = Atari800_MACHINE_XLXE;
 int Atari800_tv_mode = Atari800_TV_PAL;
 int Atari800_disable_basic = TRUE;
-int Atari800_useAlitrraOSARom;
 int Atari800_useAlitrraOSBRom;
 int Atari800_useAlitrraXLRom;
 int Atari800_useAlitrra5200Rom;
@@ -135,6 +134,12 @@ int Atari800_basic_version = -1;
 int Atari800_builtin_basic = TRUE;
 
 int verbose = FALSE;
+
+int Atari800_keyboard_leds = FALSE;
+int Atari800_f_keys = FALSE;
+int Atari800_jumper;
+int Atari800_builtin_game = FALSE;
+int Atari800_keyboard_detached = FALSE;
 
 int Atari800_display_screen = FALSE;
 int Atari800_nframes = 0;
@@ -160,7 +165,7 @@ void Atari800_Warmstart(void)
             PLATFORM_Switch80Col();
     }
 #endif
-	if (Atari800_machine_type == Atari800_MACHINE_OSA || Atari800_machine_type == Atari800_MACHINE_OSB) {
+	if (Atari800_machine_type == Atari800_MACHINE_800) {
 		/* A real Axlon homebanks on reset */
 		/* XXX: what does Mosaic do? */
 		if (MEMORY_axlon_num_banks > 0) MEMORY_PutByte(0xcfff, 0);
@@ -270,19 +275,8 @@ static int load_roms(void)
     char *machineString;
 
     switch (Atari800_machine_type) {
-        case Atari800_MACHINE_OSA:
+        case Atari800_MACHINE_800:
         default:
-            osFilename = CFG_osa_filename;
-            defaultType = SYSROM_800_CUSTOM;
-            altirraType = SYSROM_ALTIRRA_800;
-            osSize = 0x2800;
-            loadBasic = TRUE;
-            useAltira = Atari800_useAlitrraOSARom;
-            altirraRom = ROM_altirraos_800;
-            altirraString = "Using Alitrra 800 OS";
-            machineString = "Loading ROMS for OSA Machine";
-            break;
-        case Atari800_MACHINE_OSB:
             osFilename = CFG_osb_filename;
             defaultType = SYSROM_800_CUSTOM;
             altirraType = SYSROM_ALTIRRA_800;
@@ -388,8 +382,8 @@ int Atari800_Initialise(int *argc, char *argv[])
 
 	for (i = j = 1; i < *argc; i++) {
 		if (strcmp(argv[i], "-atari") == 0) {
-			if (Atari800_machine_type != Atari800_MACHINE_OSA) {
-				Atari800_machine_type = Atari800_MACHINE_OSB;
+			if (Atari800_machine_type != Atari800_MACHINE_800) {
+				Atari800_machine_type = Atari800_MACHINE_800;
 				MEMORY_ram_size = 48;
 			}
 		}
@@ -430,11 +424,11 @@ int Atari800_Initialise(int *argc, char *argv[])
 		else if (strcmp(argv[i], "-ntsc") == 0)
 			Atari800_tv_mode = Atari800_TV_NTSC;
 		else if (strcmp(argv[i], "-a") == 0) {
-			Atari800_machine_type = Atari800_MACHINE_OSA;
+			Atari800_machine_type = Atari800_MACHINE_800;
 			MEMORY_ram_size = 48;
 		}
 		else if (strcmp(argv[i], "-b") == 0) {
-			Atari800_machine_type = Atari800_MACHINE_OSB;
+			Atari800_machine_type = Atari800_MACHINE_800;
 			MEMORY_ram_size = 48;
 		}
 		else if (strcmp(argv[i], "-emuos") == 0)
@@ -448,9 +442,9 @@ int Atari800_Initialise(int *argc, char *argv[])
 			int i_a = (i + 1 < *argc);		/* is argument available? */
 			int a_m = FALSE;			/* error, argument missing! */
 
-			if (strcmp(argv[i], "-osa_rom") == 0) {
-				if (i_a) Util_strlcpy(CFG_osa_filename, argv[++i], sizeof(CFG_osa_filename)); else a_m = TRUE;
-			}
+            if (strcmp(argv[i], "-osb_rom") == 0) {
+                if (i_a) Util_strlcpy(CFG_osb_filename, argv[++i], sizeof(CFG_osb_filename)); else a_m = TRUE;
+            }
 #if 0  /* TBD what to do with R device */
 #ifdef R_IO_DEVICE
 			else if (strcmp(argv[i], "-rdevice") == 0) {
@@ -828,155 +822,160 @@ void Atari800_Frame(void)
     Atari800_Sync();
 }
 
+void Atari800_SetTVMode(int mode)
+{
+    if (mode != Atari800_tv_mode) {
+        Atari800_tv_mode = mode;
+   }
+}
+
 void Atari800_StateSave(void)
 {
-	UBYTE temp;
-	int default_tv_mode;
-	int os = 0;
-	int default_system = 3;
-	int pil_on = FALSE;
-
-	if (Atari800_tv_mode == Atari800_TV_PAL) {
-		temp = 0;
-		default_tv_mode = 1;
-	}
-	else {
-		temp = 1;
-		default_tv_mode = 2;
-	}
-	StateSav_SaveUBYTE(&temp, 1);
-
-	switch (Atari800_machine_type) {
-	case Atari800_MACHINE_OSA:
-		temp = MEMORY_ram_size == 16 ? 5 : 0;
-		os = 1;
-		default_system = 1;
-		break;
-	case Atari800_MACHINE_OSB:
-		temp = MEMORY_ram_size == 16 ? 5 : 0;
-		os = 2;
-		default_system = 2;
-		break;
-	case Atari800_MACHINE_XLXE:
-		switch (MEMORY_ram_size) {
-		case 16:
-			temp = 6;
-			default_system = 3;
-			break;
-		case 64:
-			temp = 1;
-			default_system = 3;
-			break;
-		case 128:
-			temp = 2;
-			default_system = 4;
-			break;
-		case 192:
-			temp = 9;
-			default_system = 8;
-			break;
-		case MEMORY_RAM_320_RAMBO:
-		case MEMORY_RAM_320_COMPY_SHOP:
-			temp = 3;
-			default_system = 5;
-			break;
-		case 576:
-			temp = 7;
-			default_system = 6;
-			break;
-		case 1088:
-			temp = 8;
-			default_system = 7;
-			break;
-		}
-		break;
-	case Atari800_MACHINE_5200:
-		temp = 4;
-		default_system = 6;
-		break;
-	}
-	StateSav_SaveUBYTE(&temp, 1);
-
-	StateSav_SaveINT(&os, 1);
-	StateSav_SaveINT(&pil_on, 1);
-	StateSav_SaveINT(&default_tv_mode, 1);
-	StateSav_SaveINT(&default_system, 1);
+    UBYTE temp = Atari800_tv_mode == Atari800_TV_PAL;
+    StateSav_SaveUBYTE(&temp, 1);
+    temp = Atari800_machine_type;
+    StateSav_SaveUBYTE(&temp, 1);
+    if (Atari800_machine_type == Atari800_MACHINE_XLXE) {
+        temp = Atari800_builtin_basic;
+        StateSav_SaveUBYTE(&temp, 1);
+        temp = Atari800_keyboard_leds;
+        StateSav_SaveUBYTE(&temp, 1);
+        temp = Atari800_f_keys;
+        StateSav_SaveUBYTE(&temp, 1);
+        temp = Atari800_jumper;
+        StateSav_SaveUBYTE(&temp, 1);
+        temp = Atari800_builtin_game;
+        StateSav_SaveUBYTE(&temp, 1);
+        temp = Atari800_keyboard_detached;
+        StateSav_SaveUBYTE(&temp, 1);
+    }
 }
 
 void Atari800_StateRead(UBYTE version)
 {
-	int new_tv_mode;
-	/* these are all for compatibility with previous versions */
-	UBYTE temp;
-	int default_tv_mode;
-	int os;
-	int default_system;
-	int pil_on;
+    if (version >= 7) {
+        UBYTE temp;
+        StateSav_ReadUBYTE(&temp, 1);
+        Atari800_SetTVMode(temp ? Atari800_TV_PAL : Atari800_TV_NTSC);
+        StateSav_ReadUBYTE(&temp, 1);
+        if (temp >= Atari800_MACHINE_SIZE) {
+            temp = Atari800_MACHINE_XLXE;
+            Log_print("Warning: Bad machine type read in from state save, defaulting to XL/XE");
+        }
+        Atari800_SetMachineType(temp);
+        if (Atari800_machine_type == Atari800_MACHINE_XLXE) {
+            StateSav_ReadUBYTE(&temp, 1);
+            Atari800_builtin_basic = temp != 0;
+            StateSav_ReadUBYTE(&temp, 1);
+            Atari800_keyboard_leds = temp != 0;
+            StateSav_ReadUBYTE(&temp, 1);
+            Atari800_f_keys = temp != 0;
+            StateSav_ReadUBYTE(&temp, 1);
+            Atari800_jumper = temp != 0;
+            Atari800_UpdateJumper();
+            StateSav_ReadUBYTE(&temp, 1);
+            Atari800_builtin_game = temp != 0;
+            StateSav_ReadUBYTE(&temp, 1);
+            Atari800_keyboard_detached = temp != 0;
+            Atari800_UpdateKeyboardDetached();
+        }
+    }
+    else { /* savestate from version 2.2.1 or earlier */
+        int new_tv_mode;
+        /* these are all for compatibility with previous versions */
+        UBYTE temp;
+        int default_tv_mode;
+        int os;
+        int default_system;
+        int pil_on;
 
-	StateSav_ReadUBYTE(&temp, 1);
-	new_tv_mode = (temp == 0) ? Atari800_TV_PAL : Atari800_TV_NTSC;
-	if (new_tv_mode != Atari800_tv_mode) {
-		Atari800_tv_mode = new_tv_mode;
-	}
+        StateSav_ReadUBYTE(&temp, 1);
+        new_tv_mode = (temp == 0) ? Atari800_TV_PAL : Atari800_TV_NTSC;
+        Atari800_SetTVMode(new_tv_mode);
 
-	StateSav_ReadUBYTE(&temp, 1);
-	StateSav_ReadINT(&os, 1);
-	switch (temp) {
-	case 0:
-		Atari800_machine_type = os == 1 ? Atari800_MACHINE_OSA : Atari800_MACHINE_OSB;
-		MEMORY_ram_size = 48;
-		break;
-	case 1:
-		Atari800_machine_type = Atari800_MACHINE_XLXE;
-		MEMORY_ram_size = 64;
-		break;
-	case 2:
-		Atari800_machine_type = Atari800_MACHINE_XLXE;
-		MEMORY_ram_size = 128;
-		break;
-	case 3:
-		Atari800_machine_type = Atari800_MACHINE_XLXE;
-		MEMORY_ram_size = MEMORY_RAM_320_COMPY_SHOP;
-		break;
-	case 4:
-		Atari800_machine_type = Atari800_MACHINE_5200;
-		MEMORY_ram_size = 16;
-		break;
-	case 5:
-		Atari800_machine_type = os == 1 ? Atari800_MACHINE_OSA : Atari800_MACHINE_OSB;
-		MEMORY_ram_size = 16;
-		break;
-	case 6:
-		Atari800_machine_type = Atari800_MACHINE_XLXE;
-		MEMORY_ram_size = 16;
-		break;
-	case 7:
-		Atari800_machine_type = Atari800_MACHINE_XLXE;
-		MEMORY_ram_size = 576;
-		break;
-	case 8:
-		Atari800_machine_type = Atari800_MACHINE_XLXE;
-		MEMORY_ram_size = 1088;
-		break;
-	case 9:
-		Atari800_machine_type = Atari800_MACHINE_XLXE;
-		MEMORY_ram_size = 192;
-		break;
-	default:
-		Atari800_machine_type = Atari800_MACHINE_XLXE;
-		MEMORY_ram_size = 64;
-		Log_print("Warning: Bad machine type read in from state save, defaulting to 800 XL");
-		break;
-	}
+        StateSav_ReadUBYTE(&temp, 1);
+        StateSav_ReadINT(&os, 1);
+        switch (temp) {
+        case 0:
+            Atari800_machine_type = Atari800_MACHINE_800;
+            MEMORY_ram_size = 48;
+            break;
+        case 1:
+            Atari800_machine_type = Atari800_MACHINE_XLXE;
+            MEMORY_ram_size = 64;
+            break;
+        case 2:
+            Atari800_machine_type = Atari800_MACHINE_XLXE;
+            MEMORY_ram_size = 128;
+            break;
+        case 3:
+            Atari800_machine_type = Atari800_MACHINE_XLXE;
+            MEMORY_ram_size = MEMORY_RAM_320_COMPY_SHOP;
+            break;
+        case 4:
+            Atari800_machine_type = Atari800_MACHINE_5200;
+            MEMORY_ram_size = 16;
+            break;
+        case 5:
+            Atari800_machine_type = Atari800_MACHINE_800;
+            MEMORY_ram_size = 16;
+            break;
+        case 6:
+            Atari800_machine_type = Atari800_MACHINE_XLXE;
+            MEMORY_ram_size = 16;
+            break;
+        case 7:
+            Atari800_machine_type = Atari800_MACHINE_XLXE;
+            MEMORY_ram_size = 576;
+            break;
+        case 8:
+            Atari800_machine_type = Atari800_MACHINE_XLXE;
+            MEMORY_ram_size = 1088;
+            break;
+        case 9:
+            Atari800_machine_type = Atari800_MACHINE_XLXE;
+            MEMORY_ram_size = 192;
+            break;
+        default:
+            Atari800_machine_type = Atari800_MACHINE_XLXE;
+            MEMORY_ram_size = 64;
+            Log_print("Warning: Bad machine type read in from state save, defaulting to 800 XL");
+            break;
+        }
 
-	StateSav_ReadINT(&pil_on, 1);
-	StateSav_ReadINT(&default_tv_mode, 1);
-	StateSav_ReadINT(&default_system, 1);
-	load_roms();
-	/* XXX: what about patches? */
+        StateSav_ReadINT(&pil_on, 1);
+        StateSav_ReadINT(&default_tv_mode, 1);
+        StateSav_ReadINT(&default_system, 1);
+        Atari800_SetMachineType(Atari800_machine_type);
+    }
+    load_roms();
+    /* XXX: what about patches? */
 }
 
 void Atari800_SetMachineType(int type)
 {
     Atari800_machine_type = type;
+    if (Atari800_machine_type != Atari800_MACHINE_XLXE) {
+        Atari800_builtin_basic = FALSE;
+        Atari800_keyboard_leds = FALSE;
+        Atari800_f_keys = FALSE;
+        Atari800_jumper = FALSE;
+        Atari800_builtin_game = FALSE;
+        Atari800_keyboard_detached = FALSE;
+    }
 }
+
+void Atari800_UpdateKeyboardDetached(void)
+{
+    if (Atari800_machine_type == Atari800_MACHINE_XLXE) {
+        GTIA_TRIG[2] = !Atari800_keyboard_detached;
+        if (Atari800_keyboard_detached && (GTIA_GRACTL & 4))
+                GTIA_TRIG_latch[2] = 0;
+    }
+}
+void Atari800_UpdateJumper(void)
+{
+    if (Atari800_machine_type == Atari800_MACHINE_XLXE)
+            POKEY_POT_input[4] = Atari800_jumper ? 0 : 228;
+}
+

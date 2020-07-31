@@ -13,7 +13,6 @@ int CFG_LoadConfig(const char *alternate_config_filename);
 int CFG_WriteConfig(void);
 
 /* Paths to ROM images. */
-extern char CFG_osa_filename[FILENAME_MAX];
 extern char CFG_osb_filename[FILENAME_MAX];
 extern char CFG_xlxe_filename[FILENAME_MAX];
 extern char CFG_5200_filename[FILENAME_MAX];

@@ -131,12 +131,10 @@
 #define HardDiskDir4 @"HardDiskDir4"
 #define HardDrivesReadOnly @"HardDrivesReadOnly"
 #define HPath @"HPath"
-#define UseAltiraOSARom @"UseAltiraOSARom"
-#define UseAltiraOSBRom @"UseAltiraOSARom"
+#define UseAltiraOSBRom @"UseAltiraOSBRom"
 #define UseAltiraXLRom @"UseAltiraXLRom"
 #define UseAltira5200Rom @"UseAltira5200Rom"
 #define UseAltiraBasicRom @"UseAltiraBasicRom"
-#define OsARomFile @"OsARomFile"
 #define OsBRomFile @"OsBRomFile"
 #define XlRomFile @"XlRomFile"
 #define BasicRomFile @"BasicRomFile"
@@ -357,12 +355,10 @@
     IBOutlet id hardDrivesReadOnlyButton;
     IBOutlet id hPathField;
     IBOutlet id intensityField;
-    IBOutlet id useAlitrraOSARomButton;
     IBOutlet id useAlitrraOSBRomButton;
     IBOutlet id useAlitrraXLRomButton;
     IBOutlet id useAlitrra5200RomButton;
     IBOutlet id useAlitrraBasicRomButton;
-    IBOutlet id osARomFileField;
     IBOutlet id osBRomFileField;
     IBOutlet id af80CharsetRomFileField;
     IBOutlet id af80RomFileField;
@@ -491,7 +487,6 @@
     IBOutlet id gamepadSelector;
     IBOutlet id errorOKButton;
     IBOutlet id identifyOKButton;
-    IBOutlet id identifyOSALabel;
     IBOutlet id identifyOSBLabel;
     IBOutlet id identifyXLLabel;
     IBOutlet id identifyBasicLabel;
@@ -576,7 +571,6 @@
 - (IBAction)browseBit3Rom:(id)sender;
 - (IBAction)identifyRom:(id)sender;
 - (IBAction)identifyRomOK:(id)sender;
-- (void)browseOsARom:(id)sender;
 - (void)browseOsBRom:(id)sender;
 - (void)browseXlRom:(id)sender; 
 - (void)browseBasicRom:(id)sender; 
