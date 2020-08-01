@@ -33,8 +33,10 @@
 
 #include "antic.h"
 #include "atari.h"
+#include "cassette.h"
 #include "colours.h"
 #include "log.h"
+#include "pia.h"
 #include "screen.h"
 #include "sio.h"
 #include "util.h"
@@ -67,6 +69,7 @@ int Screen_visible_y2 = Screen_HEIGHT;	/* 0 .. Screen_HEIGHT */
 int Screen_show_atari_speed = FALSE;
 int Screen_show_disk_led = TRUE;
 int Screen_show_sector_counter = FALSE;
+int Screen_show_1200_leds = TRUE;
 
 #ifdef HAVE_LIBPNG
 #define DEFAULT_SCREENSHOT_FILENAME_FORMAT "atari%03d.png"
@@ -76,6 +79,260 @@ int Screen_show_sector_counter = FALSE;
 
 static char screenshot_filename_format[FILENAME_MAX] = DEFAULT_SCREENSHOT_FILENAME_FORMAT;
 static int screenshot_no_max = 1000;
+
+#define SMALLFONT_WIDTH    5
+#define SMALLFONT_HEIGHT   7
+#define SMALLFONT_PERCENT  10
+#define SMALLFONT_C        11
+#define SMALLFONT_D        12
+#define SMALLFONT_L        13
+#define SMALLFONT_SLASH    14
+#define SMALLFONT_____ 0x00
+#define SMALLFONT___X_ 0x02
+#define SMALLFONT__X__ 0x04
+#define SMALLFONT__XX_ 0x06
+#define SMALLFONT_X___ 0x08
+#define SMALLFONT_X_X_ 0x0A
+#define SMALLFONT_XX__ 0x0C
+#define SMALLFONT_XXX_ 0x0E
+
+static void SmallFont_DrawChar(UBYTE *screen, int ch, UBYTE color1, UBYTE color2)
+{
+    static const UBYTE font[15][SMALLFONT_HEIGHT] = {
+        {
+            SMALLFONT_____,
+            SMALLFONT__X__,
+            SMALLFONT_X_X_,
+            SMALLFONT_X_X_,
+            SMALLFONT_X_X_,
+            SMALLFONT__X__,
+            SMALLFONT_____
+        },
+        {
+            SMALLFONT_____,
+            SMALLFONT__X__,
+            SMALLFONT_XX__,
+            SMALLFONT__X__,
+            SMALLFONT__X__,
+            SMALLFONT__X__,
+            SMALLFONT_____
+        },
+        {
+            SMALLFONT_____,
+            SMALLFONT_XX__,
+            SMALLFONT___X_,
+            SMALLFONT__X__,
+            SMALLFONT_X___,
+            SMALLFONT_XXX_,
+            SMALLFONT_____
+        },
+        {
+            SMALLFONT_____,
+            SMALLFONT_XX__,
+            SMALLFONT___X_,
+            SMALLFONT__X__,
+            SMALLFONT___X_,
+            SMALLFONT_XX__,
+            SMALLFONT_____
+        },
+        {
+            SMALLFONT_____,
+            SMALLFONT___X_,
+            SMALLFONT__XX_,
+            SMALLFONT_X_X_,
+            SMALLFONT_XXX_,
+            SMALLFONT___X_,
+            SMALLFONT_____
+        },
+        {
+            SMALLFONT_____,
+            SMALLFONT_XXX_,
+            SMALLFONT_X___,
+            SMALLFONT_XXX_,
+            SMALLFONT___X_,
+            SMALLFONT_XX__,
+            SMALLFONT_____
+        },
+        {
+            SMALLFONT_____,
+            SMALLFONT__X__,
+            SMALLFONT_X___,
+            SMALLFONT_XX__,
+            SMALLFONT_X_X_,
+            SMALLFONT__X__,
+            SMALLFONT_____
+        },
+        {
+            SMALLFONT_____,
+            SMALLFONT_XXX_,
+            SMALLFONT___X_,
+            SMALLFONT__X__,
+            SMALLFONT__X__,
+            SMALLFONT__X__,
+            SMALLFONT_____
+        },
+        {
+            SMALLFONT_____,
+            SMALLFONT__X__,
+            SMALLFONT_X_X_,
+            SMALLFONT__X__,
+            SMALLFONT_X_X_,
+            SMALLFONT__X__,
+            SMALLFONT_____
+        },
+        {
+            SMALLFONT_____,
+            SMALLFONT__X__,
+            SMALLFONT_X_X_,
+            SMALLFONT__XX_,
+            SMALLFONT___X_,
+            SMALLFONT__X__,
+            SMALLFONT_____
+        },
+        {
+            SMALLFONT_____,
+            SMALLFONT_X_X_,
+            SMALLFONT___X_,
+            SMALLFONT__X__,
+            SMALLFONT_X___,
+            SMALLFONT_X_X_,
+            SMALLFONT_____
+        },
+        {
+            SMALLFONT_____,
+            SMALLFONT__X__,
+            SMALLFONT_X_X_,
+            SMALLFONT_X___,
+            SMALLFONT_X_X_,
+            SMALLFONT__X__,
+            SMALLFONT_____
+        },
+        {
+            SMALLFONT_____,
+            SMALLFONT_XX__,
+            SMALLFONT_X_X_,
+            SMALLFONT_X_X_,
+            SMALLFONT_X_X_,
+            SMALLFONT_XX__,
+            SMALLFONT_____
+        },
+        {
+            SMALLFONT_____,
+            SMALLFONT_X___,
+            SMALLFONT_X___,
+            SMALLFONT_X___,
+            SMALLFONT_X___,
+            SMALLFONT_XXX_,
+            SMALLFONT_____
+        },
+        {
+            SMALLFONT_____,
+            SMALLFONT___X_,
+            SMALLFONT___X_,
+            SMALLFONT__X__,
+            SMALLFONT__X__,
+            SMALLFONT_X___,
+            SMALLFONT_____
+        }
+    };
+    int y;
+    for (y = 0; y < SMALLFONT_HEIGHT; y++) {
+        int src;
+        int mask;
+        src = font[ch][y];
+        for (mask = 1 << (SMALLFONT_WIDTH - 1); mask != 0; mask >>= 1) {
+            ANTIC_VideoPutByte(screen, (UBYTE) ((src & mask) != 0 ? color1 : color2));
+            screen++;
+        }
+        screen += Screen_WIDTH - SMALLFONT_WIDTH;
+    }
+}
+
+/* Returns screen address for placing the next character on the left of the
+   drawn number. */
+static UBYTE *SmallFont_DrawInt(UBYTE *screen, int n, UBYTE color1, UBYTE color2)
+{
+    do {
+        SmallFont_DrawChar(screen, n % 10, color1, color2);
+        screen -= SMALLFONT_WIDTH;
+        n /= 10;
+    } while (n > 0);
+    return screen;
+}
+
+void Screen_DrawAtariSpeed(double cur_time)
+{
+    if (Screen_show_atari_speed) {
+        static int percent_display = 100;
+        static int last_updated = 0;
+        static double last_time = 0;
+        if ((cur_time - last_time) >= 0.5) {
+            percent_display = (int) (100 * (Atari800_nframes - last_updated) / (cur_time - last_time) / (Atari800_tv_mode == Atari800_TV_PAL ? 50 : 60));
+            last_updated = Atari800_nframes;
+            last_time = cur_time;
+        }
+        /* if (percent_display < 99 || percent_display > 101) */
+        {
+            /* space for 5 digits - up to 99999% Atari speed */
+            UBYTE *screen = (UBYTE *) Screen_atari + Screen_visible_x1 + 5 * SMALLFONT_WIDTH
+                          + (Screen_visible_y2 - SMALLFONT_HEIGHT) * Screen_WIDTH;
+            SmallFont_DrawChar(screen, SMALLFONT_PERCENT, 0x0c, 0x00);
+            SmallFont_DrawInt(screen - SMALLFONT_WIDTH, percent_display, 0x0c, 0x00);
+        }
+    }
+}
+
+void Screen_DrawDiskLED(void)
+{
+    if (Screen_show_disk_led || Screen_show_sector_counter) {
+        UBYTE *screen = (UBYTE *) Screen_atari + Screen_visible_x2 - SMALLFONT_WIDTH
+                        + (Screen_visible_y2 - SMALLFONT_HEIGHT) * Screen_WIDTH;
+        if (SIO_last_op_time > 0) {
+            SIO_last_op_time--;
+            if (Screen_show_disk_led) {
+                SmallFont_DrawChar(screen, SIO_last_drive, 0x00, (UBYTE) (SIO_last_op == SIO_LAST_READ ? 0xac : 0x2b));
+                SmallFont_DrawChar(screen -= SMALLFONT_WIDTH, SMALLFONT_D, 0x00, (UBYTE) (SIO_last_op == SIO_LAST_READ ? 0xac : 0x2b));
+                screen -= SMALLFONT_WIDTH;
+            }
+
+            if (Screen_show_sector_counter)
+                screen = SmallFont_DrawInt(screen, SIO_last_sector, 0x00, 0x88);
+        }
+        if ((CASSETTE_readable && !CASSETTE_record) ||
+            (CASSETTE_writable && CASSETTE_record)) {
+            if (Screen_show_disk_led)
+                SmallFont_DrawChar(screen, SMALLFONT_C, 0x00, (UBYTE) (CASSETTE_record ? 0x2b : 0xac));
+
+            if (Screen_show_sector_counter) {
+                /* Displaying tape length during saving is pointless since it would equal the number
+                of the currently-written block, which is already displayed. */
+                if (!CASSETTE_record) {
+                    screen = SmallFont_DrawInt(screen - SMALLFONT_WIDTH, CASSETTE_GetSize(), 0x00, 0x88);
+                    SmallFont_DrawChar(screen, SMALLFONT_SLASH, 0x00, 0x88);
+                }
+                SmallFont_DrawInt(screen - SMALLFONT_WIDTH, CASSETTE_GetPosition(), 0x00, 0x88);
+            }
+        }
+    }
+}
+
+void Screen_Draw1200LED(void)
+{
+    if (Screen_show_1200_leds && Atari800_keyboard_leds) {
+        UBYTE *screen = (UBYTE *) Screen_atari + Screen_visible_x1 + SMALLFONT_WIDTH * 10
+            + (Screen_visible_y2 - SMALLFONT_HEIGHT) * Screen_WIDTH;
+        UBYTE portb = PIA_PORTB | PIA_PORTB_mask;
+        if ((portb & 0x04) == 0) {
+            SmallFont_DrawChar(screen, SMALLFONT_L, 0x00, 0x36);
+            SmallFont_DrawChar(screen + SMALLFONT_WIDTH, 1, 0x00, 0x36);
+        }
+        screen += SMALLFONT_WIDTH * 3;
+        if ((portb & 0x08) == 0) {
+            SmallFont_DrawChar(screen, SMALLFONT_L, 0x00, 0x36);
+            SmallFont_DrawChar(screen + SMALLFONT_WIDTH, 2, 0x00, 0x36);
+        }
+    }
+}
 
 /* converts "foo%bar##.pcx" to "foo%%bar%02d.pcx" */
 static void Screen_SetScreenshotFilenamePattern(const char *p)
@@ -115,7 +372,7 @@ static void Screen_SetScreenshotFilenamePattern(const char *p)
 	screenshot_no_max = 1000;
 }
 
-void Screen_Initialise(int *argc, char *argv[])
+int Screen_Initialise(int *argc, char *argv[])
 {
 	int i;
 	int j;
@@ -141,7 +398,7 @@ void Screen_Initialise(int *argc, char *argv[])
 
 	/* don't bother mallocing Screen_atari with just "-help" */
 	if (help_only)
-		return;
+		return TRUE;
 
 	if (Screen_atari == NULL) { /* platform-specific code can initialize it in theory */
 		Screen_atari = (ULONG *) Util_malloc(Screen_HEIGHT * Screen_WIDTH);
@@ -158,14 +415,7 @@ void Screen_Initialise(int *argc, char *argv[])
 		Screen_atari2 = Screen_atari_b;
 #endif
 	}
-}
-
-void Screen_DrawAtariSpeed(double cur_time)
-{
-}
-
-void Screen_DrawDiskLED(void)
-{
+    return TRUE;
 }
 
 void Screen_FindScreenshotFilename(char *buffer)

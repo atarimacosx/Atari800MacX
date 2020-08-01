@@ -5256,14 +5256,16 @@ int SDL_main(int argc, char **argv)
             CountFPS();
 			if (speed_limit == 0 || (speed_limit == 1 && deltatime <= 1.0/Atari800_FPS_PAL)) {
 				if (Atari800Time() >= last_time + 1.0/60.0) {
-					LED_Frame();
+                    Screen_DrawDiskLED();
+                    Screen_Draw1200LED();
 					Atari_DisplayScreen((UBYTE *) Screen_atari);
 					last_time = Atari800Time();
 					screenSwitchEnabled = TRUE;
 					}
 				}
 			else {
-				LED_Frame();
+                Screen_DrawDiskLED();
+                Screen_Draw1200LED();
 				Atari_DisplayScreen((UBYTE *) Screen_atari);
 				}
             }
