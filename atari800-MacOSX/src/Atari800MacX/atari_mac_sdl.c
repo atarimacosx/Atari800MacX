@@ -4182,13 +4182,25 @@ void HandleResizeRequest()
 {
     FULLSCREEN_MACOS = Atari800WindowIsFullscreen();
     if (FULLSCREEN_MACOS) {
-        SDL_RenderSetScale(renderer, (double) requested_w /
-        (double) GetScreenWidth(), (double) requested_h/ (double) Screen_HEIGHT);
+        if (PLATFORM_80col) {
+            if (BIT3_enabled) {
+                SDL_RenderSetScale(renderer, (double) requested_w/ (double) BIT3_SCRN_WIDTH, (double) requested_h/ (double) BIT3_SCRN_HEIGHT);
+            }
+            else if (AF80_enabled) {
+                SDL_RenderSetScale(renderer, (double) requested_w/ (double) AF80_SCRN_WIDTH, (double) requested_h/ (double) AF80_SCRN_HEIGHT );
+            }
+            else if (XEP80_enabled) {
+                SDL_RenderSetScale(renderer, (double) requested_w/ (double) XEP80_SCRN_WIDTH , (double) requested_h/ (double) XEP80_SCRN_HEIGHT );
+            }
+        }
+        else
+            SDL_RenderSetScale(renderer, (double) requested_w /
+                               (double) GetScreenWidth(), (double) requested_h/ (double) Screen_HEIGHT);
     }
     else {
         scaleFactorFloat = ((double) requested_w /
                             (double) GetScreenWidth());
-        SDL_RenderSetScale(renderer, scaleFactorFloat, scaleFactorFloat);
+        SetRenderScale();
         }
     current_w = requested_w;
     current_h = requested_h;
