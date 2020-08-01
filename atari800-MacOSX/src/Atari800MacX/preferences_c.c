@@ -811,11 +811,13 @@ int loadMacPrefs(int firstTime)
 			   ((strcmp(bb_rom_filename, prefs.blackBoxRomFile) != 0) ||
 				(strcmp(bb_scsi_disk_filename, prefs.blackBoxScsiDiskFile) != 0))) {
 		init_bb();
-    } else if (prefs.af80_enabled &&
+    }
+    if (prefs.af80_enabled &&
                ((strcmp(af80_rom_filename, prefs.af80RomFile) != 0) ||
                 (strcmp(af80_charset_filename, prefs.af80CharsetFile) != 0))) {
         init_af80();
-    } else if (prefs.bit3_enabled &&
+    }
+    if (prefs.bit3_enabled &&
                ((strcmp(bit3_rom_filename, prefs.af80RomFile) != 0) ||
                 (strcmp(bit3_charset_filename, prefs.bit3CharsetFile) != 0))) {
         init_bit3();
