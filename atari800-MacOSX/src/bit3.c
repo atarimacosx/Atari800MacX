@@ -30,6 +30,7 @@
 #include "cpu.h"
 #include <stdlib.h>
 
+#ifdef ATARI800MACX
 extern void SetDisplayManagerDisableBit3(void);
 extern void PLATFORM_Switch80Col(void);
 extern int PLATFORM_80col;
@@ -41,6 +42,14 @@ static UBYTE bit3_charset[0x1000];
 char bit3_charset_filename[FILENAME_MAX];
 
 static UBYTE bit3_screen[0x800];
+#else
+static UBYTE *bit3_rom = NULL;
+static char bit3_rom_filename[FILENAME_MAX];
+static UBYTE *bit3_charset = NULL;
+static char bit3_charset_filename[FILENAME_MAX];
+
+static UBYTE *bit3_screen = NULL;
+#endif
 
 int BIT3_enabled = FALSE;
 static int video_latch = 0;
@@ -133,7 +142,7 @@ void BIT3_WriteConfig(FILE *fp)
 	fprintf(fp, "BIT3_CHARSET=%s\n", bit3_charset_filename);
 }
 
-int BIT3_D6GetByte(UWORD addr)
+int BIT3_D6GetByte(UWORD addr, int no_side_effects)
 {
 	int result = MEMORY_dGetByte(addr);
 	return result;
@@ -144,7 +153,7 @@ void BIT3_D6PutByte(UWORD addr, UBYTE byte)
 	return;
 }
 
-int BIT3_D5GetByte(UWORD addr)
+int BIT3_D5GetByte(UWORD addr, int no_side_effects)
 {
 	int result=0xff;
 	if (addr == 0xd508) {
@@ -257,6 +266,7 @@ void BIT3_Reset(void)
 	//VIDEOMODE_Set80Column(video_latch);
 }
 
+#ifdef ATARI800MACX
 int Bit3GetCopyData(int startx, int endx, int starty, int endy, unsigned char *data)
 {
     int table_start = crtreg[0x0d] + ((crtreg[0x0c]&0x3f)<<8);
@@ -319,7 +329,7 @@ int Bit3GetCopyData(int startx, int endx, int starty, int endy, unsigned char *d
     *data = 0;
     return(count);
 }
-
+#endif
 
 /*
 vim:ts=4:sw=4:
