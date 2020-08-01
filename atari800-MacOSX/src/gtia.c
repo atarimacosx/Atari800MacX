@@ -568,7 +568,7 @@ UBYTE GTIA_GetByte(UWORD addr, int no_side_effects)
 					GTIA_consol_override = 0;
 				else {
 				--GTIA_consol_override;
-					if ((Atari800_machine_type == Atari800_MACHINE_XLXE) && Atari800_disable_basic && !BINLOAD_loading_basic)
+					if (Atari800_builtin_basic && Atari800_disable_basic && !BINLOAD_loading_basic)
 						/* Only for XL/XE - hold Option during reboot. */
 						byte &= ~INPUT_CONSOL_OPTION;
 					if (CASSETTE_hold_start && Atari800_machine_type != Atari800_MACHINE_5200) {

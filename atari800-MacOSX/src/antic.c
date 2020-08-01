@@ -24,6 +24,9 @@
 
 #include "config.h"
 #include <string.h>
+#if HAVE_STDINT_H
+# include <stdint.h>
+#endif
 
 #include "antic.h"
 #include "atari.h"
@@ -1422,7 +1425,7 @@ static void draw_an_gtia_bug(const ULONG *t_pm_scanline_ptr)
 		data <<= 2;\
 	FOUR_LOOP_END(data)\
 }
-#ifndef MACOSX
+#ifndef ATARIMACOSX
 #define DO_PMG_HIRES_NEW(data, tally) {\
 	const UBYTE *c_pm_scanline_ptr = (const UBYTE *) t_pm_scanline_ptr;\
 	int pm_pixel;\
