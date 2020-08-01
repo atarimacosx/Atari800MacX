@@ -1,5 +1,5 @@
 .DS_Store
 
 /atari800-MacOSX/src/Atari800MacX/build/
-/atari800-MacOSX/src/Atari800MacX/Atari800MacX.xcodeproj/project.xcworkspace/xcuserdata/
+/atari800-MacOSX/src/Atari800MacX/Atari800MacX.xcodeproj/project.xcworkspace/xcuserdata/*
 /atari800-MacOSX/src/Atari800MacX/Atari800MacX.xcodeproj/project.xcworkspace/xcuserdata/markg.xcuserdatad/UserInterfaceState.xcuserstate
