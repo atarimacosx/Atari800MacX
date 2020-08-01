@@ -2404,12 +2404,12 @@ DQ
                     <popUpButton verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1196">
                         <rect key="frame" x="1" y="-2" width="226" height="22"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <popUpButtonCell key="cell" type="push" title="Atari 800 (16KB)" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="1223" id="1820">
+                        <popUpButtonCell key="cell" type="push" title="Atari 800 (16KB)" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="1223" id="1820">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="message" size="11"/>
                             <menu key="menu" title="OtherViews" id="1197">
                                 <items>
-                                    <menuItem title="Atari 800 (16KB)" id="1223"/>
+                                    <menuItem title="Atari 800 (16KB)" state="on" id="1223"/>
                                     <menuItem title="Atari 800 (48KB)" id="1224"/>
                                     <menuItem title="Atari 800 (52KB)" id="1225"/>
                                     <menuItem title="Atari 800 (Axlon Memory)" id="1682"/>
@@ -2422,7 +2422,7 @@ DQ
                                     <menuItem title="Atari 320 XE (320 KB Compy Shop)" id="1230"/>
                                     <menuItem title="Atari 576XE (576KB)" id="1231"/>
                                     <menuItem title="Atari 1088XE (1088KB)" id="1232"/>
-                                    <menuItem title="Atari 5200 (16KB)" state="on" id="1200"/>
+                                    <menuItem title="Atari 5200 (16KB)" id="1200"/>
                                 </items>
                             </menu>
                         </popUpButtonCell>
@@ -2519,7 +2519,7 @@ DQ
                     </button>
                 </subviews>
             </view>
-            <point key="canvasLocation" x="45" y="2424"/>
+            <point key="canvasLocation" x="-81" y="2422"/>
         </window>
         <customObject id="1168" userLabel="PrintOutputController" customClass="PrintOutputController"/>
         <view id="952">

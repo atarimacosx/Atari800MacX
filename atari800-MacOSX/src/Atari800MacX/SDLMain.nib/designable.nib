@@ -297,6 +297,11 @@
                                     <action selector="cartInsert:" target="473" id="489"/>
                                 </connections>
                             </menuItem>
+                            <menuItem title="Insert BASIC Cartridge" keyEquivalent="b" id="WLj-Uh-rnt">
+                                <connections>
+                                    <action selector="basicInsert:" target="473" id="qAc-E9-i4U"/>
+                                </connections>
+                            </menuItem>
                             <menuItem title="Remove Cartridge" keyEquivalent="O" id="414">
                                 <connections>
                                     <action selector="cartRemove:" target="473" id="490"/>
@@ -399,6 +404,7 @@
                                 <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                             </menuItem>
                             <menuItem title="Show Media Status Window" id="681">
+                                <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="mediaStatusWindowShow:" target="473" id="682"/>
                                 </connections>

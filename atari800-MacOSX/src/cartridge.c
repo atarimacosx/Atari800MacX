@@ -1445,6 +1445,21 @@ static int InsertCartridge(const char *filename, CARTRIDGE_image_t *cart)
 	int type;
 	UBYTE header[16];
 
+#ifdef ATARI800MACX
+    if (strlen(filename) == 0) {
+        /* alloc memory and copy data */
+        len = 0x2000;
+        cart->image = (UBYTE *) Util_malloc(len);
+        memcpy(cart->image, MEMORY_basic, len);
+        len >>= 10;    /* number of kilobytes */
+        cart->size = len;
+        cart->type = CARTRIDGE_STD_8;
+        InitCartridge(cart);
+        return(0);
+    } else {
+#else
+    {
+#endif
 	/* open file */
 	fp = fopen(filename, "rb");
 	if (fp == NULL)
@@ -1523,14 +1538,26 @@ static int InsertCartridge(const char *filename, CARTRIDGE_image_t *cart)
 	}
 	fclose(fp);
 	return CARTRIDGE_BAD_FORMAT;
+#ifdef ATARI800MACX
+    }
+#endif
 }
 
 int CARTRIDGE_Insert(const char *filename)
 {
-	/* remove currently inserted cart */
-	CARTRIDGE_Remove();
-	return InsertCartridge(filename, &CARTRIDGE_main);
+    /* remove currently inserted cart */
+    CARTRIDGE_Remove();
+    return InsertCartridge(filename, &CARTRIDGE_main);
 }
+
+#ifdef ATARI800MACX
+int CARTRIDGE_Insert_BASIC(void)
+{
+    /* remove currently inserted cart */
+    CARTRIDGE_Remove();
+    return InsertCartridge("", &CARTRIDGE_main);
+}
+#endif
 
 int CARTRIDGE_InsertAutoReboot(const char *filename)
 {

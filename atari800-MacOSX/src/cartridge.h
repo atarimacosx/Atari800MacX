@@ -182,6 +182,10 @@ void CARTRIDGE_Exit(void);
 #define CARTRIDGE_BAD_CHECKSUM	-3	/* Warning: bad CART checksum */
 /* Inserts the left cartrifge. */
 int CARTRIDGE_Insert(const char *filename);
+#ifdef ATARI800MACX
+/* Inserts the BASIC cartridge and reboots the system if needed. */
+int CARTRIDGE_Insert_BASIC(void);
+#endif
 /* Inserts the left cartridge and reboots the system if needed. */
 int CARTRIDGE_InsertAutoReboot(const char *filename);
 /* Inserts the piggyback cartridge. */

@@ -160,6 +160,7 @@
 - (NSString *) saveFileInDirectory:(NSString *)directory:(NSString *)type;
 - (IBAction)cancelDisk:(id)sender;
 - (IBAction)cartInsert:(id)sender;
+- (IBAction)basicInsert:(id)sender;
 - (IBAction)cartSecondInsert:(id)sender;
 - (void)cartInsertFile:(NSString *)filename;
 - (IBAction)cartRemove:(id)sender;

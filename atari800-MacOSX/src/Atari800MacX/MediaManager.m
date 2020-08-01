@@ -556,6 +556,20 @@ NSImage *disketteImage;
 }
 
 /*------------------------------------------------------------------------------
+*  cartInsert - This method inserts the BASIC cartridge image into the emulator
+*-----------------------------------------------------------------------------*/
+- (IBAction)basicInsert:(id)sender
+{
+    if (Atari800_machine_type != Atari800_MACHINE_5200) {
+        CARTRIDGE_Insert_BASIC();
+        memset(Screen_atari, 0, (Screen_HEIGHT * Screen_WIDTH));
+        Atari_DisplayScreen((UBYTE *) Screen_atari);
+        Atari800_Coldstart();
+        [self updateInfo];
+    }
+}
+
+/*------------------------------------------------------------------------------
 *  cartInsert - This method inserts a cartridge image into the emulator
 *-----------------------------------------------------------------------------*/
 - (IBAction)cartInsert:(id)sender
@@ -570,8 +584,8 @@ NSImage *disketteImage;
         [filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
         cartSize = CARTRIDGE_Insert(cfilename);
 
-		memset(Screen_atari, 0, (Screen_HEIGHT * Screen_WIDTH));
-		Atari_DisplayScreen((UBYTE *) Screen_atari);
+        memset(Screen_atari, 0, (Screen_HEIGHT * Screen_WIDTH));
+        Atari_DisplayScreen((UBYTE *) Screen_atari);
         Atari800_Coldstart();
         }
     [self updateInfo];
@@ -2123,15 +2137,19 @@ NSImage *disketteImage;
 			[cartImageView setImage:offCartImage];
 			}
 		else {
-            ptr = CARTRIDGE_main.filename + strlen(CARTRIDGE_main.filename) - 1;
-			while (ptr > CARTRIDGE_main.filename) {
-				if (*ptr == '/') {
-					ptr++;
-					break;
-					}
-				ptr--;
-				}
-			[cartImageNameField setStringValue:[NSString stringWithCString:ptr encoding:NSASCIIStringEncoding]];
+            if (strlen(CARTRIDGE_main.filename)==0) {
+                [cartImageNameField setStringValue:@"BASIC"];
+            } else {
+                ptr = CARTRIDGE_main.filename + strlen(CARTRIDGE_main.filename) - 1;
+                while (ptr > CARTRIDGE_main.filename) {
+                    if (*ptr == '/') {
+                        ptr++;
+                        break;
+                        }
+                    ptr--;
+                    }
+                [cartImageNameField setStringValue:[NSString stringWithCString:ptr encoding:NSASCIIStringEncoding]];
+            }
 			[cartImageInsertButton setTitle:@"Eject"];
 			[cartImageView setImage:onCartImage];
 			}
