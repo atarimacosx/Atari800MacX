@@ -2137,7 +2137,7 @@ NSImage *disketteImage;
 			[cartImageView setImage:offCartImage];
 			}
 		else {
-            if (strlen(CARTRIDGE_main.filename)==0) {
+            if (strcmp(CARTRIDGE_main.filename,CARTRIDGE_SPECIAL_BASIC)==0) {
                 [cartImageNameField setStringValue:@"BASIC"];
             } else {
                 ptr = CARTRIDGE_main.filename + strlen(CARTRIDGE_main.filename) - 1;

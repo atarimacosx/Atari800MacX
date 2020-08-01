@@ -1446,11 +1446,12 @@ static int InsertCartridge(const char *filename, CARTRIDGE_image_t *cart)
 	UBYTE header[16];
 
 #ifdef ATARI800MACX
-    if (strlen(filename) == 0) {
+    if (strcmp(filename,CARTRIDGE_SPECIAL_BASIC) == 0) {
         /* alloc memory and copy data */
         len = 0x2000;
         cart->image = (UBYTE *) Util_malloc(len);
         memcpy(cart->image, MEMORY_basic, len);
+        strcpy(cart->filename, CARTRIDGE_SPECIAL_BASIC);
         len >>= 10;    /* number of kilobytes */
         cart->size = len;
         cart->type = CARTRIDGE_STD_8;
@@ -1555,7 +1556,7 @@ int CARTRIDGE_Insert_BASIC(void)
 {
     /* remove currently inserted cart */
     CARTRIDGE_Remove();
-    return InsertCartridge("", &CARTRIDGE_main);
+    return InsertCartridge(CARTRIDGE_SPECIAL_BASIC, &CARTRIDGE_main);
 }
 #endif
 

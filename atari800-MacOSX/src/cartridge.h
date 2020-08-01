@@ -180,6 +180,11 @@ void CARTRIDGE_Exit(void);
 #define CARTRIDGE_CANT_OPEN		-1	/* Can't open cartridge image file */
 #define CARTRIDGE_BAD_FORMAT		-2	/* Unknown cartridge format */
 #define CARTRIDGE_BAD_CHECKSUM	-3	/* Warning: bad CART checksum */
+
+#ifdef ATARI800MACX
+#define CARTRIDGE_SPECIAL_BASIC "!Builtin_BASIC_CART!"
+#endif
+
 /* Inserts the left cartrifge. */
 int CARTRIDGE_Insert(const char *filename);
 #ifdef ATARI800MACX
