@@ -71,6 +71,7 @@ extern UBYTE MEMORY_attrib[65536];
 typedef UBYTE (*MEMORY_rdfunc)(UWORD addr, int no_side_effects);
 typedef void (*MEMORY_wrfunc)(UWORD addr, UBYTE value);
 extern MEMORY_rdfunc MEMORY_readmap[256];
+extern MEMORY_rdfunc MEMORY_safe_readmap[256];
 extern MEMORY_wrfunc MEMORY_writemap[256];
 void MEMORY_ROM_PutByte(UWORD addr, UBYTE byte);
 /* Reads a byte from ADDR. Can potentially have side effects, when reading
