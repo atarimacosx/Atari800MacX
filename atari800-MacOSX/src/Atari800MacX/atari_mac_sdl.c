@@ -129,6 +129,7 @@ int useAtariCursorKeys = 1;
 int speed_limit = 1;
 double emulationSpeed = 1.0;
 int pauseEmulator = 0;
+int currentFps;
 /* Define the max frame rate when "speed limit" is off.  We can't let it run totally open
    loop, as with verison 3.x, and the updated timing loops for OSX 10.4, it may run too fast,
    and cause problems with key repeat kicking in on the atari much too fast.  5X normal spped
@@ -4170,6 +4171,7 @@ void CountFPS()
             strcpy(title,windowCaption);
             sprintf(count," - %3d fps",shortframes);
             strcat(title,count);
+            currentFps = shortframes;
             SDL_SetWindowTitle(MainWindow, title);
             shortframes = 0;
 			}
@@ -5266,6 +5268,8 @@ int SDL_main(int argc, char **argv)
 			if (speed_limit == 0 || (speed_limit == 1 && deltatime <= 1.0/Atari800_FPS_PAL)) {
 				if (Atari800Time() >= last_time + 1.0/60.0) {
                     Screen_DrawDiskLED();
+                    if (FULLSCREEN_MACOS)
+                        Screen_DrawAtariSpeed(currentFps);
                     Screen_Draw1200LED();
 					Atari_DisplayScreen((UBYTE *) Screen_atari);
 					last_time = Atari800Time();
