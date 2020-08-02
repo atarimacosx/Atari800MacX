@@ -454,12 +454,6 @@
                                                 <action selector="scaleMode:" target="498" id="720"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Smooth Scaling" tag="3" keyEquivalent="0" id="715">
-                                            <modifierMask key="keyEquivalentModifierMask" control="YES" command="YES"/>
-                                            <connections>
-                                                <action selector="scaleMode:" target="498" id="721"/>
-                                            </connections>
-                                        </menuItem>
                                     </items>
                                 </menu>
                             </menuItem>
@@ -915,7 +909,6 @@ DQ
                 <outlet property="revXLXEGTIAItem" destination="831" id="841"/>
                 <outlet property="scaleModeNormalItem" destination="711" id="716"/>
                 <outlet property="scaleModeScanlineItem" destination="714" id="717"/>
-                <outlet property="scaleModeSmoothItem" destination="715" id="718"/>
                 <outlet property="widthModeDefaultItem" destination="695" id="706"/>
                 <outlet property="widthModeFullItem" destination="696" id="707"/>
                 <outlet property="widthModeNarrowItem" destination="692" id="705"/>

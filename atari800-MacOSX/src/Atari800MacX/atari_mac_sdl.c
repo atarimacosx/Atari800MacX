@@ -121,7 +121,6 @@ int useAtariCursorKeys = 1;
 #define FULL_WIDTH_MODE 2
 #define NORMAL_SCALE 0
 #define SCANLINE_SCALE 1
-#define SMOOTH_SCALE 2
 
 #define SCREEN_WIDTH_SHORT    (Screen_WIDTH - 2 * 24 - 2 * 8)
 #define SCREEN_WIDTH_DEFAULT  (Screen_WIDTH - 2 * 24)
@@ -4824,8 +4823,7 @@ void DrawSelectionRectangle(int orig_x, int orig_y, int copy_x, int copy_y)
 	
     scale = scaleFactorFloat;
 	
-	if (SCALE_MODE==NORMAL_SCALE || SCALE_MODE == SCANLINE_SCALE ||
-        SCALE_MODE==SMOOTH_SCALE) {
+	if (SCALE_MODE==NORMAL_SCALE || SCALE_MODE == SCANLINE_SCALE) {
 		register int pitch2;
 		register Uint16 *start16;
 		

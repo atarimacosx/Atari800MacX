@@ -26,7 +26,6 @@
     IBOutlet id displayFpsItem;
 	IBOutlet id scaleModeNormalItem;
 	IBOutlet id scaleModeScanlineItem;
-	IBOutlet id scaleModeSmoothItem;
     IBOutlet id grabMouseItem;
 	IBOutlet id NoArtifactItem;
 	IBOutlet id revXLXEGTIAItem;

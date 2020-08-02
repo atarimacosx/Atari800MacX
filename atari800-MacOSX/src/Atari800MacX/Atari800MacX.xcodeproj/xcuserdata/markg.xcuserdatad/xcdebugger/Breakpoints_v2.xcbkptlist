@@ -14,8 +14,8 @@
             filePath = "Preferences.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2783"
-            endingLineNumber = "2783"
+            startingLineNumber = "2771"
+            endingLineNumber = "2771"
             landmarkName = "-browseFile"
             landmarkType = "7">
          </BreakpointContent>
@@ -62,8 +62,8 @@
             filePath = "MediaManager.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "506"
-            endingLineNumber = "506"
+            startingLineNumber = "509"
+            endingLineNumber = "509"
             landmarkName = "-browseFileInDirectory:"
             landmarkType = "7">
          </BreakpointContent>
@@ -78,8 +78,8 @@
             filePath = "MediaManager.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1124"
-            endingLineNumber = "1124"
+            startingLineNumber = "1127"
+            endingLineNumber = "1127"
             landmarkName = "-diskInsert:"
             landmarkType = "7">
          </BreakpointContent>
@@ -174,8 +174,8 @@
             filePath = "atari_mac_sdl.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2794"
-            endingLineNumber = "2794"
+            startingLineNumber = "2793"
+            endingLineNumber = "2793"
             landmarkName = "DisplayBit3WithoutScaling16bpp(first_line, last_line, blink)"
             landmarkType = "9">
          </BreakpointContent>
@@ -190,8 +190,8 @@
             filePath = "Preferences.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "714"
-            endingLineNumber = "714"
+            startingLineNumber = "705"
+            endingLineNumber = "705"
             landmarkName = "-showPanel:"
             landmarkType = "7">
          </BreakpointContent>
@@ -206,8 +206,8 @@
             filePath = "atari_mac_sdl.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "848"
-            endingLineNumber = "848"
+            startingLineNumber = "847"
+            endingLineNumber = "847"
             landmarkName = "InitializeVideo()"
             landmarkType = "9">
          </BreakpointContent>
@@ -222,8 +222,8 @@
             filePath = "atari_mac_sdl.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1492"
-            endingLineNumber = "1492"
+            startingLineNumber = "1491"
+            endingLineNumber = "1491"
             landmarkName = "Atari_Keyboard_International()"
             landmarkType = "9">
          </BreakpointContent>
@@ -446,8 +446,8 @@
             filePath = "MediaManager.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2140"
-            endingLineNumber = "2140"
+            startingLineNumber = "2143"
+            endingLineNumber = "2143"
             landmarkName = "-updateMediaStatusWindow"
             landmarkType = "7">
          </BreakpointContent>

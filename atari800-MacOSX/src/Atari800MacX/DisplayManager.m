@@ -157,26 +157,20 @@ static DisplayManager *sharedInstance = nil;
 
 /*------------------------------------------------------------------------------
 *  setScaleModeMenu - This method is used to set the menu text for the
-*     normal/scanline/smooth scale mode menu item.
+*     normal/scanline scale mode menu item.
 *-----------------------------------------------------------------------------*/
 - (void)setScaleModeMenu:(int)scaleMode
 {
 	switch(scaleMode)
 	{
 		case 0:
+        default:
 			[scaleModeNormalItem setState:NSOnState];
 			[scaleModeScanlineItem setState:NSOffState];
-			[scaleModeSmoothItem setState:NSOffState];
 			break;
 		case 1:
 			[scaleModeNormalItem setState:NSOffState];
 			[scaleModeScanlineItem setState:NSOnState];
-			[scaleModeSmoothItem setState:NSOffState];
-			break;
-		case 2:
-			[scaleModeNormalItem setState:NSOffState];
-			[scaleModeScanlineItem setState:NSOffState];
-			[scaleModeSmoothItem setState:NSOnState];
 			break;
 	}
 }
@@ -375,7 +369,7 @@ static DisplayManager *sharedInstance = nil;
 }
 
 /*------------------------------------------------------------------------------
-*  scaleMode - This method handles the normal/scanline/smooth scale mode menu
+*  scaleMode - This method handles the normal/scanline scale mode menu
 *       selection.
 *-----------------------------------------------------------------------------*/
 - (IBAction)scaleMode:(id)sender

@@ -2458,7 +2458,6 @@ DQ
                                 <items>
                                     <menuItem title="Normal Scaling" state="on" id="1214"/>
                                     <menuItem title="Scanlines" id="1215"/>
-                                    <menuItem title="Smooth Scaling" id="1213"/>
                                 </items>
                             </menu>
                         </popUpButtonCell>

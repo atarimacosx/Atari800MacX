@@ -82,21 +82,12 @@ static char paletteStr[FILENAME_MAX];
 #define NUM_V4_TYPES	5
 #define NUM_TOTAL_TYPES NUM_ORIG_TYPES+NUM_V4_TYPES
 
-#if 0
-static int types[NUM_TOTAL_TYPES] =
-{ 0, 1, 2, 0, 0, 3, 4, 5, 0, 0, 6, 7, 8, 0, 9,10,11,12,13};
-static int v4types[NUM_TOTAL_TYPES] =
-{-1,-1,-1, 0, 1,-1,-1,-1, 2, 3,-1,-1,-1, 4,-1,-1,-1,-1,-1};
-static int indicies[NUM_TOTAL_TYPES] =
-{0,1,2,5,6,7,10,11,12,14,15,16,17,18,3,4,8,9,13};
-#else
 static int types[NUM_TOTAL_TYPES] =
 { 3, 4, 5, 0, 0, 6, 7, 8, 0, 9,10,11,12,13};
 static int v4types[NUM_TOTAL_TYPES] =
 {-1,-1,-1, 2, 3,-1,-1,-1, 4,-1,-1,-1,-1,-1};
 static int indicies[NUM_TOTAL_TYPES] =
 {0,0,0,0,1,2,5,6,7,9,10,11,12,13,0,0,3,4,8};
-#endif
 static int axlonBankMasks[] = {3,7,15,31,63,127,255,0};
 static int mosaicBankMaxs[] = {3,19,35,51,0};
 
@@ -1569,9 +1560,6 @@ static Preferences *sharedInstance = nil;
             break;
         case 1:
             [displayedValues setObject:one forKey:ScaleMode];
-            break;
-        case 2:
-            [displayedValues setObject:two forKey:ScaleMode];
             break;
     }
 	switch([[widthModeMatrix selectedCell] tag]) {
@@ -3683,9 +3671,6 @@ static Preferences *sharedInstance = nil;
             break;
         case 1:
             [displayedValues setObject:one forKey:ScaleMode];
-            break;
-        case 2:
-            [displayedValues setObject:two forKey:ScaleMode];
             break;
 		}
     [displayedValues setObject:prefssave->showFPS ? yes : no forKey:ShowFPS];

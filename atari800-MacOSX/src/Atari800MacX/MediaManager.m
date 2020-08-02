@@ -486,7 +486,10 @@ NSImage *disketteImage;
 	index = [[Preferences sharedInstance] indexFromType:type :ver4type];
 		
 	[machineTypePulldown selectItemAtIndex:index];
-	[scaleModePulldown selectItemAtIndex:SCALE_MODE];
+    if (SCALE_MODE > 1)
+        [scaleModePulldown selectItemAtIndex:0];
+    else
+        [scaleModePulldown selectItemAtIndex:SCALE_MODE];
 	[widthModePulldown selectItemAtIndex:WIDTH_MODE];
 	[artifactModePulldown selectItemAtIndex:ANTIC_artif_mode];
 	[self updateMediaStatusWindow];
