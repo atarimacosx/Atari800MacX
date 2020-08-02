@@ -144,6 +144,7 @@
 	IBOutlet id printerPreviewItem;
 	IBOutlet id speedLimitButton;
 	IBOutlet id disBasicButton;
+    IBOutlet id insertBasicItem;
 	IBOutlet id xep80Button;
 	IBOutlet id machineTypePulldown;
 	IBOutlet id scaleModePulldown;
@@ -226,7 +227,7 @@
 - (void)setLimitButton:(int)limit;
 - (IBAction)disableBasic:(id)sender;
 - (IBAction)changeXEP80:(id)sender;
-- (void)setDisableBasicButton:(int)limit;
+- (void)setDisableBasicButton:(int)mode:(int)onoff;
 - (void)closeKeyWindow:(id)sender;
 - (IBAction)machineTypeChange:(id)sender;
 - (IBAction)scaleModeChange:(id)sender;

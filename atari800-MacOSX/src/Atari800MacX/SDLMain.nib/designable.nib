@@ -865,6 +865,7 @@ DQ
         <customObject id="315" userLabel="Preferences" customClass="Preferences"/>
         <customObject id="473" userLabel="MediaManager" customClass="MediaManager">
             <connections>
+                <outlet property="insertBasicItem" destination="WLj-Uh-rnt" id="FUW-ar-YqA"/>
                 <outlet property="insertSecondCartItem" destination="845" id="851"/>
                 <outlet property="printerPreviewItem" destination="786" id="811"/>
                 <outlet property="removeCartItem" destination="414" id="552"/>

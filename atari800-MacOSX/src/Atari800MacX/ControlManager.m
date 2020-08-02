@@ -71,8 +71,8 @@ void SetControlManagerLimit(int limit) {
     [[ControlManager sharedInstance] setLimitMenu:(limit)];
     }
     
-void SetControlManagerDisableBasic(int disableBasic) {
-    [[ControlManager sharedInstance] setDisableBasicMenu:(disableBasic)];
+void SetControlManagerDisableBasic(int mode, int disableBasic) {
+    [[ControlManager sharedInstance] setDisableBasicMenu:(mode):(disableBasic)];
     }
     
 void SetControlManagerCX85Enable(int cx85Enable) {
@@ -390,14 +390,28 @@ static int monitorRunFirstTime = 1;
 *  setDisableBasicMenu - This method is used to set the menu check state for the 
 *     Disable Basic menu item.
 *-----------------------------------------------------------------------------*/
-- (void)setDisableBasicMenu:(int)disableBasic
+- (void)setDisableBasicMenu:(int)mode:(int)disableBasic
 {
-    if (disableBasic)
-        [disableBasicItem setState:NSOnState];
-    else
-        [disableBasicItem setState:NSOffState];
+    switch(mode) {
+        case Atari800_MACHINE_800:
+            [disableBasicItem setEnabled:NO];
+            [disableBasicItem setTarget:nil];
+            break;
+        case Atari800_MACHINE_XLXE:
+            [disableBasicItem setEnabled:YES];
+            [disableBasicItem setTarget:self];
+            if (disableBasic)
+                [disableBasicItem setState:NSOnState];
+            else
+                [disableBasicItem setState:NSOffState];
+            break;
+        case Atari800_MACHINE_5200:
+            [disableBasicItem setEnabled:NO];
+            [disableBasicItem setTarget:nil];
+            break;
+    }
 		
-	[[MediaManager sharedInstance] setDisableBasicButton:disableBasic];
+    [[MediaManager sharedInstance] setDisableBasicButton:mode:disableBasic];
 }
 
 /*------------------------------------------------------------------------------

@@ -126,7 +126,7 @@
 }
 + (ControlManager *)sharedInstance;
 - (void)setLimitMenu:(int)limit;
-- (void)setDisableBasicMenu:(int)disableBasic;
+- (void)setDisableBasicMenu:(int)mode:(int)disableBasic;
 - (void)setKeyjoyEnableMenu:(int)keyjoyEnable;
 - (void)setCX85EnableMenu:(int)cx85Enable;
 - (NSString *) browseFileInDirectory:(NSString *)directory;

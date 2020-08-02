@@ -559,7 +559,7 @@ NSImage *disketteImage;
 }
 
 /*------------------------------------------------------------------------------
-*  cartInsert - This method inserts the BASIC cartridge image into the emulator
+*  basicInsert - This method inserts the BASIC cartridge image into the emulator
 *-----------------------------------------------------------------------------*/
 - (IBAction)basicInsert:(id)sender
 {
@@ -569,6 +569,8 @@ NSImage *disketteImage;
         Atari_DisplayScreen((UBYTE *) Screen_atari);
         Atari800_Coldstart();
         [self updateInfo];
+        [[ControlManager sharedInstance] setDisableBasicMenu:Atari800_machine_type:Atari800_disable_basic];
+        
     }
 }
 
@@ -2425,7 +2427,14 @@ NSImage *disketteImage;
 *-----------------------------------------------------------------------------*/
 - (IBAction)disableBasic:(id)sender;
 {
-	[[ControlManager sharedInstance] disableBasic:sender];
+    switch (Atari800_machine_type) {
+        case Atari800_MACHINE_800:
+            [self basicInsert:self];
+            break;
+        case Atari800_MACHINE_XLXE:
+            [[ControlManager sharedInstance] disableBasic:sender];
+            break;
+    }
 }
 
 /*------------------------------------------------------------------------------
@@ -2443,17 +2452,45 @@ NSImage *disketteImage;
 }
 
 /*------------------------------------------------------------------------------
-*  setLimitButton - Called to set the diable basic button in the media bar to 
+*  setDisableBasicButton - Called to set the diable basic button in the media bar to
 *   a certain state.
 *-----------------------------------------------------------------------------*/
-- (void)setDisableBasicButton:(int)disableBasic
+- (void)setDisableBasicButton:(int)mode:(int)onoff
 {
-	if (disableBasic) {
-		[disBasicButton setState:NSOnState];
-		}
-    else {
-		[disBasicButton setState:NSOffState];
-		}
+    switch(mode) {
+        case Atari800_MACHINE_800:
+            if (CARTRIDGE_main.type != CARTRIDGE_NONE &&
+                (strcmp(CARTRIDGE_main.filename, CARTRIDGE_SPECIAL_BASIC) == 0)) {
+                [disBasicButton setEnabled:NO];
+                [disBasicButton setTitle:@""];
+                [disBasicButton setState:NSOffState];
+                [insertBasicItem setTarget:nil];
+            } else {
+                [insertBasicItem setTarget:self];
+                [disBasicButton setEnabled:YES];
+                [disBasicButton setTitle:@"Load Basic"];
+                [disBasicButton setState:NSOffState];
+            }
+            break;
+        case Atari800_MACHINE_XLXE:
+            [insertBasicItem setTarget:self];
+            [disBasicButton setEnabled:YES];
+            if (onoff) {
+                [disBasicButton setTitle:@"Disable Basic"];
+                [disBasicButton setState:NSOnState];
+                }
+            else {
+                [disBasicButton setTitle:@"Disable Basic"];
+                [disBasicButton setState:NSOffState];
+                }
+            [insertBasicItem setTarget:nil];
+            break;
+        case Atari800_MACHINE_5200:
+            [disBasicButton setEnabled:NO];
+            [disBasicButton setTitle:@""];
+            [insertBasicItem setTarget:nil];
+            break;
+    }
 }
 
 /*------------------------------------------------------------------------------

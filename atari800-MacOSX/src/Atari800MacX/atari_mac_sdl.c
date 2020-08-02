@@ -261,7 +261,7 @@ extern void SetDisplayManagerGrabMouse(int mouseOn);
 extern void SetDisplayManager80ColMode(int xep80Enabled, int xep80Port, int af80Enabled, int bit3Enabled, int xep80);
 extern void SetDisplayManagerXEP80Autoswitch(int autoswitchOn);
 extern void SetControlManagerLimit(int limit);
-extern void SetControlManagerDisableBasic(int disableBasic);
+extern void SetControlManagerDisableBasic(int mode, int disableBasic);
 extern void SetControlManagerKeyjoyEnable(int keyjoyEnable);
 extern void SetControlManagerCX85Enable(int cx85enabled);
 extern void SetControlManagerMachineType(int machineType, int ramSize);
@@ -4286,7 +4286,7 @@ void ProcessMacMenus()
     if (requestDisableBasicChange) {
          Atari800_disable_basic = 1 - Atari800_disable_basic;
          requestDisableBasicChange = 0;
-         SetControlManagerDisableBasic(Atari800_disable_basic);
+         SetControlManagerDisableBasic(Atari800_machine_type,  Atari800_disable_basic);
 		 Atari800_Coldstart();
          }
     if (requestKeyjoyEnableChange) {
@@ -4329,6 +4329,7 @@ void ProcessMacMenus()
         Atari_DisplayScreen((UBYTE *) Screen_atari);
 		requestMachineTypeChange = 0;
 		SetControlManagerMachineType(Atari800_machine_type, MEMORY_ram_size);
+        SetControlManagerDisableBasic(Atari800_machine_type,  Atari800_disable_basic);
 		UpdateMediaManagerInfo();
 		}
 	if (requestPBIExpansionChange) {
@@ -4586,7 +4587,7 @@ void ProcessMacPrefsChange()
     SetDisplayManagerXEP80Autoswitch(COL80_autoswitch);
 	MediaManager80ColMode(XEP80_enabled, AF80_enabled, BIT3_enabled, PLATFORM_80col);
     real_deltatime = deltatime;
-	SetControlManagerDisableBasic(Atari800_disable_basic);
+	SetControlManagerDisableBasic(Atari800_machine_type, Atari800_disable_basic);
 	SetControlManagerKeyjoyEnable(keyjoyEnable);
 	SetControlManagerCX85Enable(INPUT_cx85);
     SetControlManagerLimit(speed_limit);
@@ -5012,7 +5013,7 @@ int SDL_main(int argc, char **argv)
 	MediaManager80ColMode(XEP80_enabled, AF80_enabled, BIT3_enabled, PLATFORM_80col);
     real_deltatime = deltatime;
     SetControlManagerLimit(speed_limit);
-	SetControlManagerDisableBasic(Atari800_disable_basic);
+	SetControlManagerDisableBasic(Atari800_machine_type, Atari800_disable_basic);
 	SetControlManagerKeyjoyEnable(keyjoyEnable);
 	SetControlManagerCX85Enable(INPUT_cx85);
 	SetControlManagerMachineType(Atari800_machine_type, MEMORY_ram_size);
