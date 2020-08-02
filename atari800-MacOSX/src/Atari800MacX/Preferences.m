@@ -372,8 +372,7 @@ static NSDictionary *defaultValues() {
                 [NSNumber numberWithBool:YES], EnableSerioSound, 
                 [NSNumber numberWithBool:NO], DontMuteAudio,
                 [NSNumber numberWithBool:YES], DiskDriveSound,
-                [NSNumber numberWithBool:NO], EnableInternational,
-                [NSNumber numberWithBool:NO], EnableMultijoy, 
+                [NSNumber numberWithBool:NO], EnableMultijoy,
                 [NSNumber numberWithBool:NO], IgnoreHeaderWriteprotect,
                 [NSString stringWithCString:imageDirStr encoding:NSASCIIStringEncoding], ImageDir, 
                 [NSString stringWithCString:printDirStr encoding:NSASCIIStringEncoding], PrintDir, 
@@ -883,8 +882,6 @@ static Preferences *sharedInstance = nil;
     [serioSoundEnableButton setState:[[displayedValues objectForKey:EnableSerioSound] boolValue] ? NSOnState : NSOffState];
     [muteAudioButton setState:[[displayedValues objectForKey:DontMuteAudio] boolValue] ? NSOffState : NSOnState];
     [diskDriveSoundButton setState:[[displayedValues objectForKey:DiskDriveSound] boolValue] ? NSOnState : NSOffState];
-    [internationalKeyboardButton setState:[[displayedValues objectForKey:EnableInternational] boolValue] ? NSOnState : NSOffState];
-    [internationalKeyboardButton setEnabled:NO]; // Always enabled on libSDL 2.0
     [enableMultijoyButton setState:[[displayedValues objectForKey:EnableMultijoy] boolValue] ? NSOnState : NSOffState];
     [ignoreHeaderWriteprotectButton setState:[[displayedValues objectForKey:IgnoreHeaderWriteprotect] boolValue] ? NSOnState : NSOffState];
 	foundMatch = FALSE;
@@ -2113,10 +2110,7 @@ static Preferences *sharedInstance = nil;
         [displayedValues setObject:yes forKey:DiskDriveSound];
     else
         [displayedValues setObject:no forKey:DiskDriveSound];
-    if ([internationalKeyboardButton state] == NSOnState)
-        [displayedValues setObject:yes forKey:EnableInternational];
-    else
-        [displayedValues setObject:no forKey:EnableInternational];
+
     if ([enableMultijoyButton state] == NSOnState)
         [displayedValues setObject:yes forKey:EnableMultijoy];
     else
@@ -3434,7 +3428,6 @@ static Preferences *sharedInstance = nil;
   prefs->enableSerioSound = [[curValues objectForKey:EnableSerioSound] intValue];
   prefs->dontMuteAudio = [[curValues objectForKey:DontMuteAudio] intValue];
   prefs->diskDriveSound = [[curValues objectForKey:DiskDriveSound] intValue];
-  prefs->enableInternational = [[curValues objectForKey:EnableInternational] intValue];
   prefs->enableMultijoy = [[curValues objectForKey:EnableMultijoy] intValue];
   prefs->ignoreHeaderWriteprotect = [[curValues objectForKey:IgnoreHeaderWriteprotect] intValue];
 	prefs->axlonBankMask =  [[curValues objectForKey:AxlonBankMask] intValue];
@@ -4832,7 +4825,6 @@ static Preferences *sharedInstance = nil;
     getBoolDefault(EnableSerioSound);
     getBoolDefault(DontMuteAudio);
     getBoolDefault(DiskDriveSound);
-    getBoolDefault(EnableInternational);
     getBoolDefault(EnableMultijoy);
     getBoolDefault(IgnoreHeaderWriteprotect);
     getStringDefault(ImageDir);
@@ -5095,7 +5087,6 @@ static Preferences *sharedInstance = nil;
     setBoolDefault(EnableSerioSound);
     setBoolDefault(DontMuteAudio);
     setBoolDefault(DiskDriveSound);
-    setBoolDefault(EnableInternational);
     setBoolDefault(EnableMultijoy);
     setBoolDefault(IgnoreHeaderWriteprotect);
     setStringDefault(ImageDir);
@@ -5343,7 +5334,6 @@ static Preferences *sharedInstance = nil;
     setConfig(EnableSerioSound);
     setConfig(DontMuteAudio);
     setConfig(DiskDriveSound);
-    setConfig(EnableInternational);
     setConfig(EnableMultijoy);
     setConfig(IgnoreHeaderWriteprotect);
     setConfig(ImageDir);
@@ -5689,7 +5679,6 @@ static Preferences *sharedInstance = nil;
     getConfig(EnableSerioSound);
     getConfig(DontMuteAudio);
     getConfig(DiskDriveSound);
-    getConfig(EnableInternational);
     getConfig(EnableMultijoy);
     getConfig(IgnoreHeaderWriteprotect);
     getConfig(ImageDir);

@@ -108,7 +108,6 @@ int requested_w;
 int requested_h;
 int mediaStatusWindowOpen;
 int functionKeysWindowOpen;
-int enable_international = 1;
 int led_enabled_media = 1;
 int led_counter_enabled_media = 1;
 int PLATFORM_80col = 0;

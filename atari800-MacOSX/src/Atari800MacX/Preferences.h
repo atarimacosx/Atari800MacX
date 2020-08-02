@@ -244,7 +244,6 @@
 #define FunctionKeysY @"FunctionKeysY"
 #define ApplicationWindowX @"ApplicationWindowX"
 #define ApplicationWindowY @"ApplicationWindowY"
-#define EnableInternational @"EnableInternational"
 #define SaveCurrentMedia @"SaveCurrentMedia"
 #define ClearCurrentMedia @"ClearCurrentMedia"
 #define KeyjoyEnable @"KeyjoyEnable"
@@ -373,7 +372,6 @@
     IBOutlet id enableHifiSoundButton;
 #endif	
 	IBOutlet id enable16BitSoundPulldown;
-	IBOutlet id internationalKeyboardButton;
     IBOutlet id enableMultijoyButton;
     IBOutlet id tvModeMatrix;
     IBOutlet id widthModeMatrix;

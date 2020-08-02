@@ -57,7 +57,6 @@ extern int Screen_show_disk_led;
 extern int Screen_show_sector_counter;
 extern int led_enabled_media;
 extern int led_counter_enabled_media;
-extern int enable_international;
 extern int JOYSTICK_MODE[4];
 extern int JOYSTICK_AUTOFIRE[4];
 extern int INPUT_mouse_mode;
@@ -891,7 +890,6 @@ int loadMacPrefs(int firstTime)
     speed_limit = prefs.speedLimit;
     CASSETTE_hold_start_on_reboot = prefs.bootFromCassette;
     CASSETTE_hold_start = prefs.bootFromCassette;
-    enable_international = TRUE; //Always enable with libSDL 2.x prefs.enableInternational;
     strcpy(atari_image_dir, prefs.imageDir);
     strcpy(atari_print_dir, prefs.printDir);
     strcpy(Devices_atari_h_dir[0], prefs.hardDiskDir[0]);
