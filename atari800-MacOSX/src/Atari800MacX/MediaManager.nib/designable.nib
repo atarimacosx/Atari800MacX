@@ -9,14 +9,20 @@
         <customObject id="-2" userLabel="File's Owner" customClass="MediaManager">
             <connections>
                 <outlet property="artifactModePulldown" destination="1216" id="1246"/>
-                <outlet property="cart1024KMatrix" destination="694" id="700"/>
-                <outlet property="cart128KMatrix" destination="656" id="663"/>
+                <outlet property="cart128KMatrix" destination="656" id="GFb-zd-f6z"/>
+                <outlet property="cart128MMatrix" destination="iYT-yd-ET5" id="0yj-Eq-q1s"/>
                 <outlet property="cart16KMatrix" destination="576" id="638"/>
+                <outlet property="cart2048KMatrix" destination="694" id="7QW-uB-3AA"/>
                 <outlet property="cart256KMatrix" destination="621" id="650"/>
-                <outlet property="cart32KMatrix" destination="590" id="641"/>
+                <outlet property="cart2KMatrix" destination="OgV-oU-uTi" id="YXY-lF-wBS"/>
+                <outlet property="cart32KMatrix" destination="590" id="NuH-ao-XnF"/>
+                <outlet property="cart32MMatrix" destination="WTd-v1-gOP" id="UpP-Vt-9sU"/>
+                <outlet property="cart4096KMatrix" destination="vVS-8y-i0n" id="bJR-YB-nsz"/>
                 <outlet property="cart40KMatrix" destination="611" id="644"/>
+                <outlet property="cart4KMatrix" destination="pXX-eu-kjE" id="3PX-aC-x4i"/>
                 <outlet property="cart512KMatrix" destination="627" id="664"/>
                 <outlet property="cart64KMatrix" destination="606" id="647"/>
+                <outlet property="cart64MMatrix" destination="gZN-Dy-emT" id="QLL-e6-yY8"/>
                 <outlet property="cart8KMatrix" destination="565" id="635"/>
                 <outlet property="cartImageInsertButton" destination="924" id="932"/>
                 <outlet property="cartImageNameField" destination="926" id="931"/>
@@ -2528,6 +2534,7 @@ DQ
         <view id="956">
             <rect key="frame" x="0.0" y="0.0" width="1" height="111"/>
             <autoresizingMask key="autoresizingMask"/>
+            <point key="canvasLocation" x="-357" y="-2071"/>
         </view>
         <view id="957">
             <rect key="frame" x="0.0" y="0.0" width="1" height="111"/>
@@ -2536,6 +2543,7 @@ DQ
         <view id="959">
             <rect key="frame" x="0.0" y="0.0" width="1" height="111"/>
             <autoresizingMask key="autoresizingMask"/>
+            <point key="canvasLocation" x="-357" y="-2441"/>
         </view>
         <view id="970">
             <rect key="frame" x="0.0" y="0.0" width="1" height="111"/>
@@ -2552,6 +2560,7 @@ DQ
         <view id="1085">
             <rect key="frame" x="0.0" y="0.0" width="1" height="111"/>
             <autoresizingMask key="autoresizingMask"/>
+            <point key="canvasLocation" x="-109" y="-2242"/>
         </view>
         <view id="1152">
             <rect key="frame" x="0.0" y="0.0" width="1" height="111"/>
