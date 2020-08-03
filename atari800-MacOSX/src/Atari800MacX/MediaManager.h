@@ -145,7 +145,8 @@
 	IBOutlet id speedLimitButton;
 	IBOutlet id disBasicButton;
     IBOutlet id insertBasicItem;
-	IBOutlet id xep80Button;
+    IBOutlet id xep80Button;
+    IBOutlet id xep80Pulldown;
 	IBOutlet id machineTypePulldown;
 	IBOutlet id scaleModePulldown;
 	IBOutlet id widthModePulldown;
@@ -236,5 +237,6 @@
 - (IBAction)checkDisk:(id)sender;
 - (void)switchDisks;
 - (void)set80ColMode:(int)xep80Enabled:(int)af80Enabled:(int)bit3Enabled:(int)xep80;
+- (IBAction)xep80Mode:(id)sender;
 
 @end

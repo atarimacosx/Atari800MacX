@@ -114,6 +114,7 @@
                 <outlet property="speedLimitButton" destination="1075" id="1081"/>
                 <outlet property="widthModePulldown" destination="1206" id="1244"/>
                 <outlet property="xep80Button" destination="1371" id="1373"/>
+                <outlet property="xep80Pulldown" destination="6Vc-ke-Kp8" id="k4h-w1-83h"/>
             </connections>
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
@@ -2437,7 +2438,7 @@ DQ
                         </connections>
                     </popUpButton>
                     <popUpButton verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1206">
-                        <rect key="frame" x="315" y="-2" width="123" height="22"/>
+                        <rect key="frame" x="224" y="-3" width="108" height="22"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <popUpButtonCell key="cell" type="push" title="Default Width" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="1236" id="1822">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
@@ -2454,25 +2455,8 @@ DQ
                             <action selector="widthModeChange:" target="-2" id="1249"/>
                         </connections>
                     </popUpButton>
-                    <popUpButton verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1211">
-                        <rect key="frame" x="437" y="-2" width="122" height="22"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                        <popUpButtonCell key="cell" type="push" title="Normal Scaling" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="1214" id="1823">
-                            <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="message" size="11"/>
-                            <menu key="menu" title="OtherViews" id="1212">
-                                <items>
-                                    <menuItem title="Normal Scaling" state="on" id="1214"/>
-                                    <menuItem title="Scanlines" id="1215"/>
-                                </items>
-                            </menu>
-                        </popUpButtonCell>
-                        <connections>
-                            <action selector="scaleModeChange:" target="-2" id="1250"/>
-                        </connections>
-                    </popUpButton>
                     <popUpButton verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1216">
-                        <rect key="frame" x="558" y="-2" width="185" height="22"/>
+                        <rect key="frame" x="440" y="-2" width="178" height="22"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <popUpButtonCell key="cell" type="push" title="Rev XL/XE GTIA Artifacting" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="1220" id="1824">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
@@ -2522,9 +2506,63 @@ DQ
                             <action selector="changeXEP80:" target="-2" id="1372"/>
                         </connections>
                     </button>
+                    <popUpButton verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6Vc-ke-Kp8">
+                        <rect key="frame" x="617" y="-4" width="124" height="26"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <popUpButtonCell key="cell" type="push" title="No 80 Column" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="3z0-mi-66N" id="Nbs-oh-Ofm">
+                            <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="message" size="11"/>
+                            <menu key="menu" title="OtherViews" id="jsq-p2-eYU">
+                                <items>
+                                    <menuItem title="No 80 Column" state="on" id="3z0-mi-66N">
+                                        <connections>
+                                            <action selector="xep80Mode:" target="-2" id="Chh-2U-B7G"/>
+                                        </connections>
+                                    </menuItem>
+                                    <menuItem title="XEP80 - Port 1" tag="1" id="bmu-3g-SlX">
+                                        <connections>
+                                            <action selector="xep80Mode:" target="-2" id="31B-Jl-kv0"/>
+                                        </connections>
+                                    </menuItem>
+                                    <menuItem title="XEP80 - Port 2" tag="2" id="AII-b6-gDE">
+                                        <connections>
+                                            <action selector="xep80Mode:" target="-2" id="hLv-IF-DnL"/>
+                                        </connections>
+                                    </menuItem>
+                                    <menuItem title="Austin Franklin" tag="3" id="EUP-7B-piB">
+                                        <connections>
+                                            <action selector="xep80Mode:" target="-2" id="SN9-YW-xxj"/>
+                                        </connections>
+                                    </menuItem>
+                                    <menuItem title="Bit3 Full View" tag="4" id="JcX-Ee-ETQ">
+                                        <connections>
+                                            <action selector="xep80Mode:" target="-2" id="3s6-pu-9R0"/>
+                                        </connections>
+                                    </menuItem>
+                                </items>
+                            </menu>
+                        </popUpButtonCell>
+                    </popUpButton>
+                    <popUpButton verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1211">
+                        <rect key="frame" x="330" y="-2" width="112" height="22"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <popUpButtonCell key="cell" type="push" title="Normal Scaling" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="1214" id="1823">
+                            <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="message" size="11"/>
+                            <menu key="menu" title="OtherViews" id="1212">
+                                <items>
+                                    <menuItem title="Normal Scaling" state="on" id="1214"/>
+                                    <menuItem title="Scanlines" id="1215"/>
+                                </items>
+                            </menu>
+                        </popUpButtonCell>
+                        <connections>
+                            <action selector="scaleModeChange:" target="-2" id="1250"/>
+                        </connections>
+                    </popUpButton>
                 </subviews>
             </view>
-            <point key="canvasLocation" x="-81" y="2422"/>
+            <point key="canvasLocation" x="-13" y="2375.5"/>
         </window>
         <customObject id="1168" userLabel="PrintOutputController" customClass="PrintOutputController"/>
         <view id="952">

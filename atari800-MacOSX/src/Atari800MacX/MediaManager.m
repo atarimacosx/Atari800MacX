@@ -19,6 +19,7 @@
 #import "Preferences.h"
 #import "DiskEditorWindow.h"
 #import "DiskEditorDataSource.h"
+#import "DisplayManager.h"
 #import "PrintOutputController.h"
 #import "SectorEditorWindow.h"
 #import "KeyMapper.h"
@@ -86,6 +87,7 @@ extern int MEMORY_ram_size;
 extern int diskDriveSound;
 extern int PREFS_axlon_num_banks;
 extern int PREFS_mosaic_num_banks;
+extern int XEP80_port;
 
 /* Arrays which define the cartridge types for each size */
 static int CART2KTYPES[] = {CARTRIDGE_STD_2};
@@ -2598,6 +2600,7 @@ NSImage *disketteImage;
 {
 	if (!xep80Enabled && !af80Enabled && !bit3Enabled) {
 		[xep80Button setEnabled:NO];
+        [xep80Pulldown selectItemAtIndex:0];
 		}
 	else {
 		[xep80Button setEnabled:YES];
@@ -2606,6 +2609,26 @@ NSImage *disketteImage;
 		else
 			[xep80Button setState:NSOffState];
 		}
+    if (af80Enabled) {
+        [xep80Pulldown selectItemAtIndex:3];
+    }
+    if (bit3Enabled) {
+        [xep80Pulldown selectItemAtIndex:4];
+    }
+    if (xep80Enabled) {
+        if (XEP80_port == 0) {
+            [xep80Pulldown selectItemAtIndex:1];
+        }
+        else {
+            [xep80Pulldown selectItemAtIndex:2];
+        }
+    }
+}
+
+- (IBAction)xep80Mode:(id)sender
+{
+    int a = [sender tag];
+    [[DisplayManager sharedInstance] xep80Mode:sender];
 }
 
 -(IBAction)changeXEP80:(id)sender
