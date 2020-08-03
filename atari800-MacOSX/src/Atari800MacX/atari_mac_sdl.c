@@ -886,12 +886,27 @@ void CalcWindowSize(int *width, int *height)
 
 void SetWindowAspectRatio(void)
 {
+    int w, h;
+    
     if (WIDTH_MODE == SHORT_WIDTH_MODE)
-        Atari800WindowAspectSet(SCREEN_WIDTH_SHORT,Screen_HEIGHT+8);
+        {
+        w = SCREEN_WIDTH_SHORT;
+        }
     else if (WIDTH_MODE == DEFAULT_WIDTH_MODE)
-        Atari800WindowAspectSet(SCREEN_WIDTH_DEFAULT,Screen_HEIGHT+8);
+        {
+        w = SCREEN_WIDTH_DEFAULT;
+        }
     else
-        Atari800WindowAspectSet(SCREEN_WIDTH_FULL,Screen_HEIGHT+8);
+        {
+        w = SCREEN_WIDTH_FULL;
+        }
+    h = Screen_HEIGHT + 16;
+    w *= 8;
+    w /= 8;
+    h *= 8;
+    h /= 8;
+         
+    Atari800WindowAspectSet(w, h);
 }
 
 static void SetRenderScale(void)
