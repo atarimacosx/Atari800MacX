@@ -646,6 +646,7 @@ NSImage *disketteImage;
 {
     CARTRIDGE_Remove();
     [self updateInfo];
+    [[ControlManager sharedInstance] setDisableBasicMenu:Atari800_machine_type:Atari800_disable_basic];
     Atari800_Coldstart();
 }
 
