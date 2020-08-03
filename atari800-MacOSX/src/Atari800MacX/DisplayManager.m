@@ -55,8 +55,12 @@ void SetDisplayManagerGrabMouse(int mouseOn) {
     }
 
 void SetDisplayManager80ColMode(int xep80Enabled, int xep80Port, int af80Enabled, int bit3Enabled, int col80) {
-    [[DisplayManager sharedInstance] set80ColModeMenu:(xep80Enabled):(xep80Port):(af80Enabled):(bit3Enabled):(col80)];
-    }
+[[DisplayManager sharedInstance] set80ColModeMenu:(xep80Enabled):(xep80Port):(af80Enabled):(bit3Enabled):(col80)];
+}
+
+int EnableDisplayManager80ColMode(int machineType, int xep80Enabled, int af80Enabled, int bit3Enabled) {
+    return [[DisplayManager sharedInstance] enable80ColModeMenu:(machineType):(xep80Enabled):(af80Enabled):(bit3Enabled)];
+}
 
 void SetDisplayManagerXEP80Autoswitch(int autoswitchOn) {
     [[DisplayManager sharedInstance] setXEP80AutoswitchMenu:autoswitchOn];
@@ -221,8 +225,48 @@ static DisplayManager *sharedInstance = nil;
 	}
 }
 
+- (bool)enable80ColModeMenu:(int)machineType:(int)xep80Enabled:(int)af80Enabled:(int)bit3Enabled
+{
+    [[MediaManager sharedInstance] enable80ColMode:machineType];
+    switch(machineType) {
+        case Atari800_MACHINE_800:
+        default:
+            [xep80Mode0Item setTarget:self];
+            [xep80Mode1Item setTarget:self];
+            [xep80Mode2Item setTarget:self];
+            [af80ModeItem setTarget:self];
+            [bit3ModeItem setTarget:self];
+            return TRUE;
+        case Atari800_MACHINE_XLXE:
+            [xep80Mode0Item setTarget:self];
+            [xep80Mode1Item setTarget:self];
+            [xep80Mode2Item setTarget:self];
+            [af80ModeItem setTarget:nil];
+            [bit3ModeItem setTarget:nil];
+            if (af80Enabled || bit3Enabled) {
+                [self set80ColModeMenu:FALSE:0:FALSE:FALSE:FALSE];
+                [[MediaManager sharedInstance]  set80ColMode:FALSE:FALSE:FALSE:FALSE];
+                [xep80Mode0Item setTarget:self];
+                return FALSE;
+            }
+            break;
+        case Atari800_MACHINE_5200:
+            [xep80Mode0Item setTarget:self];
+            [xep80Mode1Item setTarget:nil];
+            [xep80Mode2Item setTarget:nil];
+            [af80ModeItem setTarget:nil];
+            [bit3ModeItem setTarget:nil];
+            if (xep80Enabled || af80Enabled || bit3Enabled) {
+                [self set80ColModeMenu:FALSE:0:FALSE:FALSE:FALSE];
+                [[MediaManager sharedInstance]  set80ColMode:FALSE:FALSE:FALSE:FALSE];
+                return FALSE;
+            }
+            break;
+    }
+    return TRUE;
+}
 /*------------------------------------------------------------------------------
-*  setXEP80ModeMenu - This method is used to set the menu text for the
+*  set80ColModeMenu - This method is used to set the menu text for the
 *     80 Col mode menu items.
 *-----------------------------------------------------------------------------*/
 - (void)set80ColModeMenu:(int)xep80Enabled:(int)xep80Port:(int)af80Enabled:(int)bit3Enabled:(int)col80;

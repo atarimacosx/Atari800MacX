@@ -259,6 +259,7 @@ extern void SetDisplayManagerScaleMode(int scaleMode);
 extern void SetDisplayManagerArtifactMode(int scaleMode);
 extern void SetDisplayManagerGrabMouse(int mouseOn);
 extern void SetDisplayManager80ColMode(int xep80Enabled, int xep80Port, int af80Enabled, int bit3Enabled, int xep80);
+extern int EnableDisplayManager80ColMode(int machineType, int xep80Enabled, int af80Enabled, int bit3Enabled);
 extern void SetDisplayManagerXEP80Autoswitch(int autoswitchOn);
 extern void SetControlManagerLimit(int limit);
 extern void SetControlManagerDisableBasic(int mode, int disableBasic);
@@ -4321,6 +4322,13 @@ void ProcessMacMenus()
         else
             MEMORY_mosaic_num_banks = PREFS_mosaic_num_banks;
 
+        if (!EnableDisplayManager80ColMode(Atari800_machine_type, XEP80_enabled, AF80_enabled, BIT3_enabled))
+            {
+            XEP80_enabled = AF80_enabled = BIT3_enabled = FALSE;
+            PLATFORM_80col = FALSE;
+            PLATFORM_Switch80ColMode();
+            }
+
         memset(Screen_atari, 0, (Screen_HEIGHT * Screen_WIDTH));
         Atari800_InitialiseMachine();
 		Atari800_Coldstart();
@@ -4403,6 +4411,12 @@ void ProcessMacMenus()
         CreateWindowCaption();
         SDL_SetWindowTitle(MainWindow, windowCaption);
 		SetControlManagerMachineType(Atari800_machine_type, MEMORY_ram_size);
+        if (!EnableDisplayManager80ColMode(Atari800_machine_type, XEP80_enabled, AF80_enabled, BIT3_enabled))
+            {
+            XEP80_enabled = AF80_enabled = BIT3_enabled = FALSE;
+            PLATFORM_80col = FALSE;
+            PLATFORM_Switch80ColMode();
+            }
         requestCaptionChange = 0;
         }
 	if (requestPaste) {
@@ -4592,6 +4606,12 @@ void ProcessMacPrefsChange()
 	SetControlManagerCX85Enable(INPUT_cx85);
     SetControlManagerLimit(speed_limit);
 	SetControlManagerMachineType(Atari800_machine_type, MEMORY_ram_size);
+    if (!EnableDisplayManager80ColMode(Atari800_machine_type, XEP80_enabled, AF80_enabled, BIT3_enabled))
+        {
+        XEP80_enabled = AF80_enabled = BIT3_enabled = FALSE;
+        PLATFORM_80col = FALSE;
+        PLATFORM_Switch80ColMode();
+        }
 	if (bbRequested)
 		SetControlManagerPBIExpansion(1);
 	else if (mioRequested)
@@ -4980,6 +5000,11 @@ int SDL_main(int argc, char **argv)
 	  argc = prefsArgc;
       argv = prefsArgv;
 	  }
+
+    if (!EnableDisplayManager80ColMode(Atari800_machine_type, XEP80_enabled, AF80_enabled, BIT3_enabled))
+        {
+        XEP80_enabled = AF80_enabled = BIT3_enabled = FALSE;
+        }
 
     if (!Atari800_Initialise(&argc, argv))
         return 3;

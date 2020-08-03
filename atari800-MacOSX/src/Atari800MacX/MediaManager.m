@@ -2596,6 +2596,31 @@ NSImage *disketteImage;
     [self updateInfo];
 }
 
+- (void)enable80ColMode:(int)machineType
+{
+    switch(machineType) {
+        case Atari800_MACHINE_800:
+        default:
+            [[xep80Pulldown itemAtIndex:1] setTarget:self];
+            [[xep80Pulldown itemAtIndex:2] setTarget:self];
+            [[xep80Pulldown itemAtIndex:3] setTarget:self];
+            [[xep80Pulldown itemAtIndex:4] setTarget:self];
+            return TRUE;
+        case Atari800_MACHINE_XLXE:
+            [[xep80Pulldown itemAtIndex:1] setTarget:self];
+            [[xep80Pulldown itemAtIndex:2] setTarget:self];
+            [[xep80Pulldown itemAtIndex:3] setTarget:nil];
+            [[xep80Pulldown itemAtIndex:4] setTarget:nil];
+            break;
+        case Atari800_MACHINE_5200:
+            [[xep80Pulldown itemAtIndex:1] setTarget:nil];
+            [[xep80Pulldown itemAtIndex:2] setTarget:nil];
+            [[xep80Pulldown itemAtIndex:3] setTarget:nil];
+            [[xep80Pulldown itemAtIndex:4] setTarget:nil];
+            break;
+    }
+}
+
 - (void)set80ColMode:(int)xep80Enabled:(int)af80Enabled:(int)bit3Enabled:(int)col80
 {
 	if (!xep80Enabled && !af80Enabled && !bit3Enabled) {
@@ -2627,7 +2652,6 @@ NSImage *disketteImage;
 
 - (IBAction)xep80Mode:(id)sender
 {
-    int a = [sender tag];
     [[DisplayManager sharedInstance] xep80Mode:sender];
 }
 

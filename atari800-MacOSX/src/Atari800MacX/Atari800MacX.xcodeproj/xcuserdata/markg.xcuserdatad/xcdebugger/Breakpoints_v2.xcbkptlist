@@ -174,8 +174,8 @@
             filePath = "atari_mac_sdl.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2793"
-            endingLineNumber = "2793"
+            startingLineNumber = "2794"
+            endingLineNumber = "2794"
             landmarkName = "DisplayBit3WithoutScaling16bpp(first_line, last_line, blink)"
             landmarkType = "9">
          </BreakpointContent>
@@ -206,8 +206,8 @@
             filePath = "atari_mac_sdl.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "847"
-            endingLineNumber = "847"
+            startingLineNumber = "848"
+            endingLineNumber = "848"
             landmarkName = "InitializeVideo()"
             landmarkType = "9">
          </BreakpointContent>
@@ -222,8 +222,8 @@
             filePath = "atari_mac_sdl.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1491"
-            endingLineNumber = "1491"
+            startingLineNumber = "1492"
+            endingLineNumber = "1492"
             landmarkName = "Atari_Keyboard_International()"
             landmarkType = "9">
          </BreakpointContent>
@@ -471,16 +471,16 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "67788D96-1AD6-4BE7-BD95-D5D3DD0FF5E9"
-            shouldBeEnabled = "No"
+            uuid = "C193DECD-1F89-4D59-B2B4-B437BD49A773"
+            shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "MediaManager.m"
+            filePath = "DisplayManager.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2631"
-            endingLineNumber = "2631"
-            landmarkName = "-xep80Mode:"
+            startingLineNumber = "411"
+            endingLineNumber = "411"
+            landmarkName = "-displayFps:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
