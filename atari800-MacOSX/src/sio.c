@@ -172,8 +172,6 @@ char SIO_status[512];
 #define SIO_WriteFrame      (0x04)
 #define SIO_FinalStatus     (0x05)
 #define SIO_FormatFrame     (0x06)
-#define SIO_CasRead         (0x60)
-#define SIO_CasWrite        (0x61)
 static UBYTE CommandFrame[6];
 static int CommandIndex = 0;
 static UBYTE DataBuffer[512 + 3];
@@ -297,6 +295,7 @@ int SIO_Mount(int diskno, const char *filename, int b_open_readonly)
 	}
 
 	boot_sectors_type[diskno - 1] = BOOT_SECTORS_LOGICAL;
+
 	if (header.magic1 == AFILE_ATR_MAGIC1 && header.magic2 == AFILE_ATR_MAGIC2) {
 		/* ATR (may be temporary from DCM or ATR/ATR.GZ) */
 		image_type[diskno - 1] = IMAGE_TYPE_ATR;
@@ -1167,7 +1166,7 @@ static int last_ypos = 0;
 void SIO_Handler(void)
 {
 	int sector = MEMORY_dGetWordAligned(0x30a);
-	UBYTE unit = (MEMORY_dGetByte(0x300) + MEMORY_dGetByte(0x301) + 0xff ) - 0x31;
+	UBYTE unit = MEMORY_dGetByte(0x300) + MEMORY_dGetByte(0x301) + 0xff;
 	UBYTE result = 0x00;
 	UWORD data = MEMORY_dGetWordAligned(0x304);
 	int length = MEMORY_dGetWordAligned(0x308);

@@ -78,8 +78,8 @@
             filePath = "MediaManager.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1132"
-            endingLineNumber = "1132"
+            startingLineNumber = "1137"
+            endingLineNumber = "1137"
             landmarkName = "-diskInsert:"
             landmarkType = "7">
          </BreakpointContent>
@@ -176,7 +176,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "2794"
             endingLineNumber = "2794"
-            landmarkName = "DisplayBit3WithoutScaling16bpp(first_line, last_line, blink)"
+            landmarkName = "DisplayAF80WithoutScaling16bpp(first_row, last_row, blink)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -446,8 +446,8 @@
             filePath = "MediaManager.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2148"
-            endingLineNumber = "2148"
+            startingLineNumber = "2153"
+            endingLineNumber = "2153"
             landmarkName = "-updateMediaStatusWindow"
             landmarkType = "7">
          </BreakpointContent>
@@ -482,6 +482,22 @@
             endingLineNumber = "411"
             landmarkName = "-displayFps:"
             landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "3295AA13-0178-4D85-9B49-3766AD132373"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../cassette.c"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "301"
+            endingLineNumber = "301"
+            landmarkName = "CASSETTE_PutByte(byte)"
+            landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

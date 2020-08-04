@@ -1099,6 +1099,10 @@ NSImage *disketteImage;
     filename = [self saveFileInDirectory:[NSString stringWithCString:atari_cass_dir encoding:NSASCIIStringEncoding]:@"cas"];
     if (filename != nil) {
         [filename getCString:cfilename maxLength:FILENAME_MAX  encoding:NSASCIIStringEncoding];
+#if 1
+        CASSETTE_CreateCAS(cfilename, "");
+        [self updateInfo];
+#else
         image = fopen(cfilename, "wb");
         if (image == NULL) {
             [self displayError:@"Unable to Create Cassette Image!"];
@@ -1112,6 +1116,7 @@ NSImage *disketteImage;
 				[self displayError:@"Unable to Insert Cassette!"];
 			[self updateInfo];
 			}
+#endif
     }
 }
 
