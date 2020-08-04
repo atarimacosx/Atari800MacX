@@ -30,7 +30,10 @@
                 <outlet property="cartImageSecondNameField" destination="1259" id="1260"/>
                 <outlet property="cartImageView" destination="925" id="930"/>
                 <outlet property="cassImageInsertButton" destination="923" id="929"/>
+                <outlet property="cassImageLockView" destination="PBi-ny-ErH" id="ung-Hh-hWI"/>
                 <outlet property="cassImageNameField" destination="921" id="928"/>
+                <outlet property="cassImageProtectButton" destination="Zjf-19-pna" id="7eM-N0-faU"/>
+                <outlet property="cassImageRecordButton" destination="QmR-Oy-J0J" id="6ND-bP-dSZ"/>
                 <outlet property="cassImageSlider" destination="986" id="990"/>
                 <outlet property="cassImageSliderCurrField" destination="999" id="1001"/>
                 <outlet property="cassImageSliderMaxField" destination="988" id="993"/>
@@ -160,7 +163,7 @@ DQ
                         <rect key="frame" x="104" y="232" width="414" height="34"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="1690">
-                            <font key="font" metaFont="message" size="11"/>
+                            <font key="font" metaFont="toolTip"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -208,7 +211,7 @@ DQ
                         <rect key="frame" x="104" y="267" width="414" height="34"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="1694">
-                            <font key="font" metaFont="message" size="11"/>
+                            <font key="font" metaFont="toolTip"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -217,7 +220,7 @@ DQ
                         <rect key="frame" x="104" y="162" width="414" height="34"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="1695">
-                            <font key="font" metaFont="message" size="11"/>
+                            <font key="font" metaFont="toolTip"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -239,7 +242,7 @@ DQ
                         <rect key="frame" x="104" y="337" width="414" height="34"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="1697">
-                            <font key="font" metaFont="message" size="11"/>
+                            <font key="font" metaFont="toolTip"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -287,7 +290,7 @@ DQ
                         <rect key="frame" x="104" y="197" width="414" height="34"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="1701">
-                            <font key="font" metaFont="message" size="11"/>
+                            <font key="font" metaFont="toolTip"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -296,7 +299,7 @@ DQ
                         <rect key="frame" x="104" y="92" width="414" height="34"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="1702">
-                            <font key="font" metaFont="message" size="11"/>
+                            <font key="font" metaFont="toolTip"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -305,7 +308,7 @@ DQ
                         <rect key="frame" x="104" y="127" width="414" height="34"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="1703">
-                            <font key="font" metaFont="message" size="11"/>
+                            <font key="font" metaFont="toolTip"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -314,7 +317,7 @@ DQ
                         <rect key="frame" x="104" y="302" width="414" height="34"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="1704">
-                            <font key="font" metaFont="message" size="11"/>
+                            <font key="font" metaFont="toolTip"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -2017,6 +2020,17 @@ DQ
                             <action selector="diskStatusProtect:" target="-2" id="898"/>
                         </connections>
                     </button>
+                    <button verticalHuggingPriority="750" fixedFrame="YES" tag="3" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Zjf-19-pna">
+                        <rect key="frame" x="518" y="30" width="48" height="28"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <buttonCell key="cell" type="push" title="Lock" bezelStyle="rounded" alignment="center" controlSize="mini" enabled="NO" borderStyle="border" tag="3" inset="2" id="DLu-FK-i1g">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="miniSystem"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="cassStatusProtect:" target="-2" id="wdd-ns-jZG"/>
+                        </connections>
+                    </button>
                     <button verticalHuggingPriority="750" fixedFrame="YES" tag="3" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="827">
                         <rect key="frame" x="407" y="35" width="57" height="28"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -2063,12 +2077,12 @@ DQ
                         </connections>
                     </button>
                     <imageView fixedFrame="YES" tag="8" translatesAutoresizingMaskIntoConstraints="NO" id="919" customClass="Atari800ImageView">
-                        <rect key="frame" x="489" y="73" width="57" height="35"/>
+                        <rect key="frame" x="491" y="83" width="57" height="28"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="1789"/>
                     </imageView>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="921">
-                        <rect key="frame" x="477" y="59" width="83" height="11"/>
+                        <rect key="frame" x="477" y="70" width="83" height="11"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="center" title="Empty" id="1790">
                             <font key="font" metaFont="miniSystem"/>
@@ -2077,11 +2091,11 @@ DQ
                         </textFieldCell>
                     </textField>
                     <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="923">
-                        <rect key="frame" x="471" y="16" width="57" height="28"/>
+                        <rect key="frame" x="475" y="15" width="48" height="28"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <buttonCell key="cell" type="push" title="Insert" bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" inset="2" id="1791">
+                        <buttonCell key="cell" type="push" title="Insert" bezelStyle="rounded" alignment="center" controlSize="mini" borderStyle="border" inset="2" id="1791">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="message" size="11"/>
+                            <font key="font" metaFont="miniSystem"/>
                         </buttonCell>
                         <connections>
                             <action selector="cassStatusChange:" target="-2" id="933"/>
@@ -2188,8 +2202,13 @@ DQ
                         <autoresizingMask key="autoresizingMask"/>
                         <imageCell key="cell" refusesFirstResponder="YES" alignment="left" id="1802"/>
                     </imageView>
+                    <imageView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="PBi-ny-ErH">
+                        <rect key="frame" x="548" y="80" width="14" height="16"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" id="f3y-Qy-8SK"/>
+                    </imageView>
                     <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="986">
-                        <rect key="frame" x="480" y="39" width="75" height="15"/>
+                        <rect key="frame" x="480" y="51" width="75" height="15"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <sliderCell key="cell" controlSize="small" alignment="left" minValue="1" maxValue="100" doubleValue="50" tickMarkPosition="above" allowsTickMarkValuesOnly="YES" sliderType="linear" id="1803">
                             <font key="font" metaFont="user"/>
@@ -2199,7 +2218,7 @@ DQ
                         </connections>
                     </slider>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="988">
-                        <rect key="frame" x="527" y="51" width="29" height="11"/>
+                        <rect key="frame" x="527" y="62" width="29" height="11"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="400" id="1804">
                             <font key="font" metaFont="miniSystem"/>
@@ -2208,7 +2227,7 @@ DQ
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="999">
-                        <rect key="frame" x="476" y="51" width="35" height="11"/>
+                        <rect key="frame" x="476" y="62" width="35" height="11"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="1" id="1805">
                             <font key="font" metaFont="miniSystem"/>
@@ -2394,11 +2413,11 @@ DQ
                         </textFieldCell>
                     </textField>
                     <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1192">
-                        <rect key="frame" x="517" y="16" width="49" height="28"/>
+                        <rect key="frame" x="518" y="15" width="48" height="28"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <buttonCell key="cell" type="push" title="New" bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" inset="2" id="1819">
+                        <buttonCell key="cell" type="push" title="New" bezelStyle="rounded" alignment="center" controlSize="mini" borderStyle="border" inset="2" id="1819">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="message" size="11"/>
+                            <font key="font" metaFont="miniSystem"/>
                         </buttonCell>
                         <connections>
                             <action selector="createCassette:" target="-2" id="1193"/>
@@ -2560,9 +2579,20 @@ DQ
                             <action selector="scaleModeChange:" target="-2" id="1250"/>
                         </connections>
                     </popUpButton>
+                    <button verticalHuggingPriority="750" fixedFrame="YES" tag="3" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="QmR-Oy-J0J">
+                        <rect key="frame" x="475" y="30" width="48" height="28"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <buttonCell key="cell" type="push" bezelStyle="rounded" image="NSStatusUnavailable" imagePosition="overlaps" alignment="center" alternateImage="NSStatusUnavailable" controlSize="mini" enabled="NO" borderStyle="border" tag="3" inset="2" id="KLf-JP-XLi">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
+                            <font key="font" metaFont="miniSystem"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="cassRecord:" target="-2" id="nan-rB-xHI"/>
+                        </connections>
+                    </button>
                 </subviews>
             </view>
-            <point key="canvasLocation" x="-13" y="2375.5"/>
+            <point key="canvasLocation" x="-132" y="2378.5"/>
         </window>
         <customObject id="1168" userLabel="PrintOutputController" customClass="PrintOutputController"/>
         <view id="952">
@@ -3021,5 +3051,6 @@ Gw
     </objects>
     <resources>
         <image name="Fuji" width="128" height="128"/>
+        <image name="NSStatusUnavailable" width="16" height="16"/>
     </resources>
 </document>

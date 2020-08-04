@@ -133,6 +133,9 @@
 	IBOutlet id cassImageSlider;
 	IBOutlet id cassImageSliderCurrField;
 	IBOutlet id cassImageSliderMaxField;
+    IBOutlet id cassImageLockView;
+    IBOutlet id cassImageProtectButton;
+    IBOutlet id cassImageRecordButton;
 	IBOutlet id cartImageInsertButton;
 	IBOutlet id cartImageSecondInsertButton;
 	IBOutlet id cartImageNameField;
@@ -172,8 +175,10 @@
 - (IBAction)cartSelectCancel:(id)sender;
 - (IBAction)cassInsert:(id)sender;
 - (void)cassInsertFile:(NSString *)filename;
+- (IBAction)cassRecord:(id)sender;
 - (IBAction)cassRemove:(id)sender;
 - (IBAction)cassRewind:(id)sender;
+- (IBAction)cassStatusProtect:(id)sender;
 - (void)changeToComputer;
 - (IBAction)convertCartRom:(id)sender;
 - (IBAction)convertRomCart:(id)sender;

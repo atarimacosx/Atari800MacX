@@ -461,21 +461,22 @@ NSImage *disketteImage;
             [removeCartItem setTarget:self];
     if (CARTRIDGE_main.type == CARTRIDGE_SDX_64 || CARTRIDGE_main.type == CARTRIDGE_SDX_128 ||
         CARTRIDGE_main.type == CARTRIDGE_ATRAX_SDX_64 || CARTRIDGE_main.type == CARTRIDGE_ATRAX_SDX_128)
-            [insertSecondCartItem setTarget:self];
-        else
-            [insertSecondCartItem setTarget:nil];
-        if (CARTRIDGE_piggyback.type == CARTRIDGE_NONE)
-            [removeSecondCartItem setTarget:nil];
-        else
-            [removeSecondCartItem setTarget:self];
-        if ((strcmp(CASSETTE_filename, "None") == 0) || (strlen(CASSETTE_filename) == 0)) {
-            [removeCassItem setTarget:nil];
-            [rewindCassItem setTarget:nil];
-            }
-        else {
-            [removeCassItem setTarget:self];
-            [rewindCassItem setTarget:self];
-            }
+        [insertSecondCartItem setTarget:self];
+    else
+        [insertSecondCartItem setTarget:nil];
+    if (CARTRIDGE_piggyback.type == CARTRIDGE_NONE)
+        [removeSecondCartItem setTarget:nil];
+    else
+        [removeSecondCartItem setTarget:self];
+    if (CASSETTE_status == CASSETTE_STATUS_NONE)
+        {
+        [removeCassItem setTarget:nil];
+        [rewindCassItem setTarget:nil];
+        }
+    else {
+        [removeCassItem setTarget:self];
+        [rewindCassItem setTarget:self];
+        }
 	
 	type = CalcAtariType(Atari800_machine_type, MEMORY_ram_size,
 						 MEMORY_axlon_num_banks > 0, MEMORY_mosaic_num_banks > 0);
@@ -843,7 +844,16 @@ NSImage *disketteImage;
 }
 
 /*------------------------------------------------------------------------------
-*  cassRewind - This method removes the inserted cassette.
+*  cassRecord - This method presses the record button on the cassette drive.
+*-----------------------------------------------------------------------------*/
+- (IBAction)cassRecord:(id)sender
+{
+    CASSETTE_record = 1 - CASSETTE_record;
+    [self updateMediaStatusWindow];
+}
+
+/*------------------------------------------------------------------------------
+*  cassRemove - This method removes the inserted cassette.
 *-----------------------------------------------------------------------------*/
 - (IBAction)cassRemove:(id)sender
 {
@@ -857,6 +867,16 @@ NSImage *disketteImage;
 - (IBAction)cassRewind:(id)sender
 {
     CASSETTE_Seek(1);
+}
+
+
+/*------------------------------------------------------------------------------
+*  cassStatusProtect - This is called when a drive Lock/Unlock is pressed.
+*-----------------------------------------------------------------------------*/
+- (IBAction)cassStatusProtect:(id)sender
+{
+    CASSETTE_writable = 1 - CASSETTE_writable;
+    [self updateMediaStatusWindow];
 }
 
 /*------------------------------------------------------------------------------
@@ -1109,8 +1129,8 @@ NSImage *disketteImage;
             }
         else {
             fclose(image);
-			if ((strcmp(CASSETTE_filename, "None") == 0) || (strlen(CASSETTE_filename) == 0))
-				CASSETTE_Remove();
+            if (CASSETTE_status == CASSETTE_STATUS_NONE)
+                CASSETTE_Remove();
 			ret = CASSETTE_Insert(cfilename);
 			if (! ret) 
 				[self displayError:@"Unable to Insert Cassette!"];
@@ -1784,8 +1804,9 @@ NSImage *disketteImage;
 *-----------------------------------------------------------------------------*/
 - (IBAction)cassStatusChange:(id)sender
 {
-	if ((strcmp(CASSETTE_filename, "None") == 0) || (strlen(CASSETTE_filename) == 0)) {
-		[self cassInsert:self];
+    if (CASSETTE_status == CASSETTE_STATUS_NONE)
+        {
+        [self cassInsert:self];
 		}
 	else {
 		[self cassRemove:self];
@@ -2202,8 +2223,11 @@ NSImage *disketteImage;
 		if (CASSETTE_status == CASSETTE_STATUS_NONE) {
 			[cassImageNameField setStringValue:@"Empty"];
 			[cassImageInsertButton setTitle:@"Insert"];
+            [cassImageRecordButton setEnabled:NO];
+            [cassImageProtectButton setEnabled:NO];
 			[cassImageView setImage:off410Image];
-			[cassImageSlider setEnabled:NO];
+            [cassImageLockView setImage:lockoffImage];
+            [cassImageSlider setEnabled:NO];
 			[cassImageSlider setIntValue:1];
 			[cassImageSliderCurrField setEnabled:NO];
 			[cassImageSliderMaxField setStringValue:@""];
@@ -2224,7 +2248,7 @@ NSImage *disketteImage;
 			[cassImageNameField setStringValue:[NSString stringWithCString:ptr encoding:NSASCIIStringEncoding]];
 			[cassImageInsertButton setTitle:@"Eject"];
 			[cassImageView setImage:on410Image];
-			printf("In UMSW curr=%d max=%d\n",current_block, max_block);
+			//printf("In UMSW curr=%d max=%d\n",current_block, max_block);
 			[cassImageSliderCurrField setIntValue:current_block];
 			[cassImageSliderMaxField  setIntValue:max_block];
 			[cassImageSlider setMaxValue:(float)max_block];
@@ -2232,7 +2256,21 @@ NSImage *disketteImage;
 			[cassImageSlider setEnabled:YES];
 			[cassImageSliderCurrField setEnabled:YES];
 			[cassImageSliderMaxField setEnabled:YES];
-			}
+            [cassImageRecordButton setEnabled:YES];
+            if (CASSETTE_record)
+                [cassImageRecordButton setState:NSOnState];
+            else
+                [cassImageRecordButton setState:NSOffState];
+            [cassImageProtectButton setEnabled:YES];
+            if (!CASSETTE_writable) {
+                [cassImageProtectButton setTitle:@"Lock"];
+                [cassImageLockView setImage:lockoffImage];
+            }
+            else {
+                [cassImageProtectButton setTitle:@"Unlock"];
+                [cassImageLockView setImage:lockImage];
+            }
+        }
 
 }
 
