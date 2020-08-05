@@ -470,12 +470,14 @@ NSImage *disketteImage;
         [removeSecondCartItem setTarget:self];
     if (CASSETTE_status == CASSETTE_STATUS_NONE)
         {
+        [protectCassItem setTarget:nil];
         [recordCassItem setTarget:nil];
         [recordCassItem setState:NSOffState];
         [removeCassItem setTarget:nil];
         [rewindCassItem setTarget:nil];
         }
     else {
+        [protectCassItem setTarget:self];
         [recordCassItem setTarget:self];
         [removeCassItem setTarget:self];
         [rewindCassItem setTarget:self];
@@ -483,6 +485,10 @@ NSImage *disketteImage;
             [recordCassItem setState:NSOnState];
         else
             [recordCassItem setState:NSOffState];
+        if (CASSETTE_write_protect)
+            [protectCassItem setState:NSOnState];
+        else
+            [protectCassItem setState:NSOffState];
         }
 	
 	type = CalcAtariType(Atari800_machine_type, MEMORY_ram_size,
@@ -885,6 +891,7 @@ NSImage *disketteImage;
 {
     CASSETTE_write_protect = 1 - CASSETTE_write_protect;
     [self updateMediaStatusWindow];
+    [self updateInfo];
 }
 
 /*------------------------------------------------------------------------------

@@ -350,6 +350,11 @@
                                     <action selector="cassRecord:" target="473" id="aJ5-5w-r5s"/>
                                 </connections>
                             </menuItem>
+                            <menuItem title="Cassette Write Protect" id="GhL-1U-SCu">
+                                <connections>
+                                    <action selector="cassStatusProtect:" target="473" id="qz2-qD-fqk"/>
+                                </connections>
+                            </menuItem>
                             <menuItem isSeparatorItem="YES" id="453">
                                 <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                             </menuItem>
@@ -408,8 +413,7 @@
                             <menuItem isSeparatorItem="YES" id="680">
                                 <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                             </menuItem>
-                            <menuItem title="Show Media Status Window" id="681">
-                                <modifierMask key="keyEquivalentModifierMask"/>
+                            <menuItem title="Show Media Status Window" keyEquivalent="t" id="681">
                                 <connections>
                                     <action selector="mediaStatusWindowShow:" target="473" id="682"/>
                                 </connections>
@@ -873,6 +877,7 @@ DQ
                 <outlet property="insertBasicItem" destination="WLj-Uh-rnt" id="FUW-ar-YqA"/>
                 <outlet property="insertSecondCartItem" destination="845" id="851"/>
                 <outlet property="printerPreviewItem" destination="786" id="811"/>
+                <outlet property="protectCassItem" destination="GhL-1U-SCu" id="fKd-cD-kG5"/>
                 <outlet property="recordCassItem" destination="96g-1U-6SU" id="pLM-F1-oVp"/>
                 <outlet property="removeCartItem" destination="414" id="552"/>
                 <outlet property="removeCassItem" destination="417" id="554"/>

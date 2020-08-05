@@ -62,8 +62,8 @@
             filePath = "MediaManager.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "519"
-            endingLineNumber = "519"
+            startingLineNumber = "525"
+            endingLineNumber = "525"
             landmarkName = "-browseFileInDirectory:"
             landmarkType = "7">
          </BreakpointContent>
@@ -78,8 +78,8 @@
             filePath = "MediaManager.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1165"
-            endingLineNumber = "1165"
+            startingLineNumber = "1172"
+            endingLineNumber = "1172"
             landmarkName = "-diskInsert:"
             landmarkType = "7">
          </BreakpointContent>
@@ -446,8 +446,8 @@
             filePath = "MediaManager.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2182"
-            endingLineNumber = "2182"
+            startingLineNumber = "2189"
+            endingLineNumber = "2189"
             landmarkName = "-updateMediaStatusWindow"
             landmarkType = "7">
          </BreakpointContent>
