@@ -238,11 +238,6 @@
                                     <action selector="showCreatePanel:" target="473" id="780"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="New Cassette Image..." id="820">
-                                <connections>
-                                    <action selector="createCassette:" target="473" id="821"/>
-                                </connections>
-                            </menuItem>
                             <menuItem title="Edit an .atr Disk Image..." keyEquivalent="e" id="771">
                                 <connections>
                                     <action selector="showEditorPanel:" target="473" id="772"/>
@@ -335,6 +330,11 @@
                                     <action selector="cassInsert:" target="473" id="494"/>
                                 </connections>
                             </menuItem>
+                            <menuItem title="New Cassette Image..." id="820">
+                                <connections>
+                                    <action selector="createCassette:" target="473" id="821"/>
+                                </connections>
+                            </menuItem>
                             <menuItem title="Remove Cassette" id="417">
                                 <connections>
                                     <action selector="cassRemove:" target="473" id="495"/>
@@ -343,6 +343,11 @@
                             <menuItem title="Rewind Cassette" id="472">
                                 <connections>
                                     <action selector="cassRewind:" target="473" id="496"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Cassette Record" id="96g-1U-6SU">
+                                <connections>
+                                    <action selector="cassRecord:" target="473" id="aJ5-5w-r5s"/>
                                 </connections>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="453">
@@ -868,6 +873,7 @@ DQ
                 <outlet property="insertBasicItem" destination="WLj-Uh-rnt" id="FUW-ar-YqA"/>
                 <outlet property="insertSecondCartItem" destination="845" id="851"/>
                 <outlet property="printerPreviewItem" destination="786" id="811"/>
+                <outlet property="recordCassItem" destination="96g-1U-6SU" id="pLM-F1-oVp"/>
                 <outlet property="removeCartItem" destination="414" id="552"/>
                 <outlet property="removeCassItem" destination="417" id="554"/>
                 <outlet property="removeD1Item" destination="404" id="505"/>
