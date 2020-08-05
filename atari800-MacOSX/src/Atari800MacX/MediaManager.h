@@ -56,6 +56,7 @@
     IBOutlet id removeD8Item;
     IBOutlet id removeCartItem;
     IBOutlet id removeSecondCartItem;
+    IBOutlet id recordCassItem;
     IBOutlet id removeCassItem;
     IBOutlet id rewindCassItem;
 	IBOutlet id selectPrinterPulldown;

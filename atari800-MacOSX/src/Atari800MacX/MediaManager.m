@@ -470,12 +470,19 @@ NSImage *disketteImage;
         [removeSecondCartItem setTarget:self];
     if (CASSETTE_status == CASSETTE_STATUS_NONE)
         {
+        [recordCassItem setTarget:nil];
+        [recordCassItem setState:NSOffState];
         [removeCassItem setTarget:nil];
         [rewindCassItem setTarget:nil];
         }
     else {
+        [recordCassItem setTarget:self];
         [removeCassItem setTarget:self];
         [rewindCassItem setTarget:self];
+        if (CASSETTE_record)
+            [recordCassItem setState:NSOnState];
+        else
+            [recordCassItem setState:NSOffState];
         }
 	
 	type = CalcAtariType(Atari800_machine_type, MEMORY_ram_size,
@@ -850,6 +857,7 @@ NSImage *disketteImage;
 {
     CASSETTE_record = 1 - CASSETTE_record;
     [self updateMediaStatusWindow];
+    [self updateInfo];
 }
 
 /*------------------------------------------------------------------------------
@@ -875,7 +883,7 @@ NSImage *disketteImage;
 *-----------------------------------------------------------------------------*/
 - (IBAction)cassStatusProtect:(id)sender
 {
-    CASSETTE_writable = 1 - CASSETTE_writable;
+    CASSETTE_write_protect = 1 - CASSETTE_write_protect;
     [self updateMediaStatusWindow];
 }
 
@@ -2262,7 +2270,7 @@ NSImage *disketteImage;
             else
                 [cassImageRecordButton setState:NSOffState];
             [cassImageProtectButton setEnabled:YES];
-            if (!CASSETTE_writable) {
+            if (!CASSETTE_write_protect) {
                 [cassImageProtectButton setTitle:@"Lock"];
                 [cassImageLockView setImage:lockoffImage];
             }
