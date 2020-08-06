@@ -604,7 +604,8 @@ NSImage *disketteImage;
     if (filename != nil) {
         [filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
         cartSize = CARTRIDGE_Insert(cfilename);
-
+        if (cartSize > 0)
+            CARTRIDGE_main.type = [self cartSelect:cartSize];
         memset(Screen_atari, 0, (Screen_HEIGHT * Screen_WIDTH));
         Atari_DisplayScreen((UBYTE *) Screen_atari);
         Atari800_Coldstart();
@@ -648,6 +649,8 @@ NSImage *disketteImage;
     if (filename != nil) {
         [filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
         cartSize = CARTRIDGE_Insert(cfilename);
+        if (cartSize > 0)
+            CARTRIDGE_main.type = [self cartSelect:cartSize];
 		memset(Screen_atari, 0, (Screen_HEIGHT * Screen_WIDTH));
 		Atari_DisplayScreen((UBYTE *) Screen_atari);
         Atari800_Coldstart();
