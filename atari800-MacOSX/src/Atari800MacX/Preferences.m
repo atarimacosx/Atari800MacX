@@ -1826,7 +1826,8 @@ static Preferences *sharedInstance = nil;
             [displayedValues setObject:four forKey:PrinterType];
             break;
 		}
-	[printerTabView selectTabViewItemAtIndex:[printerTypePulldown indexOfSelectedItem]];
+	// Get rid of this.  No need to select tab view based on pulldown.
+    // [printerTabView selectTabViewItemAtIndex:[printerTypePulldown indexOfSelectedItem]];
     switch([atari825CharSetPulldown indexOfSelectedItem]) {
         case 0:
 		default:
