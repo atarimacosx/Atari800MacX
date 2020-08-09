@@ -2383,7 +2383,7 @@ static void Devices_P_Write(void)
         CPU_regY = 1;
         CPU_ClrN;
     }
-    else if (currPrinter == 4)
+    else
     {
         if (byte == 0x9b)
             byte = 0x0D;
