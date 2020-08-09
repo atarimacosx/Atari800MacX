@@ -1128,10 +1128,8 @@ NSImage *disketteImage;
 *-----------------------------------------------------------------------------*/
 - (IBAction)createCassette:(id)sender
 {
-    FILE *image = NULL;
     NSString *filename;
     char cfilename[FILENAME_MAX];
-	int ret;
     
     PauseAudio(1);
     filename = [self saveFileInDirectory:[NSString stringWithCString:atari_cass_dir encoding:NSASCIIStringEncoding]:@"cas"];
@@ -2666,7 +2664,7 @@ NSImage *disketteImage;
             [[xep80Pulldown itemAtIndex:2] setTarget:self];
             [[xep80Pulldown itemAtIndex:3] setTarget:self];
             [[xep80Pulldown itemAtIndex:4] setTarget:self];
-            return TRUE;
+            break;
         case Atari800_MACHINE_XLXE:
             [[xep80Pulldown itemAtIndex:1] setTarget:self];
             [[xep80Pulldown itemAtIndex:2] setTarget:self];
