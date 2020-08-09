@@ -4344,6 +4344,9 @@ void ProcessMacMenus()
             PLATFORM_Switch80ColMode();
             }
 
+        if (Atari800_machine_type == Atari800_MACHINE_5200)
+            if (CARTRIDGE_main.type != CARTRIDGE_NONE)
+                CARTRIDGE_Remove();
         memset(Screen_atari, 0, (Screen_HEIGHT * Screen_WIDTH));
         Atari800_InitialiseMachine();
 		Atari800_Coldstart();
