@@ -127,105 +127,38 @@
     else if ([identifier isEqualToString:PopoverIdentifier])
     {
         NSPopoverTouchBarItem *thePopover = [[NSPopoverTouchBarItem alloc] initWithIdentifier:PopoverIdentifier];
-        thePopover.collapsedRepresentationLabel = NSLocalizedString(@"Ins/Del", @"");
+        thePopover.collapsedRepresentationLabel = NSLocalizedString(@"Ins/Del/F", @"");
         
         thePopover.popoverTouchBar.delegate = self;
         thePopover.popoverTouchBar.defaultItemIdentifiers =
-        @[InsertCharButtonIdentifier, InsertLineButtonIdentifier,DeleteCharButtonIdentifier,DeleteLineButtonIdentifier, F1ButtonIdentifier, F2ButtonIdentifier, F3ButtonIdentifier, F4ButtonIdentifier];
+        @[PopoverGroup];
  
         return thePopover;
     }
-    else if ([identifier isEqualToString:InsertCharButtonIdentifier])
+    else if ([identifier isEqualToString:PopoverGroup])
     {
-        NSButton *theLabel = [NSButton buttonWithTitle:NSLocalizedString(@"Ins Char", @"") target:[ControlManager sharedInstance] action:@selector(insertCharPressed:)];
+        NSButton *insCharButton = [NSButton buttonWithTitle:NSLocalizedString(@"Ins Char", @"") target:[ControlManager sharedInstance] action:@selector(insertCharPressed:)];
         
+        NSButton *insLineButton = [NSButton buttonWithTitle:NSLocalizedString(@"Ins Line", @"") target:[ControlManager sharedInstance] action:@selector(insertLinePressed:)];
+        
+        NSButton *delCharButton = [NSButton buttonWithTitle:NSLocalizedString(@"Del Char", @"") target:[ControlManager sharedInstance] action:@selector(deleteCharPressed:)];
+        
+        NSButton *delLineButton = [NSButton buttonWithTitle:NSLocalizedString(@"Del Line", @"") target:[ControlManager sharedInstance] action:@selector(deleteLinePressed:)];
+        
+        NSButton *f1Button = [NSButton buttonWithTitle:NSLocalizedString(@"F1", @"") target:[ControlManager sharedInstance] action:@selector(f1Pressed:)];
+        
+        NSButton *f2Button = [NSButton buttonWithTitle:NSLocalizedString(@"F2", @"") target:[ControlManager sharedInstance] action:@selector(f2Pressed:)];
+        
+        NSButton *f3Button = [NSButton buttonWithTitle:NSLocalizedString(@"F3", @"") target:[ControlManager sharedInstance] action:@selector(f3Pressed:)];
+        
+        NSButton *f4Button = [NSButton buttonWithTitle:NSLocalizedString(@"F4", @"") target:[ControlManager sharedInstance] action:@selector(f4Pressed:)];
+        
+        NSStackView *stackView = [NSStackView stackViewWithViews:@[insCharButton, insLineButton, delCharButton, delLineButton, f1Button, f2Button, f3Button, f4Button]];
+        stackView.spacing = 1;
+
         NSCustomTouchBarItem *customItemForLabel =
-            [[NSCustomTouchBarItem alloc] initWithIdentifier:InsertCharButtonIdentifier];
-        customItemForLabel.view = theLabel;
-        
-        customItemForLabel.visibilityPriority = NSTouchBarItemPriorityNormal;
-        
-        return customItemForLabel;
-    }
-    else if ([identifier isEqualToString:InsertLineButtonIdentifier])
-    {
-        NSButton *theLabel = [NSButton buttonWithTitle:NSLocalizedString(@"Ins Line", @"") target:[ControlManager sharedInstance] action:@selector(insertLinePressed:)];
-        
-        NSCustomTouchBarItem *customItemForLabel =
-            [[NSCustomTouchBarItem alloc] initWithIdentifier:InsertLineButtonIdentifier];
-        customItemForLabel.view = theLabel;
-        
-        customItemForLabel.visibilityPriority = NSTouchBarItemPriorityNormal;
-        
-        return customItemForLabel;
-    }
-    else if ([identifier isEqualToString:DeleteCharButtonIdentifier])
-    {
-        NSButton *theLabel = [NSButton buttonWithTitle:NSLocalizedString(@"Del Char", @"") target:[ControlManager sharedInstance] action:@selector(deleteCharPressed:)];
-        
-        NSCustomTouchBarItem *customItemForLabel =
-            [[NSCustomTouchBarItem alloc] initWithIdentifier:DeleteCharButtonIdentifier];
-        customItemForLabel.view = theLabel;
-        
-        customItemForLabel.visibilityPriority = NSTouchBarItemPriorityNormal;
-        
-        return customItemForLabel;
-    }
-    else if ([identifier isEqualToString:DeleteLineButtonIdentifier])
-    {
-        NSButton *theLabel = [NSButton buttonWithTitle:NSLocalizedString(@"Del Line", @"") target:[ControlManager sharedInstance] action:@selector(deleteLinePressed:)];
-        
-        NSCustomTouchBarItem *customItemForLabel =
-            [[NSCustomTouchBarItem alloc] initWithIdentifier:DeleteLineButtonIdentifier];
-        customItemForLabel.view = theLabel;
-        
-        customItemForLabel.visibilityPriority = NSTouchBarItemPriorityNormal;
-        
-        return customItemForLabel;
-    }
-    else if ([identifier isEqualToString:F1ButtonIdentifier])
-    {
-        NSButton *theLabel = [NSButton buttonWithTitle:NSLocalizedString(@"F1", @"") target:[ControlManager sharedInstance] action:@selector(f1Pressed:)];
-        
-        NSCustomTouchBarItem *customItemForLabel =
-            [[NSCustomTouchBarItem alloc] initWithIdentifier:F1ButtonIdentifier];
-        customItemForLabel.view = theLabel;
-        
-        customItemForLabel.visibilityPriority = NSTouchBarItemPriorityNormal;
-        
-        return customItemForLabel;
-    }
-    else if ([identifier isEqualToString:F2ButtonIdentifier])
-    {
-        NSButton *theLabel = [NSButton buttonWithTitle:NSLocalizedString(@"F2", @"") target:[ControlManager sharedInstance] action:@selector(f2Pressed:)];
-        
-        NSCustomTouchBarItem *customItemForLabel =
-            [[NSCustomTouchBarItem alloc] initWithIdentifier:F2ButtonIdentifier];
-        customItemForLabel.view = theLabel;
-        
-        customItemForLabel.visibilityPriority = NSTouchBarItemPriorityNormal;
-        
-        return customItemForLabel;
-    }
-    else if ([identifier isEqualToString:F3ButtonIdentifier])
-    {
-        NSButton *theLabel = [NSButton buttonWithTitle:NSLocalizedString(@"F3", @"") target:[ControlManager sharedInstance] action:@selector(f3Pressed:)];
-        
-        NSCustomTouchBarItem *customItemForLabel =
-            [[NSCustomTouchBarItem alloc] initWithIdentifier:F3ButtonIdentifier];
-        customItemForLabel.view = theLabel;
-        
-        customItemForLabel.visibilityPriority = NSTouchBarItemPriorityNormal;
-        
-        return customItemForLabel;
-    }
-    else if ([identifier isEqualToString:F4ButtonIdentifier])
-    {
-        NSButton *theLabel = [NSButton buttonWithTitle:NSLocalizedString(@"F4", @"") target:[ControlManager sharedInstance] action:@selector(f4Pressed:)];
-        
-        NSCustomTouchBarItem *customItemForLabel =
-            [[NSCustomTouchBarItem alloc] initWithIdentifier:F4ButtonIdentifier];
-        customItemForLabel.view = theLabel;
+            [[NSCustomTouchBarItem alloc] initWithIdentifier:PopoverGroup];
+        customItemForLabel.view = stackView;
         
         customItemForLabel.visibilityPriority = NSTouchBarItemPriorityNormal;
         
