@@ -134,7 +134,7 @@
         
         thePopover.popoverTouchBar.delegate = self;
         thePopover.popoverTouchBar.defaultItemIdentifiers =
-        @[PopoverGroup1, PopoverGroup2];
+        @[PopoverGroup1];
  
         return thePopover;
     }
@@ -148,19 +148,6 @@
         
         NSButton *delLineButton = [NSButton buttonWithTitle:NSLocalizedString(@"Del Line", @"") target:[ControlManager sharedInstance] action:@selector(deleteLinePressed:)];
         
-        NSStackView *stackView = [NSStackView stackViewWithViews:@[insCharButton, insLineButton, delCharButton, delLineButton]];
-        stackView.spacing = 1;
-
-        NSCustomTouchBarItem *customItemForLabel =
-            [[NSCustomTouchBarItem alloc] initWithIdentifier:PopoverGroup1];
-        customItemForLabel.view = stackView;
-        
-        customItemForLabel.visibilityPriority = NSTouchBarItemPriorityNormal;
-        
-        return customItemForLabel;
-    }
-    else if ([identifier isEqualToString:PopoverGroup2])
-    {
         NSButton *f1Button = [NSButton buttonWithTitle:NSLocalizedString(@"F1", @"") target:[ControlManager sharedInstance] action:@selector(f1Pressed:)];
         
         NSButton *f2Button = [NSButton buttonWithTitle:NSLocalizedString(@"F2", @"") target:[ControlManager sharedInstance] action:@selector(f2Pressed:)];
@@ -169,11 +156,11 @@
         
         NSButton *f4Button = [NSButton buttonWithTitle:NSLocalizedString(@"F4", @"") target:[ControlManager sharedInstance] action:@selector(f4Pressed:)];
         
-        NSStackView *stackView = [NSStackView stackViewWithViews:@[f1Button, f2Button, f3Button, f4Button]];
+        NSStackView *stackView = [NSStackView stackViewWithViews:@[insCharButton, insLineButton, delCharButton, delLineButton, f1Button, f2Button, f3Button, f4Button]];
         stackView.spacing = 1;
 
         NSCustomTouchBarItem *customItemForLabel =
-            [[NSCustomTouchBarItem alloc] initWithIdentifier:PopoverGroup2];
+            [[NSCustomTouchBarItem alloc] initWithIdentifier:PopoverGroup1];
         customItemForLabel.view = stackView;
         
         customItemForLabel.visibilityPriority = NSTouchBarItemPriorityNormal;
