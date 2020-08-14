@@ -16,6 +16,8 @@
 #define ClearButtonIdentifier @"ClearButton"
 #define InverseButtonIdentifier @"InverseButton"
 #define PopoverIdentifier @"Popover"
+#define TopLevelGroup @"TopLevel"
+#define PopoverGroup @"PopGroup"
 #define InsertCharButtonIdentifier @"InsertCharButton"
 #define InsertLineButtonIdentifier @"InsertLineButton"
 #define DeleteCharButtonIdentifier @"DeleteCharButton"
@@ -44,7 +46,7 @@
         
     // Set the default ordering of items.
     bar.defaultItemIdentifiers =
-        @[ColdButtonIdentifier,WarmButtonIdentifier,OptionButtonIdentifier,SelectButtonIdentifier,StartButtonIdentifier,ClearButtonIdentifier, InverseButtonIdentifier,PopoverIdentifier,NSTouchBarItemIdentifierOtherItemsProxy];
+        @[TopLevelGroup,PopoverIdentifier,NSTouchBarItemIdentifierOtherItemsProxy];
     
     return bar;
     }
@@ -52,134 +54,71 @@
 // This gets called while the NSTouchBar is being constructed, for each NSTouchBarItem to be created.
 - (nullable NSTouchBarItem *)touchBar:(NSTouchBar *)touchBar makeItemForIdentifier:(NSTouchBarItemIdentifier)identifier
 {
-    if ([identifier isEqualToString:ColdButtonIdentifier])
+    NSDictionary *attrsDictionary;
+    NSAttributedString *attrString;
+    NSMutableParagraphStyle *style;
+    
+    if ([identifier isEqualToString:TopLevelGroup])
     {
-        NSButton *theLabel = [NSButton buttonWithTitle:NSLocalizedString(@"Power", @"") target:[ControlManager sharedInstance] action:@selector(coldReset:)];
-        [theLabel sizeToFit];
-        theLabel.target = [ControlManager sharedInstance];
-        theLabel.action = @selector(coldReset:);
+        NSButton *coldButton = [NSButton buttonWithTitle:NSLocalizedString(@"Power", @"") target:[ControlManager sharedInstance] action:@selector(coldReset:)];
         
-        NSCustomTouchBarItem *customItemForLabel =
-            [[NSCustomTouchBarItem alloc] initWithIdentifier:ColdButtonIdentifier];
-        customItemForLabel.view = theLabel;
-        
-        customItemForLabel.visibilityPriority = NSTouchBarItemPriorityHigh;
-        
-        return customItemForLabel;
-    }
-    else if ([identifier isEqualToString:WarmButtonIdentifier])
-    {
-        NSButton *theLabel = [NSButton buttonWithTitle:NSLocalizedString(@"Reset", @"") target:[ControlManager sharedInstance] action:@selector(warmReset:)];
+       NSButton *warmButton = [NSButton buttonWithTitle:NSLocalizedString(@"Reset", @"") target:[ControlManager sharedInstance] action:@selector(warmReset:)];
 
-        theLabel.bezelColor = [NSColor colorWithSRGBRed:0.639 green:0.420 blue:0.2 alpha:1.0];
-        NSMutableParagraphStyle *style = [[NSMutableParagraphStyle alloc] init];
+        warmButton.bezelColor = [NSColor colorWithSRGBRed:0.639 green:0.420 blue:0.2 alpha:1.0];
+        style = [[NSMutableParagraphStyle alloc] init];
         [style setAlignment:NSTextAlignmentCenter];
-        NSDictionary *attrsDictionary  = [NSDictionary dictionaryWithObjectsAndKeys:
+        attrsDictionary  = [NSDictionary dictionaryWithObjectsAndKeys:
                     NSColor.blackColor, NSForegroundColorAttributeName,
-                    theLabel.font, NSFontAttributeName,
+                    warmButton.font, NSFontAttributeName,
                     style, NSParagraphStyleAttributeName, nil];
-        NSAttributedString *attrString = [[NSAttributedString alloc]initWithString:theLabel.title attributes:attrsDictionary];
-        [theLabel setAttributedTitle:attrString];
+        attrString = [[NSAttributedString alloc]initWithString:warmButton.title attributes:attrsDictionary];
+        [warmButton setAttributedTitle:attrString];
 
-        NSCustomTouchBarItem *customItemForLabel =
-            [[NSCustomTouchBarItem alloc] initWithIdentifier:WarmButtonIdentifier];
-        customItemForLabel.view = theLabel;
-        
-        
-        customItemForLabel.visibilityPriority = NSTouchBarItemPriorityHigh;
-        
-        return customItemForLabel;
-    }
-    else if ([identifier isEqualToString:OptionButtonIdentifier])
-    {
-        NSButton *theLabel = [NSButton buttonWithTitle:NSLocalizedString(@"Option", @"") target:[ControlManager sharedInstance] action:@selector(optionPressed:)];
+        NSButton *optionButton = [NSButton buttonWithTitle:NSLocalizedString(@"Option", @"") target:[ControlManager sharedInstance] action:@selector(optionPressed:)];
 
-        theLabel.bezelColor = [NSColor colorWithSRGBRed:0.761 green:0.525 blue:0.247 alpha:1.0];
-        NSMutableParagraphStyle *style = [[NSMutableParagraphStyle alloc] init];
+        optionButton.bezelColor = [NSColor colorWithSRGBRed:0.761 green:0.525 blue:0.247 alpha:1.0];
+        style = [[NSMutableParagraphStyle alloc] init];
         [style setAlignment:NSTextAlignmentCenter];
-        NSDictionary *attrsDictionary  = [NSDictionary dictionaryWithObjectsAndKeys:
+        attrsDictionary  = [NSDictionary dictionaryWithObjectsAndKeys:
                     NSColor.blackColor, NSForegroundColorAttributeName,
-                    theLabel.font, NSFontAttributeName,
+                    optionButton.font, NSFontAttributeName,
                     style, NSParagraphStyleAttributeName, nil];
-        NSAttributedString *attrString = [[NSAttributedString alloc]initWithString:theLabel.title attributes:attrsDictionary];
-        [theLabel setAttributedTitle:attrString];
-        [theLabel sizeToFit];
+        attrString = [[NSAttributedString alloc]initWithString:optionButton.title attributes:attrsDictionary];
+        [optionButton setAttributedTitle:attrString];
 
-        NSCustomTouchBarItem *customItemForLabel =
-            [[NSCustomTouchBarItem alloc] initWithIdentifier:OptionButtonIdentifier];
-        customItemForLabel.view = theLabel;
-        
-        customItemForLabel.visibilityPriority = NSTouchBarItemPriorityHigh;
-        
-        return customItemForLabel;
-    }
-    else if ([identifier isEqualToString:SelectButtonIdentifier])
-    {
-        NSButton *theLabel = [NSButton buttonWithTitle:NSLocalizedString(@"Select", @"") target:[ControlManager sharedInstance] action:@selector(selectPressed:)];
+        NSButton *selectButton = [NSButton buttonWithTitle:NSLocalizedString(@"Select", @"") target:[ControlManager sharedInstance] action:@selector(selectPressed:)];
 
-        theLabel.bezelColor = [NSColor colorWithSRGBRed:0.890 green:0.635 blue:0.267 alpha:1.0];
-        NSMutableParagraphStyle *style = [[NSMutableParagraphStyle alloc] init];
+        selectButton.bezelColor = [NSColor colorWithSRGBRed:0.890 green:0.635 blue:0.267 alpha:1.0];
+        style = [[NSMutableParagraphStyle alloc] init];
         [style setAlignment:NSTextAlignmentCenter];
-        NSDictionary *attrsDictionary  = [NSDictionary dictionaryWithObjectsAndKeys:
+        attrsDictionary  = [NSDictionary dictionaryWithObjectsAndKeys:
                     NSColor.blackColor, NSForegroundColorAttributeName,
-                    theLabel.font, NSFontAttributeName,
+                    selectButton.font, NSFontAttributeName,
                     style, NSParagraphStyleAttributeName, nil];
-        NSAttributedString *attrString = [[NSAttributedString alloc]initWithString:theLabel.title attributes:attrsDictionary];
-        [theLabel setAttributedTitle:attrString];
-        [theLabel sizeToFit];
+        attrString = [[NSAttributedString alloc]initWithString:selectButton.title attributes:attrsDictionary];
+        [selectButton setAttributedTitle:attrString];
+ 
+        NSButton *startButton = [NSButton buttonWithTitle:NSLocalizedString(@"Start", @"") target:[ControlManager sharedInstance] action:@selector(startPressed:)];
 
-        NSCustomTouchBarItem *customItemForLabel =
-            [[NSCustomTouchBarItem alloc] initWithIdentifier:SelectButtonIdentifier];
-        customItemForLabel.view = theLabel;
-        
-        customItemForLabel.visibilityPriority = NSTouchBarItemPriorityHigh;
-        
-        return customItemForLabel;
-    }
-    else if ([identifier isEqualToString:StartButtonIdentifier])
-    {
-        NSButton *theLabel = [NSButton buttonWithTitle:NSLocalizedString(@"Start", @"") target:[ControlManager sharedInstance] action:@selector(startPressed:)];
-
-        theLabel.bezelColor = [NSColor colorWithSRGBRed:0.906 green:0.682 blue:0.263 alpha:1.0];
-        NSMutableParagraphStyle *style = [[NSMutableParagraphStyle alloc] init];
+        startButton.bezelColor = [NSColor colorWithSRGBRed:0.906 green:0.682 blue:0.263 alpha:1.0];
+        style = [[NSMutableParagraphStyle alloc] init];
         [style setAlignment:NSTextAlignmentCenter];
-        NSDictionary *attrsDictionary  = [NSDictionary dictionaryWithObjectsAndKeys:
+        attrsDictionary  = [NSDictionary dictionaryWithObjectsAndKeys:
                     NSColor.blackColor, NSForegroundColorAttributeName,
-                    theLabel.font, NSFontAttributeName,
+                    startButton.font, NSFontAttributeName,
                     style, NSParagraphStyleAttributeName, nil];
-        NSAttributedString *attrString = [[NSAttributedString alloc]initWithString:theLabel.title attributes:attrsDictionary];
-        [theLabel setAttributedTitle:attrString];
-        [theLabel sizeToFit];
+        attrString = [[NSAttributedString alloc]initWithString:startButton.title attributes:attrsDictionary];
+        [startButton setAttributedTitle:attrString];
 
-        NSCustomTouchBarItem *customItemForLabel =
-            [[NSCustomTouchBarItem alloc] initWithIdentifier:StartButtonIdentifier];
-        customItemForLabel.view = theLabel;
-        
-        customItemForLabel.visibilityPriority = NSTouchBarItemPriorityHigh;
-        
-        return customItemForLabel;
-    }
-    else if ([identifier isEqualToString:ClearButtonIdentifier])
-    {
-        NSButton *theLabel = [NSButton buttonWithTitle:NSLocalizedString(@"Clear", @"") target:[ControlManager sharedInstance] action:@selector(clearPressed:)];
-        [theLabel sizeToFit];
+        NSButton *clearButton = [NSButton buttonWithTitle:NSLocalizedString(@"Clear", @"") target:[ControlManager sharedInstance] action:@selector(clearPressed:)];
 
+        NSButton *inverseButton = [NSButton buttonWithTitle:NSLocalizedString(@"Inverse", @"") target:[ControlManager sharedInstance] action:@selector(inversePressed:)];
+        
+        NSStackView *stackView = [NSStackView stackViewWithViews:@[coldButton, warmButton, optionButton, selectButton, startButton, clearButton, inverseButton]];
+        stackView.spacing = 1;
         NSCustomTouchBarItem *customItemForLabel =
-            [[NSCustomTouchBarItem alloc] initWithIdentifier:ClearButtonIdentifier];
-        customItemForLabel.view = theLabel;
-        
-        customItemForLabel.visibilityPriority = NSTouchBarItemPriorityHigh;
-        
-        return customItemForLabel;
-    }
-    else if ([identifier isEqualToString:InverseButtonIdentifier])
-    {
-        NSButton *theLabel = [NSButton buttonWithTitle:NSLocalizedString(@"Inverse", @"") target:[ControlManager sharedInstance] action:@selector(inversePressed:)];
-        [theLabel sizeToFit];
-        
-        NSCustomTouchBarItem *customItemForLabel =
-            [[NSCustomTouchBarItem alloc] initWithIdentifier:InverseButtonIdentifier];
-        customItemForLabel.view = theLabel;
+            [[NSCustomTouchBarItem alloc] initWithIdentifier:TopLevelGroup];
+        customItemForLabel.view = stackView;
         
         customItemForLabel.visibilityPriority = NSTouchBarItemPriorityHigh;
         
