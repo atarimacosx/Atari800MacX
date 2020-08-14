@@ -224,6 +224,15 @@
 - (IBAction)optionPressed:(id)sender;
 - (IBAction)selectPressed:(id)sender;
 - (IBAction)inversePressed:(id)sender;
+- (IBAction)clearPressed:(id)sender;
+- (IBAction)insertCharPressed:(id)sender;
+- (IBAction)insertLinePressed:(id)sender;
+- (IBAction)deleteCharPressed:(id)sender;
+- (IBAction)deleteLinePressed:(id)sender;
+- (IBAction)f1Pressed:(id)sender;
+- (IBAction)f2Pressed:(id)sender;
+- (IBAction)f3Pressed:(id)sender;
+- (IBAction)f4Pressed:(id)sender;
 - (IBAction)functionKeyWindowShow:(id)sender;
 - (NSString *) hexStringFromShort:(unsigned short)a;
 - (NSMutableAttributedString *) colorFromShort:(unsigned short)a:(unsigned short)old_a;

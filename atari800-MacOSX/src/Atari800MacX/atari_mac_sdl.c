@@ -418,6 +418,15 @@ int startFunctionPressed = 0;
 int selectFunctionPressed = 0;
 int optionFunctionPressed = 0;
 int inverseFunctionPressed = 0;
+int clearFunctionPressed = 0;
+int insertCharFunctionPressed = 0;
+int insertLineFunctionPressed = 0;
+int deleteCharFunctionPressed = 0;
+int deleteLineFunctionPressed = 0;
+int f1FunctionPressed = 0;
+int f2FunctionPressed = 0;
+int f3FunctionPressed = 0;
+int f4FunctionPressed = 0;
 
 /* Mouse and joystick related stuff from Input.c */
 int INPUT_key_code = AKEY_NONE;
@@ -1309,6 +1318,51 @@ int Atari_Keyboard_International(void)
     if (inverseFunctionPressed) {
         inverseFunctionPressed = 0;
         return AKEY_ATARI;
+    }
+    
+    if (clearFunctionPressed) {
+        clearFunctionPressed = 0;
+        return AKEY_CLEAR;
+    }
+    
+    if (insertCharFunctionPressed) {
+        insertCharFunctionPressed = 0;
+        return AKEY_INSERT_CHAR;
+    }
+    
+    if (insertLineFunctionPressed) {
+        insertLineFunctionPressed = 0;
+        return AKEY_INSERT_LINE;
+    }
+    
+    if (deleteCharFunctionPressed) {
+        deleteCharFunctionPressed = 0;
+        return AKEY_DELETE_CHAR;
+    }
+    
+    if (deleteLineFunctionPressed) {
+        deleteLineFunctionPressed = 0;
+        return AKEY_DELETE_LINE;
+    }
+    
+    if (f1FunctionPressed) {
+        f1FunctionPressed = 0;
+        return AKEY_F1;
+    }
+    
+    if (f2FunctionPressed) {
+        f2FunctionPressed = 0;
+        return AKEY_F2;
+    }
+    
+    if (f3FunctionPressed) {
+        f3FunctionPressed = 0;
+        return AKEY_F3;
+    }
+    
+    if (f4FunctionPressed) {
+        f4FunctionPressed = 0;
+        return AKEY_F4;
     }
     
     if (pasteState != PASTE_IDLE) {

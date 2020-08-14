@@ -20,6 +20,10 @@
 #define InsertLineButtonIdentifier @"InsertLineButton"
 #define DeleteCharButtonIdentifier @"DeleteCharButton"
 #define DeleteLineButtonIdentifier @"DeleteLineButton"
+#define F1ButtonIdentifier @"F1Button"
+#define F2ButtonIdentifier @"F2Button"
+#define F3ButtonIdentifier @"F3Button"
+#define F4ButtonIdentifier @"F4Button"
 
 @interface Atari800WindowController ()
 
@@ -40,7 +44,7 @@
         
     // Set the default ordering of items.
     bar.defaultItemIdentifiers =
-        @[ColdButtonIdentifier,WarmButtonIdentifier,OptionButtonIdentifier,SelectButtonIdentifier,StartButtonIdentifier,ClearButtonIdentifier, InverseButtonIdentifier,PopoverIdentifier,NSTouchBarItemIdentifierOtherItemsProxy];// InsertCharButtonIdentifier, InsertLineButtonIdentifier,DeleteCharButtonIdentifier,DeleteLineButtonIdentifier,NSTouchBarItemIdentifierOtherItemsProxy];//,WarmButtonIdentifier, NSTouchBarItemIdentifierOtherItemsProxy];
+        @[ColdButtonIdentifier,WarmButtonIdentifier,OptionButtonIdentifier,SelectButtonIdentifier,StartButtonIdentifier,ClearButtonIdentifier, InverseButtonIdentifier,PopoverIdentifier,NSTouchBarItemIdentifierOtherItemsProxy];
     
     return bar;
     }
@@ -53,13 +57,12 @@
         NSButton *theLabel = [NSButton buttonWithTitle:NSLocalizedString(@"Power", @"") target:[ControlManager sharedInstance] action:@selector(coldReset:)];
         [theLabel sizeToFit];
         theLabel.target = [ControlManager sharedInstance];
-        theLabel.action = @selector(startPressed:);
+        theLabel.action = @selector(coldReset:);
         
         NSCustomTouchBarItem *customItemForLabel =
             [[NSCustomTouchBarItem alloc] initWithIdentifier:ColdButtonIdentifier];
         customItemForLabel.view = theLabel;
         
-        // You want this label to always be visible no matter how many items are in the NSTouchBar instance.
         customItemForLabel.visibilityPriority = NSTouchBarItemPriorityHigh;
         
         return customItemForLabel;
@@ -83,7 +86,6 @@
         customItemForLabel.view = theLabel;
         
         
-        // You want this label to always be visible no matter how many items are in the NSTouchBar instance.
         customItemForLabel.visibilityPriority = NSTouchBarItemPriorityHigh;
         
         return customItemForLabel;
@@ -107,7 +109,6 @@
             [[NSCustomTouchBarItem alloc] initWithIdentifier:OptionButtonIdentifier];
         customItemForLabel.view = theLabel;
         
-        // You want this label to always be visible no matter how many items are in the NSTouchBar instance.
         customItemForLabel.visibilityPriority = NSTouchBarItemPriorityHigh;
         
         return customItemForLabel;
@@ -131,7 +132,6 @@
             [[NSCustomTouchBarItem alloc] initWithIdentifier:SelectButtonIdentifier];
         customItemForLabel.view = theLabel;
         
-        // You want this label to always be visible no matter how many items are in the NSTouchBar instance.
         customItemForLabel.visibilityPriority = NSTouchBarItemPriorityHigh;
         
         return customItemForLabel;
@@ -155,41 +155,32 @@
             [[NSCustomTouchBarItem alloc] initWithIdentifier:StartButtonIdentifier];
         customItemForLabel.view = theLabel;
         
-        // You want this label to always be visible no matter how many items are in the NSTouchBar instance.
         customItemForLabel.visibilityPriority = NSTouchBarItemPriorityHigh;
         
         return customItemForLabel;
     }
     else if ([identifier isEqualToString:ClearButtonIdentifier])
     {
-        NSButton *theLabel = [NSButton buttonWithTitle:NSLocalizedString(@"Clear", @"") target:self action:nil];
+        NSButton *theLabel = [NSButton buttonWithTitle:NSLocalizedString(@"Clear", @"") target:[ControlManager sharedInstance] action:@selector(clearPressed:)];
         [theLabel sizeToFit];
 
-        theLabel.target = [ControlManager sharedInstance];
-        theLabel.action = @selector(startPressed:);
-        
         NSCustomTouchBarItem *customItemForLabel =
             [[NSCustomTouchBarItem alloc] initWithIdentifier:ClearButtonIdentifier];
         customItemForLabel.view = theLabel;
         
-        // You want this label to always be visible no matter how many items are in the NSTouchBar instance.
         customItemForLabel.visibilityPriority = NSTouchBarItemPriorityHigh;
         
         return customItemForLabel;
     }
     else if ([identifier isEqualToString:InverseButtonIdentifier])
     {
-        NSButton *theLabel = [NSButton buttonWithTitle:NSLocalizedString(@"Inverse", @"") target:self action:nil];
+        NSButton *theLabel = [NSButton buttonWithTitle:NSLocalizedString(@"Inverse", @"") target:[ControlManager sharedInstance] action:@selector(inversePressed:)];
         [theLabel sizeToFit];
-
-        theLabel.target = [ControlManager sharedInstance];
-        theLabel.action = @selector(inversePressed:);
         
         NSCustomTouchBarItem *customItemForLabel =
             [[NSCustomTouchBarItem alloc] initWithIdentifier:InverseButtonIdentifier];
         customItemForLabel.view = theLabel;
         
-        // You want this label to always be visible no matter how many items are in the NSTouchBar instance.
         customItemForLabel.visibilityPriority = NSTouchBarItemPriorityHigh;
         
         return customItemForLabel;
@@ -197,77 +188,111 @@
     else if ([identifier isEqualToString:PopoverIdentifier])
     {
         NSPopoverTouchBarItem *thePopover = [[NSPopoverTouchBarItem alloc] initWithIdentifier:PopoverIdentifier];
-
-        [thePopover setCustomizationLabel:NSLocalizedString(@"Ins/Del", @"")];
-        //thePopover.popoverTouchBar =
+        thePopover.collapsedRepresentationLabel = NSLocalizedString(@"Ins/Del", @"");
+        
+        thePopover.popoverTouchBar.delegate = self;
+        thePopover.popoverTouchBar.defaultItemIdentifiers =
+        @[InsertCharButtonIdentifier, InsertLineButtonIdentifier,DeleteCharButtonIdentifier,DeleteLineButtonIdentifier, F1ButtonIdentifier, F2ButtonIdentifier, F3ButtonIdentifier, F4ButtonIdentifier];
+ 
         return thePopover;
     }
-#if 0
     else if ([identifier isEqualToString:InsertCharButtonIdentifier])
     {
-        NSButton *theLabel = [NSButton buttonWithTitle:NSLocalizedString(@"InsertC", @"") target:self action:nil];
-        
-        theLabel.target = [ControlManager sharedInstance];
-        theLabel.action = @selector(startPressed:);
+        NSButton *theLabel = [NSButton buttonWithTitle:NSLocalizedString(@"Ins Char", @"") target:[ControlManager sharedInstance] action:@selector(insertCharPressed:)];
         
         NSCustomTouchBarItem *customItemForLabel =
             [[NSCustomTouchBarItem alloc] initWithIdentifier:InsertCharButtonIdentifier];
         customItemForLabel.view = theLabel;
         
-        // You want this label to always be visible no matter how many items are in the NSTouchBar instance.
         customItemForLabel.visibilityPriority = NSTouchBarItemPriorityNormal;
         
         return customItemForLabel;
     }
     else if ([identifier isEqualToString:InsertLineButtonIdentifier])
     {
-        NSButton *theLabel = [NSButton buttonWithTitle:NSLocalizedString(@"InsertL", @"") target:self action:nil];
-        
-        theLabel.target = [ControlManager sharedInstance];
-        theLabel.action = @selector(startPressed:);
+        NSButton *theLabel = [NSButton buttonWithTitle:NSLocalizedString(@"Ins Line", @"") target:[ControlManager sharedInstance] action:@selector(insertLinePressed:)];
         
         NSCustomTouchBarItem *customItemForLabel =
             [[NSCustomTouchBarItem alloc] initWithIdentifier:InsertLineButtonIdentifier];
         customItemForLabel.view = theLabel;
         
-        // You want this label to always be visible no matter how many items are in the NSTouchBar instance.
         customItemForLabel.visibilityPriority = NSTouchBarItemPriorityNormal;
         
         return customItemForLabel;
     }
     else if ([identifier isEqualToString:DeleteCharButtonIdentifier])
     {
-        NSButton *theLabel = [NSButton buttonWithTitle:NSLocalizedString(@"DeleteC", @"") target:self action:nil];
-        
-        theLabel.target = [ControlManager sharedInstance];
-        theLabel.action = @selector(startPressed:);
+        NSButton *theLabel = [NSButton buttonWithTitle:NSLocalizedString(@"Del Char", @"") target:[ControlManager sharedInstance] action:@selector(deleteCharPressed:)];
         
         NSCustomTouchBarItem *customItemForLabel =
             [[NSCustomTouchBarItem alloc] initWithIdentifier:DeleteCharButtonIdentifier];
         customItemForLabel.view = theLabel;
         
-        // You want this label to always be visible no matter how many items are in the NSTouchBar instance.
         customItemForLabel.visibilityPriority = NSTouchBarItemPriorityNormal;
         
         return customItemForLabel;
     }
     else if ([identifier isEqualToString:DeleteLineButtonIdentifier])
     {
-        NSButton *theLabel = [NSButton buttonWithTitle:NSLocalizedString(@"DeleteL", @"") target:self action:nil];
-        
-        theLabel.target = [ControlManager sharedInstance];
-        theLabel.action = @selector(startPressed:);
+        NSButton *theLabel = [NSButton buttonWithTitle:NSLocalizedString(@"Del Line", @"") target:[ControlManager sharedInstance] action:@selector(deleteLinePressed:)];
         
         NSCustomTouchBarItem *customItemForLabel =
             [[NSCustomTouchBarItem alloc] initWithIdentifier:DeleteLineButtonIdentifier];
         customItemForLabel.view = theLabel;
         
-        // You want this label to always be visible no matter how many items are in the NSTouchBar instance.
         customItemForLabel.visibilityPriority = NSTouchBarItemPriorityNormal;
         
         return customItemForLabel;
     }
-#endif
+    else if ([identifier isEqualToString:F1ButtonIdentifier])
+    {
+        NSButton *theLabel = [NSButton buttonWithTitle:NSLocalizedString(@"F1", @"") target:[ControlManager sharedInstance] action:@selector(f1Pressed:)];
+        
+        NSCustomTouchBarItem *customItemForLabel =
+            [[NSCustomTouchBarItem alloc] initWithIdentifier:F1ButtonIdentifier];
+        customItemForLabel.view = theLabel;
+        
+        customItemForLabel.visibilityPriority = NSTouchBarItemPriorityNormal;
+        
+        return customItemForLabel;
+    }
+    else if ([identifier isEqualToString:F2ButtonIdentifier])
+    {
+        NSButton *theLabel = [NSButton buttonWithTitle:NSLocalizedString(@"F2", @"") target:[ControlManager sharedInstance] action:@selector(f2Pressed:)];
+        
+        NSCustomTouchBarItem *customItemForLabel =
+            [[NSCustomTouchBarItem alloc] initWithIdentifier:F2ButtonIdentifier];
+        customItemForLabel.view = theLabel;
+        
+        customItemForLabel.visibilityPriority = NSTouchBarItemPriorityNormal;
+        
+        return customItemForLabel;
+    }
+    else if ([identifier isEqualToString:F3ButtonIdentifier])
+    {
+        NSButton *theLabel = [NSButton buttonWithTitle:NSLocalizedString(@"F3", @"") target:[ControlManager sharedInstance] action:@selector(f3Pressed:)];
+        
+        NSCustomTouchBarItem *customItemForLabel =
+            [[NSCustomTouchBarItem alloc] initWithIdentifier:F3ButtonIdentifier];
+        customItemForLabel.view = theLabel;
+        
+        customItemForLabel.visibilityPriority = NSTouchBarItemPriorityNormal;
+        
+        return customItemForLabel;
+    }
+    else if ([identifier isEqualToString:F4ButtonIdentifier])
+    {
+        NSButton *theLabel = [NSButton buttonWithTitle:NSLocalizedString(@"F4", @"") target:[ControlManager sharedInstance] action:@selector(f4Pressed:)];
+        
+        NSCustomTouchBarItem *customItemForLabel =
+            [[NSCustomTouchBarItem alloc] initWithIdentifier:F4ButtonIdentifier];
+        customItemForLabel.view = theLabel;
+        
+        customItemForLabel.visibilityPriority = NSTouchBarItemPriorityNormal;
+        
+        return customItemForLabel;
+    }
+
     return nil;
 }
 
