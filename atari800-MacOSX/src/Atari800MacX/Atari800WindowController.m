@@ -135,7 +135,8 @@
         thePopover.popoverTouchBar.delegate = self;
         thePopover.popoverTouchBar.defaultItemIdentifiers =
         @[PopoverGroup1];
- 
+        thePopover.visibilityPriority = NSTouchBarItemPriorityHigh;
+
         return thePopover;
     }
     else if ([identifier isEqualToString:PopoverGroup1])
