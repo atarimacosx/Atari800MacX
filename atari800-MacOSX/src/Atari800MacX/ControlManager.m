@@ -65,6 +65,7 @@ extern int selectFunctionPressed;
 extern int optionFunctionPressed;
 extern int inverseFunctionPressed;
 extern int clearFunctionPressed;
+extern int helpFunctionPressed;
 extern int insertCharFunctionPressed;
 extern int insertLineFunctionPressed;
 extern int deleteCharFunctionPressed;
@@ -1119,6 +1120,15 @@ static int monitorRunFirstTime = 1;
 - (IBAction)clearPressed:(id)sender
 {
     clearFunctionPressed = FUNCTION_KEY_PRESS_DURATION;
+}
+
+/*------------------------------------------------------------------------------
+ *  helpPressed - Handle the user pressing the help button in the function
+ *     keys window.  We want to hold it down for Duration frames.
+ *-----------------------------------------------------------------------------*/
+- (IBAction)helpPressed:(id)sender
+{
+    helpFunctionPressed = FUNCTION_KEY_PRESS_DURATION;
 }
 
 /*------------------------------------------------------------------------------

@@ -419,6 +419,7 @@ int selectFunctionPressed = 0;
 int optionFunctionPressed = 0;
 int inverseFunctionPressed = 0;
 int clearFunctionPressed = 0;
+int helpFunctionPressed = 0;
 int insertCharFunctionPressed = 0;
 int insertLineFunctionPressed = 0;
 int deleteCharFunctionPressed = 0;
@@ -1302,66 +1303,74 @@ int Atari_Keyboard_International(void)
         INPUT_key_consol &= (~INPUT_CONSOL_OPTION);
         optionFunctionPressed--;
     }
+    
     if (selectFunctionPressed) {
         INPUT_key_consol &= (~INPUT_CONSOL_SELECT);
         selectFunctionPressed--;
     }
+    
     if (startFunctionPressed) {
         INPUT_key_consol &= (~INPUT_CONSOL_START);
         startFunctionPressed--;
     }
+    
     if (breakFunctionPressed) {
-        breakFunctionPressed = 0;
+        breakFunctionPressed--;
         return AKEY_BREAK;
     }
     
     if (inverseFunctionPressed) {
-        inverseFunctionPressed = 0;
+        inverseFunctionPressed--;
         return AKEY_ATARI;
     }
     
     if (clearFunctionPressed) {
-        clearFunctionPressed = 0;
+        clearFunctionPressed--;
         return AKEY_CLEAR;
     }
     
+    if (helpFunctionPressed) {
+        helpFunctionPressed--;
+        return AKEY_HELP;
+    }
+    
     if (insertCharFunctionPressed) {
-        insertCharFunctionPressed = 0;
+        insertCharFunctionPressed--;
         return AKEY_INSERT_CHAR;
     }
     
     if (insertLineFunctionPressed) {
-        insertLineFunctionPressed = 0;
+        insertLineFunctionPressed--;
         return AKEY_INSERT_LINE;
     }
     
     if (deleteCharFunctionPressed) {
-        deleteCharFunctionPressed = 0;
+        deleteCharFunctionPressed--;
         return AKEY_DELETE_CHAR;
     }
     
     if (deleteLineFunctionPressed) {
-        deleteLineFunctionPressed = 0;
+        deleteLineFunctionPressed--;
         return AKEY_DELETE_LINE;
     }
     
     if (f1FunctionPressed) {
-        f1FunctionPressed = 0;
+        f1FunctionPressed--;
         return AKEY_F1;
     }
     
     if (f2FunctionPressed) {
-        f2FunctionPressed = 0;
+        f2FunctionPressed--;
         return AKEY_F2;
     }
     
     if (f3FunctionPressed) {
-        f3FunctionPressed = 0;
+        f3FunctionPressed--;
         return AKEY_F3;
     }
     
     if (f4FunctionPressed) {
-        f4FunctionPressed = 0;
+        f4FunctionPressed--;
         return AKEY_F4;
     }
     

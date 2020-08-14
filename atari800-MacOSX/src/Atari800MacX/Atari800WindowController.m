@@ -17,7 +17,8 @@
 #define InverseButtonIdentifier @"InverseButton"
 #define PopoverIdentifier @"Popover"
 #define TopLevelGroup @"TopLevel"
-#define PopoverGroup @"PopGroup"
+#define PopoverGroup1 @"PopGroup1"
+#define PopoverGroup2 @"PopGroup2"
 #define InsertCharButtonIdentifier @"InsertCharButton"
 #define InsertLineButtonIdentifier @"InsertLineButton"
 #define DeleteCharButtonIdentifier @"DeleteCharButton"
@@ -114,7 +115,9 @@
 
         NSButton *inverseButton = [NSButton buttonWithTitle:NSLocalizedString(@"Inverse", @"") target:[ControlManager sharedInstance] action:@selector(inversePressed:)];
         
-        NSStackView *stackView = [NSStackView stackViewWithViews:@[coldButton, warmButton, optionButton, selectButton, startButton, clearButton, inverseButton]];
+        NSButton *helpButton = [NSButton buttonWithTitle:NSLocalizedString(@"Help", @"") target:[ControlManager sharedInstance] action:@selector(helpPressed:)];
+        
+        NSStackView *stackView = [NSStackView stackViewWithViews:@[coldButton, warmButton, optionButton, selectButton, startButton, clearButton, inverseButton, helpButton]];
         stackView.spacing = 1;
         NSCustomTouchBarItem *customItemForLabel =
             [[NSCustomTouchBarItem alloc] initWithIdentifier:TopLevelGroup];
@@ -131,11 +134,11 @@
         
         thePopover.popoverTouchBar.delegate = self;
         thePopover.popoverTouchBar.defaultItemIdentifiers =
-        @[PopoverGroup];
+        @[PopoverGroup1, PopoverGroup2];
  
         return thePopover;
     }
-    else if ([identifier isEqualToString:PopoverGroup])
+    else if ([identifier isEqualToString:PopoverGroup1])
     {
         NSButton *insCharButton = [NSButton buttonWithTitle:NSLocalizedString(@"Ins Char", @"") target:[ControlManager sharedInstance] action:@selector(insertCharPressed:)];
         
@@ -145,6 +148,19 @@
         
         NSButton *delLineButton = [NSButton buttonWithTitle:NSLocalizedString(@"Del Line", @"") target:[ControlManager sharedInstance] action:@selector(deleteLinePressed:)];
         
+        NSStackView *stackView = [NSStackView stackViewWithViews:@[insCharButton, insLineButton, delCharButton, delLineButton]];
+        stackView.spacing = 1;
+
+        NSCustomTouchBarItem *customItemForLabel =
+            [[NSCustomTouchBarItem alloc] initWithIdentifier:PopoverGroup1];
+        customItemForLabel.view = stackView;
+        
+        customItemForLabel.visibilityPriority = NSTouchBarItemPriorityNormal;
+        
+        return customItemForLabel;
+    }
+    else if ([identifier isEqualToString:PopoverGroup2])
+    {
         NSButton *f1Button = [NSButton buttonWithTitle:NSLocalizedString(@"F1", @"") target:[ControlManager sharedInstance] action:@selector(f1Pressed:)];
         
         NSButton *f2Button = [NSButton buttonWithTitle:NSLocalizedString(@"F2", @"") target:[ControlManager sharedInstance] action:@selector(f2Pressed:)];
@@ -153,11 +169,11 @@
         
         NSButton *f4Button = [NSButton buttonWithTitle:NSLocalizedString(@"F4", @"") target:[ControlManager sharedInstance] action:@selector(f4Pressed:)];
         
-        NSStackView *stackView = [NSStackView stackViewWithViews:@[insCharButton, insLineButton, delCharButton, delLineButton, f1Button, f2Button, f3Button, f4Button]];
+        NSStackView *stackView = [NSStackView stackViewWithViews:@[f1Button, f2Button, f3Button, f4Button]];
         stackView.spacing = 1;
 
         NSCustomTouchBarItem *customItemForLabel =
-            [[NSCustomTouchBarItem alloc] initWithIdentifier:PopoverGroup];
+            [[NSCustomTouchBarItem alloc] initWithIdentifier:PopoverGroup2];
         customItemForLabel.view = stackView;
         
         customItemForLabel.visibilityPriority = NSTouchBarItemPriorityNormal;

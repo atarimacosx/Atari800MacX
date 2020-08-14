@@ -225,6 +225,7 @@
 - (IBAction)selectPressed:(id)sender;
 - (IBAction)inversePressed:(id)sender;
 - (IBAction)clearPressed:(id)sender;
+- (IBAction)helpPressed:(id)sender;
 - (IBAction)insertCharPressed:(id)sender;
 - (IBAction)insertLinePressed:(id)sender;
 - (IBAction)deleteCharPressed:(id)sender;
