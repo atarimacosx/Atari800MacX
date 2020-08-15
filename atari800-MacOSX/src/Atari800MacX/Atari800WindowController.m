@@ -141,13 +141,13 @@
     }
     else if ([identifier isEqualToString:PopoverGroup1])
     {
-        NSButton *insCharButton = [NSButton buttonWithTitle:NSLocalizedString(@"Ins Char", @"") target:[ControlManager sharedInstance] action:@selector(insertCharPressed:)];
+        NSButton *insCharButton = [NSButton buttonWithTitle:NSLocalizedString(@"Ins C", @"") target:[ControlManager sharedInstance] action:@selector(insertCharPressed:)];
         
-        NSButton *insLineButton = [NSButton buttonWithTitle:NSLocalizedString(@"Ins Line", @"") target:[ControlManager sharedInstance] action:@selector(insertLinePressed:)];
+        NSButton *insLineButton = [NSButton buttonWithTitle:NSLocalizedString(@"Ins L", @"") target:[ControlManager sharedInstance] action:@selector(insertLinePressed:)];
         
-        NSButton *delCharButton = [NSButton buttonWithTitle:NSLocalizedString(@"Del Char", @"") target:[ControlManager sharedInstance] action:@selector(deleteCharPressed:)];
+        NSButton *delCharButton = [NSButton buttonWithTitle:NSLocalizedString(@"Del C", @"") target:[ControlManager sharedInstance] action:@selector(deleteCharPressed:)];
         
-        NSButton *delLineButton = [NSButton buttonWithTitle:NSLocalizedString(@"Del Line", @"") target:[ControlManager sharedInstance] action:@selector(deleteLinePressed:)];
+        NSButton *delLineButton = [NSButton buttonWithTitle:NSLocalizedString(@"Del L", @"") target:[ControlManager sharedInstance] action:@selector(deleteLinePressed:)];
         
         NSButton *f1Button = [NSButton buttonWithTitle:NSLocalizedString(@"F1", @"") target:[ControlManager sharedInstance] action:@selector(f1Pressed:)];
         
