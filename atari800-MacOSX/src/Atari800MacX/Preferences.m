@@ -2964,12 +2964,12 @@ static Preferences *sharedInstance = nil;
             break;
         case 3:
             romFilename = [curValues objectForKey:BasicRomFile];
-            label = identify5200Label;
+            label = identifyBasicLabel;
             romDefault = SYSROM_BASIC_CUSTOM;
             break;
         case 4:
             romFilename = [curValues objectForKey:A5200RomFile];
-            label = identifyBasicLabel;
+            label = identify5200Label;
             romDefault = SYSROM_5200_CUSTOM;
             break;
     }
