@@ -174,8 +174,8 @@
             filePath = "atari_mac_sdl.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2857"
-            endingLineNumber = "2857"
+            startingLineNumber = "2861"
+            endingLineNumber = "2861"
             landmarkName = "DisplayAF80WithoutScaling16bpp(first_row, last_row, blink)"
             landmarkType = "9">
          </BreakpointContent>
@@ -209,22 +209,6 @@
             startingLineNumber = "858"
             endingLineNumber = "858"
             landmarkName = "InitializeVideo()"
-            landmarkType = "9">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "1DC4F71F-A766-4839-8ACC-879ECE0480B9"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "atari_mac_sdl.c"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1555"
-            endingLineNumber = "1555"
-            landmarkName = "Atari_Keyboard_International()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -526,8 +510,8 @@
             filePath = "atari_mac_sdl.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "4470"
-            endingLineNumber = "4470"
+            startingLineNumber = "4474"
+            endingLineNumber = "4474"
             landmarkName = "ProcessMacMenus()"
             landmarkType = "9">
          </BreakpointContent>
