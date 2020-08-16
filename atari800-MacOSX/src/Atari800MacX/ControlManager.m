@@ -75,6 +75,7 @@ extern int f2FunctionPressed;
 extern int f3FunctionPressed;
 extern int f4FunctionPressed;
 extern int MONITOR_break_run_to_here;
+extern int FULLSCREEN_MACOS;
 
 /* Functions which provide an interface for C code to call this object's shared Instance functions */
 void SetControlManagerLimit(int limit) {
@@ -982,9 +983,10 @@ static int monitorRunFirstTime = 1;
 		}
     
     monitorCharCount = 0;
-	if (retValue >= -1)
-//		[[monitorInputField window] orderOut:self];
+    if (retValue >= -1) {
+		[[monitorInputField window] orderOut:self];
 		[[monitorInputField window] close];
+    }
     [self releaseKey:QZ_F8];
 
     PauseAudio(0);
