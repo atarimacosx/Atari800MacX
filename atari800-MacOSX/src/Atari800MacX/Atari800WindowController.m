@@ -144,7 +144,7 @@
         NSButton *insCharButton = [NSButton buttonWithTitle:NSLocalizedString(@"Ins C", @"") target:[ControlManager sharedInstance] action:@selector(insertCharPressed:)];
         
         NSButton *insLineButton = [NSButton buttonWithTitle:NSLocalizedString(@"Ins L", @"") target:[ControlManager sharedInstance] action:@selector(insertLinePressed:)];
-        
+
         NSButton *delCharButton = [NSButton buttonWithTitle:NSLocalizedString(@"Del C", @"") target:[ControlManager sharedInstance] action:@selector(deleteCharPressed:)];
         
         NSButton *delLineButton = [NSButton buttonWithTitle:NSLocalizedString(@"Del L", @"") target:[ControlManager sharedInstance] action:@selector(deleteLinePressed:)];

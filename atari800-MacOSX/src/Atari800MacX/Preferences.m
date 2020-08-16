@@ -275,6 +275,7 @@ static NSDictionary *defaultValues() {
                 [NSNumber numberWithInt:40], ColorShift, 
                 [NSString stringWithCString:paletteStr encoding:NSASCIIStringEncoding], PaletteFile, 
                 [NSNumber numberWithBool:NO], ShowFPS,
+                [NSNumber numberWithBool:NO], OnlyIntegralScaling,
                 [NSNumber numberWithBool:YES], LedStatus,
                 [NSNumber numberWithBool:YES], LedSector,
                 [NSNumber numberWithBool:YES], LedStatusMedia,
@@ -803,6 +804,7 @@ static Preferences *sharedInstance = nil;
     [externalPaletteButton setState:[[displayedValues objectForKey:UseBuiltinPalette] boolValue] ? NSOffState : NSOnState];
     [adjustPaletteButton setState:[[displayedValues objectForKey:AdjustPalette] boolValue] ? NSOnState : NSOffState];
     [fpsButton setState:[[displayedValues objectForKey:ShowFPS] boolValue] ? NSOnState : NSOffState];
+    [onlyIntegralScalingButton setState:[[displayedValues objectForKey:OnlyIntegralScaling] boolValue] ? NSOnState : NSOffState];
     [ledStatusButton setState:[[displayedValues objectForKey:LedStatus] boolValue] ? NSOnState : NSOffState];
     [ledSectorButton setState:[[displayedValues objectForKey:LedSector] boolValue] ? NSOnState : NSOffState];
     [ledStatusMediaButton setState:[[displayedValues objectForKey:LedStatusMedia] boolValue] ? NSOnState : NSOffState];
@@ -1664,6 +1666,10 @@ static Preferences *sharedInstance = nil;
         [displayedValues setObject:yes forKey:ShowFPS];
     else
         [displayedValues setObject:no forKey:ShowFPS];
+    if ([onlyIntegralScalingButton state] == NSOnState)
+        [displayedValues setObject:yes forKey:OnlyIntegralScaling];
+    else
+        [displayedValues setObject:no forKey:OnlyIntegralScaling];
     if ([ledSectorButton state] == NSOnState)
         [displayedValues setObject:yes forKey:LedSector];
     else
@@ -3379,8 +3385,9 @@ static Preferences *sharedInstance = nil;
     prefs->intensity = [[curValues objectForKey:Intensity] intValue]; 
     prefs->colorShift = [[curValues objectForKey:ColorShift] intValue]; 
     [[curValues objectForKey:PaletteFile] getCString:prefs->paletteFile maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
-    prefs->showFPS = [[curValues objectForKey:ShowFPS] intValue]; 
-    prefs->ledStatus = [[curValues objectForKey:LedStatus] intValue]; 
+    prefs->showFPS = [[curValues objectForKey:ShowFPS] intValue];
+    prefs->onlyIntegralScaling = [[curValues objectForKey:OnlyIntegralScaling] intValue];
+    prefs->ledStatus = [[curValues objectForKey:LedStatus] intValue];
     prefs->ledSector = [[curValues objectForKey:LedSector] intValue]; 
     prefs->ledStatusMedia = [[curValues objectForKey:LedStatusMedia] intValue]; 
     prefs->ledSectorMedia = [[curValues objectForKey:LedSectorMedia] intValue];
@@ -4733,6 +4740,7 @@ static Preferences *sharedInstance = nil;
     getIntDefault(ColorShift);
     getBoolDefault(AdjustPalette);
     getBoolDefault(ShowFPS);
+    getBoolDefault(OnlyIntegralScaling);
     getBoolDefault(LedStatus);
     getBoolDefault(LedSector);
     getBoolDefault(LedStatusMedia);
@@ -4999,6 +5007,7 @@ static Preferences *sharedInstance = nil;
     setIntDefault(ColorShift);
     setBoolDefault(AdjustPalette);
     setBoolDefault(ShowFPS);
+    setBoolDefault(OnlyIntegralScaling);
     setBoolDefault(LedStatus);
     setBoolDefault(LedSector);
     setBoolDefault(LedStatusMedia);
@@ -5246,6 +5255,7 @@ static Preferences *sharedInstance = nil;
     setConfig(ColorShift);
     setConfig(AdjustPalette);
     setConfig(ShowFPS);
+    setConfig(OnlyIntegralScaling);
     setConfig(LedStatus);
     setConfig(LedSector);
     setConfig(LedStatusMedia);
@@ -5591,6 +5601,7 @@ static Preferences *sharedInstance = nil;
     getConfig(ColorShift);
     getConfig(AdjustPalette);
     getConfig(ShowFPS);
+    getConfig(OnlyIntegralScaling);
     getConfig(LedStatus);
     getConfig(LedSector);
     getConfig(LedStatusMedia);

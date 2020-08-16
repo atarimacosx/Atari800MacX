@@ -32,6 +32,7 @@
 #define Intensity @"Instensity"
 #define ColorShift @"ColorShift"
 #define PaletteFile @"PaletteFile"
+#define OnlyIntegralScaling @"OnlyIntegralScaling"
 #define ShowFPS @"ShowFPS"
 #define LedStatus @"LedStatus"
 #define LedSector @"LedSector"
@@ -374,6 +375,7 @@
 	IBOutlet id enable16BitSoundPulldown;
     IBOutlet id enableMultijoyButton;
     IBOutlet id tvModeMatrix;
+    IBOutlet id onlyIntegralScalingButton;
     IBOutlet id widthModeMatrix;
     IBOutlet id whiteLevelField;
     IBOutlet id xlRomFileField;

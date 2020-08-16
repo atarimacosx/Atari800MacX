@@ -14,8 +14,8 @@
             filePath = "Preferences.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2765"
-            endingLineNumber = "2765"
+            startingLineNumber = "2771"
+            endingLineNumber = "2771"
             landmarkName = "-browseFile"
             landmarkType = "7">
          </BreakpointContent>
@@ -174,8 +174,8 @@
             filePath = "atari_mac_sdl.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2861"
-            endingLineNumber = "2861"
+            startingLineNumber = "2862"
+            endingLineNumber = "2862"
             landmarkName = "DisplayAF80WithoutScaling16bpp(first_row, last_row, blink)"
             landmarkType = "9">
          </BreakpointContent>
@@ -190,8 +190,8 @@
             filePath = "Preferences.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "704"
-            endingLineNumber = "704"
+            startingLineNumber = "705"
+            endingLineNumber = "705"
             landmarkName = "-showPanel:"
             landmarkType = "7">
          </BreakpointContent>
@@ -206,8 +206,8 @@
             filePath = "atari_mac_sdl.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "858"
-            endingLineNumber = "858"
+            startingLineNumber = "859"
+            endingLineNumber = "859"
             landmarkName = "InitializeVideo()"
             landmarkType = "9">
          </BreakpointContent>
@@ -510,8 +510,8 @@
             filePath = "atari_mac_sdl.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "4474"
-            endingLineNumber = "4474"
+            startingLineNumber = "4486"
+            endingLineNumber = "4486"
             landmarkName = "ProcessMacMenus()"
             landmarkType = "9">
          </BreakpointContent>

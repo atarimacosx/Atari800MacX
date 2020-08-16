@@ -112,6 +112,7 @@ int led_enabled_media = 1;
 int led_counter_enabled_media = 1;
 int PLATFORM_80col = 0;
 int useAtariCursorKeys = 1;
+int onlyIntegralScaling = FALSE;
 #define USE_ATARI_CURSOR_CTRL_ARROW 0
 #define USE_ATARI_CURSOR_ARROW_ONLY 1
 #define USE_ATARI_CURSOR_FX         2
@@ -910,7 +911,7 @@ void SetWindowAspectRatio(void)
         {
         w = SCREEN_WIDTH_FULL;
         }
-    h = Screen_HEIGHT + 16;
+    h = Screen_HEIGHT;
     w *= 8;
     w /= 8;
     h *= 8;
@@ -3089,7 +3090,7 @@ void Atari_DisplayScreen(UBYTE * screen)
         for (rows = 0; rows < MainScreen->h; rows ++)
             {
             scanlineRect.x = 0;
-                scanlineRect.w = screen_width;
+            scanlineRect.w = screen_width;
             scanlineRect.y = rows*scaleFactorFloat+scaleFactorFloat;
             scanlineRect.h = 1;
             SDL_RenderFillRect(renderer, &scanlineRect);
@@ -4275,14 +4276,25 @@ void HandleResizeRequest()
         else
             SDL_RenderSetScale(renderer, (double) requested_w /
                                (double) GetScreenWidth(), (double) requested_h/ (double) Screen_HEIGHT);
+        current_w = requested_w;
+        current_h = requested_h;
     }
     else {
-        scaleFactorFloat = ((double) requested_w /
-                            (double) GetScreenWidth());
-        SetRenderScale();
+        int new_w, new_h;
+        scaleFactorFloat = ((double) requested_h /
+                            (double) Screen_HEIGHT);
+        Log_print("Reqeusted Sreeen: %dx%d %f ",requested_w, requested_h, scaleFactorFloat);
+        if (onlyIntegralScaling) {
+            scaleFactorFloat = trunc(scaleFactorFloat+0.1);
+            if (scaleFactorFloat < 1.0)
+                scaleFactorFloat = 1.0;
         }
-    current_w = requested_w;
-    current_h = requested_h;
+        new_w = GetScreenWidth() * scaleFactorFloat;
+        new_h = Screen_HEIGHT * scaleFactorFloat;
+        Log_print("Setting Screen: %dx%d %f",new_w,new_h,scaleFactorFloat);
+        SetRenderScale();
+        SDL_SetWindowSize(MainWindow, new_w, new_h);
+        }
 }
 
 /*------------------------------------------------------------------------------
