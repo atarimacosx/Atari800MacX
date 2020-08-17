@@ -295,6 +295,8 @@
 		2DE2D1ED106EA23D0049A8A1 /* DisabledBreakpointCurrentLine.png in Resources */ = {isa = PBXBuildFile; fileRef = 2DE2D1EB106EA23D0049A8A1 /* DisabledBreakpointCurrentLine.png */; };
 		2DE2D3AB106F04A90049A8A1 /* BreakpointsController.h in Headers */ = {isa = PBXBuildFile; fileRef = 2DE2D3A9106F04A90049A8A1 /* BreakpointsController.h */; };
 		2DE2D3AC106F04A90049A8A1 /* BreakpointsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DE2D3AA106F04A90049A8A1 /* BreakpointsController.m */; };
+		2DE616FF24EA0A010032A53F /* Atari400KeyRepro60Rounded.png in Resources */ = {isa = PBXBuildFile; fileRef = 2DE616FE24EA0A000032A53F /* Atari400KeyRepro60Rounded.png */; };
+		2DE6170124EA0A1F0032A53F /* Mac52-3x-Clear-60-Rounded.png in Resources */ = {isa = PBXBuildFile; fileRef = 2DE6170024EA0A1F0032A53F /* Mac52-3x-Clear-60-Rounded.png */; };
 		2DE6EB7B24CE197000A55386 /* altirra_basic.h in Headers */ = {isa = PBXBuildFile; fileRef = 2DE6EB7324CE197000A55386 /* altirra_basic.h */; };
 		2DE6EB7C24CE197000A55386 /* altirraos_800.c in Sources */ = {isa = PBXBuildFile; fileRef = 2DE6EB7424CE197000A55386 /* altirraos_800.c */; };
 		2DE6EB7D24CE197000A55386 /* altirraos_xl.h in Headers */ = {isa = PBXBuildFile; fileRef = 2DE6EB7524CE197000A55386 /* altirraos_xl.h */; };
@@ -570,6 +572,8 @@
 		2DE2D1EB106EA23D0049A8A1 /* DisabledBreakpointCurrentLine.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = DisabledBreakpointCurrentLine.png; sourceTree = SOURCE_ROOT; };
 		2DE2D3A9106F04A90049A8A1 /* BreakpointsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BreakpointsController.h; sourceTree = "<group>"; };
 		2DE2D3AA106F04A90049A8A1 /* BreakpointsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BreakpointsController.m; sourceTree = "<group>"; };
+		2DE616FE24EA0A000032A53F /* Atari400KeyRepro60Rounded.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Atari400KeyRepro60Rounded.png; sourceTree = "<group>"; };
+		2DE6170024EA0A1F0032A53F /* Mac52-3x-Clear-60-Rounded.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Mac52-3x-Clear-60-Rounded.png"; sourceTree = "<group>"; };
 		2DE646A80531083200A8C8B4 /* mac_colours.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = mac_colours.c; sourceTree = SOURCE_ROOT; };
 		2DE646A90531083200A8C8B4 /* mac_colours.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = mac_colours.h; sourceTree = SOURCE_ROOT; };
 		2DE6EB7324CE197000A55386 /* altirra_basic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = altirra_basic.h; sourceTree = "<group>"; };
@@ -972,6 +976,8 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				2DE616FE24EA0A000032A53F /* Atari400KeyRepro60Rounded.png */,
+				2DE6170024EA0A1F0032A53F /* Mac52-3x-Clear-60-Rounded.png */,
 				77324B9024AC2CC50007CB07 /* close810snd.wav */,
 				77324B9124AC2CC50007CB07 /* open810snd.wav */,
 				77A5A9D421EC3B430098C3A5 /* lock.png */,
@@ -1302,8 +1308,10 @@
 				2DAEDB5E09B69AED005FF181 /* DiskEditorWindow.nib in Resources */,
 				2D76732721EA8B7A00D99B0E /* atari825.png in Resources */,
 				2D76733321EA8D8F00D99B0E /* text_dark.png in Resources */,
+				2DE6170124EA0A1F0032A53F /* Mac52-3x-Clear-60-Rounded.png in Resources */,
 				2DAEDB5F09B69AED005FF181 /* AboutBox.nib in Resources */,
 				2D76733721EA920000D99B0E /* cassetteoff.png in Resources */,
+				2DE616FF24EA0A010032A53F /* Atari400KeyRepro60Rounded.png in Resources */,
 				2D76731F21EA882000D99B0E /* atari810write.png in Resources */,
 				2D0CA97724B56AE80089AC88 /* AtasciiLight.png in Resources */,
 				2DAEDB6009B69AED005FF181 /* Credits.html in Resources */,

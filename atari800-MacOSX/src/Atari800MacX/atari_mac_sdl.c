@@ -106,6 +106,10 @@ int current_w;
 int current_h;
 int requested_w;
 int requested_h;
+int non_fullscreen_w;
+int non_fullscreen_h;
+int non_fullscreen_x;
+int non_fullscreen_y;
 int mediaStatusWindowOpen;
 int functionKeysWindowOpen;
 int led_enabled_media = 1;
@@ -801,13 +805,13 @@ void InitializeWindow(int w, int h)
         Atari800OriginSave();
         SDL_DestroyWindow(MainWindow);
     }
-    
+    Log_print("Setting Screen: %dx%d %f",w,h,scaleFactorFloat);
     MainWindow = SDL_CreateWindow(windowCaption,
                                     SDL_WINDOWPOS_UNDEFINED,
                                     SDL_WINDOWPOS_UNDEFINED,
                                     w, h, SDL_WINDOW_RESIZABLE);
-    current_w = w;
-    current_h = h;
+    current_w = non_fullscreen_w = w;
+    current_h = non_fullscreen_h = h;
     SDL_SetHint(SDL_HINT_RENDER_DRIVER, "metal");
     renderer = SDL_CreateRenderer(MainWindow, -1, 0);
     SetRenderScale();
@@ -834,6 +838,7 @@ void InitializeWindow(int w, int h)
     SDL_RenderClear(renderer);
 
     Atari800OriginRestore();
+    SDL_GetWindowPosition(MainWindow,&non_fullscreen_x, &non_fullscreen_y);
 
     PauseAudio(0);
         
@@ -917,7 +922,7 @@ void SetWindowAspectRatio(void)
     h *= 8;
     h /= 8;
          
-    Atari800WindowAspectSet(w, h);
+    Atari800WindowAspectSet(w, h+8);
 }
 
 static void SetRenderScale(void)
@@ -4260,8 +4265,10 @@ void CountFPS()
 
 void HandleResizeRequest()
 {
+    //int wasFullscreen = FULLSCREEN_MACOS;
     FULLSCREEN_MACOS = Atari800WindowIsFullscreen();
     if (FULLSCREEN_MACOS) {
+        Log_print("Setting FullSreeen: %dx%d ",requested_w, requested_h);
         if (PLATFORM_80col) {
             if (BIT3_enabled) {
                 SDL_RenderSetScale(renderer, (double) requested_w/ (double) BIT3_SCRN_WIDTH, (double) requested_h/ (double) BIT3_SCRN_HEIGHT);
@@ -4279,6 +4286,15 @@ void HandleResizeRequest()
         current_w = requested_w;
         current_h = requested_h;
     }
+#if 0
+    else if (wasFullscreen) {
+        Atari800OriginRestore();
+        SDL_SetWindowPosition(MainWindow,non_fullscreen_x, non_fullscreen_y);
+        SDL_SetWindowSize(MainWindow, non_fullscreen_w, non_fullscreen_w);
+        Log_print("Setting Screen: %dx%d %f",non_fullscreen_w,non_fullscreen_h,scaleFactorFloat);
+        SetRenderScale();
+    }
+#endif
     else {
         int new_w, new_h;
         scaleFactorFloat = ((double) requested_h /
@@ -4294,6 +4310,12 @@ void HandleResizeRequest()
         Log_print("Setting Screen: %dx%d %f",new_w,new_h,scaleFactorFloat);
         SetRenderScale();
         SDL_SetWindowSize(MainWindow, new_w, new_h);
+        SDL_GetWindowPosition(MainWindow,&non_fullscreen_x, &non_fullscreen_y);
+        non_fullscreen_w = new_w;
+        non_fullscreen_h = new_h;
+        current_w = new_w;
+        current_h = new_h;
+        Atari800OriginSave();
         }
 }
 
