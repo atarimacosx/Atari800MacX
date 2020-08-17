@@ -5116,13 +5116,13 @@ int SDL_main(int argc, char **argv)
       argv = prefsArgv;
 	  }
 
+    if (!Atari800_Initialise(&argc, argv))
+        return 3;
+
     if (!EnableDisplayManager80ColMode(Atari800_machine_type, XEP80_enabled, AF80_enabled, BIT3_enabled))
         {
         XEP80_enabled = AF80_enabled = BIT3_enabled = FALSE;
         }
-
-    if (!Atari800_Initialise(&argc, argv))
-        return 3;
 
     CreateWindowCaption();
     SDL_SetWindowTitle(MainWindow, windowCaption);
