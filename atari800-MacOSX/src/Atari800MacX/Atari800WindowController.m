@@ -111,13 +111,22 @@
         attrString = [[NSAttributedString alloc]initWithString:startButton.title attributes:attrsDictionary];
         [startButton setAttributedTitle:attrString];
 
-        NSButton *clearButton = [NSButton buttonWithTitle:NSLocalizedString(@"Clear", @"") target:[ControlManager sharedInstance] action:@selector(clearPressed:)];
-
-        NSButton *inverseButton = [NSButton buttonWithTitle:NSLocalizedString(@"Inverse", @"") target:[ControlManager sharedInstance] action:@selector(inversePressed:)];
-        
         NSButton *helpButton = [NSButton buttonWithTitle:NSLocalizedString(@"Help", @"") target:[ControlManager sharedInstance] action:@selector(helpPressed:)];
+        helpButton.bezelColor = [NSColor colorWithSRGBRed:0.678 green:0.667 blue:0.678 alpha:1.0];
+        style = [[NSMutableParagraphStyle alloc] init];
+        [style setAlignment:NSTextAlignmentCenter];
+        attrsDictionary  = [NSDictionary dictionaryWithObjectsAndKeys:
+                    NSColor.blackColor, NSForegroundColorAttributeName,
+                    helpButton.font, NSFontAttributeName,
+                    style, NSParagraphStyleAttributeName, nil];
+        attrString = [[NSAttributedString alloc]initWithString:helpButton.title attributes:attrsDictionary];
+        [helpButton setAttributedTitle:attrString];
+
+        NSButton *clearButton = [NSButton buttonWithImage:[NSImage imageNamed:@"Mac52-3x-Clear-60-Rounded"] target:[ControlManager sharedInstance] action:@selector(clearPressed:)];
+
+        NSButton *inverseButton = [NSButton buttonWithImage:[NSImage imageNamed:@"Atari400KeyRepro60Rounded"] target:[ControlManager sharedInstance] action:@selector(inversePressed:)];
         
-        NSStackView *stackView = [NSStackView stackViewWithViews:@[coldButton, warmButton, optionButton, selectButton, startButton, clearButton, inverseButton, helpButton]];
+        NSStackView *stackView = [NSStackView stackViewWithViews:@[coldButton, warmButton, optionButton, selectButton, startButton, helpButton, clearButton, inverseButton]];
         stackView.spacing = 1;
         NSCustomTouchBarItem *customItemForLabel =
             [[NSCustomTouchBarItem alloc] initWithIdentifier:TopLevelGroup];
