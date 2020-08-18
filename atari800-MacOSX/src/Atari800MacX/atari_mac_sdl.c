@@ -3095,7 +3095,7 @@ void Atari_DisplayScreen(UBYTE * screen)
         for (rows = 0; rows < MainScreen->h; rows ++)
             {
             scanlineRect.x = 0;
-            scanlineRect.w = screen_width;
+            scanlineRect.w = (screen_width*3)/2;
             scanlineRect.y = rows*scaleFactorFloat+scaleFactorFloat;
             scanlineRect.h = 1;
             SDL_RenderFillRect(renderer, &scanlineRect);

@@ -169,6 +169,7 @@
         </window>
         <window title="Atari800MacX Monitor" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="53" userLabel="Monitor" customClass="MonitorWindow">
             <windowStyleMask key="styleMask" titled="YES"/>
+            <windowCollectionBehavior key="collectionBehavior" moveToActiveSpace="YES" fullScreenAuxiliary="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" topStrut="YES"/>
             <rect key="contentRect" x="216" y="232" width="531" height="560"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
@@ -2073,6 +2074,7 @@ DQ
                     </imageView>
                 </subviews>
             </view>
+            <point key="canvasLocation" x="132" y="439"/>
         </window>
         <menu autoenablesItems="NO" id="2419" userLabel="Watch Menu">
             <items>
@@ -2290,6 +2292,7 @@ DQ
                     </imageView>
                 </subviews>
             </view>
+            <point key="canvasLocation" x="132" y="248"/>
         </window>
     </objects>
     <resources>
