@@ -159,13 +159,49 @@
         NSButton *delLineButton = [NSButton buttonWithTitle:NSLocalizedString(@"Del L", @"") target:[ControlManager sharedInstance] action:@selector(deleteLinePressed:)];
         
         NSButton *f1Button = [NSButton buttonWithTitle:NSLocalizedString(@"F1", @"") target:[ControlManager sharedInstance] action:@selector(f1Pressed:)];
-        
+        f1Button.bezelColor = [NSColor colorWithSRGBRed:0.678 green:0.667 blue:0.678 alpha:1.0];
+        style = [[NSMutableParagraphStyle alloc] init];
+        [style setAlignment:NSTextAlignmentCenter];
+        attrsDictionary  = [NSDictionary dictionaryWithObjectsAndKeys:
+                    NSColor.blackColor, NSForegroundColorAttributeName,
+                    f1Button.font, NSFontAttributeName,
+                    style, NSParagraphStyleAttributeName, nil];
+        attrString = [[NSAttributedString alloc]initWithString:f1Button.title attributes:attrsDictionary];
+        [f1Button setAttributedTitle:attrString];
+
         NSButton *f2Button = [NSButton buttonWithTitle:NSLocalizedString(@"F2", @"") target:[ControlManager sharedInstance] action:@selector(f2Pressed:)];
-        
+        f2Button.bezelColor = [NSColor colorWithSRGBRed:0.678 green:0.667 blue:0.678 alpha:1.0];
+        style = [[NSMutableParagraphStyle alloc] init];
+        [style setAlignment:NSTextAlignmentCenter];
+        attrsDictionary  = [NSDictionary dictionaryWithObjectsAndKeys:
+                    NSColor.blackColor, NSForegroundColorAttributeName,
+                    f2Button.font, NSFontAttributeName,
+                    style, NSParagraphStyleAttributeName, nil];
+        attrString = [[NSAttributedString alloc]initWithString:f2Button.title attributes:attrsDictionary];
+        [f2Button setAttributedTitle:attrString];
+
         NSButton *f3Button = [NSButton buttonWithTitle:NSLocalizedString(@"F3", @"") target:[ControlManager sharedInstance] action:@selector(f3Pressed:)];
-        
+        f3Button.bezelColor = [NSColor colorWithSRGBRed:0.678 green:0.667 blue:0.678 alpha:1.0];
+        style = [[NSMutableParagraphStyle alloc] init];
+        [style setAlignment:NSTextAlignmentCenter];
+        attrsDictionary  = [NSDictionary dictionaryWithObjectsAndKeys:
+                    NSColor.blackColor, NSForegroundColorAttributeName,
+                    f3Button.font, NSFontAttributeName,
+                    style, NSParagraphStyleAttributeName, nil];
+        attrString = [[NSAttributedString alloc]initWithString:f3Button.title attributes:attrsDictionary];
+        [f3Button setAttributedTitle:attrString];
+
         NSButton *f4Button = [NSButton buttonWithTitle:NSLocalizedString(@"F4", @"") target:[ControlManager sharedInstance] action:@selector(f4Pressed:)];
-        
+        f4Button.bezelColor = [NSColor colorWithSRGBRed:0.678 green:0.667 blue:0.678 alpha:1.0];
+        style = [[NSMutableParagraphStyle alloc] init];
+        [style setAlignment:NSTextAlignmentCenter];
+        attrsDictionary  = [NSDictionary dictionaryWithObjectsAndKeys:
+                    NSColor.blackColor, NSForegroundColorAttributeName,
+                    f4Button.font, NSFontAttributeName,
+                    style, NSParagraphStyleAttributeName, nil];
+        attrString = [[NSAttributedString alloc]initWithString:f4Button.title attributes:attrsDictionary];
+        [f4Button setAttributedTitle:attrString];
+
         NSStackView *stackView = [NSStackView stackViewWithViews:@[insCharButton, insLineButton, delCharButton, delLineButton, f1Button, f2Button, f3Button, f4Button]];
         stackView.spacing = 1;
 
