@@ -97,6 +97,7 @@ int paletteWhite = 0xf0;
 int paletteIntensity = 80;
 int paletteColorShift = 40;
 int screen_x_offset = 0;
+int screen_y_offset = 0;
 int FULLSCREEN_MACOS = 0;
 int SCALE_MODE;
 double scaleFactor = 3;
@@ -107,10 +108,6 @@ int current_w;
 int current_h;
 int requested_w;
 int requested_h;
-int non_fullscreen_w;
-int non_fullscreen_h;
-int non_fullscreen_x;
-int non_fullscreen_y;
 int mediaStatusWindowOpen;
 int functionKeysWindowOpen;
 int led_enabled_media = 1;
@@ -812,8 +809,8 @@ void InitializeWindow(int w, int h)
                                     SDL_WINDOWPOS_UNDEFINED,
                                     SDL_WINDOWPOS_UNDEFINED,
                                     w, h, SDL_WINDOW_RESIZABLE);
-    current_w = non_fullscreen_w = w;
-    current_h = non_fullscreen_h = h;
+    current_w = w;
+    current_h = h;
     SDL_SetHint(SDL_HINT_RENDER_DRIVER, "metal");
     renderer = SDL_CreateRenderer(MainWindow, -1, 0);
     SetRenderScale();
@@ -840,7 +837,6 @@ void InitializeWindow(int w, int h)
     SDL_RenderClear(renderer);
 
     Atari800OriginRestore();
-    SDL_GetWindowPosition(MainWindow,&non_fullscreen_x, &non_fullscreen_y);
 
     PauseAudio(0);
         
@@ -3081,7 +3077,7 @@ void Atari_DisplayScreen(UBYTE * screen)
 
     //Copying the texture on to the window using renderer and rectangle
     rect.x = screen_x_offset;
-    rect.y = 0;
+    rect.y = screen_y_offset;
     rect.w = MainScreen->w;
     rect.h = MainScreen->h;
     SDL_RenderCopy(renderer, texture, NULL, &rect);
@@ -4292,15 +4288,28 @@ void HandleResizeRequest()
             current_w = requested_w;
             current_h = requested_h;
             screen_x_offset = 0;
+            screen_y_offset = 0;
             }
+        else if (onlyIntegralScaling) {
+            double thisScaleFactor = trunc((double) requested_h /
+                                (double) Screen_HEIGHT);
+            if (thisScaleFactor < 1.0)
+                thisScaleFactor = 1.0;
+            SDL_RenderSetScale(renderer, thisScaleFactor, thisScaleFactor);
+            screen_x_offset = ((double)((requested_w -
+                                         ((int)(GetScreenWidth()* thisScaleFactor)))/2))/thisScaleFactor;
+            screen_y_offset = ((double)((requested_h -
+                                         ((int)(Screen_HEIGHT* thisScaleFactor)))/2))/thisScaleFactor;
+            current_w = requested_w;
+            current_h = requested_h;
+        }
         else {
             double thisScaleFactor = (double) requested_h /
                                 (double) Screen_HEIGHT;
             SDL_RenderSetScale(renderer, thisScaleFactor, thisScaleFactor);
             screen_x_offset = ((double)((requested_w -
                                        ((int)(GetScreenWidth()* thisScaleFactor)))/2))/thisScaleFactor;;
-            // Make sure the screens are cleared to black
-            memset(Screen_atari, 0, (Screen_HEIGHT * Screen_WIDTH));
+            screen_y_offset = 0;
             current_w = requested_w;
             current_h = requested_h;
         }
@@ -4320,14 +4329,14 @@ void HandleResizeRequest()
         Log_print("Setting Screen: %dx%d %f",new_w,new_h,scaleFactorFloat);
         SetRenderScale();
         SDL_SetWindowSize(MainWindow, new_w, new_h);
-        SDL_GetWindowPosition(MainWindow,&non_fullscreen_x, &non_fullscreen_y);
-        non_fullscreen_w = new_w;
-        non_fullscreen_h = new_h;
         current_w = new_w;
         current_h = new_h;
         screen_x_offset = 0;
+        screen_y_offset = 0;
         }
-    // Make sure the full display is shown
+    // Make sure the full display is shown and clear
+    memset(Screen_atari1, 0, (Screen_HEIGHT * Screen_WIDTH));
+    memset(Screen_atari2, 0, (Screen_HEIGHT * Screen_WIDTH));
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
     SDL_RenderPresent(renderer);
