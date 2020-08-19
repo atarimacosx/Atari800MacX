@@ -4270,6 +4270,8 @@ void HandleResizeRequest()
     FULLSCREEN_MACOS = Atari800WindowIsFullscreen();
     if (FULLSCREEN_MACOS) {
         Log_print("Setting FullSreeen: %dx%d ",requested_w, requested_h);
+        //SDL_DestroyRenderer(renderer);
+        //renderer = SDL_CreateRenderer(MainWindow, -1, 0);
         if (!fixAspectFullscreen) {
             if (PLATFORM_80col) {
                 if (BIT3_enabled) {
@@ -4333,11 +4335,11 @@ void HandleResizeRequest()
     // Make sure the full display is shown and clear
     memset(Screen_atari1, 0, (Screen_HEIGHT * Screen_WIDTH));
     memset(Screen_atari2, 0, (Screen_HEIGHT * Screen_WIDTH));
+    full_display = FULL_DISPLAY_COUNT;
+    Atari_DisplayScreen((UBYTE *) Screen_atari);
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
     SDL_RenderPresent(renderer);
-    full_display = FULL_DISPLAY_COUNT;
-    Atari_DisplayScreen((UBYTE *) Screen_atari);
 }
 
 /*------------------------------------------------------------------------------

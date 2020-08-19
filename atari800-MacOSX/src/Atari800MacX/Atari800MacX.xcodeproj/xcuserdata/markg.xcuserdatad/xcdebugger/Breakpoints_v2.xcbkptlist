@@ -190,8 +190,8 @@
             filePath = "atari_mac_sdl.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "866"
-            endingLineNumber = "866"
+            startingLineNumber = "862"
+            endingLineNumber = "862"
             landmarkName = "InitializeVideo()"
             landmarkType = "9">
          </BreakpointContent>
@@ -494,25 +494,9 @@
             filePath = "atari_mac_sdl.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "4524"
-            endingLineNumber = "4524"
+            startingLineNumber = "4531"
+            endingLineNumber = "4531"
             landmarkName = "ProcessMacMenus()"
-            landmarkType = "9">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "EAAAE9D9-8E77-4F21-83B3-9AFE14D194FC"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "atari_mac_sdl.c"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "4326"
-            endingLineNumber = "4326"
-            landmarkName = "HandleResizeRequest()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -526,25 +510,9 @@
             filePath = "atari_mac_sdl.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "3051"
-            endingLineNumber = "3051"
+            startingLineNumber = "3047"
+            endingLineNumber = "3047"
             landmarkName = "Atari_DisplayScreen(screen)"
-            landmarkType = "9">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "D706A39E-C1D4-43D0-B043-037CC2C69888"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "atari_mac_sdl.c"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "4304"
-            endingLineNumber = "4304"
-            landmarkName = "HandleResizeRequest()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
