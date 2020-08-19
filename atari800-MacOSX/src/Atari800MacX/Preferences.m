@@ -276,6 +276,7 @@ static NSDictionary *defaultValues() {
                 [NSString stringWithCString:paletteStr encoding:NSASCIIStringEncoding], PaletteFile, 
                 [NSNumber numberWithBool:NO], ShowFPS,
                 [NSNumber numberWithBool:NO], OnlyIntegralScaling,
+                [NSNumber numberWithBool:NO], FixAspectFullscreen,
                 [NSNumber numberWithBool:YES], LedStatus,
                 [NSNumber numberWithBool:YES], LedSector,
                 [NSNumber numberWithBool:YES], LedStatusMedia,
@@ -805,6 +806,7 @@ static Preferences *sharedInstance = nil;
     [adjustPaletteButton setState:[[displayedValues objectForKey:AdjustPalette] boolValue] ? NSOnState : NSOffState];
     [fpsButton setState:[[displayedValues objectForKey:ShowFPS] boolValue] ? NSOnState : NSOffState];
     [onlyIntegralScalingButton setState:[[displayedValues objectForKey:OnlyIntegralScaling] boolValue] ? NSOnState : NSOffState];
+    [fixAspectFullscreenButton setState:[[displayedValues objectForKey:FixAspectFullscreen] boolValue] ? NSOnState : NSOffState];
     [ledStatusButton setState:[[displayedValues objectForKey:LedStatus] boolValue] ? NSOnState : NSOffState];
     [ledSectorButton setState:[[displayedValues objectForKey:LedSector] boolValue] ? NSOnState : NSOffState];
     [ledStatusMediaButton setState:[[displayedValues objectForKey:LedStatusMedia] boolValue] ? NSOnState : NSOffState];
@@ -1670,6 +1672,10 @@ static Preferences *sharedInstance = nil;
         [displayedValues setObject:yes forKey:OnlyIntegralScaling];
     else
         [displayedValues setObject:no forKey:OnlyIntegralScaling];
+    if ([fixAspectFullscreenButton state] == NSOnState)
+        [displayedValues setObject:yes forKey:FixAspectFullscreen];
+    else
+        [displayedValues setObject:no forKey:FixAspectFullscreen];
     if ([ledSectorButton state] == NSOnState)
         [displayedValues setObject:yes forKey:LedSector];
     else
@@ -3387,6 +3393,7 @@ static Preferences *sharedInstance = nil;
     [[curValues objectForKey:PaletteFile] getCString:prefs->paletteFile maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
     prefs->showFPS = [[curValues objectForKey:ShowFPS] intValue];
     prefs->onlyIntegralScaling = [[curValues objectForKey:OnlyIntegralScaling] intValue];
+    prefs->fixAspectFullscreen = [[curValues objectForKey:FixAspectFullscreen] intValue];
     prefs->ledStatus = [[curValues objectForKey:LedStatus] intValue];
     prefs->ledSector = [[curValues objectForKey:LedSector] intValue]; 
     prefs->ledStatusMedia = [[curValues objectForKey:LedStatusMedia] intValue]; 
@@ -4741,6 +4748,7 @@ static Preferences *sharedInstance = nil;
     getBoolDefault(AdjustPalette);
     getBoolDefault(ShowFPS);
     getBoolDefault(OnlyIntegralScaling);
+    getBoolDefault(FixAspectFullscreen);
     getBoolDefault(LedStatus);
     getBoolDefault(LedSector);
     getBoolDefault(LedStatusMedia);
@@ -5008,6 +5016,7 @@ static Preferences *sharedInstance = nil;
     setBoolDefault(AdjustPalette);
     setBoolDefault(ShowFPS);
     setBoolDefault(OnlyIntegralScaling);
+    setBoolDefault(FixAspectFullscreen);
     setBoolDefault(LedStatus);
     setBoolDefault(LedSector);
     setBoolDefault(LedStatusMedia);
@@ -5256,6 +5265,7 @@ static Preferences *sharedInstance = nil;
     setConfig(AdjustPalette);
     setConfig(ShowFPS);
     setConfig(OnlyIntegralScaling);
+    setConfig(FixAspectFullscreen);
     setConfig(LedStatus);
     setConfig(LedSector);
     setConfig(LedStatusMedia);
@@ -5602,6 +5612,7 @@ static Preferences *sharedInstance = nil;
     getConfig(AdjustPalette);
     getConfig(ShowFPS);
     getConfig(OnlyIntegralScaling);
+    getConfig(FixAspectFullscreen);
     getConfig(LedStatus);
     getConfig(LedSector);
     getConfig(LedStatusMedia);

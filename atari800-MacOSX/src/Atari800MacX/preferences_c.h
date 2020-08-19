@@ -28,6 +28,7 @@ typedef struct ATARI800MACX_PREF {
                 char paletteFile[FILENAME_MAX]; 
                 int showFPS;
                 int onlyIntegralScaling;
+                int fixAspectFullscreen;
 				int ledStatus;
 				int ledSector;
 				int ledStatusMedia;

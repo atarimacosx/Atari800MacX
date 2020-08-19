@@ -50,6 +50,7 @@ extern int paletteColorShift;
 extern int PLATFORM_80col;
 extern int SCALE_MODE;
 extern int onlyIntegralScaling;
+extern int fixAspectFullscreen;
 extern int scaleFactor;
 extern double scaleFactorFloat;
 extern int WIDTH_MODE;
@@ -758,6 +759,7 @@ int loadMacPrefs(int firstTime)
     WIDTH_MODE = prefs.widthMode; 
     Screen_show_atari_speed = prefs.showFPS;
     onlyIntegralScaling = prefs.onlyIntegralScaling;
+    fixAspectFullscreen = prefs.fixAspectFullscreen;
 	Screen_show_disk_led = prefs.ledStatus;
 	Screen_show_sector_counter = prefs.ledSector;
 	led_enabled_media = prefs.ledStatusMedia;
