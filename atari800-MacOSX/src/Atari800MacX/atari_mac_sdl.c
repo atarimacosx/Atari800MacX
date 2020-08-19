@@ -4285,8 +4285,6 @@ void HandleResizeRequest()
             else
                 SDL_RenderSetScale(renderer, (double) requested_w /
                                    (double) GetScreenWidth(), (double) requested_h/ (double) Screen_HEIGHT);
-            current_w = requested_w;
-            current_h = requested_h;
             screen_x_offset = 0;
             screen_y_offset = 0;
             }
@@ -4300,8 +4298,6 @@ void HandleResizeRequest()
                                          ((int)(GetScreenWidth()* thisScaleFactor)))/2))/thisScaleFactor;
             screen_y_offset = ((double)((requested_h -
                                          ((int)(Screen_HEIGHT* thisScaleFactor)))/2))/thisScaleFactor;
-            current_w = requested_w;
-            current_h = requested_h;
         }
         else {
             double thisScaleFactor = (double) requested_h /
@@ -4310,9 +4306,9 @@ void HandleResizeRequest()
             screen_x_offset = ((double)((requested_w -
                                        ((int)(GetScreenWidth()* thisScaleFactor)))/2))/thisScaleFactor;;
             screen_y_offset = 0;
-            current_w = requested_w;
-            current_h = requested_h;
         }
+        current_w = requested_w;
+        current_h = requested_h;
     }
     else {
         int new_w, new_h;
