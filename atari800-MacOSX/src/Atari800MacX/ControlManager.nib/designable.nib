@@ -166,18 +166,20 @@
             <point key="canvasLocation" x="188" y="414"/>
         </window>
         <window title="Atari800MacX Monitor" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="53" userLabel="Monitor" customClass="MonitorWindow">
-            <windowStyleMask key="styleMask" titled="YES"/>
+            <windowStyleMask key="styleMask" titled="YES" resizable="YES"/>
             <windowCollectionBehavior key="collectionBehavior" moveToActiveSpace="YES" fullScreenAuxiliary="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" topStrut="YES"/>
             <rect key="contentRect" x="216" y="232" width="531" height="640"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
+            <value key="minSize" type="size" width="531" height="560"/>
+            <value key="maxSize" type="size" width="531" height="800"/>
             <view key="contentView" id="51">
                 <rect key="frame" x="0.0" y="0.0" width="531" height="640"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <customView id="150" userLabel="Drawer Content View">
+                    <customView id="150" userLabel="Debugger">
                         <rect key="frame" x="0.0" y="248" width="531" height="392"/>
-                        <autoresizingMask key="autoresizingMask"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2145">
                                 <rect key="frame" x="7" y="371" width="92" height="14"/>
@@ -1568,7 +1570,7 @@
                     </customView>
                     <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="63">
                         <rect key="frame" x="5" y="3" width="519" height="27"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="5003">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -1580,7 +1582,7 @@
                     </textField>
                     <scrollView fixedFrame="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="64">
                         <rect key="frame" x="5" y="33" width="519" height="214"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" heightSizable="YES"/>
                         <clipView key="contentView" id="RBb-le-Q5B">
                             <rect key="frame" x="1" y="1" width="502" height="212"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
