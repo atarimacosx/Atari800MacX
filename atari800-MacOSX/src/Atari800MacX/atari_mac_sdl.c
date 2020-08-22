@@ -106,8 +106,7 @@ int GRAB_MOUSE = 0;
 int WIDTH_MODE;  /* Width mode, and the constants that define it */
 int current_w;
 int current_h;
-int requested_w;
-int requested_h;
+
 int mediaStatusWindowOpen;
 int functionKeysWindowOpen;
 int led_enabled_media = 1;
@@ -325,8 +324,8 @@ void SoundSetup(void);
 void PauseAudio(int pause);
 void CreateWindowCaption(void);
 void ProcessCopySelection(int *first_row, int *last_row, int selectAll);
-void HandleResizeRequest(void);
-int  GetScreenWidth(void);
+void HandleResizeRequest(int requested_w, int requested_h);
+int  GetAtariScreenWidth(void);
 void CalcWindowSize(int *width, int *height);
 void SetWindowAspectRatio(void);
 static void SetRenderScale(void);
@@ -852,7 +851,7 @@ void InitializeWindow(int w, int h)
 *-----------------------------------------------------------------------------*/
 void InitializeVideo()
 {
-    int w = GetScreenWidth();
+    int w = GetAtariScreenWidth();
     int h = Screen_HEIGHT;
 
     SDL_ShowCursor(SDL_ENABLE); // show mouse cursor
@@ -871,7 +870,7 @@ void InitializeVideo()
         memset(Screen_atari_b, 0, (Screen_HEIGHT * Screen_WIDTH));
 }
 
-int GetScreenWidth(void)
+int GetAtariScreenWidth(void)
 {
     int width;
     
@@ -885,9 +884,45 @@ int GetScreenWidth(void)
     return width;
 }
 
+int GetDisplayScreenWidth(void)
+{
+    int width;
+    
+    if (PLATFORM_80col) {
+        if (BIT3_enabled)
+            width = BIT3_SCRN_WIDTH;
+        else if (AF80_enabled)
+            width = AF80_SCRN_WIDTH;
+        else
+            width = XEP80_SCRN_WIDTH;
+    } else {
+        width = GetAtariScreenWidth();
+    }
+
+    return width;
+}
+
+int GetDisplayScreenHeight(void)
+{
+    int height;
+    
+    if (PLATFORM_80col) {
+        if (BIT3_enabled)
+            height = BIT3_SCRN_HEIGHT;
+        else if (AF80_enabled)
+            height = AF80_SCRN_HEIGHT;
+        else
+            height = XEP80_SCRN_HEIGHT;
+    } else {
+        height = Screen_HEIGHT;
+    }
+
+    return height;
+}
+
 void CalcWindowSize(int *width, int *height)
 {
-    int sWidth = GetScreenWidth();
+    int sWidth = GetAtariScreenWidth();
     
     *width = (double) sWidth * scaleFactorFloat;
     *height = (double) Screen_HEIGHT * scaleFactorFloat;
@@ -925,38 +960,17 @@ void SetWindowAspectRatio(void)
 
 static void SetRenderScale(void)
 {
-    if (FULLSCREEN_MACOS) {
-        if (PLATFORM_80col) {
-            if (BIT3_enabled) {
-                SDL_RenderSetScale(renderer, (double) current_w/ (double) BIT3_SCRN_WIDTH, (double) current_h/ (double) BIT3_SCRN_HEIGHT);
-            }
-            else if (AF80_enabled) {
-                SDL_RenderSetScale(renderer, (double) current_w/ (double) AF80_SCRN_WIDTH, (double) current_h/ (double) AF80_SCRN_HEIGHT );
-            }
-            else if (XEP80_enabled) {
-                SDL_RenderSetScale(renderer, (double) current_w/ (double) XEP80_SCRN_WIDTH , (double) current_h/ (double) XEP80_SCRN_HEIGHT );
-            }
-        }
-        else
-            SDL_RenderSetScale(renderer, scaleFactorFloat, scaleFactorFloat);
+    if (PLATFORM_80col) {
+        SDL_RenderSetScale(renderer,
+                           ((double) GetAtariScreenWidth() /
+                            (double) GetDisplayScreenWidth() ) *
+                           scaleFactorFloat,
+                           ((double) Screen_HEIGHT /
+                            (double) GetDisplayScreenHeight() ) *
+                           scaleFactorFloat);
     }
-    else {
-        int width = GetScreenWidth();
-
-        if (PLATFORM_80col) {
-            if (BIT3_enabled) {
-                SDL_RenderSetScale(renderer, ((double) width/ (double) BIT3_SCRN_WIDTH ) * scaleFactorFloat, ((double) Screen_HEIGHT/ (double) BIT3_SCRN_HEIGHT ) *scaleFactorFloat);
-            }
-            else if (AF80_enabled) {
-                SDL_RenderSetScale(renderer, ((double) width/ (double) AF80_SCRN_WIDTH ) * scaleFactorFloat, ((double) Screen_HEIGHT/ (double) AF80_SCRN_HEIGHT ) * scaleFactorFloat);
-            }
-            else if (XEP80_enabled) {
-                SDL_RenderSetScale(renderer, ((double) width/ (double) XEP80_SCRN_WIDTH ) * scaleFactorFloat, ((double) Screen_HEIGHT/ (double) XEP80_SCRN_HEIGHT ) *scaleFactorFloat);
-            }
-        }
-        else
-            SDL_RenderSetScale(renderer, scaleFactorFloat, scaleFactorFloat);
-    }
+    else
+        SDL_RenderSetScale(renderer, scaleFactorFloat, scaleFactorFloat);
 }
 
 static void Switch80Col(void)
@@ -964,7 +978,7 @@ static void Switch80Col(void)
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
     SDL_RenderPresent(renderer);
-    SetRenderScale();
+    HandleResizeRequest(current_w, current_h);
     full_display = FULL_DISPLAY_COUNT;
     Atari_DisplayScreen((UBYTE *) Screen_atari);
     CreateWindowCaption();
@@ -1033,9 +1047,12 @@ void SwitchWidth(int width)
     int w, h;
     
     WIDTH_MODE = width;
-    CalcWindowSize(&w, &h);
-    SetWindowAspectRatio();
-    SDL_SetWindowSize(MainWindow, w, h);
+    if (!FULLSCREEN_MACOS) {
+        CalcWindowSize(&w, &h);
+        SetWindowAspectRatio();
+        SDL_SetWindowSize(MainWindow, w, h);
+    }
+    HandleResizeRequest(current_w, current_h);
     full_display = FULL_DISPLAY_COUNT;
     Atari_DisplayScreen((UBYTE *) Screen_atari);
 	SetDisplayManagerWidthMode(width);
@@ -1540,9 +1557,7 @@ int Atari_Keyboard_International(void)
                     break;
                 case SDL_WINDOWEVENT:
                     if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
-                        requested_w = event.window.data1;
-                        requested_h = event.window.data2;
-                        HandleResizeRequest();
+                        HandleResizeRequest(event.window.data1, event.window.data2);
                     }
                 case SDL_TEXTINPUT:
                     kbhits = (Uint8 *) SDL_GetKeyboardState(NULL);
@@ -4264,49 +4279,55 @@ void CountFPS()
         }
 }
 
-void HandleResizeRequest()
+void HandleResizeRequest(int requested_w, int requested_h)
 {
     //int wasFullscreen = FULLSCREEN_MACOS;
     FULLSCREEN_MACOS = Atari800WindowIsFullscreen();
     if (FULLSCREEN_MACOS) {
         Log_print("Setting FullSreeen: %dx%d ",requested_w, requested_h);
-        //SDL_DestroyRenderer(renderer);
-        //renderer = SDL_CreateRenderer(MainWindow, -1, 0);
+        /* Destroying and recreating the renderer here is neccesary to
+           prevent unexplained artifacts on the side of the screen.
+           The screen clearing at the end of this function doesn't fix
+           it, and I don't know why.  I think it's a Metal or libSDL
+           issue */
+        SDL_DestroyRenderer(renderer);
+        renderer = SDL_CreateRenderer(MainWindow, -1, 0);
         if (!fixAspectFullscreen) {
-            if (PLATFORM_80col) {
-                if (BIT3_enabled) {
-                    SDL_RenderSetScale(renderer, (double) requested_w/ (double) BIT3_SCRN_WIDTH, (double) requested_h/ (double) BIT3_SCRN_HEIGHT);
-                }
-                else if (AF80_enabled) {
-                    SDL_RenderSetScale(renderer, (double) requested_w/ (double) AF80_SCRN_WIDTH, (double) requested_h/ (double) AF80_SCRN_HEIGHT );
-                }
-                else if (XEP80_enabled) {
-                    SDL_RenderSetScale(renderer, (double) requested_w/ (double) XEP80_SCRN_WIDTH , (double) requested_h/ (double) XEP80_SCRN_HEIGHT );
-                }
-            }
-            else
-                SDL_RenderSetScale(renderer, (double) requested_w /
-                                   (double) GetScreenWidth(), (double) requested_h/ (double) Screen_HEIGHT);
+            SDL_RenderSetScale(renderer,
+                               (double) requested_w /
+                               (double) GetDisplayScreenWidth(),
+                               (double) requested_h /
+                               (double) GetDisplayScreenHeight());
             screen_x_offset = 0;
             screen_y_offset = 0;
             }
         else if (onlyIntegralScaling) {
-            double thisScaleFactor = trunc((double) requested_h /
-                                (double) Screen_HEIGHT);
-            if (thisScaleFactor < 1.0)
-                thisScaleFactor = 1.0;
-            SDL_RenderSetScale(renderer, thisScaleFactor, thisScaleFactor);
+            double thisXScaleFactor;
+            double thisYScaleFactor;
+            
+            thisYScaleFactor = trunc((double) requested_h /
+                                     (double) GetDisplayScreenHeight());
+            if (thisYScaleFactor < 1.0)
+                thisYScaleFactor = 1.0;
+            thisXScaleFactor = ((double) GetAtariScreenWidth() /
+                    (double) GetDisplayScreenWidth()) * thisYScaleFactor;
+            SDL_RenderSetScale(renderer, thisXScaleFactor, thisYScaleFactor);
             screen_x_offset = ((double)((requested_w -
-                                         ((int)(GetScreenWidth()* thisScaleFactor)))/2))/thisScaleFactor;
+                                       ((int)(GetDisplayScreenWidth()* thisXScaleFactor)))/2))/thisXScaleFactor;;
             screen_y_offset = ((double)((requested_h -
-                                         ((int)(Screen_HEIGHT* thisScaleFactor)))/2))/thisScaleFactor;
+                                         ((int)(GetDisplayScreenHeight()* thisYScaleFactor)))/2))/thisYScaleFactor;
         }
         else {
-            double thisScaleFactor = (double) requested_h /
-                                (double) Screen_HEIGHT;
-            SDL_RenderSetScale(renderer, thisScaleFactor, thisScaleFactor);
+            double thisXScaleFactor;
+            double thisYScaleFactor;
+            
+            thisYScaleFactor = (double) requested_h /
+                               (double) GetDisplayScreenHeight();
+            thisXScaleFactor = ((double) GetAtariScreenWidth() /
+                    (double) GetDisplayScreenWidth()) * thisYScaleFactor;
+            SDL_RenderSetScale(renderer, thisXScaleFactor, thisYScaleFactor);
             screen_x_offset = ((double)((requested_w -
-                                       ((int)(GetScreenWidth()* thisScaleFactor)))/2))/thisScaleFactor;;
+                                       ((int)(GetDisplayScreenWidth()* thisXScaleFactor)))/2))/thisXScaleFactor;;
             screen_y_offset = 0;
         }
         current_w = requested_w;
@@ -4322,7 +4343,7 @@ void HandleResizeRequest()
             if (scaleFactorFloat < 1.0)
                 scaleFactorFloat = 1.0;
         }
-        new_w = GetScreenWidth() * scaleFactorFloat;
+        new_w = GetAtariScreenWidth() * scaleFactorFloat;
         new_h = Screen_HEIGHT * scaleFactorFloat;
         Log_print("Setting Screen: %dx%d %f",new_w,new_h,scaleFactorFloat);
         SetRenderScale();
