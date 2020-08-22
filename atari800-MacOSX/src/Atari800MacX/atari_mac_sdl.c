@@ -1058,8 +1058,9 @@ void SwitchWidth(int width)
     WIDTH_MODE = width;
     CalcWindowSize(&w, &h);
     SetWindowAspectRatio();
-    SDL_SetWindowSize(MainWindow, w, h);
-    //HandleResizeRequest(w,h);
+    if (!FULLSCREEN_MACOS)
+        SDL_SetWindowSize(MainWindow, w, h);
+    HandleResizeRequest(current_w, current_h);
     full_display = FULL_DISPLAY_COUNT;
     Atari_DisplayScreen((UBYTE *) Screen_atari);
 	SetDisplayManagerWidthMode(width);
