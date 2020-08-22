@@ -899,10 +899,14 @@ static int monitorRunFirstTime = 1;
 		return [[Preferences sharedInstance] monitorGUIVisable];
 	}
 	
+#if 0
 	if ([monitorDrawer state] == NSDrawerClosedState) 
 		return NO;
 	else
 		return YES;
+#else
+    return NO;
+#endif
 }
 
 /*------------------------------------------------------------------------------
@@ -953,8 +957,6 @@ static int monitorRunFirstTime = 1;
 
 	if (monitorRunFirstTime) {
 		[[monitorOutputView window] setFrameOrigin:[[Preferences sharedInstance] monitorOrigin]];
-		if ([[Preferences sharedInstance] monitorGUIVisable])
-			[self monitorDrawerToggle:self];
 		monitorRunFirstTime = 0;
 		}
 
@@ -1221,38 +1223,6 @@ static int monitorRunFirstTime = 1;
 - (IBAction)selectPressed:(id)sender
 {
 	selectFunctionPressed = FUNCTION_KEY_PRESS_DURATION;
-}
-
-/*------------------------------------------------------------------------------
- *  monitorDrawerToggle - Toggle the Drawer for the GUI portion of the monitor
- *    open or closed.
- *-----------------------------------------------------------------------------*/
-- (IBAction) monitorDrawerToggle:(id)sender
-{
-	NSWindow *window;
-	NSRect frame;
-	NSRange theEnd;
-	
-	window = [monitorInputField window];
-	frame = [window frame];
-	if ([monitorDrawer state] == NSDrawerClosedState) {
-		frame.origin.y += kGraphicalDrawerSize;
-		frame.size.height -= kGraphicalDrawerSize;
-		[window setFrame:frame display:YES animate:YES];
-		[window setHasShadow:NO];
-		[monitorDrawer toggle:sender];
-		[monitorGUIButton setState:NSOnState];
-	}
-	else {
-		frame.origin.y -= kGraphicalDrawerSize;
-		frame.size.height += kGraphicalDrawerSize;
-		[monitorDrawer toggle:sender];
-		[window setHasShadow:YES];
-		[window setFrame:frame display:YES animate:YES];
-		[monitorGUIButton setState:NSOffState];
-	}
-    theEnd=NSMakeRange([[monitorOutputView string] length],0);
-    [monitorOutputView scrollRangeToVisible:theEnd];
 }
 
 /*------------------------------------------------------------------------------

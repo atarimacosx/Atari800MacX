@@ -597,8 +597,6 @@ static Preferences *sharedInstance = nil;
 	[displayedValues setObject:[NSNumber numberWithBool:guiVisable] forKey:MonitorGUIVisable];
 	origin = [[ControlManager sharedInstance] monitorOriginSave];
 	[displayedValues setObject:[NSNumber numberWithFloat:origin.x] forKey:MonitorX];
-	if (guiVisable)
-		origin.y -= kGraphicalDrawerSize;
 	[displayedValues setObject:[NSNumber numberWithFloat:origin.y] forKey:MonitorY];
 	origin = [Atari800Window applicationWindowOriginSave];
     if (!FULLSCREEN_MACOS) {

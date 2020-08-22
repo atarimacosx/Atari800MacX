@@ -21,7 +21,6 @@
 #import "PokeyDataSource.h"
 
 #define kHistorySize 25
-#define kGraphicalDrawerSize 387
 
 @interface ControlManager : NSObject
 {
@@ -79,8 +78,6 @@
     IBOutlet id monitorInputField;
     IBOutlet id monitorExeButton;
     IBOutlet id monitorDoneButton;
-	IBOutlet id monitorDrawer;
-	IBOutlet id monitorGUIButton;
 	IBOutlet id monitorTabView;
 	IBOutlet id monitorPCRegField;
 	IBOutlet id monitorARegField;
@@ -190,7 +187,6 @@
 - (void)updateMonitorGUIDisasm:(BOOL) usePc: (unsigned short) altAddress;
 - (void)updateMonitorGUILabels;
 - (void)updateMonitorGUIHardware;
-- (IBAction) monitorDrawerToggle:(id)sender;
 - (IBAction) monitorToggleTableBreakpoint:(id)sender;
 - (IBAction) monitorAddByteWatch:(id)sender;
 - (IBAction) monitorAddWordWatch:(id)sender;
