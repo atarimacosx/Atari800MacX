@@ -960,26 +960,17 @@ void SetWindowAspectRatio(void)
 
 static void SetRenderScale(void)
 {
-    if (FULLSCREEN_MACOS) {
-        if (PLATFORM_80col) {
-            SDL_RenderSetScale(renderer, (double) current_w/ (double) GetDisplayScreenWidth(), (double) current_h/ (double) GetDisplayScreenHeight());
-        }
-        else
-            SDL_RenderSetScale(renderer, scaleFactorFloat, scaleFactorFloat);
+    if (PLATFORM_80col) {
+        SDL_RenderSetScale(renderer,
+                           ((double) GetAtariScreenWidth() /
+                            (double) GetDisplayScreenWidth() ) *
+                           scaleFactorFloat,
+                           ((double) Screen_HEIGHT /
+                            (double) GetDisplayScreenHeight() ) *
+                           scaleFactorFloat);
     }
-    else {
-        if (PLATFORM_80col) {
-            SDL_RenderSetScale(renderer,
-                               ((double) GetAtariScreenWidth() /
-                                (double) GetDisplayScreenWidth() ) *
-                               scaleFactorFloat,
-                               ((double) Screen_HEIGHT /
-                                (double) GetDisplayScreenHeight() ) *
-                               scaleFactorFloat);
-        }
-        else
-            SDL_RenderSetScale(renderer, scaleFactorFloat, scaleFactorFloat);
-    }
+    else
+        SDL_RenderSetScale(renderer, scaleFactorFloat, scaleFactorFloat);
 }
 
 static void Switch80Col(void)
@@ -987,7 +978,7 @@ static void Switch80Col(void)
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
     SDL_RenderPresent(renderer);
-    SetRenderScale();
+    HandleResizeRequest(current_w, current_h);
     full_display = FULL_DISPLAY_COUNT;
     Atari_DisplayScreen((UBYTE *) Screen_atari);
     CreateWindowCaption();
@@ -1056,10 +1047,11 @@ void SwitchWidth(int width)
     int w, h;
     
     WIDTH_MODE = width;
-    CalcWindowSize(&w, &h);
-    SetWindowAspectRatio();
-    if (!FULLSCREEN_MACOS)
+    if (!FULLSCREEN_MACOS) {
+        CalcWindowSize(&w, &h);
+        SetWindowAspectRatio();
         SDL_SetWindowSize(MainWindow, w, h);
+    }
     HandleResizeRequest(current_w, current_h);
     full_display = FULL_DISPLAY_COUNT;
     Atari_DisplayScreen((UBYTE *) Screen_atari);
@@ -4293,8 +4285,13 @@ void HandleResizeRequest(int requested_w, int requested_h)
     FULLSCREEN_MACOS = Atari800WindowIsFullscreen();
     if (FULLSCREEN_MACOS) {
         Log_print("Setting FullSreeen: %dx%d ",requested_w, requested_h);
-        //SDL_DestroyRenderer(renderer);
-        //renderer = SDL_CreateRenderer(MainWindow, -1, 0);
+        /* Destroying and recreating the renderer here is neccesary to
+           prevent unexplained artifacts on the side of the screen.
+           The screen clearing at the end of this function doesn't fix
+           it, and I don't know why.  I think it's a Metal or libSDL
+           issue */
+        SDL_DestroyRenderer(renderer);
+        renderer = SDL_CreateRenderer(MainWindow, -1, 0);
         if (!fixAspectFullscreen) {
             SDL_RenderSetScale(renderer,
                                (double) requested_w /
