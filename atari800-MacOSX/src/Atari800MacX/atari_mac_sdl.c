@@ -4359,6 +4359,7 @@ void HandleResizeRequest(int requested_w, int requested_h)
     memset(Screen_atari2, 0, (Screen_HEIGHT * Screen_WIDTH));
     full_display = FULL_DISPLAY_COUNT;
     Atari_DisplayScreen((UBYTE *) Screen_atari);
+    SDL_FillRect(MainScreen, NULL, SDL_MapRGB(MainScreen->format, 0, 0, 0));
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
     SDL_RenderPresent(renderer);
