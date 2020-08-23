@@ -210,6 +210,7 @@ extern int bit3EnabledChanged;
 extern int xep80EnabledChanged;
 extern int xep80ColorsChanged;
 extern int configurationChanged;
+extern int fullscreenOptsChanged;
 extern int fileToLoad;
 extern int CARTRIDGE_type;
 int disable_all_basic = 1;
@@ -4739,7 +4740,10 @@ void ProcessMacPrefsChange()
 			loadPrefsBinaries();
 			UpdateMediaManagerInfo();
             Atari800_Coldstart();
-		}	
+		}
+        if (fullscreenOptsChanged && FULLSCREEN_MACOS) {
+            HandleResizeRequest(current_w, current_h);
+        }
 
     if (Atari800_tv_mode == Atari800_TV_PAL)
             deltatime = (1.0 / 50.0) / emulationSpeed;

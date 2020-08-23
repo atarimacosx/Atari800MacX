@@ -190,6 +190,7 @@ int xep80ColorsChanged;
 int configurationChanged;
 int mioChanged;
 int bbChanged;
+int fullscreenOptsChanged;
 int bbRequested = FALSE;
 int mioRequested = FALSE;
 int dontMuteAudio = 0;
@@ -743,6 +744,12 @@ void CalculatePrefsChanged()
 		xep80ColorsChanged = TRUE;
 	else
 		xep80ColorsChanged = FALSE;
+    
+    if ((onlyIntegralScaling != prefs.onlyIntegralScaling) ||
+        (fixAspectFullscreen != prefs.fixAspectFullscreen))
+        fullscreenOptsChanged = TRUE;
+    else
+        fullscreenOptsChanged = FALSE;
 }
 
 int loadMacPrefs(int firstTime)
