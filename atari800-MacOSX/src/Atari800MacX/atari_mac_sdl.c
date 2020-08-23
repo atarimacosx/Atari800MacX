@@ -325,7 +325,7 @@ void SoundSetup(void);
 void PauseAudio(int pause);
 void CreateWindowCaption(void);
 void ProcessCopySelection(int *first_row, int *last_row, int selectAll);
-void HandleResizeRequest(int requested_w, int requested_h);
+void HandleScreenChange(int requested_w, int requested_h);
 int  GetAtariScreenWidth(void);
 void CalcWindowSize(int *width, int *height);
 void SetWindowAspectRatio(void);
@@ -979,7 +979,7 @@ static void Switch80Col(void)
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
     SDL_RenderPresent(renderer);
-    HandleResizeRequest(current_w, current_h);
+    HandleScreenChange(current_w, current_h);
     full_display = FULL_DISPLAY_COUNT;
     Atari_DisplayScreen((UBYTE *) Screen_atari);
     CreateWindowCaption();
@@ -1053,7 +1053,7 @@ void SwitchWidth(int width)
         SetWindowAspectRatio();
         SDL_SetWindowSize(MainWindow, w, h);
     }
-    HandleResizeRequest(current_w, current_h);
+    HandleScreenChange(current_w, current_h);
     full_display = FULL_DISPLAY_COUNT;
     Atari_DisplayScreen((UBYTE *) Screen_atari);
 	SetDisplayManagerWidthMode(width);
@@ -1558,7 +1558,7 @@ int Atari_Keyboard_International(void)
                     break;
                 case SDL_WINDOWEVENT:
                     if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
-                        HandleResizeRequest(event.window.data1, event.window.data2);
+                        HandleScreenChange(event.window.data1, event.window.data2);
                     }
                 case SDL_TEXTINPUT:
                     kbhits = (Uint8 *) SDL_GetKeyboardState(NULL);
@@ -4280,7 +4280,7 @@ void CountFPS()
         }
 }
 
-void HandleResizeRequest(int requested_w, int requested_h)
+void HandleScreenChange(int requested_w, int requested_h)
 {
     //int wasFullscreen = FULLSCREEN_MACOS;
     FULLSCREEN_MACOS = Atari800WindowIsFullscreen();
@@ -4743,7 +4743,7 @@ void ProcessMacPrefsChange()
             Atari800_Coldstart();
 		}
         if (fullscreenOptsChanged && FULLSCREEN_MACOS) {
-            HandleResizeRequest(current_w, current_h);
+            HandleScreenChange(current_w, current_h);
         }
 
     if (Atari800_tv_mode == Atari800_TV_PAL)
