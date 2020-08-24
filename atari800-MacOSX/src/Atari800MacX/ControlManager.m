@@ -986,6 +986,7 @@ static int monitorRunFirstTime = 1;
     // window
     [copyMenu setTarget:nil];
     [pasteMenu setTarget:nil];
+    [selectAllMenu setTarget:nil];
 
     PauseAudio(1);
             
@@ -1025,6 +1026,7 @@ static int monitorRunFirstTime = 1;
     // work again.
     [copyMenu setTarget:[DisplayManager sharedInstance]];
     [pasteMenu setTarget:[DisplayManager sharedInstance]];
+    [selectAllMenu setTarget:[DisplayManager sharedInstance]];
 
     if (retValue < 0)
         return(1);

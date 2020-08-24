@@ -88,7 +88,11 @@
                             <menuItem isSeparatorItem="YES" id="610">
                                 <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                             </menuItem>
-                            <menuItem title="Cut" keyEquivalent="x" id="608"/>
+                            <menuItem title="Cut" keyEquivalent="x" id="608">
+                                <connections>
+                                    <action selector="cut:" target="-1" id="6cM-of-ie5"/>
+                                </connections>
+                            </menuItem>
                             <menuItem title="Copy" keyEquivalent="c" id="631">
                                 <connections>
                                     <action selector="copy:" target="498" id="XWX-NT-khA"/>
@@ -957,6 +961,7 @@ DQ
                 <outlet property="pauseItem" destination="448" id="531"/>
                 <outlet property="pbiExpansionMenu" destination="888" id="982"/>
                 <outlet property="saveStateItem" destination="468" id="535"/>
+                <outlet property="selectAllMenu" destination="619" id="K3A-FN-Wdu"/>
                 <outlet property="warmResetItem" destination="451" id="533"/>
             </connections>
         </customObject>
