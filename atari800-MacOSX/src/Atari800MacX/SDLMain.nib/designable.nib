@@ -945,6 +945,7 @@ DQ
                 <outlet property="arrowKeysMenu" destination="1046" id="1050"/>
                 <outlet property="arrowKeysOnlyItem" destination="1048" id="1056"/>
                 <outlet property="coldResetItem" destination="452" id="534"/>
+                <outlet property="copyMenu" destination="631" id="cw4-DM-wY0"/>
                 <outlet property="ctrlArrowKeysItem" destination="1047" id="1055"/>
                 <outlet property="cx85EnableItem" destination="1006" id="1008"/>
                 <outlet property="disableBasicItem" destination="722" id="723"/>
@@ -952,6 +953,7 @@ DQ
                 <outlet property="limitItem" destination="449" id="532"/>
                 <outlet property="loadStateItem" destination="469" id="536"/>
                 <outlet property="machineTypeMenu" destination="962" id="984"/>
+                <outlet property="pasteMenu" destination="605" id="dY5-Of-hm4"/>
                 <outlet property="pauseItem" destination="448" id="531"/>
                 <outlet property="pbiExpansionMenu" destination="888" id="982"/>
                 <outlet property="saveStateItem" destination="468" id="535"/>
