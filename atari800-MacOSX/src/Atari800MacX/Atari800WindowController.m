@@ -122,7 +122,7 @@
         attrString = [[NSAttributedString alloc]initWithString:helpButton.title attributes:attrsDictionary];
         [helpButton setAttributedTitle:attrString];
 
-        NSButton *clearButton = [NSButton buttonWithImage:[NSImage imageNamed:@"Mac52-3x-Clear-60-Rounded"] target:[ControlManager sharedInstance] action:@selector(clearPressed:)];
+        NSButton *clearButton = [NSButton buttonWithImage:[NSImage imageNamed:@"AtariClear60Rounded"] target:[ControlManager sharedInstance] action:@selector(clearPressed:)];
 
         NSButton *inverseButton = [NSButton buttonWithImage:[NSImage imageNamed:@"Atari400KeyRepro60Rounded"] target:[ControlManager sharedInstance] action:@selector(inversePressed:)];
         
