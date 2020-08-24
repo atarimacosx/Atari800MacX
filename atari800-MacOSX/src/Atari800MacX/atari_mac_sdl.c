@@ -4340,7 +4340,7 @@ void HandleScreenChange(int requested_w, int requested_h)
                             (double) Screen_HEIGHT);
         Log_print("Reqeusted Sreeen: %dx%d %f ",requested_w, requested_h, scaleFactorFloat);
         if (onlyIntegralScaling) {
-            scaleFactorFloat = trunc(scaleFactorFloat+0.1);
+            scaleFactorFloat = trunc(scaleFactorFloat+0.4);
             if (scaleFactorFloat < 1.0)
                 scaleFactorFloat = 1.0;
         }
