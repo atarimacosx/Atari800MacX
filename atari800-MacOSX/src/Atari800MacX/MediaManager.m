@@ -1696,6 +1696,7 @@ NSImage *disketteImage;
 	DiskEditorWindow *diskEditor;
 	NSString *errorString;
 
+    [[DisplayManager sharedInstance] enableMacCopyPaste];
     PauseAudio(1);
     filename = [self browseFileTypeInDirectory:
                   [NSString stringWithCString:atari_disk_dirs[0] encoding:NSASCIIStringEncoding]:

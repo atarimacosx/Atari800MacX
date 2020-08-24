@@ -32,7 +32,9 @@
 	IBOutlet id XLXEGTIAItem;
 	IBOutlet id GTIA400800Item;
 	IBOutlet id CTIA400800Item;
-
+    IBOutlet id copyMenu;
+    IBOutlet id pasteMenu;
+    IBOutlet id selectAllMenu;
 }
 + (DisplayManager *)sharedInstance;
 - (void)setWidthmodeMenu:(int)widthMode;
@@ -59,4 +61,6 @@
 - (IBAction) paste:(id) sender;
 - (IBAction) selectAll:(id) sender;
 - (IBAction) copy:(id) sender;
+- (void) enableMacCopyPaste;
+- (void) enableAtariCopyPaste;
 @end

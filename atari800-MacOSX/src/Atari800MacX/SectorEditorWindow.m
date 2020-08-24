@@ -8,6 +8,7 @@
 #import "atrErr.h"
 #import "atrMount.h"
 #import "Preferences.h"
+#import "DisplayManager.h"
 #import "SectorEditorWindow.h"
 
 extern void PauseAudio(int pause);
@@ -99,7 +100,9 @@ static SectorEditorWindow *sharedInstance = nil;
 *-----------------------------------------------------------------------------*/
 - (void)showSectorPanel
 {
+    [[DisplayManager sharedInstance] enableMacCopyPaste];
     [NSApp runModalForWindow:[sectorTableView window]];
+    [[DisplayManager sharedInstance] enableAtariCopyPaste];
 }
 
 /*------------------------------------------------------------------------------

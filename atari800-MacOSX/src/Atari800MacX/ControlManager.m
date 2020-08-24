@@ -981,13 +981,8 @@ static int monitorRunFirstTime = 1;
 		monitorRunFirstTime = 0;
 		}
 
-    // Set the target of copy and paste to
-    // first responder so they will work in Mac
-    // window
-    [copyMenu setTarget:nil];
-    [pasteMenu setTarget:nil];
-    [selectAllMenu setTarget:nil];
-
+    [[DisplayManager sharedInstance] enableMacCopyPaste];
+    
     PauseAudio(1);
             
     MONITOR_monitorEnter();
@@ -1021,13 +1016,8 @@ static int monitorRunFirstTime = 1;
 
     PauseAudio(0);
 
-    // Set the target of copy and paste to
-    // Display Manger so Atari cut/paste will
-    // work again.
-    [copyMenu setTarget:[DisplayManager sharedInstance]];
-    [pasteMenu setTarget:[DisplayManager sharedInstance]];
-    [selectAllMenu setTarget:[DisplayManager sharedInstance]];
-
+    [[DisplayManager sharedInstance] enableAtariCopyPaste];
+    
     if (retValue < 0)
         return(1);
     else

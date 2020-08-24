@@ -476,4 +476,25 @@ static DisplayManager *sharedInstance = nil;
     requestCopy = 1;
 }
 
+- (void) enableMacCopyPaste
+{
+    // Set the target of copy and paste to
+    // first responder so they will work in Mac
+    // window
+    [copyMenu setTarget:nil];
+    [pasteMenu setTarget:nil];
+    [selectAllMenu setTarget:nil];
+}
+
+
+- (void) enableAtariCopyPaste
+{
+    // Set the target of copy and paste to
+    // Display Manger so Atari cut/paste will
+    // work again.
+    [copyMenu setTarget:self];
+    [pasteMenu setTarget:self];
+    [selectAllMenu setTarget:self];
+}
+
 @end
