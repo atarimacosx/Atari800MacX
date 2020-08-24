@@ -101,7 +101,7 @@
  
         NSButton *startButton = [NSButton buttonWithTitle:NSLocalizedString(@"Start", @"") target:[ControlManager sharedInstance] action:@selector(startPressed:)];
 
-        startButton.bezelColor = [NSColor colorWithSRGBRed:0.906 green:0.682 blue:0.263 alpha:1.0];
+        startButton.bezelColor = [NSColor colorWithSRGBRed:1.0 green:0.816 blue:0.067 alpha:1.0];
         style = [[NSMutableParagraphStyle alloc] init];
         [style setAlignment:NSTextAlignmentCenter];
         attrsDictionary  = [NSDictionary dictionaryWithObjectsAndKeys:
