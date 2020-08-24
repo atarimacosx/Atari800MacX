@@ -502,6 +502,7 @@ static NSDictionary *defaultValues() {
                 [NSNumber numberWithInt:0], MonitorX,
                 [NSNumber numberWithInt:0], MonitorY,
                 [NSNumber numberWithBool:NO], MonitorGUIVisable,
+                [NSNumber numberWithInt:560], MonitorHeight,
                 [NSNumber numberWithInt:0], FunctionKeysX,
                 [NSNumber numberWithInt:0], FunctionKeysY,
                 [NSNumber numberWithInt:59999], ApplicationWindowX,
@@ -582,6 +583,7 @@ static Preferences *sharedInstance = nil;
     NSDictionary *prefs;
 	NSPoint origin;
 	BOOL guiVisable;
+    int monitorHeight;
 
 	// Save the window frames 
 	origin = [[MediaManager sharedInstance] mediaStatusOriginSave];
@@ -593,8 +595,10 @@ static Preferences *sharedInstance = nil;
 	origin = [[ControlManager sharedInstance] functionKeysOriginSave];
 	[displayedValues setObject:[NSNumber numberWithFloat:origin.x] forKey:FunctionKeysX];
 	[displayedValues setObject:[NSNumber numberWithFloat:origin.y] forKey:FunctionKeysY];
-	guiVisable = [[ControlManager sharedInstance] monitorGUIVisableSave];
-	[displayedValues setObject:[NSNumber numberWithBool:guiVisable] forKey:MonitorGUIVisable];
+    guiVisable = [[ControlManager sharedInstance] monitorGUIVisableSave];
+    [displayedValues setObject:[NSNumber numberWithBool:guiVisable] forKey:MonitorGUIVisable];
+    monitorHeight = [[ControlManager sharedInstance] monitorHeightSave];
+    [displayedValues setObject:[NSNumber numberWithInt:monitorHeight] forKey:MonitorHeight];
 	origin = [[ControlManager sharedInstance] monitorOriginSave];
 	[displayedValues setObject:[NSNumber numberWithFloat:origin.x] forKey:MonitorX];
 	[displayedValues setObject:[NSNumber numberWithFloat:origin.y] forKey:MonitorY];
@@ -3968,9 +3972,14 @@ static Preferences *sharedInstance = nil;
 
 - (BOOL)monitorGUIVisable
 {
-	return ([[displayedValues objectForKey:MonitorGUIVisable] boolValue]); 
+    return ([[displayedValues objectForKey:MonitorGUIVisable] boolValue]);
 }
-	
+    
+- (int)monitorHeight
+{
+    return ([[displayedValues objectForKey:MonitorHeight] intValue]);
+}
+    
 - (NSPoint)applicationWindowOrigin
 {
    NSPoint origin;
@@ -4968,7 +4977,8 @@ static Preferences *sharedInstance = nil;
     getIntDefault(MessagesY);
     getIntDefault(MonitorX);
     getIntDefault(MonitorY);
-	getBoolDefault(MonitorGUIVisable);
+    getBoolDefault(MonitorGUIVisable);
+    getIntDefault(MonitorHeight);
     getIntDefault(FunctionKeysX);
     getIntDefault(FunctionKeysY);
     getIntDefault(ApplicationWindowX);
@@ -5224,7 +5234,8 @@ static Preferences *sharedInstance = nil;
     setIntDefault(FunctionKeysY);
     setIntDefault(MonitorX);
     setIntDefault(MonitorY);
-	setBoolDefault(MonitorGUIVisable);
+    setBoolDefault(MonitorGUIVisable);
+    setIntDefault(MonitorHeight);
     setIntDefault(ApplicationWindowX);
     setIntDefault(ApplicationWindowY);
 
@@ -5469,7 +5480,8 @@ static Preferences *sharedInstance = nil;
     setConfig(FunctionKeysY);
     setConfig(MonitorX);
     setConfig(MonitorY);
-	setConfig(MonitorGUIVisable);
+    setConfig(MonitorGUIVisable);
+    setConfig(MonitorHeight);
     setConfig(ApplicationWindowX);
     setConfig(ApplicationWindowY);
 	
@@ -5824,7 +5836,8 @@ static Preferences *sharedInstance = nil;
     getConfig(MessagesY);
     getConfig(MonitorX);
     getConfig(MonitorY);
-	getConfig(MonitorGUIVisable);
+    getConfig(MonitorGUIVisable);
+    getConfig(MonitorHeight);
     getConfig(FunctionKeysX);
     getConfig(FunctionKeysY);
     getConfig(ApplicationWindowX);

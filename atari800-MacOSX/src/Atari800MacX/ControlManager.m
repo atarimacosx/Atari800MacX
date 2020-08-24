@@ -895,18 +895,31 @@ static int monitorRunFirstTime = 1;
  *-----------------------------------------------------------------------------*/
 - (BOOL)monitorGUIVisableSave
 {
-	if (monitorRunFirstTime) {
-		return [[Preferences sharedInstance] monitorGUIVisable];
-	}
-	
+    if (monitorRunFirstTime) {
+        return [[Preferences sharedInstance] monitorGUIVisable];
+    }
+    
 #if 0
-	if ([monitorDrawer state] == NSDrawerClosedState) 
-		return NO;
-	else
-		return YES;
+    if ([monitorDrawer state] == NSDrawerClosedState)
+        return NO;
+    else
+        return YES;
 #else
     return NO;
 #endif
+}
+
+/*------------------------------------------------------------------------------
+ *  monitorHeightSave - This method saves the monitor window height.
+ *-----------------------------------------------------------------------------*/
+- (int)monitorHeightSave
+{
+    if (monitorRunFirstTime) {
+        return [[Preferences sharedInstance] monitorHeight];
+    }
+    
+    NSRect monitorRect = [[monitorOutputView window] frame];
+    return monitorRect.size.height;
 }
 
 /*------------------------------------------------------------------------------
@@ -954,9 +967,16 @@ static int monitorRunFirstTime = 1;
     int retValue = 0;
     NSRange theEnd;
     NSString *stringObj;
+    NSRect monitorRect;
+    NSPoint origin;
+    int height;
 
 	if (monitorRunFirstTime) {
-		[[monitorOutputView window] setFrameOrigin:[[Preferences sharedInstance] monitorOrigin]];
+        origin = [[Preferences sharedInstance] monitorOrigin];
+        height = [[Preferences sharedInstance] monitorHeight];
+        monitorRect = NSMakeRect(origin.x, origin.y, 531, height);
+        [[monitorOutputView window]
+         setFrame:monitorRect display:YES];
 		monitorRunFirstTime = 0;
 		}
 

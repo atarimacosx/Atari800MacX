@@ -242,6 +242,7 @@
 #define MonitorX @"MonitorX"
 #define MonitorY @"MonitorY"
 #define MonitorGUIVisable @"MonitorGUIVisable"
+#define MonitorHeight @"MonitorHeight"
 #define FunctionKeysX @"FunctionKeysX"
 #define FunctionKeysY @"FunctionKeysY"
 #define ApplicationWindowX @"ApplicationWindowX"
@@ -609,6 +610,7 @@
 - (NSPoint)functionKeysOrigin;
 - (NSPoint)monitorOrigin;
 - (BOOL)monitorGUIVisable;
+- (int)monitorHeight;
 - (NSPoint)applicationWindowOrigin;
 - (void)transferValuesFromEmulator:(struct ATARI800MACX_PREFSAVE *)prefssave;
 - (void) saveCurrentMediaAction:(id)sender;

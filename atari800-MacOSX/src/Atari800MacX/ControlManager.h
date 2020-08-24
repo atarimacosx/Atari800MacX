@@ -162,6 +162,7 @@
 - (NSPoint)functionKeysOriginSave;
 - (NSPoint)monitorOriginSave;
 - (BOOL)monitorGUIVisableSave;
+- (int)monitorHeightSave;
 - (void)monitorPrint:(char *)string;
 - (IBAction)monitorMenuRun:(id)sender;
 - (int)monitorRun;
