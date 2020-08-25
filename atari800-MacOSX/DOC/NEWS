@@ -1,3 +1,855 @@
+Version 4.2.0 (2019/12/28) - released at SILK
+==========================
+
+ New Features:
+ -------------
+  * raw Pokey registers recording by Ivo van Poorten
+  * new platform supported: FireBee
+  * optional hiding of hidden files/folders in the UI file selector
+  * libatari800 (Atari800 as a library) by Rob McMullen
+  * R: device (many years old feature) enabled by default
+ 
+ Fixes:
+ ------
+  * proper check if SDL joysticks are found (fixes #58)
+  * Portrait mode for Android (related to #41)
+  * RMW for Pokey
+  * ROM OS path changes handled better
+  * improved "Find ROM images" - now Atari800 reboots if necessary
+  * fixed an old bug which caused freezing in the UI on Falcon
+
+ New command line options:
+ -------------------------
+  * -pokeyrec and its children
+  * -atari_files
+  * -saved_files
+  * -kbdjoy0 -kbdjoy1 -nokbdjoy0 -nokbdjoy1
+
+ Plus many Atari Falcon specific fixes and improvements by Mikro.
+
+
+Version 4.1.0 (2019/04/13) - release cooked at Atariada.cz (again :-)
+==========================
+
+ New Features:
+ -------------
+  * Atari800 now includes Altirra BIOS-es for all emulated systems: 400/800,
+    XL/XE, and 5200; as well as Altirra BASIC. It is now possible to use the
+    emulator without providing any ROM images.
+
+  * The Altirra OS-es and Altirra BASIC can now be selected by users in the
+    "System settings", if they want to use them. Previously Altirra OS was used
+    automatically only when no other OS ROMs were found.
+
+  * joyhat support for all four real joysticks, configurable in CLI/cfg/TUI
+
+
+ Notable changes:
+ ----------------
+  * All documentation specific to building Atari800 on Windows has been moved
+    from DOC/INSTALL to a new file, DOC/BUILD.windows. This document
+    has also been expanded with a new chapter covering building Atari800 using
+    MSYS2.
+
+  * Ability to use the built-in EmuOS firmware has been removed. Users wishing
+    to run Atari800 without providing OS ROMs now have an option of using the
+    built-in Altirra OS-es, which are compatible with much more Atari software
+    than EmuOS.
+    At the same time, it is still possible to compile a version of Atari800
+    without any OS ROMs built in, by means of the --disable-altirra_bios
+    configure option.
+
+
+ Port specific improvements:
+ ---------------------------
+ == Atari Falcon ==
+  * More Videl/screen handling fixes
+  * Ability to run Atari800 in an AES-less environment
+  * Replaced C2P with MMU friendly and faster code
+  * Atari800 should run on all TOS clones with XBIOS Sound API
+
+ == Android ==
+  * Fixed building of the Android target, broken in the previous release.
+  * Fixed labels on console keys (unreadable on hi-res displays)
+  * Fixed console keys press detection
+  * Fixed "right-handed joystick" trigger press
+
+ == Raspberry Pi ==
+  * updated build documentation
+  * find proper Broadcom GLes libraries
+  * fixed bug in GRAPHICS 9 (shifted colors)
+
+ == MS Windows ==
+  * updated build documentation
+
+
+ General Fixes:
+ --------------
+  * updated build documentation
+  * it is possible to build atari800 out of source tree
+  * unconnected host joysticks initialized properly, fixes the MULE game
+
+
+Version 4.0.0 (2018/04/21) - release cooked at Atariada.cz
+==========================
+
+ This release brings four years of hard work of fellow Atari800 developers
+ on improvements and bugfixes of our favorite Atari emulator.
+
+ Ports to Atari ST/TT/Falcon, Android, Raspberry Pi and Sega Dreamcast
+ have been improved (some of them greatly).
+
+ CPU, SIO, ANTIC, GTIA, POKEY and PIA emulation has been corrected.
+
+ Atari800 now includes Altirra BIOS so it is now possible to run *some*
+ programs even without installing the original ROM files.
+
+ The total number of changes is so huge that major version bump was necessary.
+
+ Contrary to usual NEWS entries here follows a very incomplete list. It might
+ be updated in later releases. In the meantime please read DOC/ChangeLog
+ and the commit history in git for complete list of changes.
+
+ This release contains breaking changes in color handling. Users updating from
+ an earlier version should reset their color settings, or else the display
+ might be unreadable. To reset the color settings, do one of these:
+  * Select one of the presets available in the menu option "Display settings"->
+    "Color preset"; or
+  * Run atari800 with the -color-preset command-line option, e.g.:
+    atari800 -colors-preset standard; or
+  * Delete the emulator's config file (.atari800.cfg). Caution: you'll lose
+    all Atari800 settings!
+
+
+ New features:
+ -------------
+  * Support for loading of CAS images with "fsk" chunks - images of
+    copy-protected tapes can now be loaded, with SIO patch being disabled.
+  * Bit3 Full View 80 Column card emulation.
+  * New cartridge type 68: "Atrax 128 KB cartridge".
+    Previously existing cartridge type 17: "Atrax 128 KB cartridge" was based
+    on a misconception - real Atrax cartridges have their address and data
+    lines intermixed, so type 17 could not be used with actual ROM dumps. So,
+    type 17 has been renamed to "Decoded Atrax 128 KB cartridge", and new type
+    68 has been added, whcih now can be used for Atrax ROM chip dumps.
+  * New cartridge types supported:
+    - aDawliah 32 KB cartridge
+    - aDawliah 64 KB cartridge
+
+  * new command line switch "-volume" (for 16bit sound output) that can set
+    the output volume of the Atari 800 emulator with value from 0 to 100.
+
+
+ Notable Changes:
+ ----------------
+  * The Sound Settings option "Fragment size" has been renamed to less cryptic
+    "Hardware buffer size".
+  * Total emulator volume is lower now because the output has been shifted
+    in order to fix a possible annoying humming sound in silence on some
+    receivers (TV sets).
+
+
+ Port specific improvements:
+ ---------------------------
+ == Atari ST/TT/Falcon ==
+  * CPU emulation fixes for the assembly target (now synchronised with the
+    mainline code, incl. the cycle exact mode)
+  * Stereo POKEY support
+  * Video enhancements: flicker-less rendering & RGB monitors support
+  * SuperVidel support (that means much faster direct rendering using its
+    8-bit chunky mode)
+  * Many small fixes and optimisations
+
+ == Android ==
+  * Built-in Planetary Defense 2012 by Tom Hudson, an enhanced version of 
+    the classic game with emulated touchscreen controls.
+  * New feature: Native sound playback for post 2.3 devices, automatically 
+    enabled. Eliminates stuttering and inconsistent timing of previous 
+    implementation.
+
+
+ General Fixes:
+ --------------
+  * Fixed computation of gamma adjustment - now it is applied to each of the
+    three RGB channels separately.
+  * On systems that support synchronized sound: Fixed the emulator crashing
+    when Dual POKEY was enabled while High Fidelity POKEY was turned off.
+  * Improve screen update routines in the Dreamcast port. They don't use
+    DIRTYRECT anymore but are faster than the old routines when the whole
+    screen is dirty.
+
+
+Version 3.1.0 (2014/04/12) - release cooked at Atariada.cz
+==========================
+
+  Highlight of this release: Raspberry Pi port by Andrey Dj
+
+  Hidden easter egg: on-screen keyboard in SDL by Christian Groessler
+
+  All the following work has been done by Tomasz Krasuski:
+
+ General new features:
+ ---------------------
+  * More accurate emulation of PAL colours (based on analysis of oscillograms
+    of real PAL GTIA output)
+
+  * Improved PAL blending, working on all grayscale pixels and is accurate now
+    (can be enabled/disabled in "TV effect" display settings)
+
+  * common sound layer implemented (SDL, JavaNVM, OSS, DOS) with synchro sound.
+
+  * synchronized sound is now supported by both POKEY sound engines.
+
+  * turbo mode (F12) is considerably faster
+
+  * Added cartridge mapping used by "Turbo Hit"/"Atari Blizzard Hit".
+  * Added MegaMax 2 MB cartridge mapping.
+  * Added read-only support for the 4 MB Flash MegaCart mapping.
+  * Added minimal support for The!Cart.
+
+ General Fixes:
+ --------------
+  * fixed possible unnecessary cartridge bank switching
+  * fixes and clean up in Java port 
+  * fixed diagnostic cartridge cold start (doesn't send Start+Option)
+  * fixed two old bugs in DOS sound (pitch being wrong and sound missing)
+  * fixed keyboard not working for ncurses video and OSS sound
+
+
+Version 3.0.0 (2013/03/03)
+==========================
+
+ New features:
+ -------------
+  * Option to automatically save configuration on exit
+  * More settings saved in configuration:
+    - currently attached tape file
+    - cartridge settings, including currently attached cartridges
+    - state of R-Time 8
+    - system settings, including Mosaic/Axlon RAM size
+  * New Tape Management menu - can now create blank tape images, switch tape
+    to read/write in order to save additional data at the end of the current
+    tape image, rewind/fast forward the tape, and mark it as read-only. See
+    DOC/USAGE for details.
+  * Displaying tape position when "Show sector/block counter" is enabled.
+  * Reworked Cartridge Management menu - now displays filename of the
+    attached cartridge.
+  * Option to disable restarting of the machine after cartridge change.
+  * When attaching a cartridge from the command line, cartridge type can now
+    be specified using the new -cart-type and -cart2-type options.
+  * New cartridge types supported:
+    - OSS 8 KB cartridge
+    - OSS two chip 16 KB cartridge (043M)
+    - Blizzard 4 KB cartridge
+    - AST 32 KB cartridge
+    - Atrax SDX 64 KB cartridge
+    - Atrax SDX 128 KB cartridge
+    - Turbosoft 64 KB cartridge
+    - Turbosoft 128 KB cartridge
+    - Ultracart 32 KB cartridge
+    - Low bank 8 KB cartridge
+    - SIC! 128 KB cartridge
+    - SIC! 256 KB cartridge
+    - SIC! 512 KB cartridge
+    - Standard 2 KB cartridge
+    - Standard 4 KB cartridge
+    - Right slot 4 KB cartridge
+  * The configure script can now auto-detect some of the available display and
+    sound interfaces before compiling.
+  * Option to enable XEP80 added to The Emulator Settings menu.
+  * Emulation of the 1200XL, including console LEDs, no built-in BASIC, the
+    F1-F4 keys (mapped to arrow keys in the SDL version) and the on-board
+    J1 jumper.
+  * Emulation of the XE Game System, including the built-in game and
+    detachable keyboard.
+  * Revamped the Select System menu (now called System Settings). Can now
+    select many system settings, including RAM expansions, OS and BASIC
+    revision, and more.
+  * System ROM settings moved to a separate menu. Now it stores paths to all
+    known official revisions of the Atari OS, the 5200 BIOS, all BASIC
+    revisions, and the XEGS built-in game. The OS revision to use is chosen
+    automatically when selecting a machine type (for example, the 400/800 OS
+    PAL or NTSC version is chosen depending on the selected TV system).
+  * 400/800: Emulation of all RAM sizes achievable with different combinations
+    of the CX852 and CX853 modules - from 8 to 48 KB.
+  * Emulation of 32/48KB memory sizes in the XL/XE mode, compatible
+    with memory expansions for the 600XL manufactured by RC Systems.
+  * Emulation of the MapRAM hardware hack.
+  * Display settings: "Hue" renamed to "Tint". Tint now configurable also in
+    PAL mode.
+
+  New Android port features:
+  --------------------------
+  * Renamed Atari800 Android port to "Colleen"
+  * Implemented extended key remapping
+  * Implemented the B: device (8-bit games can reach the web now)
+  * Support for Xperia play keycodes added
+  * Remapped dpad enter to break
+  * Added paddle emulation
+  * Optimized file selector, allow roaming outside of ext. storage dir
+  * Added an exclusion border for paddle mode
+  * Implemented state saving
+  * Implemented Planetary Defense mode, a Koala Pad click-where-I-point mode
+  * Natively supported UI on post-Honeycomb devices
+  * Fixes for Jelly Bean (audio stuttering, keypad dialogs, soft keyboard)
+  * Added new dialog for cartridge type selection
+  * UI fine tuning
+
+ General Fixes:
+ --------------
+  * Bugfixes in cassette emulation - works reliably even for tape images with
+    long (> 4096 B) blocks.
+  * Fixes in save states - loading of save states works correctly even with an
+    attached bank-switched cartridge or with an Axlon/Mosaic RAM expansion.
+    Note 1: Format of the state files has changed. Old save states can still
+    be opened, but newly-created ones cannot be opened in older versions of
+    Atari800.
+    Note 2: Tape position is not restored on loading of save states. Do not
+    save state during tape loading/saving - it won't work as expected.
+  * "Disable BASIC when booting Atari" no longer emulates pressing of the
+    Option key when in the 400/800 mode.
+  * Fixed a bug with BASIC sometimes disabling itself when switching system
+    type to 400/800
+  * Minor bugfixes in file selector
+  * Fixed emulation of SpartaDOS X piggyback cartridge functionality
+  * "Save Screenshot" fixed - it saved an interlaced screenshot instead of a
+    normal one.
+  * SDL version: Swapped mapping of right and middle mouse buttons, to make it
+    identical to the X11 and Win32 ports.
+  * Monitor: fixed displaying/disassembling of memory area $D000-$D7FF - with
+    the new supported cartridge types, code may reside on page $D5, and now it
+    can be debugged.
+  * SDL version: fixed a blue border when in OpenGL BGRA32 mode.
+  * Minor fixes in parsing of command-line options.
+  * Rewritten XEP80 emulation - now more accurate and supports switching
+    between NTSC/PAL modes with correct aspect ratio. XEP80 emulation now
+    requires a charset ROM image, path to which should be set in the
+    XEP80_CHARSET line in the config file.
+  * Fixed operating system patches not working with all official revisions of
+    the OS.
+  * Fixed emulation of separate ANTIC/CPU access to XE RAM when Self-Test is
+    enabled.
+  * Fixed the emulator menu sometimes being displayed incorrectly (missing
+    font) when running without an OS ROM image.
+  * Improved accuracy of generated colours in PAL mode.
+  * Fixed emulation of the H: read operation - Turbo Basic's BLOAD now works
+    on H: devices.
+
+
+Version 2.2.1 (2011/04/28)
+==========================
+
+  Quick update fixing some annoying bugs from the previous release
+  and adding some new host screen optimizations and improvements:
+
+  * X11 target can be compiled again
+  * SDL sound on *BSD should work
+  * older compilers (DOS/BeOS) should compile again
+  * many SDL/OpenGL workarounds for Microsoft Windows libSDL bugs
+  * IDE fix and CF emulation
+  * some small Android fixes and new arrow key derotation workaround
+  * UI sliders used for more settings (video area/shift options)
+  * several command line options renamed to be more intuitive (see the USAGE)
+  * automatic detection of host screen aspect ratio
+  * added option for disabling OpenGL Pixel Buffer Objects
+  * added option for enabling video synchronization with vertical retrace
+  * added option for selecting pixel format in OpenGL
+  * now saves the Show Speed/Disk Activity/Sector Counter in the settings
+
+
+Version 2.2.0 (2011/04/02)
+==========================
+
+ Another update after two long years. A lot of changes and major improvements:
+
+ New features:
+ -------------
+    * SDL features synchronized sound (GTIA+POKEY digisounds play properly now)
+    * SDL display enhancements (hardware accelerated using OpenGL)
+    * DirectX display enhancements (also hardware accelerated)
+    * Improved NTSC and PAL colours (presets: Standard/Deep Black/Vibrant)
+    * Austin Franklin 80 Column card
+    * Emulate the Alien Group Voice Box I and II
+    * Added support for F12 turbo mode.
+    * IDE emulation (compatible with MyIDE)
+    * New Android port by Kostas Nakos (available in the App Market already)
+    * Auto frame skip for slower devices (currently enabled for Android only)
+
+ Fixes:
+ ------
+    * trak-ball (cx22) emulation fixed
+    * SDL: leftmost column missing in 16/32bpp fixed
+    * DirectX default for Win32 SDL
+
+  SDL Display enhancements:
+  -------------------------
+1. Fullscreen resolution - this gives a list of all available resolutions from 
+which a user chooses one. The default resolution is the next-bigger-than 
+336x240.
+
+2. Fullscreen: yes/no - obvious. Window size is independent from the chosen 
+fullscreen resolution and can be changed by resizing the window.
+
+3. Rotate sideways: yes/no - rotates the screen by 90 deg. Works as earlier, 
+ie. only for "standard" display (no NTSC filter, no 80 column card).
+
+4. Stretch - this option controls how display stretching (scaling) is 
+performed. We can select one of:
+a) none - no stretching at all
+b) integer multiples (default) - width and height will be resized by 1x, 2x, 
+3x etc.
+c) full - stretching is unrestricted, display will cover the entire screen.
+
+5. Keep aspect ratio - this option controls how the display's aspect ratio is 
+corrected. 3 options available:
+a) disabled - no aspect ratio correction, display will fill entire 
+screen/window,
+b) 1:1 (default) - width and height will be multipled by the same value
+c) like real TV - display will be resized to reflect pixel aspect ratio of a 
+real Atari connected to a TV. Atari pixels are not square; pixel width-to-
+height ratio is about 0.857 for NTSC and 1.039 for PAL. This option reflects 
+that.
+
+6. Host display aspect ratio - here the user enters aspect ratio of his 
+monitor. This value is used to properly compute display aspect ratio when 
+"Keep aspect ratio" is set to "like real TV". Set it to 4:3 (default), 16:9, 
+1.78:1 etc.
+
+7. Horizontal view area - this option sets the size of Atari screen area 
+visible horizontally. Choose one of:
+a) narrow - 320 columns wide,
+b) normal (default) - 336 columns wide,
+c) full - 384 columns
+d) custom - lets the user enter any value between 160 and 384.
+
+8. Vertical view area - similar to above:
+a) short - 200 lines high
+b) normal (default) - this setting is TV-system-dependent. In PAL this makes 
+all 240 lines visible, while in NTSC top and bottom 8 lines are hidden, which 
+leaves 224 lines visible. I've made this as such because apparently on NTSC 
+TVs not all 240 lines are visible. The value of 224 was taken by taking full 
+NTSC height (480, divided by 2) and cutting top and bottom 3.5% (different 
+sources say 3.5% is the "action-safe" overscan area).
+c) full - 240 lines high
+d) custom - any value between 100 and 240.
+
+9. Horizontal offset - when amount of columns displayed is less than 384, this 
+option "shifts" the visible screen area. Setting to higher than 0 shows more 
+of the right side, and lower than 0 shows more of the left side.
+
+10. Vertical offset - similar to above.
+
+Additionally, the Alt+Shift+X shortcut that switches beetween standard<->80 
+column display is now also available as "Display settings->80 column display 
+if available: yes/no".
+
+The Alt+B switch however has been removed - since setting black/white colours 
+can be done in Display settings anyway.
+
+All new options are also available from command line and are saveable in 
+configuration.
+
+  New Android port features:
+  -------------------------
+- Efficient performance
+- Uses Opengl ES to handle scaling of the graphics
+- Runs on Android 1.6+
+- Novel on screen touch joystick control for less hand cramps & intuitive 
+  control
+- Supports multi touch input
+- Supports hardware keyboard with key remapping for joystick input
+- Supports the Wii Controller for joystick input
+- Supports the "move to SD" feature
+- Sound emulation very good but not perfect yet
+- Bypasses the emulator UI menu completely - goes 'the android way' about it
+- Available in the App Market: market://details?id=name.nick.jubanka.atari800
+
+
+Version 2.1.0 (2009/03/27)
+
+ The promised completely new next-gen Atari800 was postponed so this
+ is another incremental update of the good old Atari800. Let's see
+ what we have added and improved in the last 20 months:
+
+ New features:
+ -------------
+    * added Axlon and Mosaic RAM expansions for Atari 400/800
+    * added emulation of 1400XL, 1450XLD, MIO and Black Box
+    * added support of .PRO copy-protected disk images
+    * implemented tape loading with variable bitrates
+    * implemented cassette writing via hardware registers
+    * added switching between NTSC and PAL color palettes
+    * added emulation of XEP80 and a prototype 80 column card
+      for the Atari 1090 (SDL only currently)
+    * added emulation of CX85 numeric keyboard (Java and SDL only)
+    * event recording added (-record, -playback): save your game walkthrough
+      using the "-record mygame.dat" and later impress your friends by
+      your game skills or highest score using the "-playback mygame.dat"
+    * NTSC Filter option added to UI
+    * -directmouse added to SDL and X11 (used for -mouse pad or koala)
+    * monitor supports arrow keys - e.g. up-arrow for history
+    * SDL: interpolated scanlines (use -scanlinesnoint to disable)
+    * SDL: added -mouse, -mousespeed, -grabmouse (also Alt+M)
+    * SDL: visual configuration of keyboard joysticks layout in the UI
+           (F1 -> Controller Configuration -> Define layout)
+           default mapping changed to 4,8,6,5 (joy0) and A,W,D,S (joy1)
+    * R: device can be serial-only, network-only or both (selectable)
+    * R: device now supported on MS Windows and Dreamcast as well
+    * a completely new port to Java using NestedVM, running also as an applet
+    * Falcon/TT: removed Devpac dependency in asm files (now gcc friendly)
+
+ Fixes:
+ ------
+    * fix for "Ilusia" demo
+    * better GTIA bug mode emulation
+    * POKEY sound: nonlinear mixing (not enabled by default), two-tone filter
+    * fixed POKEY registers: ALLPOT, IRQEN and STIMER
+    * various Atari5200 fixes
+    * fixed Atrax cartridge bank switching
+    * fixed sound recording to WAV
+    * -showspeed fixed, now shows speed <= 100% correctly
+    * major source code cleanup, compiles with -pedantic etc.
+    * Save State: added support for Axlon and Mosaic (version increased to 5),
+                  fixed PBIM12 restoring, fixed PAGED_MEM error with POKEY,
+                  color palette restoring fixed
+    * SDL: using DirectX driver on MS Windows (much faster),
+           fixed stdout.txt on MS Windows,
+           fixed broken Caps Lock key handling,
+           -audio16 fixed
+    * Dreamcast recognizes the TAB key
+    * MS-Windows: Shift+Control fixes
+    * dropped SVGAlib target - use SDL instead
+
+ Thanks to Perry McFarlane and other developers for their contributions
+ to this release. Enjoy Atari800!
+
+
+Version 2.0.3 (2007/07/11)
+
+ This is probably the last release that is based on the source code
+ written by David Firth back in previous century.
+ A completely new Atari800, written from scratch, with even better
+ portability and maintainability is being planned so stay tuned!
+
+ Changes:
+ --------
+ * new style of artifacting
+ * corrected PMG in bizarre ANTIC/GTIA modes
+ * added 128 KB SpartaDOS X cartridge type
+ * added support for QVGA landscape smartphones, added the virtual keyboard
+ * new command-line option "-win32keys" for keyboard layouts different from US
+ * MS-Win: run the emulator in a window ("-windowed" on the command line)
+ * middle button support for ST and Amiga mice in X11 and MS-Win targets
+
+
+Version 2.0.2 (2006/04/08)
+
+ There is a new NTSC emulator available thanks to Blargg (Shay Green) 
+ (http://www.slack.net/~ant) and NewRisingSun who made the original algorithm.
+ You can access it with -ntscemu in the SDL port only.  
+ Only 640x480x16 is supported and will be invoked automatically.
+ You will need a fast processor (~700 MHz or so).
+ This code should be considered experimental but I hope you
+ will try it and report any problems.  Please experiment with the 
+ many settings and compare them with a real NTSC Atari if you have one.
+ If you come up with better settings than the current defaults please provide
+ feedback. Try -ntsc_burst 0.70 in Drol, Choplifter and Ultima.
+ Please read DOC/USAGE and check -help.
+
+ Changes:
+ --------
+ * Blargg's NTSC composite video emulator, based on NewRisingSun's Algorithm.
+ * small fixes in ANTIC/GTIA emulation
+ * fixed DCM image handling (broken in 2.0.0)
+ * added emulation of Atari XL/XE with 192 KB RAM
+ * integrated SEGA Dreamcast port
+ * Atari Inverse key mapped also to "`" (backquote) in SDL port (MS Win users)
+ * some minor improvements
+ * much more DOC/TODO
+
+
+Version 2.0.1 (2006/01/02)
+
+ Just a quick UI bugfixes release.
+
+
+Version 2.0.0 (2005/12/31) - celebrating decade of Atari800 development!
+
+ This release brings major source code clean up, numerous bug fixes and
+ many great new features and important improvements. 98% of changes since
+ last release have been made by Piotr Fusik - admire his dedication
+ to Atari800 project while you will be browsing through the impressive list
+ of changes below.
+
+ Run-time configuration (via the .atari800.cfg file) has been improved.
+ All configuration options are now available in the User Interface.
+ Remember to use "Save configuration file" when necessary.
+
+ If you are new to Atari800, press F1 and select "Emulator Configuration"
+ to configure the ROM images. This can be easily done with
+ "Find ROM images in a directory".
+
+ DISK_DIR, ROM_DIR, EXE_DIR and STATE_DIR configuration options are no longer
+ supported in this version. You need to re-select your directories
+ using "Emulator Configuration" -> "Configure directories".
+
+ Changes:
+ --------
+ * auto-starting any file supported by the emulator
+   via the command line, User Interface or Alt+R
+ * direct loading of Atari Basic programs:
+   - SAVEd (*.BAS) programs
+   - LISTed (*.LST) programs with auto-detected Atari, LF, CR/LF or CR
+     line terminators
+ * numerous fixes and improvements in H: device emulation
+ * fixed a bug in DMACTL emulation
+ * cycle-exact Read-Modify-Write instructions for all GTIA registers
+ * Atarimax cartridges
+ * correct emulation of the RESET key in 400/800 (it generates RNMI)
+ * improved DCM format support
+ * improved PERCOM emulation (helps non-standard disk images)
+ * removed questions that appeared in the console window when no configuration
+   file was found; now a default configuration is written and you can
+   modify it using User Interface; the easiest way to configure ROMs is
+   "Find ROM images in a directory" which looks for common names of ROM images
+ * DISK_DIR, ROM_DIR, EXE_DIR and STATE_DIR configuration options replaced
+   with ATARI_FILES_DIR and SAVED_FILES_DIR
+ * sound recording now works (was completely broken)
+ * new in User Interface: "Emulator Configuration", "Controller
+   Configuration", "Save Interlaced Screenshot", "Uncompress Disk Image"
+ * improved "open file" selector:
+   - sorts case-insensitively
+   - sorts directories whose name begins with a dot
+   - starts on the previously selected file
+   - you can move to a file by pressing its first letter (works in menus, too)
+   - path of the listed directory is shown at the top of the screen
+ * improved "save file" filename selection:
+  - no longer limited to 32 characters
+  - directory appears in the edit box
+  - Tab invokes directory browser
+ * "Make Blank ATR Disk" creates standard Single Density disk image
+ * shortcut keys (Alt+letter, F9, ...) work in User Interface
+ * new "-screenshots <pattern>" command-line option
+ * replaced "-rtime <onoff>" with "-rtime" / "-nortime"
+ * replaced "-hdreadonly <onoff>" with "-hreadonly" / "-hreadwrite"
+ * new monitor commands: "LABELS", "LOOP"
+ * "C", "M" and "S" monitor commands support hardware registers
+ * improved "SHOW", "DLIST", "D" and "A" monitor commands
+ * fixed memory leaks, buffer overflows, Y2K and Y2100 bugs
+ * fixed GCC 4 compilation error and warnings
+ * fixed sound in X11 version (feedback is welcome)
+ * much faster display in the X11 version
+ * MOTIF and XVIEW versions are now compilable
+ * standard key mappings for F6-F10 in DirectX, SDL, SVGALIB and X11 versions
+ * implemented Atari 5200 keys in DirectX, SDL, SVGALIB and X11 versions
+ * WinCE version ported to Smartphones
+ * DirectX version can be compiled with MSVC 6
+ * stereo now works in DOS ports
+ * fixed "-rotate90" and Alt+B in SDL version
+ * greatly improved BASIC version:
+   - supports sound
+   - supports all interrupts
+   - timing much closer to real Atari
+   - Clear Screen, Backspace, Tab and Bell converted from ATASCII to ASCII
+   - improved "K:" input
+   - much smaller executable (does not include unused code)
+ * greatly improved CURSES version:
+   - support for PDCurses
+   - small fix for NCurses
+   - generates screen basing on the Display List
+   - fixed Tab, Backspace, Insert, Delete, Home, F2, F3, F4, F8 and Ctrl+letter
+   - fixed "-wide2" mode
+   - Alt+letter shortcuts work on PDCurses
+   - bitmap graphics emulation is now disabled by default
+     (smaller and faster executable), but can be enabled with "configure"
+ * new experimental PlayStation 2 port
+ * improved "configure" script
+ * SDL keyboard joysticks can be enabled/disabled in the UI (Controller Config)
+ * many small fixes and major source code clean up
+
+
+Version 1.3.6 (2005/04/30)
+
+ Changes:
+ --------
+ * different color palette used by default
+ * PNG screenshots added
+ * added sector counter and speedometer
+ * F6 is Atari HELP key on Curses, Falcon and in X11
+ * added missing combinations of ANTIC modes with GTIA modes
+ * keyboard joystick works in more games (doesn't pause the game) in SDL
+ * mouse joystick emulation works in X11
+ * cassette loading by hardware registers (Ninja and Elektraglide
+   are examples of games that load correctly now)
+ * blank boot ATR disk image can be created in the Disk Management menu
+ * many small fixes and major source code clean up
+
+
+Version 1.3.5 (2004/12/30)
+
+ Changes:
+ --------
+ * keyboard handling improved in SDL (working on non-US layouts, more
+   keys recognized)
+ * keyboard handling improved in X11 (crash fixed, auto-repeat working)
+
+
+Version 1.3.4 (2004/12/27)
+
+ Changes:
+ --------
+ * security fixes (buffer overflows) and compilation errors (GCC 3.4)
+ * ANTIC timing fix for Timeslip game
+ * fix in UI fileselector (crashed if there were no files)
+ * Amiga port updated
+
+
+Version 1.3.3 (2004/08/08)
+
+ Changes:
+ --------
+ * ANTIC mode 2 + GTIA mode 10 - half pixel shift fix
+ * Amiga port updated
+ * OS/2 port updated
+ * DOSVGA port updated - joystick definition read again
+ * X11 port has improved keyboard support (Ctrl+Pause, left Ctrl for joy button)
+ * SDL port updated: joysticks emulated on keyboard can be freely edited
+   now with SDL_JOY_0_<direction> and SDL_TRIG_0 (same for JOY_1/TRIG_1)
+   config file parameters that expect values from SDL keySyms.
+
+
+Version 1.3.2 (2003/12/20)
+
+ Highlights since previous release:
+ ----------------------------------
+ * R: can now be hooked to a real serial port (no runtime config yet)
+ * various ANTIC and POKEY fixes for perfect software compatibility
+ * disk and cartridge info saved in the state files
+ * casette handling greatly improved
+ * even more cartridges supported (40 now!)
+ * some rare buffer overflows fixed
+
+
+Version 1.3.1 (2003/09/04)
+
+ Highlights since last 1.3.0 release:
+ ------------------------------------
+ * rewritten and much improved configure script
+ * new cartridge types supported (38 types now!) - see DOC/cart.txt
+ * Disk Sets - loading and saving of D1-D8 set is possible in the UI
+ * R: as the Atari850 serial port emulation added - see DOC/r_device.txt
+ * updated and improved m68k assembler emulation of the CPU
+ * XF551 HighSpeed transfer emulation added
+
+
+Version 1.3.0 (2003/02/10)
+
+ Highlights since last 1.2.5 release:
+ ------------------------------------
+ * new HiFi sound (you may en/disable it in the UI)
+ * new cycle-exact Antic emulation
+ * "H:" emulation complete (including subfolders)
+ * Paged memory implementation (fast XE bank-switching)
+ * new configuration file name and location ($HOME/.atari800.cfg)
+
+Detailed list of changes follows:
+
+* configuration file ("atari800.cfg") related changes:
+
+  1) configuration file is renamed to ".atari800.cfg" by default (note
+     the leading dot in the name, similarly to most other configuration
+     files of programs on Unix platforms). On DOS/TOS (FS 8+3 limitation)
+     the old "atari800.cfg" will be supported.
+
+  2) RT-Config (the module in Atari800) tries to search the configuration
+     file in user's home folder first (environment variable HOME should
+     point there). If it's found then it's used. If it's not there then
+     RT-Config tries to open system wide configuration file (by default
+     it's "/etc/atari800.cfg"). Please note that the system wide file is
+     not updated by Save function of RT-Config because it's expected
+     that this file is read-only for regular user.
+
+  3) RT-Config can also be told where your configuration file is by
+     using the "-config <filepath>" command line parameter. If the file
+     is not there yet it's created. So it's quite easy to let Atari800
+     create a test config file and compare it with your current config
+     or to have several config files for various game/demo/application
+     uses of the Atari800 emulator.
+
+  4) Some config file options were renamed or otherwise changed some
+     time ago already but they were still recognized. This is no longer
+     true so better create a new config file from scratch.
+
+  5) There are two new important switches - "ENABLE_NEW_POKEY" and
+     "STEREO_POKEY" so better create new config file so you get these
+     options configured properly.
+
+* new Sound:
+
+  The new MZ POKEY emulation is now enabled by default on all ports.
+  Also the STEREO sound (Dual POKEY) is compiled in by default
+  but is not enabled (so there's a single POKEY by default but you
+  can enable the second one very easily in the User Interface (press F1).
+
+  Both can be en/disabled in the configuration file (call atari800 with
+  the "-configure" parameter to reconfigure these and other options).
+
+  Win32 and SDL ports also recognize a new cmdline switch "-audio16"
+  that switches to 16-bit sound.
+
+
+Unreleased version 1.2.10 (2003/02/09)
+
+* autoconf 2.5x required for building the source fetched from CVS.
+  However, released source code comes with prebuilt configure script
+  so you shouldn't even notice this change.
+
+* SDL version contains the same keyboard IRQ fix that was recently
+  done in the general input core. In human language: Super Pacman 5200
+  will not crash after SHIFT and * keypress.
+
+* On-the-fly change of POKEY emulation core (old Ron Fries' or new
+  Michael Borisov's). Compare the new HiFi sound with the previous one.
+
+
+Unreleased version 1.2.9 (2003/01/27)
+
+* New cycle-exact ANTIC/GTIA emulation. Enabled by default, disable by
+  ./configure --disable-cycleexact
+
+Unreleased version 1.2.8 (2003/01/27)
+
+* Paged memory implementation finished. Disabled by default, enable by
+  ./configure --enable-paged
+
+Unreleased version 1.2.7 (2003/01/27)
+
+* Harddisk emulation now complete including support for subdirectories.
+
+Unreleased version 1.2.6 (2003/01/27)
+
+* New sound core and 16 bit sound support -- high sound quality but slower.
+  Use -audio16 option to enable 16 bit sound and -quality <level> to set sound
+  quality (level > 0 enables new sound core) on the win32 port.
+  Consult port specific doc for command line details.
+
+Version 1.2.5 (2002/12/02)
+
+* UI - the SpaceBar in disk management switches between the RW and RO flags
+  (this didn't work for a long time, now fixed). Please note that this RW/RO
+  switch is just temporary and does not change the writeprotect flag of ATR
+  images. Besides, it cannot override this flag so you actually can't mount
+  a writeprotected ATR image read/write using this Space Bar toggle.
+
+* Atari800 compilable under OS/2
+
+* MultiJoy4 interface and Amiga/AtariST right mouse button supported
+
+* 13 new cartridge types supported
+
+* ANTIC mode E + GTIA mode 9 added (used in "Unconventional 2k", "Ass Kisiel")
+
+
 Version 1.2.4 (2002/08/07)
 
 * 576 and 1088 kB RAM supported (selection available in the UI)
@@ -237,4 +1089,4 @@ Version 1.2.0 (2001/11/29)
   and AUDC/AUDF/AUDCTL variables, included pokey.h
 
 
-Previous changes (pre 1.2.0) are in the CHANGES file.
+Previous changes (pre 1.2.0) are in the CHANGES.OLD file.

@@ -1,9 +1,4765 @@
+*** With Atari800 hosted by Github we rely on the git commit messages now
+*** so for detailed changelog please clone git repository and use git log
+*** or visit https://github.com/atari800/atari800/commits/master
+
+
+2018-07-07  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* monitor.c: Fixed building --without-video.
+
+
+2018-07-04  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* android/res/values/strings.xml, android/src/FileSelector.java,
+  android/src/MainActivity.java: Allow running the emulator without setting
+  system ROM path - Altirra ROMs are available. Updated the first-run message to
+  reflect that.
+* android/jni/androidinput.c, android/src/A800view.java: Fixed a bug when the
+  "Right-Handed Joystick" option is enabled: a one-finger touch on the screen's
+  left side did not register as a trigger press.
+
+
+2018-07-01  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* android/jni/graphics.[ch]: Fixed an issue with labels of the console keys
+  being unreadable on high-resolution displays. They are now scaled to screen
+  resolution.
+* android/jni/androidinput.c: Fixed a bug in computing coordinates of console
+  key presses, which could result in a different key being pressed than
+  expected.
+  Moved variables to reduce their scope, for better readability.
+  
+
+2018-06-22  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* DOC/NEWS: Added an entry about addition of DOC/BUILD.windows.
+* DOC/NEWS, DOC/TODO, DOC/USAGE, .cvsignore, Makefile.in,
+  android/jni/Android.mk.in, atari.[ch], atari800.man, configure.ac,
+  dc/Mahefile.dc, devices.c, emuos.*, esc.c, memory.c,
+  roms/altirra_5200_os.[ch], win32/msc/Makefile: Removed EmuOS.
+
+
+2018-06-10  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* DOC/BUILD.windows, DOC/INSTALL: Extracted Windows-specific instructions
+  to a separate document. Added instructions on building with MSYS2.
+
+
+2018-06-05  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* android/jni/androidinput.[ch], android/jni/graphics.c, android/jni/jni.c,
+  android/jni/platform.c, android/jni/sound.c: Fixed
+  -Wimplicit-function-declaration warnings.
+* android/jni/androidinput.[ch]: Fixed -Wimplicit-int, -Wunused-comparison,
+  -Wbitwise-op-parentheses, -Wtautological-constant-out-of-range-compare and
+  -Wparentheses warnings.
+* android/jni/androidinput.c, android/jni/graphics.c: Fixed -Wswitch warnings.
+* android/jni/androidinput.c, android/jni/jni.c: Fixed -Wdangling-else warnings.
+* android/jni/jni.c: Fixed -Wpointer-sign and -Wreturn-type warnings.
+* android/jni/keys.inc: Disabled many -Winitializer-overrides warnings.
+* atari.c: Fixed a -Wtautological-constant-out-of-range-compare warning.
+* ui.c: Fixed a -Wformat-truncation warning.
+* monitor.c: Fixed a -Wformat warning.
+* dos/vga_gfx.c, img_tape.c: Fixed -Wstringop-truncation warnings.
+* ide.c: Fixed a -Wmultistatement-macros warning.
+* antic.c, configure.ac: Fixed -Wpointer-to-int-cast warnings.
+* Makefile.in: Disable an unavoidable -Wpedantic warning in dos/dos_sb.c.
+  Add the src/roms/ directory to make clean.
+* devices.c: struct stat.st_time and time_t may have different size on some
+  platforms.
+
+
+2018-06-02  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* cassette.c, devices.c, esc.c, sio.c: Added support for SIO patches in
+  AltirraOS 800/XL.
+* android/jni/jni.c: Allow running "Atari OS/B" machine types with AltirraOS
+  when no real rev. B ROMs are available.
+
+
+2018-06-01  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* atari800.man: Fixed an error in description of -800-rev.
+* DOC/NEWS, DOC/USAGE, atari.[ch], atari800.man, configure.ac, emuos.h,
+  emuos_altirra.c, esc.c, memory.c, roms/altirra_5200_os.[ch],
+  roms/altirra_basic.[ch], roms/altirraos_800.[ch], roms/altirraos_xl.[ch],
+  sysrom.[ch], ui.c: Reverted support for Altirra OS and redid it from scratch -
+  the AltirraOS version added previously was the 400/800 variant, but it was
+  used in both 400/800 and XL/XE modes.
+  Added support for AltirraOS 400/800, AltirraOS XL, Altirra 5200 BIOS and
+  Altirra BASIC.
+  Added options for Altirra OSes and BASIC in the "System settings" menu.
+  SIO patches are not yet supported in Altirra OSes.
+* DOC/CREDITS: Added credit to Avery Lee for his Altirra ROMs.
+
+
+2018-05-29  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* DOC/README.android: More detailed build instructions. 
+
+
+2018-05-27  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* monitor.c: Fixed building with --disable-monitorhints.
+* configure.ac, monitor.c: TIOCGWINSZ may require including termios.h on some
+  platforms (e.g. Android) - added autodetection of such case.
+* DOC/NEWS, src/android/jni/Android.mk.in: Fixed building of Android port -
+  emous is now an optional module.
+* .gitignore - Added files to ignore from the Android port.
+
+
+2018-05-01  Petr Stehlik <pstehlik@sophics.cz>
+* implemented joyhat support for all four real joysticks (command line,
+  configuration file and also the F1 TUI configuration). Original patch
+  from Michal "Baktra" Kalous, with my fixes and clean up.
+
+* DOC/NEWS: updated with new platform specific bits for the 4.0.0 release
+
+
+2018-04-26  Petr Stehlik <pstehlik@sophics.cz>
+* TravisCI scripts from Thorsten Otto added
+
+
+** 4.0.0 released on 2018-04-21
+
+2018-04-21  Petr Stehlik <pstehlik@sophics.cz>
+* src/monitor.c: fixed printf() GCC warnings
+* src/mzpokeysnd.c: silence generates 0000 in the physical sound output
+  now. Originally it was generating a large negative value that was causing
+  an annoying humming sound in certain high-end sound systems.
+* DOC/*: updated for new project web: atari800.github.io
+* src/sound.c: "-volume" parsing fixed
+* src/atari800.man: "-volume" documented
+
+
+2017-06-25  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* DOC/NEWS, DOC/USAGE, android/jni/jni.c, atari800.man, cartridge.[ch], ui.c:
+  Original Atrax cartridges have address and data lines intermixed. The
+  existing CART Type 17: Atrax 128 KB cartridge was therefore not a type of
+  real cartridge, not usable for actual Atrax ROM dumps. I've renamed it to
+  "Decoded Atrax 128 KB cartridge" and added new "Type 68: Atrax 128 KB
+  cartridge" that supports real Atrax ROM dumps.
+
+
+2016-10-08  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* debian/compat, debian/changelog, debian/control, debian/rules,
+  debian/source/format: Updates from the official Debian package.
+
+
+2016-10-07  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* sdl/input.c: Fix segfault when using -nojoystick. Fix improper use of
+  SDL_PollEvent - caused keyboard input lag when moving a mouse or joystick.
+
+
+2015-11-12  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* pia.c: Fix convoluted "if" condition.
+
+
+2015-10-13  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* sio.c: Suggested by Avery Lee: Fix SIO error codes with SIO patch enabled.
+  This bug tripped up the original Sikor Soft's Ketchup disk, that relied on
+  attempting to read disk sector 720, which should return error 144 instead of
+  146.
+
+
+2015-09-23  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* cassette.[ch], pia.c, screen.c, sio.[ch]: Some tapes try to read from disk
+  while the tape motor is on (case in point: Cubbyholes (APX)). This was not
+  emulated correctly - when a disk read was attempted while tape motor was on,
+  the value of the sio.c->TransferStatus variable would never revert to
+  SIO_CasReadWrite, and the tape loading would not continue. This is now
+  fixed. As a consequence, tape emulation ceased to use the variables
+  SIO_last_op, SIO_last_op_time and SIO_last_drive, so the related code in
+  screen.c and pia.c has been updated with that in mind.
+
+
+2015-08-26  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* atari.c: Avoid segfault on switching TV system while sound is disabled.
+
+
+2015-07-23  Christian Groessler  <chris@groessler.org>
+* dc/Makefile.dc, dc/atari_dc.c, dc/config.h, dc/displayscreen.S:
+  Rewrite of the screen update routines. DIRTYRECT isn't used
+  anymore. Now always the whole screen is updated. The new routines
+  use the Dreamcast processor's "store queue" which results in a
+  decent speed-up. The time spent updating the screen is now constant,
+  regardless of the screen changes. With little changes to the screen
+  more time is spent in the screen update routines, compared to
+  DIRTYRECT. But for the worst case (whole screen dirty) it's faster
+  than with DIRTYRECT. Boulder Dash in NTSC mode now doesn't jitter
+  when scrolling.
+  Add another option in Makefile.dc to use OCRAM (fast on-processor
+  RAM, cutting the data cache size in half) for the palette data. This
+  option is disabled for now since I didn't notice any difference in
+  emulation speed with it. Maybe if more "hot" variables are moved
+  into OCRAM it could make a difference.
+* dc/shlelf-ocram.xc: New File. Linker script to be used when using
+  the OCRAM option.
+
+
+2015-06-06  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* binload.c: Achim Haertel's patch fixes emulation crash when slow loading of
+  DOS binary files is turned off during such loading.
+* ui.c, DOC/USAGE: Rename "Slow loading of XEX" to "Slow booting of DOS binary
+  files" - XEX is just one of the possible extensions of such files.
+
+
+2015-06-02  Petr Stehlik <pstehlik@sophics.cz>
+* sdl/input.c: preliminary support for four real joysticks
+
+
+2015-05-29  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* binload.[ch], cfg.c, ui.c, DOC/CREDITS: Achim Haertel's patch
+  adds an option to slow down the loading of DOS binary files ran using "Run
+  Atari Program".
+* atari_curses.c, atari_falcon.c, atari_x11.c, amiga/amiga.c, javanvm/input.c,
+  sdl/input.c, win32/atari_win32.c, DOC/USAGE: Map F7 to temporarily stop slow
+  loading of DOS binary files, in addition to its standard "Break" key mapping.
+
+
+2015-05-27  Christian Groessler  <chris@groessler.org>
+* antic.c, cartridge.c, ide.c, input.c: Remove warnings when compiling
+  on FreeBSD/i386 10.1 with llvm.
+
+
+2015-05-10  Christian Groessler  <chris@groessler.org>
+* atari_x11.c (PLATFORM_Initialise): Preinitialize image_data buffer to
+  shut off valgrind warnings.
+* devices.c: Fix for bug #43: Prevent double close of entry in h_fp[]
+  array.
+
+
+2015-04-28  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* antic.c: Fix an infinite recursion with enabled NEW_CYCLE_EXACT, disabled
+  PAGED_ATTRIB, when the ANTIC display list is pointed to GTIA registers. The
+  recursion was: ANTIC_UpdateScanline -> draw_partial_scanline -> antic_load ->
+  MEMORY_CopyFromMem -> MEMORY_GetByte -> MEMORY_HwGetByte -> GTIA_GetByte ->
+  ANTIC_UpdateScanline.
+  Test case: Sky Writer XEX (length 16827, CRC32 9e0fd2e7) running in 400/800
+  mode.
+
+
+2015-04-27  Christian Groessler  <chris@groessler.org>
+* dc/atari_dc.c: Remove obsolete comments.
+* dc/version.h: Set A800DCBETA to 2 (2nd beta version).
+* DOC/TESTS.dc: New file. Lists tests which should be run before a new
+  Atari800DC release.
+* DOC/README.dc: Update.
+* DOC/CHANGES.dc: Update for Atari800DC 0.79beta2 release.
+
+
+2015-04-24  Christian Groessler  <chris@groessler.org>
+* dc/atari_dc.c: Parse "DOUBLE_BUFFERING" from atari800.cfg, setting the 'db_mode'
+  variable. Some other small cleanups.
+* dc/atari800.cfg: Add "DOUBLE_BUFFERING" entry.
+
+
+2015-04-16  Christian Groessler  <chris@groessler.org>
+* dc/atari_dc.c: Adapt controller and keyboard detection to new KOS version.
+
+
+2015-04-11  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* ui.c: Fix a bad cast that resulted in crash when changing display resolution.
+* artifact.c: Remove an invalid cast.
+
+
+2015-04-08  Christian Groessler  <chris@groessler.org>
+* sdl/input.c: Fix auto-repeat in emulator menu when using on-screen
+  keyboard emulation.
+
+
+2015-04-08  Christian Groessler  <chris@groessler.org>
+* dc/atari_dc.c: Fix paddle emulation (adapt to new KOS return values).
+  Add PLATFORM_Configure() to parse DISPLAY_X_ADJUST and
+  DISPLAY_Y_ADJUST. Remove warnings and some unused code.
+* dc/config.h: Add SUPPORTS_PLATFORM_CONFIGURE.
+* dc/atari800.cfg: Recreated with new emulator version.
+
+
+2015-04-01  Christian Groessler  <chris@groessler.org>
+* sound_oss.c: Fix sound device name for NetBSD and OpenBSD.
+
+
+2015-03-31  Christian Groessler  <chris@groessler.org>
+* dc/atari_dc.c: Fix crash when disconnecting the controller while being
+  in the emulator menu. Fix inaccessibility of controller when
+  disconnecting and reconnecting to a different port while being in the
+  keyboard emulation menu.
+
+
+2015-03-28  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* configure.ac: Fix displaying --enable-nonlinear_mixing twice on
+  ./configure --help. NONLINEAR_MIXING now defaults to enabled on all targets.
+
+
+2015-03-28  Christian Groessler  <chris@groessler.org>
+* ui.c, ui_basic.c: Adapt emulator menu to Dreamcast and
+  add DC specific menu items.
+* dc/atari_dc.c: Ditto. And fix swapped up/down direction when using the
+  controller joystick.
+
+
+2015-03-27  Christian Groessler  <chris@groessler.org>
+* dc/atari_dc.c (controller_kb): Fix auto-repeat in emulator menu.
+
+
+2015-03-23  Christian Groessler  <chris@groessler.org>
+* dc/atari_dc.c: The overridden console keys were never released, except
+  for START.
+
+
+2015-03-21  Perry McFarlane  <perry_m@mail.com>
+* gtia.c: Improve player/playfield collisions for NEW_CYCLE_EXACT
+
+
+2015-03-21  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* pokeysnd.[ch], DOC/NEWS: Fixed a crash with SYNCHRONIZED_SOUND, when enabling
+  stereo sound together with ENABLE_NEW_POKEY=0. Added comment to avoid future
+  mistakes.
+
+
+2015-03-20  Christian Groessler  <chris@groessler.org>
+* dc/atari_dc.c: Fix problem when trying to leave the on-screen keyboard
+  emulation menu when an override for the DC 'B' button is configured.
+  Some other unrelated code cleanups.
+
+
+2015-03-19  Christian Groessler  <chris@groessler.org>
+* dc/atari_dc.c: Don't inject a "START" button press when leaving the
+  on-screen keyboard.
+
+
+2015-03-17  Perry McFarlane  <perry_m@mail.com>
+* antic.c, artifact.c, colours.c, img_tape.c, log.[ch], monitor.c, screen.c,
+  sio.c, ui.[ch], sdl/video.c, sdl/video_gl.c, sdl/video_sw.c, win32/sound.c:
+  Fix gcc warnings, allow compiling with g++.
+
+
+2015-03-16  Perry McFarlane  <perry_m@mail.com>
+* pia.[ch], pokey.c, statesav.c: Fix PIA CA2/CB2 and irq. Bump
+  SAVE_VERSION_NUMBER to 8.
+
+
+2015-03-14  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* sio.c: With SIO patch enabled, replicate behaviour of the real SIO OS
+  routine. E.T. Phone Home! now works with SIO patch enabled.
+
+
+2015-03-11  Perry McFarlane  <perry_m@mail.com>
+* cpu.c: Fix opcodes 93, 9b, 9c, 9e, 9f (sha ind_y, shs, shy, shx, sha) page
+  crossing behaviour.
+
+
+2015-03-05  Christian Groessler  <chris@groessler.org>
+* ui.c (AboutEmulator): Change copyright year to 2015.
+* dc/version.h: Add a knob to switch "beta versions" on and off.
+* dc/atari_dc.c: Update on-screen keyboard to current interface of
+  ui_basic.c.
+
+
+2015-02-25  Christian Groessler  <chris@groessler.org>
+* configure.ac: If a non-standard location for the X11 libraries was given
+  (--x-libraries parameter), add this location to the run-time search path.
+
+
+2015-02-24  Perry McFarlane  <perry_m@mail.com>
+* bit3.c, DOC/NEWS: Invert bit3 cursor, add bit3 NEWS.
+
+
+2015-02-24  Christian Groessler  <chris@groessler.org>
+* atari_x11.c, configure.ac: Add support for palette update in X11 targets.
+* gtia.c: Fix compilation of basic (no video) target.
+
+
+2015-02-18  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* DOC/NEWS, DOC/USAGE: Updated for new release.
+
+
+2015-02-12  Petr Stehlik <pstehlik@sophics.cz>
+Committing fixes provided by Jools Wills in SF.net Bugs #41 and #42:
+* configure.ac: native building on RPi fixed
+* sdl/video.c: handle properly situation when any resolution is available
+
+
+2015-02-12  Perry McFarlane  <perry_m@mail.com>
+* DOC/ChangeLog, DOC/TODO, DOC/USAGE, atari.c, cartridge.c, cfg.c,
+  configure.ac, pbi.c, ui.c, videomode.[ch], sdl/input.c, sdl/palette.c,
+  sdl/video.[ch], sdl/video_gl.c, sdl/video_sw.c, bit3.[ch]: Emulate the Bit3
+  Full View 80 column card for the Atari 800.  Added more #ifdefs for AF80,
+  XEP80_EMULATION, PBI_PROTO80, and NTSC_FILTER.
+
+
+2015-02-07  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* cassette.c, img_tape.c: Minimal support for reading CAS "fsk " chunks, to
+  support some tape images of copy-protected original software, only with
+  unpatched SIO.
+
+
+2015-01-24  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* platform.h, sound_oss.c, sound.[ch], ui.c, dos/sound_dos.c, javanm/sound.c,
+  sdl/sound.c, atari800.man, DOC/USAGE: Improve usability: rename "Fragment
+  size" to "Hardware buffer size" and change the unit to milliseconds instead
+  of frames. Code for resizing the buffer to a power of 2 is now called in
+  platform-specific modules - the reason is not all sound backends require
+  such adjustment of the buffer length.
+
+
+2015-01-10  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* win32/msc/Makefile: Fixed incorrect file extensions.
+
+
+2014-11-28  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* colours_ntsc.c, atari_ntsc/atari_ntsc_impl.h: Fixed mathematics in the YIQ
+  computations - although the resulting colors were correct, the names of i
+  and q variables were swapped in the sources.
+
+* colours_ntsc.c, colours_pal.c, colours.[ch], pal_blending.c, filter_ntsc.c,
+  atari_ntsc/atari_ntsc.c, DOC/NEWS: Fixed computation of gamma adjustment -
+  it is now applied to each of the three RGB channels separately.
+
+
+2014-09-22  Kostas Nakos  <knakos@gmail.com>
+
+* android/* : Bugfix no sound when machine is NTSC, small bugfixes and
+  workarounds for OSL sound. Prepare for release.
+
+
+2014-09-19  Kostas Nakos  <knakos@gmail.com>
+* configure.ac: Switch to android-9 environment for OpenSL ES support.
+
+* android/*: Add OpenSL ES native sound support for post-2.3 devices. Gained
+  accurate sound playback. Added bindings for capstoggle & atari keys.
+
+
+2014-09-16  Kostas Nakos  <knakos@gmail.com>
+* atari.c: Skip ROM file search as some android builds go in infinite loop
+  due to buggy platform implementation.
+
+* configure.ac: Updated to newer android toolchain.
+
+* android/*: Support for built-in Planetary Defense 2012 (courtesy and thanks
+  to Tom Hudson), miscellaneous fixes, update to newer android toolchain.
+
+
+** 3.1.0 released on 2014-04-12
+
+2014-04-12  Petr Stehlik <pstehlik@sophics.cz>
+* DOC/ChangeLog, DOC/NEWS: updated for new release
+
+* README.1ST, atari800.spec, DOC/README, atari.h, atari800.man, configure.ac,
+  util/export: version++
+
+
+2014-04-05  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* cfg.c, mxpokeysnd.[ch], pokeysnd.[ch], sound.c, ui.c, configure.ac: Moved the
+  SYNCHRONIZED_SOUND code made more generic and moved out of mzpokeysnd.c to
+  pokeysnd.c. Now synchronized sound is supported by both pokey sound engines.
+
+* colours_pal.c: Minor formatting & constness fixes.
+
+
+2014-03-03  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* atari.c, atari_basic.c, atari_curses.c, atari_falcon.c, atari_ps2.c,
+  atari_x11.c, amiga/amiga.c, dos/atari_vga.c, sdl/main.c,
+  win32/atari_win32.c, win32/main.cpp, atari_wince.c Ensure that Sound_Exit()
+  is called after config file is saved-on-exit, by moving the call to
+  Sound_Exit() out of PLATFORM_Exit() and into Atari800_Exit(). Reason: When
+  SOUND_THIN_API is enabled, autosaving after Sound_Exit would cause the
+  config file's SOUND_ENABLED entry to always be written as 0.
+
+
+2014-02-27  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* sdl/init.c, sdl/main.c: Avoid "undefined reference to PLATFORM_Time" linker
+  error when configured --with-sound=sdl but --with-video != sdl.
+
+* atari.c: Fixed a bug with keyboard input not working on --with-video=ncurses
+  --with-audio=oss. On initialisation, Sound_enabled == TRUE but audio output
+  is not yet initialised. In such situation calling
+  sound_oss.c->PLATFORM_SoundSetup() would close standard input, thus disabling
+  keyboard.
+
+
+2014-02-19  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* cartridge.[ch], ui.c, android/jni/jni.c, atari800.man, DOC/cart.txt,
+  DOC/USAGE, DOC/CREDITS: With Hias' help - documented behaviour of the XEGS
+  cartridges more precisely. Also added a different variant of the XEGS 64 KB
+  cartridge - both variants were manufactured by Atari.
+
+
+2014-01-29  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* cartridge.[ch], ui.c, android/jni/jni.c, atari800.man, DOC/cart.txt,
+  DOC/USAGE: Based on description by Hias, added minimal support for the 32
+  and 64 MB variants of The!Cart.
+
+* DOC/cart.txt: Added column that describes state of emulation support of
+  the cartridge types. Also other fixes.
+
+
+2014-01-26  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* dos/dos_sb.c: Bring indentation more into line with the apparent standard.
+
+* dos/sound_dos.c, dos/dos_sb.[ch], configure.ac: Apply SOUND_THIN_API to DOS
+  sound. Also fix two old bugs: pitch being wrong, and sound not working in
+  one-shot mode (DSP 1.xx).
+
+* sound.c, ui.c: Move code that stores current sound settings in Sound_desired
+  - previously settings were stored only when changed from GUI, but not when
+  changed from command line params.
+
+
+2014-01-18  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* ui.c: Fix obvious mistake in System Settings, that lead to buffer overflow.
+
+* cartridge.c, DOC/cart.txt, DOC/CREDITS: Fixes by Matthias Reichl for
+  emulation of The!Cart.
+
+
+2013-12-28  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* atari.c: Make turbo mode considerably faster, by avoiding pointless screen
+  redraws.
+
+* sdl/sound.c, sound.c: Fix stereo sound on SDL and -sound/-nosound parameters,
+  broken when introducing SOUND_THIN_API.
+
+
+2013-12-15  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* atari.c, util.[ch]: Atari_time and Atari_sleep renamed to Util_* and moved to
+  util.c module - they are now used externally from atari.c.
+
+* atari.c, cfg.c, platform.h, sound_oss.c, sound.[ch], ui.c,
+  javanvm/atari800.java, javanvm/javanvm.h, javanvm/sound.c, sdl/sound.c,
+  configure.ac, atari800.man, DOC/USAGE: Formerly SDL-specific support for
+  synchronized sound moved to new module sound.c and made platform-independent.
+  In effect, created a new thin API for platform-specific audio. Platforms that
+  support SOUND_THIN_API will have thinner layer of platform-specific sound
+  code and will support a common set of new functionality:
+  - ability to build with --enable-synchronized_sound,
+  - new UI Sound menu options for enabling/disabling sound, setting sample
+    rate, choosing 8- or 16-bit sound, setting hardwares ound buffer size, and
+    (with enabled synchronized_sound) setting sound latency,
+  - saving these new options in config, and setting them from command line
+    parameters.
+  Currently SOUND_THIN_API is implemented for SDL, JavaNVM and OSS sound.
+
+
+2013-12-14  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* javanvm/input.c: Map F12 to Turbo, as in other targets.
+
+
+2013-12-08  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* binload.c: When no OS patches were enabled, Running of BASIC files would
+  cause the emulated system to go sraight to Self Test: the calls to
+  Device_PatchOS() would enable E: patches, but wouldn't disable the OS memory
+  checks. Calling ESC_UpdatePatches() instead solves the issue.
+* afile.c, atari.c, gtia.[ch]: Avoid sending Option and Start keystrokes to a 
+  diagnostic cartridge when coldstarting.
+* cartridge.[ch], ui.c, android/jni/jni.c, atari800.man, DOC/cart.txt,
+  DOC/USAGE: Added support for the 2 MB MegaCart mapping.
+
+
+2013-12-07  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* cartridge.[ch], atari800.man, DOC/cart.txt: Added support for a small subset
+  of The!Cart mapping.
+* cartridge.[ch]: CARTRIDGE_kb is not modified anywhere, made it const.
+
+
+2013-12-04  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* cartridge.[ch], ui.c, android/jni/jni.c, atari800.man, DOC/cart.txt,
+  DOC/USAGE: Added read-only support for the 4 MB Flash MegaCart mapping.
+
+
+2013-12-02  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* cartridge.[ch], ui.c, android/jni/jni.c, atari800.man, DOC/cart.txt,
+  DOC/USAGE: Added support for the MegaMax 2 MB cartridge mapping. Developers
+  of The!Cart confirmed that the CART ID for the 64MB variant is not needed, so
+  I've reused it.
+
+
+2013-11-23  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* configure.ac, atari.c, platform.h, atari_ps2.c, sdl/main.c : Minimal cleanup
+  of platform-specific Sleep/Time routines.
+
+
+2013-11-11  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* monitor.c: Fixed & updated symbols based on OS & BASIC source listings.
+
+
+2013-11-09  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* DOC/cart.txt: By request of the developers of The!Cart, reserved two IDs
+  for this new cartridge type.
+
+
+2013-05-02  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* DOC/INSTALL: Update NestedVM build manual - it doesn't build with
+  --enable-ide.
+
+* javanvm/atari_javanvm.c: Fix overflow of dsp_buffer - could happen on some
+  systems where JAVANVM_SoundAvailable sometimes returns value larger than
+  2*line_buffer_size.
+
+* DOC/INSTALL, configure.ac, Makefile.in, javanvm/atari_javanvm.[ch],
+  javanvm/input.[ch], javanvm/javanvm.h, javanvm/main.c, javanvm/sound.c,
+  javanvm/video.[ch]: Code cleanup - split atari_javanvm.c to separate modules
+  for video, sound and input. Merge javanvm and javanvm-basic targets into the
+  default target - NestedVM host is now autodetected.
+
+
+2013-04-28  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* Makefile.in: Use printf instead of echo -e - more portable (and -e didn't
+  work on GNU Make 3.81).
+
+
+2013-04-23  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* artifact.[ch], atari.c, atari800.man, cfg.c, configure.ac,
+  pal_blending.[ch], ui.c, videomode.[ch], sdl/video_gl.c, sdl/video.sw.c,
+  sdl/video.c, DOC/USAGE, amiga/makefile, dc/Makefile.dc,
+  win32/msc/Makefile: New module, artifact.c, which manages settings of all
+  artifacting modes. Artifacting modes are now stored independently for PAL
+  and NTSC modes, and set according to the current TV mode setting.
+
+* sdl/main.c, sdl/video.c: When in monitor, avoid reopening the SDL window
+  during stepping through code.
+
+
+2013-04-15  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* colours_pal.[ch], colours.[ch], configure.ac, pal_blending.[ch], platform.h,
+  ui.c, sdl/palette.[ch], sdl/video_gl.[ch], sdl/video_sw.[ch], sdl.video.[ch]:
+  Added accurate emulation of PAL delay line (PAL blending).
+
+
+2013-04-08  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* antic.[ch], gtia.c, ui.c: Improve the existing PAL blending implementation,
+  which worked only on lines in GTIA mode 9 and was erroneously called
+  "GTIA11_DELAY". Previously it only blended lines placed below GTIA 11 lines,
+  now it works on all grasycale pixels. PAL blending now can be switched
+  on/off - see "Display settings->TV effect" (renamed from "NTSC artifacting
+  quality", as this option is no longer NTSC-specific).
+
+
+2013-04-07  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* colours_pal.c: More accurate emulation of PAL colours based on analysis of
+  oscillograms of PAL GTIA output.
+
+* cartridge.[ch], ui.c, atari800.man, DOC/cart.txt, DOC/USAGE: Added support
+  for the cartridge mapping used by "Turbo Hit"/"Atari Blizzard Hit".
+
+* memory.h: Fix gcc 4.7.2 -Wstrict-aliasing warnings.
+
+* cartridge.[ch], ui.c, android/jni/jni.c: Avoid compiler warnings by moving
+  the table of cartridge names to jni.c. The default target doesn't need that
+  table anyway, it only needs the names.
+
+* cartridge.c: Fix uninitialised variable which could result in unnecessary
+  bank switching.
+
+
+2013-03-21  Petr Stehlik <pstehlik@sophics.cz>
+* configure.c, ui.c, atari_rpi.c, gles/video.c: committing new support
+  for Raspberry Pi made by Andrey Dj
+
+* DOC/README.RPI, DOC/BUILD.RPI: documentation added
+
+
+** 3.0.0 released on 2013-03-03
+
+2013-03-03  Petr Stehlik <pstehlik@sophics.cz>
+* DOC/ChangeLog, DOC/NEWS: updated for new release
+
+* README.1ST, atari800.spec, DOC/README, atari.h, atari800.man, configure.ac,
+  util/export: version++
+
+* emuos.c, emuos.lis: extended copyleft
+
+* debian/{chaneglog, control, rules}: updates from the official Debian
+  package merged with updates for a new release
+
+
+2013-02-09  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* DOC/INSTALL, DOC/PORTING, DOC/README: Rename the "basic" version to "simple"
+  in the docs, to avoid confusion with the Atari BASIC and with the "basic"
+  target - there's no such target anymore.
+
+* debian/control, DOC/INSTALL, DOC/INSTALL.dos, DOC/INSTALL.falcon,
+  DOC/README, DOC/readme.html.in, src/atari800.man, atari800.spec, README.1ST:
+  Update docs to inlcude the 1200XL and the XEGS as emulated systems.
+
+* DOC/INSTALL.falcon: Update after renaming --disable-sound to --without-sound.
+
+* DOC/README, DOC/NEWS: Updated with all my contributions since 2.2.1.
+
+
+2013-01-28  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* src/autogen.sh, src/configure.ac, src/configure_dos.bat:
+  Rename the "basic" target to "default" and make it the default - the
+  "--target" configure option can be omitted. Renamed the "--with-gui"
+  configure option to "--with-video".
+
+* util/benchmark.pl:
+  Update to reflect the above changes. Allow passing --with-* options to
+  configure.
+
+* atari800.spec:
+  Update to reflect the above changes. Allow building multiple binaries, each
+  with a different set of configure options.
+
+* DOC/README, DOC/INSTALL, DOC/PORTING, debian/rules:
+  Update to reflect the above changes.
+
+
+2012-10-11  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* devices.c: Fix the H: read function to return status $03 if the next read
+  operation would yield EOF. This complies with Atari DOS behaviour and fixes
+  Turbo BASIC's BLOAD.
+
+* atari.c, cfg.c, memory.[ch], ui.c, atari800.man, DOC/CREDITS, DOC/README,
+  DOC/USAGE: Patch by Jerzy Kut <mono@atari.pl> with additional fixes. Adds
+  support for the MapRAM memory enhancement for XL/XE systems.
+
+* sdl/video_gl.c: Patch by Jerzy Kut <mono@atari.pl>. Spelling fix.
+
+
+2012-09-09  Kostas Nakos  <knakos@gmail.com>
+* android/*: More UI fine tuning, new dialog for cartridge type selection
+* afile.c, cartridge.[ch], ui.c: Moved cartridge types' descriptive text to
+  a more central (reusable) location, hooked android port when a cartridge
+  type cannot be detected.
+
+
+2012-09-08  Kostas Nakos  <knakos@gmail.com>
+* android/*: UI fine tuning, soft keyboard fix for jelly bean
+
+
+2012-09-05  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* android/jni/jni.c: Fix ROM selection hack to support the well-known OSB NTSC
+  ROM bundled with XFormer. That ROM is hacked and therefore it is not
+  recognised as SYSROM_B_NTSC, but as SYSROM_800_CUSTOM.
+
+
+2012-09-04  Kostas Nakos  <knakos@gmail.com>
+* android/*: Natively support UI on post-Honeycomb devices
+
+
+2011-08-27  James Wilkinson  <james@slor.net>
+* config.guess: Detect Haiku as x86 BeOS.
+
+
+2012-08-05  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* sysrom.c: Fixed CRC32 of the CC01r4 OS ROM - the previous one was for a
+  binary that I've myself incorrectly-assembled from sources.
+
+
+2012-07-29  Kostas Nakos  <knakos@gmail.com>
+* android/*: Update project to newer android sdk (jelly bean - 4.1),
+             Fine tuning of the B: device handling,
+             Fix audio stuttering on jelly bean,
+             Fix keymap preference crash on jelly bean,
+             Fix keyboard mapping dialog on jelly bean
+
+
+2012-07-21  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* DOC/CREDITS: Fix alphabetical order. Update my own contributions.
+
+
+2012-06-02  Kostas Nakos  <knakos@gmail.com>
+* android/*: Small tweaks to the touchscreen mode
+* afile.c, cartridge.c: Temporary fix for non auto-detected cartridges, until
+  the implementation of a proper menu
+
+
+2012-05-20  Kostas Nakos  <knakos@gmail.com>
+* android/*: Implement Planetary Defense mode, a Koala Pad click-where-I-point
+  mode
+* devices.[ch], esc.h, android/*: Implement the B: device in the core and
+  android port
+
+
+2012-05-19  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* cartridge.[ch], ui.c, atari800.man, DOC/cart.txt, DOC/USAGE: Support for
+  2 KB and 4 KB ROMs used in early Atari cartridges.
+
+* configure.ac, platform.h, atari.c, ui_basic.c, ui.[ch], sdl/init.[ch],
+  sdl/main.c, sdl/sound.c, debian/rules, util/benchmark.pl, DOC/INSTALL: Merge
+  basic and sdl targets - GUI and sound libraries are now autodetected or
+  explicitely selected by --with-gui and --with-sound configure options.
+
+* configure_dos.bat: Fix the dosvga and basic targets being merged.
+
+
+2012-05-16  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* cartridge.[ch], ui.c, atari800.man, DOC/cart.txt, DOC/CREDITS, DOC/USAGE:
+  Committing patch by Jakub Husak: Support for the SIC! cartridge mapping
+  (without the flash programming feature).
+
+
+2012-05-04  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* configure.ac, util/benchmark.pl: Merge basic, curses, ncurses, pdcurses and
+  dosvga targets - appropriate GUI/input library is now autodetected or
+  selected explicitely by --with-gui configure option.
+
+* ui.c: Fix segfault in the ROM Locations menu.
+
+* atari_basic.c: Fix some GCC warnings.
+
+
+2012-05-01  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* devices.c, ide_internal.h, input.c, log.c, pbi_scsi.c, sio.c, ui.c, util.h,
+  dos/dos_ints.h: Fix some GCC warnings.
+
+
+2012-04-22  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* colours.[ch], colours_ntsc.[ch], colours_pal.[ch], ui.c, sdl/input.c,
+  atari800.man, DOC/USAGE: More exact emulation of PAL colors, including
+  colour delay - based on Altirra but with different table coeffitients,
+  derived from a real machine. Colour delay values for NTSC rescaled to
+  simplify the code.
+
+
+2012-04-21  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* sdl/input.c: Make the display adjustment keyboard shortcuts work by pressing
+  and holding - no more need to press the keys repeatedly.
+
+* colours_ntsc.[ch], colurs_pal.c, colours.[ch], filter_ntsc.c, ui.c,
+  sdl/input.c, atari800.man, DOS/USAGE: Rename color control "Hue" to "Tint".
+  Add tint control also for PAL mode, as there are PAL TVs with tint control.
+
+
+2012-03-31  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* cartridge.[ch], ui.c, atari800.man, DOC/cart.txt, DOC/USAGE: Added support
+  for the cartridge mapping used by "Monkey Wrench II for the Atari XL".
+
+
+2012-03-29  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* cartridge.[ch], ui.c, atari800.man, DOC/cart.txt: Renamed MicroCalc
+  cartridge mapping to Ultracart - that's the name printed at the cartridge's
+  PCB.
+
+
+2012-03-26  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* cartridge.[ch], ui.c, atari800.man, DOC/cart.txt, DOC/USAGE: Added support
+  for the MicroCalc cartridge mapping.
+
+
+2012-03-24  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* atari.c, cfg.c, memory.[ch], ui.c: Simplify Axlon RAM code. Fix bug with
+  Axlon and Mosaic RAM switching to home bank on state read. Add option to
+  control Axlon RAM settings in GUI. Save Axlon RAM settings in config.
+
+
+2012-03-23  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* atari.[ch], cfg.c, ui.c: Fixed 1200XL jumper emulation - the machine has
+  only one onboard jumper, not four.
+
+* atari.c, cfg.c, memory.[ch], ui.c: Simplify Mosaic RAM code. Add option to
+  control Mosaic RAM settings in GUI. Save Mosaic RAM setting in config.
+
+
+2012-03-18  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* atari.c, emuos.[ch], memory.c, Makefile.in, android/jni/Amdroid.mk.in,
+  dc/Makefile.dc, win32/msc/Makefile: Always take UI font from EMUOS - fixes
+  missing font when running the emulator in 5200 mode without configured OS
+  ROMs.
+
+* atari.[ch], cartridge.c, cfg.c, devices.c, esc.c, input.c, memory.c, pia.c,
+  screen.c, sysrom.c, ui_basic.c, ui.c, sdl/input.c, android/jni/jni.c,
+  atari800.man, DOC/USAGE:
+  Reworked support for machine types. All XL/XE features can be enabled/
+  disabled independently. UI menu "Select System" renamed to "System Settings"
+  and reworked - now it only lists systems manufactured originally, with
+  additional options for configuration.
+
+* devices.c, esc.c, sysrom.[ch], ui.c, atari800.man, DOC/USAGE: Support OS
+  revisions from the Arabic 65XE and prototype XL machines.
+
+
+2012-03-11  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* pia.c: Fix recently-introduced bug with MEMORY_cartA0BF_enabled being saved
+  twice in savestates - in both memory.c and pia.c.
+
+* af80.c, cassette.c, devices.c, log.c, monitor.c, pbi_bb.c, pbi_mio.c,
+  pbi_proto80.c, pbi_xld.c, sysrom.c, ui.c, xep80.c, wince/port/missing.c:
+  Remove initialisation of local-static and global arrays to "", to prevent
+  them ending up in .data segment instead of .bss on some architectures/
+  compilers (android-arm). The C standard requires them to be initialised with
+  zeroes at runtime, so initialisation with "" is not needed.
+
+
+2012-03-10  Kostas Nakos  <knakos@gmail.com>
+* android/*: Rename android port to Colleen
+
+
+2012-03-08  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* atari.[ch], cfg.c, input.c, memory.[ch], sysrom.[ch], ui.c, atari800.man,
+  DOC/USAGE: Add emulation of the XEGS (builtin game, detachable keyboard).
+
+* atari.[ch], cfg.c, input.c, ui.c: Add emulation of 1200XL option jumpers,
+  as described in Atari XL Addendum section 3.8.
+
+* ui.c: Emulate 32KB and 48KB memory expansions for the 600XL manufactured by
+  RC Systems.
+
+
+2012-03-05  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* memory.c, pia.[ch], statesav.c: Fix 2 errors related to separate access
+  of CPU and ANTIC to XE RAM:
+  - Self-Test should be visible also in the bank seen by ANTIC.
+  - When saving/loading a savestate in which only ANTIC has access to XE RAM,
+  XE bank number was not saved/loaded correctly. To fix this, loading/saving
+  of MEMORY_xe_bank had to be moved from PIA_StateRead to MEMORY_StateRead; so
+  I also moved a few other variables in those functions to where they belong.
+
+* atari.[ch], cartridge.c, cfg.c, devices.c, esc.c, input.c, memory.c, pia.c,
+  screen.[ch], sysrom.[ch], ui_basic.c, ui.c, atari800.man, DOC/USAGE: Add
+  emulation of the 1200XL (no builtin BASIC, LEDs overlayed on screen, 2 new
+  XL OS revisions). The System ROM Settings menu ceased to fit on one screen,
+  so it is split into submenus.
+
+* sdl/input.c: When in 1200XL mode, map arrows to F1-F4 keys.
+
+* atari.[ch], cartridge.c, devices.c, esc.c, input.c, memory.c, pia.c,
+  screen.c, ui.c, sdl/input.c, android/jni/jni.c: Replace most of the
+  "if Atari800_machine_type ==" statements with references to
+  Atari800_features  - the code was starting to be too convoluted.
+
+
+2012-02-23  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* cfg.c, memory.[ch], ui.c: Allow choosing more RAM amounts for 400/800, based
+  on possible combinations of CX852 and CX853 memory modules. Extending the
+  list of available systems in "Select System" menu to include all new RAM
+  sizes would be impractical, so a new option "RAM size" was added instead.
+
+* atari.[ch], memory.c, pia.c, statesav.c: Support for saving new RAM sizes
+  (and the old 52kb size, too) in save states. reading/saving MEMORY_ram_size
+  moved to memory.c, where it belongs; storing RAM size as two separate values
+  (base RAM, XE banks) to make it more future-proof. Fixed the "feature" of
+  saving of unused 192kb.
+
+* statesav.c: Fix old bug that allowed loading of save states with version
+  number higher than current.
+
+
+2012-02-19  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* atari.[ch], devices.c, esc.c, sysrom.[ch]: Make OS patches work depending on
+  OS version. Now patches work correctly also with Rev. A PAL and Rev. 1
+  (600XL).
+
+2012-02-16  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* atari.[ch], cartridge.c, cfg.c, devices.c, esc.c, memory.[ch], sysrom.[ch],
+  ui_basic.c, ui.c, android/jni/jni.c: Merge Atari800_MACHINE_OSA and
+  Atari800_MACHINE_OSB into Atari800_MACHINE_800 - no need for separate machine
+  types since OS revision can now be selected.
+
+* sysrom.c, atari800.man, DOC/USAGE: Support choosing OS revision from command
+  line.
+
+
+2012-02-10  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* atari.c, cfg.[ch], crc32.[ch], sysrom.[ch], ui.c, Makefile.in,
+  dc/Makefile.dc, win32/msc/Makefile, android/jni/jni.c,
+  android/jni/Android.mk.in: Two new modules (crc32, sysrom) that add a new
+  functionality of searching for OS/BASIC ROM images based on known CRC32
+  hashes. Added possibility to select an OS/BASIC version when many are
+  available ("Select System"). When switching between PAL/NTSC, NTSC or PAL
+  version of OS Rev. A is selected accordingly.
+  Android port updated to work correctly (OS/BASIC version selection is still
+  missing though).
+
+
+2012-01-27  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* xep80.c: Rename SetCursor to SetCursorMode to avoid conflict with a winuser.h
+  function under MinGW.
+
+
+2012-01-19  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* xep80_fonts.c, xep80.[ch], videomode.c: Rewtritten XEP80 emulation, based on
+  disassembly of the XEP80 ROM. Programs such as EIGHTY.BAS from XEP80 System
+  Diskette, or XEPLIST2.BAS from ANTIC Oct/1988, now work correctly.
+
+* videomode.c: Added authenthic aspect ratio for XEP80. Fixed issue with
+  1x, 2x, 3x, and "custom" stretch settings - for all videomodes except NORMAL
+  the screen would stretch twice the amount it should.
+
+
+2012-01-12  Kostas Nakos  <knakos@gmail.com>
+* android/*: Implement state saving, fix a keymap preference corner case
+
+
+2012-01-08  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* antic.c: Fix accuracy of ANTIC_CPU_CLOCK when NEW_CYCLE_EXACT is enabled.
+
+* monitor.c: Fix accuracy of cycle counts (when displaying the current state)
+  when NEX_CYCLE_EXACT is enabled.
+
+* xep80.c: Fix (and simplify) the code for I/O timing - it was not resistant
+  to random data appearing in PORTA, which resulted in XEP80 going haywire
+  after coldstart. The change breaks binary compatibility of savestates.
+  Standardise indentation (tabs instead of spaces).
+  Remove the XEP80_ prefix from names of static entities.
+
+
+2012-01-07  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* sdl/input.c: No need to call SDL_GetKeyState() on each frame - moved the
+  call to SDL_INPUT_Initialise().
+
+* xep80.[ch]: Removed variables XEP80_first_row, XEP80_last_row - not used
+  anywhere.
+
+* cfg.c, xep80_fonts.[ch], xep80.[ch]: Load XEP80 fonts from a ROM image
+  instead of storing them in the source file (ROM path stored in config).
+  Generate the XEP80 block font algorithmically instead of storing it in the
+  source file.
+
+* ui.c, videomode.[ch], xep80.[ch], atari800.man, DOC/USAGE, sdl/video_gl.c:
+  Support XEP80's ability to switch the TV system by software. After the
+  changes, the maximum height of the screen is 300 lines.
+
+* sdl/video.c: Fix a glitch that appeared during XEP80 initialisation.
+
+* ui.c: Add option to enable/disable XEP80 to the Emulator Settings menu.
+
+
+2012-01-07  Kostas Nakos  <knakos@gmail.com>
+* android/*: Optimize file selector, allow roaming outside of ext. storage dir
+             Added an exclusion border for paddle mode
+
+
+2011-12-22  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* android/jni/Android.mk.in, dc/Makefile.dc, win32/msc/Makefile: Add missing
+  object img_tape.o to platform-specific Makefiles to make them work again
+  (see Makefile.in revision 1.52).
+
+
+2011-11-29  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* cassette.c: Remove excessive logging, committed by mistake yesterday.
+
+
+2011-11-28  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* cassette.c: Fix segfault when the -tape parameter points to a nonexistent
+  file.
+
+
+2011-11-16  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* atari_falcon.c, sound_falcon.c, falcon/sound_dma.S: Fix Falcon compilation
+  errors with MiNTLib 0.59.1 and GCC 4.6.2 (still works with GCC 2.95.3 as
+  tested under SpareMiNT).
+
+* atari_basic.c, atari_curses.c, atari_falcon.c, atari_ps2.c, atari_x11.c,
+  sound_falcon.c, sound_oss.c, sound.h, android/jni/sound.c, dos/atari_vga.c,
+  dos/sound_dos.c, sdl/main.c, sdl/sound.[ch], win32/atari_win32.c,
+  win32/sound.c, wince/port/atari_wince.c, wince/port/sound.c: Make
+  Sound_Initialise fail gracefully instead of segfaulting when an option
+  argument is missing. Do not initialise sound unnecessarily when the "-help"
+  option is given.
+
+* antic.c, atari_curses.c, atari.c, platform.h, ui_basic.c, ui.c: Cleanup:
+  gather all declarations of curses_* functions together in platform.h.
+
+* atari.c, configure.ac, devices.c, log.c, monitor.c, screen.c, sio.c,
+  sound_oss.c, ui_basic.c, ui.c: Cleanup to make the ncurses target build with
+  more restrictive CFLAGS (same as the sdl target).
+
+
+2011-11-11  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* af80.[ch], atari.c, cartridge.[ch], devices.[ch], ide.[ch], input.c,
+  pbi_bb.[ch], pbi_mio.[ch], pbi_proto80.[ch], pbi_xld.[ch], pbi.[ch],
+  sdl/video.c: Add or fix Exit functions for files/resources that were not
+  _explicitely_ closed/freed on exit.
+  Add call to Atari800_ErrExit also when commandline-parsing fails.
+  Previously when starting the dosvga target with "atari800 -artif",
+  the emulator would exit without uninitialising VGA, leaving mess on screen.
+
+* amiga/amiga.c, dc/atari_dc.c: Fix Platform_Initialise() not returning
+  a value.
+
+
+2011-11-04  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* monitor.c: Fix a memory leak - buffer allocated by readline() should be
+  freed by user.
+
+* configure.ac: Clean-up of SDL detection - restore the "Don't redefine main"
+  snippet that got mistakenly deleted in revisions 1.108-1.109.
+
+* configure.ac, Makefile.in, DOC/README.android: Cleanup in detection of
+  libreadline and OpenGL:
+  Renamed options --enable-monitor-readline and --enable-opengl to
+  --with-readline and --with-opengl, respectively - Autoconf manual recommends
+  the --with prefix for options requiring external software.
+  Since the AC_CHECK_HEADER (used in OpenGL detection) requires proper setting
+  of CPPFLAGS, rudimentary support for this variable has been added.
+
+* sdl/video_gl.c: Fix wrong definition of "black" colour for the BGRA32 pixel
+  format, which caused a visible blue border around the screen with bilinear
+  filtering and stretch >= 2.
+
+
+2011-10-27  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* afile.c, cassette.[ch], img_tape.[ch], screen.c, ui.c, Makefile.in:
+  Cassette-related code cleanup - functionality related to handling of
+  tape image files split from afile.c and cassette.c to new module img_tape.
+  Functional changes: During cassette insert the old tape is not unmounted
+  until opening of the new tape ended successfully; Added error message when
+  tape opening fails with the -tape command parameter.
+
+
+2011-09-05  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* DOC/cart.txt, DOC/USAGE, atari800.man, cartridge.[ch], ui.c: Added support
+  for Atrax SDX 64/128K cartridge mapping and for the Turbosoft 64/128
+  cartridge mappings.
+
+* cartridge.c: Fixed a bug in OSS 034M/043M mappings - the area filled by $FF
+  should be $A000-$AFF instead of $8000-$9FFF.
+
+
+2011-09-04  Kostas Nakos  <knakos@gmail.com>
+* android/*: Added paddle emulation
+
+
+2011-09-03  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* monitor.c: Code cleanup - split MONITOR_Run() into separate functions for
+  each monitor command. Functionality unchanged.
+
+* af80.[ch], antic.[ch], cartridge.[ch], cpu.c, gtia.[ch], ide.[ch],
+  memory.[ch], monitor.c, pbi_bb.[ch], pbi_mio.[ch], pbi_proto80.[ch],
+  pbi.[ch], pia.[ch], pokey.[ch]: Added option of reading hardware memory
+  without side effects. Used this in the, monitor so now eg. the "M" option
+  doesn't switch cartridge banks while displaying page $D5. Fixed the
+  monitor's "disassemble" functionality - it didn't correctly disassemble code
+  in hardware memory.
+
+
+2011-09-02  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* sdl/input.c: Swapped mapping of right and middle mouse buttons, to make it
+  identical to the X11 and Win32 ports.
+
+
+2011-08-24  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* cartridge.[ch], ui.c, atari800.man, DOC/cart.txt, DOC/USAGE: Added support
+  for a 32 KB cartridge format used by Atari Super Turbo Multi-Cartridge.
+
+* cfg.c, rtime.[ch]: Support for saving the state of R-Time 8 in config file.
+
+* atari800.man: Improve formatting (bold, italic etc.), mainly according to
+  man-pages(7).
+
+
+2011-08-06  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* afile.c: Fixed compilation errors for --target=basic introduced on
+  2011-06-27.
+
+
+2011-08-05  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* DOS/cart.txt, DOC/USAGE, cartridge.[ch], ui.c: Added support for the
+  Blizzard-type 4KB cartridge (which contains a 2732 EPROM inside).
+
+
+2011-07-23  Kostas Nakos  <knakos@gmail.com>
+* atari.c: Use FPS defines in autoframeskip
+* android/*: Fix a nasty bug, when orientation was changed during the
+             preferences activity,
+             added shadow rectangle around console keys overlay
+
+
+2011-07-02  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* cartridge.[ch], ui.c, atari800.man, DOC/cart.txt, DOC/USAGE: Added support
+  for the OSS 043M cartridge format. The old 034M format is marked as obsolete
+  but still supported. Renamed the OSS cartridge formats to include
+  information on number of ROM chips (043M/034M - two chip, M091 - one chip).
+
+
+2011-06-27  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* cassette.c: Fixed a bug with eof_of_tape not always being set to 1 when it
+  should be, f.e. after a call to CASSETTE_Seek(). When the SIO patch was
+  enabled and the tape was Seek'ed past the last block, this could result in
+  a call to CASSETTE_IOLineStatus() while CASSETTE_current_block was higher
+  than CASSETTE_max_block. This in turn would cause division by 0 (due to
+  reading an uninitialilsed value from cassette_baudblock).
+  Now eof_of_tape is set properly after every change of either
+  CASSETTE_current_block or CASSETTE_max_block, so a dangerous call to
+  CASSETTE_IOLineStatus doesn't happen anymore.
+
+* cartridge.c: Fixed a bug introduced in rev. 1.48: CARTRIDGE_StateRead would
+  try to read the cartridge's bank state even if the cartridge was not
+  present; thus the whole state reading would fail.
+
+* afile.c: Support selecting cartridge type when loading a cartridge by Alt+R.
+
+
+2011-06-21  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* ui.c: Fixed a segfault when opening the "Fullscreen resolution" submenu.
+  This was caused by the change in ui.h on 06-20. (reported by Krzysztof
+  Karkosza)
+
+
+2011-06-20  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* sdl/input.c: Fixed a bug with F10 creating interlaced screenshots instead of
+  non-interlaced.
+
+* cartridge.[ch], ui.c, atari800.man, DOC/USAGE: Ported from Atari800WinPLus -
+  an option for enabling/disabling automatic reboot when the cartridge is
+  inserted or removed. (Only applies to the main cartridge. After inserting or
+  removing a piggyback cartridge, it works as earlier - ie. the system will
+  not reboot automatically.)
+  
+* ui.h, ui_basic.c: Reworked detection of menu end (UI_MENU_END). The
+  previous solution stopped working correctly since in the CartManagement menu
+  there are hidden menuitems with the "item" field set to NULL which would be
+  incorrectly detected as end of menu.
+
+
+2011-06-17  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* cartridge.c, DOC/cart.txt: Reverted the last change in the 034M mapping
+  regarding switched banks 1 and 2 - on second thought, applying such change
+  to a years-old specification without proper discussion is not a good idea.
+
+
+2011-06-16  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+*cartridge.c, DOC/cart.txt: Fixed an ages-old bug in the OSS 034M cartridge
+  banking scheme. Banks 1 and 2 were switched, which caused all known OSS
+  034M dumps to fail. (There actually are only 3 known images of 034M
+  cartridges:
+  Action! 3.5: http://ftp.pigwa.net/stuff/collections/atari_forever/ROM/ACTION.OSS/ACTION.OSS
+  BASIC XL 1.02: http://ftp.pigwa.net/stuff/collections/atari_forever/ROM/BASICXL.OSS/BXL102.OSS
+  MAC/65 1.0: http://ftp.pigwa.net/stuff/collections/atari_forever/ROM/MAC65.OSS/MAC65.OSS
+  All failed to work before this fix.)
+  Additionally the combinations $D5x1 and $D5x5 were incorrectly described as
+  working - I've changed it to more closely reflect the reality (the
+  combinations cause selection of 2 banks simultaneously - but it's still not
+  emulated 100% exactly).
+
+* cartridge.[ch], atari.c, ui.c: Moved the logic that auto-switches machine
+  type after insertion of a cartridge. Now it resides in cartridge.c, where it
+  belongs. Introduced new function CARTRIDGE_SetType, that should be used to
+  change the cartridge's type. CARTRIDGE_IsFor5200 and CARTRIDGE_Start are not
+  used outside cartridge.c anymore, so I renamed them and made static.
+
+
+2011-06-13  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* cartridge.[ch]: Major rewrite, required to fix bugs in piggyback cartridge
+  emulation and with writing/reading savestates with banked cartridges.
+  1. SDX piggyback emulation was broken and apparently written without knowing
+     the cartridge's specs - the SDX cart only reacts to access to address
+     $D5Ex (also $D5Fx in case of the 128K version).
+  2. A piggyback cartridge reacts to access to page $D5 even if it is disabled
+     by the SDX cart. So when processing a read/write to page $D5 both mounted
+     cartridges must be bank-switched.
+  3. A cartridge reacts to page $D5 even if there's an R-Time or
+     IDE hardware installed.
+  3. In savestates the bankswitched cartridge's current state was not stored,
+     and in some cases such savestates didn't work properly when loaded.
+  4. Overall code cleanup - introduced the CARTRIDGE_image_t structure for
+     clarity.
+
+* gtia.[ch], statesav.c, cartridge.[ch] (CARTRIDGE_StateRead)
+  (CARTRIDGE_StateSave): GTIA needs to store its trigger latches in the
+  savestate in order to properly restore after loading a savestate with
+  a banked cartridge. Banked cartridge's current state must also be stored in
+  a savestate. Both changes require bumping up the savestate version number.
+
+* atari.c, ui.c: Apply the new API of cartridge.h.
+
+* DOC/cart.txt: Update the SpartaDOS X sections with info about piggyback
+  cartridges.
+
+* atari.c, cartridge.[ch] (CARTRIDGE_Initialise): Move code for processing
+  cartridge-related commandline optins to cartridge.c.
+
+* cartridge.c, atari800.man, DOC/USAGE: Add -cart-type and -cart2-type
+  options, that allow to choose cartridge type from commandline.
+
+* cartridge.c (CARTRIDGE_ReadConfig, CARTRIDGE_WriteConfig), cfg.c: Support
+  loading and saving of the cartridge settings in the config file.
+
+* cartridge.[ch], ui.c, atari800.man, DOC/cart.txt DOC/USAGE: Add support for
+  the OSS The Writer's Tool cartridge mapping.
+
+
+2011-06-08  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* ui_basic.c: Allow opening up the file selector when the given PATH is
+  invalid. When a diskette image is mounted, its path is cached in the
+  emulator. If, in the meantime, the path to that file have become invalid
+  (e.g. the directory in which the file resided have been deleted), then
+  reopening the file selector for that particular diskette would have failed.
+
+* cartridge.c: Unify duplicate code in CARTRIDGE_Insert and
+  CARTRIDGE_Insert_Second.
+
+
+2011-06-05  Kostas Nakos  <knakos@gmail.com>
+* android/*: Implement extended key remapping,
+             Support Xperia play keycodes,
+             Remap dpad enter to break,
+             New NTSC/PAL tv mode preference
+
+
+2011-05-22  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* DOC/USAGE, atari800.man, cassette.[ch], ui.c: Add an option for making the
+  attached cassette image read-only.
+
+* cassette.[ch]: Cleanup - rearrange function order to place the functions
+  related to the SIO patch together at the bottom of the files.
+
+* cartridge.[ch], ui.c: Merge "Insert Cartridge"/"Remove Cartridge" menu
+  options into one, to make it consistent with other file-selectors in the
+  menu (ie. display filename, Enter=Insert, BkSp=Remove). Ditto for the
+  "Insert|Remove SDX Piggyback Cartridge" options.
+
+* ui.c: Don't leave the "Cartridge Management" menu after inserting/removing
+  a cartridge. The behaviour was inconsistent with other menus.
+
+* screen.c: Minor fix - missing "else" in Screen_Initialise().
+
+
+2011-05-21  Tomasz Krasuski  <kr0tki@poczta.onet.pl>
+* sio.c: Fixed a bug with SIO sounds remaining audible after saving to tape
+  with SIO patch (reported by Krzysztof Karkosza).
+
+* atari.c: During coldstart, don't automatically hold Option on non-XL/XE
+  machines. This fixes unwanted keystrokes when running cartridges on 400/800
+  with the "Disable Basic" option. Also, don't hold Start on booting the 5200.
+
+* memory.c: Bugfix: When "Selecting System" and choosing 800/48KB RAM twice
+  in a row, BASIC would get disabled even if the "Disable BASIC" option was
+  set to "No". This was caused by missing initialisation of cartridge memory
+  in MEMORY_InitialiseMachine().
+
+
+2011-05-18  Tomasz Krasuski <kr0tki@poczta.onet.pl>
+* cassette.c: Fixed a bug with CASSETTE_description not being properly ended
+  with '\0' when tape is inserted (reported by Achim Haertel).
+
+
+2011-05-15  Tomasz Krasuski <kr0tki@poczta.onet.pl>
+* cassette.[ch], pokey.c, sio.c: Improve cassette emulation, to allow loading
+  some non-standard tapes (e.g. Feud/Turbo 2600, Miecze Valdgira II,
+  Operation Blood).
+  Emulation of SERIN was inaccurate - new byte appeared in SERIN only if the
+  serial input IRQ was enabled, and it happened 2 scanlines after the byte's
+  transmission has _started_. On a real machine, a byte appears in
+  SERIN at the same time the serial input IRQ is generated, that is, when
+  the byte's transmission _ends_; and it happens even when the IRQ is
+  disabled. The bug caused issues with tapes of _certain_ baudrates (e.g. 577
+  baud).
+  Changed the way cassette IRQ is invoked - there is no notion of
+  "cassette IRQ delay" anymore. Instead, CASSETTE_AddScanLine returns TRUE
+  on SERIN update.
+  Added partial emulation of SKCTL reset bits - due to improved SERIN
+  accuracy proper emulation of serial IO resetting is now needed to load tapes
+  correctly.
+  
+
+2011-05-09  Tomasz Krasuski <kr0tki@poczta.onet.pl>
+* pia.c: Fixed a bug with PIA's tape motor state and COMMAND line state not
+  being restored on loading of a savestate.
+
+* screen.c: Display SIO activity for tapes only when a tape image is attached.
+
+* cassette.[ch], sio.c: Fixed a segfault when reading tape blocks longer than
+  4096 bytes, by dynamically allocationg memory when needed. Blocks loaded
+  with SIO patch are now copied to Atari memory even when they are too short
+  or the checksum is wrong - this duplicates the behaviour of the unpatched
+  system. CASSETTE_buffer no longer used outside cassette.c, so it's made
+  static.
+
+
+2011-05-08  Tomasz Krasuski <kr0tki@poczta.onet.pl>
+* atari.c, cassette.[ch], cfg.c, screen.c, sio.c, ui.c: Added support for
+  switching bettween tape loading/saving without need to re-attach a tape
+  image. Added a "Tape management" menu with new options for tape rewinding
+  and creating a blank CAS image. Added loading/saving of the currently
+  attached tape image in the config file. Without the SIO patch, a user now
+  must manually switch tape recording on/off if needed. Fixed some bugs and
+  cleaned the code a bit.
+
+* DOC/directx.txt, atari_curses.c, atari_falcon.c, atari_ps2.c,
+  dos/atari_vga.c, javanvm/atari_javanvm.c, sdl/input.c, win32/atari_win32.c:
+  Added the Alt+T shortcut to the new Tape Management menu. The "tilt screen"
+  in the Win32 port has been remapped to Alt+Shift+Z to avoid conflict.
+
+* DOC/USAGE: Updated the "Cassette operation" section with the new features.
+
+* screen.c: Added displaying of current tape position when sector counter is
+  enabled. Display a "Dn" symbol instead of "n" during disk operations.
+
+* ui.c: Renamed the "Show disk activity" and "Show sector counter" options to
+  reflect the fact that they also affect tape operations.
+
+
+2011-05-05  Petr Stehlik <pstehlik@sophics.cz>
+* atari800.spec: David Bolt has provided an update that allows building
+  the RPM packages for Fedora, CentOS, SUSE and Mandriva distributions.
+
+
+2011-04-30  Tomasz Krasuski <kr0tki@poczta.onet.pl>
+* videomode.c: Fixed a bug with not allowing a VIDEOMODE_HOST_ASPECT_RATIO=0:0
+  entry in the config file. Now when this value is encountered, the emulator
+  performs aspect ratio autodetection.
+
+* DOC/USAGE, atari800.man, atari.[ch], atari_curses.c, cfg.[ch], colours.c,
+  input.c, ui.c, util.c, sdl/sound.c: Added support for automatic saving of
+  configuration on emulator exit. (Had to move the System ROM Settings to
+  a separate submenu in UI in order to make place for the new option.)
+  Autosaving is performed only when a user closed the emulator, and not when
+  the emulator closed itself eg. due to failure. For exiting an emulator due
+  to error, a new function Atari800_ErrExit() is provided. This function works
+  like Atari800_Exit but omits the autosaving.
+
+
+** 2.2.1 released on 2011-04-28
+
+2011-04-28  Petr Stehlik <pstehlik@sophics.cz>
+* configure.ac: generalization for sound configuration
+
+* ui.c, videomode.c, sdl/input.c: slight optimization for snprintf()
+
+* monitor.c, rdevice.c, screen.[ch], sio.c, ui.c, ui_basic.c, util.c,
+  videomode.c: replace unsafe sprintf() with snprintf()
+
+* sdl/input.c: fix for over-optimized LPT TRIG, sprintf() removed
+
+* README.1ST, atari800.spec, DOC/README, DOC/NEWS, atari.h, util/export:
+  updated for a new release
+
+
+2011-04-27  Petr Stehlik <pstehlik@sophics.cz>
+* DOC/ChangeLog: blank lines added, "src/" from filenames removed
+
+* ide.c: fixes for IDE emulation from Ivo <ivop@euronet.nl> - fix for
+  8-bit mode with an odd number of reads and adds a command line option
+  for enabling CF mode (slightly different from normal HD mode)
+
+* configure.ac: fixes non-SDL sound (example: X11 target) for Linux and BeOS
+  and also adds support for SDL sound on Falcon and other platforms
+  (like for example *BSD, which should fix the Debian Atari800 package)
+
+* debian/*: updated for a new release, dropping non-SDL binary packages.
+
+
+2011-04-23  Kostas Nakos  <knakos@gmail.com>
+* android/*: Speed up fileselector on orientation update & bugfix mount/insert
+
+
+2011-04-22  Tomasz Krasuski <kr0tki@poczta.onet.pl>
+* sdl/input.c: Allow using SDL/LPT joysticks together with keyboard
+  joysticks. Previously if a user had a joystick connected, keyboard
+  joysticks were ignored.
+
+* sdl/video.c, sdl/video_gl.c: Rework the resolution of the segfault
+  when switching between software<->OpenGL in Windows - now it always
+  reinitialises the video subsystem. The previous solution would later cause
+  glitches when rapidly resizing the OpenGL window.
+
+* sdl/main.c, sdl/input.c: Delay processing of repeated window resize
+  requests on Windows to avoid a bug in SDL.
+
+
+2011-04-18  Tomasz Krasuski <kr0tki@poczta.onet.pl>
+* ui_basic.c: Fix division by 0 in the slider control.
+
+* configure.ac: Fix recently-introduced issue with building SDL/Windows -
+  adding SDL flags to CFLAGS must be done after all AC_CHECK_FUNCS tests but
+  before the OpenGL check.
+
+* sdl/main.c: Fix Windows/SDL crash when the console window is closed by
+  user, by servicing console-sourced signals. The crash was due to the audio
+  subsystem not being closed properly.
+
+* atari.c, sdl/main.c, sdl/video.[ch], sdl/video_gl.c, sdl/video_sw.[ch]:
+  On Windows use the DirectX backend only in fullscreen (supports VSync) and
+  Windib otherwise (DirectX backend is glitchy in windowed modes).
+
+* ui.c: Use the slider control in the "Scanlines visibility" menu option;
+  improve several option names.
+
+* cfg.c, screen.[ch]: Store the "Show speed", "Show disk activity" and
+  "Show sector counter" settings in config file.
+
+
+2011-04-13  Tomasz Krasuski <kr0tki@poczta.onet.pl>
+* atari.c: Fix bug introduced at 04-09 with atari.c not compiling when
+  HAVE_SIGNAL is not defined.
+
+* DOS/INSTALL, configure.ac, aclocal.m4: Detect presence of SDL
+  using the standard m4 script provided by SDL. New configure options are
+  available: --disable-sdltest, --with-sdl-prefix and --with-sdl-exec-prefix.
+
+* sdl/video.c, sdl/video_gl.c: Fix misuse of SDL - setting pointers
+  to OpenGL functions must be performed after each call to SDL_SetVideoMode.
+  Fix a bug with screen_texture not always being freed when needed.
+  Make OpenGL log messages slimmer and let them appear only when initialising
+  OpenGL.
+
+
+2011-04-09  Tomasz Krasuski <kr0tki@poczta.onet.pl>
+* DOC/USAGE, atari800.man, ui.c, atari_ntsc/atari_ntsc.[ch],
+  sdl/palette.[ch], sdl/video.[ch], sdl/video_gl.[ch],
+  sdl/video_sw.[ch]: Add option for setting pixel (texture) format
+  in OpenGL mode - depending on graphics hardware, different formats give
+  the best performance. the BPP parameter is now only for software modes.
+  Also fix a bug with bit depth autodetection not working (in Windows BPP
+  autotetection works only before the first call to SDL_SetVideoMode), and use
+  the SDL 8-bit palettised video mode properly.
+
+* DOC/USAGE, atari800.man, ui.c, sdl/video.[ch],
+  sdl/video_gl.[ch], sdl/video_sw.c: Add option for enabling
+  synchronization with vertical retrace - for SDL fullscreen non-OpenGL modes.
+
+* DOC/USAGE, atari800.man, ui.c, sdl/video_gl.[ch]:
+  Add option for disabling OpenGL Pixel Buffer Objects - on some hardware they
+  decrease performance.
+
+* DOC/USAGE, atari800.man, ui.c, videomode.[ch]:
+  Add option for automatic detection of host screen aspect ratio.
+
+* DOC/USAGE, atari800.man, ui.c, videomode.[ch], sdl/video.c:
+  Rename several options to more intuitive names - in command line and in GUI:
+  -horiz-offset -> -horiz-shift, -vert-offset -> -vert-shift,
+  -stretch integer -> -stretch integral,
+  -keep-aspect 1to1 -> image-aspect square-pixels,
+  -[no]-opengl -> -[no]-video-accel
+
+* ui.c: Reorder the Video Mode Settings menu, for better usability.
+  Use the slider control for video area/shift options.
+
+* sdl/video_gl.c, sdl/video_sw.c: Call SDL_SetVideoMode() and display
+  ModeInfo only when necessary.
+
+* DOC/USAGE, atari800.man, videomode.c, sdl/video.c: Other fixes
+  in help/documentation.
+
+* sdl/main.c, sdl/video.[ch], sdl/video_gl.[ch], sdl/video_sw.c:
+  Try to reinitialise the SDL video subsystem after an error before failing.
+  This allows to recover from some hardware/driver-related errors.
+
+* platform.h, videomode.c, sdl/input.c, sdl.video.c, sdl/video_sw.c:
+  Fix broken handling of SDL_VIDEORESIZE event: the call to SDL_SetVideoMode
+  must set the same window size as returned by the event. Also when window
+  is maximised, it is not allowed to un-maximise it by software. When these
+  conditions are not met, glitches occur.
+
+* videomode.c: Fix broken aspect ratio correction in windowed rotated
+  modes. Make the windowed mode the default - it's more compatible.
+
+* sdl/video_gl.c: Fix glitches when switching software<->OpenGL on
+  Windows. Avoid unnecessary scanline-drawing when scanline-percentage is 0.
+
+* sdl/input.c: Work around unwanted keyboard events when pressing
+  Alt+Tab on Windows.
+
+* atari.c, ui.c, sdl/input.c: Fix abuse of signals.
+  Atari800_Exit() calls signal-unsafe functions, so it cannot be called from
+  within a signal handler.
+
+* sdl/main.c: Close the SDL window when the monitor is used, to avoid
+  unnecessary keyboard events.
+
+* monitor.c: Fix improper handling of the prompt when readline is used.
+
+
+2011-04-04  James Wilkinson  <james@slor.net>
+* configure.ac, Makefile.in: maintain support for older compilers (DOS, BeOS)
+
+
+2011-04-03  Kostas Nakos  <knakos@gmail.com>
+* android/*: Implement new screen cropping preferences,
+             some small port fixes,
+             implement new arrow key derotation workaround for ext. keyboards
+
+
+** 2.2.0 released on 2011-04-02 at Atariada in Prostejov
+
+2011-04-02  Petr Stehlik <pstehlik@sophics.cz>
+  Commiting patches submitted by Tomasz Krasuski <tomasz.krasuski@interia.pl>
+  and Achim Haertel <aha_33@t-online.de>:
+* many files: Tomasz Krasuski's large patch that adds a new control to the GUI,
+  a slider which allows to adjust a numeric value using left and right arrows.
+  The slider is used in the colour controls (brightness, contrast etc.) and in
+  NTSC Filter settings. The colour/palette settings and NTSC Filter settings
+  are now saved in the config file. Color handling in UI got better names:
+  "Color preset", "Standard", "Deep" and "Vibrant".
+  Added the option "Filter preset" to Display settings->NTSC Filter settings.
+  This option allows to adjust several presets for the NTSC filter: 
+  Composite, S-Video, RGB and Monochrome. Previously this option was available 
+  only as a keyboard shortcut in the SDL port. Also see -ntsc-filter-preset in 
+  the command line.
+  Added a new function PreInitialise() that is intended to contain any
+  initialisation code that needs to be called before reading of the config file.
+  Fixed a few compilation errors and warnings for the MSVC build, and slightly
+  updated the build instructions. As a bonus, the colour/palette adjustments
+  are now also available in the DirectX port.
+  Simplified the code for processing Win32-specific hotkeys. Now there's less
+  platfrom-specific code scattered around. Functionality remains unchanged.
+
+* monitor.c: Achim Haertel's patch adds a minor change to the monitor:
+  BPC without argument shows now the current breakpoint location.
+
+* atari800.spec: X11 and ncurses dropped. libGL should be added
+  as a recommended library.
+
+* README.1ST, README, ChangeLog, NEWS, util/export: updated for a new release
+
+* sdl/video_sw.c: disabled an annoying debug print
+
+
+2011-04-02  Kostas Nakos  <knakos@gmail.com>
+* android/*: Implement a simple disk management menu
+* ui.c: Rearranged an #include to silence a redefinition warning
+
+
+2011-03-19  Kostas Nakos  <knakos@gmail.com>
+* android/*: Map dpad-center and ~ to Atari's escape key,
+             fix a couple of races when restarting, pausing/resuming the audio
+
+
+2011-03-06  Kostas Nakos  <knakos@gmail.com>
+* atari.[ch], android/*: Implemented autoframeskip functionality
+* android/*: Added .com & .exe to supported extensions,
+             bugfix crash when sound disabled,
+			 added new joystick grace area preference 
+
+
+2011-02-13  Kostas Nakos  <knakos@gmail.com>
+* log.c, atari.c, screen.c, configure.ac, Makefile.in, android/*: Imported the
+  android port
+* antic.c: Fix dirty screen updates with WORDS_UNALIGNED_OK
+
+
+2010-12-09  James Wilkinson  <james@slor.net>
+* af80.c: prevent extra carriage return in config file setting.
+
+
+2010-11-25  Petr Stehlik <pstehlik@sophics.cz>
+* cartridge.c, cassette.c, cfg.c, devices.c, monitor.c, pbi_scsi.c, sio.c,
+  sound_oss.c, statesav.c, ui.c: GCC warnings about unused results fixed
+  (mostly return values of fread() and similar libc functions).
+
+* atari.c: fixed benchmarking with SDL (DONT_DISPLAY)
+
+
+2010-11-24  Petr Stehlik <pstehlik@sophics.cz>
+* many files: Tomasz Krasuski's large patch that implements major SDL video
+  output improvements - see "Display settings" -> "Video mode settings".
+
+* util.c: fixed Util_stricmp() implementation (was broken for empty strings)
+
+
+2010-11-23  Petr Stehlik <pstehlik@sophics.cz>
+* configure.ac: Matthias Reichl's patches for cross-compilation of the Windows
+  version under Debian. Use as follows:
+    PATH="/opt/mingw/SDL-1.2.14/bin:${PATH}" \
+    CPPFLAGS="-I/opt/mingw/libz-1.2.5/include" \
+    LDFLAGS="-L/opt/mingw/libz-1.2.5/lib" \
+    ./configure --target=sdl --host=i586-mingw32msvc
+
+* ui.c: Tomasz Krasuski's patch for hiding proper Display entries in PAL mode
+
+* configure.ac: Tomasz Krasuski's patch for termcap being available in other
+  libraries (readline, ncurses)
+
+
+2010-10-05  James Wilkinson  <james@slor.net>
+* ui_basic.c: change #ifdef to DIRECTX for DoEvents() call (thanks Matthias)
+
+
+2010-05-24  Petr Stehlik <pstehlik@sophics.cz>
+* atari.c, cartridge.c, configure.ac, Makefile.in: make IDE emulation optional
+  though enabled by default (use --disable-ide configure option if it doesn't
+  compile on your platform)
+
+* colours_ntsc.c: fixed missing default return
+
+* atari.h: version increased to 2.2.0rc1
+
+* atari800.spec, README.1ST, DOC/NEWS: updated for upcoming release
+
+
+2010-05-17  Petr Stehlik <pstehlik@sophics.cz>
+* colours.c: write file in binary mode (thanks Tomasz Krasuski for the patch)
+* ide.c: read file in binary mode
+* data folder added
+* icon files moved from util to data folder
+* atari2.svg and atari2.png added to data folder (credits to John Oyler,
+  thanks to Brian Watson)
+
+
+2010-04-30  James Wilkinson  <james@slor.net>
+* akey.h, atari.c, colours.[ch], colours_ntsc.[ch], colours_pal.c, configure.ac,
+  ui.[ch], ui_basic.[ch], win32/atari_win32.[ch], win32/main.cpp, win32/main.h,
+  win32/main_menu.h, win32/render_direct3d.cpp, win32/render_direct3d.h,
+  win32/render_gdi.c, win32/render_gdiplus.cpp, win32/screen_win32.[ch],
+  DOC/directx.txt:
+  Committed DirectX display enhancements by David Dahlstrom <ddahlstrom@charter.net>
+
+
+2010-04-29  James Wilkinson  <james@slor.net>
+* Makefile.in: switched to patsubst long form in win32 rule because compound short form did not work as expected with at least some compilers
+
+* win32/atari_win32.h: corrected prototype to remove compiler warning
+
+
+2010-04-28  James Wilkinson  <james@slor.net>
+* ide.[ch], ide_internal.h: build fixes for Windows/BeOS/DOS fseek/ftell and compiler complaints
+
+
+2010-04-27  Ivo van Poorten  <ivop@euronet.nl>
+Implementation of both 8- and 16-bit IDE. If the MSB's are ignored, 
+the interface is compatible with MyIDE (tested mainly with MYIDE44E.ROM).
+Some advanced features, like SMART and DVD/CDROM support, are not there yet, 
+but this is more than enough to write and test low level IDE Microdrive/CF 
+code. For harddisks it might be beneficial to emulate a couple of busy cycles.
+
+
+2010-04-26  James Wilkinson  <james@slor.net>
+* ui.c: corrected H: error caused by turbo patch
+
+* atari.c, colours.c: correct blank screen on platforms that do not support palette update
+
+* atari_sdl.c, sound_oss.c: improve turbo mode for SDL build with synchronized sound and OSS sound
+
+
+2010-04-20  James Wilkinson  <james@slor.net>
+* atari.c, monitor.[ch] DOC/trainer.txt: committed trainer searcher by Achim Haertel.
+
+* atari.[ch], ui.c: committed savestate sound patch by Tomasz Krasuski.
+
+
+2010-04-19  James Wilkinson  <james@slor.net>
+* akey.h, atari.[ch], atari_sdl.c, atari_x11.c, ui.c, dos/atari_vga.c, win32/atari_win32.c:
+  Added support for F12 turbo mode.
+
+* win32/joystick.c: do not stop joystick enumeration on dual stick settings failure
+
+* emuos.h, emuos.lis: update for 2010
+
+* win32/atari_win32.h, win32/keyboard.c: DirectInput cleanup
+
+
+2010-04-16  James Wilkinson  <james@slor.net>
+* win32/atari_win32.c: correct keystroke auto-repeat
+
+
+2010-03-23  Perry McFarlane  <perry_m@fastmail.fm>
+* DOC/USAGE, atari.c, configure.ac, mzpokeysnd.c, pbi.c, pbi_xld.[ch],
+pokey.c, pokeysnd.c, votrax.c, new files: voicebox.[ch], votraxsnd.[ch]:
+emulate the Alien Group Voice Box I and II
+
+
+2010-01-29  Piotr Fusik  <fox@scene.pl>
+* ui.h, ui_basic.c: changed source code from CRLF to LF
+
+
+2010-01-27  Perry McFarlane  <perry_m@fastmail.fm>
+* af80.[ch], atari.c: fix coldstart for AF80.
+
+
+2010-01-21  James Wilkinson  <james@slor.net>
+* win32/render_direct3d.cpp: disable extended functions if supporting runtime not installed.
+
+* configure.ac: remove dependency on libd3dx9.
+
+
+2010-01-19  James Wilkinson  <james@slor.net>
+* pbi_proto80.c: prevent extra carriage return in config file setting.
+
+* win32/sound.c: don't try to reinit sound (causes crash) if -nosound was used.
+
+
+2010-01-18  James Wilkinson  <james@slor.net>
+* ui.[ch], win32/atari_win32.c, win32/render_direct3d.*, win32/render_gdi.c, win32/render_gdiplus.cpp, win32/screen_win32.[ch]:
+  Committed updated DirectX display enhancements from David Dahlstrom.
+
+* pbi_bb.c, pbi_mio.c, pbi_xld.c: prevent extra carriage returns in config file rom settings.
+
+
+2010-01-17  James Wilkinson  <james@slor.net>
+* configure.ac: define SUPPORTS_PLATFORM_CONFIGSAVE and SUPPORTS_PLATFORM_CONFIGURE for DirectX build.
+
+
+2010-01-14  Piotr Fusik  <fox@scene.pl>
+* win32/msc/config.h: #define WIN32 -> HAVE_WINDOWS_H
+
+* win32/render_gdi.obj: was incidentally committed
+
+
+2010-01-13  James Wilkinson  <james@slor.net>
+* configure.ac: removed -Wredundant-decls for BeOS
+
+* configure.ac, ui.c, win32/render_*.*, win32/screen_win32.[ch], win32/main.*:
+  Changes to support new DirectX code under gcc.
+
+* configure.ac, atari.[ch], atari_sdl.c, compfile.c, devices.c, platform.h, pokey.c, rdevice.c, rtime.c, ui.[ch], ui_basic.c, util.[ch], wince/port/missing.h:
+  Changes from WIN32 to DIRECTX and HAVE_WINDOWS_H definitions.
+
+
+2010-01-12  James Wilkinson  <james@slor.net>
+* atari_sdl.c:
+  Committed patch by Tomaz Krasuski to fix DirectX default for Win32 SDL driver.
+  Also made change to correct garbage column in some scaling modes.
+
+
+2010-01-10  Piotr Fusik  <fox@scene.pl>
+* util/colormix.asx, util/colormix.xex: program for testing PAL delay line;
+  use arrow keys and space
+
+
+2010-01-07  Piotr Fusik  <fox@scene.pl>
+* ui.c: wrapped UpdateColourControls into ifdef
+
+* colours.c, colours_ntsc.c, colours_pal.c, sio.c: killed MSVC warnings
+
+* win32/msc/config.h, win32/msc/Makefile: updated (colour_ntsc etc.)
+
+  Commiting patch submitted by David Dahlstrom <ddahlstrom@charter.net>
+* platform.h, ui.c, ui.h, ui_basic.c, win32/atari_win32.[ch],
+  win32/joystick.[ch], win32/main.[ch], win32/main.cpp, win32/render_*.*,
+  win32/screen_win32.[ch]: display and controller enhancements
+
+
+2009-12-28  Piotr Fusik  <fox@scene.pl>
+* configure.ac, devices.c: MKDIR_TAKES_ONE_ARG for MinGW
+
+* colours_ntsc.h: M_PI for MinGW
+
+  Commiting patch submitted by Tomasz Krasuski <tomasz.krasuski@interia.pl>
+* DOC/USAGE, atari.c, atari800.man, atari_sdl.c, colours.[ch],
+  colours_external.[ch], colours_ntsc.[ch], colours_pal.[ch] filter_ntsc.[ch],
+  configure.ac, ui.c, atari_ntsc/atari_ntsc.[ch],
+  atari_ntsc/atari_ntsc_config.h, atari_ntsc/atari_ntsc_impl.h:
+  1. Removed Atari800-specific code from the atari_ntsc library, and placed it
+  in a new module, FILTER_NTSC. This new module serves as an interface between
+  Atari800 and Blargg's library.
+  2. Removed the palette generation code from atari_ntsc and placed it in a new
+  module, COLOURS_NTSC. Palette generation is from now on used both in
+  "standard" mode and in NTSC-filtered mode. Old default palettes have been
+  removed from the COLOURS module.
+  3. Introduced a new module, COLOURS_PAL, that includes improved routines for
+  PAL palette generation. PAL Ataris produce colours in a similar way to NTSC
+  ones; the only difference lies in phases of hues in YIQ (or YUV) colourspace.
+  Unfortunately, while differences between hue phases are constant in NTSC,
+  it's not the case in PAL. I have failed in trying to develop a formula that
+  lies behind PAL hue phases, so I gave up on that; instead I measured PAL hue
+  phases based on several screenshots, and stuffed them in the colour_angles
+  table (see colours_pal.c->GeneratePalette()). The result looks very plausible
+  and accurately represents colours of my 65XE, at least.
+  4. Controls for contrast, brightness, saturation, gamma, hue and colordelay
+  now apply to both NTSC and PAL palettes (hue and colordelay only to NTSC),
+  regardless of NTSC filter. Palette generation is now on by default, therefore
+  parameters -genpaln/p are not needed anymore.
+  5. Support for externally-loaded palettes has moved to a new module,
+  COLOURS_EXTERNAL. Brightness, contrast, saturation and gamma can now be
+  applied also to external palettes (-paletten-adjust and -palettep-adjust
+  parameters).
+  6. NTSC filter also supports external palettes.
+  7. Added new and changed a few of existing colour-related command-line
+  parameters.
+  8. Keyboard shortcuts in SDL have been shuffled a bit, so that controls
+  usable only for NTSC filter lie next to each other.
+  9. Display Settings menu has been expanded - now it includes controls for
+  adjusting all colour settings (including NTSC filter settings), and also
+  loading and unloading of external palettes.
+  10. A new functionality has been added - saving the current colours (with
+  adjustments) to a palette file. See Display Settings->Save current palette.
+
+
+2009-12-13  Perry McFarlane  <perry_m@fastmail.fm>
+* /DOC/USAGE, atari_sdl.c, platform.h, ui.c, xep80.c:
+  All 80 column modes work like XEP80 with alt-shift-X to switch screens.
+  Rename PLATFORM_SwitchXep80() to PLATFORM_Switch80(), PLATFORM_xep80 to
+  PLATFORM_show_80.
+
+
+2009-12-07  Perry McFarlane  <perry_m@fastmail.fm>
+* USAGE, af80.[ch], atari.c, atari_sdl.c, cartridge.c, cfg.c, configure.ac,
+cpu.[ch], monitor.c, pbi.c, TODO:
+  Austin Franklin 80 Column card
+  Execution history now stores opcode data.
+  update TODO
+
+
+2009-11-21  Perry McFarlane  <perry_m@fastmail.fm>
+* sio.c: replace random with rand for portability
+  Commiting patch submitted by Tomasz Krasuski <tomasz.krasuski@interia.pl>
+* DOC/USAGE, Makefile.in, atari.c, atari800.man, atari_ntsc.[ch] (removed),
+  atari_ntsc/atari_ntsc.[ch], atari_ntsc/atari_ntsc.config.h,
+  atari_ntsc/atari_ntsc_impl.h, atari_sdl.c, configure.ac:
+  Update to atari_ntsc based on Blargg's nes_ntsc 0.2.2, correct colour phases,
+  other fixes.
+
+
+2009-10-08  Piotr Fusik  <fox@scene.pl>
+  Commiting patch submitted by Tomasz Krasuski <tomasz.krasuski@interia.pl>
+* atari_sdl.c: fixed missing leftmost column in 16bpp and 32bpp modes
+
+
+2009-09-29  Piotr Fusik  <fox@scene.pl>
+* ui.c: sf.net bug #2868897 "Build fails on platforms without sound"
+
+
+2009-09-20  Perry McFarlane  <perry_m@fastmail.fm>
+* atari_sdl.c: fix support of -nosound with SYNCHRONIZED_SOUND
+* Makefile.in: use more memory for javac for javanvm version
+* input.c: remove unused result variable from call to mouse_step() to
+suppress warning.
+* javanvm/atari800.java: fix an issue with the screen sometimes not showing.
+
+
+2009-09-18  Perry McFarlane  <perry_m@fastmail.fm>
+* DOC/BUGS, atari.[ch], atari_sdl.c, cfg.c, configure.ac, mzpokeysnd.[ch],
+pbi_xld.c, platform.h, ui.c USAGE : added synchronized sound for the SDL
+version.
+Sound can now be generated in sync with the rest of the emulation and not in a
+separate thread.  VOL_ONLY_SOUND is no longer needed.  GTIA and POKEY
+digisounds now work properly.  The old pokeysnd.c will not work with
+synchronized sound, only mzpokeysnd will be supported. 16 bit sound is now
+the default for SDL.  Use -audio8 for 8 bit SDL sound.
+Improved mzpokeysnd speed somewhat.
+
+
+2009-08-12  Piotr Fusik  <fox@scene.pl>
+  Commiting a modified patch from Magnus Lind <magli143@gmail.com>
+* input.c: fix for trak-ball (cx22) emulation: bits 0 and 3 keep
+  the last direction
+
+
+2009-07-18  Petr Stehlik <pstehlik@sophics.cz>
+* configure.ac: patch from Patrice Mandin for gemlib autodetection
+
+
+2009-06-30  Piotr Fusik  <fox@scene.pl>
+  Commiting patch submitted by Tomasz Krasuski <tomasz.krasuski@interia.pl>
+* atari_sdl.c, compfile.c: changed "#ifdef linux" to "#ifdef __linux__"
+
+
+2009-04-18  Perry McFarlane  <perry_m@fastmail.fm>
+* sio.c: sio fix broke BINLOAD
+
+
+2009-04-17  Perry McFarlane  <perry_m@fastmail.fm>
+* sio.c: fix sio for AMS music player
+
+
+2009-03-30  Perry McFarlane  <perry_m@fastmail.fm>
+* gtia.c: compile without NEW_CYCLE_EXACT
+
+
+2009-03-30  Petr Stehlik <pstehlik@sophics.cz>
+* atari800.spec: png library added to dependencies.
+
+
+2009-03-27  Piotr Fusik  <fox@scene.pl>
+* win32/atari_win32.c: missing return value in PLATFORM_Initialise
+* win32/.cvsignore: atari.res
+
+
+** 2.1.0 released on 2009-03-27
+
+2009-03-27  Petr Stehlik <pstehlik@sophics.cz>
+* atari800.spec: added dependencies to SDL, ncurses, zlib and readline
+* debian/control: added dependency to libreadline5-dev
+* debian/changelog, debian/atari800.cfg: updated for release
+* emuos.{h,lis}: (c) 2005 -> 2009
+* DOC/FAQ: updated for release (SDL keyboard joysticks are configurable now)
+* DOC/NEWS: yet another update (thanks Piotr for help with final editing)
+
+
+2009-03-27  Piotr Fusik  <fox@scene.pl>
+* DOC/TODO: updated
+
+
+2009-03-26  Petr Stehlik <pstehlik@sophics.cz>
+* DOC/NEWS, DOC/CREDITS, atari800.man, atari.spec, README: release update
+* configure.ac, atari.h, util/export: version increased
+
+
+2009-03-23  Petr Stehlik <pstehlik@sophics.cz>
+* DOC/NEWS, DOC/CREDITS: updated for upcoming release
+* configure.ac: readline support in monitor enabled by default,
+  simple Autoconf readline check added.
+
+
+2009-03-22  Perry McFarlane  <perry_m@fastmail.fm>
+* atari_sdl.c: fix warning
+* atari.c: fix basic/curses version compile error
+* DOC/TODO: update
+
+
+2009-03-20  Petr Stehlik <pstehlik@sophics.cz>
+  Commiting patch submitted by Tomasz Krasuski <kr0tki@poczta.onet.pl>
+* too_many_files: check for existence of required parameter of some command
+  line options before using it. Let all *_Initialise() functions return
+  status (FALSE in case something failed).
+
+
+2009-03-17  Piotr Fusik  <fox@scene.pl>
+* colours.c, win32/sound.c: killed MSVC 2008 warnings
+
+
+2009-03-16  Perry McFarlane  <perry_m@fastmail.fm>
+* antic.c: fix for Ilusia demo
+
+
+2009-03-01  Perry McFarlane  <perry_m@fastmail.fm>
+* DOC/USAGE, input.c: specify CX85 port
+* atari_sdl.c: minor fix for CX85
+
+
+2009-02-28  Perry McFarlane  <perry_m@fastmail.fm>
+* /DOC/USAGE akey.h atari_sdl.c javanvm/atari_javanvm.c input.[ch]: Emulate
+  CX85 numeric keypad
+
+
+2009-02-25  Perry McFarlane  <perry_m@fastmail.fm>
+  Commiting patch submitted by Tomasz <kr0tki@poczta.onet.pl> with my changes
+* atari.c atari_sdl.c atari_ntsc.[ch] configure.ac platform.h ui.c: NTSC
+Filter option in the UI.
+
+
+2009-02-05  Perry McFarlane  <perry_m@fastmail.fm>
+  Commiting patch submitted by Tomasz Krasuski <kr0tki@poczta.onet.pl>
+* atari_sdl.c: cleaned up display modes.
+
+
+2009-01-11  Petr Stehlik <pstehlik@sophics.cz>
+  Commiting patch submitted by Tomasz Krasuski <kr0tki@poczta.onet.pl>
+* atari_sdl.c: -audio16 fixed
+* pokeysnd.[ch]: Sound recording must stop when POKEY is reinitialised
+* sndsave.c: Chunks in WAV format must be word-aligned,
+             16-bit sound recording fixed.
+
+
+2008-12-27  Petr Stehlik <pstehlik@sophics.cz>
+  Commiting patch submitted by Tomasz Krasuski <kr0tki@poczta.onet.pl>
+* atari.c: initialize color palette after loading saved state
+* cfg.c, mzpokeysnd.c, pokeysnd.c, ui.c: serio_sound* -> POKEYSND_serio_sound*
+
+
+2008-11-03  Perry McFarlane  <perry_m@fastmail.fm>
+* configure.ac: fix syntax error
+
+
+2008-10-30  Perry McFarlane  <perry_m@fastmail.fm>
+* memory.c: 5200 GTIA c000-cfff and POKEY e800-efff mirrors.
+* configure.ac: minor fix for Cygwin.
+
+
+2008-10-29  Perry McFarlane  <perry_m@fastmail.fm>
+* afile.[ch], atari.c, sio.c:  Support .pro images
+* ui.c: replace ^R in source with \022
+* pbi_bb.c, pbi_mio.c: correct Util_filenamenotset error.
+* mzpokeysnd.c, pokey.c, pokey.h: rename SKCTLS -> SKCTL
+* monitor.c: 5200 equates.
+* DOC/BUGS: add Extract demo.
+* Makefile.in: use NestedVM javasource and UnixRuntime by default
+* monitor.c: SKCTL and SKSTAT in pokey state output.
+
+
+2008-10-13  Matthias Reichl  <hias@horus.com>
+* pokey.c: fixed the ALLPOT register - it didn't work
+  and there was an access outside array bounds
+
+
+2008-09-21  Petr Stehlik  <pstehlik@sophics.cz>
+* ui.c: visual configuration of keyboard joysticks layout, at long last!
+  Currently for the SDL target only. Also default joystick mapping
+  changed to num pad 4,8,6,5 + right ctrl and A,W,D,S + left ctrl keys.
+  Feel free to set up your own mapping and then save the configuration.
+
+* atari_sdl.c: removed keys for combined joystick directions (left+up, etc.)
+
+* util.[ch]: safe_strncpy() added
+
+
+2008-09-21  B Watson  <yalhcru@gmail.com>
+* input.[ch]: "-directmouse" added (directly converting the mouse's absolute
+  X/Y position to the POKEY pot. Used only for "-mouse pad", "-mouse koala",
+  or "-mouse touch". The "-mousespeed" option does nothing when "-directmouse"
+  is enabled.
+
+* atari_sdl.c: mouse support ("-mouse xxx", "-mousespeed N") added, including
+  the direct mouse support. Also adds a new "-grabmouse" command line option
+  and a new keystroke, alt-M, to grab/ungrab the mouse.
+
+* atari_x11.c: direct mouse support added
+
+
+2008-09-17  Piotr Fusik  <fox@scene.pl>
+* win32/msc/Makefile: added new source files
+
+
+2008-09-17  B Watson  <yalhcru@gmail.com>
+* configure.ac, monitor.c: --enable-readline option for the configure script
+  - the monitor supports arrow keys (including up-arrow for command history),
+  home/end, etc. using the "readline" library
+
+
+2008-08-28  Perry McFarlane  <perry_m@fastmail.fm>
+* javanvm/atari800.java: gain applet focus
+* sio.h: remove Id tag
+* xep80.c: XEP80_BlitGraphChar(int x, int y), add int before x and y
+* pokeysnd.[ch], mzpokeysnd.c: SAMPBUF_MAX -> POKEYSND_SAMPBUF_MAX
+* mzpokeysnd.c, pokeymix.inc: changed NONLINEAR_MIXING to use a better
+  method, pokeymix.inc is no longer needed.
+
+
+2008-08-22  Petr Stehlik  <pstehlik@sophics.cz>
+* atari_svgalib.c, configure.ac, Makefile.in, DOC/*: SVGAlib target dropped
+  definitely. SVGAlib is long time dead and running programs setuid 'root'
+  is so dangerous. Use/improve the SDL target instead!
+
+
+2008-07-12  Perry McFarlane  <perry_m@fastmail.fm>
+* most files: finished renaming globals.  New files: akey.h, (AKEY_*),
+esc.[ch](patches), afile.[ch](file loading), cfg.[ch] (configuration),
+ui_basic.h
+
+
+2008-07-03  Perry McFarlane  <perry_m@fastmail.fm>
+* remez.[ch], mzpokeysnd.c: rename Remez_, remez -> Remez_CreateFilter.
+* devices.[ch], atari.c, binload.c, rdevice.c, ui.c: rename Devices_, Device_
+-> Devices.
+* cpu.[ch], antic.c, atari.c, binload.c, cassette.c, devices.c,
+input.c, monitor.c, pbi.c, pbi_bb.c, pbi_mio.c, pokey.c, rdevice.c, sio.c,
+ui.c: rename CPU_.
+* sio.[ch], atari.c, atari_x11.c, binload.c, pbi_xld.c, pia.c, pokey.c,
+screen.c, ui.c: rename SIO_
+
+
+2008-07-02  Perry McFarlane  <perry_m@fastmail.fm>
+* javanvm/atari_javanvm.c: compile without SOUND
+* atari_sdl.c: name changes
+* sndsave.[ch], atari.c, pokeysnd.c, ui.c: rename externals with SndSave_
+* statesav.[ch], antic.c, atari.c, cartridge.c, cpu.c, dc/atari_dc.c, gtia.c,
+memory.c, pbi.c, pbi_bb.c, pbi_mio.c, pbi_xld.c, pia.c, pokey.c, sio.c, ui.c,
+xep80.c: rename externals with StateSav_
+* log.[ch], antic.c, atari.c, atari_basic.c, atari_curses.c, atari_falcon.c,
+atari_ntsc.c, atari_ps2.c, atari_sdl.c, atari_svgalib.c, atari_x11.c,
+binload.c, cassette.c, colours.c, devices.c, dos/atari_vga.c, dos/dos_sb.c,
+dos/sound_dos.c, input.c, javanvm/atari_javanvm.c, memory.c, pbi_bb.c,
+pbi_mio.c, pbi_xld.c, rdevice.c, remez.c, rtime.c, screen.c, sio.c,
+sound_oss.c, statesav.c, ui_basic.c, win32/atari_win32.c, win32/joystick.c,
+win32/screen_win32.c, win32/sound.c, wince/port/atari_wince.c,
+wince/port/sound.c, xep80.c: rename externals with Log_, Aprint -> Log_print
+Aflushlog -> Log_flushlog.
+* compfile.[ch], sio.c, ui.c rename CompressedFile_ to CompFile_ so that it
+matches the filename.
+* xep80_fonts.[ch] xep80.c: rename externals with XEP80_Fonts_.
+* votrax.[ch], pbi_xld.c: rename externals with Votrax_, INT16 -> SWORD.
+* binload.[ch], atari.c, cartridge.c, devices.c, sio.c: rename externals with
+BINLOAD_
+* colours.[ch], atari.[ch], atari_falcon.c, atari_ps2.c, atari_sdl.c,
+atari_svgalib.c, atari_x11.c, dc/atari_dc.c, dos/atari_vga.c, atari_javanvm.c,
+screen.c, win32/screen_win32.c, wince/port/screen_wince.cpp: rename externals
+with Colours_, Palette -> Colours_ so that it matches the filename.
+* screen.[ch], antic.c, atari.[ch], atari_falcon.c, atari_ps2.c, atari_sdl.c,
+atari_x11.c, dc/atari_dc.c, dos/atari_vga.c, input.c, ui.c,
+ui_basic.c, win32/atari_win32.c, wince/port/atari_wince.c, wince/port/main.c,
+wince/port/screen_wince.cpp: rename externals to Screen_, atari_screen ->
+Screen_atari, etc. move entire_screen_dirty from antic.c to screen.c, rename
+Screen_EntireDirty.
+* xep80.[ch]: rename ATARI_EOL -> XEP80_ATARI_EOL
+* rtime.[ch], cartridge.c, ui.c: rename rtime_enabled -> RTIME_enabled
+* cassette.[ch], atari.c, gtia.c, input.c, sio.c, ui.c, rename CASSETTE_, make
+some vars static.
+* rdevice.[ch], devices.c, atari.c: rename RDevice_
+* monitor.[ch], atari_basic.c, atari_curses.c, atari_falcon.c, atari_ps2.c,
+atari_sdl.c, atari_svgalib.c, atari_x11.c, cpu.c, dos/atari_vga.c,
+win32/atari_win32.c: rename Monitor_
+
+
+2008-06-30  Perry McFarlane  <perry_m@fastmail.fm>
+* atari.c, atari_sdl.c, configure.ac, javanvm/atari800.java,
+javanvm/atari_javanvm.c, pokeysnd.c, sound.h, ui.c, win32/sound.c:
+add support for stereo, new sound.h function Sound_Reint on some platforms,
+fixes to sdl sound, minor fixes.
+* win32/sound.c: fix STEREO_SOUND undefined
+
+
+2008-06-29  Perry McFarlane  <perry_m@fastmail.fm>
+* configure.ac: -source 1.4 to suppress javac warnings
+
+
+2008-06-28  Perry McFarlane  <perry_m@fastmail.fm>
+* memory.h: suppress PAGED_MEM warning
+
+
+2008-06-27  Perry McFarlane  <perry_m@fastmail.fm>
+* atari.c: add -basic_rom none
+* Makefile.in fix javanvm variables
+* util.[ch] cassette.c, configure.ac: Util_strncpy to fix javanvm bug
+* INSTALL, UnixRuntime.patch, atari800.java, atari_javanvm.c: Java applet
+
+
+2008-06-24  Perry McFarlane  <perry_m@fastmail.fm>
+* pbi.[ch], pbi_xld.[ch], pbi_bb.[ch], pbi_mio.[ch], statesav.c: state saving
+for MIO, Black Box, XLD.
+
+
+2008-06-19  Perry McFarlane  <perry_m@fastmail.fm>
+* ui.c, xep80.c: improve XEP80 state saving
+
+
+2008-06-18  Perry McFarlane  <perry_m@fastmail.fm>
+* DOC/CREDITS, DOC/TODO, USAGE, atari.c, atari_sdl.c, configure.ac, pia.c,
+platform.h, statesav.c, ui.c, xep80.[ch], xep80_fonts.[ch]:
+Added XEP80 emulation by Mark Grebe to the SDL version, from Atari800MacX
+
+
+2008-06-18  Christian Groessler  <chris@groessler.org>
+* dc/atari_dc.c (Atari_Keyboard): recognize TAB key.
+* atari_x11.c (Atari_DisplayScreen): add missing XSync call in not-SHM
+part.
+* ui.c, ui.h: add additional parameter to the fMessage function,
+indicating whether to wait for a key press. Display a "please wait"
+message in SaveState and LoadState.
+* ui_basic.c: adapt to fMessage change. Change BasicUIMessage to use
+the new parameter and clear status line before writing the new
+message.
+
+
+2008-06-15  Christian Groessler  <chris@groessler.org>
+* rdevice.c, dc/Makefile.dc, dc/config.h, dc/atari_dc.c: add serial R:
+support for Dreamcast
+
+
+2008-06-14  Perry McFarlane  <perry_m@fastmail.fm>
+* input.c: 5200 bit 5 toggle fix (Star Trek)
+* atari_sdl.c, input.c: fix shift+control keys
+* atari_sdl.c, dos/atari_vga.c, javanvm/atari_javanvm.c,
+  win32/atari_win32.c: further shift+control fixes
+* USAGE: updated keyboard
+* statesav.c: fix gzFile
+
+
+2008-06-13  Perry McFarlane  <perry_m@fastmail.fm>
+* rdevice.c, configure.ac: fix for win32 R: device
+* pokey.c: IRQEN fix
+* pokeysnd.c: add #ifdef PBI_XLD
+
+
+2008-06-12  Christian Groessler  <chris@groessler.org>
+* rdevice.c, configure.ac: R: device now not longer inherently supports
+network (with serial as an additional option). Now serial-only,
+network-only, or both can be selected.
+
+
+2008-05-31  Piotr Fusik  <fox@scene.pl>
+* atari.c, pokey.c: made the BASIC version compilable
+
+
+2008-05-29  Perry McFarlane  <perry_m@fastmail.fm>
+* atari_sdl.c, cassette.c, input.c, memory.c, pbi_bb.c, pbi_proto80.c,
+pbi_xld.c, pokeysnd.c, sio.c, statesav.c, ui.h, util.[ch], votrax.c:
+made compilable with g++. Fixed some bugs, and a bugfix for pbi_xld.c,
+other minor fixes.
+
+
+2008-05-28  Perry McFarlane  <perry_m@fastmail.fm>
+* DOC/USAGE, atari_sdl.c, configure.ac, pbi.c, pbi_proto80.c, pbi_proto80.h,
+pbi_xld.c: added emulation of a prototype 80 column card for the Atari 1090
+expansion box (SDL version).  Also fixed a problem with LoadImage in pbi_xld.c
+* DOC/INSTALL: Improved documentation a bit, suggested use of SDL.
+* input.[ch], pokey.c: record random_scanline_counter for event recording.
+
+
+2008-05-27  Perry McFarlane  <perry_m@fastmail.fm>
+* antic.c, atari_ntsc.h, cassette.c, gtia.c, joycfg.c, monitor.c,
+mzpokeysnd.c, pbi.c, pokeysnd.c, screen.c, sio.c, votrax.c:
+Some spelling in comments corrected.
+* mzpokeysnd.c: fix warnings
+
+
+2008-05-26  Perry McFarlane  <perry_m@fastmail.fm>
+* antic.[ch], atari.[ch], atari_sdl.c, cartridge.h, cassette.c, cpu.h,
+gtia.[ch], javanvm/atari_javanvm.c, mzpokeysnd.c, pbi_bb.c, pbi_mio.c,
+pbi_scsi.c, pbi_xld.[ch], pia.h, platform.h, pokey.h, rtime.[ch], sio.h,
+statesav.c, ui.c, ui_basic.c, util.[ch], votrax.[ch]:
+  I compiled with:
+  CC = gcc -ansi -pedantic -Wall -Waggregate-return -Wmissing-declarations
+  -Wmissing-prototypes -Wredundant-decls -Wstrict-prototypes -Winline
+  and I found missing headers and lack of static in many places.
+  Black Box and MIO will now continue with SCSI disabled if the disk image
+  is not found.
+
+* Makefile.in, configure.ac, cpu.c, atari_vga.c, sound_dos.c, vga_gfx.c,
+javanvm/atari_javanvm.c, rdevice.c, win32/atari_win32.c, win32/keyboard.h,
+win32/main.h, win32/screen_win32.c:
+  Made windx, sdl, and javanvm compile with -ansi -pedantic. Fixed more
+  warnings. Made improved gcc warnings the default for windx, sdl, javanvm
+  and dosvga.
+
+* rdevice.c: removed // comments and warnings.
+
+* cpu.c: gcc will use goto and use of __extension__ will avoid -pedantic
+  warnings.
+
+
+2008-05-25  Perry McFarlane  <perry_m@fastmail.fm>
+* atari_sdl.c, cpu.c, pbi_mio.c, pbi_xld.c, win32/atari_win32.c,
+win32/screen_win32.c: some gcc -ansi -pedantic fixes
+
+
+2008-05-25  Piotr Fusik  <fox@scene.pl>
+* win32/msc/Makefile: added votrax and pbi_xld
+
+* sio.c, pbi_xld.c: made compilable with VC2005
+
+
+2008-05-25  Perry McFarlane  <perry_m@fastmail.fm>
+* votrax.[ch] vtxsmpls.inc pbi.[ch] pbi_xld.[ch] pbi_mio.[ch] pbi_bb.[ch]
+pbi_scsi.[ch] sio.[ch] atari.c configure.ac atari_sdl.c
+dos/atari_vga.c javanvm/atari_javanvm.c win32/atari_win32.c memory.c
+pokeysnd.c DOC/CREDITS DOC/README DOC/TODO DOC/USAGE:
+Added emulation of the 1400XL, 1450XLD, MIO and Black Box.
+
+
+2008-05-24  Achim Haertel  <achim.haertel@e-technik.tu-chemnitz.de>
+* cassette.c: implemented loading with variable baud rate
+
+
+2008-05-22  Petr Stehlik  <pstehlik@sophics.cz>
+* cpu_m68k.asm: made linkable (missing cim_encountered and rts_handler).
+  Surprisingly it is working (ATARI BASIC READY) eventhough it is 5 years
+  outdated and needs many changes to be in sync with cpu.c again.
+
+* cpu_m68k.S: made compilable and linkable. It even sort of works but
+  fails before reaching the ATARI BASIC READY prompt :-( The conversion
+  is still not correct but debugging it is hard...
+
+
+2008-05-21  Petr Stehlik  <pstehlik@sophics.cz>
+* atari_x11.c: removed "-fps" support, use "-showspeed" instead
+* USAGE, atari800.man: updated wrt. removed "-fps"
+* cpu_m68k.S: added fresh conversion of 5 years outdated cpu_m68k.asm
+* configure.ac: default LDFLAGS will be without the "-s" (strip binary)
+  since package maintainers don't like autostriping of the debug symbols.
+
+
+2008-05-20  Petr Stehlik  <pstehlik@sophics.cz>
+* .asm->.S: Devpac syntax of asm files converted to gcc one
+* gst2gcc: removed, no longer needed
+* Makefike.in: updated for compiling/assembling the .S files
+* atari_falcon.c: corrected include path to "falcon.h"
+* atari.c: corrected C++-ism (my old gcc 2.91 didn't like it)
+* DOC/INSTALL.falcon updated (an optimized rebuild script added)
+
+
+2008-05-15  Perry McFarlane  <perry_m@fastmail.fm>
+* rdevice.[ch] atari.c configure.ac: Windows support for R: device.
+* USAGE: added record/playback
+
+
+2008-05-14  Perry McFarlane  <perry_m@fastmail.fm>
+* input.c: stdlib for exit()
+
+
+2008-05-13  Perry McFarlane  <perry_m@fastmail.fm>
+* configure.ac: nonlinear mixing minor fix
+* input.[ch], configure.ac, pokey.c, atari.c, TODO: event recording
+
+
+2008-05-11  Perry McFarlane  <perry_m@fastmail.fm>
+* dos/atari_vga.c, configure.ac: Atari_PaletteUpdate
+* win32/sound.c, pokeysnd.h SND_STEREO removed (obsolete)
+
+
+2008-05-10  Perry McFarlane  <perry_m@fastmail.fm>
+* mzpokeysnd.c, pokeymix.inc: use shorts for smaller file size with table
+
+
+2008-05-09  Perry McFarlane  <perry_m@fastmail.fm>
+* mzpokeysnd.c, pokey.c: fixed two-tone
+
+
+2008-05-08  Petr Stehlik  <pstehlik@sophics.cz>
+* atari.c: get rid of #ifdef USE_CLOCK and also #ifdef DONT_SYNC_WITH_HOST
+* configure.ac: get rid of USE_CLOCK for Falcon
+
+
+2008-05-07  Petr Stehlik  <pstehlik@sophics.cz>
+* screen.c: DrawAtariSpeed() now computes the real speed by itself and always
+  shows it (if enabled) even if it is at 100% or around (previously it was
+  hidden when in range 99% - 101%). It even shows speed < 100% (previously
+  it didn't) - hopefully this will help profiling various ./configure
+  options on slow Atari800 hosts.
+
+* atari.c: just some cleanup around the atari_sync(), no functional changes.
+
+
+2008-05-07  Perry McFarlane  <perry_m@fastmail.fm>
+* mzpokeysnd.c, configure.ac, pokey.h, pokeymix.inc: Nonlinear mixing,
+  two-tone filter, corrected STIMER.
+
+
+2008-05-05  Perry McFarlane  <perry_m@fastmail.fm>
+* javanvm/atari_javanvm.c, atari_sdl.c: remove // comments
+* javanvm/atari800.java: fix frame.pack()
+* Makefile.in, DOC/INSTALL: changed to make jar file by default for Java
+* Makefile.in: added comments to build from NestedVM javasource compiler
+
+
+2008-04-16  Piotr Fusik  <fox@scene.pl>
+* antic.c, atari.c, memory.c: in C code local variable definitions should
+  precede statements
+
+
+2008-04-16  Achim Haertel  <achim.haertel@e-technik.tu-chemnitz.de>
+* cassette.[ch], pia.c, pokey.c, screen.c, sio.[ch]:
+  implemented raw writing (via HW registers, not SIO) to cassette files
+
+
+2008-04-08  Perry McFarlane  <perry_m@fastmail.fm>
+* javanvm/atari_javanvm.c, javanvm/atari800.java, configure.ac: sound support
+for the Java NestedVM port
+
+
+2007-11-28  Marcin Zukowski  <marcin.zukowski@gmail.com>
+* cartridge.c: fixed Atrax cartridge bank switching
+
+
+2007-10-19  Perry McFarlane  <perry_m@fastmail.fm>
+* javanvm/atari_javanvm.c: keypad fix
+
+
+2007-10-18  Perry McFarlane  <perry_m@fastmail.fm>
+* javanvm/atari_javanvm.[ch] javanvm/atari800.java added for Java NestedVM
+  port configure.ac, Makefile.in, platform.h, INSTALL, USAGE: modified for
+  NestedVM port
+
+* screen.c, USAGE: -showspeed command line option
+* win32/*: suppress gcc warnings
+* win32/screen_win32.c, configure.ac: support Atari_PaletteUpdate
+
+
+2007-10-11  Perry McFarlane  <perry_m@fastmail.fm>
+* devices.h: make h_current_dir extern
+* monitor.c: COLOUR -> COLOR
+
+
+2007-10-04  Perry McFarlane  <perry_m@fastmail.fm>
+* colours.[ch], atari.[ch], platform.h, USAGE, atari_sdl.c, atari_ntsc.c,
+  configure.ac, TODO: added support for switching between NTSC and PAL
+  palettes.
+  The platform-specific function Atari_PaletteUpdate is now required in those
+  ports which calculate their own palette from colortable.  The SDL version
+  is working but other ports will need to be updated.
+
+
+2007-10-02  Perry McFarlane  <perry_m@fastmail.fm>
+* antic.c: cleaner macros
+* cycle_map.c: minor cleanup
+* ui.c, README, amiga/Atari800.guide: GPL version 2 now, not 1
+* most files: FSF address change in GPL notices.
+
+
+2007-09-30  Perry McFarlane  <perry_m@fastmail.fm>
+* antic.c: Added better support for GTIA bug mode.
+
+
+2007-09-12  Perry McFarlane  <perry_m@fastmail.fm>
+* memory.c: Fix PAGED_MEM error (missing break in switch) with POKEY in
+  loading saved states.
+
+* memory.[ch], statesav.c, cpu.c Support Axlon and Mosaic state saving.
+  SAVE_VERSION_NUMBER upgraded to from 4 to 5
+
+
+2007-09-06  Perry McFarlane  <perry_m@fastmail.fm>
+* memory.[ch], atari.c, TODO, USAGE: add Axlon and Mosaic RAM expansions
+  for the 400/800.
+
+
+2007-08-04  Perry McFarlane  <perry_m@fastmail.fm>
+* memory.c: fix PBIM1/M2_Get/PutByte in MemStateRead
+* atari_ntsc.c: tweak default parameters a bit
+
+
+2007-08-02  Perry McFarlane  <perry_m@fastmail.fm>
+* atari_sdl.c: fix broken Caps Lock key handling
+* atari_sdl.c: reduce default NTSC scanlines percentage from 20 to 5
+
+
+2007-07-31  Perry McFarlane  <perry_m@fastmail.fm>
+* configure.ac, INSTALL: fix for windows sdl version.  Don't use -mwindows or
+  -Dmain=SDL_main and use -mno-cygwin on Cygwin.  SDL_win32_main.c is now
+  required from the sdl source.  Update documentation in INSTALL. This fixes
+  the stdout.txt problem.
+
+* atari_sdl.c: fix for windows sdl version.  Make SDL_VIDEODRIVER=directx by
+  default because it is much faster.  SDL 1.2.10+ uses windib as the default.
+
+* atari_sdl.c: added interpolated scanlines, made it the default, added
+  -scanlinesnoint option to disable it
+
+
+2007-07-30  Perry McFarlane  <perry_m@fastmail.fm>
+* configure.ac: fix for windows sdl version.  Don't require winmm or gdi32
+
+
+** 2.0.3 released on 2007-07-11
+
+2007-04-23  Piotr Fusik  <fox@scene.pl>
+* win32/msc/Makefile: fixed a problem that appeared when I switched to another
+  version of NMAKE ("fatal error U1100: macro '$@' is illegal in the context
+  of batch rule '.c.obj'")
+
+
+2007-04-23  Paulo Lopes  <paulo.lopes@ist.utl.pt>
+* win32/atari_win32.c: new command-line option "-win32keys" for keyboard
+  layouts different from US (the emulator relies on Win32 API to do scan code
+  translations)
+
+
+2006-12-07  Paulo Lopes  <paulo.lopes@ist.utl.pt>
+* win32/main.c, win32/screen_win32.[ch]: an option to run the emulator
+  in a window ("-windowed" on the command line)
+
+
+2006-11-05  Piotr Fusik  <fox@scene.pl>
+* DOC/PORTING: an introduction to writing platform-specific part of Atari800
+
+
+2006-10-31  Kostas Nakos  <knakos@gmail.com>
+* util.c: Make sure user does not updir from the root in WinCE
+
+
+2006-10-30  Kostas Nakos  <knakos@gmail.com>
+* wince/port/*, ui_basic.c, DOC/INSTALL.wince: added support for QVGA landscape
+  smartphones, added the virtual keyboard (kb_ui) and updated documentation.
+
+
+2006-09-04  Piotr Fusik  <fox@scene.pl>
+* cartridge.[ch], ui.c, DOC/cart.txt: added 128 KB SpartaDOS X cartridge type,
+  by the way: shortened the cartridge code and replaced letters with numbers
+  for bank indexing in the documentation
+
+
+2006-07-23  Piotr Fusik  <fox@scene.pl>
+* input.[ch], atari_x11.c, win32/main.c: middle button support
+  for ST and Amiga mice
+
+
+2006-07-21  Piotr Fusik  <fox@scene.pl>
+* antic.c: corrected PMG in bizarre ANTIC/GTIA modes
+
+
+2006-07-01  Mark Grebe  <markgrebe@yahoo.com>
+* antic.[ch], ui.c: new style of artifacting
+
+
+2006-06-29  Piotr Fusik  <fox@scene.pl>
+* win32/msc/Makefile, win32/msc/config.h, DOC/INSTALL:
+  upgraded VC++ from 6.0 to 2005
+
+
+2006-05-01  Piotr Fusik  <fox@scene.pl>
+* util/act2html.*: replaced my old C program with a Perl script;
+  the Perl script keeps hues from different palettes together
+  which I think is better for palette comparisons
+
+* util/colors.asx, util/colors.xex: Atari program that displays all 256 colors
+
+* util/crlf.*, util/keyboard.txt, util/usage2html.pl: removed
+
+* util/readme.txt: updated
+
+* act/gray.act: 0x00,0x11,0x22,... instead of 0x00,0x10,0x20,...
+
+
+2006-04-24  Piotr Fusik  <fox@scene.pl>
+* util/sethdr.pl, util/sethdr.txt: removed; the script hasn't been updated
+  for years (so it supported only half of current cartridge types),
+  wasn't portable, etc. "Create Cartridge from ROM image" in the emulator
+  basically does the job of the removed script.
+
+* util/makebb.bat: removed; anyone who is serious about making a ROM image
+  of "Bounty Bob Strikes Back 5200" by concatenating 3 files can read
+  DOC/cart.txt
+
+
+** 2.0.2 released on 2006-04-08
+
+2006-04-08  Petr Stehlik  <pstehlik@sophics.cz>
+* atari_sdl.c: map ATARI key to SDL_BACKQUOTE key as well (similarly to DOS
+  port) since LSUPER key (the WINDOW key) is unusable in MS Windows (it
+  opens up the Start menu).
+
+* config.{guess,sub}: updated to version from 2006-02-23
+
+* debian/*: update for new release. Fixes bugs in Debian BTS (#346876, #288543)
+
+* atari800.{h,man},configure.ac,README*,atari800.spec: update for 2.0.2 release
+
+
+2006-04-06  Perry McFarlane  <perry_m@fastmail.fm>
+* antic.c: removed IR = 0 and anticmode = 0. Added a check to ignore JVB
+  in the jump instruction instead.
+
+
+2006-03-29  Perry McFarlane  <perry_m@fastmail.fm>
+* atari_sdl.c, atari_ntsc.c: added command line options, help and rearranged
+  code a bit in the NTSC emulator.
+* DOC/USAGE updated for the NTSC emulator.
+* DOC/BUGS added Satan's Hollow and Sirius games.
+* TODO updated to add NTSC emulator todos and a large number of other ideas.
+* DOC/CREDITS added Shay Green as author the of NTSC emulator
+
+
+2006-03-19  Piotr Fusik  <fox@scene.pl>
+* compfile.c: fixed DCM image handling - support 0x45 "End Of Pass" code
+  in an empty sector block starting at any sector (usually 0x0045)
+
+
+2006-03-10  Perry McFarlane  <perry_m@fastmail.fm>
+* atari_sdl.c, atari_ntsc.c: Blargg's NTSC composite video emulator based on
+  NewRisingSun's algorithm. SDL port 640x480x16 only. Use -ntscemu.
+
+
+2006-02-03  Piotr Fusik  <fox@scene.pl>
+* antic.c: a bug in do_border_gtia10 caused a crash on machines that don't
+  support unaligned words (problem reported by Mark Watson), on other machines
+  sprites on the right border in GTIA 10 modes were incorrectly shifted;
+  a pointer cast in DO_BORDER_1 replaced with IS_ZERO_ULONG, just in case
+
+
+2006-01-31  Piotr Fusik  <fox@scene.pl>
+* win32/screen_win32.c: made DDERR_UNSUPPORTED user-friendly ;-)
+
+* atari.h, input.c, statesav.c, ui.c, ui.h, ui_basic.c, dc/atari_dc.c,
+  dc/atari800.cfg, dc/config.h, dc/dc_chdir.c, dc/icon.h, dc/Makefile.dc,
+  dc/version.h, dc/vmu.c, dc/vmu.h, DOC/CHANGES.dc, DOC/README.dc:
+  integrated Christian Groessler's SEGA Dreamcast port
+
+
+2006-01-30  Perry McFarlane  <perry_m@fastmail.fm>
+* antic.c: fixes for Spider City and Fast Eddie
+  Don't display usual graphics if DMACTL width changed from 0 past a
+  certain cycle.  Also don't continue to steal cycles. Bug made Fast Eddie
+  bounce up and down one scan line in the demo mode and caused garbage lines
+  in Spider City.
+
+* antic.c: fix update_scanline_* to adjust for HSCROL only when IR&0x10 is
+  true.  I don't know if it caused any problems but it was wrong.
+
+* antic.c: fix for Final Orbit. Set IR = 0 after JVB instruction.  Bug made the
+  screen shake badly.
+
+
+2006-01-26  Piotr Fusik  <fox@scene.pl>
+* ui_basic.c: directory that has been left (via Backspace or "[..]")
+  is highlighted in the parent directory; display an error message
+  when cannot enter a directory
+
+
+2006-01-14  Piotr Fusik  <fox@scene.pl>
+* monitor.c: "D" command displayed FFFE and FFFF instruction addresses
+  as FFFFFFFE and FFFFFFFF respectively
+
+
+2006-01-11  Troy Ayers  <holiday42@gmail.com>
+* atari_ps2.c: Added routines for sound_pauses and sound resume for the PS2
+
+
+2006-01-09  Piotr Fusik  <fox@scene.pl>
+* pokeysnd.c: some fixes for stereo RF pokeysnd, essential for ASAP
+
+
+2006-01-07  Piotr Fusik  <fox@scene.pl>
+* atari.[ch], memory.c, ui.c: 192 KB RAM
+
+
+2006-01-06  Piotr Fusik  <fox@scene.pl>
+* configure.ac: small fix for sound on PS2
+
+* DOC/BUGS: 5200 Joust sets all colors to black on PAL machines
+  (not Atari800's bug)
+
+
+** 2.0.1 released on 2006-01-02
+
+2006-01-02  Petr Stehlik  <pstehlik@sophics.cz>
+* atari_sdl.c: keysym.unicode is not defined for KEYUP event (reported
+  by Patrice Mandin, the Atari libSDL port author)
+
+* various doc files: update for 2.0.1 bugfix release
+
+
+2006-01-02  Piotr Fusik  <fox@scene.pl>
+* devices.c: H: device defaults to read-only
+
+* atari_sdl.c: keys used for joystick emulation shouldn't be ignored in UI
+  (reported by Wiktor Grebla)
+
+* ui.c: fixed a bug in per-file ROM configuration in UI (reported
+  by Piotr Skamruk)
+
+* ui.[ch]: MENU_PLACEHOLDER is no longer necessary thanks to the new
+  FindMenuItem()
+
+
+** 2.0.0 released on 2005-12-31
+*** started second decade of Atari800 development!
+
+2005-12-31  Petr Stehlik  <pstehlik@sophics.cz>
+* atari_falcon.c: 'fVDI' cookie almost surely indicates that we are running
+  on a graphics card with no bitplanes support.
+  <falcon.h> header file is in mint subfolder in newer mintlibs.
+
+
+2005-12-30  Kostas Nakos <knakos@phys.uoa.gr>
+* wince/*: code refinements
+
+* DOC/INSTALL.wince: updated
+
+
+2005-12-30  Piotr Fusik  <fox@scene.pl>
+* cpu.[ch], mzpokeysnd.c, pokey.h, pokeysnd.c, remez.c: added conditional code
+  for an external project derived from Atari800, see http://asap.sf.net
+
+
+2005-12-29  Petr Stehlik  <pstehlik@sophics.cz>
+* atari_sdl.c: keyboard joysticks:
+  - removed secondary trigger key
+  - added functions that list currently assigned keyboard joystick keys (for
+    use in the UI to show user how the joystick is mapped)
+  - SDL_X_TRIG renamed to SDL_JOY_X_TRIGGER (old config name still supported)
+  - SDL_JOY_X_ENABLED added to config file (so you can enable/disable
+    the keyboard joysticks and save that for future)
+
+* ui.c: SDL keyboard joysticks: show how the joystick keys are mapped
+
+* config.{guess, sub}: updated to versions from August 2005
+
+* atari800.man: added -Hpath <path>
+
+* DOC/FAQ: listed my solutions for keyboard joysticks and sound problems
+  under SDL with GNOME ESD.
+
+* atari800.spec, README.1ST, DOC/{README, NEWS}: updated for new release
+
+
+2005-12-29  Piotr Fusik  <fox@scene.pl>
+* ui_basic.c: help line for the directory selector
+
+
+2005-12-28  Petr Stehlik  <pstehlik@sophics.cz>
+* sound_oss.c: handles situations when Pokey generated channels don't match
+  the output channels - for example when stereo Pokey is to play on mono only
+  card, or vice-versa. Also stereo Pokey compiled in but disabled at runtime
+  now plays from both channels (not just the left one).
+
+
+2005-12-27  Piotr Fusik  <fox@scene.pl>
+* DOC/INSTALL.amiga: removed (completely obsolete)
+
+* DOC/TODO: reorganized and added my ideas
+
+* pokey.c: made initialization of poly17_lookup[] about 10 times faster
+
+
+2005-12-05  Piotr Fusik  <fox@scene.pl>
+* atari_ps2.c: sound support for the PS2
+
+
+2005-11-30  Piotr Skamruk  <jellonek@knip.pol.lublin.pl>
+* ui.c: options for enabling/disabling SDL keyboard joysticks
+
+
+2005-11-26  Piotr Fusik  <fox@scene.pl>
+* atari.c: fixed Atari_time() on the PS2
+
+* atari.c: applied patch for *argc==0 (Chris)
+
+* ui_basic.c: minor fix in FileSelector()
+
+
+2005-11-24  Petr Stehlik  <pstehlik@sophics.cz>
+* atari_sdl.c: keyboard joysticks don't pause games anymore. However, a
+  runtime switch between keyboard joysticks and normal keyboard is needed.
+  DOS/VGA uses <F7>. Will SDL use that or something else? Also some sort
+  of visual indication (similar to disk drives lights) is needed otherwise
+  users will get confused when half of their keyboard doesn't respond.
+
+
+2005-11-19  Piotr Fusik  <fox@scene.pl>
+* configure.ac, sound_oss.c, sound_unix.c: new OSS sound handling:
+  - renamed sound_unix.c to sound_oss.c
+  - added "-lossaudio" (necessary on NetBSD)
+  - removed some advanced tricks (including "-snddelay" option),
+    now writing samples for one Atari frame at once
+  - implemented Sound_Pause() using SNDCTL_DSP_POST
+
+* monitor.c: the output of "GTIA" command is now 7 lines instead of 5,
+  but is much more readable (sprite registers are aligned)
+
+
+2005-11-14  Piotr Fusik  <fox@scene.pl>
+* configure.ac: R: device disabled by default (use "--enable-riodevice"
+  at your own risk)
+
+* atari_ps2.c: fixed timer_interrupt_id, but the timer code probably
+  still won't work, so I wrapped it in USE_TIMERS
+
+* ui_basic.c: added "[mc0:]" to file selector on PS2;
+  use just one Win32 API call GetLogicalDrives() for all drive letters
+
+
+2005-11-11  Piotr Fusik  <fox@scene.pl>
+* configure.ac, amiga/config.h, win32/msc/config.h, wince/port/config.h,
+  antic.c, cpu.c, memory.h, pokeysnd.c:
+  UNALIGNED_LONG_OK -> WORDS_UNALIGNED_OK
+
+* atari.[ch], antic.c, memory.h: STAT_UNALIGNED_WORDS
+
+* binload.c, devices.c: dGetWord -> dGetWordAligned,
+  dPutWord -> dPutWordAligned
+
+* configure.ac: WORDS_UNALIGNED_OK now bases on the built-in
+  CPU architecture database and can be overridden
+  with "--enable-unalignedwords" / "--disable-unalignedwords"
+
+* atari.c, atari_ps2.c: implemented Atari_time() and Atari_sleep() on PS2
+
+
+2005-11-08  Piotr Fusik  <fox@scene.pl>
+* atari_ps2.c, devices.c, ui_basic.c: support for directory listings on PS2
+  ("mc0:" only)
+
+
+2005-11-04  Piotr Fusik  <fox@scene.pl>
+* monitor.c: pacified warnings on 64-bit CPUs
+
+
+2005-11-03  Piotr Fusik  <fox@scene.pl>
+* ui.c: "Uncompress disk image": there was a random message when the user
+  cancelled output file selection
+
+* sio.c: removed superfluous SIO_Dismount() - SIO_Mount() calls it
+
+
+2005-11-02  Piotr Fusik  <fox@scene.pl>
+* atari.c: RESET key in 400/800 does not reset chips, but only generates
+  RNMI interrupt
+
+* gtia.c: pacified warnings in no-NEW_CYCLE_EXACT build
+
+* devices.c: pacified MSVCE warning in WORDS_BIGENDIAN build
+
+* ui_basic.c: file selector shows empty directories on WinCE
+
+* devices.c: H: directory listing with no matching entry now works on WinCE
+
+* devices.[ch], ui.[ch]: "Advanced H: options"
+
+* devices.c: fixed H: open mode 12 - now creates files that didn't exist;
+  added H: open mode 13 - append and read (most Atari DOSes don't support it,
+  but Sparta does)
+
+* devices.c: H: MyDOS Load Executable command now works on open files
+  (this is how MyDOS menu uses it)
+
+* configure.ac, amiga/config.h, win32/msc/config.h, util.[ch], devices.c,
+  sio.c: improved handling of temporary files:
+  - temporary files with H: directory listing are deleted on WinCE
+  - if available, tmpfile() is used for DCM and GZ disk images
+    (no need to store names of temporary files)
+
+* sio.c: fixed Aprint("%SIO... inside #ifdef DEBUG
+
+* sio.c: drive status command ('S') now reports the density configured
+  via PERCOM ('O') - MyDOS menu can reformat a disk with different sector size
+
+* compfile.[ch]: rewritten from scratch. New DCM code is partially inspired
+  by Ernest Schreurs' DCM2ATR utility:
+  - DCMs that aren't Single/Double/Enhanced Density are now supported
+    (example: double-sided disks)
+  - DCM sector coding type 0x42 is now supported
+  - DCM code is short, fast and clear (as opposed to old DCM code and DCM2ATR)
+
+* ui.c: "Uncompress Disk Image" converts XFD.GZ to XFD, ATR.GZ to ATR,
+  DCM to ATR
+
+* win32/main.c: replaced WinMain() with main() so that MSVC-compiled version
+  is a console application
+
+* atari.[ch], atari_curses.c, atari_sdl.c, atari_svgalib.c,
+  colours.c, compfile.c, devices.c, log.c, memory.c, monitor.c, mzpokeysnd.c,
+  pia.c, platform.h, pokeysnd.c, sio.c, sound_unix.c, statesav.c, ui.c,
+  ui_basic.c, dos/dos_ints.h, dos/dos_sb.[ch], win32/atari_win32.c,
+  win32/joystick.c, win32/keyboard.c, win32/main.c, win32/screen_win32.c,
+  win32/sound.c: removed CVS log from file contents
+
+
+2005-10-29  Kostas Nakos  <knakos@gmail.com>
+* atari.c: implementation of alternate host syncing scheme
+  With USE_CLOCK undefined, normal operation requires syncing (sleeping) for
+  each frame, even when refresh rate is > 1. By defining the
+  ALTERNATE_SYNC_WITH_HOST symbol results in calculating skipped and the drawn
+  frames, then sleeping once for a longer period. This scheme seems to yield
+  better results for slow devices.
+
+
+2005-10-25  Piotr Fusik  <fox@scene.pl>
+* sio.c: compressed disk images are now open read-only.
+  Version 1.3.6 could open them in read-write mode, but the compressed
+  images were never modified, so changes were lost. It was commented
+  "this is a fake but some games need it", but, since read-only ATRs
+  (e.g. on a CD-ROM) cannot be open in read-write mode, why compressed
+  images should be?
+
+* antic.c, monitor.c: "VCOUNT" and "ypos" are now zero in the monitor
+  invoked outside ANTIC_Frame() (previously 0x9c and 312 respectively,
+  which doesn't make sense)
+
+* atari.[ch], devices.c, ui.c, util.h: Atari800 tries to guess ROM paths
+  that are not configured (no configuration file or no entries for ROM paths).
+  It checks in the current directory, "/usr/share/atari800" (only on Unix
+  and Linux), directory with the Atari800 binary and its "rom" and "ROM"
+  subdirectories. See source code of Atari800_FindROMImages() in atari.c
+  for the filenames that are checked. Note that only the presence of files
+  is checked here, not their contents. This is far from perfect, but probably
+  better than hard-coded default filenames (in the current directory)
+  as in Atari800 1.3.6 and earlier.
+
+
+2005-10-23  Piotr Fusik  <fox@scene.pl>
+* ui_basic.c: silenced a warning
+
+* devices.c, hdevtest.lst: made H: functions 0x2f and 0x30
+  SpartaDOS-compatible
+
+* devices.c, ui_basic.c: Win32 implementation of directory listing
+  no longer fails when no file matches the mask
+
+* devices.c: Win32 implementation of long directory listing
+  reports local file times rather than UTC
+
+
+2005-10-22  Piotr Fusik  <fox@scene.pl>
+* monitor.c: #include "pokeysnd.h" for stereo_sound (previously
+  in rt-config.h)
+
+* dos/atari_vga.c: didn't compile after removing Atari_DisplayScreen's
+  argument
+
+* atari_x11.c: XVIEW didn't compile after introducing atari_files_dir
+
+* atari.[ch], ui.c: I forgot about configuration of tv_mode, now it's
+  in "Select System"
+
+* util.[ch], devices.c, ui_basic.c: Util_chrieq()
+
+* ui.[ch], ui_basic.c, wince/port/ui_wince.c, wince/port/main.c:
+  - display error message when SIO_Mount() fails
+  - introduced MENU_* macros to hide tMenuItem structure layout
+    in menu definitions
+  - removed tMenuItem.sig (used by wince_ui_driver only)
+  - simplified tMenuItem.flags values
+  - replaced tUIDriver.fAboutBox with more general tUIDriver.fInfoScreen
+  - added "tooltips" in Disk Management
+  - combined "H: device" with "Use H: devices in Read Only mode"
+  - added "Configure Directories" for configuration of atari_files_dir[]
+    and saved_files_dir[] (thanks Petr for idea)
+  - tUIDriver.fSelect now supports "dragging" (for reordering
+    atari_files_dir[] and saved_files_dir[])
+  - FileSelector's scrolling is less tricky and more reliable,
+    as a side effect Left and Right arrows can be used to jump to first
+    and last menu item respectively
+  - you can quickly move in menus and file selector by pressing first
+    letter of an item
+  - fixed some problems with Alt+letter shortcuts
+  - Alt+O no longer displays a blue line at bottom of the screen
+  - moved WinCE-specific UI menu items to ui.c; only AboutPocketAtari()
+    left in ui_wince.c; wince_ui_driver is history, which is good, because
+    UI Driver is meant for View/Controller, not Model of User Interface;
+    Kostas should review my changes, naturally
+  - some naming changes to follow Atari800 convention
+
+* atari_svgalib.c, ui_basic.c: improved SVGA_SPEEDUP:
+  - now draws 1/refresh_rate part of screen every frame instead
+    of every refresh_rate frames;
+  - protected against problems when changing refresh_rate from UI
+  - should work correctly with refresh_rate not being a divisor of 240
+  - removed special handling from ui_basic.c
+
+* atari.h, configure.ac: version 1.4.0
+
+
+2005-10-19  Piotr Fusik  <fox@scene.pl>
+* amiga/amiga.c: Atari_LoadAnyFile() additionally supports DCM, BAS, LST,
+  CART, ROM, CAS, BOOT_TAPE
+
+* ui.c: disks mounted as read-only now marked with '*' in Disk Management
+
+* sio.c: initialize sio_filename[] with "Off" to match drive_status[]
+  initialized with Off; simplified code by removing istmpfile[]
+
+* amiga/amiga.c, atari_curses.c, atari_falcon.c, atari_ps2.c, atari_sdl.c,
+  atari_svgalib.c, atari_vga.c, win32/atari_win32.c, wince/port/atari_wince.c,
+  atari_x11.c, win32/main.c, platform.h, ui_basic.c:
+  removed Atari_DisplayScreen's argument: use atari_screen directly
+
+* util.c: Util_splitpath() and Util_catpath() recognize slash in addition
+  to backslash
+
+* rt-config.[ch], ui.c, ui_basic.c, atari_x11.c: DISK_DIR, ROM_DIR, EXE_DIR
+  and STATE_DIR configuration options replaced with ATARI_FILES_DIR
+  and SAVED_FILES_DIR. See discussion on the mailing list (9-11 Sep 2005).
+
+* ui.[ch], ui_basic.c, wince/port/ui_wince.c: improved file selection:
+  - file selector's title is the path of the listed directory
+  - sort directories that start with a dot
+  - file selector starts on the previously selected file
+  - Backspace in the file selector goes to the parent directory
+  - filenames of saved files are no longer limited to 32 characters
+  - directory of a saved file appears in the edit box
+  - Tab in the edit box invokes directory browser
+  - added directory selection
+
+* ui.[ch], ui_basic.c, wince/port/ui_wince.c:
+  - removed box around screen title; screen title now always takes one line
+    and is shortened if necessary
+  - improved refresh_rate selection
+  - added "Controller Configuration"
+  - restored "Save Interlaced Screenshot" in the main menu
+  - "Atari Settings" -> "Emulator Configuration": added H: paths
+    and read-only, print command and ROM settings;
+    the easiest way to configure ROMs is "Find ROM images in a directory"
+    which looks for common names of ROM images (e.g. atarixl.rom)
+  - improved disabling of function keys and Alt+letter in User Interface
+    on WinCE (now using MENU_ACCEL() macro); applied to PlayStation 2, too
+  - changed items[] indexing to pointer access in BasicUISelect();
+    this is not a matter of optimization, since a smart compiler should
+    generate same code for both - I'm 99% sure there's a bug in MSVC 6
+    that caused the disabled R: menu item to appear on screen
+  - some code simplifications
+
+* devices.[ch], rt-config.[ch]:
+  RtIsPrintCommandSafe() -> Device_SetPrintCommand()
+
+* atari.c, prompts.[ch], rt-config.[ch], Makefile.in, amiga/Makefile,
+  win32/msc/Makefile: removed "-configure" command-line option
+  and the questions that appeared in the console window when no configuration
+  file was found; now a default configuration is written and you can modify it
+  using User Interface; removed prompts.[ch]
+
+* atari.[ch], rt-config.[ch], Makefile.in, amiga/Makefile,
+  win32/msc/Makefile: variables configured by the configuration file
+  moved to the modules they actually belong to; config read/write moved
+  to atari.[ch]; removed rt-config.[ch]
+
+
+2005-10-12  Troy Ayers  <holiday42@gmail.com>
+* configure.ac: For PS2 port removed check for libgcc, added check for libz.
+
+* atari_ps2.c: Changed keyboard input to "raw" mode, as "normal" mode will not
+  read directional keys.  Changed PS2 button assignments.
+
+
+2005-10-09  Piotr Fusik  <fox@scene.pl>
+* atari_x11.c: removed "Help" menu item disabling, because "Help" was removed
+  recently
+
+* rdevice.c: improved Device_GetInetAddress:
+  - all non-control ASCII characters except space allowed (dunno if correct)
+  - memory wraps at 64K
+  - prevented buffer overflow
+
+* binload.c, devices.c: use fgetc() instead of fread() for single bytes;
+  start_binloading is a boolean, and should be set to TRUE or FALSE
+
+* devices.c, rt-config.[ch]: atari_h[1-4]_dir -> atari_h_dir[0..3];
+  hd_read_only -> h_read_only
+
+* devices.[ch]: numerous improvements in H: device emulation:
+  - slash, backslash, colon and greater-than are allowed H: directory
+    separators on all platforms
+  - parent directory on H: is "<" or ".."
+  - access via H: outside the specified directories is not possible
+    (I hope so!)
+  - HPath -> h_exe_path, and is not modified in-place
+  - fixed match(): "F?" matched "F", "FOO?BAR" matched "FOO.BAR"
+  - apostrophe is valid in filenames
+  - MyDOS compatible H: commands: 0x22 = mkdir, 0x29 = cd
+  - H: rename command no longer allows moving files to a different directory
+  - command 0x30 is "ToAbsolutePath" rather than "CurrentDirectory"
+  - mkdir and rmdir no longer work in H: read-only mode
+  - mkdir no longer calls umask(), and now creates directory with default
+    permissions
+  - H5: is no longer valid (but H6:-H9: default to the current directory)
+  - apply fseek(fp, 0, SEEK_CUR) between reads and writes of a file open
+    in "rb+" mode (e.g. DJGPP needs that)
+  - H: directories prefixed with ':' in directory listing on MyDOS
+  - base names longer than 8 characters and extensions longer than
+    3 characters are truncated and terminated with '+' in directory listings
+  - file size in long directory listing limited to 999999
+  - long directory listing uses (SpartaDOS-compatible) 12-hour format
+
+* ui_basic.c: silenced a warning
+
+* win32/atari_win32.c: implemented Atari 5200 keys;
+  F11 and Scroll Lock no longer press L on Atari keyboard;
+  Ctrl+arrows emulate Atari arrows without Control;
+  adapted to Atari800 coding style
+
+* util/benchmark.pl: fixed program name in error messages
+
+* util/hdevtest.lst: automatic test of H: device. Usage instructions inside.
+
+
+2005-09-27  Piotr Fusik  <fox@scene.pl>
+* atari_curses.c, ui_basic.c: screencode -> curses char code conversion
+  is now done in curses_display_line rather than Atari_DisplayScreen:
+  avoided conversion from ASCII to screencode and back in UI (it was wrong
+  for some characters), this fixes Alt+O menu in Self Test
+
+* memory.c, ui_basic.c: UI's charset is now in ATASCII order,
+  so ascii_to_screen is not necessary
+
+* monitor.c: silenced MSVC warnings
+
+* util.h: fixed a warning about implicit declaration of unlink() in sio.c
+
+* atari_x11.c: fixed keyboard on Motif and XView
+
+* configure.ac: PlayStation 2 fixes; lots of small improvements
+
+
+2005-09-24  Piotr Fusik  <fox@scene.pl>
+* atari_ps2.c, configure.ac: added development version of the PlayStation 2
+  port I'm working on together with Troy Ayers; it is limited at the moment:
+  no real speed synchronization, no sound, no file selector, no monitor
+
+
+2005-09-18  Piotr Fusik  <fox@scene.pl>
+* cpu.c, monitor.[ch]: major improvement of monitor:
+  - new command "B" manages user-defined breakpoints
+    (based on Atari800Win PLus 4.0 by Marcin Lewandowski)
+  - monitor now displays registers and current instruction when invoked
+  - "SHOW" additionally displays current instruction
+  - disassembler displays bytes before the instruction,
+    to avoid misalignment where long labels are present
+  - disassembler no longer displays cycles (it was misleading,
+    because the number of cycles is variable for some instructions)
+  - removed memory contents display in single step mode (not useful)
+  - "ESCAPE" and "ESCRTS" disassembled with their argument
+  - "TRON", "TROFF" -> "TRACE" (output to file, not stdout; includes
+    ypos, xpos and registers)
+  - "BRKHERE" -> "BBRK"
+  - "BREAK" -> "BPC"
+  - "YBREAK" -> "BLINE"
+  - "H" is an alias to "HISTORY"
+  - "ROM", "RAM" work in PAGED_ATTRIB build
+  - "DLIST" groups identical instructions and prints them in one line
+  - assembler supports labels
+  - assembler handles "JSR 0", "LDA 0,Y" etc.
+  - improved branch range checking in assembler
+  - error messages for invalid "SETx" arguments
+  - unofficial "NOP" and "SBC #" are marked with "!" in disassembly
+  - assembler generates the official "NOP" opcode
+
+* configure.ac: MONITOR_BREAKPOINTS ("B" command),
+  MONITOR_PROFILE ("PROFILE" command), MONITOR_TRACE ("TRACE" command)
+
+* atari.c: size of auto-started XFD images must be multiple of 128 bytes.
+  Corrupted images won't work, but we gain a better detection of Atari files.
+
+* atari.c, cpu.[ch], monitor.[ch]: break_cim -> cim_encountered
+  (monitor displays "CIM encountered" not only in MONITOR_BREAK build)
+
+* antic.[ch], cpu.c, monitor.[ch]: ypos_break_addr -> break_ypos
+
+* cpu.c: support for Atari800Win PLus
+
+* rt-config.[ch], ui.c: don't exit emulator if "Update configuration file"
+  failed
+
+* ui_basic.c: fixed file selector: last directory entry wasn't sorted
+
+* ui_basic.c: right arrow in last column of file selector jumps
+  to the last entry
+
+* ui.c: improved "Extract ROM image from Cartridge":
+  - allocates only as much memory as necessary rather than 1 MB
+  - displays error message on write error
+
+* ui.h, ui_basic.c, wince/port/ui_wince.c: saved a few bytes per tMenuItem
+
+* wince/port/config.h:
+  #undef HAVE_NANOSLEEP, #undef HAVE_STRDUP, #define SIZEOF_LONG 4
+  (this is for use with the preprocessor, so sizeof(long) was wrong),
+  #define STDC_HEADERS (this means there are stdlib.h, stdarg.h and string.h)
+
+
+2005-09-14  Piotr Fusik  <fox@scene.pl>
+* atari.c, configure.ac: prefer nanosleep() (POSIX.1) to usleep()
+  and select(); prefer Sleep() on WIN32
+
+* atari_x11.c: handle Motif/XView events in Atari_Keyboard() rather than
+  Atari_DisplayScreen() - F1 User Interface now works in these versions;
+  TODO: key repeat does not work on Motif and is too fast on XView
+
+* pokey.c: can use Win32 API instead of time()
+
+* rtime.c: can use Win32 API; fixed Y2K bug
+
+* compfile.c, devices.c, sio.c, util.[ch]: Util_unlink();
+  use unlink() and not remove(), because remove() calls unlink() for files
+  and we never remove() directories
+
+* util.c: fixed Util_splitpath on root directory path
+
+* ui_basic.c: ".." in Win32 API based file selector on WINCE
+
+* ui_basic.c: include B: in DOS_DRIVES; detect floppies on WIN32
+
+
+2005-09-11  Piotr Fusik  <fox@scene.pl>
+* ui_basic.c: fixed file selector which I broke yesterday
+
+* atari.c: fixed parse error in zlib-less compilation
+
+* atari.c, devices.c: removed unnecessary "Fatal Error" messages
+
+* memory.c, remez.c, screen.c: use Util_malloc() instead of malloc()
+
+* rdevice.c: avoid malloc()
+
+* ui_basic.c: use Util_realloc() instead of realloc()
+
+* ui.h, ui_basic.c: fixed warnings
+
+* rtime.c: replaced "-rtime <onoff>" with "-rtime" / "-nortime"
+  documented in "-help"
+
+* devices.c: replaced "-hdreadonly <onoff>" with "-hreadonly" / "-hreadwrite"
+
+* devices.c, monitor.c, util.[ch]: Util_strupper() and Util_strlower()
+
+* pokey_resample.[ch]: removed dead code
+
+* act/fox.act: removed, use jakub.act instead (it is built-in)
+
+* monitor.c: extended labels (MONITOR_HINTS):
+  - can be disabled with "LABELS OFF"
+  - can be loaded with "LABELS LOAD" / "LABELS ADD"
+    (supported are label tables generated by xasm, Mad-Assembler
+     and HardCore Assembler)
+  - can be defined with "LABELS SET"
+  - you can use a label where a hex value is expected
+  - binary search replaced with linear, for simplicity
+
+* devices.c, win32/msc/config.h: H: lock/unlock work on MSVC,
+  using Win32 API directly; rename, mkdir, rmdir can be implemented
+  using Win32 API; Win32 API implementation of directory listing
+  is now the default and does not use stat(); fixed Y2100 bug :-)
+
+* ui_basic.c, util.[ch]: implemented file selector on MSVC
+
+* ui_basic.c: try to handle directories with ']' in their names
+
+* ui.c: removed an opendir() call (unnecessary, I think!)
+
+* compfile.[ch], sio.c: removed the unused diskno parameter from opendcm()
+  and openzlib()
+
+* remez.[ch]: fprintf(stderr, ...) -> Aprint();
+  adapted to Atari800 coding style; added "static" to functions;
+  added "const" to pointers
+
+* atari.h, devices.c: "defined(WIN32) || defined(__PLUS)" -> "defined(WIN32)"
+  (Atari800Win PLus should define WIN32)
+
+* dos/dos_sb.c: fixed some of gcc -pedantic warnings;
+  adapted to Atari800 coding style
+
+* win32/atari_win32.c: F6 = Help, F7 = Break; TODO: 5200 keys
+
+
+2005-09-10  Piotr Fusik  <fox@scene.pl>
+* configure.ac: #define our symbols to 1 (just like autoconf's own symbols);
+  described basic and *curses targets
+
+* win32/screen_win32.c: improved error handling:
+  - DirectX docs suggest using FAILED() instead of !=DD_OK
+  - display the name of the failed function and the return code
+    (unfortunately DXTrace() is available only in DirectX 8.0 and higher)
+  - display a hint if SetDisplayMode fails with DDERR_INVALIDMODE
+    (the default 320x240 doesn't work on my Win98SE / Radeon 9000,
+     although it works on XP on the same machine)
+
+* ui.h, ui_basic.c: char * -> const char *
+
+* rt-config.c, ui_basic.c, util.[ch]: simplified code by introducing
+  Util_splitpath() and Util_catpath()
+
+
+2005-09-09  Piotr Fusik  <fox@scene.pl>
+* DOC/HOWTO-DIRTYSPAN: an alternative to DIRTYRECT (just an idea)
+
+
+2005-09-07  Piotr Fusik  <fox@scene.pl>
+* sound_unix.c: set speed after stereo, because the allowed speed may be
+  different for stereo
+
+* antic.c, atari.[ch], atari_falcon.c, atari_sdl.c, atari_x11.c, cartridge.c,
+  cassette.c, colours.c, compfile.c, devices.c, input.c, monitor.c,
+  rt-config.c, rtime.c, screen.c, sound_falcon.c, sound_unix.c, ui.c,
+  ui_basic.c, util.[ch], dos/sound_dos.c, Makefile.in, amiga/makefile:
+  "util" is a new useful module not related directly to the emulation
+
+* configure.ac, list.[ch], ui_basic.c, amiga/makefile: improved file selector:
+  - sorts filenames case-insensitively
+  - displays "Please wait..." while the directory is read
+  - uses less memory (dynamic array instead of linked list, bye-bye list.[ch])
+  - faster (quicksort instead of bubblesort)
+
+* compfile.c: fixed 32 KB memory leak per open zlib-compressed disk image
+
+* sio.c: optimized SIO_ChkSum()
+
+* ui.c: improved "Create Cartridge from ROM image":
+  - don't exit the emulator without any cleanup if the input file cannot
+    be read, display an error message instead
+  - display a message for files of non-standard sizes (including files that
+    are already CARTs)
+  - allocate only as much memory as necessary rather than 1 MB
+
+* ui.c: improved "Save Disk Set" and "Make blank ATR disk":
+  - can be cancelled by pressing Esc while editing the filename
+  - display a message on success
+  - display an error message on failure
+  - don't operate on NULL if fopen() fails
+
+* ui_basic.c: shorten the messages (especially the ones with long filenames)
+  to fit on screen
+
+* antic.c, atari.c, colours.h, cpu.c, mzpokeysnd.c, pia.c, pokey.c,
+  pokeysnd.c, win32/atari_win32.c, win32/joystick.c, win32/keyboard.c,
+  win32/sound.c: silenced MSVC 6 /W3 warnings
+
+* win32/main.c, win32/screen_win32.c, win32/msc/config.h, win32/msc/Makefile,
+  DOC/INSTALL: DirectX version can be compiled with Microsoft 32-bit C/C++
+  Compiler 6.0. Currently missing features:
+  - file selector in ui_basic (one has to type the filename)
+  - lock/unlock operations on H: devices
+  - stereo (just haven't tested it yet)
+
+
+2005-09-06  Perry McFarlane  <perry_m@fastmail.fm>
+* antic.c: a fix for DMACTL written twice in the same scanline
+
+
+2005-09-05  Kostas Nakos  <knakos@gmail.com>
+* wince/* : Updated the wince port to work with Smartphones.
+  Several other improvements to the port.
+
+
+2005-09-04  Piotr Fusik  <fox@scene.pl>
+* monitor.c: initialize break_addr with 0xd000. Previously, Atari800
+  compiled with MONITOR_BREAK (the default) entered the monitor
+  rather than executing the instruction at address 0x0000
+  (perfectly legal for 6502 code).
+
+* ui_basic.c: don't hide ATR/XFD file extensions in the file selector
+
+* atari_svgalib.c: Atari 5200 keys
+
+* sound_unix.c: fixed sound on Linux. This is black magic to me.
+  I hope there will be some feedback from users.
+
+
+2005-09-03  Piotr Fusik  <fox@scene.pl>
+* atari.c, gtia.c: I broke the BASIC version recently, fixed
+
+* cpu.c: cycle-exact Read-Modify-Write instructions for NEW_CYCLE_EXACT
+
+* antic.c, configure.ac, gtia.c, util/benchmark.pl: removed CYCLE_EXACT
+  (superseded by NEW_CYCLE_EXACT)
+
+* devices.c: improved "K:" input in BASIC version: use just the first
+  character from the entered line and ignore the remaining characters
+  (including EOL). This is because the input from the terminal
+  is line-buffered, so we have to press Enter for the Atari emulation
+  to continue - but we don't want this Enter to be delivered
+  to the emulated Atari.
+
+* devices.c: BASIC version: Atari Clear Screen, Backspace, Tab and Bell
+  converted to the corresponding ASCII codes
+
+* atari_x11.c, configure.ac: (x11-)xview(-shm) now compiles and works
+
+* atari_x11.c: fixed Shift+F5; F8 and (Shift+)F10 are now "Enter monitor"
+  and "Save (interlaced) screenshot", respectively (just like in other
+  versions of Atari800); don't clear key_shift when another key is pressed
+  TODO: Alt+letter shortcuts
+
+* atari_svgalib.c: implemented F6 (Help) and F7 (Break)
+
+* amiga/config.h: updated for clib2-1.194
+
+
+2005-08-31  Piotr Fusik  <fox@scene.pl>
+* atari.[ch], ui.c: auto-starting any file supported by the emulator
+  via the command line, User Interface or Alt+R
+
+* binload.c: a fix for BASIC loader that didn't work if drive 1
+  was enabled but contained no disk
+
+* cpu.c: CYCLES_PER_OPCODE, NO_V_FLAG_VARIABLE, PC_PTR, PREFETCH_CODE
+  for better (?) performance (not enabled by default);
+  WRAP_64K and WRAP_ZPAGE for very precise emulation;
+  optimized CPU_GetStatus(), CPU_PutStatus(), BRANCH()
+
+* devices.c: created Device_OpenDir() and Device_ReadDir() that simplify
+  searching directories. On Windows, if opendir() is not available,
+  these functions are implemented using Win32 API. Changed behaviour:
+  - directory listing and wildcard functions Rename, Delete, Lock, Unlock
+    should now correctly handle the current directory, root directories
+    and files with uppercase letters on case-sensitive filesystems
+  - filenames in directory listing are no longer converted to uppercase
+  - filename extension in the directory listing is now the filename part
+    after the last dot and not the first one
+
+* devices.c: improved H5:-H9:
+  - reading supports CR/LF and CR files in addition to LF
+  - writing uses native EOLs rather than LFs
+
+* devices.c: Device_HHSPEC_Disk_Info(), Device_HHSPEC_Current_Dir()
+  no longer use dPutByte(), so the result is wrapped at 64K,
+  doesn't get written to ROM and may be written to hardware registers
+
+* gtia.c: optimized GTIA_GetByte()
+
+* log.c: fixed Aflushlog's bad behaviour when the log contained percents
+
+* memory.[ch]: added two extra bytes to memory[], because the CPU
+  emulation can access them
+
+* cartridge.h, memory.[ch]: state files should now work with PAGED_ATTRIB
+
+* boot.h, ui.c: MakeBlankDisk() now writes a blank Single Density disk
+  rather than a 3-sector disk with useless executable loader - removed boot.h
+
+* atari.[ch], colours.c, gtia.[ch], input.c, log.[ch], mzpokeysnd.[ch],
+  pokey.[ch], pokeysnd.[ch], rt-config.[ch]: support for Atari800Win PLus
+
+* util/benchmark.pl: dropped "-run" so any Atari program may be used
+
+
+2005-08-27  Piotr Fusik  <fox@scene.pl>
+* atari_sdl.c, atari_x11.c: now compile with --disable-sound
+
+* cartridge.c, memory.c: cast the result of malloc()
+
+* cassette.h: declared CASSETTE_CreateFile()
+
+* compfile.[ch], sio.c: created compfile.h
+
+* cpu.c: restored that "continue" at the end of the main loop
+
+* devices.[ch]: DEFAULT_H_PATH moved to devices.h (for Atari800Win PLus)
+
+* input.c: corrected file description
+
+* memory.h: wrap macro arguments in parentheses, just in case
+
+* remez.c: fixed a memory leak (found by Marcin Lewandowski)
+
+* configure.ac, sound.c, sound_unix.c:
+  renamed sound.c to sound_unix.c to avoid confusion
+
+* statesav.c, ui_basic.c: MSVC declares getcwd() in <direct.h>
+
+* atari.c, util/benchmark.pl: performance tests
+  (some results posted to the mailing list)
+
+
+2005-08-24  Piotr Fusik  <fox@scene.pl>
+* atari.c: load state files from the command line using "-state"
+
+* sio.c: recognize disk image format by the header rather than filename
+  extension (*.DC3 now work as DCM)
+
+* screen.h, ui.c: show_atari_speed, show_disk_led, show_sector_counter
+  available in "Display Settings"
+
+* devices.c: H: and R: work with PAGED_ATTRIB
+
+* screen.c: fixed Screen_DrawAtariSpeed() not updating with refresh_rate > 1
+
+* ui_basic.c: use stricmp() if there's no strcasecmp()
+
+* monitor.c: people may mean accumulator mode when they write "ASL A"
+  in the assembler
+
+* atari_curses.c: keypad works on PDCurses
+
+* cpu.[ch]: changed remember_PC_curpos and remember_jmp_curpos
+  to unsigned, because "x % POWER_OF_TWO" is much faster for unsigned x
+  (1 instruction vs 6 on x86)
+
+* antic.c, monitor.[ch]: changed ypos_break_addr from UWORD to int (faster)
+
+* cpu.c, monitor.[ch]: PROFILE -> MONITOR_PROFILE, TRACE -> MONITOR_TRACE
+
+* monitor.c: combined consecutive printfs
+
+
+2005-08-22  Piotr Fusik  <fox@scene.pl>
+* cartridge.c: Atarimax cartridges can be bank-switched by reading $D5xx
+
+* atari.c, emuos.h: stripped 2k more from emuos (it has no Floating Point,
+  obviously!)
+
+* atari.c, memory.c: don't try to load BASIC ROM in 400/800 emuos mode
+
+* devices.c, mkimg.c, monitor.c, prompts.c, rdevice.c, sio.c:
+  avoid the potentially signed-char-unsafe <ctype.h> functions (macros?)
+
+* configure.ac: good advice for those poor souls who run "configure"
+  with just "--enable-veryslow" and expect a miracle ;-)
+
+* atari.h, ui.c: new "Display Settings" menu allows for changing the framerate
+  and toggling sprite_collisions_in_skipped_frames
+
+
+2005-08-21  Piotr Fusik  <fox@scene.pl>
+* cartridge.[ch], ui.c: Atarimax cartridges
+
+* atari.c, statesav.c: fixed loading of non-verbose state files
+
+* atari.c: "--usage" and "--help" now work
+
+* memory.[ch], sio.c: CopyFromMem and CopyToMem (both used by SIO)
+  now work with hardware registers
+
+* monitor.c: use fflush(stdout) where necessary;
+  normalized all hex output to uppercase;
+  improved "JUMPS": now displays the instructions;
+  improved "PROFILE": now displays the instructions;
+  accept "ASL @" in assembler
+
+* rt-config.c: default filename for the 5200 ROM;
+  moved Atari_ConfigInit() to the end of RtPresetDefaults(),
+  so the Smartphone port can override enable_new_pokey
+
+* screen.c: improved Screen_DrawAtariSpeed: updated every 0.5 sec or so
+
+* sio.c: removed unportable DEBUG code
+
+* configure.ac, statesav.c: use #ifdef HAVE_STRERROR
+
+* configure.ac, compfile.c, devices.c: use #ifdef HAVE_REWIND
+
+* ui.c: error messages for state load/save
+
+* atari.[ch], compfile.c, configure.ac, devices.c: use ANSI/POSIX tmpnam()
+  for creating filenames of temporary files, rather than unportable
+  mktemp/mkstemp. tmpnam() generates filenames in system's temporary
+  directory.
+
+* antic.c, atari.c, atari_curses.c, gtia.c: Self Test menu highlighting
+  on Curses
+
+* atari_curses.c: fixed display of '\x7f';
+  use KEY_HELP, KEY_SHELP, KEY_LHELP, KEY_BREAK, KEY_HOME, KEY_CLEAR,
+  KEY_IC, KEY_IL, KEY_DC, KEY_DL, KEY_STAB, KEY_CTAB if available
+
+* atari_sdl.c: "-rotate90" now works correctly on little-endian machines;
+  don't initialize sound with "-help"; 5200 keys; F6=Help, F7=Break;
+  Shift/Control for Atari, Help, Space, Return, Tab, arrows;
+  Alt+B isn't repeated at a crazy speed
+
+* atari_x11.c: MUCH faster screen display; 5200 keys; Caps can be released;
+  Shift/Control for Help, Escape, Space, Return, Tab
+
+* configure.ac: fixed x11-motif
+
+* antic.[ch], compfile.c, input.c, screen.h, dos/atari_vga.c, ui.c:
+  minor clean up
+
+
+2005-08-19  Piotr Fusik  <fox@scene.pl>
+* atari.c, screen.[ch]: Screen_Initialise();
+  support "-screenshots <pattern>" on the command line: it defines a pattern
+  for quick screenshots (i.e. the ones made with (Shift+)F10).
+  For example "-screenshots /home/fred/foo##.pcx" means that
+  /home/fred/foo00.pcx, /home/fred/foo01.pcx, ... should be used.
+  Existing files are overwritten only if all the files defined by the pattern
+  exist. Submitted as a feature request on sf.net.
+
+* atari_curses.c: Alt+letter work on PDCurses;
+  Ctrl+letter should be Control+letter, not Shift+Control+letter;
+  Always treat 0x08 and KEY_BACKSPACE as Backspace;
+  F10 = Screenshot (must run configure with --disable-cursesbasic to make this
+  one work)
+
+* atari.c, emuos.h: stripped 6k of zeros from emuos
+
+* ui.[ch], ui_basic.c: shortcut keys (Alt+letter, F9, ...) didn't work in UI
+  (reported as a bug on sf.net)
+
+* monitor.c: addr defaults to regPC (handy for "D" and "LOOP");
+  new command "LOOP": disassemble from the beginning of a loop that contains
+  the instruction at the specified address.
+  The loop is detected by looking for a branch instruction after the specified
+  address whose target is below (or equal to) the specified address.
+  Unconditional (JMP) loops are not detected.
+
+
+2005-08-17  Piotr Fusik  <fox@scene.pl>
+* configure.ac, *.c: autoconf improvements for Playstation 2;
+  include config.h before system headers as autoconf's manual suggests
+
+* configure.ac: don't use AC_FUNC_MALLOC because we never do malloc(0)
+
+* rt-config.c: check if print_command is safe for sprintf format
+
+* atari_x11.c, memory.[ch], ui.c: removed PILL (use cartridge images instead)
+
+
+2005-08-15  Piotr Fusik  <fox@scene.pl>
+* atari.c: corrected VOL_ONLY_SOUND in BASIC and CURSES_BASIC
+
+* binload.[ch], sio.c: BIN_loade_start -> BIN_loader_start
+
+* cpu.c: corrected cycles for unofficial opcodes 0xB3, 0xBB, 0xBF
+
+* cpu.c: auto-define NO_GOTO for non-gccs
+
+* cpu.[ch], monitor.c: HISTORY displays ypos xpos also with NEW_CYCLE_EXACT
+  disabled
+
+* cpu.c, memory.h: changed some | to +: this gives better code on x86 due to
+  the LEA instruction
+
+* monitor.c: "C", "M" and "S" support hardware registers
+
+* monitor.c: display correct value for ZP,Y instruction
+
+* monitor.c: PENL -> PENV
+
+* cartridge.c, memory.[ch]: code simplified by defining SetROM and SetRAM
+  for PAGED_ATTRIB
+
+* devices.c: '!', '#', '$', '&', '(', ')', '-' and '@' are now valid
+  in H: filenames
+
+* atari.c, binload.[ch], cartridge.c, cpu.[ch], devices.c, ui.c:
+  direct loading of Atari Basic programs. Supported are:
+  - SAVEd (*.BAS) programs
+  - LISTed (*.LST) programs with auto-detected Atari, LF, CR/LF or CR
+    line terminators
+  From the user's point of view, loading of Atari Basic programs works
+  exactly like loading binary executables: use "-run" from command line
+  or "Run Atari program directly" from the User Interface.
+  The inner workings are much more interesting:
+  0a. BIN_loader() detects file type: *.BAS programs start with two 0x00 bytes,
+      *.LST programs must start with a digit.
+  0b. During coldstart Atari Basic is enabled, even if disable_basic is set.
+  0c. Device_PatchOS() installs a patch for E: write.
+  1. The "READY" prompt is expected on E:. This is not necessarily
+     the first thing printed on E: - a DOS may print its messages before running
+	 Atari Basic.
+  2. RUN "E:" (for *.BAS) or ENTER "E:" (for *.LST) is passed to Atari Basic
+     via E:.
+  3. A patched E: open handler installs handlers for read and close operations.
+  4. Reading bytes from the file. A conversion is applied to *.LST files:
+     first 0x9b, (0x0d,0x0a), 0x0d or 0x0a found in the file becomes the line
+	 terminator and is converted to 0x9b.
+  5. Close file. Patches are removed.
+  6. (for *.LST) The "READY" prompt is expected on E:. If something different
+     appears (probably "ERROR"), skip the step 7.
+  7. (for *.LST) "RUN" is passed to Atari Basic via E:.
+
+
+2005-08-14  Piotr Fusik  <fox@scene.pl>
+* dos/dos_sb.c, dos/sound_dos.c: stereo now works
+
+* dos/atari_vga.c, dos/sound_dos.h: sound_dos.h removed, use sound.h instead
+
+* rt-config.c: support 16, 576, 1088 RAM; skip non-working options
+
+* ui_basic.c: avoid negative array indexes with special keys pressed in UI
+
+
+2005-08-13  Piotr Fusik  <fox@scene.pl>
+* atari_curses.c: TAB is now TAB rather than CONTROL+I;
+  F8 is "enter monitor" not coldstart;
+  Start, Select, Option can now be released;
+  fixed -wide2 mode
+
+* antic.c, atari.c, atari_curses.c: generate curses screen basing on the DL
+  rather than OS screen - Self Test and halt screen of emuos are now visible
+
+* configure.ac: support --target x11-shm, x11-motif, x11-xview, x11-xview-shm;
+  changed hints for symbols in config.h to full sentences,
+  to be consistent with autoconf-generated hints;
+  fixed hint for VOL_ONLY_SOUND; lack of zlib is no fatal error;
+  check for signal.h, termios.h, memmove, signal, strspn;
+  CURSES_BASIC; no sound objects if SOUND disabled
+
+* antic.c, atari.c, configure.ac, gtia.c, input.c, ui.c, ui_basic.c:
+  CURSES version without bitmap screen generation (i.e. no screenshots)
+  enabled with CURSES_BASIC - faster and smaller, enabled by default
+
+* cartridge.c, cassette.[ch], pokey.[ch], sio.c: fixed warnings
+
+* antic.[ch], gtia.c, pokey.c, statesav.[ch], ui_basic.c: fixed indentation
+
+* ui.c: not compiled-in features don't show in menus
+
+* cartridge.c, sio.c, statesav.[ch]: added functions for filename save/read
+
+* configure.ac, Makefile.in, ui.c: no sound emulation if sound is disabled
+
+
+2005-08-10  Piotr Fusik  <fox@scene.pl>
+* atari_basic.c: sound support; don't link with input.o
+
+* atari.c: BASIC and VERY_SLOW now generate all kinds of interrupts.
+  This generally means that you can hear music and SIO works without a patch.
+  Timing in these versions is now much more precise.
+
+* antic.[ch], monitor.c: "dlist" in monitor now supports Display Lists
+  in extended memory with exclusive Antic access
+
+* devices.c: patching E: open doesn't make sense
+
+* cassette.c, ui.c: hold_start_on_reboot moved to cassette.c
+
+* antic.c, cartridge.c, gtia.c, memory.c, pia.c, pokey.c, sio.c:
+  no state files in BASIC version
+
+* configure.ac, Makefile.in: link cycle_map.o only for NEW_CYCLE_EXACT;
+  CYCLE_EXACT, NEW_CYCLE_EXACT, CRASH_MENU, VERY_SLOW not available in BASIC
+  version; input.o, screen.o, colours.o, statesav.o, list.o, ui_basic.o, ui.o
+  not linked in BASIC version
+
+* atari.c, cpu.c, gtia.c, pia.c, pokey.c: input.o and statesav.o not linked
+  in BASIC version
+
+* Makefile.in: "make clean" now additionally cleans dos/, falcon/ and win32/
+
+* mzpokeysnd.c, pokeysnd.[ch], sndsave.[ch]: Sound Recording was designed
+  only for 8-bit unsigned samples mono on little-endian machines. Even in this
+  configuration it didn't work, because the frequency wasn't written
+  in the header (and you should have selected old pokeysnd in order to have
+  any samples in the file). Now 8-bit unsigned samples mono/stereo old/new
+  Pokey should work on all machines. 16-bit and signed samples are still TODO.
+
+* ui.c: Sound Recording to atari000.wav, atari001.wav, etc. rather than 0.raw,
+  1.raw. Doesn't overwrite existing files now. TODO: prompt for filename.
+
+* atari.c: close sound file at exit, so correct headers are written
+
+* antic.c, cartridge.[ch], cpu.c, emuos.h, gtia.c: added consts
+
+* antic.c: fixed code formatting
+
+* configure.ac: small fix for ncurses and support for pdcurses
+
+* atari_curses.c: backspace now works on DJGPP/pdcurses
+
+
+2005-08-07  Piotr Fusik  <fox@scene.pl>
+* mzpokeysnd.c: eschew traditional comments in log messages!
+
+* devices.c: MSVC headers have no S_IRUSR nor S_IWUSR
+
+* devices.c: empty Hx_DIR now refers to the current directory rather than
+  the root
+
+* ui.c: display error messages for "Run BIN file", "Select tape",
+  "Insert cartridge" and "Save screenshot"
+
+* compfile.c: fixed indentation; other minor improvements
+
+
+2005-08-06  Piotr Fusik  <fox@scene.pl>
+* configure.ac, devices.c: check for rename() and snprintf()
+
+* devices.c: fixed error codes; fixed "unused" warnings; other minor fixes
+
+* antic.[ch], atari_sdl.c, atari_x11.c, cassette.[ch], cycle_map.h,
+  pokeysnd.[ch], screen.h, ui.[ch], ui_basic.c, dos/atari_vga.c, dos/vga_gfx.h:
+  changed () function signatures to (void)
+
+* antic.c, atari_sdl.c, atari_x11.c, cassette.c, cycle_map.c, monitor.c,
+  pokeysnd.c, ui_basic.c: fixed indentation
+
+* rtime.c: optimized RTIME_GetByte
+
+* mzpokeysnd.c, pokey.c, pokeysnd.h, pokey_resample.c, prompts.c:
+  // comments changed to /* */
+
+* emuos.lis, emuos.h, ui_basic.c: updated copyright year
+
+* atari.c: if no sleep-like function available, fall back to time polling
+
+* monitor.c: fixed a warning
+
+
+2005-08-05  Piotr Fusik  <fox@scene.pl>
+* configure.ac: added checks for some headers and functions used in devices.c
+  and atari.c.
+  VERY IMPORTANT: if you don't use Configure, make sure you define HAVE_*
+  symbols (in config.h) for the header files and functions you have.
+
+* sio.c: getcwd() may be unavailable
+
+* devices.c, devices.h: fancy I/O functions may be unavailable;
+  got rid of numerous #ifdef BACK_SLASH
+
+* statesav.c: ReadDisabledROMs wasn't actually called!
+  Thank you GCC 4 for the warning.
+
+* atari.c: use best time functions available - now checked by Configure,
+  not hard-coded for platforms (almost...)
+
+
+2005-06-24  Piotr Fusik  <fox@scene.pl>
+* sio.c: fixed PERCOM configuration (spotted by Erhard Puetz):
+  - 1 track, 1 side for non-standard disk images (i.e. exactly 65535 sectors
+    for 65535 sectors image)
+  - 80 tracks for standard 720K, 1.44M and 2.88M disks
+  - MFM byte is 0 for SD, 4 otherwise
+  - unused bytes are set to 0
+
+
+2005-05-20  Piotr Fusik  <fox@scene.pl>
+* antic.c, sndsave.h, ui_basic.c: fixed an error and some warnings reported
+  by GCC 4.0.0
+
+
+2005-05-13  James Wilkinson  <james@slor.net>
+* win32/atari_win32.c, win32/joystick.[ch], win32/main.c: added DirectX
+  joystick support
+
+* win32/atari_win32.c: cleaned up initialization with nonexistent config file
+
+
+** 1.3.6 released on 2005-04-30
+
+2005-04-30  Petr Stehlik  <pstehlik@sophics.cz>
+* ui.c, boot.h: "Make Blank Boot Disk" added to "Disk Management",
+  inspired by LNG (lng.sourceforge.net). It creates a blank boot atr file.
+  Before you can use this blank disk, you must format it. Patch by
+  'maddoxik' (whoever he is, didn't supply real name).
+
+
+2005-03-24  Piotr Fusik  <fox@scene.pl>
+* cpu.c: fixed incorrectly saved N flag when entering the monitor (bug found
+  by Marcin Lewandowski)
+
+* devices.c: added "-help"
+
+
+2005-03-15  Achim Haertel <achim.haertel@e-technik.tu-chemnitz.de>
+* casette.[ch], pokey.[ch], sio.[ch], pia.c: implemented cassette loading
+  by hardware registers.
+  Examples of now working games:
+  - Ninja: (eof-)blocks pass on tape while the OS waits for a leader.
+  - Elektraglide has a nonstandard format which is not readable by the
+    SIO-patch but requires raw loading.
+
+
+2005-03-11  Piotr Fusik  <fox@scene.pl>
+* atari_x11.c: "-mouse" works. Set default clipping area to 336x240.
+  x11-motif is now compilable, possibly also x11-xview.
+
+
+2005-03-10  Piotr Fusik  <fox@scene.pl>
+* atari_basic.c: updated for new Atari800_Frame()
+
+* atari_sdl.c: corrected Atari_TRIG() and don't initialize sound on "-help"
+
+* ui.c: "Extract ROM image from Cartridge" should skip the CART header,
+  not just copy the whole file
+
+* ui_basic.c: fixed a memory leak
+
+* ui.[ch], atari.c, cpu.c: removed the unused "screen" parameter from ui()
+  and SelectCartType()
+
+
+2005-03-09  Petr Stehlik  <pstehlik@sophics.cz>
+* atari_sdl.c: switched back to Atari800_Frame like all other ports do.
+  So far everything looks OK. Why did Jacek abandon the Atari800_Frame
+  way? Weird.
+  Also finally disabled propagating of the KP0-KP9 keys to key_code.
+  Without this the keyboard joystick emulation was mostly unusable.
+  Needs a more general solution - masking out all keyboard joystick keys.
+  Copy from atari_vga.c, it's solved properly there, IIRC.
+
+* atari_x11.c: disabled propagating of the KP0-KP9 keys to key_code.
+
+* configure.ac: enables linux joystick by default. The atari_x11.c needs
+  a lot of cleanup: move the mouse emulation to input.c and make sure
+  the keyboard joystick, mouse joystick and real joysticks do cope together.
+
+
+2005-03-08  Piotr Fusik  <fox@scene.pl>
+* antic.c: added missing combinations of ANTIC modes with GTIA modes.
+  GTIA modes are correctly scrolled horizontally.
+
+* compfile.c, devices.c, gtia.c, monitor.c, mzpokeysnd.c, sio.c, ui_basic.c:
+  killed gcc -W warnings. Remained only the warnings about unused parameters.
+
+* antic.c, input.c, dos/sound_dos.c: handle "-help" option
+
+
+2005-03-05  Piotr Fusik  <fox@scene.pl>
+* ui_basic.c: fixed "Error opening '' directory"
+
+* input.[ch]: support AKEY_BREAK
+
+* atari.[ch], atari_curses.c, atari_falcon.c, atari_svgalib.c, atari_x11.c,
+  amiga/amiga.c, dos/atari_vga.c, win32/main.c, wince/port/atari_wince.c:
+  support for special AKEY_*, refresh rate control and atari_sync()
+  moved to Atari800_Frame()
+
+* atari_curses.c, atari_falcon.c, atari_x11.c: F6 is Atari HELP key
+
+
+2005-03-03  Piotr Fusik  <fox@scene.pl>
+* win32/*, configure.ac:
+  renamed win32/screen.[ch] to win32/screen_win32.[ch]
+
+* wince/port/*, wince/PocketAtari.vcp:
+  renamed wince/port/screen.* to wince/port/screen_wince.*
+
+* atari.[ch], screen.[ch], antic.c, cpu.c, input.c, ui_basic.c:
+  moved screen-related variables to the new "screen" module
+
+* configure.ac, makefile, atari.[ch], screen.[ch], sio.[ch], atari_sdl.c,
+  dos/atari_vga.c:
+  deleted diskled.[ch], moved disk LEDs to the new "screen" module,
+  added sector counter and speedometer
+
+
+2005-02-23  Piotr Fusik  <fox@scene.pl>
+* colours.[ch]: refactored, using jakub.act by default
+
+* log.c, configure.ac: use vsnprintf only if available
+
+* screen.[ch]: renamed from ataripcx.[ch] and added PNG screenshots
+
+* atari.c, atari_curses.c, atari_sdl.c, atari_svgalib.c, atari_x11.c, ui.c,
+  Makefile.in, amiga/makefile, dos/atari_vga.c, win32/main.c,
+  wince/port/atari_wince.c, wince/PocketAtari.vcp:
+  PNG screenshots
+
+
+2005-02-22  Piotr Fusik  <fox@scene.pl>
+* cartridge.c: switch back on the main bank of switchable XEGS cartridges
+  (bug found by Chris Hutt)
+
+
+2005-01-06  Petr Stehlik  <pstehlik@sophics.cz>
+* atari_sdl.c: F8 (enter monitor) was not implemented. Fixed. Also
+  entering monitor now switches off the fullscreen mode which makes
+  the monitor usable in X-Windows (not sure about framebuffer but
+  I'd guess for that one we'd have to turn off the graphics completely).
+
+
+** 1.3.5 released on 2004-12-30
+
+2004-12-29  Petr Stehlik  <pstehlik@sophics.cz>
+* atari_x11.c: Ken Zalewski contributed a patch for keyboard handling
+  that fixes a segfault (XLookupString was called even if the event
+  was not keyboard related).
+
+* atari_x11.c: after looking into the keyboard handling under X11
+  I realized that keyboard auto-repeat was not working at all.
+  I tried to fix it by keeping the keycode status persistent.
+  It seems to work in non-XVIEW/non-MOTIF version.
+
+
+2004-12-28  Petr Stehlik  <pstehlik@sophics.cz>
+* atari_sdl.c: Daniel Serpell contributed a patch for keyboard handling
+  that makes the Atari800 keyboard working on non-US keyboard layouts
+  simply by using the Unicode values of the keys (instead of scancodes).
+  Also, keys Control-0 to 9 and Control-A to Z were added. The "Atari"
+  key is mapped to the left Windows key, the Caps-toggle key is mapped
+  to the right Windows key and the Atari Shift+F1 and Shift+F2 keys
+  are mapped to host's PageUp and PageDown keys (as this is the function
+  of those keys in the Atari-XL OS).
+
+
+** 1.3.4 released on 2004-12-27
+
+2004-11-26  Petr Stehlik  <pstehlik@sophics.cz>
+* rt-config.c: fixed many possible buffer overflows that were dangerous if
+  atari800 was installed suid root. Thanks for analysis go to Adam Zabrocki.
+
+* svgalib.c: fixes a compilation error when compiling with GCC 3.4.x
+  (compiler chokes on label at end of block). Thank for patch to Andrew Church
+
+
+2004-11-17  Perry McFarlane  <perry_m@fastmail.fm>
+* antic.c: Fix for Timeslip game.  Newcycleexact dmactl change bug.
+
+
+2004-09-24  Sebastian Bauer
+* ui_basic.c: fixed NULL pointer access in file dialog which happened if there
+  were no files in the selected directory.
+
+* amiga/*: updated
+
+
+** 1.3.3 released
+
+2004-08-08  Petr Stehlik  <pstehlik@sophics.cz>
+* various files: updated for 1.3.3 release
+
+
+2004-08-05  Christian Groessler <cpg@aladdin.de>
+* atari_x11.c: adds the left ctrl key as joystick button if "-keypad" is
+  in use. Also cleans up mostly by adding ANSI C function headers.
+
+
+2004-07-26  Sebastian Bauer
+* amiga/*: major update, cleanup, fixed console keys, upgraded sound support
+
+
+2004-07-05  Petr Stehlik  <pstehlik@sophics.cz>
+* configure.ac: Ken Ames sent a patch that supports OS/2
+
+
+2004-06-06  Petr Stehlik  <pstehlik@sophics.cz>
+* atari_x11.c: Christian Groessler's patch adds missing keyboard autorepeat
+  when in the internal Atari800 debugger.
+
+* prompts.c: fixed RemoveSpaces() - should not remove space from within
+  the string, only leading and trailing space chars should be removed.
+
+* rt-config.c, configure.ac: SUPPORTS_ATARI_CONFIG* now set in configure.ac
+  for DOSVGA and SDL. This also fixes joystick definition not loaded in
+  the DOSVGA port since the #ifdef VGA was changed to #ifdef DOSVGA.
+
+* atari_sdl.c: emulated joysticks configured in the atari800.cfg file
+  thanks to patch from Benny (Fishy_PKAT151). This is incompatible
+  with the DOS VGA port configuration so I expect this to change
+  before 1.3.3 release.
+
+* rt-config.c: RemoveSpaces() called on both keyword and its value.
+
+* rt-config.c, atari_sdl.c: bunch of Aprint() cleaned up
+
+
+2004-06-04  Petr Stehlik  <pstehlik@sophics.cz>
+* config.{sub,guess}, debian/*: updated by the atari800 debian diff file
+
+
+2004-06-03  Piotr Fusik  <fox@scene.pl>
+* antic.c: ANTIC mode 2 + GTIA mode 10 should be shifted right by a half
+  of a pixel [a fix for the upcoming demo :-) ]
+
+
+2004-06-02  Petr Stehlik  <pstehlik@sophics.cz>
+* atari_x11.c: Christian Groessler suggested to add XK_Break key check
+  so that Ctrl+Pause on linux machine generates the AKEY_BREAK keypress.
+
+
+2004-02-21  Petr Stehlik  <pstehlik@sophics.cz>
+* rdevice.c: Martin Albert, our new Debian package maintainer, suggested
+  to allow /dev/ttyS0 for all Linux archs, which is a good idea.
+  This device should be runtime configurable, anyway.
+
+
+2003-12-21  Petr Stehlik  <pstehlik@sophics.cz>
+* ui_basic.c: Aprint warning that fileselector couldn't open a folder.
+  The warning should be propagated to the UI and shown to user. Or better
+  yet, the Fileselector should be able to modify the path until it could
+  open it (example: /tmp/state_files/ -> /tmp/)
+
+
+** 1.3.2 released
+
+2003-12-20  Petr Stehlik  <pstehlik@sophics.cz>
+* macosx/*: all old files removed and new up-to-date ones (from Mark Grebe)
+  stored in a single macosx.tar.gz file for easier maintenance.
+
+* various files: increased version for new 1.3.2 release
+
+
+2003-12-16  Piotr Fusik  <fox@scene.pl>
+* cartridge.[ch], ui.c, DOC/cart.txt, DOC/README: new cartridge types:
+  Phoenix and Blizzard
+
+* cassette.c: write cassette description, update tape position indicators
+  when writing, changed C++ style comments to traditional
+
+* atari.c: check OS before applying C: patches
+
+
+2003-12-17  Mark Grebe  <markgrebe@yahoo.com>
+* compfile.c: Fixed serious bug in Type 41 decoding
+* mzpokeysnd.c: Added console and SIO Sound back in
+
+
+2003-11-22  Achim Haertel <achim.haertel@e-technik.tu-chemnitz.de>
+* atari.c: when the snailmeter is enabled and the speed grown beyond 100%
+  a negative amount of memory was tried to be filled.
+
+
+2003-11-14  Achim Haertel <achim.haertel@e-technik.tu-chemnitz.de>
+ Cassette handling greatly improved:
+
+* atari.[ch]: OS patched for tape leader recognition
+
+* cassette.[ch]: Loading improved, skips now blocks which pass on tape while
+  the OS waits for a leader. Writing implemented. Some bugfixes (CAS format
+  chunk header size is always 8, record checksum for raw files).
+
+* sio.c: Evaluates i/o-commands for cassette
+
+* ui.c: "Load tape image" renamed to "Select tape image"
+
+ The remaining open points are:
+ - State of cassette operation is not saved in state file - is the expense
+   necessary?
+
+ - Tape file selector (and disk too) would need 2 additional points at top:
+   <Eject> and <New> (atm tape save is only possible if you create a file
+   with 0 length and insert that).
+
+
+2003-11-13  Perry McFarlane  <perry_m@fastmail.fm>
+* antic.c: DMACTL NEW_CYCLE_EXACT width decrease fix for SERIOUS diskmag #8
+
+
+2003-11-13  Petr Stehlik  <pstehlik@sophics.cz>
+* log.c: corrected buffer overflow found by Laios Mircea
+
+
+2003-10-26  Mark Grebe  <markgrebe@yahoo.com>
+* cartridge.c, sio.c, statesav.c: saving disk and cartridge info
+  in the state file. Bumped the state file version number, and then added
+  save functions to the Cart and SIO files. It currently supports reading
+  the current version (3) as well as the new version (4) state files.
+  It writes only the new version (4). The filename information for cartridge
+  and disk information is stored in two ways. It is stored as a relative
+  path if the file is in the emulator's directory tree, and it is stored
+  as an absolute path if it isn't. If it doesn't find the cartridge or disk,
+  it does not refuse to load the state, but continues. New state file format
+  works extremely well with the bank switched cartridges.
+
+
+2003-10-25  Petr Stehlik  <pstehlik@sophics.cz>
+* atari_falcon.c: disable compiling with stereo sound enabled
+
+* log.c: do MacOSX a favor and generally allow platform specific Aprint
+  output
+
+* atari.c: wrong path to disk image is not a reason to quit with an error
+  message
+
+* mzpokeysnd.c: simple fix for SERIO_SOUND (thanks to Mark Grebe)
+
+* pokey.c: some platforms (MacOSX) might need different SOUND_GAIN
+  so it's possible to define it in configure/Makefile now.
+
+* atari_sdl.c: hatefully backported fix from input.c (see 2003-09-21)
+  Somebody should inspect the atari_sdl.c why it doesn't use the
+  Atari800_Frame system and possibly use it in the SDL port as well.
+
+* DOC/TODO: some items removed, some edited.
+
+
+2003-10-24  Piotr Fusik  <fox@scene.pl>
+* sio.c: "Overmind" runs with NEW_CYCLE_EXACT and SIO patch enabled.
+  I implemented NO_SECTOR_DELAY in 0.9.9i to allow running the "Overmind"
+  demo.  Originally this hack relied on the xpos variable and thus wasn't
+  NEW_CYCLE_EXACT compatible.  Now the delay occurs only between
+  successive reads of sector 1, not every time reading sector 2.
+  This makes every disk image boot 0.2 sec. faster.
+* sio.h: NO_SECTOR_DELAY is internal to sio.c
+
+
+2003-09-23  Piotr Fusik  <fox@scene.pl>
+* ui.c, sio.h: added Rotate_Disks() to UI
+
+
+2003-09-22  Perry McFarlane  <perry_m@fastmail.fm>
+* antic.c: got sprite collisions working with NEW_CYCLE_EXACT
+  (broken by mistake)
+* antic.c: a fix for "Sweet Illusions" part with wireframe vectors
+  (sprites highlighting the scrolling text)
+
+
+2003-09-21  Piotr Fusik  <fox@scene.pl>
+* input.c: implemented bit 6 of SKSTAT - now you can exit from
+  the "spinning camera" part of "Cool Emotion"
+* mkimg.c: general clean-up: int main, fixed #includes, etc.
+
+
+2003-09-16  Perry McFarlane  <perry_m@fastmail.fm>
+* antic.c: cycle-perfect CHACTL mid-scanline changes
+* DOC/BUGS: updated
+
+
+2003-09-15  Chris Martin <cmartin@ti.com>
+* DOC/rdevice_faq.txt: detailed documentation
+
+
+2003-05-28  Chris Martin <cmartin@ti.com>
+* rdevice.c: fixed several bugs with the sockets version, and it now includes
+  a serial port mode as well.  The R: device can now be emulated by network
+  sockets or you can connect directly to the host serial ports (/dev/ttyS0,
+  etc.) in order to talk to a real modem.
+
+  There is a variable near the top of the rdevice.c file called 'r_serial'.
+  When this is 0, network sockets are used; when it is 1, the RS232 port on
+  the host is used. This variable should be moved to rt-config.h and the
+  atari800 config file could have a line that says:
+
+  R_SERIAL=1
+
+
+2003-09-04  Petr Stehlik  <pstehlik@sophics.cz>
+* compfile.c, devices.c: small fix for possibly undefined O_BINARY in the
+  mkstemp emulation from Perry. This could help me compiling Atari800
+  on Falcon where I have an older version of MiNTlib.
+  Also make sure "config.h" is included wherever you rely on configure
+  defines..
+
+* DOC/BUGS: some bugs removed as direct response on Perry's newest patches.
+  Possibly many more bugs from this list could be removed now.
+
+* DOC/TODO: added three very important things to do at the top of this
+  TO-DO list. Also added an item about configuring the R: device, this
+  time at the bottom of the list.
+
+
+2003-09-14  Perry McFarlane  <perry_m@fastmail.fm>
+* win32/sound.c: round buffer to a sample pair if STEREO sound configured
+
+* compfile.c, devices.c, configure.ac: make sure mkstemp() is defined and
+  if it's not, emulate it using mktemp(). Helps compiling in mingw32.
+
+* antic.c: CHBASE timing is cycle-exact now. Fixes Endless Dream (credits
+  in the intro), among others.
+
+* gtia.c: DMACTL timing is now improved. Fixes Sweet Illusions (sprites
+  highlighting the scroll) and surely also other games and demos.
+
+
+2003-09-04  Petr Stehlik  <pstehlik@sophics.cz>
+* configure.ac: forgot to increase version
+
+* util/export: added check for version in configure.ac
+
+* ChangeLog: some older entries about fixing bugs in Debian BTS corrected
+
+* debian/*: taken from fresh debian package of Atari800 1.3.1
+
+
+** tagged as ATARI800_1_3_1
+
+2003-09-04  Petr Stehlik  <pstehlik@sophics.cz>
+* configure.ac: svgalib target added
+
+* SVGAlib target dropped from Debian and RPM build scripts
+
+* -rc1 removed from everywhere, it was causing pain for the build scripts
+
+* sockets.txt renamed to r_device.txt
+
+* Makefile.in: rewritten a bit the install process. Now actually becoming
+  usable - for example "make install DESTDIR=/tmp" now does something
+  useful. There's a bit more work to do - install the rest of documentation
+  and write 'uninstall' target.
+
+* atari800.spec: builds on the Makefile.in improvement. Now should finally
+  install the man page everytime.
+
+
+** tagged as ATARI800_1_3_1-RC1
+
+2003-09-03  Petr Stehlik  <pstehlik@sophics.cz>
+* dos/vga_gfx.h: wrong #endif fixed
+* dos/atari_vga.c: cleaned up a bit, added #ifdef SHOW_DISK_LED
+* configure_dos.bat: default target and bufferedlog pre-set
+* atari.h: version increased to 1.3.1-rc1
+
+
+2003-08-31  Petr Stehlik  <pstehlik@sophics.cz>
+* rdevice.c: GPL header added (hope that it actually was free source before
+  Chris brought it to Atari800 project)
+
+* rt-config.c: R: patch is not enabled by default. It can be enabled in the UI
+
+* ui.c: R: patch named as "Atari850 emulation via network" (better description
+  welcome)
+
+* DOC/sockets.txt: this is the explanation of R: - couple of excerpts from
+  Atari800 mailing list mails.
+
+
+2003-08-31  Ed Cogburn  <ecogburn@xtn.net>
+* Makefile.in, configure.ac: rdevice.o compiled and linked in only on linux
+  or Unix and unless --disable-riodevice was used when configuring.
+
+* devices.c, atari.h: R: is compiled in only if R_IO_DEVICE is defined (see
+  configure --enable-riodevice, note that it is defined by default)
+
+
+2003-08-05  Petr Stehlik  <pstehlik@sophics.cz>
+* atari.c: tried to fix a recent security issue known as CAN-2003-0630,
+  found by Debian Security Audit Project, Debian BTS #203707.
+  In order to provide a complex fix (better than the one suggested in BTS)
+  I wrote code that is not looking very well but works correctly, hopefully.
+  Nevertheless this fixes only the core module arguments parsing - the
+  sound module and port specific modules do it on their own and that
+  should be fixed as well. Best by going for GNU getopt!
+
+  Also the osa/osb/xlxe/5200/basic rom loading options were not documented
+  in the "-help" list. Fixed.
+
+* atari_sdl.c: refresh_rate unused, removed
+
+
+2003-08-05  Achim Haertel <achim.haertel@e-technik.tu-chemnitz.de>
+* sio.c: fixed random timeout while sectorread at datatransfer with
+         command frames.
+  - added: xf551 hispeed commands (0xA1, 0xA2, 0xD0, 0xD2, 0xD7)
+  - added: status command reports errors in last read/write operation
+
+  caveat: the only commandframe which transfers in hispeed is sectorread,
+  all other use normal speed in the emu
+
+* pokey.c: xf551 hispeed transfer uses SIO speed 0x10
+
+
+2003-07-04  Piotr Fusik  <fox@scene.pl>
+* mzpokeysnd.c: added key click
+
+* cpu.c: a fix for "CMC Demo" crashing NEW_CYCLE_EXACT emulator
+  (the problem could probably exist in many other demos
+  which play samples using IRQ)
+
+
+2003-06-27  Perry McFarlane  <ce596@torfree.net>
+* cycle_map.[ch]: a fix that prevents "Cool Emotion" demo from crashing
+  NEW_CYCLE_EXACT emulator if P: patch is disabled
+
+
+2003-06-18  Petr Stehlik  <pstehlik@sophics.cz>
+* config.{sub,guess}: upgraded to latest versions from autotools-dev package
+  in order to fix the Debian BTS #193397 (problem supporting the Debian mips
+  and mipsel architectures).
+
+
+2003-06-15  Petr Stehlik  <pstehlik@sophics.cz>
+* compfile.c: quick fix for non-zlib capable environments
+
+
+2003-05-28  Petr Stehlik  <pstehlik@sophics.cz>
+* cpu_m68k.asm: major update, brings it to the 1.3.0+ level of cpu.c
+  Thanks Gerhard.
+
+* devices.c, atari.h, rdevice.[ch]: new R: device support (sockets).
+  Originally written by Tom Hunt. Fixed, updated and prepared for Atari800
+  integration by Chris Martin <cmartin@ti.com>. Thanks Chris!
+
+* atari.c, ui.c, rt-config.[ch], Makefile.in: updated to allow run-time
+  configuration of the R: entry in HATABS.
+
+* DOC/sockets.txt: it's an excerpt from mails I got from Chris. It may
+  explain some basic ideas about the R: device.
+
+
+2003-03-07  Piotr Fusik  <fox@scene.pl>
+* pia.[ch], memory.[ch], atari.c: fixed MultiJoy and PORTB:
+  PORTA must be configured as output to select MultiJoy port.
+  PORTB direction register can be read.
+  PORTB lines stay high if configured as inputs
+  ("Road Race" works in XL/XE mode - didn't since 1.2.4).
+  Reset sets PORTB output (not 0xD301, which may be direction register
+  at the moment) to 0xFF.
+* cartridge.c, cassette.c, input.c: copyright fix (I created these files)
+
+
+2003-03-03  Mark Grebe  <markgrebe@yahoo.com>
+* ui.c: Save/Load Disk Set implemented. Result of Save is a text file
+  containing names of the disk images that are currently in the drives.
+  On saving drives with no disks are marked as "Empty" and on loading
+  no changes are made to such drives. This allows the user to load multiple
+  disk sets sequentially. File extension is ".set".
+
+
+2003-03-03  Ed Cogburn  <ecogburn@xtn.net>
+* mzpokeysnd.c: Initialize some uninitialized variables to fix gcc warning
+
+* devices.c, compfile.c: tmpnam() -> mkstemp() to fix gcc warning
+
+* atari_sdl.c: control key support added (how it could be compiled before?)
+
+* configure.ac: massive rewrite, new way of handling our options. Config
+  summary added.
+
+* Makefile.in: a number of small changes, and OBJ is changed to OBJS for
+  consistancy within configure.ac
+
+* atari.c, diskled.c, sio.c: diskled module is compiled in only if it's
+  enabled in configure.
+
+
+2003-02-27  Piotr Fusik  <fox@scene.pl>
+* cartridge.[ch], ui.c, DOC/cart.txt, DOC/CREDITS, DOC/README:
+  new cartridge type
+
+
+2003-02-24  Ed Cogburn  <ecogburn@xtn.net>
+* added copyright headers to all *.c and *.asm files. Tried to collect
+  as much info as possible from the various ChangeLogs but if the author
+  in the header is incorrect please don't hesitate to send me a correction.
+
+* fixed all *.h files to use the same consistent format (#ifndef _FILE_H_ )
+
+* reformatted DOC/CREDITS
+
+
+2003-02-19  Ed Cogburn  <ecogburn@xtn.net>
+* configure process: cleans up some things, fixes a few little things,
+  rewrote the message screen when nothing is typed, and reorganizes/changes
+  the --enable options and the symbol names (defines) for those options.
+
+  First, all options are now --enable-xxx, because I flipped all the inverse
+  options. In other words, all symbol names declared for options here in
+  configure now mean the feature is enabled if the symbol is defined, for
+  consistancy, and to make it easier to figure out what options need to be
+  set. The display when you use '--help' also puts those features which
+  default to on at the top of the list, so its easy to look down the list
+  and understand whats going on now.
+
+  For those options that I flipped, I made the necessary fixes to the other
+  source files, mainly changing #ifdef to #ifndef or vice-versa.
+  I also changed symbol names where I thought it made sense. So for examples:
+  'NOSNDINTER' is flipped to "INTERPOLATE_SOUND".
+  'NO_VOL_ONLY' is flipped to 'VOL_ONLY_SOUND'.
+  'CLIP' is now 'CLIP_SOUND'.
+  'STEREO' is now 'STEREO_SOUND'.
+  'JOYMOUSE' is now 'SVGA_JOYMOUSE'
+  'USE_CURSORBLOCK' is now'SVGA_CURSORBLOCK' because these two options are
+  only valid with the svgalib target, just like 'SVGA_SPEEDUP'. 'CPUASS'
+  is now 'FALCON_CPUASM' since its only valid with the falcon target.
+  Symbols that started with 'NO_' have been flipped, mostly to their original
+  name without 'NO_'.  'SET_LED' is gone, and 'NO_LED_ON_SCREEN' has been
+  flipped to 'SHOW_DISK_LED'.
+
+2003-02-18  Petr Stehlik  <pstehlik@sophics.cz>
+* atari_sdl.c: sends more Atari keys: SETTAB/CLRTAB, HELP, CAPSLOCK,
+  INSERT_LINE/CHAR, DELETE_LINE/CHAR. Thanks to Mark for updating the file.
+
+2003-02-17  Petr Stehlik  <pstehlik@sophics.cz>
+* debian/ folder with deb scripts added (taken from official Atari800
+  debian package created by Dale Scheetz)
+* atari_sdl.c: window gets a title (thanks to Jozef for suggestion)
+
+2003-02-11  Vasyl Tsvirkunov  <vasyl@pacbell.net>
+* antic.c: added missing guard around extern reference
+* mzpokeysnd.c: C standard compliance fix
+* wince\*: WinCE/PocketPC updated
+
+** tagged as 1.3.0
+
+2003-02-10  Petr Stehlik  <pstehlik@sophics.cz>
+
+* pokey.c, monitor.c: added include. Interesting is that my compiler at
+  home hasn't complained but the gcc-3.2.2 here at work was uncompromising.
+* atari.c: "--help", "--usage" and "--version" recognized now, though the
+  former two just ask user to type "-help" again.
+* pokeysnd.[ch]: fixed typo errors
+* configure.in: alternate user and system-wide config file names for DOS
+  and TOS ($HOME/atari800.cfg and C:\atari800.cfg) since their filesystem
+  is still limited to 8+3 filenames.
+* win32/sound.c: restored original behaviour of "-quality" switch.
+* atari800.man: version increased, SDL option "-audio16" added.
+* win32/sound.c: "-bit16" renamed to "-audio16" to be in sync with SDL port
+* emuos.h: finally updated with proper URL
+* most files in DOC folder updated with minor fixes
+
+2003-02-09  Petr Stehlik  <pstehlik@sophics.cz>
+
+* pokey.[ch]: 'stereo_enabled' variable moved to rt-config.c
+* prompts.[ch]: YesNo() renamed to GetYesNo() and added GetYesNoAsInt()
+  that allows user to enter Y/N in the RtConfigUpdate process
+* rt-config.c: added 'enable_new_pokey'
+  * added "ENABLE_NEW_POKEY" and "STEREO_POKEY" config options
+  * removed all the code for backward compatibility since it could cause
+    confusion if both old and new option existed in one config file
+  * updated for GetYesNoAsInt() prompt
+  * completely reworked the way the config file is searched for on disk:
+    now it first tries in user's $HOME folder file named ".atari800.cfg"
+    (which is configurable at compile-time) and later it falls back
+    to system wide "/etc/atari800.cfg" (also configurable at compile-time).
+  * also saving to user defined config file (-config <fname>) should work
+    now (contrary to previous state where it saved to default file).
+  * actual config filename is printed so users are sure which file was
+    used (if their configured, or $HOME, or the system wide one)
+* ui.c: updated for 'enable_new_pokey'
+* pokeysnd.c: it wasn't clear to me how important the 'quality' parameter
+  was so I added a function Pokey_set_quality(int). If it wasn't that
+  important (was for testing only?) then let's remove this function.
+* pokeysnd.c: a new function "Pokey_DoInit()" does the actual initialization
+  of the Pokey emulation. It's been separated from Pokey_sound_init to
+  allow calling from UI.
+* atari_amiga.c, sound.c, sound_falcon.c, dos/sound_dos.c, win32/sound.c,
+  wince/sound.c: updated for Pokey_sound_init()'s number of parameters.
+* atari_sdl.c: removed "-mzpokey", "-oldpokey" and "-stereo" command line
+  switches. This job (cleaning up the bloated command line options) was
+  actually one of the main reasons for all my today's changes.
+* configure.in: STEREO sound enabled by default. Shouldn't hurt since
+  at the same time the 'enabled_stereo' is FALSE by default. So basically
+  released binaries will be able to turn on stereo anytime users'll wish.
+  Slower machines might want to disable this (as well as pixel-exact
+  Antic emulation and a few more things) before building. Configure script
+  could even take care of that if it knew which targets are running on
+  slow machines.
+* atari.h, DOC/NEWS, DOC/INSTALL updated with info from above.
+
+** tagged as 1.2.10
+
+2003-02-09  Petr Stehlik  <pstehlik@sophics.cz>
+
+* pokeysnd.[ch]: added Pokey_set/get_quality() that allows me to switch
+  the Pokey routines (Ron Fries/Michael Borisov) on-the-fly from UI.
+* ui.c: Sound Settings submenu added. Allows changing the Pokey routines
+  on-the-fly (automatically reboots) and also Mono/Stereo (if compiled in).
+* emuos.lis: updated URL
+
+2003-02-08  Petr Stehlik  <pstehlik@sophics.cz>
+
+* atari_sdl.c: signal keyboard interrupt only when it's enabled
+  (bugfix copied from input.c where it was fixed by Piotr)
+* configure.in, acconfig.h: autoconf 2.5x required again. OS/2 and other
+  platforms with old autoconf can use the pre-generated configure script
+  found in released versions.
+* atari_curses.c: exit() was not defined so I replaced it by return.
+* atari_x11.c: some variables are used only if SHM is not defined
+* configure.in, ui_basic.c: "CURSES" replaced by "USE_CURSES" so that
+  compiler doesn't complain about a redefined stuff
+* pokeysnd.c: null functions defined properly to avoid compiler warnings
+
+
+2003-02-04  Petr Stehlik  <pstehlik@sophics.cz>
+
+* configure.in, acconfig.h: after few days of autoconf 2.5x support I
+  rolled back the changes since Ken Ames had a problem with upgrading
+  autoconf on OS/2.
+
+** tagged as 1.2.9
+
+2003-01-27  Perry McFarlane  <ce596@torfree.net>
+
+  I am going to send my cycle-exact patch now because I don't have any
+  more time to work on it.  Hopefully it will be useful.  I hope
+  it is not a problem to apply the patches.  I tried to make them
+  to the current version.  They need more testing, though.
+  In particular state saving is not tested.
+
+  I have been working over the past few weeks on some improvements
+  to the Atari800 emulator.
+  I wanted to add support for mid-scanline changes to colours
+  and players which are used by some (few) games and demos.
+  I have written some code that does this, as a patch to
+  the current code base.
+  To avoid using the new code './configure --disable-cycleexact'
+  This patch will fix display bugs in Master of the Lamps,
+  Mail order monsters etc.
+  However there were still a few bugs in some programs (see BUGS)
+  and I haven't had time to fully test it.   I also have run out
+  of personal time to work on this code for a while so I won't have
+  much time to maintain it.   I think I should submit it now and
+  hopefully it can be used to help improve the emulator.  If I had
+  more time I would have completed more of the changes I wanted, see
+  TODO in the code for some future ideas.
+  As for efficency, it is probably going to be slower than normal
+  to use this code, but it seems OK on my (fast) machine, so
+  since it is a #define to remove the new technique I hope this
+  will not be a problem.
+
+  There is also a test program called T7.bas which I was using to
+  help find out how the real Atari's timing works, it might
+  be of interest to someone. (probably not) I am going to include
+  it anyways along with some brief documentation. There is asm code
+  t7.asm and a c program bdata.c that converts asm to Atari basic data
+  statements.   T7.asm can be compiled with ATASM.
+
+* antic.c, gtia.c, cycle_map.c:
+  Cycle-exact changes to colours, player horizontal positions, player
+  graphics.
+  Basic idea: arrays cpu2antic and antic2cpu are created in
+  cycle_map.c  Antic.c selects the correct cycle map
+  based on the IR mode and scanline #, DMACTL screen width and HSCROL
+  then cpu2antic_ptr and antic2cpu_ptr will convert the cpu's cycles
+  to those of antic and vice-versa.  xpos will now represent the
+  cpu's perception of cycles and not the acutual xpos.
+  font_cycles, DMAR etc are not used.  When the cpu changes
+  a display register, the display is updated partially to the point
+  where the change occurs.  A function draw_partial_scanline does
+  this using the existing antic drawing code in a somewhat hackish way.
+
+  cycle-exact GTIA11_DELAY for "Demonic laughter" demo.
+  using ring buffer approach
+
+  Improved handling of DMACTL changes in the middle of a scanline.
+  Fixes: Decathlon, Mail order monsters.
+  Emulation of a DMACTL width change bug.
+
+* cpu.c, monitor.c:
+  The monitor remembers xpos and ypos in a buffer.
+  A new command, YBREAK, can cause a breakpoint at a given scanline(ypos)
+  setting YBREAK ypos+1000 causes a flickering line to appear at
+  that point on the screen rather than breaking the cpu.  This allows
+  debugging what happens at that scanline more easily.
+  The memmove approach for remember_JMP, remmeber_PC has been replaced
+  with a more efficent ring buffer approach
+  The HISTORY command now gives a disassembly of the last N instructions
+  where N=64 by default, and if the new cycle-exact code is used, it
+  also gives the xpos and ypos of those instructions.
+  correction to SIZEP2 SIZEP3 equates
+
+* pokey.c:
+  cycle-exact random number generator reads.
+
+** tagged as 1.2.8
+
+2003-01-27  Jason Duerstock  <jason@cluephone.com>
+
+* PAGED_ATTRIB support, removing the attrib[] array and replacing it with
+  a map of 256 pointers (one for each page of memory.  If the pointer is
+  NULL, then the  memory[] array will be accessed directly.
+
+  This change is activated through './configure --enable-paged'.
+
+  In my estimation, this should improve the performance of the emulator,
+  removing 64K of cache usage, and short-circuiting some switch {}
+  statements.
+
+  Note that this will render old saved-state files incompatible.
+
+  There are a few short bits not finished yet, one of which being the
+  "H:" device patch, which is mapped into 0xd1xx (parallel bus space),
+  the other being state saving.
+
+  My idea on how to do this is through the following struct:
+
+	map_save save_map[2] = {
+	        {0,     NULL,   NULL},          /* RAM */
+	        {1,     NULL,   ROM_PutByte}    /* ROM */
+	};
+
+  The readmap and writemap will be compared with the pair of pointers
+  in the struct, and a byte (the first column) will be saved for each
+  page.
+
+  On restore, the byte will be used to reconstruct the readmap and
+  writemap.
+
+* Several warnings have been cleaned up through inclusion of the proper
+  headers.
+
+* 'make distclean' has been added, to remove all the files generated
+  from autoconf and ./configure
+
+  In the process, I removed the (admittedly ugly) memory.[ch] redirection
+  to memory-[pd].[ch].  If the general consensus is that PAGED_ATTRIB
+  is a step in the right direction, then I will look at tacking PAGED_MEM
+  back on through PAGED_ATTRIB.
+
+  Any comments, suggestions, critiques, etc are appreciated.
+
+joy> something has to be done regarding the saved-state files. Backward
+     compatibility is a key thing in this area.
+
+** tagged as 1.2.7
+
+2003-01-27  Mark Grebe  <markgrebe@yahoo.com>
+* devices.c:
+  I've finally got around to finishing the upgrade to
+  the hard disk emulation.  It now fully support
+  subdirectories.  It supports CREDIR, RMDIR, CWD, ?DIR
+  in SpartaDos and BW-DOS.  It also supports their XIO
+  equivelents, and subdirectories work in all the other
+  DOS commands as well.  It uses '>' and '>>' as
+  directory seperators like SpartaDOS and BW-DOS.  I've
+  also added support for the binary load commands, and
+  added a path string for use with the H: devices, as
+  the standard path won't work for them.
+
+  It really needs a documentation writeup, but I've
+  been gettting swamped at work, so that will come as I
+  get time, but thought I would get this to everyone
+  now, as I released it in the last release of
+  Atari800MacX.  I've tested it on the Mac, as well as
+  Windows and the Linux SDL port.
+
+  The only other change that  is needed, is that
+  Device_HHINIT should be called during Coldstart(), so
+  that the working directories get reset to the root
+  directory.
+
+joy> Note that it may needs the same patches that were applied
+     to devices.c in version 1.14. But I don't have an Amiga handy
+     so I'll let someone else do it.
+
+** tagged as 1.2.6
+
+2003-01-27  Piotr Fusik  <fox@scene.pl>
+* antic.c: swapped GTIA and CTIA artifacting modes
+  (swapped by mistake in 0.9.9j)
+* input.c: signal keyboard interrupt only when it's enabled
+  (fixes Atari crash after SHIFT and * in Super Pacman 5200)
+
+2002-12-16  Krzysztof Nikiel  <knik@poczta.onet.pl>
+* colours.c: corrected color/BW conversion (Vasyl was right)
+
+2002-12-08  Krzysztof Nikiel  <knik@poczta.onet.pl>
+* pokeysnd.c mzpokeysnd.c: Added 16bit and quality sound setting support.
+  Added multiple sound engines support.
+
+2002-12-04  Mark Grebe <markgrebe@yahoo.com>
+* devices.c: device H: now fully emulates the standard DOS functions
+  Rename, Delete, Lock, Unlock, Note, Point, and Open for Update.
+  Also changed the directory listing to look like the standard Atari
+  DOS 2.0 listing. (The sector count is based on 256 byte sectors).
+
+** released as 1.2.5 on 2002/12/02
+
+2002-11-25  Piotr Fusik  <fox@scene.pl>
+* DOC/cart.txt: fixed a few typos
+
+2002-11-06  Petr Stehlik  <pstehlik@sophics.cz>
+* ui.c:
+  - applied patch from Ed Cogburn that fixes subsequent mounting
+    of R/W disks in slot that was mounted R/O previously.
+  - finally implemented the R/W <-> R/O mode switching using the Space Bar.
+    Please note that this R/W <-> R/O switch is just temporary and does
+    not change the writeprotect flag of ATR images. Besides, it cannot
+    override this flag so you actually can't mount a writeprotected ATR
+    image read/write using this Space Bar toggle.
+
+* atari.c: Ken Ames sent me a very simple patch that is supposed to allow
+    compiling the Atari800 on OS/2 "using Hob X11, XFree86, or IBM's X11
+    server".
+
+2002-09-16  Piotr Fusik  <fox@scene.pl>
+* cartridge.[ch], ui.c, DOC/cart.txt: five new cartridge types (Nir Dary)
+
+2002-09-05  Piotr Fusik  <fox@scene.pl>
+* cartridge.[ch], ui.c, DOC/cart.txt, DOC/README: seven new cartridge types
+  (by Nir Dary)
+
+2002-08-26  Adam Bienias
+* pokeysnd.c: a fix for better quality of sound
+
+2002-08-21  Piotr Fusik  <fox@scene.pl>
+* antic.c: ANTIC mode E + GTIA mode 9 ("Unconventional 2k", "Ass Kisiel")
+
+2002-08-15  Piotr Fusik  <fox@scene.pl>
+* DOC/BUGS: "Numen" soundtrack
+* cartridge.[ch], ui.c, DOC/cart.txt: 1 MB XEGS cart
+* input.c: Amiga/ST mouse right button ("Bombdown")
+* input.h, input.c, pia.c: MultiJoy4 interface (4 joysticks for XL/XE)
+
 ** released as 1.2.4
 
 2002-08-07  Petr Stehlik  <pstehlik@sophics.cz>
 * atari_sdl.c:
   - added atexit(SDL_Quit) to clean up after unsuccessful initialization.
-  - fixed "-help" so that it doesn't initialize graphics mode. 
+  - fixed "-help" so that it doesn't initialize graphics mode.
   - added "-sound" and "-nosound" support so you can disable sound if
     your sound card is not plugged in :)
   - added "-dsprate" support
@@ -31,6 +4787,10 @@
 * antic.c, memory-d.c, atari800.man: separate ANTIC access to extended memory
   for 130 XE and 320 Compy Shop
 * DOC/README: updated features
+
+2002-07-11  Krzysztof Nikiel  <knik@poczta.onet.pl>
+* configure.in: Freature processing redesigned to be more consistent.
+  Correct enable/disable info is printed in help.
 
 ** released as 1.2.3
 
@@ -319,7 +5079,7 @@
 2001-09-26  Piotr Fusik  <fox@scene.pl>
 
 * input.c, input.h: added mouse_mode, mouse_port, 5200 key codes
-* antic.h, antic.c, platforma.h, atari_vga.c: light_pen_enabled, Atari_PEN ->
+* antic.h, antic.c, platform.h, atari_vga.c: light_pen_enabled, Atari_PEN ->
   mouse_mode==MOUSE_PEN, PENH_input, PENV_input (direct mouse support
   for light pen emulation)
 

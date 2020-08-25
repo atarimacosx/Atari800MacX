@@ -1,46 +1,54 @@
-VER_MAJOR=1
+#!/bin/sh
+# This scripts helps with building the source .tar.gz file
+
+VER_MAJOR=4
 VER_MINOR=2
-VER_MICRO=4
+VER_MICRO=0
 #
 VERSION=$VER_MAJOR"."$VER_MINOR"."$VER_MICRO
 TAG="ATARI800_"$VER_MAJOR"_"$VER_MINOR"_"$VER_MICRO
+#upper case the tag
+TAG=`echo $TAG | tr [:lower:] [:upper:]`
 FOLDER="atari800-"$VERSION
-FNAME=$FOLDER".tar.gz"
+FNAME=$FOLDER"-src.tgz"
 #
-echo "download from CVS? (y/N)"
+echo "download from GitHub? (y/N)"
 read key
 if [ "x"$key = "xy" ]; then
-	cvs -d:pserver:anonymous@cvs.atari800.sf.net:/cvsroot/atari800 login
-	cvs -z9 -d:pserver:anonymous@cvs.atari800.sf.net:/cvsroot/atari800 export -r $TAG atari800
+	git clone https://github.com/atari800/atari800.git
 fi
 #
-grep ATARI_TITLE atari800/src/atari.h | grep $VERSION >/dev/null
+grep "[Vv]ersion "$VERSION atari800/README.TXT >/dev/null
 if [ $? -ne 0 ]; then
-	echo "increase version in src/atari.h"
-	exit 1
-fi
-grep "[Vv]ersion "$VERSION atari800/README.1ST >/dev/null
-if [ $? -ne 0 ]; then
-	echo "increase version in README.1ST"
+	echo "ERROR: increase version in README.TXT"
 	exit 1
 fi
 grep "[Vv]ersion "$VERSION atari800/DOC/README >/dev/null
 if [ $? -ne 0 ]; then
-	echo "increase version in DOC/README (2x)"
+	echo "ERROR: increase version in DOC/README"
+	exit 1
+fi
+grep "Atari800 "$VERSION atari800/src/atari800.man >/dev/null
+if [ $? -ne 0 ]; then
+	echo "ERROR: increase version in src/atari800.man"
 	exit 1
 fi
 grep "%define ver" atari800/atari800.spec | grep $VERSION >/dev/null
 if [ $? -ne 0 ]; then
-	echo "increase version in atari800.spec"
+	echo "ERROR: increase version in atari800.spec"
+	exit 1
+fi
+grep "AC_INIT(Atari800, "$VERSION atari800/configure.ac | grep $VERSION >/dev/null
+if [ $? -ne 0 ]; then
+	echo "ERROR: increase version in configure.ac"
 	exit 1
 fi
 #
-cd atari800/src
+cd atari800
 ./autogen.sh
 # remove leftovers from autogen process
-rm autogen.sh acconfig.h config.cache config.log configure.in
-# remove old stuff
-rm configure.c config.in
-cd ../..
+rm -f autogen.sh config.cache config.log
+rm -rf autom4te.cache
+cd ..
 mv atari800 $FOLDER
-tar czvf $FNAME $FOLDER
+GZIP=--best tar chozvf $FNAME $FOLDER

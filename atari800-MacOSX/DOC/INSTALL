@@ -1,8 +1,5 @@
-Installation of the Atari 800 Emulator
+Installation of the Atari800 Emulator
 --------------------------------------
-
-If you downloaded this package from CVS install autoconf and run autogen.sh
-before configuring.
 
 Irrespective of whether you are going to compile the emulator yourself
 or install a pre-compiled binary version you must obtain a copy of the
@@ -17,19 +14,21 @@ http://prdownloads.sf.net/atari800/xf25.zip
 If you are creating the ROM images yourself they should be copied from
 the following locations:-
 
-1. Atari Basic (8192 bytes between $a000 and $bfff)
-2. Atari OS/A (10240 bytes between $d800 and $ffff)
-3. Atari OS/B (10240 bytes between $d800 and $ffff)
-4. Atari XL/XE (16384 bytes between $c000 and $ffff)
-5. Atari 5200 (2048 bytes between $f800 and $ffff)
-
-Note: If you are extracting the atarixl.rom you will find that the
-      ROM area under the custom chip ($d000 to $d7ff) are mapped
-      between $5000 and $57ff when bit 7 of PORTB is set to 1.
-
-      i.e. You should set bit 7 of PORTB and then dump the memory
-           out in the following order:- $c000 to $cfff, $5000 to $57ff
-           and finally $d800 to $ffff.
+1. Atari BASIC (8192 bytes between $a000 and $bfff)
+   Note: On a 400/800/1200XL system a BASIC cartridge must be inserted, and on
+   other systems the built-in BASIC must be enabled by setting bit 1 of PORTB
+   to 0.
+2. Atari 400/800 OS (10240 bytes between $d800 and $ffff)
+3. Atari XL/XE OS (16384 bytes between $c000 and $ffff)
+   Note: If you are extracting the XL/XE OS you will find that the ROM area
+   under the custom chip ($d000 to $d7ff) is mapped between $5000 and $57ff
+   when bit 7 of PORTB is set to 1. I.e. you should set bit 7 of PORTB and
+   then dump the memory out in the following order:- $c000 to $cfff,
+   $5000 to $57ff and finally $d800 to $ffff.
+4. Atari XEGS built-in game (8192 bytes between $a000 and $bfff)
+   Note: the built-in game must be enabled by setting bit 1 of PORTB to 1 and
+   bit 6 to 0.
+5. Atari 5200 BIOS (2048 bytes between $f800 and $ffff)
 
 The first time you run the emulator you will be prompted for the
 location of the ROMs and various other defaults. If you want to
@@ -42,126 +41,179 @@ Compiling the Emulator
 The emulator can be compiled for the following systems (and probably
 many others with a little work):-
 
-1. X Window Version (Including SUN OpenWindows) on a Unix Platform
-2. SVGALIB Version on Linux
-3. CURSES version
-4. Graphical Version for the Amiga
-5. Graphical version for the Atari TT/Falcon and compatible computers
-6. BASIC version (No Graphics). Should be straightforward to configure
-   for any 32 bit environment supporting ANSI C.
-7. VGA Version for DOS
-8. DirectX Version for Microsoft Windows
-9. SDL (Linux/Unix, Windows, BeOS)
-10. WinCE
+1. X Window Version (including SUN OpenWindows) on a Unix Platform
+   (prefer the SDL version)
+2. CURSES version
+3. Graphical Version for the Amiga (not maintained)
+4. Graphical version for the Atari TT/Falcon and compatible computers
+5. "simple" version (no graphics). Should be straightforward to configure
+   for any 32-bit environment supporting ANSI C.
+6. VGA Version for DOS
+7. DirectX Version for Microsoft Windows (also try the SDL version)
+8. SDL (Linux/Unix, Windows, BeOS)
+9. WinCE
+10. Java (various platforms)
+11. Static library version: libatari800
 
 Installed zlib (compression library) enables building the emulator with
-compressed statesave images support.
-
-   Note: I don't say 32 bit computer because certain operating systems
-   enforce a 16 bit memory model. No prizes are offered for correctly
-   identifing the OS in question.
+compressed statesave images support. Additionally installed libpng
+makes the emulator capable of generating screenshots in the PNG format.
 
 Building the Emulator on most platforms
 ---------------------------------------
 
-0. Type "./configure --target=" for a list of supported platforms.
-1. Type "./configure --target=your_target" (choose from the list above)
-2. Type "make"
-3. Install the emulator by typing "make install".
+1. Change your working dir to the atari800 path
+2. Check if "configure" script is there. If it is skip to step 4.
+3. Run "./autogen.sh" (make sure you have autoconf >= 2.5x installed).
+4. Type "./configure".
+5. Type "make".
+6. Change directory to atari800/src
+7. Install the emulator by typing "make install".
+
+Please note it is also possible to build atari800 outside the source
+directory. Just follow steps 1-3 and then call `configure' from your build
+directory, i.e. ../atari800/configure if your build directory is located next
+to atari800 source directory.
+
+By default, the "configure" script attempts to auto-detect the best interfaces
+available to use for emulating video and sound. It is also possible to
+override autodetection and select a specific interface by appending the
+"--with-video=<value>" and "--with-sound=<value>" options to the command
+in step 4. Below is the list of available values for these options:  
+a) Video interfaces (--with-video):
+- dosvga: use direct access to VGA card, only under DOS/DJGPP
+- sdl: use the Simple DirectMedia Library
+- curses: use the curses library
+- ncurses: use the ncurses library
+- pdcurses: use the pdcurses library
+- no: use only stdin/stdout for input/output. Supported on all platforms
+b) Sound interfaces (--with-sound):
+- win: use the WinMM library, only under Windows
+- falcon: use Atari Falcon native sound
+- dossb: use direct access to a Sound Blaster-compatible card, only under
+  DOS/DJGPP
+- sdl: use the Simple DirectMedia Library
+- oss: use Open Sound System
+- no: disable sound altogether. Supported on all platforms
+
+Only the video and sound interfaces listed above are autodetected, but the
+emulator also supports other ones. To build for a platform that is
+not automatically detected, replace step 4 of the above instructions with:
+
+4a. Type "./configure --target=help" for a list of supported platforms.
+4b. Type "./configure --target=<YourTarget>" (choose from the list above)
+
 
 Building the Emulator for Curses
 --------------------------------
 
-Follow the instruction for Unix but note that you must be using the
+Follow the instruction above but note that you must be using the
 System V Curses Library. BSD Curses is lacking a few functions and
 will not work (nodelay, attron, attroff, keypad and curs_set).
-
-Building the Emulator for VAX/VMS
----------------------------------
-
-This version only support the BASIC text only mode. You will be
-able to run programs such as:- DOS 2.5, DOS XL, MAC65 (disk version),
-Atari Basic and similar programs. I have had reports that you can
-make the X11 version run under DEC-Windows with a little work.
-
-Note: I have not built this version for a while. Modifications may be
-      required to vmsbuild.
-
-To build type @vmsbuild at the command line. I have compiled it with
-GNU C 2.6.1 but I don't expect problems with other versions. It
-will probably compile OK on VAX C but it will require the appropriate
-compilation options to be inserted into vmsbuild.com
-
-atari800 :== $DISK$xxxx:[yyyy]atari800.exe
-
-	where xxxx is the disk the software is on.
-	      yyyy is the directory the software is in.
-
-Building the Emulator for the CBM Amiga
----------------------------------------
-
-Compiler: GNU C + DICE C (Lattice C Untried)
-
-There is a separate makefile provided for the Amiga - Makefile.amiga
-By default it is setup for use with GCC. If you are using Dice C you
-will need to comment out the GCC section and remove the comments from
-the Dice section. Unfortunately I don't use DICE C very often so if
-it no longer compiles please let me know.
-
-GNU C is available on AMINET under dev/gcc but needs about 6MB to
-compile the emulator.
-
-For GCC be sure that the C_INCLUDE_PATH environment variable is
-pointing to the location of the official Commodore include files
-prior to compiling the emulator.
-
-For example:
-	setenv C_INCLUDE_PATH /path/of/cbm/includes
 
 Building the Emulator for DOS
 -----------------------------
 
-To compile, use DJGPP the DOS port of gcc, which can be get from
+To compile, use DJGPP the DOS port of gcc, which can be got from
 http://www.delorie.com/djgpp/. You will need complete environment
 in order to configure and build the executables.
-You may need zlib (compression library) to use compressed statesave images.
-To build curses (text mode) version install curses library (e.g. PDCurses).
+You may need zlib (compression library) to use compressed statesave images
+and libpng for PNG screenshots. To build curses (text mode) version install
+curses-compatible library (e.g. PDCurses) and add
+"--with-video=pdcurses" when invoking "./configure".
 
 Since the source code contains files with long file names, you must unpack
 and compile the source on a filesystem supporting long file names (for example
 VFAT of Windows95). An additional change of DJGPP setting is required:
 open the DJGPP.ENV file in editor and change the LFN= line to LFN=y
 
-1. Run "configure_dos.bat --target=vga".
+1. Run "configure_dos.bat".
 2. Run "make" and "make joycfg".
 3. If everything went good you should have atari800.exe and joycfg.exe -
    copy them to destination directory.
-   
+
 Building the Emulator for Windows
 ---------------------------------
 
-Atari800 for Windows can be built using Cygwin environment:
-http://cygwin.com/
-
-1. Type "./configure --target=dx".
-2. Type "make".
-3. Copy atari800.exe to destination directory.
+See DOC/BUILD.windows.
 
 Building the Emulator for Falcon
 --------------------------------
 
-You need a recent GCC, for example 2.7.2, running on a filesystem with long
-file names (either minix-fs of MiNT, or VFAT of MagiC).
+You need a recent GCC, for example 4.6.4, running on a filesystem with long
+file names (either minixfs/ext2fs of MiNT, or VFAT of MagiC).
 
 1. Type "./configure --target=falcon".
 2. Type "make".
 3. Copy atari800 to destination directory or try "make install".
 
+You also can build the default target (by omitting the "--target" option)
+with optional support for curses or SDL - see "Building the Emulator on most
+platforms".
+
 Building the Emulator for SDL
 -----------------------------
 
-0. Please install (and configure) SDL library (http://www.libsdl.org). 
-1. Type "./configure --target=sdl".
-2. Type "make".
-3. Type "make install".
-4. You can run atari800 anytime you want.
+1. Please install (and configure) SDL library (http://www.libsdl.org).
+2. If you want to build an OpenGL-capable version, you'll need OpenGL headers
+   installed. They should support OpenGL version 2.1 or later, ie. with support
+   for the Pixel Buffer Object (PBO) extension. The result binary, however, will
+   not require an OpenGL 2.1-capable video card - it will also support OpenGL
+   1.1 video cards (PBOs simply won't be used), and machines without OpenGL
+   support aat all (only software modes will be available).
+3. Follow the instructions in the "Building the Emulator on most platforms"
+   section above. NOTE: To be sure, force using SDL by adding
+   "--with-video-input=sdl --with-sound=sdl" when calling "./configure".
+   Otherwise the configure script may autodetect and use other libraries for
+   video and audio.
+4. When building on Windows, see DOC/BUILD.windows for additional notes.
+
+Building the Emulator for Java using NestedVM
+---------------------------------------------
+
+1. Get and build NestedVM (nestedvm.ibex.org). make env.sh and unix_runtime.jar
+2. source env.sh in the NestedVM directory.
+3. Follow steps 1-5 of the "Building the Emulator on most platforms" section
+   above, but when calling ./configure, add these two parameters:
+   --host=mips-unknown-elf --disable-ide
+   ie.
+   ./configure --host=mips-unknown-elf --disable-ide
+   You might want to add --enable-veryslow --disable-monitorbreak to the above.
+   This should result in creation of the file named atari800.jar.
+4. atari800.jar requires unix_runtime.jar in the same directory. Copy it from
+   the NestedVM directory where you made it using "make unix_runtime.jar" as 
+   stated above.
+5. To run use: java -jar atari800.jar
+Add -o UnixRuntime to the NestedVM compiler options to enable directory
+browsing.
+This requires changing Windows paths to the form: /c:/file in all configuration
+files and on the command line.  It will look for .atari800.cfg in your
+Windows home directory.
+Applet version:
+You must compile with -o UnixRuntime
+Apply UnixRuntime.patch to NestedVM.
+To use:
+<APPLET CODE="atari800.class" WIDTH=672 HEIGHT=480 ARCHIVE="atari800.jar, unix_runtime.jar">
+<PARAM name=args value="-config /resource/http://atari800_applet.cfg -xlxe_rom /resource/http://ospp.rom -basic_rom none -nobasic -nopatchall /resource/http://disk.atr">
+</APPLET>
+All files should have /resource/http:// in front of their names.
+Edit atari800_applet.cfg and add /resource/http:// to all rom files, even those
+you are not providing.
+Legal distribution of Atari800 as an applet cannot include the OS and BASIC
+ROM Files.  You can run without BASIC by using -basic_rom none and Thomas
+Richter's Os++.
+
+Building the libatari800 static library
+---------------------------------------
+
+The libatari800 target requires no external libraries and is platform
+independent. It also has no user interface, as it's designed to be embedded
+into another program that controls the operation of the emulator.
+
+The build procedure is much the same as on most platforms, except for step 4:
+
+4. Type "./configure --target=libatari800".
+
+The resulting libatari800.a file can be linked with user programs to create an
+embedded atari800 emulator.
+

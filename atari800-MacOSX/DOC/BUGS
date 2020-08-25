@@ -1,15 +1,62 @@
 Bugs and Known Problems
 -----------------------
 
-o a few keyboard-related bugs: e.g. pressing SHIFT+1 and then
+* Cosmic Balance (game) hangs before the intro screen. This is probably
+  due to inaccurate emulation of POKEY interrupts (see below). The program 
+  uses a hardware SIO loader as part of a presumed protection scheme.  
+  There is a bug in the code which activates the POKEY timers at an 
+  absurdly high frequency. This causes repeated interrupts which hangs the 
+  program.
+  Probably there is some interaction with SIO which prevents this on
+  a real Atari.
+  A workaround is to invoke the monitor and type "c 10 40" and "cont".
+
+* new Pokey engine doesn't switch to mono output in STEREO_SOUND config
+
+* new Pokey engine doesn't support VOL_ONLY_SOUND on the second Pokey
+
+* a few keyboard-related bugs: e.g. pressing SHIFT+1 and then
   releasing SHIFT should still give '!' characters
 
-o ANTIC emulation is scanline-, not pixel-exact.
+* The cycle-exact ANTIC/GTIA/CPU timing is not 100%.
   This causes display bugs in following programs:
+  - Surf's up (game) (the horizon)
+  - Satan's Hollow (game) (horizon) (confirmed sta WSYNC at WSYNC_C bug)
+  - Dimension X (game) (alignment problem)
+  - Te.mod (demo) (small glitched pixel in the final credits on the bottom left)
+  - Our 5oft Unity Part (demo) (cycle-alignment, probably WSYNC)
+  - Isolation (demo) (vector animations)
+  - 80 Random Moving Rectangles (demo) (top left of rectangles, screen data
+    is modified while drawing a scanline)
+  - Sirius games: Scores and Text in Worm War I, Final Orbit, Spider City, 
+    Turmoil, Fantastic Voyage.  These games store screen data in page 0
+    and modify it each scan line.  They reuse the same data for each
+    scan line with an LMS on every line.  This makes the code look 
+    like 2600 code. Emulating this requires trapping writes to
+    page 0 and doing partial ANTIC loads. 
+  - Spider City has another bug in the map which is caused by player graphics
+    and HPOS being changed before the player is finished being drawn.  This
+    is only possible for wide players. 
+  - Extract (demo) (face)
+
+* Non-bugs:
+  - Ergo Bibamus (demo) (one pixel of the flower above the perspective scroll)
+  - Mail Order Monsters (game)
+    (some colour changes do not align with text, occurs on a real Atari)
+  - The Break (demo) (bugs on the left side of photo)
+  - Star Raiders (disk image) (game) (doesn't work on XL/XE, select OS/B)
+  - Many other disk images of cartridges that work on XL/XE require OS B
+    because a once-popular cart dumping program for the Atari 800 generates
+    an OS B-specific loader. IIRC it loads the image and jumps into the OS B
+    RESET vector location, which is changed on the XL.
+  - Strip Poker (game) (Atari Basic must be enabled)
+  - Joust (Atari 5200 game) (the game sets all colors to black on PAL systems,
+    you need to switch the emulator to NTSC mode)
+
+* The following programs are improved by using the new cycle-exact code:
   - 8 Players Demo (demo)
   - Bewesoft's Demo (demo)
   - Bitter Reality (demo)
-  - Darkness Warrior (picture)
   - Demonic Laughter (music collection)
   - Extract (graphics collection)
   - GED (graphics editor)
@@ -18,30 +65,50 @@ o ANTIC emulation is scanline-, not pixel-exact.
   - Master of the Lamps (game)
   - Orneta '95 invitro (demo)
   - Our 5oft Unity Part (demo)
-  - Power Graph (graphics editor)
   - Studio Dream (demo)
   - Sweet Illusion (demo)
   - Te.mod (demo)
   - The Break (demo)
+  - Miner 2049'er (game) (rotating 5's)
+  - Dimension X (game) (title screen upper and lower bars)
+  - Graphics impossible (demo) (Antic magazine)
+  - Power Graph (graphics editor)
+  - Darkness Warrior (picture)
 
-o POKEY interrupts are scanline-, not cycle-exact.
-  This causes sound bugs in following programs:
-  - Mirax Force (game)
-  - Saturday Demo (demo)
-  - The Last Guardian (game)
+* POKEY interrupts are scanline-, not cycle-exact.
+  This causes display or sound bugs in following programs:
+  - Joyride (demo) (white lines on title picture)
+  - Mirax Force (game) (speech)
+  - Saturday Demo (demo) (music)
+  - The Last Guardian (game) (speech)
+  - Digital Trash (demo) (music)
 
-o sound emulation uses VOL_ONLY hack.
-  This causes sound bugs in following programs:
-  - Digital Trash (demo)
+* VOL_ONLY_SOUND causes sound bugs in following programs:
   - Ghostbusters (game)
   - Overmind (demo)
 
-o intensive 130xe-banks switching slows down emulation much.
+* intensive 130xe-banks switching slows down emulation much.
   This causes performance problems in following programs:
   - Impossible but Real (demo)
   - Sheol (demo)
   - Total Daze (demo)
   - Ultra (demo)
 
-o SDL port uses call back system for filling sound buffer.
+* The following VAPI images are known to not work:
+  (This list may not be complete, as full VAPI documentation
+   has never been released by the author)
+  - Alternate Reality: The City
+  - Ankh
+  - Attack at EP CYG 4
+  - Ballblazer Activision (UK)
+  - Jenny of the Prairie
+  - Mercenary - Escape from Targ _ Novagen Software
+  - Mr. Do!
+  - Music Studio (The)
+  - Promoteur
+  - Rescue on Fractalus! _ Activision (UK)
+  - Spy vs Spy
+  - Targets - A Number Game
+
+* SDL port uses call back system for filling sound buffer.
   This causes wrong sound effects (noise) in some games.
