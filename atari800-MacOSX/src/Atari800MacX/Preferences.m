@@ -49,17 +49,25 @@ extern ATARI825_PREF prefs825;
 extern ATARI1020_PREF prefs1020;
 extern EPSON_PREF prefsEpson;
 extern ATASCII_PREF prefsAtascii;
-extern int FULLSCREEN;
-extern int UI_alt_function;
-extern int requestFullScreenUI;
 extern int diskDriveSound;
+extern int FULLSCREEN_MACOS;
+typedef struct CARTRIDGE_image_t {
+    int type;
+    int state; /* Cartridge's state, such as selected bank or switch on/off. */
+    int size; /* Size of the image, in kilobytes */
+    unsigned char *image;
+    char filename[FILENAME_MAX];
+} CARTRIDGE_image_t;
+
+extern CARTRIDGE_image_t CARTRIDGE_main;
+extern CARTRIDGE_image_t CARTRIDGE_piggyback;
 
 extern char atari_config_dir[FILENAME_MAX];
 
 static char workingDirectory[FILENAME_MAX], osromsDir[FILENAME_MAX], paletteDir[FILENAME_MAX];
 static char imageDirStr[FILENAME_MAX],printDirStr[FILENAME_MAX];
 static char hardDiskDir1Str[FILENAME_MAX], hardDiskDir2Str[FILENAME_MAX], hardDiskDir3Str[FILENAME_MAX];
-static char hardDiskDir4Str[FILENAME_MAX], osARomFileStr[FILENAME_MAX], osBRomFileStr[FILENAME_MAX];
+static char hardDiskDir4Str[FILENAME_MAX], osBRomFileStr[FILENAME_MAX];
 static char xlRomFileStr[FILENAME_MAX], basicRomFileStr[FILENAME_MAX], a5200RomFileStr[FILENAME_MAX];
 static char diskImageDirStr[FILENAME_MAX],diskSetDirStr[FILENAME_MAX], cartImageDirStr[FILENAME_MAX], cassImageDirStr[FILENAME_MAX];
 static char exeFileDirStr[FILENAME_MAX], savedStateDirStr[FILENAME_MAX], configDirStr[FILENAME_MAX];
@@ -75,13 +83,83 @@ static char paletteStr[FILENAME_MAX];
 #define NUM_TOTAL_TYPES NUM_ORIG_TYPES+NUM_V4_TYPES
 
 static int types[NUM_TOTAL_TYPES] =
-{ 0, 1, 2, 0, 0, 3, 4, 5, 0, 0, 6, 7, 8, 0, 9,10,11,12,13};
+{ 3, 4, 5, 0, 0, 6, 7, 8, 0, 9,10,11,12,13};
 static int v4types[NUM_TOTAL_TYPES] =
-{-1,-1,-1, 0, 1,-1,-1,-1, 2, 3,-1,-1,-1, 4,-1,-1,-1,-1,-1};
+{-1,-1,-1, 2, 3,-1,-1,-1, 4,-1,-1,-1,-1,-1};
 static int indicies[NUM_TOTAL_TYPES] =
-{0,1,2,5,6,7,10,11,12,14,15,16,17,18,3,4,8,9,13};
+{0,0,0,0,1,2,5,6,7,9,10,11,12,13,0,0,3,4,8};
 static int axlonBankMasks[] = {3,7,15,31,63,127,255,0};
-static int mosaicBankMaxs[] = {3,19,35,0};
+static int mosaicBankMaxs[] = {3,19,35,51,0};
+
+/* Note: this is duplicted with sysrom.h as due
+   to type conflicts we cannot include that file */
+/* ROM IDs for all supported ROM images. */
+enum {
+    /* --- OS ROMs from released Atari computers --- */
+    /* OS rev. A (1979) from early NTSC 400/800. Part no. C012499A + C014599A + C012399B */
+    SYSROM_A_NTSC,
+    /* OS rev. A (1979) from PAL 400/800. Part no. C015199 + C015299 + C012399B */
+    SYSROM_A_PAL,
+    /* OS rev. B (1981) from late NTSC 400/800. Part no. C012499B + C014599B + C012399B */
+    SYSROM_B_NTSC,
+    /* OS rev. 10 (1982-10-26) from 1200XL. Part no. C060616A + C060617A */
+    SYSROM_AA00R10,
+    /* OS rev. 11 (1982-12-23) from 1200XL. Part no. C060616B + C060617B */
+    SYSROM_AA01R11,
+    /* OS rev. 1 (1983-03-11) from 600XL. Part no. C062024 */
+    SYSROM_BB00R1,
+    /* OS rev. 2 (1983-05-10) from 800XL and early 65XE/130XE. Part no. C061598B */
+    SYSROM_BB01R2,
+    /* OS rev. 3 (1984-03-23) from prototype 1450XLD. Known as 1540OS3.V0 and 1450R3V0.ROM */
+    SYSROM_BB02R3,
+    /* OS rev. 3 ver. 4 (1984-06-21) from prototype 1450XLD. Known as os1450.128 and 1450R3VX.ROM */
+    SYSROM_BB02R3V4,
+    /* OS rev. 5 ver. 0 (1984-09-06) compiled from sources:
+       http://www.atariage.com/forums/topic/78579-a800ossrc/page__view__findpost__p__961535 */
+    SYSROM_CC01R4,
+    /* OS rev. 3 (1985-03-01) from late 65XE/130XE. Part no. C300717 */
+    SYSROM_BB01R3,
+    /* OS rev. 4 (1987-05-07) from XEGS - OS only. Part no. C101687 (2nd half) */
+    SYSROM_BB01R4_OS,
+    /* OS rev. 59 (1987-07-21) from Arabic 65XE. Part no. C101700 */
+    SYSROM_BB01R59,
+    /* OS rev. 59 (1987-07-21) from Kevin Savetz' Arabic 65XE (prototype?):
+       http://www.savetz.com/vintagecomputers/arabic65xe/ */
+    SYSROM_BB01R59A,
+    /* --- BIOS ROMs from Atari 5200 --- */
+    /* BIOS from 4-port and early 2-port 5200 (1982). Part no. C019156 */
+    SYSROM_5200,
+    /* BIOS from late 2-port 5200 (1983). Part no. C019156A */
+    SYSROM_5200A,
+    /* --- Atari BASIC ROMs --- */
+    /* Rev. A (1979), sold on cartridge. Part no. C012402 + C014502 */
+    SYSROM_BASIC_A,
+    /* Rev. B (1983), from 600XL/early 800XL, also on cartridge. Part no. C060302A */
+    SYSROM_BASIC_B,
+    /* Rev. C (1984), from late 800XL and all XE/XEGS, also on cartridge, Part no. C024947A */
+    SYSROM_BASIC_C,
+    /* builtin XEGS Missile Command. Part no. C101687 (1st quarter) */
+    SYSROM_XEGAME,
+    /* --- Custom ROMs --- */
+    SYSROM_800_CUSTOM, /* Custom 400/800 OS */
+    SYSROM_XL_CUSTOM, /* Custom XL/XE OS */
+    SYSROM_5200_CUSTOM, /* Custom 5200 BIOS */
+    SYSROM_BASIC_CUSTOM,/* Custom BASIC */
+    SYSROM_XEGAME_CUSTOM, /* Custom XEGS game */
+    SYSROM_LOADABLE_SIZE, /* Number of OS ROM loadable from file */
+#if EMUOS_ALTIRRA
+    /* --- Built-in free replacement OSes from Altirra --- */
+    SYSROM_ALTIRRA_800 = SYSROM_LOADABLE_SIZE, /* AltirraOS 400/800 */
+    SYSROM_ALTIRRA_XL, /* AltirraOS XL/XE/XEGS */
+    SYSROM_ALTIRRA_5200, /* Altirra 5200 OS */
+    SYSROM_ALTIRRA_BASIC, /* ATBASIC */
+    SYSROM_SIZE, /* Number of available OS ROMs */
+#else /* !EMUOS_ALTIRRA */
+    SYSROM_SIZE = SYSROM_LOADABLE_SIZE, /* Number of available OS ROMs */
+#endif /* !EMUOS_ALTIRRA */
+    SYSROM_AUTO = SYSROM_SIZE /* Use to indicate that OS revision should be chosen automatically */
+};
+extern int SYSROM_FindType(int defaultType, char const *filename, char *romTypeName);
 
 void RunPreferences() {
 
@@ -155,8 +233,6 @@ static NSDictionary *defaultValues() {
     strcat(hardDiskDir4Str, "/HardDrive4");
     strcpy(osromsDir, workingDirectory);
     strcat(osromsDir, "/OSRoms");
-    strcpy(osARomFileStr, workingDirectory);
-    strcat(osARomFileStr, "/OSRoms/atariosa.rom");
     strcpy(osBRomFileStr, workingDirectory);
     strcat(osBRomFileStr, "/OSRoms/atariosb.rom");
     strcpy(xlRomFileStr, workingDirectory);
@@ -181,22 +257,10 @@ static NSDictionary *defaultValues() {
     
     if (!dict) {
         dict = [[NSDictionary alloc] initWithObjectsAndKeys:
-                [NSNumber numberWithBool:NO], FullScreen, 
-                [NSNumber numberWithBool:YES], OpenGl, 
-                [NSNumber numberWithBool:YES], LockFullscreenSize, 
-                [NSNumber numberWithBool:YES], FullscreenMonitor, 
-                [NSNumber numberWithFloat:0.0],FullscreenForeRed,
-                [NSNumber numberWithFloat:0.0],FullscreenForeBlue,
-                [NSNumber numberWithFloat:0.8],FullscreenForeGreen,
-                [NSNumber numberWithFloat:1.0],FullscreenForeAlpha,
-                [NSNumber numberWithFloat:0.0],FullscreenBackRed,
-                [NSNumber numberWithFloat:0.0],FullscreenBackBlue,
-                [NSNumber numberWithFloat:0.0],FullscreenBackGreen,
-                [NSNumber numberWithFloat:1.0],FullscreenBackAlpha,
-                [NSNumber numberWithBool:NO], DoubleSize, 
-                [NSNumber numberWithInt:0], ScaleMode, 
-                [NSNumber numberWithInt:2], ScaleFactor, 
-                [NSNumber numberWithInt:1], WidthMode, 
+                [NSNumber numberWithInt:0], ScaleMode,
+                [NSNumber numberWithInt:2], ScaleFactor,
+                [NSNumber numberWithFloat:2.0], ScaleFactorFloat,
+                [NSNumber numberWithInt:1], WidthMode,
                 [NSNumber numberWithInt:0], TvMode, 
                 [NSNumber numberWithFloat:1.0], EmulationSpeed,
                 [NSNumber numberWithInt:1], RefreshRatio, 
@@ -211,6 +275,8 @@ static NSDictionary *defaultValues() {
                 [NSNumber numberWithInt:40], ColorShift, 
                 [NSString stringWithCString:paletteStr encoding:NSASCIIStringEncoding], PaletteFile, 
                 [NSNumber numberWithBool:NO], ShowFPS,
+                [NSNumber numberWithBool:NO], OnlyIntegralScaling,
+                [NSNumber numberWithBool:NO], FixAspectFullscreen,
                 [NSNumber numberWithBool:YES], LedStatus,
                 [NSNumber numberWithBool:YES], LedSector,
                 [NSNumber numberWithBool:YES], LedStatusMedia,
@@ -239,6 +305,10 @@ static NSDictionary *defaultValues() {
                 @"",BlackBoxRomFile,
                 @"",BlackBoxScsiDiskFile,
                 @"",MioScsiDiskFile,
+                [NSNumber numberWithBool:NO], UseAltiraOSBRom,
+                [NSNumber numberWithBool:NO], UseAltiraXLRom,
+                [NSNumber numberWithBool:NO], UseAltira5200Rom,
+                [NSNumber numberWithBool:NO], UseAltiraBasicRom,
                 [NSNumber numberWithBool:YES], DisableBasic, 
                 [NSNumber numberWithBool:NO], DisableAllBasic, 
                 [NSNumber numberWithBool:YES], EnableSioPatch, 
@@ -304,8 +374,7 @@ static NSDictionary *defaultValues() {
                 [NSNumber numberWithBool:YES], EnableSerioSound, 
                 [NSNumber numberWithBool:NO], DontMuteAudio,
                 [NSNumber numberWithBool:YES], DiskDriveSound,
-                [NSNumber numberWithBool:NO], EnableInternational,
-                [NSNumber numberWithBool:NO], EnableMultijoy, 
+                [NSNumber numberWithBool:NO], EnableMultijoy,
                 [NSNumber numberWithBool:NO], IgnoreHeaderWriteprotect,
                 [NSString stringWithCString:imageDirStr encoding:NSASCIIStringEncoding], ImageDir, 
                 [NSString stringWithCString:printDirStr encoding:NSASCIIStringEncoding], PrintDir, 
@@ -315,8 +384,7 @@ static NSDictionary *defaultValues() {
                 [NSString stringWithCString:hardDiskDir4Str encoding:NSASCIIStringEncoding], HardDiskDir4, 
                 [NSNumber numberWithBool:YES], HardDrivesReadOnly, 
                 @"H1:>DOS;>DOS",HPath,
-                [NSString stringWithCString:osARomFileStr encoding:NSASCIIStringEncoding], OsARomFile, 
-                [NSString stringWithCString:osBRomFileStr encoding:NSASCIIStringEncoding], OsBRomFile, 
+                [NSString stringWithCString:osBRomFileStr encoding:NSASCIIStringEncoding], OsBRomFile,
                 [NSString stringWithCString:xlRomFileStr encoding:NSASCIIStringEncoding], XlRomFile, 
                 [NSString stringWithCString:basicRomFileStr encoding:NSASCIIStringEncoding], BasicRomFile, 
                 [NSString stringWithCString:a5200RomFileStr encoding:NSASCIIStringEncoding], A5200RomFile, 
@@ -434,6 +502,7 @@ static NSDictionary *defaultValues() {
                 [NSNumber numberWithInt:0], MonitorX,
                 [NSNumber numberWithInt:0], MonitorY,
                 [NSNumber numberWithBool:NO], MonitorGUIVisable,
+                [NSNumber numberWithInt:560], MonitorHeight,
                 [NSNumber numberWithInt:0], FunctionKeysX,
                 [NSNumber numberWithInt:0], FunctionKeysY,
                 [NSNumber numberWithInt:59999], ApplicationWindowX,
@@ -514,6 +583,7 @@ static Preferences *sharedInstance = nil;
     NSDictionary *prefs;
 	NSPoint origin;
 	BOOL guiVisable;
+    int monitorHeight;
 
 	// Save the window frames 
 	origin = [[MediaManager sharedInstance] mediaStatusOriginSave];
@@ -525,17 +595,18 @@ static Preferences *sharedInstance = nil;
 	origin = [[ControlManager sharedInstance] functionKeysOriginSave];
 	[displayedValues setObject:[NSNumber numberWithFloat:origin.x] forKey:FunctionKeysX];
 	[displayedValues setObject:[NSNumber numberWithFloat:origin.y] forKey:FunctionKeysY];
-	guiVisable = [[ControlManager sharedInstance] monitorGUIVisableSave];
-	[displayedValues setObject:[NSNumber numberWithBool:guiVisable] forKey:MonitorGUIVisable];
+    guiVisable = [[ControlManager sharedInstance] monitorGUIVisableSave];
+    [displayedValues setObject:[NSNumber numberWithBool:guiVisable] forKey:MonitorGUIVisable];
+    monitorHeight = [[ControlManager sharedInstance] monitorHeightSave];
+    [displayedValues setObject:[NSNumber numberWithInt:monitorHeight] forKey:MonitorHeight];
 	origin = [[ControlManager sharedInstance] monitorOriginSave];
 	[displayedValues setObject:[NSNumber numberWithFloat:origin.x] forKey:MonitorX];
-	if (guiVisable)
-		origin.y -= kGraphicalDrawerSize;
 	[displayedValues setObject:[NSNumber numberWithFloat:origin.y] forKey:MonitorY];
 	origin = [Atari800Window applicationWindowOriginSave];
-	[displayedValues setObject:[NSNumber numberWithFloat:origin.x] forKey:ApplicationWindowX];
-	[displayedValues setObject:[NSNumber numberWithFloat:origin.y] forKey:ApplicationWindowY];
-
+    if (!FULLSCREEN_MACOS) {
+        [displayedValues setObject:[NSNumber numberWithFloat:origin.x] forKey:ApplicationWindowX];
+        [displayedValues setObject:[NSNumber numberWithFloat:origin.y] forKey:ApplicationWindowY];
+    }
 
 	// Get the changed prefs back from emulator
 	savePrefs();
@@ -602,8 +673,6 @@ static Preferences *sharedInstance = nil;
     int i,numberGamepadConfigs;
     int currNumConfigs;
   
-    if (FULLSCREEN)
-        return;
 	/* Transfer the changed prefs values back from emulator */
 	savePrefs();
 	[self commitDisplayedValues];
@@ -648,6 +717,7 @@ static Preferences *sharedInstance = nil;
         [[prefTabView window] center];
         [[gamepadButton1 window] center];
         [[errorOKButton window] center];
+        [[identifyOKButton window] center];
         [[configNameField window] center];
         [[leftJoyUpPulldown window] center];
         [[padJoyUpPulldown window] center];
@@ -721,21 +791,6 @@ static Preferences *sharedInstance = nil;
 
     if (!prefTabView) return;	/* UI hasn't been loaded... */
 
-    [fullScreenMatrix selectCellWithTag:[[displayedValues objectForKey:FullScreen] boolValue] ? 1 : 0];
-    [openglMatrix selectCellWithTag:[[displayedValues objectForKey:OpenGl] boolValue] ? 1 : 0];
-    [openglMatrix setEnabled:NO];
-    [lockFullscreenSizeButton setState:[[displayedValues objectForKey:LockFullscreenSize] boolValue] ? NSOnState : NSOffState];
-    [fullscreenMonitorButton setState:[[displayedValues objectForKey:FullscreenMonitor] boolValue] ? NSOnState : NSOffState];
-    [fullscreenForegroundRed setIntValue:[[displayedValues objectForKey:FullscreenForeRed] floatValue]*255];
-    [fullscreenForegroundGreen setIntValue:[[displayedValues objectForKey:FullscreenForeGreen] floatValue]*255];
-    [fullscreenForegroundBlue setIntValue:[[displayedValues objectForKey:FullscreenForeBlue] floatValue]*255];
-    [fullscreenBackgroundRed setIntValue:[[displayedValues objectForKey:FullscreenBackRed] floatValue]*255];
-    [fullscreenBackgroundGreen setIntValue:[[displayedValues objectForKey:FullscreenBackGreen] floatValue]*255];
-    [fullscreenBackgroundBlue setIntValue:[[displayedValues objectForKey:FullscreenBackBlue] floatValue]*255];
-	if ([[displayedValues objectForKey:DoubleSize] boolValue] == 0)
-		[scaleFactorMatrix  selectCellWithTag:0];
-	else
-		[scaleFactorMatrix  selectCellWithTag:[[displayedValues objectForKey:ScaleFactor] intValue]];
     [scaleModeMatrix  selectCellWithTag:[[displayedValues objectForKey:ScaleMode] intValue]];
     [widthModeMatrix  selectCellWithTag:[[displayedValues objectForKey:WidthMode] intValue]];
     [tvModeMatrix  selectCellWithTag:[[displayedValues objectForKey:TvMode] intValue]];
@@ -752,6 +807,8 @@ static Preferences *sharedInstance = nil;
     [externalPaletteButton setState:[[displayedValues objectForKey:UseBuiltinPalette] boolValue] ? NSOffState : NSOnState];
     [adjustPaletteButton setState:[[displayedValues objectForKey:AdjustPalette] boolValue] ? NSOnState : NSOffState];
     [fpsButton setState:[[displayedValues objectForKey:ShowFPS] boolValue] ? NSOnState : NSOffState];
+    [onlyIntegralScalingButton setState:[[displayedValues objectForKey:OnlyIntegralScaling] boolValue] ? NSOnState : NSOffState];
+    [fixAspectFullscreenButton setState:[[displayedValues objectForKey:FixAspectFullscreen] boolValue] ? NSOnState : NSOffState];
     [ledStatusButton setState:[[displayedValues objectForKey:LedStatus] boolValue] ? NSOnState : NSOffState];
     [ledSectorButton setState:[[displayedValues objectForKey:LedSector] boolValue] ? NSOnState : NSOffState];
     [ledStatusMediaButton setState:[[displayedValues objectForKey:LedStatusMedia] boolValue] ? NSOnState : NSOffState];
@@ -831,8 +888,6 @@ static Preferences *sharedInstance = nil;
     [serioSoundEnableButton setState:[[displayedValues objectForKey:EnableSerioSound] boolValue] ? NSOnState : NSOffState];
     [muteAudioButton setState:[[displayedValues objectForKey:DontMuteAudio] boolValue] ? NSOffState : NSOnState];
     [diskDriveSoundButton setState:[[displayedValues objectForKey:DiskDriveSound] boolValue] ? NSOnState : NSOffState];
-    [internationalKeyboardButton setState:[[displayedValues objectForKey:EnableInternational] boolValue] ? NSOnState : NSOffState];
-    [internationalKeyboardButton setEnabled:NO]; // Always enabled on libSDL 2.0
     [enableMultijoyButton setState:[[displayedValues objectForKey:EnableMultijoy] boolValue] ? NSOnState : NSOffState];
     [ignoreHeaderWriteprotectButton setState:[[displayedValues objectForKey:IgnoreHeaderWriteprotect] boolValue] ? NSOnState : NSOffState];
 	foundMatch = FALSE;
@@ -877,12 +932,16 @@ static Preferences *sharedInstance = nil;
     [hardDrivesReadOnlyButton setState:[[displayedValues objectForKey:HardDrivesReadOnly] boolValue] ? NSOnState : NSOffState];
     [hPathField setStringValue:[displayedValues objectForKey:HPath]];
 
-    [osARomFileField setStringValue:[displayedValues objectForKey:OsARomFile]];
     [osBRomFileField setStringValue:[displayedValues objectForKey:OsBRomFile]];
     [xlRomFileField setStringValue:[displayedValues objectForKey:XlRomFile]];
     [basicRomFileField setStringValue:[displayedValues objectForKey:BasicRomFile]];
     [a5200RomFileField setStringValue:[displayedValues objectForKey:A5200RomFile]];
+    [useAlitrraOSBRomButton setState:[[displayedValues objectForKey:UseAltiraOSBRom] boolValue] ? NSOnState : NSOffState];
+    [useAlitrraXLRomButton setState:[[displayedValues objectForKey:UseAltiraXLRom] boolValue] ? NSOnState : NSOffState];
+    [useAlitrra5200RomButton setState:[[displayedValues objectForKey:UseAltira5200Rom] boolValue] ? NSOnState : NSOffState];
+    [useAlitrraBasicRomButton setState:[[displayedValues objectForKey:UseAltiraBasicRom] boolValue] ? NSOnState : NSOffState];
 
+    
     [diskImageDirField setStringValue:[displayedValues objectForKey:DiskImageDir]];
     [diskSetDirField setStringValue:[displayedValues objectForKey:DiskSetDir]];
     [cartImageDirField setStringValue:[displayedValues objectForKey:CartImageDir]];
@@ -1456,7 +1515,7 @@ static Preferences *sharedInstance = nil;
     double aFloat;
     int mouseCount = 0;
     int firstMouse = 0;
-    float penRed, penBlue, penGreen, penAlpha;
+    float penRed, penBlue, penGreen;
     int type, typever4;
     
     static NSNumber *yes = nil;
@@ -1497,67 +1556,6 @@ static Preferences *sharedInstance = nil;
         fourteen = [[NSNumber alloc] initWithInt:14];
     }
 
-    [displayedValues setObject:[[fullScreenMatrix selectedCell] tag] ? yes : no forKey:FullScreen];
-    [displayedValues setObject:[[openglMatrix selectedCell] tag] ? yes : no forKey:OpenGl];
-    if ([lockFullscreenSizeButton state] == NSOnState) {
-        [displayedValues setObject:yes forKey:LockFullscreenSize];
-		[fullscreenMonitorButton setEnabled:YES];
-        [fullscreenForegroundRed setEnabled:YES];
-        [fullscreenForegroundGreen setEnabled:YES];
-        [fullscreenForegroundBlue setEnabled:YES];
-        [fullscreenBackgroundRed setEnabled:YES];
-        [fullscreenBackgroundBlue setEnabled:YES];
-        [fullscreenBackgroundGreen setEnabled:YES];
-		}
-    else {
-        [displayedValues setObject:no forKey:LockFullscreenSize];
- 		[fullscreenMonitorButton setEnabled:NO];
-        [fullscreenForegroundRed setEnabled:NO];
-        [fullscreenForegroundGreen setEnabled:NO];
-        [fullscreenForegroundBlue setEnabled:NO];
-        [fullscreenBackgroundRed setEnabled:NO];
-        [fullscreenBackgroundGreen setEnabled:NO];
-        [fullscreenBackgroundBlue setEnabled:NO];
-		}
-    if ([fullscreenMonitorButton state] == NSOnState)
-        [displayedValues setObject:yes forKey:FullscreenMonitor];
-    else
-        [displayedValues setObject:no forKey:FullscreenMonitor];
-    penRed = ((float) [fullscreenForegroundRed intValue])/255.0;
-    penGreen = ((float) [fullscreenForegroundGreen intValue])/255.0;
-    penBlue = ((float) [fullscreenForegroundBlue intValue])/255.0;
-    penAlpha = 0.0;
-	[displayedValues setObject:[NSNumber numberWithFloat:penRed] forKey:FullscreenForeRed];
-	[displayedValues setObject:[NSNumber numberWithFloat:penBlue] forKey:FullscreenForeBlue];
-	[displayedValues setObject:[NSNumber numberWithFloat:penGreen] forKey:FullscreenForeGreen];
-	[displayedValues setObject:[NSNumber numberWithFloat:penAlpha] forKey:FullscreenForeAlpha];
-    penRed = ((float) [fullscreenBackgroundRed intValue])/255.0;
-    penGreen = ((float) [fullscreenBackgroundGreen intValue])/255.0;
-    penBlue = ((float) [fullscreenBackgroundBlue intValue])/255.0;
-    penAlpha = 0.0;
-	[displayedValues setObject:[NSNumber numberWithFloat:penRed] forKey:FullscreenBackRed];
-	[displayedValues setObject:[NSNumber numberWithFloat:penBlue] forKey:FullscreenBackBlue];
-	[displayedValues setObject:[NSNumber numberWithFloat:penGreen] forKey:FullscreenBackGreen];
-	[displayedValues setObject:[NSNumber numberWithFloat:penAlpha] forKey:FullscreenBackAlpha];
-    switch([[scaleFactorMatrix selectedCell] tag]) {
-        case 1:
-		default:
-            [displayedValues setObject:one forKey:ScaleFactor];
-			[displayedValues setObject:no forKey:DoubleSize];
-            break;
-        case 2:
-            [displayedValues setObject:two forKey:ScaleFactor];
-			[displayedValues setObject:yes forKey:DoubleSize];
-            break;
-        case 3:
-            [displayedValues setObject:three forKey:ScaleFactor];
-			[displayedValues setObject:yes forKey:DoubleSize];
-            break;
-        case 4:
-            [displayedValues setObject:four forKey:ScaleFactor];
-			[displayedValues setObject:yes forKey:DoubleSize];
-            break;
-    }
 	switch([[scaleModeMatrix selectedCell] tag]) {
         case 0:
 		default:
@@ -1565,9 +1563,6 @@ static Preferences *sharedInstance = nil;
             break;
         case 1:
             [displayedValues setObject:one forKey:ScaleMode];
-            break;
-        case 2:
-            [displayedValues setObject:two forKey:ScaleMode];
             break;
     }
 	switch([[widthModeMatrix selectedCell] tag]) {
@@ -1675,6 +1670,14 @@ static Preferences *sharedInstance = nil;
         [displayedValues setObject:yes forKey:ShowFPS];
     else
         [displayedValues setObject:no forKey:ShowFPS];
+    if ([onlyIntegralScalingButton state] == NSOnState)
+        [displayedValues setObject:yes forKey:OnlyIntegralScaling];
+    else
+        [displayedValues setObject:no forKey:OnlyIntegralScaling];
+    if ([fixAspectFullscreenButton state] == NSOnState)
+        [displayedValues setObject:yes forKey:FixAspectFullscreen];
+    else
+        [displayedValues setObject:no forKey:FixAspectFullscreen];
     if ([ledSectorButton state] == NSOnState)
         [displayedValues setObject:yes forKey:LedSector];
     else
@@ -1837,7 +1840,8 @@ static Preferences *sharedInstance = nil;
             [displayedValues setObject:four forKey:PrinterType];
             break;
 		}
-	[printerTabView selectTabViewItemAtIndex:[printerTypePulldown indexOfSelectedItem]];
+	// Get rid of this.  No need to select tab view based on pulldown.
+    // [printerTabView selectTabViewItemAtIndex:[printerTypePulldown indexOfSelectedItem]];
     switch([atari825CharSetPulldown indexOfSelectedItem]) {
         case 0:
 		default:
@@ -2121,10 +2125,7 @@ static Preferences *sharedInstance = nil;
         [displayedValues setObject:yes forKey:DiskDriveSound];
     else
         [displayedValues setObject:no forKey:DiskDriveSound];
-    if ([internationalKeyboardButton state] == NSOnState)
-        [displayedValues setObject:yes forKey:EnableInternational];
-    else
-        [displayedValues setObject:no forKey:EnableInternational];
+
     if ([enableMultijoyButton state] == NSOnState)
         [displayedValues setObject:yes forKey:EnableMultijoy];
     else
@@ -2172,11 +2173,26 @@ static Preferences *sharedInstance = nil;
         [displayedValues setObject:no forKey:HardDrivesReadOnly];
     [displayedValues setObject:[hPathField stringValue] forKey:HPath];
 
-    [displayedValues setObject:[osARomFileField stringValue] forKey:OsARomFile];
     [displayedValues setObject:[osBRomFileField stringValue] forKey:OsBRomFile];
     [displayedValues setObject:[xlRomFileField stringValue] forKey:XlRomFile];
     [displayedValues setObject:[basicRomFileField stringValue] forKey:BasicRomFile];
     [displayedValues setObject:[a5200RomFileField stringValue] forKey:A5200RomFile];
+    if ([useAlitrraOSBRomButton state] == NSOnState)
+        [displayedValues setObject:yes forKey:UseAltiraOSBRom];
+    else
+        [displayedValues setObject:no forKey:UseAltiraOSBRom];
+    if ([useAlitrraXLRomButton state] == NSOnState)
+        [displayedValues setObject:yes forKey:UseAltiraXLRom];
+    else
+        [displayedValues setObject:no forKey:UseAltiraXLRom];
+    if ([useAlitrra5200RomButton state] == NSOnState)
+        [displayedValues setObject:yes forKey:UseAltira5200Rom];
+    else
+        [displayedValues setObject:no forKey:UseAltira5200Rom];
+    if ([useAlitrraBasicRomButton state] == NSOnState)
+        [displayedValues setObject:yes forKey:UseAltiraBasicRom];
+    else
+        [displayedValues setObject:no forKey:UseAltiraBasicRom];
 
     [displayedValues setObject:[diskImageDirField stringValue] forKey:DiskImageDir];
     [displayedValues setObject:[diskSetDirField stringValue] forKey:DiskSetDir];
@@ -2891,18 +2907,6 @@ static Preferences *sharedInstance = nil;
 
 /* The following methods allow the user to choose the ROM files */
    
-- (void)browseOsARom:(id)sender {
-    NSString *filename, *dir;
-    
-    dir = [[NSString alloc] initWithCString:osromsDir encoding:NSASCIIStringEncoding];
-    filename = [self browseFileInDirectory:dir];
-    if (filename != nil) {
-        [osARomFileField setStringValue:filename];
-        [self miscChanged:self];
-        }
-    [dir release];
-    }
-    
 - (IBAction)browseAF80Rom:(id)sender {
     NSString *filename, *dir;
 
@@ -2949,6 +2953,56 @@ static Preferences *sharedInstance = nil;
         [self miscChanged:self];
         }
     [dir release];
+}
+
+- (IBAction)identifyRom:(id)sender {
+    NSString *romFilename;
+    NSTextField *label;
+    char romCFilename[FILENAME_MAX];
+    int romDefault;
+    int osType;
+    char romTypeName[40];
+    int rom;
+    
+    for (rom = 1; rom < 5; rom ++) {
+    switch( rom ) {
+        case 1:
+            romFilename = [curValues objectForKey:OsBRomFile];
+            label = identifyOSBLabel;
+            romDefault = SYSROM_800_CUSTOM;
+            break;
+        case 2:
+            romFilename = [curValues objectForKey:XlRomFile];
+            label = identifyXLLabel;
+            romDefault = SYSROM_XL_CUSTOM;
+            break;
+        case 3:
+            romFilename = [curValues objectForKey:BasicRomFile];
+            label = identifyBasicLabel;
+            romDefault = SYSROM_BASIC_CUSTOM;
+            break;
+        case 4:
+            romFilename = [curValues objectForKey:A5200RomFile];
+            label = identify5200Label;
+            romDefault = SYSROM_5200_CUSTOM;
+            break;
+    }
+    
+    if ([romFilename isEqual:@""])
+        [label setStringValue:@"ROM not set - Altirra Will Be Used"];
+    else {
+        [romFilename getCString:romCFilename maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+        
+        osType = SYSROM_FindType(romDefault, romCFilename, romTypeName);
+
+        if (osType == -1)
+            [label setStringValue:@"Error Identifying ROM - Altirra Will Be Used"];
+        else
+            [label setStringValue:[NSString stringWithCString:romTypeName encoding:NSASCIIStringEncoding]];
+        }
+    }
+    
+    [NSApp runModalForWindow:[identifyOKButton window]];
 }
 
 - (void)browseOsBRom:(id)sender {
@@ -3322,20 +3376,10 @@ static Preferences *sharedInstance = nil;
     NSString *buttonKey, *button5200Key;
     
     prefs = getPrefStorage();
-    prefs->fullScreen = [[curValues objectForKey:FullScreen] intValue]; 
-    prefs->openGl = [[curValues objectForKey:OpenGl] intValue]; 
-    prefs->lockFullscreenSize = [[curValues objectForKey:LockFullscreenSize] intValue]; 
-    prefs->fullscreenMonitor = [[curValues objectForKey:FullscreenMonitor] intValue];
-	prefs->fullForeRed = (int) ([[curValues objectForKey:FullscreenForeRed] floatValue] * 255);
-	prefs->fullForeGreen = (int) ([[curValues objectForKey:FullscreenForeGreen] floatValue] * 255);
-	prefs->fullForeBlue = (int) ([[curValues objectForKey:FullscreenForeBlue] floatValue] * 255);
-	prefs->fullBackRed = (int) ([[curValues objectForKey:FullscreenBackRed] floatValue] * 255);
-	prefs->fullBackGreen = (int) ([[curValues objectForKey:FullscreenBackGreen] floatValue] * 255);
-	prefs->fullBackBlue = (int) ([[curValues objectForKey:FullscreenBackBlue] floatValue] * 255);
-    prefs->spriteCollisions = [[curValues objectForKey:SpriteCollisions] intValue]; 
-    prefs->doubleSize = [[curValues objectForKey:DoubleSize] intValue]; 
-    prefs->scaleFactor = [[curValues objectForKey:ScaleFactor] intValue]; 
-    prefs->widthMode = [[curValues objectForKey:WidthMode] intValue]; 
+    prefs->spriteCollisions = [[curValues objectForKey:SpriteCollisions] intValue];
+    prefs->scaleFactor = [[curValues objectForKey:ScaleFactor] intValue];
+    prefs->scaleFactorFloat = [[curValues objectForKey:ScaleFactorFloat] floatValue];
+    prefs->widthMode = [[curValues objectForKey:WidthMode] intValue];
 	prefs->scaleMode = [[curValues objectForKey:ScaleMode] intValue];
     prefs->tvMode = [[curValues objectForKey:TvMode] intValue]; 
     prefs->emulationSpeed = [[curValues objectForKey:EmulationSpeed] floatValue]; 
@@ -3349,8 +3393,10 @@ static Preferences *sharedInstance = nil;
     prefs->intensity = [[curValues objectForKey:Intensity] intValue]; 
     prefs->colorShift = [[curValues objectForKey:ColorShift] intValue]; 
     [[curValues objectForKey:PaletteFile] getCString:prefs->paletteFile maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
-    prefs->showFPS = [[curValues objectForKey:ShowFPS] intValue]; 
-    prefs->ledStatus = [[curValues objectForKey:LedStatus] intValue]; 
+    prefs->showFPS = [[curValues objectForKey:ShowFPS] intValue];
+    prefs->onlyIntegralScaling = [[curValues objectForKey:OnlyIntegralScaling] intValue];
+    prefs->fixAspectFullscreen = [[curValues objectForKey:FixAspectFullscreen] intValue];
+    prefs->ledStatus = [[curValues objectForKey:LedStatus] intValue];
     prefs->ledSector = [[curValues objectForKey:LedSector] intValue]; 
     prefs->ledStatusMedia = [[curValues objectForKey:LedStatusMedia] intValue]; 
     prefs->ledSectorMedia = [[curValues objectForKey:LedSectorMedia] intValue];
@@ -3399,13 +3445,16 @@ static Preferences *sharedInstance = nil;
   prefs->enableSerioSound = [[curValues objectForKey:EnableSerioSound] intValue];
   prefs->dontMuteAudio = [[curValues objectForKey:DontMuteAudio] intValue];
   prefs->diskDriveSound = [[curValues objectForKey:DiskDriveSound] intValue];
-  prefs->enableInternational = [[curValues objectForKey:EnableInternational] intValue];
   prefs->enableMultijoy = [[curValues objectForKey:EnableMultijoy] intValue];
   prefs->ignoreHeaderWriteprotect = [[curValues objectForKey:IgnoreHeaderWriteprotect] intValue];
 	prefs->axlonBankMask =  [[curValues objectForKey:AxlonBankMask] intValue];
 	prefs->mosaicMaxBank =  [[curValues objectForKey:MosaicMaxBank] intValue];
 	prefs->blackBoxEnabled = [[curValues objectForKey:BlackBoxEnabled] intValue];
 	prefs->mioEnabled = [[curValues objectForKey:MioEnabled] intValue];
+    prefs->useAltirraOSBRom = [[curValues objectForKey:UseAltiraOSBRom] intValue];
+    prefs->useAltirraXLRom = [[curValues objectForKey:UseAltiraXLRom] intValue];
+    prefs->useAltirra5200Rom = [[curValues objectForKey:UseAltira5200Rom] intValue];
+    prefs->useAltirraBasicRom = [[curValues objectForKey:UseAltiraBasicRom] intValue];
     [[curValues objectForKey:AF80CharsetFile] getCString:prefs->af80CharsetFile maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
     [[curValues objectForKey:AF80RomFile] getCString:prefs->af80RomFile maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
     [[curValues objectForKey:Bit3CharsetFile] getCString:prefs->bit3CharsetFile maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
@@ -3422,7 +3471,6 @@ static Preferences *sharedInstance = nil;
   [[curValues objectForKey:HardDiskDir4] getCString:prefs->hardDiskDir[3] maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
   prefs->hardDrivesReadOnly = [[curValues objectForKey:HardDrivesReadOnly] intValue];
   [[curValues objectForKey:HPath] getCString:prefs->hPath maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
-  [[curValues objectForKey:OsARomFile] getCString:prefs->osARomFile maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
   [[curValues objectForKey:OsBRomFile] getCString:prefs->osBRomFile maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
   [[curValues objectForKey:XlRomFile] getCString:prefs->xlRomFile maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
   [[curValues objectForKey:BasicRomFile] getCString:prefs->basicRomFile maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
@@ -3601,8 +3649,7 @@ static Preferences *sharedInstance = nil;
         thirteen = [[NSNumber alloc] initWithInt:13];
     }
 
-    [displayedValues setObject:prefssave->fullScreen ? yes : no forKey:FullScreen];
-    [displayedValues setObject:prefssave->doubleSize ? yes : no forKey:DoubleSize];
+    [displayedValues setObject:[NSNumber numberWithDouble:prefssave->scaleFactorFloat] forKey:ScaleFactorFloat];
     switch(prefssave->scaleFactor) {
         case 1:
             [displayedValues setObject:one forKey:ScaleFactor];
@@ -3634,9 +3681,6 @@ static Preferences *sharedInstance = nil;
             break;
         case 1:
             [displayedValues setObject:one forKey:ScaleMode];
-            break;
-        case 2:
-            [displayedValues setObject:two forKey:ScaleMode];
             break;
 		}
     [displayedValues setObject:prefssave->showFPS ? yes : no forKey:ShowFPS];
@@ -3862,9 +3906,9 @@ static Preferences *sharedInstance = nil;
 		[displayedValues setObject:no forKey:CassFileEnabled];
 		[displayedValues setObject:@"" forKey:CassFile];
 		}
-	if (strlen(cart_filename) != 0) {
+    if (strlen(CARTRIDGE_main.filename) != 0) {
 		[displayedValues setObject:yes forKey:CartFileEnabled];
-		[displayedValues setObject:[NSString stringWithCString:cart_filename encoding:NSASCIIStringEncoding] forKey:CartFile];
+		[displayedValues setObject:[NSString stringWithCString:CARTRIDGE_main.filename encoding:NSASCIIStringEncoding] forKey:CartFile];
 		}
 	else {
 		[displayedValues setObject:no forKey:CartFileEnabled];
@@ -3928,9 +3972,14 @@ static Preferences *sharedInstance = nil;
 
 - (BOOL)monitorGUIVisable
 {
-	return ([[displayedValues objectForKey:MonitorGUIVisable] boolValue]); 
+    return ([[displayedValues objectForKey:MonitorGUIVisable] boolValue]);
 }
-	
+    
+- (int)monitorHeight
+{
+    return ([[displayedValues objectForKey:MonitorHeight] intValue]);
+}
+    
 - (NSPoint)applicationWindowOrigin
 {
    NSPoint origin;
@@ -4215,6 +4264,11 @@ static Preferences *sharedInstance = nil;
 - (void)errorOK:(id)sender {
     [NSApp stopModal];
     [[errorOKButton window] close];
+    }
+
+- (IBAction)identifyRomOK:(id)sender {
+    [NSApp stopModal];
+    [[identifyOKButton window] close];
     }
 
 - (void)gamepadButtonChange:(id)sender {
@@ -4682,21 +4736,9 @@ static Preferences *sharedInstance = nil;
     
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithCapacity:10];
-    getBoolDefault(FullScreen);
-    getBoolDefault(OpenGl);
-    getBoolDefault(LockFullscreenSize);
-    getBoolDefault(FullscreenMonitor);
-	getFloatDefault(FullscreenForeRed); 
-	getFloatDefault(FullscreenForeBlue); 
-	getFloatDefault(FullscreenForeGreen); 
-	getFloatDefault(FullscreenForeAlpha); 
-	getFloatDefault(FullscreenBackRed); 
-	getFloatDefault(FullscreenBackBlue); 
-	getFloatDefault(FullscreenBackGreen); 
-	getFloatDefault(FullscreenBackAlpha); 
-    getBoolDefault(DoubleSize);
     getIntDefault(ScaleMode);
     getIntDefault(ScaleFactor);
+    getFloatDefault(ScaleFactorFloat);
     getIntDefault(WidthMode);
     getIntDefault(TvMode);
     getFloatDefault(EmulationSpeed);
@@ -4712,6 +4754,8 @@ static Preferences *sharedInstance = nil;
     getIntDefault(ColorShift);
     getBoolDefault(AdjustPalette);
     getBoolDefault(ShowFPS);
+    getBoolDefault(OnlyIntegralScaling);
+    getBoolDefault(FixAspectFullscreen);
     getBoolDefault(LedStatus);
     getBoolDefault(LedSector);
     getBoolDefault(LedStatusMedia);
@@ -4805,7 +4849,6 @@ static Preferences *sharedInstance = nil;
     getBoolDefault(EnableSerioSound);
     getBoolDefault(DontMuteAudio);
     getBoolDefault(DiskDriveSound);
-    getBoolDefault(EnableInternational);
     getBoolDefault(EnableMultijoy);
     getBoolDefault(IgnoreHeaderWriteprotect);
     getStringDefault(ImageDir);
@@ -4816,11 +4859,14 @@ static Preferences *sharedInstance = nil;
     getStringDefault(HardDiskDir4);
     getBoolDefault(HardDrivesReadOnly);
     getStringDefault(HPath);
-    getStringDefault(OsARomFile);
     getStringDefault(OsBRomFile);
     getStringDefault(XlRomFile);
     getStringDefault(BasicRomFile);
     getStringDefault(A5200RomFile);
+    getBoolDefault(UseAltiraOSBRom);
+    getBoolDefault(UseAltiraXLRom);
+    getBoolDefault(UseAltira5200Rom);
+    getBoolDefault(UseAltiraBasicRom);
     getStringDefault(DiskImageDir);
     getStringDefault(DiskSetDir);
     getStringDefault(CartImageDir);
@@ -4931,7 +4977,8 @@ static Preferences *sharedInstance = nil;
     getIntDefault(MessagesY);
     getIntDefault(MonitorX);
     getIntDefault(MonitorY);
-	getBoolDefault(MonitorGUIVisable);
+    getBoolDefault(MonitorGUIVisable);
+    getIntDefault(MonitorHeight);
     getIntDefault(FunctionKeysX);
     getIntDefault(FunctionKeysY);
     getIntDefault(ApplicationWindowX);
@@ -4958,20 +5005,8 @@ static Preferences *sharedInstance = nil;
 /* Save preferences to system defaults */
 + (void)savePreferencesToDefaults:(NSDictionary *)dict {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    setBoolDefault(FullScreen);
-    setBoolDefault(OpenGl);
-    setBoolDefault(LockFullscreenSize);
-    setBoolDefault(FullscreenMonitor);
-	setFloatDefault(FullscreenForeRed); 
-	setFloatDefault(FullscreenForeBlue); 
-	setFloatDefault(FullscreenForeGreen); 
-	setFloatDefault(FullscreenForeAlpha); 
-	setFloatDefault(FullscreenBackRed); 
-	setFloatDefault(FullscreenBackBlue); 
-	setFloatDefault(FullscreenBackGreen); 
-	setFloatDefault(FullscreenBackAlpha); 
-    setBoolDefault(DoubleSize);
     setIntDefault(ScaleMode);
+    setFloatDefault(ScaleFactorFloat);
     setIntDefault(ScaleFactor);
     setIntDefault(WidthMode);
     setIntDefault(TvMode);
@@ -4988,6 +5023,8 @@ static Preferences *sharedInstance = nil;
     setIntDefault(ColorShift);
     setBoolDefault(AdjustPalette);
     setBoolDefault(ShowFPS);
+    setBoolDefault(OnlyIntegralScaling);
+    setBoolDefault(FixAspectFullscreen);
     setBoolDefault(LedStatus);
     setBoolDefault(LedSector);
     setBoolDefault(LedStatusMedia);
@@ -5077,7 +5114,6 @@ static Preferences *sharedInstance = nil;
     setBoolDefault(EnableSerioSound);
     setBoolDefault(DontMuteAudio);
     setBoolDefault(DiskDriveSound);
-    setBoolDefault(EnableInternational);
     setBoolDefault(EnableMultijoy);
     setBoolDefault(IgnoreHeaderWriteprotect);
     setStringDefault(ImageDir);
@@ -5088,11 +5124,14 @@ static Preferences *sharedInstance = nil;
     setStringDefault(HardDiskDir4);
     setBoolDefault(HardDrivesReadOnly);
     setStringDefault(HPath);
-    setStringDefault(OsARomFile);
     setStringDefault(OsBRomFile);
     setStringDefault(XlRomFile);
     setStringDefault(BasicRomFile);
     setStringDefault(A5200RomFile);
+    setBoolDefault(UseAltiraOSBRom);
+    setBoolDefault(UseAltiraXLRom);
+    setBoolDefault(UseAltira5200Rom);
+    setBoolDefault(UseAltiraBasicRom);
     setStringDefault(DiskImageDir);
     setStringDefault(DiskSetDir);
     setStringDefault(CartImageDir);
@@ -5195,7 +5234,8 @@ static Preferences *sharedInstance = nil;
     setIntDefault(FunctionKeysY);
     setIntDefault(MonitorX);
     setIntDefault(MonitorY);
-	setBoolDefault(MonitorGUIVisable);
+    setBoolDefault(MonitorGUIVisable);
+    setIntDefault(MonitorHeight);
     setIntDefault(ApplicationWindowX);
     setIntDefault(ApplicationWindowY);
 
@@ -5215,21 +5255,9 @@ static Preferences *sharedInstance = nil;
 	[self commitDisplayedValues];
 	dict = [[NSMutableDictionary alloc] initWithCapacity:100];
 	[dict setDictionary:curValues];
-    setConfig(FullScreen);
-    setConfig(OpenGl);
-    setConfig(LockFullscreenSize);
-    setConfig(FullscreenMonitor);
-	setConfig(FullscreenForeRed); 
-	setConfig(FullscreenForeBlue); 
-	setConfig(FullscreenForeGreen); 
-	setConfig(FullscreenForeAlpha); 
-	setConfig(FullscreenBackRed); 
-	setConfig(FullscreenBackBlue); 
-	setConfig(FullscreenBackGreen); 
-	setConfig(FullscreenBackAlpha); 
-    setConfig(DoubleSize);
     setConfig(ScaleMode);
     setConfig(ScaleFactor);
+    setConfig(ScaleFactorFloat);
     setConfig(WidthMode);
     setConfig(TvMode);
     setConfig(EmulationSpeed);
@@ -5245,6 +5273,8 @@ static Preferences *sharedInstance = nil;
     setConfig(ColorShift);
     setConfig(AdjustPalette);
     setConfig(ShowFPS);
+    setConfig(OnlyIntegralScaling);
+    setConfig(FixAspectFullscreen);
     setConfig(LedStatus);
     setConfig(LedSector);
     setConfig(LedStatusMedia);
@@ -5334,7 +5364,6 @@ static Preferences *sharedInstance = nil;
     setConfig(EnableSerioSound);
     setConfig(DontMuteAudio);
     setConfig(DiskDriveSound);
-    setConfig(EnableInternational);
     setConfig(EnableMultijoy);
     setConfig(IgnoreHeaderWriteprotect);
     setConfig(ImageDir);
@@ -5345,11 +5374,14 @@ static Preferences *sharedInstance = nil;
     setConfig(HardDiskDir4);
     setConfig(HardDrivesReadOnly);
     setConfig(HPath);
-    setConfig(OsARomFile);
     setConfig(OsBRomFile);
     setConfig(XlRomFile);
     setConfig(BasicRomFile);
     setConfig(A5200RomFile);
+    setConfig(UseAltiraOSBRom);
+    setConfig(UseAltiraXLRom);
+    setConfig(UseAltira5200Rom);
+    setConfig(UseAltiraBasicRom);
     setConfig(DiskImageDir);
     setConfig(DiskSetDir);
     setConfig(CartImageDir);
@@ -5448,7 +5480,8 @@ static Preferences *sharedInstance = nil;
     setConfig(FunctionKeysY);
     setConfig(MonitorX);
     setConfig(MonitorY);
-	setConfig(MonitorGUIVisable);
+    setConfig(MonitorGUIVisable);
+    setConfig(MonitorHeight);
     setConfig(ApplicationWindowX);
     setConfig(ApplicationWindowY);
 	
@@ -5469,12 +5502,6 @@ static Preferences *sharedInstance = nil;
 - (void)saveConfiguration:(id)sender {
 	NSString *filename;
 	
-    if (FULLSCREEN) {
-        UI_alt_function = UI_MENU_SAVECFG;
-        requestFullScreenUI = 1;
-        return;
-    }
-    
 	filename = [self saveFileInDirectory:[NSString stringWithCString:atari_config_dir  encoding:NSASCIIStringEncoding]:@"a8c"];
 	if (filename != nil)
 		[self saveConfigurationData:filename];
@@ -5502,12 +5529,6 @@ static Preferences *sharedInstance = nil;
 - (int)loadConfiguration:(id)sender {
     NSString *filename;
 	NSOpenPanel *openPanel;
-
-    if (FULLSCREEN) {
-        UI_alt_function = UI_MENU_LOADCFG;
-        requestFullScreenUI = 1;
-        return 0;
-    }
 
 	openPanel = [NSOpenPanel openPanel];
 	[openPanel setCanChooseDirectories:NO];
@@ -5582,21 +5603,9 @@ static Preferences *sharedInstance = nil;
 		return;
 	}
 
-    getConfig(FullScreen);
-    getConfig(OpenGl);
-    getConfig(LockFullscreenSize);
-    getConfig(FullscreenMonitor);
-	getConfig(FullscreenForeRed); 
-	getConfig(FullscreenForeBlue); 
-	getConfig(FullscreenForeGreen); 
-	getConfig(FullscreenForeAlpha); 
-	getConfig(FullscreenBackRed); 
-	getConfig(FullscreenBackBlue); 
-	getConfig(FullscreenBackGreen); 
-	getConfig(FullscreenBackAlpha); 
-    getConfig(DoubleSize);
     getConfig(ScaleMode);
     getConfig(ScaleFactor);
+    getConfig(ScaleFactorFloat);
     getConfig(WidthMode);
     getConfig(TvMode);
     getConfig(EmulationSpeed);
@@ -5612,6 +5621,8 @@ static Preferences *sharedInstance = nil;
     getConfig(ColorShift);
     getConfig(AdjustPalette);
     getConfig(ShowFPS);
+    getConfig(OnlyIntegralScaling);
+    getConfig(FixAspectFullscreen);
     getConfig(LedStatus);
     getConfig(LedSector);
     getConfig(LedStatusMedia);
@@ -5701,7 +5712,6 @@ static Preferences *sharedInstance = nil;
     getConfig(EnableSerioSound);
     getConfig(DontMuteAudio);
     getConfig(DiskDriveSound);
-    getConfig(EnableInternational);
     getConfig(EnableMultijoy);
     getConfig(IgnoreHeaderWriteprotect);
     getConfig(ImageDir);
@@ -5712,11 +5722,14 @@ static Preferences *sharedInstance = nil;
     getConfig(HardDiskDir4);
     getConfig(HardDrivesReadOnly);
     getConfig(HPath);
-    getConfig(OsARomFile);
     getConfig(OsBRomFile);
     getConfig(XlRomFile);
     getConfig(BasicRomFile);
     getConfig(A5200RomFile);
+    getConfig(UseAltiraOSBRom);
+    getConfig(UseAltiraXLRom);
+    getConfig(UseAltira5200Rom);
+    getConfig(UseAltiraBasicRom);
     getConfig(DiskImageDir);
     getConfig(DiskSetDir);
     getConfig(CartImageDir);
@@ -5823,7 +5836,8 @@ static Preferences *sharedInstance = nil;
     getConfig(MessagesY);
     getConfig(MonitorX);
     getConfig(MonitorY);
-	getConfig(MonitorGUIVisable);
+    getConfig(MonitorGUIVisable);
+    getConfig(MonitorHeight);
     getConfig(FunctionKeysX);
     getConfig(FunctionKeysY);
     getConfig(ApplicationWindowX);

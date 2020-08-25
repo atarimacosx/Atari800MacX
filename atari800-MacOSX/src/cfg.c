@@ -35,23 +35,25 @@
 #include "ui.h"
 #include "util.h"
 
-char CFG_osa_filename[FILENAME_MAX] = Util_FILENAME_NOT_SET;
+
 char CFG_osb_filename[FILENAME_MAX] = Util_FILENAME_NOT_SET;
 char CFG_xlxe_filename[FILENAME_MAX] = Util_FILENAME_NOT_SET;
 char CFG_5200_filename[FILENAME_MAX] = Util_FILENAME_NOT_SET;
 char CFG_basic_filename[FILENAME_MAX] = Util_FILENAME_NOT_SET;
 
-#ifndef MACOSX
+#ifdef ATARI800MACX
 void CFG_FindROMImages(const char *directory, int only_if_not_set)
 {
 }
 
 int CFG_LoadConfig(const char *alternate_config_filename)
 {
+    return TRUE;
 }
 
 int CFG_WriteConfig(void)
 {
+    return TRUE;
 }
 #else
 void CFG_FindROMImages(const char *directory, int only_if_not_set)
@@ -164,9 +166,7 @@ int CFG_LoadConfig(const char *alternate_config_filename)
 			Util_trim(string);
 			Util_trim(ptr);
 
-			if (strcmp(string, "OS/A_ROM") == 0)
-				Util_strlcpy(CFG_osa_filename, ptr, sizeof(CFG_osa_filename));
-			else if (strcmp(string, "OS/B_ROM") == 0)
+            if (strcmp(string, "OS/B_ROM") == 0)
 				Util_strlcpy(CFG_osb_filename, ptr, sizeof(CFG_osb_filename));
 			else if (strcmp(string, "XL/XE_ROM") == 0)
 				Util_strlcpy(CFG_xlxe_filename, ptr, sizeof(CFG_xlxe_filename));
@@ -352,7 +352,6 @@ int CFG_WriteConfig(void)
 	Log_print("Writing config file: %s", rtconfig_filename);
 
 	fprintf(fp, "%s\n", Atari800_TITLE);
-	fprintf(fp, "OS/A_ROM=%s\n", CFG_osa_filename);
 	fprintf(fp, "OS/B_ROM=%s\n", CFG_osb_filename);
 	fprintf(fp, "XL/XE_ROM=%s\n", CFG_xlxe_filename);
 	fprintf(fp, "BASIC_ROM=%s\n", CFG_basic_filename);

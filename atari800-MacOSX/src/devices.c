@@ -2,7 +2,7 @@
  * devices.c - emulation of H:, P:, E: and K: Atari devices
  *
  * Copyright (C) 1995-1998 David Firth
- * Copyright (C) 1998-2005 Atari800 development team (see DOC/CREDITS)
+ * Copyright (C) 1998-2010 Atari800 development team (see DOC/CREDITS)
  *
  * This file is part of the Atari800 emulator project which emulates
  * the Atari 400, 800, 800XL, 130XE, and 5200 8-bit computers.
@@ -22,6 +22,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
+/* Bibliography:
+   [OSMAN] - Atari Home Computer System Technical Reference Notes - Operating System
+             User's Manual - CA016555 Rev. A - 1982 Atari, Inc.
+ */
 #include "config.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -66,6 +70,7 @@
 #include "log.h"
 #include "memory.h"
 #include "sio.h"
+#include "sysrom.h"
 #include "util.h"
 #ifdef R_IO_DEVICE
 #include "rdevice.h"
@@ -81,7 +86,7 @@
 #define S_IWRITE S_IWUSR
 #endif
 
-#ifdef WIN32
+#ifdef HAVE_WINDOWS_H
 
 #include <windows.h>
 
@@ -99,12 +104,12 @@
 #define FILENAME filename
 #endif /* UNICODE */
 
-#endif /* WIN32 */
+#endif /* HAVE_WINDOWS_H */
 
 
 /* Read Directory abstraction layer -------------------------------------- */
 
-#ifdef WIN32
+#ifdef HAVE_WINDOWS_H
 
 static char dir_path[FILENAME_MAX];
 static WIN32_FIND_DATA wfd;
@@ -233,6 +238,7 @@ static DIR *dp = NULL;
 
 static int Devices_OpenDir(const char *filename)
 {
+#ifdef ATARI800MACX
 	char *multi_aster;
 	
 	Util_splitpath(filename, dir_path, filename_pattern);
@@ -248,7 +254,9 @@ static int Devices_OpenDir(const char *filename)
 		multi_aster++;
 		Util_stpcpy(multi_aster, temp);
 	}
-
+#else
+	Util_splitpath(filename, dir_path, filename_pattern);
+#endif
 	if (dp != NULL)
 		closedir(dp);
 	dp = opendir(dir_path);
@@ -292,7 +300,7 @@ static int Devices_ReadDir(char *fullpath, char *filename, int *isdir,
 #ifdef HAVE_STAT
 	if (stat(temppath, &status) == 0) {
 		if (isdir != NULL)
-			*isdir = (status.st_mode & S_IFDIR) ? TRUE : FALSE;
+			*isdir = S_ISDIR(status.st_mode);
 		if (readonly != NULL)
 			*readonly = (status.st_mode & S_IWRITE) ? FALSE : TRUE;
 		if (size != NULL)
@@ -302,7 +310,10 @@ static int Devices_ReadDir(char *fullpath, char *filename, int *isdir,
 			struct tm *ft;
 			int hour;
 			char ampm = 'a';
-			ft = localtime(&status.st_mtime);
+			{
+				time_t tim = status.st_mtime;
+				ft = localtime(&tim);
+			}
 			hour = ft->tm_hour;
 			if (hour >= 12) {
 				hour -= 12;
@@ -368,7 +379,7 @@ static int Devices_ReadDir(char *fullpath, char *filename, int *isdir,
 
 /* Rename File/Directory abstraction layer ------------------------------- */
 
-#ifdef WIN32
+#ifdef HAVE_WINDOWS_H
 
 static int Devices_Rename(const char *oldname, const char *newname)
 {
@@ -400,7 +411,7 @@ static int Devices_Rename(const char *oldname, const char *newname)
 
 /* Set/Reset Read-Only Attribute abstraction layer ----------------------- */
 
-#ifdef WIN32
+#ifdef HAVE_WINDOWS_H
 
 /* Enables/disables read-only mode for the file. Returns TRUE on success. */
 static int Devices_SetReadOnly(const char *filename, int readonly)
@@ -431,7 +442,7 @@ static int Devices_SetReadOnly(const char *filename, int readonly)
 
 /* Make Directory abstraction layer -------------------------------------- */
 
-#ifdef WIN32
+#ifdef HAVE_WINDOWS_H
 
 static int Devices_MakeDirectory(const char *filename)
 {
@@ -445,10 +456,11 @@ static int Devices_MakeDirectory(const char *filename)
 
 static int Devices_MakeDirectory(const char *filename)
 {
-	/* XXX: I don't see any good reason why umask() and limited permissions were used. */
-	/* umask(S_IWGRP | S_IWOTH); */
-	return (mkdir(filename, 0777
-		 /* S_IRUSR | S_IWUSR | S_IXUSR | S_IRGRP | S_IROTH | S_IXGRP | S_IXOTH */) == 0);
+	return mkdir(filename
+#ifndef MKDIR_TAKES_ONE_ARG
+		, 0777
+#endif
+		) == 0;
 }
 
 #define DO_MKDIR
@@ -458,7 +470,7 @@ static int Devices_MakeDirectory(const char *filename)
 
 /* Remove Directory abstraction layer ------------------------------------ */
 
-#ifdef WIN32
+#ifdef HAVE_WINDOWS_H
 
 static UBYTE Devices_RemoveDirectory(const char *filename)
 {
@@ -500,7 +512,7 @@ static int Devices_D_IsDefault(void);
 static int devbug = FALSE;
 
 /* host path for each H: unit */
-char Devices_atari_h_dir[4][FILENAME_MAX] = { "", "", "", "" };
+char Devices_atari_h_dir[4][FILENAME_MAX];
 
 /* read only mode for H: device */
 int Devices_h_read_only = TRUE;
@@ -511,7 +523,7 @@ int Devices_h_read_only = TRUE;
 char Devices_h_exe_path[FILENAME_MAX] = DEFAULT_H_PATH;
 
 /* Devices_h_current_dir must be empty or terminated with Util_DIR_SEP_CHAR;
- only Util_DIR_SEP_CHAR can be used as a directory separator here */
+   only Util_DIR_SEP_CHAR can be used as a directory separator here */
 char Devices_h_current_dir[4][FILENAME_MAX];
 
 #ifdef D_PATCH
@@ -528,12 +540,16 @@ static FILE *h_fp[8] = { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL };
 /* H: text mode per IOCB */
 static int h_textmode[8];
 
+/* H: last read character per IOCB */
+static int h_lastbyte[8];
+
 /* last read character was CR, per IOCB */
 static int h_wascr[8];
 
-/* last operation: 'o': open, 'r': read, 'w': write, per IOCB */
-/* (this is needed to apply fseek(fp, 0, SEEK_CUR) between reads and writes
-   in update (12) mode) */
+/* last operation: 'o': open, 'r': read, 'w': write, 'p': point, 'b': binary
+   load, per IOCB. This is needed to apply fseek(fp, 0, SEEK_CUR) between reads
+   and writes in update (12) mode, and to support the read-ahead of 1 byte
+   in Devices_h_read. */
 static char h_lastop[8];
 
 #ifdef D_PATCH
@@ -548,7 +564,7 @@ static int h_iocb;
 /* H: device number, 0-3 */
 static int h_devnum;
 
-#ifdef MACOSX
+#ifdef ATARI800MACX
 extern int currPrinter;
 extern char atari_print_dir[FILENAME_MAX];
 extern void PrintOutputControllerPrintChar(char character);
@@ -588,7 +604,7 @@ void Devices_H_CloseAll(void)
 		}
 }
 
-#ifdef MACOSX
+#ifdef ATARI800MACX
 void Devices_H_Init(void)
 #else
 static void Devices_H_Init(void)
@@ -603,21 +619,39 @@ static void Devices_H_Init(void)
 	Devices_H_CloseAll();
 }
 
-void Devices_Initialise(int *argc, char *argv[])
+int Devices_Initialise(int *argc, char *argv[])
 {
 	int i;
 	int j;
 	for (i = j = 1; i < *argc; i++) {
-		if (strcmp(argv[i], "-H1") == 0)
-			Util_strlcpy(Devices_atari_h_dir[0], argv[++i], FILENAME_MAX);
-		else if (strcmp(argv[i], "-H2") == 0)
-			Util_strlcpy(Devices_atari_h_dir[1], argv[++i], FILENAME_MAX);
-		else if (strcmp(argv[i], "-H3") == 0)
-			Util_strlcpy(Devices_atari_h_dir[2], argv[++i], FILENAME_MAX);
-		else if (strcmp(argv[i], "-H4") == 0)
-			Util_strlcpy(Devices_atari_h_dir[3], argv[++i], FILENAME_MAX);
-		else if (strcmp(argv[i], "-Hpath") == 0)
-			Util_strlcpy(Devices_h_exe_path, argv[++i], FILENAME_MAX);
+		int i_a = (i + 1 < *argc);		/* is argument available? */
+		int a_m = FALSE;			/* error, argument missing! */
+
+		if (strcmp(argv[i], "-H1") == 0) {
+			if (i_a)
+				Util_strlcpy(Devices_atari_h_dir[0], argv[++i], FILENAME_MAX);
+			else a_m = TRUE;
+		}
+		else if (strcmp(argv[i], "-H2") == 0) {
+			if (i_a)
+				Util_strlcpy(Devices_atari_h_dir[1], argv[++i], FILENAME_MAX);
+			else a_m = TRUE;
+		}
+		else if (strcmp(argv[i], "-H3") == 0) {
+			if (i_a)
+				Util_strlcpy(Devices_atari_h_dir[2], argv[++i], FILENAME_MAX);
+			else a_m = TRUE;
+		}
+		else if (strcmp(argv[i], "-H4") == 0) {
+			if (i_a)
+				Util_strlcpy(Devices_atari_h_dir[3], argv[++i], FILENAME_MAX);
+			else a_m = TRUE;
+		}
+		else if (strcmp(argv[i], "-Hpath") == 0) {
+			if (i_a)
+				Util_strlcpy(Devices_h_exe_path, argv[++i], FILENAME_MAX);
+			else a_m = TRUE;
+		}
 		else if (strcmp(argv[i], "-hreadonly") == 0)
 			Devices_h_read_only = TRUE;
 		else if (strcmp(argv[i], "-hreadwrite") == 0)
@@ -637,11 +671,19 @@ void Devices_Initialise(int *argc, char *argv[])
 			}
 			argv[j++] = argv[i];
 		}
+
+		if (a_m) {
+			Log_print("Missing argument for '%s'", argv[i]);
+			return FALSE;
+		}
 	}
 	*argc = j;
 	Devices_H_Init();
+
+	return TRUE;
 }
 
+#ifdef ATARI800MACX
 void Devices_WarmCold_Start(void)
 {
 	int i;
@@ -658,6 +700,12 @@ void Devices_WarmCold_Start(void)
 		d_is_default[i] = FALSE;
 #endif
 	
+}
+#endif
+
+void Devices_Exit(void)
+{
+	Devices_H_CloseAll();
 }
 
 #define IS_DIR_SEP(c) ((c) == '/' || (c) == '\\' || (c) == ':' || (c) == '>')
@@ -792,48 +840,19 @@ static int Devices_GetNumber(int set_textmode)
 	if (!Devices_GetIOCB())
 		return -1;
 	devnum = MEMORY_dGetByte(Devices_ICDNOZ);
-	
-#ifdef D_PATCH	
-	/* If this is called from the D: handler, not the H: */
-	if (in_d_patch) {
-		/* It must be the default drive, as we normally don't 
-		   handle requests with device number of 1 */
-		if (devnum == 1) {
-			devnum = d_current_drive;
-		}
-		
-		if (devnum > 8) {
-			CPU_regY = 160; /* invalid unit/drive number */
-			CPU_SetN;
-			return -1;
-		}
-		/* D5: and D6: don't do translation, D7: and D8: do */
-		if (devnum < 7) {
-			if (set_textmode)
-				h_textmode[h_iocb] = FALSE;
-			return devnum - 5;
-		}
-		if (set_textmode)
-			h_textmode[h_iocb] = TRUE;
-		return devnum - 7;
-	} else {
-#endif		
-		if (devnum > 9 || devnum == 0 || devnum == 5) {
-			CPU_regY = 160; /* invalid unit/drive number */
-			CPU_SetN;
-			return -1;
-		}
-		if (devnum < 5) {
-			if (set_textmode)
-				h_textmode[h_iocb] = FALSE;
-			return devnum - 1;
-		}
-		if (set_textmode)
-			h_textmode[h_iocb] = TRUE;
-		return devnum - 6;
-#ifdef D_PATCH	
+	if (devnum > 9 || devnum == 0 || devnum == 5) {
+		CPU_regY = 160; /* invalid unit/drive number */
+		CPU_SetN;
+		return -1;
 	}
-#endif	
+	if (devnum < 5) {
+		if (set_textmode)
+			h_textmode[h_iocb] = FALSE;
+		return devnum - 1;
+	}
+	if (set_textmode)
+		h_textmode[h_iocb] = TRUE;
+	return devnum - 6;
 }
 
 static UWORD Devices_GetHostPath(int set_textmode)
@@ -1052,10 +1071,13 @@ static void Devices_H_Read(void)
 		return;
 	if (h_fp[h_iocb] != NULL) {
 		int ch;
-		if (h_lastop[h_iocb] == 'w')
-			fseek(h_fp[h_iocb], 0, SEEK_CUR);
-		h_lastop[h_iocb] = 'r';
-		ch = fgetc(h_fp[h_iocb]);
+		if (h_lastop[h_iocb] != 'r') {
+			if (h_lastop[h_iocb] == 'w')
+				fseek(h_fp[h_iocb], 0, SEEK_CUR);
+			h_lastbyte[h_iocb] = fgetc(h_fp[h_iocb]);
+			h_lastop[h_iocb] = 'r';
+		}
+		ch = h_lastbyte[h_iocb];
 		if (ch != EOF) {
 			if (h_textmode[h_iocb]) {
 				switch (ch) {
@@ -1090,7 +1112,10 @@ static void Devices_H_Read(void)
 				}
 			}
 			CPU_regA = (UBYTE) ch;
-			CPU_regY = 1;
+			/* [OSMAN] p. 79: Status should be 3 if next read would yield EOF.
+			   But to set the stream's EOF flag, we need to read the next byte. */
+			h_lastbyte[h_iocb] = fgetc(h_fp[h_iocb]);
+			CPU_regY = feof(h_fp[h_iocb]) ? 3 : 1;
 			CPU_ClrN;
 		}
 		else {
@@ -1392,6 +1417,9 @@ static void Devices_H_Note(void)
 		long pos = ftell(h_fp[h_iocb]);
 		if (pos >= 0) {
 			int iocb = Devices_IOCB0 + h_iocb * 16;
+			/* In Devices_H_Read one byte is read ahead. Take it into account. */
+			if (h_lastop[h_iocb] == 'r' && h_lastbyte[h_iocb] != EOF)
+				--pos;
 			MEMORY_dPutByte(iocb + Devices_ICAX5, (UBYTE) pos);
 			MEMORY_dPutByte(iocb + Devices_ICAX3, (UBYTE) (pos >> 8));
 			MEMORY_dPutByte(iocb + Devices_ICAX4, (UBYTE) (pos >> 16));
@@ -1427,6 +1455,7 @@ static void Devices_H_Point(void)
 			CPU_regY = 166; /* invalid POINT request */
 			CPU_SetN;
 		}
+		h_lastop[h_iocb] = 'p';
 	}
 	else {
 		CPU_regY = 130; /* specified device does not exist; XXX: correct? */
@@ -1434,7 +1463,8 @@ static void Devices_H_Point(void)
 	}
 }
 
-static FILE *binf = NULL;
+static FILE *binfile = NULL;
+static FILE **binf = &binfile;
 static int runBinFile;
 static int initBinFile;
 
@@ -1442,9 +1472,9 @@ static int initBinFile;
 static int Devices_H_BinReadWord(void)
 {
 	UBYTE buf[2];
-	if (fread(buf, 1, 2, binf) != 2) {
-		fclose(binf);
-		binf = NULL;
+	if (fread(buf, 1, 2, *binf) != 2) {
+		fclose(*binf);
+		*binf = NULL;
 		if (BINLOAD_start_binloading) {
 			BINLOAD_start_binloading = FALSE;
 			Log_print("binload: not valid BIN file");
@@ -1463,7 +1493,7 @@ static int Devices_H_BinReadWord(void)
 
 static void Devices_H_BinLoaderCont(void)
 {
-	if (binf == NULL)
+	if (*binf == NULL)
 		return;
 	if (BINLOAD_start_binloading) {
 		MEMORY_dPutByte(0x244, 0);
@@ -1500,10 +1530,10 @@ static void Devices_H_BinLoaderCont(void)
 
 		to++;
 		do {
-			int byte = fgetc(binf);
+			int byte = fgetc(*binf);
 			if (byte == EOF) {
-				fclose(binf);
-				binf = NULL;
+				fclose(*binf);
+				*binf = NULL;
 				if (runBinFile)
 					CPU_regPC = MEMORY_dGetWordAligned(0x2e0);
 				if (initBinFile && (MEMORY_dGetByte(0x2e3) != 0xd7)) {
@@ -1599,13 +1629,13 @@ static void Devices_H_Load(int mydos)
 		if (Devices_GetAtariPath(devnum, r) == 0)
 			return;
 		Util_catpath(host_path, Devices_atari_h_dir[devnum], atari_path);
-		binf = fopen(host_path, "rb");
-		if (binf != NULL || *q == '\0')
+		*binf = fopen(host_path, "rb");
+		if (*binf != NULL || *q == '\0')
 			break;
 		p = q + 1;
 	}
 
-	if (binf == NULL) {
+	if (*binf == NULL) {
 		/* open from the specified location */
 		if (Devices_GetAtariPath(h_devnum, atari_filename) == 0)
 			return;
@@ -1616,21 +1646,20 @@ static void Devices_H_Load(int mydos)
 		} else {
 #endif		
 		Util_catpath(host_path, Devices_atari_h_dir[h_devnum], atari_path);
-#ifdef D_PATCH
-		}
-#endif		
-		binf = fopen(host_path, "rb");
-		if (binf == NULL) {
+		*binf = fopen(host_path, "rb");
+		if (*binf == NULL) {
 			CPU_regY = 170;
 			CPU_SetN;
 			return;
 		}
+#ifdef D_PATCH
+        }
+#endif
 	}
-
 	/* check header */
-	if (fread(buf, 1, 2, binf) != 2 || buf[0] != 0xff || buf[1] != 0xff) {
-		fclose(binf);
-		binf = NULL;
+	if (fread(buf, 1, 2, *binf) != 2 || buf[0] != 0xff || buf[1] != 0xff) {
+		fclose(*binf);
+		*binf = NULL;
 		Log_print("H: load: not valid BIN file");
 		CPU_regY = 180;
 		CPU_SetN;
@@ -1651,10 +1680,16 @@ static void Devices_H_FileLength(void)
 		Devices_H_Load(TRUE);
 	/* if we are running MyDOS then assume it is a MyDOS Load File command */
 	else if (MEMORY_dGetByte(0x700) == 'M') {
-		/* XXX: if (binf != NULL) fclose(binf); ? */
-		binf = h_fp[h_iocb];
+		/* XXX: if (*binf != NULL) fclose(*binf); ? */
+
+		/* In Devices_H_Read one byte is read ahead. Take it into account. */
+		if (h_lastop[h_iocb] == 'r' && h_lastbyte[h_iocb] != EOF)
+			fseek(h_fp[h_iocb], -1, SEEK_CUR);
+
+		binf = &h_fp[h_iocb];
 		Devices_H_LoadProceed(TRUE);
-		/* XXX: don't close binf when complete? */
+		binf = &binfile;
+		h_lastop[h_iocb] = 'b';
 	}
 	/* otherwise assume it is a file length command */
 	else {
@@ -1722,16 +1757,16 @@ static void Devices_H_ChangeDirectory(void)
 {
 	if (devbug)
 		Log_print("CD Command");
-	
+
 	if (Devices_GetHostPath(FALSE) == 0)
 		return;
-	
+
 	if (!Util_direxists(host_path)) {
 		CPU_regY = 150;
 		CPU_SetN;
 		return;
 	}
-	
+
 	if (atari_path[0] == '\0')
 		Devices_h_current_dir[h_devnum][0] = '\0';
 	else {
@@ -1739,11 +1774,12 @@ static void Devices_H_ChangeDirectory(void)
 		p[0] = Util_DIR_SEP_CHAR;
 		p[1] = '\0';
 	}
-	
+
 	CPU_regY = 1;
 	CPU_ClrN;
 }
 
+#ifdef ATARI800MACX
 static void Devices_H_ChangeDefaultDrive(void)
 {
 #ifdef D_PATCH	
@@ -1801,10 +1837,9 @@ static void Devices_H_ChangeDefaultDrive(void)
 		p[1] = '\0';
 	}
 
-#endif	
-	CPU_regY = 1;
-	CPU_ClrN;
+#endif
 }
+#endif
 
 static void Devices_H_DiskInfo(void)
 {
@@ -1921,9 +1956,13 @@ static void Devices_H_Special(void)
 		Devices_H_RemoveDirectory();
 		return;
 #endif
+#ifdef ATARI800MACX
 	case 0x29: /* MyDOS */
 		Devices_H_ChangeDefaultDrive();
 		return;
+#else
+	case 0x29: /* MyDOS */
+#endif
 	case 0x2c: /* Sparta */
 		Devices_H_ChangeDirectory();
 		return;
@@ -2254,7 +2293,7 @@ static void Devices_P_Close(void)
 	if (devbug)
 		Log_print("PHCLOS");
 
-#ifdef MACOSX
+#ifdef ATARI800MACX
     if (currPrinter != 0) {
 		CPU_regY = 1;
 		CPU_ClrN;
@@ -2271,8 +2310,10 @@ static void Devices_P_Close(void)
 #endif
 		{
 			char command[256 + FILENAME_MAX]; /* 256 for Devices_print_command + FILENAME_MAX for spool_file */
+			int retval;
 			sprintf(command, Devices_print_command, spool_file);
-			system(command);
+			if ((retval = system(command)) == -1)
+				Log_print("Print command \"%s\' failed", command);
 #if defined(HAVE_UTIL_UNLINK) && !defined(VMS) && !defined(MACOSX)
 			if (Util_unlink(spool_file) != 0) {
 				perror(spool_file);
@@ -2289,7 +2330,7 @@ static void Devices_P_Open(void)
 	if (devbug)
 		Log_print("PHOPEN");
 
-#ifdef MACOSX
+#ifdef ATARI800MACX
  	if (currPrinter != 0) {
 		CPU_regY = 1;
 		CPU_ClrN;
@@ -2300,7 +2341,7 @@ static void Devices_P_Open(void)
 	if (phf != NULL)
 		Devices_P_Close();
 
-#ifdef MACOSX
+#ifdef ATARI800MACX
 	strcpy(spool_file,atari_print_dir);
 	strcat(spool_file,"/");
 	strcat(spool_file,"SPOOL_XXXXXX\0");
@@ -2326,7 +2367,7 @@ static void Devices_P_Write(void)
 		Log_print("PHWRIT");
 
 	byte = CPU_regA;
-#ifdef MACOSX	
+#ifdef ATARI800MACX	
     if (currPrinter == 0)
 	{
 		if (byte == 0x9b)
@@ -2354,10 +2395,10 @@ static void Devices_P_Write(void)
 #else
 	if (byte == 0x9b)
 		byte = '\n';
-	
+
 	fputc(byte, phf);
-	regY = 1;
-	ClrN;
+	CPU_regY = 1;
+	CPU_ClrN;
 #endif
 }
 
@@ -2470,6 +2511,97 @@ static void Devices_K_Read(void)
 
 #endif /* BASIC */
 
+/* B: device emulation --------------------------------------------------- */
+
+/* The B: device is intended as a handler for interoperating with a web browser.
+ * The device is OPENed, a url is WRITE-n, then it is CLOSEd.
+ * Upon closing, the ready flag in the structure is set to TRUE.
+ * This can tested by the host port, reset to FALSE then if the string contained
+ * in the url member looks like a url, a browser to can be spawned to that url.
+ * The user can also be notified via a popup that an Atari program is requesting
+ * browser access.
+ */
+
+struct DEV_B dev_b_status;
+
+static void Devices_B_Open(void)
+{
+	if (devbug)
+		Log_print("B: OPEN");
+
+	if (MEMORY_dGetByte(Devices_ICAX1Z) != 8) {
+		CPU_regY = 163; /* read-only device */
+		CPU_SetN;
+		return;
+	}
+
+	memset(dev_b_status.url, 0, sizeof(dev_b_status.url));
+	dev_b_status.pos = 0;
+	dev_b_status.ready = FALSE;
+
+	CPU_regY = 1;	/* open OK */
+	CPU_ClrN;
+}
+
+static void Devices_B_Close(void)
+{
+	if (devbug)
+		Log_print("B: CLOSE (%s)", dev_b_status.url);
+
+	if (dev_b_status.pos > 0)
+		dev_b_status.ready = TRUE;
+
+	CPU_regY = 1;
+	CPU_ClrN;
+}
+
+static void Devices_B_Write(void)
+{
+	UBYTE byte;
+
+	byte = CPU_regA;
+
+	if (devbug)
+		Log_print("B: WRITE ([%d] %02X, '%c')", dev_b_status.pos, byte, byte);
+
+	if (byte == 0x9b)
+		byte = '\0';
+
+	if (dev_b_status.pos >= sizeof(dev_b_status.url) - 1) {
+		CPU_regY = 135; /* attempted to write to a read-only device */
+		CPU_SetN;
+		return;
+	}
+	dev_b_status.url[dev_b_status.pos++] = byte;
+
+	CPU_regY = 1;
+	CPU_ClrN;
+}
+
+static void Devices_B_Null(void)
+{
+	if (devbug)
+		Log_print("B: NULL");
+}
+
+static void Devices_B_Read(void)
+{
+	if (devbug)
+		Log_print("B: READ");
+
+	CPU_regY = 136; /* end of file */
+	CPU_SetN;
+}
+
+static void Devices_B_Init(void)
+{
+	if (devbug)
+		Log_print("B: INIT");
+
+	CPU_regY = 1;
+	CPU_ClrN;
+}
+
 
 /* Atari BASIC loader ---------------------------------------------------- */
 
@@ -2488,10 +2620,10 @@ static void Devices_RestoreHandler(UWORD address, UBYTE esc_code)
 {
 	ESC_Remove(esc_code);
 	/* restore original OS code */
-	MEMORY_dCopyToMem(Atari800_machine_type == Atari800_MACHINE_XLXE
-	            ? MEMORY_os + address - 0xc000
-	            : MEMORY_os + address - 0xd800,
-	           address, 3);
+	MEMORY_dCopyToMem(MEMORY_os - (Atari800_machine_type == Atari800_MACHINE_800
+	                               ? 0xd800
+	                               : 0xc000) + address,
+	                  address, 3);
 }
 
 static void Devices_RestoreEHOPEN(void)
@@ -2610,6 +2742,30 @@ static void Devices_GetBasicCommand(void)
 static void Devices_OpenBasicFile(void)
 {
 	if (BINLOAD_bin_file != NULL) {
+		if (BINLOAD_loading_basic == BINLOAD_LOADING_BASIC_LISTED) {
+			/* determine its type now rather than during the loading */
+			unsigned char buf[2];
+			size_t buf_read;
+
+			fseek(BINLOAD_bin_file, 0, SEEK_END);
+			fseek(BINLOAD_bin_file, -2, SEEK_CUR);
+
+			buf_read = fread(buf, sizeof(buf[0]), 2, BINLOAD_bin_file);
+			if (buf_read == 2) {
+				/* simple heuristics - look at the last and possibly one before last character */
+				if (buf[1] == 0x9b) {
+					BINLOAD_loading_basic = BINLOAD_LOADING_BASIC_LISTED_ATARI;
+				} else if (buf[1] == 0x0a) {
+					BINLOAD_loading_basic = BINLOAD_LOADING_BASIC_LISTED_LF;
+					if (buf[0] == 0x0d) {
+						BINLOAD_loading_basic = BINLOAD_LOADING_BASIC_LISTED_CRLF;
+					}
+				} else if (buf[1] == 0x0d) {
+					BINLOAD_loading_basic = BINLOAD_LOADING_BASIC_LISTED_CR;
+				}
+			}
+		}
+
 		fseek(BINLOAD_bin_file, 0, SEEK_SET);
 		ESC_AddEscRts(ehclos_addr, ESC_EHCLOS, Devices_CloseBasicFile);
 		ESC_AddEscRts(ehread_addr, ESC_EHREAD, Devices_ReadBasicFile);
@@ -2632,22 +2788,10 @@ static void Devices_ReadBasicFile(void)
 		}
 		switch (BINLOAD_loading_basic) {
 		case BINLOAD_LOADING_BASIC_LISTED:
-			switch (ch) {
-			case 0x9b:
-				BINLOAD_loading_basic = BINLOAD_LOADING_BASIC_LISTED_ATARI;
-				break;
-			case 0x0a:
-				BINLOAD_loading_basic = BINLOAD_LOADING_BASIC_LISTED_LF;
-				ch = 0x9b;
-				break;
-			case 0x0d:
-				BINLOAD_loading_basic = BINLOAD_LOADING_BASIC_LISTED_CR_OR_CRLF;
-				ch = 0x9b;
-				break;
-			default:
-				break;
-			}
-			break;
+			/* can't be just LISTED at this point */
+			CPU_regY = 136;
+			CPU_SetN;
+			return;
 		case BINLOAD_LOADING_BASIC_LISTED_CR:
 			if (ch == 0x0d)
 				ch = 0x9b;
@@ -2665,21 +2809,6 @@ static void Devices_ReadBasicFile(void)
 					return;
 				}
 			}
-			if (ch == 0x0d)
-				ch = 0x9b;
-			break;
-		case BINLOAD_LOADING_BASIC_LISTED_CR_OR_CRLF:
-			if (ch == 0x0a) {
-				BINLOAD_loading_basic = BINLOAD_LOADING_BASIC_LISTED_CRLF;
-				ch = fgetc(BINLOAD_bin_file);
-				if (ch == EOF) {
-					CPU_regY = 136;
-					CPU_SetN;
-					return;
-				}
-			}
-			else
-				BINLOAD_loading_basic = BINLOAD_LOADING_BASIC_LISTED_CR;
 			if (ch == 0x0d)
 				ch = 0x9b;
 			break;
@@ -2729,6 +2858,7 @@ int Devices_enable_d_patch = TRUE;
 #endif
 int Devices_enable_p_patch = TRUE;
 int Devices_enable_r_patch = FALSE;
+int Devices_enable_b_patch = FALSE;
 
 /* Devices_PatchOS is called by ESC_PatchOS to modify standard device
    handlers in Atari OS. It puts escape codes at beginnings of OS routines,
@@ -2740,18 +2870,52 @@ int Devices_enable_r_patch = FALSE;
 */
 int Devices_PatchOS(void)
 {
+	/* addr points to the ROM table of handler vectors. */
 	UWORD addr;
 	int i;
 	int patched = FALSE;
 
-	switch (Atari800_machine_type) {
-	case Atari800_MACHINE_OSA:
-	case Atari800_MACHINE_OSB:
-		addr = 0xf0e3;
+	switch (Atari800_os_version) {
+	case SYSROM_A_NTSC:
+	case SYSROM_A_PAL:
+	case SYSROM_B_NTSC:
+	case SYSROM_800_CUSTOM:
+		addr = 0xf0e3; /* labeled TBLENT in OS sources */
 		break;
-	case Atari800_MACHINE_XLXE:
-		addr = 0xc42e;
+	case SYSROM_AA00R10:
+		addr = 0xc4fa; /* labeled THAV in OS sources */
 		break;
+	case SYSROM_AA01R11:
+		addr = 0xc479; /* labeled THAV in OS sources */
+		break;
+	case SYSROM_BB00R1:
+		addr = 0xc43c; /* labeled THAV in OS sources */
+		break;
+	case SYSROM_BB01R2:
+	case SYSROM_BB01R3:
+	case SYSROM_BB01R4_OS:
+	case SYSROM_BB01R59:
+	case SYSROM_BB01R59A:
+	case SYSROM_XL_CUSTOM:
+		addr = 0xc42e; /* labeled THAV in OS sources */
+		break;
+	case SYSROM_BB02R3:
+		addr = 0xc42c; /* labeled THAV in OS sources */
+		break;
+	case SYSROM_BB02R3V4:
+		addr = 0xc43b; /* labeled THAV in OS sources */
+		break;
+	case SYSROM_CC01R4:
+		addr = 0xc3eb; /* labeled THAV in OS sources */
+		break;
+#if EMUOS_ALTIRRA
+	case SYSROM_ALTIRRA_800:
+		addr = 0xefd4; /* labeled InitHandlerTable in OS sources */
+		break;
+	case SYSROM_ALTIRRA_XL:
+		addr = 0xee90; /* labeled InitHandlerTable in OS sources */
+		break;
+#endif /* EMUOS_ALTIRRA */
 	default:
 		return FALSE;
 	}
@@ -2890,6 +3054,7 @@ static UWORD h_entry_address = 0;
 #ifdef R_IO_DEVICE
 static UWORD r_entry_address = 0;
 #endif
+static UWORD b_entry_address = 0;
 
 #define H_DEVICE_BEGIN  0xd140
 #define H_TABLE_ADDRESS 0xd140
@@ -2927,6 +3092,17 @@ static UWORD r_entry_address = 0;
 #define D_DEVICE_END    0xd1e5
 #endif
 
+#define B_DEVICE_BEGIN  0xd1c0
+#define B_TABLE_ADDRESS 0xd1c0
+#define B_PATCH_OPEN    0xd1d0
+#define B_PATCH_CLOS    0xd1d3
+#define B_PATCH_READ    0xd1d6
+#define B_PATCH_WRIT    0xd1d9
+#define B_PATCH_STAT    0xd1dc
+#define B_PATCH_SPEC    0xd1df
+#define B_PATCH_INIT    0xd1e3
+#define B_DEVICE_END    0xd1e5
+
 void Devices_Frame(void)
 {
 	if (Devices_enable_h_patch)
@@ -2941,6 +3117,9 @@ void Devices_Frame(void)
 	if (Devices_enable_r_patch)
 		r_entry_address = Devices_UpdateHATABSEntry('R', r_entry_address, R_TABLE_ADDRESS);
 #endif
+
+	if (Devices_enable_b_patch)
+		b_entry_address = Devices_UpdateHATABSEntry('B', b_entry_address, B_TABLE_ADDRESS);
 }
 
 /* this is called when Devices_enable_h_patch is toggled */
@@ -3056,4 +3235,42 @@ void Devices_UpdatePatches(void)
 		MEMORY_dFillMem(R_DEVICE_BEGIN, 0xff, R_DEVICE_END - R_DEVICE_BEGIN + 1);
 	}
 #endif /* defined(R_IO_DEVICE) */
+
+	if (Devices_enable_b_patch) {
+		/* add B: device to HATABS */
+		MEMORY_SetROM(B_DEVICE_BEGIN, B_DEVICE_END);
+		/* set handler table */
+		MEMORY_dPutWord(B_TABLE_ADDRESS + Devices_TABLE_OPEN, B_PATCH_OPEN - 1);
+		MEMORY_dPutWord(B_TABLE_ADDRESS + Devices_TABLE_CLOS, B_PATCH_CLOS - 1);
+		MEMORY_dPutWord(B_TABLE_ADDRESS + Devices_TABLE_READ, B_PATCH_READ - 1);
+		MEMORY_dPutWord(B_TABLE_ADDRESS + Devices_TABLE_WRIT, B_PATCH_WRIT - 1);
+		MEMORY_dPutWord(B_TABLE_ADDRESS + Devices_TABLE_STAT, B_PATCH_STAT - 1);
+		MEMORY_dPutWord(B_TABLE_ADDRESS + Devices_TABLE_SPEC, B_PATCH_SPEC - 1);
+		MEMORY_dPutWord(B_TABLE_ADDRESS + Devices_TABLE_INIT, B_PATCH_INIT - 1);
+		/* set patches */
+		ESC_AddEscRts(B_PATCH_OPEN, ESC_BOPEN, Devices_B_Open);
+		ESC_AddEscRts(B_PATCH_CLOS, ESC_BCLOS, Devices_B_Close);
+		ESC_AddEscRts(B_PATCH_READ, ESC_BREAD, Devices_B_Read);
+		ESC_AddEscRts(B_PATCH_WRIT, ESC_BWRIT, Devices_B_Write);
+		ESC_AddEscRts(B_PATCH_STAT, ESC_BSTAT, Devices_B_Null);
+		ESC_AddEscRts(B_PATCH_SPEC, ESC_BSPEC, Devices_B_Null);
+		ESC_AddEscRts(B_PATCH_INIT, ESC_BINIT, Devices_B_Init);
+	}
+	else {
+		/* remove B: entry from HATABS */
+		Devices_RemoveHATABSEntry('B', b_entry_address, B_TABLE_ADDRESS);
+		/* remove patches */
+		ESC_Remove(ESC_BOPEN);
+		ESC_Remove(ESC_BCLOS);
+		ESC_Remove(ESC_BREAD);
+		ESC_Remove(ESC_BWRIT);
+		ESC_Remove(ESC_BSTAT);
+		ESC_Remove(ESC_BSPEC);
+		/* fill memory area used for table and patches with 0xff */
+		MEMORY_dFillMem(B_DEVICE_BEGIN, 0xff, B_DEVICE_END - B_DEVICE_BEGIN + 1);
+	}
 }
+
+/*
+vim:ts=4:sw=4:
+*/

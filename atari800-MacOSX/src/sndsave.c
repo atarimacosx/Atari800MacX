@@ -27,7 +27,7 @@
 #include "pokeysnd.h"
 #include "sndsave.h"
 
-#ifdef MACOSX
+#ifdef ATARI800MACX
 #define AIFF_CHUNK_HEADER   "FORM\000\000\000\000AIFFCOMM\000\000\000\022\000\002\000\000\000\000\000\010\100\016\254\104\000\000\000\000\000\000"
 #define AIFF_CHUNK_HEADER_LENGTH    38
 #define AIFF_DATA_CHUNK_HEADER	"SSND\000\000\000\000\000\000\000\000\000\000\000\000"
@@ -38,7 +38,7 @@
 /* sndoutput is just the file pointer for the current sound file */
 static FILE *sndoutput = NULL;
 
-#ifdef MACOSX
+#ifdef ATARI800MACX
 char *SndSave_Find_AIFF_name(void)
 {
 	int aiff_no = -1;
@@ -81,7 +81,7 @@ int SndSave_IsSoundFileOpen(void)
 
    RETURNS: TRUE if file closed with no problems, FALSE if failure during close */
 
-#ifdef MACOSX
+#ifdef ATARI800MACX
 int SndSave_CloseSoundFile(void)
 {
 	int	bSuccess = TRUE;
@@ -180,7 +180,7 @@ int SndSave_CloseSoundFile(void)
 
    RETURNS: TRUE if file opened with no problems, FALSE if failure during open */
 
-#ifdef MACOSX
+#ifdef ATARI800MACX
 int SndSave_OpenSoundFile(const char *szFileName)
 {
 	SndSave_CloseSoundFile();
@@ -301,7 +301,7 @@ int SndSave_OpenSoundFile(const char *szFileName)
 
    RETURNS: the number of bytes written to the file (should be equivalent to the input uiSize parm) */
 
-#ifdef MACOSX
+#ifdef ATARI800MACX
 int SndSave_WriteToSoundFile(const unsigned char *ucBuffer, unsigned int uiSize)
 {
 	static unsigned char buffer[1 << FRAGSIZE];

@@ -56,6 +56,8 @@
     IBOutlet id removeD8Item;
     IBOutlet id removeCartItem;
     IBOutlet id removeSecondCartItem;
+    IBOutlet id protectCassItem;
+    IBOutlet id recordCassItem;
     IBOutlet id removeCassItem;
     IBOutlet id rewindCassItem;
 	IBOutlet id selectPrinterPulldown;
@@ -77,6 +79,8 @@
     IBOutlet id error2Button;
     IBOutlet id error2Field1;
     IBOutlet id error2Field2;
+    IBOutlet id cart2KMatrix;
+    IBOutlet id cart4KMatrix;
     IBOutlet id cart8KMatrix;
     IBOutlet id cart16KMatrix;
     IBOutlet id cart32KMatrix;
@@ -86,6 +90,11 @@
     IBOutlet id cart256KMatrix;
     IBOutlet id cart512KMatrix;
     IBOutlet id cart1024KMatrix;
+    IBOutlet id cart2048KMatrix;
+    IBOutlet id cart4096KMatrix;
+    IBOutlet id cart32MMatrix;
+    IBOutlet id cart64MMatrix;
+    IBOutlet id cart128MMatrix;
 	IBOutlet id d1DiskImageInsertButton;
 	IBOutlet id d1DiskImageNameField;
 	IBOutlet id d1DiskImageNumberField;
@@ -126,6 +135,9 @@
 	IBOutlet id cassImageSlider;
 	IBOutlet id cassImageSliderCurrField;
 	IBOutlet id cassImageSliderMaxField;
+    IBOutlet id cassImageLockView;
+    IBOutlet id cassImageProtectButton;
+    IBOutlet id cassImageRecordButton;
 	IBOutlet id cartImageInsertButton;
 	IBOutlet id cartImageSecondInsertButton;
 	IBOutlet id cartImageNameField;
@@ -137,10 +149,11 @@
 	IBOutlet id printerPreviewItem;
 	IBOutlet id speedLimitButton;
 	IBOutlet id disBasicButton;
-	IBOutlet id xep80Button;
+    IBOutlet id insertBasicItem;
+    IBOutlet id xep80Button;
+    IBOutlet id xep80Pulldown;
 	IBOutlet id machineTypePulldown;
 	IBOutlet id scaleModePulldown;
-	IBOutlet id scaleSizePulldown;
 	IBOutlet id widthModePulldown;
 	IBOutlet id artifactModePulldown;
 	int numChecked;
@@ -154,6 +167,7 @@
 - (NSString *) saveFileInDirectory:(NSString *)directory:(NSString *)type;
 - (IBAction)cancelDisk:(id)sender;
 - (IBAction)cartInsert:(id)sender;
+- (IBAction)basicInsert:(id)sender;
 - (IBAction)cartSecondInsert:(id)sender;
 - (void)cartInsertFile:(NSString *)filename;
 - (IBAction)cartRemove:(id)sender;
@@ -163,8 +177,10 @@
 - (IBAction)cartSelectCancel:(id)sender;
 - (IBAction)cassInsert:(id)sender;
 - (void)cassInsertFile:(NSString *)filename;
+- (IBAction)cassRecord:(id)sender;
 - (IBAction)cassRemove:(id)sender;
 - (IBAction)cassRewind:(id)sender;
+- (IBAction)cassStatusProtect:(id)sender;
 - (void)changeToComputer;
 - (IBAction)convertCartRom:(id)sender;
 - (IBAction)convertRomCart:(id)sender;
@@ -219,15 +235,16 @@
 - (void)setLimitButton:(int)limit;
 - (IBAction)disableBasic:(id)sender;
 - (IBAction)changeXEP80:(id)sender;
-- (void)setDisableBasicButton:(int)limit;
+- (void)setDisableBasicButton:(int)mode:(int)onoff;
 - (void)closeKeyWindow:(id)sender;
 - (IBAction)machineTypeChange:(id)sender;
-- (IBAction)scaleSizeChange:(id)sender;
 - (IBAction)scaleModeChange:(id)sender;
 - (IBAction)widthModeChange:(id)sender;
 - (IBAction)artifactModeChange:(id)sender;
 - (IBAction)checkDisk:(id)sender;
 - (void)switchDisks;
+- (void)enable80ColMode:(int)machineType;
 - (void)set80ColMode:(int)xep80Enabled:(int)af80Enabled:(int)bit3Enabled:(int)xep80;
+- (IBAction)xep80Mode:(id)sender;
 
 @end

@@ -10,19 +10,9 @@
 #include "stdio.h"
 
 typedef struct ATARI800MACX_PREF {
-                int fullScreen; 
-				int openGl;
-                int lockFullscreenSize;
-                int fullscreenMonitor;
-				int fullForeRed;
-				int fullForeGreen;
-				int fullForeBlue;
-				int fullBackRed;
-				int fullBackGreen;
-				int fullBackBlue;
-                int doubleSize; 
                 int scaleFactor;
-                int widthMode; 
+                double scaleFactorFloat;
+                int widthMode;
 				int scaleMode;
                 int tvMode; 
                 int refreshRatio; 
@@ -37,6 +27,8 @@ typedef struct ATARI800MACX_PREF {
                 int adjustPalette;
                 char paletteFile[FILENAME_MAX]; 
                 int showFPS;
+                int onlyIntegralScaling;
+                int fixAspectFullscreen;
 				int ledStatus;
 				int ledSector;
 				int ledStatusMedia;
@@ -86,11 +78,14 @@ typedef struct ATARI800MACX_PREF {
                 char hardDiskDir[4][FILENAME_MAX]; 
                 int hardDrivesReadOnly;
                 char hPath[FILENAME_MAX];
-                char osARomFile[FILENAME_MAX]; 
-                char osBRomFile[FILENAME_MAX]; 
+                char osBRomFile[FILENAME_MAX];
                 char xlRomFile[FILENAME_MAX]; 
                 char basicRomFile[FILENAME_MAX];
                 char a5200RomFile[FILENAME_MAX];
+                int  useAltirraOSBRom;
+                int  useAltirraXLRom;
+                int  useAltirra5200Rom;
+                int  useAltirraBasicRom;
                 char diskImageDir[FILENAME_MAX];
                 char diskSetDir[FILENAME_MAX];
                 char cartImageDir[FILENAME_MAX];
@@ -170,9 +165,8 @@ typedef struct ATARI800MACX_PREF {
 } ATARI800MACX_PREF;
 
 typedef struct ATARI800MACX_PREFSAVE {
-                int fullScreen; 
-                int doubleSize; 
                 int scaleFactor;
+                double scaleFactorFloat;
                 int widthMode; 
 				int scaleMode;
                 int showFPS;

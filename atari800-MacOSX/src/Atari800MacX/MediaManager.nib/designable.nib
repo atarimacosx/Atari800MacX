@@ -9,14 +9,20 @@
         <customObject id="-2" userLabel="File's Owner" customClass="MediaManager">
             <connections>
                 <outlet property="artifactModePulldown" destination="1216" id="1246"/>
-                <outlet property="cart1024KMatrix" destination="694" id="700"/>
-                <outlet property="cart128KMatrix" destination="656" id="663"/>
+                <outlet property="cart128KMatrix" destination="656" id="GFb-zd-f6z"/>
+                <outlet property="cart128MMatrix" destination="iYT-yd-ET5" id="0yj-Eq-q1s"/>
                 <outlet property="cart16KMatrix" destination="576" id="638"/>
+                <outlet property="cart2048KMatrix" destination="694" id="7QW-uB-3AA"/>
                 <outlet property="cart256KMatrix" destination="621" id="650"/>
-                <outlet property="cart32KMatrix" destination="590" id="641"/>
+                <outlet property="cart2KMatrix" destination="OgV-oU-uTi" id="YXY-lF-wBS"/>
+                <outlet property="cart32KMatrix" destination="590" id="NuH-ao-XnF"/>
+                <outlet property="cart32MMatrix" destination="WTd-v1-gOP" id="UpP-Vt-9sU"/>
+                <outlet property="cart4096KMatrix" destination="vVS-8y-i0n" id="bJR-YB-nsz"/>
                 <outlet property="cart40KMatrix" destination="611" id="644"/>
+                <outlet property="cart4KMatrix" destination="pXX-eu-kjE" id="3PX-aC-x4i"/>
                 <outlet property="cart512KMatrix" destination="627" id="664"/>
                 <outlet property="cart64KMatrix" destination="606" id="647"/>
+                <outlet property="cart64MMatrix" destination="gZN-Dy-emT" id="QLL-e6-yY8"/>
                 <outlet property="cart8KMatrix" destination="565" id="635"/>
                 <outlet property="cartImageInsertButton" destination="924" id="932"/>
                 <outlet property="cartImageNameField" destination="926" id="931"/>
@@ -24,7 +30,10 @@
                 <outlet property="cartImageSecondNameField" destination="1259" id="1260"/>
                 <outlet property="cartImageView" destination="925" id="930"/>
                 <outlet property="cassImageInsertButton" destination="923" id="929"/>
+                <outlet property="cassImageLockView" destination="PBi-ny-ErH" id="ung-Hh-hWI"/>
                 <outlet property="cassImageNameField" destination="921" id="928"/>
+                <outlet property="cassImageProtectButton" destination="Zjf-19-pna" id="7eM-N0-faU"/>
+                <outlet property="cassImageRecordButton" destination="QmR-Oy-J0J" id="6ND-bP-dSZ"/>
                 <outlet property="cassImageSlider" destination="986" id="990"/>
                 <outlet property="cassImageSliderCurrField" destination="999" id="1001"/>
                 <outlet property="cassImageSliderMaxField" destination="988" id="993"/>
@@ -104,11 +113,11 @@
                 <outlet property="printerImageView" destination="1172" id="1173"/>
                 <outlet property="printerPreviewButton" destination="1157" id="1181"/>
                 <outlet property="scaleModePulldown" destination="1211" id="1245"/>
-                <outlet property="scaleSizePulldown" destination="1201" id="1243"/>
                 <outlet property="selectPrinterPulldown" destination="1158" id="1182"/>
                 <outlet property="speedLimitButton" destination="1075" id="1081"/>
                 <outlet property="widthModePulldown" destination="1206" id="1244"/>
                 <outlet property="xep80Button" destination="1371" id="1373"/>
+                <outlet property="xep80Pulldown" destination="6Vc-ke-Kp8" id="k4h-w1-83h"/>
             </connections>
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
@@ -154,7 +163,7 @@ DQ
                         <rect key="frame" x="104" y="232" width="414" height="34"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="1690">
-                            <font key="font" metaFont="message" size="11"/>
+                            <font key="font" metaFont="toolTip"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -202,7 +211,7 @@ DQ
                         <rect key="frame" x="104" y="267" width="414" height="34"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="1694">
-                            <font key="font" metaFont="message" size="11"/>
+                            <font key="font" metaFont="toolTip"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -211,7 +220,7 @@ DQ
                         <rect key="frame" x="104" y="162" width="414" height="34"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="1695">
-                            <font key="font" metaFont="message" size="11"/>
+                            <font key="font" metaFont="toolTip"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -233,7 +242,7 @@ DQ
                         <rect key="frame" x="104" y="337" width="414" height="34"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="1697">
-                            <font key="font" metaFont="message" size="11"/>
+                            <font key="font" metaFont="toolTip"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -281,7 +290,7 @@ DQ
                         <rect key="frame" x="104" y="197" width="414" height="34"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="1701">
-                            <font key="font" metaFont="message" size="11"/>
+                            <font key="font" metaFont="toolTip"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -290,7 +299,7 @@ DQ
                         <rect key="frame" x="104" y="92" width="414" height="34"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="1702">
-                            <font key="font" metaFont="message" size="11"/>
+                            <font key="font" metaFont="toolTip"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -299,7 +308,7 @@ DQ
                         <rect key="frame" x="104" y="127" width="414" height="34"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="1703">
-                            <font key="font" metaFont="message" size="11"/>
+                            <font key="font" metaFont="toolTip"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -308,7 +317,7 @@ DQ
                         <rect key="frame" x="104" y="302" width="414" height="34"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="1704">
-                            <font key="font" metaFont="message" size="11"/>
+                            <font key="font" metaFont="toolTip"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -936,11 +945,11 @@ DQ
         <window title="Choose 8 KB Cartridge Type" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="560" userLabel="Cart8KB">
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="294" y="260" width="330" height="152"/>
+            <rect key="contentRect" x="294" y="260" width="332" height="193"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
             <value key="minSize" type="size" width="81" height="2"/>
             <view key="contentView" id="564">
-                <rect key="frame" x="0.0" y="0.0" width="330" height="152"/>
+                <rect key="frame" x="0.0" y="0.0" width="332" height="193"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <button verticalHuggingPriority="750" fixedFrame="YES" tag="8" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="563">
@@ -958,10 +967,10 @@ DQ
                         </connections>
                     </button>
                     <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="565">
-                        <rect key="frame" x="64" y="62" width="211" height="78"/>
+                        <rect key="frame" x="64" y="62" width="206" height="118"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                        <size key="cellSize" width="211" height="18"/>
+                        <size key="cellSize" width="206" height="18"/>
                         <size key="intercellSpacing" width="4" height="2"/>
                         <buttonCell key="prototype" type="radio" title="Radio" imagePosition="leading" alignment="left" inset="2" id="1829">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -985,6 +994,14 @@ DQ
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
+                                <buttonCell type="radio" title="OSS 8 KB Cartridge" imagePosition="leading" alignment="left" inset="2" id="id6-6r-cC0">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <buttonCell type="radio" title="Low Bank 8 KB Cartridge" imagePosition="leading" alignment="left" inset="2" id="bMW-wz-ML9">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
                             </column>
                         </cells>
                     </matrix>
@@ -1004,16 +1021,16 @@ Gw
                     </button>
                 </subviews>
             </view>
-            <point key="canvasLocation" x="101" y="-482"/>
+            <point key="canvasLocation" x="102" y="-461.5"/>
         </window>
         <window title="Choose 16 KB Cartridge Type" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="572" userLabel="Cart16KB">
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="328" y="246" width="335" height="211"/>
+            <rect key="contentRect" x="328" y="246" width="335" height="237"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
             <value key="minSize" type="size" width="81" height="2"/>
             <view key="contentView" id="571">
-                <rect key="frame" x="0.0" y="0.0" width="335" height="211"/>
+                <rect key="frame" x="0.0" y="0.0" width="335" height="237"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <button verticalHuggingPriority="750" fixedFrame="YES" tag="16" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="573">
@@ -1031,10 +1048,10 @@ DQ
                         </connections>
                     </button>
                     <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="576">
-                        <rect key="frame" x="63" y="59" width="220" height="138"/>
+                        <rect key="frame" x="63" y="59" width="212" height="158"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                        <size key="cellSize" width="220" height="18"/>
+                        <size key="cellSize" width="212" height="18"/>
                         <size key="intercellSpacing" width="4" height="2"/>
                         <buttonCell key="prototype" type="radio" title="Radio" imagePosition="leading" alignment="left" inset="2" id="1830">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -1070,6 +1087,10 @@ DQ
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
+                                <buttonCell type="radio" title="OSS '043M' 16 KB Cartridge" imagePosition="leading" alignment="left" inset="2" id="HIH-13-NLq">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
                             </column>
                         </cells>
                     </matrix>
@@ -1089,16 +1110,16 @@ Gw
                     </button>
                 </subviews>
             </view>
-            <point key="canvasLocation" x="-341" y="-478"/>
+            <point key="canvasLocation" x="-341.5" y="-491.5"/>
         </window>
         <window title="Choose 32 KB Cartridge Type" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="594" userLabel="Cart32KB">
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="313" y="273" width="330" height="184"/>
+            <rect key="contentRect" x="313" y="273" width="333" height="271"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
             <value key="minSize" type="size" width="81" height="2"/>
             <view key="contentView" id="587">
-                <rect key="frame" x="0.0" y="0.0" width="330" height="184"/>
+                <rect key="frame" x="0.0" y="0.0" width="333" height="271"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <button verticalHuggingPriority="750" fixedFrame="YES" tag="32" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="592">
@@ -1116,10 +1137,10 @@ DQ
                         </connections>
                     </button>
                     <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="590">
-                        <rect key="frame" x="63" y="53" width="229" height="118"/>
+                        <rect key="frame" x="63" y="53" width="228" height="198"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                        <size key="cellSize" width="229" height="18"/>
+                        <size key="cellSize" width="228" height="18"/>
                         <size key="intercellSpacing" width="4" height="2"/>
                         <buttonCell key="prototype" type="radio" title="Radio" imagePosition="leading" alignment="left" inset="2" id="1831">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -1151,6 +1172,22 @@ DQ
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
+                                <buttonCell type="radio" title="AST 32 KB Cartridge" imagePosition="leading" alignment="left" inset="2" id="IzD-FL-zXj">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <buttonCell type="radio" title="Ultracart 32 KB Cartridge" imagePosition="leading" alignment="left" inset="2" id="rXf-BO-xuO">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <buttonCell type="radio" title="Blizzard 32 KB Cartridge" imagePosition="leading" alignment="left" inset="2" id="gFJ-6L-iHL">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <buttonCell type="radio" title="aDawliah 32 KB Cartridge" imagePosition="leading" alignment="left" inset="2" id="dER-Jy-FJb">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
                             </column>
                         </cells>
                     </matrix>
@@ -1170,16 +1207,16 @@ Gw
                     </button>
                 </subviews>
             </view>
-            <point key="canvasLocation" x="-342" y="-784"/>
+            <point key="canvasLocation" x="-340.5" y="-827.5"/>
         </window>
         <window title="Choose 64 KB Cartridge Type" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="607" userLabel="Cart64K">
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="304" y="169" width="338" height="203"/>
+            <rect key="contentRect" x="304" y="169" width="337" height="290"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
             <value key="minSize" type="size" width="81" height="2"/>
             <view key="contentView" id="603">
-                <rect key="frame" x="0.0" y="0.0" width="338" height="203"/>
+                <rect key="frame" x="0.0" y="0.0" width="337" height="290"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <button verticalHuggingPriority="750" fixedFrame="YES" tag="64" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="601">
@@ -1197,10 +1234,10 @@ DQ
                         </connections>
                     </button>
                     <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="606">
-                        <rect key="frame" x="63" y="52" width="229" height="138"/>
+                        <rect key="frame" x="63" y="52" width="237" height="218"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                        <size key="cellSize" width="229" height="18"/>
+                        <size key="cellSize" width="237" height="18"/>
                         <size key="intercellSpacing" width="4" height="2"/>
                         <buttonCell key="prototype" type="radio" title="Radio" imagePosition="leading" alignment="left" inset="2" id="1832">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -1224,7 +1261,7 @@ DQ
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
-                                <buttonCell type="radio" title="XEGS 64 KB Cartridge" imagePosition="leading" alignment="left" tag="4" inset="2" id="687">
+                                <buttonCell type="radio" title="XEGS 64 KB cartridge (banks 0-7)" imagePosition="leading" alignment="left" tag="4" inset="2" id="687">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
@@ -1233,6 +1270,22 @@ DQ
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
                                 <buttonCell type="radio" title="Switchable XEGS 64 KB Cartridge" imagePosition="leading" alignment="left" tag="6" inset="2" id="703">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <buttonCell type="radio" title="Atrax SDX 64 KB Cartridge" imagePosition="leading" alignment="left" inset="2" id="zwp-jd-cFA">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <buttonCell type="radio" title="Turbosoft 64 KB Cartridge" imagePosition="leading" alignment="left" inset="2" id="pH8-Ns-r9Q">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <buttonCell type="radio" title="XEGS 64 KB cartridge (banks 8-15)" imagePosition="leading" alignment="left" inset="2" id="k1T-Fq-8t8">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <buttonCell type="radio" title="aDawliah 64 KB Cartridge" imagePosition="leading" alignment="left" inset="2" id="3fD-Hs-abb">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
@@ -1255,7 +1308,7 @@ Gw
                     </button>
                 </subviews>
             </view>
-            <point key="canvasLocation" x="-342" y="-1086"/>
+            <point key="canvasLocation" x="-343" y="-1148"/>
         </window>
         <window title="Choose 40 KB Cartridge Type" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="614" userLabel="Cart40KB">
             <windowStyleMask key="styleMask" titled="YES"/>
@@ -1347,10 +1400,10 @@ DQ
                         </connections>
                     </button>
                     <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="621">
-                        <rect key="frame" x="64" y="61" width="243" height="58"/>
+                        <rect key="frame" x="64" y="61" width="236" height="78"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                        <size key="cellSize" width="243" height="18"/>
+                        <size key="cellSize" width="236" height="18"/>
                         <size key="intercellSpacing" width="4" height="2"/>
                         <buttonCell key="prototype" type="radio" title="Radio" imagePosition="leading" alignment="left" inset="2" id="1834">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -1367,6 +1420,10 @@ DQ
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
                                 <buttonCell type="radio" title="Switchable XEGS 256 KB Cartridge" imagePosition="leading" alignment="left" tag="2" inset="2" id="707">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <buttonCell type="radio" title="SIC! 256 KB Cartridge" imagePosition="leading" alignment="left" inset="2" id="aoc-lH-D0Y">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
@@ -1394,11 +1451,11 @@ Gw
         <window title="Choose 512 KB Cartridge Type" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="632" userLabel="Cart512KB">
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="641" y="313" width="346" height="138"/>
+            <rect key="contentRect" x="641" y="313" width="348" height="160"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
             <value key="minSize" type="size" width="81" height="2"/>
             <view key="contentView" id="629">
-                <rect key="frame" x="0.0" y="0.0" width="346" height="138"/>
+                <rect key="frame" x="0.0" y="0.0" width="348" height="160"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <button verticalHuggingPriority="750" fixedFrame="YES" tag="512" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="630">
@@ -1416,10 +1473,10 @@ DQ
                         </connections>
                     </button>
                     <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="627">
-                        <rect key="frame" x="64" y="67" width="240" height="58"/>
+                        <rect key="frame" x="64" y="67" width="233" height="78"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                        <size key="cellSize" width="240" height="18"/>
+                        <size key="cellSize" width="233" height="18"/>
                         <size key="intercellSpacing" width="4" height="2"/>
                         <buttonCell key="prototype" type="radio" title="Radio" imagePosition="leading" alignment="left" inset="2" id="1835">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -1436,6 +1493,10 @@ DQ
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
                                 <buttonCell type="radio" title="Switchable XEGS 512 KB Cartridge" imagePosition="leading" alignment="left" tag="2" inset="2" id="709">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <buttonCell type="radio" title="SIC! 512 KB Cartridge" imagePosition="leading" alignment="left" inset="2" id="Rt5-3S-6Na">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
@@ -1458,16 +1519,16 @@ Gw
                     </button>
                 </subviews>
             </view>
-            <point key="canvasLocation" x="-344" y="-1831"/>
+            <point key="canvasLocation" x="-343" y="-1842"/>
         </window>
         <window title="Choose 128 KB Cartridge Type" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="659" userLabel="Cart128KB">
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="384" y="337" width="334" height="174"/>
+            <rect key="contentRect" x="384" y="337" width="333" height="258"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
             <value key="minSize" type="size" width="81" height="2"/>
             <view key="contentView" id="654">
-                <rect key="frame" x="0.0" y="0.0" width="334" height="174"/>
+                <rect key="frame" x="0.0" y="0.0" width="333" height="258"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <button verticalHuggingPriority="750" fixedFrame="YES" tag="128" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="657">
@@ -1485,10 +1546,10 @@ DQ
                         </connections>
                     </button>
                     <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="656">
-                        <rect key="frame" x="64" y="49" width="241" height="118"/>
+                        <rect key="frame" x="64" y="49" width="234" height="198"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                        <size key="cellSize" width="241" height="18"/>
+                        <size key="cellSize" width="234" height="18"/>
                         <size key="intercellSpacing" width="4" height="2"/>
                         <buttonCell key="prototype" type="radio" title="Radio" imagePosition="leading" alignment="left" inset="2" id="1836">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -1520,6 +1581,22 @@ DQ
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
+                                <buttonCell type="radio" title="Atrax SDX 128 KB Cartridge" imagePosition="leading" alignment="left" inset="2" id="6se-Xd-F0e">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <buttonCell type="radio" title="Turbosoft 128 KB Cartridge" imagePosition="leading" alignment="left" inset="2" id="IOH-ur-H2T">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <buttonCell type="radio" title="SIC! 128 KB Cartridge" imagePosition="leading" alignment="left" inset="2" id="ElE-mF-BNO">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <buttonCell type="radio" title="Atrax 128 KB Cartridge" imagePosition="leading" alignment="left" inset="2" id="uxS-E6-dku">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
                             </column>
                         </cells>
                     </matrix>
@@ -1539,18 +1616,19 @@ Gw
                     </button>
                 </subviews>
             </view>
+            <point key="canvasLocation" x="-349.5" y="-1530"/>
         </window>
-        <window title="Choose 1024 KB Cartridge Type" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="692" userLabel="Cart1024KB1">
+        <window title="Choose 2048 KB Cartridge Type" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="692" userLabel="Cart2048KB">
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="251" y="82" width="348" height="137"/>
+            <rect key="contentRect" x="251" y="82" width="346" height="109"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
             <value key="minSize" type="size" width="81" height="2"/>
             <view key="contentView" id="695">
-                <rect key="frame" x="0.0" y="0.0" width="348" height="137"/>
+                <rect key="frame" x="0.0" y="0.0" width="346" height="109"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <button verticalHuggingPriority="750" fixedFrame="YES" tag="512" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="696">
+                    <button verticalHuggingPriority="750" fixedFrame="YES" tag="2048" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="696">
                         <rect key="frame" x="196" y="12" width="84" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="OK" bezelStyle="rounded" alignment="center" state="on" borderStyle="border" tag="512" inset="2" id="1760">
@@ -1565,10 +1643,10 @@ DQ
                         </connections>
                     </button>
                     <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="694">
-                        <rect key="frame" x="64" y="51" width="251" height="78"/>
+                        <rect key="frame" x="64" y="51" width="176" height="38"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                        <size key="cellSize" width="251" height="18"/>
+                        <size key="cellSize" width="176" height="18"/>
                         <size key="intercellSpacing" width="4" height="2"/>
                         <buttonCell key="prototype" type="radio" title="Radio" imagePosition="leading" alignment="left" inset="2" id="1837">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -1576,19 +1654,11 @@ DQ
                         </buttonCell>
                         <cells>
                             <column>
-                                <buttonCell type="radio" title="XEGS 1024 KB Cartridge" imagePosition="leading" alignment="left" state="on" inset="2" id="1188">
+                                <buttonCell type="radio" title="MegaMax 2 MB cartridge" imagePosition="leading" alignment="left" state="on" inset="2" id="1188">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
-                                <buttonCell type="radio" title="Mega Cartridge 1024 KB" imagePosition="leading" alignment="left" tag="1" inset="2" id="1189">
-                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                    <font key="font" metaFont="system"/>
-                                </buttonCell>
-                                <buttonCell type="radio" title="Switchable XEGS 1024 KB Cartridge" imagePosition="leading" alignment="left" tag="2" inset="2" id="1190">
-                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                    <font key="font" metaFont="system"/>
-                                </buttonCell>
-                                <buttonCell type="radio" title="ATMAX 1024 KB Cartridge" imagePosition="leading" alignment="left" tag="3" inset="2" id="1191">
+                                <buttonCell type="radio" title="MegaCart 2 MB cartridge" imagePosition="leading" alignment="left" tag="1" inset="2" id="1189">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
@@ -1611,6 +1681,68 @@ Gw
                     </button>
                 </subviews>
             </view>
+            <point key="canvasLocation" x="-345" y="-2072.5"/>
+        </window>
+        <window title="Choose 4096 KB Cartridge Type" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="3zX-7e-Gie" userLabel="Cart4096KB">
+            <windowStyleMask key="styleMask" titled="YES"/>
+            <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+            <rect key="contentRect" x="251" y="82" width="346" height="109"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
+            <value key="minSize" type="size" width="81" height="2"/>
+            <view key="contentView" id="ZOp-AH-FRJ">
+                <rect key="frame" x="0.0" y="0.0" width="346" height="109"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <button verticalHuggingPriority="750" fixedFrame="YES" tag="4096" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="sRr-q0-JxH">
+                        <rect key="frame" x="196" y="12" width="84" height="32"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <buttonCell key="cell" type="push" title="OK" bezelStyle="rounded" alignment="center" state="on" borderStyle="border" tag="512" inset="2" id="9fI-2C-L2o">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                            <string key="keyEquivalent" base64-UTF8="YES">
+DQ
+</string>
+                        </buttonCell>
+                        <connections>
+                            <action selector="cartSelectOK:" target="-2" id="k01-6k-c1a"/>
+                        </connections>
+                    </button>
+                    <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vVS-8y-i0n">
+                        <rect key="frame" x="64" y="51" width="212" height="18"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        <size key="cellSize" width="212" height="18"/>
+                        <size key="intercellSpacing" width="4" height="2"/>
+                        <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="Fy7-ni-P1U">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <cells>
+                            <column>
+                                <buttonCell type="radio" title="Flash MegaCart 4 MB cartridge" imagePosition="left" alignment="left" state="on" inset="2" id="sHv-rb-cQm">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                            </column>
+                        </cells>
+                    </matrix>
+                    <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="we2-7o-bfH">
+                        <rect key="frame" x="60" y="12" width="84" height="32"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="sv4-rT-vub">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                            <string key="keyEquivalent" base64-UTF8="YES">
+Gw
+</string>
+                        </buttonCell>
+                        <connections>
+                            <action selector="cartSelectCancel:" target="-2" id="1XI-g9-koP"/>
+                        </connections>
+                    </button>
+                </subviews>
+            </view>
+            <point key="canvasLocation" x="-345" y="-2072.5"/>
         </window>
         <window title="Error" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="725" userLabel="Error2">
             <windowStyleMask key="styleMask" titled="YES"/>
@@ -1888,6 +2020,17 @@ DQ
                             <action selector="diskStatusProtect:" target="-2" id="898"/>
                         </connections>
                     </button>
+                    <button verticalHuggingPriority="750" fixedFrame="YES" tag="3" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Zjf-19-pna">
+                        <rect key="frame" x="518" y="30" width="48" height="28"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <buttonCell key="cell" type="push" title="Lock" bezelStyle="rounded" alignment="center" controlSize="mini" enabled="NO" borderStyle="border" tag="3" inset="2" id="DLu-FK-i1g">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="miniSystem"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="cassStatusProtect:" target="-2" id="wdd-ns-jZG"/>
+                        </connections>
+                    </button>
                     <button verticalHuggingPriority="750" fixedFrame="YES" tag="3" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="827">
                         <rect key="frame" x="407" y="35" width="57" height="28"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -1934,12 +2077,12 @@ DQ
                         </connections>
                     </button>
                     <imageView fixedFrame="YES" tag="8" translatesAutoresizingMaskIntoConstraints="NO" id="919" customClass="Atari800ImageView">
-                        <rect key="frame" x="489" y="73" width="57" height="35"/>
+                        <rect key="frame" x="491" y="83" width="57" height="28"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="1789"/>
                     </imageView>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="921">
-                        <rect key="frame" x="477" y="59" width="83" height="11"/>
+                        <rect key="frame" x="477" y="70" width="83" height="11"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="center" title="Empty" id="1790">
                             <font key="font" metaFont="miniSystem"/>
@@ -1948,11 +2091,11 @@ DQ
                         </textFieldCell>
                     </textField>
                     <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="923">
-                        <rect key="frame" x="471" y="16" width="57" height="28"/>
+                        <rect key="frame" x="475" y="15" width="48" height="28"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <buttonCell key="cell" type="push" title="Insert" bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" inset="2" id="1791">
+                        <buttonCell key="cell" type="push" title="Insert" bezelStyle="rounded" alignment="center" controlSize="mini" borderStyle="border" inset="2" id="1791">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="message" size="11"/>
+                            <font key="font" metaFont="miniSystem"/>
                         </buttonCell>
                         <connections>
                             <action selector="cassStatusChange:" target="-2" id="933"/>
@@ -2059,8 +2202,13 @@ DQ
                         <autoresizingMask key="autoresizingMask"/>
                         <imageCell key="cell" refusesFirstResponder="YES" alignment="left" id="1802"/>
                     </imageView>
+                    <imageView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="PBi-ny-ErH">
+                        <rect key="frame" x="548" y="80" width="14" height="16"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" id="f3y-Qy-8SK"/>
+                    </imageView>
                     <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="986">
-                        <rect key="frame" x="480" y="39" width="75" height="15"/>
+                        <rect key="frame" x="480" y="51" width="75" height="15"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <sliderCell key="cell" controlSize="small" alignment="left" minValue="1" maxValue="100" doubleValue="50" tickMarkPosition="above" allowsTickMarkValuesOnly="YES" sliderType="linear" id="1803">
                             <font key="font" metaFont="user"/>
@@ -2070,7 +2218,7 @@ DQ
                         </connections>
                     </slider>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="988">
-                        <rect key="frame" x="527" y="51" width="29" height="11"/>
+                        <rect key="frame" x="527" y="62" width="29" height="11"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="400" id="1804">
                             <font key="font" metaFont="miniSystem"/>
@@ -2079,7 +2227,7 @@ DQ
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="999">
-                        <rect key="frame" x="476" y="51" width="35" height="11"/>
+                        <rect key="frame" x="476" y="62" width="35" height="11"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="1" id="1805">
                             <font key="font" metaFont="miniSystem"/>
@@ -2265,11 +2413,11 @@ DQ
                         </textFieldCell>
                     </textField>
                     <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1192">
-                        <rect key="frame" x="517" y="16" width="49" height="28"/>
+                        <rect key="frame" x="518" y="15" width="48" height="28"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <buttonCell key="cell" type="push" title="New" bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" inset="2" id="1819">
+                        <buttonCell key="cell" type="push" title="New" bezelStyle="rounded" alignment="center" controlSize="mini" borderStyle="border" inset="2" id="1819">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="message" size="11"/>
+                            <font key="font" metaFont="miniSystem"/>
                         </buttonCell>
                         <connections>
                             <action selector="createCassette:" target="-2" id="1193"/>
@@ -2282,21 +2430,16 @@ DQ
                     <popUpButton verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1196">
                         <rect key="frame" x="1" y="-2" width="226" height="22"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <popUpButtonCell key="cell" type="push" title="Atari 5200 (16KB)" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="1200" id="1820">
+                        <popUpButtonCell key="cell" type="push" title="Atari 800 (16KB)" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="1223" id="1820">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="message" size="11"/>
                             <menu key="menu" title="OtherViews" id="1197">
                                 <items>
-                                    <menuItem title="Atari OS/A (16KB)" id="1199"/>
-                                    <menuItem title="Atari OS/A (48KB)" id="1221"/>
-                                    <menuItem title="Atari OS/A (52KB)" id="1222"/>
-                                    <menuItem title="Atari OS/A (Axlon Memory)" id="1680"/>
-                                    <menuItem title="Atari OS/A (Mosaic Memory)" id="1681"/>
-                                    <menuItem title="Atari OS/B (16KB)" id="1223"/>
-                                    <menuItem title="Atari OS/B (48KB)" id="1224"/>
-                                    <menuItem title="Atari OS/B (52KB)" id="1225"/>
-                                    <menuItem title="Atari OS/B (Axlon Memory)" id="1682"/>
-                                    <menuItem title="Atari OS/B (Mosaic Memory)" id="1683"/>
+                                    <menuItem title="Atari 800 (16KB)" state="on" id="1223"/>
+                                    <menuItem title="Atari 800 (48KB)" id="1224"/>
+                                    <menuItem title="Atari 800 (52KB)" id="1225"/>
+                                    <menuItem title="Atari 800 (Axlon Memory)" id="1682"/>
+                                    <menuItem title="Atari 800 (Mosaic Memory)" id="1683"/>
                                     <menuItem title="Atari 600XL (16KB)" id="1226"/>
                                     <menuItem title="Atari 800XL (64KB)" id="1227"/>
                                     <menuItem title="Atari 130XE (128KB)" id="1228"/>
@@ -2305,7 +2448,7 @@ DQ
                                     <menuItem title="Atari 320 XE (320 KB Compy Shop)" id="1230"/>
                                     <menuItem title="Atari 576XE (576KB)" id="1231"/>
                                     <menuItem title="Atari 1088XE (1088KB)" id="1232"/>
-                                    <menuItem title="Atari 5200 (16KB)" state="on" id="1200"/>
+                                    <menuItem title="Atari 5200 (16KB)" id="1200"/>
                                 </items>
                             </menu>
                         </popUpButtonCell>
@@ -2313,27 +2456,8 @@ DQ
                             <action selector="machineTypeChange:" target="-2" id="1247"/>
                         </connections>
                     </popUpButton>
-                    <popUpButton verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1201">
-                        <rect key="frame" x="224" y="-2" width="91" height="22"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                        <popUpButtonCell key="cell" type="push" title="3x Scale" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="1234" id="1821">
-                            <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="message" size="11"/>
-                            <menu key="menu" title="OtherViews" id="1202">
-                                <items>
-                                    <menuItem title="1x Scale" id="1204"/>
-                                    <menuItem title="2x Scale" id="1233"/>
-                                    <menuItem title="3x Scale" state="on" id="1234"/>
-                                    <menuItem title="4x Scale" id="1235"/>
-                                </items>
-                            </menu>
-                        </popUpButtonCell>
-                        <connections>
-                            <action selector="scaleSizeChange:" target="-2" id="1248"/>
-                        </connections>
-                    </popUpButton>
                     <popUpButton verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1206">
-                        <rect key="frame" x="315" y="-2" width="123" height="22"/>
+                        <rect key="frame" x="224" y="-3" width="108" height="22"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <popUpButtonCell key="cell" type="push" title="Default Width" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="1236" id="1822">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
@@ -2350,26 +2474,8 @@ DQ
                             <action selector="widthModeChange:" target="-2" id="1249"/>
                         </connections>
                     </popUpButton>
-                    <popUpButton verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1211">
-                        <rect key="frame" x="437" y="-2" width="122" height="22"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                        <popUpButtonCell key="cell" type="push" title="Normal Scaling" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="1214" id="1823">
-                            <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="message" size="11"/>
-                            <menu key="menu" title="OtherViews" id="1212">
-                                <items>
-                                    <menuItem title="Normal Scaling" state="on" id="1214"/>
-                                    <menuItem title="Scanlines" id="1215"/>
-                                    <menuItem title="Smooth Scaling" id="1213"/>
-                                </items>
-                            </menu>
-                        </popUpButtonCell>
-                        <connections>
-                            <action selector="scaleModeChange:" target="-2" id="1250"/>
-                        </connections>
-                    </popUpButton>
                     <popUpButton verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1216">
-                        <rect key="frame" x="558" y="-2" width="185" height="22"/>
+                        <rect key="frame" x="440" y="-2" width="178" height="22"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <popUpButtonCell key="cell" type="push" title="Rev XL/XE GTIA Artifacting" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="1220" id="1824">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
@@ -2419,9 +2525,74 @@ DQ
                             <action selector="changeXEP80:" target="-2" id="1372"/>
                         </connections>
                     </button>
+                    <popUpButton verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6Vc-ke-Kp8">
+                        <rect key="frame" x="617" y="-4" width="124" height="26"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <popUpButtonCell key="cell" type="push" title="No 80 Column" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="3z0-mi-66N" id="Nbs-oh-Ofm">
+                            <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="message" size="11"/>
+                            <menu key="menu" title="OtherViews" id="jsq-p2-eYU">
+                                <items>
+                                    <menuItem title="No 80 Column" state="on" id="3z0-mi-66N">
+                                        <connections>
+                                            <action selector="xep80Mode:" target="-2" id="Chh-2U-B7G"/>
+                                        </connections>
+                                    </menuItem>
+                                    <menuItem title="XEP80 - Port 1" tag="1" id="bmu-3g-SlX">
+                                        <connections>
+                                            <action selector="xep80Mode:" target="-2" id="31B-Jl-kv0"/>
+                                        </connections>
+                                    </menuItem>
+                                    <menuItem title="XEP80 - Port 2" tag="2" id="AII-b6-gDE">
+                                        <connections>
+                                            <action selector="xep80Mode:" target="-2" id="hLv-IF-DnL"/>
+                                        </connections>
+                                    </menuItem>
+                                    <menuItem title="Austin Franklin" tag="3" id="EUP-7B-piB">
+                                        <connections>
+                                            <action selector="xep80Mode:" target="-2" id="SN9-YW-xxj"/>
+                                        </connections>
+                                    </menuItem>
+                                    <menuItem title="Bit3 Full View" tag="4" id="JcX-Ee-ETQ">
+                                        <connections>
+                                            <action selector="xep80Mode:" target="-2" id="3s6-pu-9R0"/>
+                                        </connections>
+                                    </menuItem>
+                                </items>
+                            </menu>
+                        </popUpButtonCell>
+                    </popUpButton>
+                    <popUpButton verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1211">
+                        <rect key="frame" x="330" y="-2" width="112" height="22"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <popUpButtonCell key="cell" type="push" title="Normal Scaling" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="1214" id="1823">
+                            <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="message" size="11"/>
+                            <menu key="menu" title="OtherViews" id="1212">
+                                <items>
+                                    <menuItem title="Normal Scaling" state="on" id="1214"/>
+                                    <menuItem title="Scanlines" id="1215"/>
+                                </items>
+                            </menu>
+                        </popUpButtonCell>
+                        <connections>
+                            <action selector="scaleModeChange:" target="-2" id="1250"/>
+                        </connections>
+                    </popUpButton>
+                    <button verticalHuggingPriority="750" fixedFrame="YES" tag="3" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="QmR-Oy-J0J">
+                        <rect key="frame" x="475" y="30" width="48" height="28"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <buttonCell key="cell" type="push" bezelStyle="rounded" image="NSStatusUnavailable" imagePosition="overlaps" alignment="center" alternateImage="NSStatusUnavailable" controlSize="mini" enabled="NO" borderStyle="border" tag="3" inset="2" id="KLf-JP-XLi">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
+                            <font key="font" metaFont="miniSystem"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="cassRecord:" target="-2" id="nan-rB-xHI"/>
+                        </connections>
+                    </button>
                 </subviews>
             </view>
-            <point key="canvasLocation" x="-119" y="2433"/>
+            <point key="canvasLocation" x="-132" y="2378.5"/>
         </window>
         <customObject id="1168" userLabel="PrintOutputController" customClass="PrintOutputController"/>
         <view id="952">
@@ -2431,6 +2602,7 @@ DQ
         <view id="956">
             <rect key="frame" x="0.0" y="0.0" width="1" height="111"/>
             <autoresizingMask key="autoresizingMask"/>
+            <point key="canvasLocation" x="-357" y="-2071"/>
         </view>
         <view id="957">
             <rect key="frame" x="0.0" y="0.0" width="1" height="111"/>
@@ -2439,6 +2611,7 @@ DQ
         <view id="959">
             <rect key="frame" x="0.0" y="0.0" width="1" height="111"/>
             <autoresizingMask key="autoresizingMask"/>
+            <point key="canvasLocation" x="-357" y="-2441"/>
         </view>
         <view id="970">
             <rect key="frame" x="0.0" y="0.0" width="1" height="111"/>
@@ -2455,6 +2628,7 @@ DQ
         <view id="1085">
             <rect key="frame" x="0.0" y="0.0" width="1" height="111"/>
             <autoresizingMask key="autoresizingMask"/>
+            <point key="canvasLocation" x="-109" y="-2242"/>
         </view>
         <view id="1152">
             <rect key="frame" x="0.0" y="0.0" width="1" height="111"/>
@@ -2464,8 +2638,419 @@ DQ
             <rect key="frame" x="0.0" y="0.0" width="125" height="1"/>
             <autoresizingMask key="autoresizingMask"/>
         </view>
+        <window title="Choose 128 KB Cartridge Type" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="FOE-zI-ti4" userLabel="Cart128KB">
+            <windowStyleMask key="styleMask" titled="YES"/>
+            <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+            <rect key="contentRect" x="384" y="337" width="333" height="258"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
+            <value key="minSize" type="size" width="81" height="2"/>
+            <view key="contentView" id="mNT-am-6fO">
+                <rect key="frame" x="0.0" y="0.0" width="333" height="258"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <button verticalHuggingPriority="750" fixedFrame="YES" tag="128" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mOw-7g-kSa">
+                        <rect key="frame" x="195" y="12" width="84" height="32"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <buttonCell key="cell" type="push" title="OK" bezelStyle="rounded" alignment="center" state="on" borderStyle="border" tag="128" inset="2" id="u0M-As-Ubz">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                            <string key="keyEquivalent" base64-UTF8="YES">
+DQ
+</string>
+                        </buttonCell>
+                        <connections>
+                            <action selector="cartSelectOK:" target="-2" id="b1R-xL-EBC"/>
+                        </connections>
+                    </button>
+                    <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="EOK-lR-bOj">
+                        <rect key="frame" x="64" y="49" width="234" height="198"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        <size key="cellSize" width="234" height="18"/>
+                        <size key="intercellSpacing" width="4" height="2"/>
+                        <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="uxV-RA-DZV">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <cells>
+                            <column>
+                                <buttonCell type="radio" title="XEGS 128 KB Cartridge" imagePosition="left" alignment="left" state="on" inset="2" id="Yec-jI-upC">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <buttonCell type="radio" title="Atrax 128 KB Cartridge" imagePosition="left" alignment="left" tag="1" inset="2" id="idO-9G-v5H">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <buttonCell type="radio" title="Mega Cartridge 128 KB" imagePosition="left" alignment="left" tag="2" inset="2" id="C8f-cS-IXN">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <buttonCell type="radio" title="Switchable XEGS 128 KB Cartridge" imagePosition="left" alignment="left" tag="3" inset="2" id="fwA-A9-01i">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <buttonCell type="radio" title="ATMAX 128 KB Cartridge" imagePosition="left" alignment="left" tag="4" inset="2" id="jeV-rl-8am">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <buttonCell type="radio" title="Sparta DOS X 128 KB Cartridge" imagePosition="left" alignment="left" tag="5" inset="2" id="C40-H7-IP8">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <buttonCell type="radio" title="Atrax SDX 128 KB Cartridge" imagePosition="left" alignment="left" inset="2" id="YDa-RJ-FJI">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <buttonCell type="radio" title="Turbosoft 128 KB Cartridge" imagePosition="left" alignment="left" inset="2" id="cmP-3g-LwE">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <buttonCell type="radio" title="SIC! 128 KB Cartridge" imagePosition="left" alignment="left" inset="2" id="uCk-Dp-Bjv">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <buttonCell type="radio" title="Atrax 128 KB Cartridge" imagePosition="left" alignment="left" inset="2" id="RSJ-LS-wKs">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                            </column>
+                        </cells>
+                    </matrix>
+                    <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2SA-zH-EYf">
+                        <rect key="frame" x="60" y="12" width="84" height="32"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="m3W-PI-0Z8">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                            <string key="keyEquivalent" base64-UTF8="YES">
+Gw
+</string>
+                        </buttonCell>
+                        <connections>
+                            <action selector="cartSelectCancel:" target="-2" id="Nln-s7-gzs"/>
+                        </connections>
+                    </button>
+                </subviews>
+            </view>
+            <point key="canvasLocation" x="-349.5" y="-1530"/>
+        </window>
+        <window title="Choose 4 KB Cartridge Type" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="0ne-4B-Wpo" userLabel="Cart4KB">
+            <windowStyleMask key="styleMask" titled="YES"/>
+            <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+            <rect key="contentRect" x="294" y="260" width="332" height="133"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
+            <value key="minSize" type="size" width="81" height="2"/>
+            <view key="contentView" id="JK7-El-xri">
+                <rect key="frame" x="0.0" y="0.0" width="332" height="133"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <button verticalHuggingPriority="750" fixedFrame="YES" tag="4" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="MHh-mk-BGj">
+                        <rect key="frame" x="195" y="16" width="84" height="32"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <buttonCell key="cell" type="push" title="OK" bezelStyle="rounded" alignment="center" state="on" borderStyle="border" tag="8" inset="2" id="ygl-T7-MbE">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                            <string key="keyEquivalent" base64-UTF8="YES">
+DQ
+</string>
+                        </buttonCell>
+                        <connections>
+                            <action selector="cartSelectOK:" target="-2" id="M9c-A2-242"/>
+                        </connections>
+                    </button>
+                    <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pXX-eu-kjE">
+                        <rect key="frame" x="64" y="62" width="171" height="58"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        <size key="cellSize" width="171" height="18"/>
+                        <size key="intercellSpacing" width="4" height="2"/>
+                        <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="eOf-Bw-q3J">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <cells>
+                            <column>
+                                <buttonCell type="radio" title="Blizzard 4 KB Cartridge" imagePosition="left" alignment="left" state="on" inset="2" id="Nl0-sA-fw7">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <buttonCell type="radio" title="Standard 4 KB Cartridge" imagePosition="left" alignment="left" tag="1" inset="2" id="lZY-iD-eJK">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <buttonCell type="radio" title="Right slot 4 KB cartridge" imagePosition="left" alignment="left" tag="2" inset="2" id="GdO-C3-Ajt">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                            </column>
+                        </cells>
+                    </matrix>
+                    <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4YU-Wz-H34">
+                        <rect key="frame" x="60" y="16" width="84" height="32"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="bOq-oa-4z9">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                            <string key="keyEquivalent" base64-UTF8="YES">
+Gw
+</string>
+                        </buttonCell>
+                        <connections>
+                            <action selector="cartSelectCancel:" target="-2" id="rzh-Fb-DHf"/>
+                        </connections>
+                    </button>
+                </subviews>
+            </view>
+            <point key="canvasLocation" x="76" y="-381"/>
+        </window>
+        <window title="Choose 2 KB Cartridge Type" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="v2f-MH-Bb4" userLabel="Cart2KB">
+            <windowStyleMask key="styleMask" titled="YES"/>
+            <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+            <rect key="contentRect" x="294" y="260" width="332" height="93"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
+            <value key="minSize" type="size" width="81" height="2"/>
+            <view key="contentView" id="3Ap-52-qlh">
+                <rect key="frame" x="0.0" y="0.0" width="332" height="93"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <button verticalHuggingPriority="750" fixedFrame="YES" tag="2" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9JJ-iE-0J9">
+                        <rect key="frame" x="195" y="16" width="84" height="32"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <buttonCell key="cell" type="push" title="OK" bezelStyle="rounded" alignment="center" state="on" borderStyle="border" tag="8" inset="2" id="GMI-4a-Ws9">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                            <string key="keyEquivalent" base64-UTF8="YES">
+DQ
+</string>
+                        </buttonCell>
+                        <connections>
+                            <action selector="cartSelectOK:" target="-2" id="ZFr-Xv-aCg"/>
+                        </connections>
+                    </button>
+                    <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OgV-oU-uTi">
+                        <rect key="frame" x="64" y="62" width="168" height="18"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        <size key="cellSize" width="168" height="18"/>
+                        <size key="intercellSpacing" width="4" height="2"/>
+                        <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="xcW-Bh-OzB">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <cells>
+                            <column>
+                                <buttonCell type="radio" title="Standard 2 KB cartridge" imagePosition="left" alignment="left" state="on" inset="2" id="wL7-zd-DQD">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                            </column>
+                        </cells>
+                    </matrix>
+                    <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3hW-F5-kSd">
+                        <rect key="frame" x="60" y="16" width="84" height="32"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="84k-fe-TYE">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                            <string key="keyEquivalent" base64-UTF8="YES">
+Gw
+</string>
+                        </buttonCell>
+                        <connections>
+                            <action selector="cartSelectCancel:" target="-2" id="Lwd-U8-XnY"/>
+                        </connections>
+                    </button>
+                </subviews>
+            </view>
+            <point key="canvasLocation" x="23" y="-284"/>
+        </window>
+        <window title="Choose 32 MB Cartridge Type" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="bU1-yy-eC6" userLabel="Cart32MB">
+            <windowStyleMask key="styleMask" titled="YES"/>
+            <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+            <rect key="contentRect" x="251" y="82" width="346" height="89"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
+            <value key="minSize" type="size" width="81" height="2"/>
+            <view key="contentView" id="B9x-mu-1VY">
+                <rect key="frame" x="0.0" y="0.0" width="346" height="89"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <button verticalHuggingPriority="750" fixedFrame="YES" tag="32768" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="g3h-Vc-9KP">
+                        <rect key="frame" x="196" y="12" width="84" height="32"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <buttonCell key="cell" type="push" title="OK" bezelStyle="rounded" alignment="center" state="on" borderStyle="border" tag="512" inset="2" id="G4n-56-efI">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                            <string key="keyEquivalent" base64-UTF8="YES">
+DQ
+</string>
+                        </buttonCell>
+                        <connections>
+                            <action selector="cartSelectOK:" target="-2" id="80a-cy-JCZ"/>
+                        </connections>
+                    </button>
+                    <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WTd-v1-gOP">
+                        <rect key="frame" x="64" y="51" width="178" height="18"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        <size key="cellSize" width="178" height="18"/>
+                        <size key="intercellSpacing" width="4" height="2"/>
+                        <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="BFd-LE-fJn">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <cells>
+                            <column>
+                                <buttonCell type="radio" title="The!Cart 32 MB cartridge" imagePosition="left" alignment="left" state="on" inset="2" id="0H1-gQ-B8j">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                            </column>
+                        </cells>
+                    </matrix>
+                    <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6j1-g6-Qg2">
+                        <rect key="frame" x="60" y="12" width="84" height="32"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="L1e-FG-IHj">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                            <string key="keyEquivalent" base64-UTF8="YES">
+Gw
+</string>
+                        </buttonCell>
+                        <connections>
+                            <action selector="cartSelectCancel:" target="-2" id="j9I-B0-W9Z"/>
+                        </connections>
+                    </button>
+                </subviews>
+            </view>
+            <point key="canvasLocation" x="-356" y="-2250"/>
+        </window>
+        <window title="Choose 64 MB Cartridge Type" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="M52-Ft-JGO" userLabel="Cart64MB">
+            <windowStyleMask key="styleMask" titled="YES"/>
+            <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+            <rect key="contentRect" x="251" y="82" width="346" height="89"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
+            <value key="minSize" type="size" width="81" height="2"/>
+            <view key="contentView" id="6gs-nE-6hO">
+                <rect key="frame" x="0.0" y="0.0" width="346" height="89"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <button verticalHuggingPriority="750" fixedFrame="YES" tag="65536" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1E4-5S-qxG">
+                        <rect key="frame" x="196" y="12" width="84" height="32"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <buttonCell key="cell" type="push" title="OK" bezelStyle="rounded" alignment="center" state="on" borderStyle="border" tag="512" inset="2" id="83t-c0-FHb">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                            <string key="keyEquivalent" base64-UTF8="YES">
+DQ
+</string>
+                        </buttonCell>
+                        <connections>
+                            <action selector="cartSelectOK:" target="-2" id="sTW-hT-goe"/>
+                        </connections>
+                    </button>
+                    <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gZN-Dy-emT">
+                        <rect key="frame" x="64" y="51" width="178" height="18"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        <size key="cellSize" width="178" height="18"/>
+                        <size key="intercellSpacing" width="4" height="2"/>
+                        <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="5nS-ZN-6QW">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <cells>
+                            <column>
+                                <buttonCell type="radio" title="The!Cart 64 MB cartridge" imagePosition="left" alignment="left" state="on" inset="2" id="L2b-0X-1Kt">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                            </column>
+                        </cells>
+                    </matrix>
+                    <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="r8d-TQ-1gv">
+                        <rect key="frame" x="60" y="12" width="84" height="32"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="EK5-IR-lk4">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                            <string key="keyEquivalent" base64-UTF8="YES">
+Gw
+</string>
+                        </buttonCell>
+                        <connections>
+                            <action selector="cartSelectCancel:" target="-2" id="OZl-VF-deC"/>
+                        </connections>
+                    </button>
+                </subviews>
+            </view>
+            <point key="canvasLocation" x="-409" y="-2185"/>
+        </window>
+        <window title="Choose 128 MB Cartridge Type" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="foM-hu-pML" userLabel="Cart128MB">
+            <windowStyleMask key="styleMask" titled="YES"/>
+            <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+            <rect key="contentRect" x="251" y="82" width="346" height="89"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
+            <value key="minSize" type="size" width="81" height="2"/>
+            <view key="contentView" id="zlo-95-Gon">
+                <rect key="frame" x="0.0" y="0.0" width="346" height="89"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <button verticalHuggingPriority="750" fixedFrame="YES" tag="131072" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="eZc-fl-qQi">
+                        <rect key="frame" x="196" y="12" width="84" height="32"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <buttonCell key="cell" type="push" title="OK" bezelStyle="rounded" alignment="center" state="on" borderStyle="border" tag="512" inset="2" id="GCE-ie-Ywi">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                            <string key="keyEquivalent" base64-UTF8="YES">
+DQ
+</string>
+                        </buttonCell>
+                        <connections>
+                            <action selector="cartSelectOK:" target="-2" id="7Ad-aL-mmh"/>
+                        </connections>
+                    </button>
+                    <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iYT-yd-ET5">
+                        <rect key="frame" x="64" y="51" width="184" height="18"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        <size key="cellSize" width="184" height="18"/>
+                        <size key="intercellSpacing" width="4" height="2"/>
+                        <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="1bN-M7-oNk">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <cells>
+                            <column>
+                                <buttonCell type="radio" title="The!Cart 128 MB cartridge" imagePosition="left" alignment="left" state="on" inset="2" id="Y4V-me-KVd">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                            </column>
+                        </cells>
+                    </matrix>
+                    <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="UKy-dS-DW5">
+                        <rect key="frame" x="60" y="12" width="84" height="32"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="kpM-b9-LxR">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                            <string key="keyEquivalent" base64-UTF8="YES">
+Gw
+</string>
+                        </buttonCell>
+                        <connections>
+                            <action selector="cartSelectCancel:" target="-2" id="BCS-Ls-tyg"/>
+                        </connections>
+                    </button>
+                </subviews>
+            </view>
+            <point key="canvasLocation" x="-409" y="-2185"/>
+        </window>
     </objects>
     <resources>
         <image name="Fuji" width="128" height="128"/>
+        <image name="NSStatusUnavailable" width="16" height="16"/>
     </resources>
 </document>

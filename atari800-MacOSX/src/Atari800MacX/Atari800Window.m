@@ -9,6 +9,7 @@
 
 */
 #import "Atari800Window.h"
+#import "Atari800WindowController.h"
 #import "Preferences.h"
 
 /* Static window variables.  This class supports only a single window object */
@@ -19,6 +20,19 @@ static NSPoint windowOrigin;
 /* Functions which provide an interface for C code to call this object's shared Instance functions */
 void Atari800WindowCreate(NSWindow *window) {
     our_window = window;
+    [[[Atari800WindowController alloc] init:window] retain];
+}
+
+void Atari800WindowAspectSet(int w, int h) {
+    our_window.aspectRatio = NSMakeSize(w,h);
+}
+
+void Atari800WindowFullscreen() {
+    [our_window toggleFullScreen:nil];
+}
+
+int Atari800WindowIsFullscreen() {
+    return (([our_window styleMask] & NSWindowStyleMaskFullScreen) == NSWindowStyleMaskFullScreen);
 }
 
 void Atari800OriginSet() {

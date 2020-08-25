@@ -32,8 +32,13 @@
 #include "memory.h"
 #include "pia.h"
 #include "sio.h"
+#include "sysrom.h"
 #include "ui.h"
 #include <stdlib.h>
+
+#ifdef LIBATARI800
+#include "libatari800/main.h"
+#endif
 
 int ESC_enable_sio_patch = TRUE;
 
@@ -47,6 +52,44 @@ int ESC_enable_sio_patch = TRUE;
 */
 static UWORD esc_address[256];
 static ESC_FunctionType esc_function[256];
+
+/* Esc function that removes the wait loop when reading the tape leader. For
+   use with standard Atari OSes only. */
+static void CassetteLeaderLoad(void)
+{
+	CASSETTE_LeaderLoad();
+
+	/* registers for SETVBV: third system timer, ~0.1 sec */
+	CPU_regA = 3;
+	CPU_regX = 0;
+	CPU_regY = 5;
+}
+
+/* Esc function that removes the wait loop when writing the tape leader. For
+   use with standard Atari OSes only. */
+static void CassetteLeaderSave(void)
+{
+	CASSETTE_LeaderSave();
+
+	/* registers for SETVBV: third system timer, ~0.1 sec */
+	CPU_regA = 3;
+	CPU_regX = 0;
+	CPU_regY = 5;
+}
+
+#if EMUOS_ALTIRRA
+/* Esc function that removes the wait loop in AltirraOS's "CassetteWait"
+   routine when reading or writing the tape leader. */
+static void CassetteLeaderAltirra(void)
+{
+	if (CPU_regX == 1)
+		CASSETTE_LeaderLoad();
+	else
+		CASSETTE_LeaderSave();
+	/* Routine expects Y = 1 on exit. */
+	CPU_regY = 1;
+}
+#endif /* EMUOS_ALTIRRA */
 
 void ESC_ClearAll(void)
 {
@@ -104,10 +147,13 @@ void ESC_Run(UBYTE esc_code)
 	UI_crash_code = MEMORY_dGetByte(UI_crash_address);
 	UI_Run();
 #else /* CRASH_MENU */
-#ifndef MACOSX
+#ifndef ATARI800MACX
 	CPU_cim_encountered = 1;
 #endif	
 	Log_print("Invalid ESC code %02x at address %04x", esc_code, CPU_regPC - 2);
+#if defined(LIBATARI800) && defined(HAVE_SETJMP)
+	longjmp(libatari800_cpu_crash, LIBATARI800_INVALID_ESCAPE_OPCODE);
+#endif /* LIBATARI800 && HAVE_SETJMP */
 #ifndef __PLUS
 	if (!Atari800_Exit(TRUE))
 		exit(0);
@@ -125,34 +171,83 @@ void ESC_PatchOS(void)
 		UWORD addr_s;
 		UBYTE check_s_0;
 		UBYTE check_s_1;
+#if EMUOS_ALTIRRA
+		int altirra = FALSE;
+#endif /* EMUOS_ALTIRRA */
+
 		/* patch Open() of C: so we know when a leader is processed */
-		switch (Atari800_machine_type) {
-		case Atari800_MACHINE_OSA:
-		case Atari800_MACHINE_OSB:
+		switch (Atari800_os_version) {
+		case SYSROM_A_NTSC:
+		case SYSROM_B_NTSC:
+		case SYSROM_800_CUSTOM:
 			addr_l = 0xef74;
 			addr_s = 0xefbc;
 			check_s_0 = 0xa0;
 			check_s_1 = 0x80;
 			break;
-		case Atari800_MACHINE_XLXE:
+		case SYSROM_A_PAL:
+			addr_l = 0xef74;
+			addr_s = 0xefbc;
+			check_s_0 = 0xa0;
+			check_s_1 = 0xc0;
+			break;
+		case SYSROM_AA00R10:
+			addr_l = 0xed47;
+			addr_s = 0xed94;
+			check_s_0 = 0xa9;
+			check_s_1 = 0x03;
+			break;
+		case SYSROM_AA01R11:
+		case SYSROM_BB00R1:
+		case SYSROM_BB01R2:
+		case SYSROM_BB02R3:
+		case SYSROM_BB02R3V4:
+		case SYSROM_BB01R3:
+		case SYSROM_BB01R4_OS:
+		case SYSROM_BB01R59:
+		case SYSROM_BB01R59A:
+		case SYSROM_XL_CUSTOM:
 			addr_l = 0xfd13;
 			addr_s = 0xfd60;
 			check_s_0 = 0xa9;
 			check_s_1 = 0x03;
 			break;
+		case SYSROM_CC01R4:
+			addr_l = 0xef74;
+			addr_s = 0xefbc;
+			check_s_0 = 0xa9;
+			check_s_1 = 0x03;
+			break;
+#if EMUOS_ALTIRRA
+		case SYSROM_ALTIRRA_800:
+			altirra = TRUE;
+			addr_l = 0xef91; /* points to CassetteWait */
+			/* Fall through. */
+		case SYSROM_ALTIRRA_XL:
+			altirra = TRUE;
+			addr_l = 0xee4a; /* points to CassetteWait */
+			break;
+#endif /* EMUOS_ALTIRRA */
 		default:
 			return;
 		}
-		/* don't hurt non-standard OSes that may not support cassette at all  */
-		if (MEMORY_dGetByte(addr_l)     == 0xa9 && MEMORY_dGetByte(addr_l + 1) == 0x03
-		 && MEMORY_dGetByte(addr_l + 2) == 0x8d && MEMORY_dGetByte(addr_l + 3) == 0x2a
-		 && MEMORY_dGetByte(addr_l + 4) == 0x02
-		 && MEMORY_dGetByte(addr_s)     == check_s_0
-		 && MEMORY_dGetByte(addr_s + 1) == check_s_1
-		 && MEMORY_dGetByte(addr_s + 2) == 0x20 && MEMORY_dGetByte(addr_s + 3) == 0x5c
-		 && MEMORY_dGetByte(addr_s + 4) == 0xe4) {
-			ESC_Add(addr_l, ESC_COPENLOAD, CASSETTE_LeaderLoad);
-			ESC_Add(addr_s, ESC_COPENSAVE, CASSETTE_LeaderSave);
+#if EMUOS_ALTIRRA
+		if (altirra)
+			ESC_AddEscRts(addr_l, ESC_COPENLOAD, CassetteLeaderAltirra);
+		else
+#endif /* EMUOS_ALTIRRA */
+		{
+			/* don't hurt non-standard OSes that may not support cassette at all  */
+			if (MEMORY_dGetByte(addr_l)     == 0xa9 && MEMORY_dGetByte(addr_l + 1) == 0x03
+			 && MEMORY_dGetByte(addr_l + 2) == 0x8d && MEMORY_dGetByte(addr_l + 3) == 0x2a
+			 && MEMORY_dGetByte(addr_l + 4) == 0x02
+			 && MEMORY_dGetByte(addr_s)     == check_s_0
+			 && MEMORY_dGetByte(addr_s + 1) == check_s_1
+			 && MEMORY_dGetByte(addr_s + 2) == 0x20 && MEMORY_dGetByte(addr_s + 3) == 0x5c
+			 && MEMORY_dGetByte(addr_s + 4) == 0xe4) {
+				ESC_Add(addr_l, ESC_COPENLOAD, CassetteLeaderLoad);
+				ESC_Add(addr_s, ESC_COPENSAVE, CassetteLeaderSave);
+			}
 		}
 		ESC_AddEscRts(0xe459, ESC_SIOV, SIO_Handler);
 		patched = TRUE;
@@ -162,38 +257,55 @@ void ESC_PatchOS(void)
 		ESC_Remove(ESC_COPENSAVE);
 		ESC_Remove(ESC_SIOV);
 	};
-	if (patched && Atari800_machine_type == Atari800_MACHINE_XLXE) {
-		/* Disable Checksum Test */
-		MEMORY_dPutByte(0xc314, 0x8e);
-		MEMORY_dPutByte(0xc315, 0xff);
-		MEMORY_dPutByte(0xc319, 0x8e);
-		MEMORY_dPutByte(0xc31a, 0xff);
+	if (patched){
+		UWORD addr;
+		switch (Atari800_os_version) {
+		case SYSROM_AA00R10:
+			addr = 0xc3d2;
+			break;
+		case SYSROM_AA01R11:
+			addr = 0xc346;
+			break;
+		case SYSROM_BB00R1:
+			addr = 0xc32b;
+			break;
+		case SYSROM_BB01R2:
+		case SYSROM_BB02R3:
+		case SYSROM_BB01R3:
+		case SYSROM_BB01R4_OS:
+		case SYSROM_BB01R59:
+		case SYSROM_BB01R59A:
+		case SYSROM_XL_CUSTOM:
+			addr = 0xc31d;
+			break;
+		case SYSROM_BB02R3V4:
+			addr = 0xc32c;
+			break;
+		case SYSROM_CC01R4:
+			addr = 0xc2e0;
+			break;
+		default:
+			/* Don't disable checksum test. */
+			return;
+		}
+		/* Disable setting NGFLAG on wrong OS checksum. */
+		MEMORY_dPutByte(addr, 0xea);
+		MEMORY_dPutByte(addr+1, 0xea);
 	}
 }
 
 void ESC_UpdatePatches(void)
 {
-	switch (Atari800_machine_type) {
-	case Atari800_MACHINE_OSA:
-	case Atari800_MACHINE_OSB:
+	/* Patch only if OS enabled. */
+	if (Atari800_machine_type != Atari800_MACHINE_5200 &&
+	    (Atari800_machine_type != Atari800_MACHINE_XLXE || (PIA_PORTB & 1) != 0)) {
+		int const os_rom_start = Atari800_machine_type == Atari800_MACHINE_800 ? 0xd800 : 0xc000;
 		/* Restore unpatched OS */
-		MEMORY_dCopyToMem(MEMORY_os, 0xd800, 0x2800);
+		if (os_rom_start < 0xd000)
+			MEMORY_dCopyToMem(MEMORY_os, os_rom_start, 0xd000 - os_rom_start);
+		MEMORY_dCopyToMem(MEMORY_os + 0xd800 - os_rom_start, 0xd800, 0x2800);
 		/* Set patches */
 		ESC_PatchOS();
 		Devices_UpdatePatches();
-		break;
-	case Atari800_MACHINE_XLXE:
-		/* Don't patch if OS disabled */
-		if ((PIA_PORTB & 1) == 0)
-			break;
-		/* Restore unpatched OS */
-		MEMORY_dCopyToMem(MEMORY_os, 0xc000, 0x1000);
-		MEMORY_dCopyToMem(MEMORY_os + 0x1800, 0xd800, 0x2800);
-		/* Set patches */
-		ESC_PatchOS();
-		Devices_UpdatePatches();
-		break;
-	default:
-		break;
 	}
 }

@@ -13,10 +13,7 @@
 #import "bit3.h"
 #import "xep80.h"
 
-extern void SwitchFullscreen(void);
 extern void PLATFORM_Switch80Col(void);
-extern int requestDoubleSizeChange;
-extern int DOUBLESIZE;
 extern int SCALE_MODE;
 extern int scaleFactor;
 extern int requestWidthModeChange;
@@ -37,10 +34,6 @@ extern int requestCopy;
 extern int requestSelectAll;
 
 /* Functions which provide an interface for C code to call this object's shared Instance functions */
-void SetDisplayManagerDoubleSize(int scale) {
-    [[DisplayManager sharedInstance] setDoublesizeMenu:scale];
-    }
-
 void SetDisplayManagerWidthMode(int widthMode) {
     [[DisplayManager sharedInstance] setWidthmodeMenu:(widthMode)];
     }
@@ -62,8 +55,12 @@ void SetDisplayManagerGrabMouse(int mouseOn) {
     }
 
 void SetDisplayManager80ColMode(int xep80Enabled, int xep80Port, int af80Enabled, int bit3Enabled, int col80) {
-    [[DisplayManager sharedInstance] set80ColModeMenu:(xep80Enabled):(xep80Port):(af80Enabled):(bit3Enabled):(col80)];
-    }
+[[DisplayManager sharedInstance] set80ColModeMenu:(xep80Enabled):(xep80Port):(af80Enabled):(bit3Enabled):(col80)];
+}
+
+int EnableDisplayManager80ColMode(int machineType, int xep80Enabled, int af80Enabled, int bit3Enabled) {
+    return [[DisplayManager sharedInstance] enable80ColModeMenu:(machineType):(xep80Enabled):(af80Enabled):(bit3Enabled)];
+}
 
 void SetDisplayManagerXEP80Autoswitch(int autoswitchOn) {
     [[DisplayManager sharedInstance] setXEP80AutoswitchMenu:autoswitchOn];
@@ -97,41 +94,6 @@ static DisplayManager *sharedInstance = nil;
 
 - (void)dealloc {
 	[super dealloc];
-}
-
-/*------------------------------------------------------------------------------
-*  setDoublesizeMenu - This method is used to set the menu text for the 
-*     single/double size menu item.
-*-----------------------------------------------------------------------------*/
-- (void)setDoublesizeMenu:(int)scale
-{
-	switch(scale)
-	{
-		case 1:
-			[scale1xItem setState:NSOnState];
-			[scale2xItem setState:NSOffState];
-			[scale3xItem setState:NSOffState];
-			[scale4xItem setState:NSOffState];
-			break;
-		case 2:
-			[scale1xItem setState:NSOffState];
-			[scale2xItem setState:NSOnState];
-			[scale3xItem setState:NSOffState];
-			[scale4xItem setState:NSOffState];
-			break;
-		case 3:
-			[scale1xItem setState:NSOffState];
-			[scale2xItem setState:NSOffState];
-			[scale3xItem setState:NSOnState];
-			[scale4xItem setState:NSOffState];
-			break;
-		case 4:
-			[scale1xItem setState:NSOffState];
-			[scale2xItem setState:NSOffState];
-			[scale3xItem setState:NSOffState];
-			[scale4xItem setState:NSOnState];
-			break;
-	}
 }
 
 /*------------------------------------------------------------------------------
@@ -199,26 +161,20 @@ static DisplayManager *sharedInstance = nil;
 
 /*------------------------------------------------------------------------------
 *  setScaleModeMenu - This method is used to set the menu text for the
-*     normal/scanline/smooth scale mode menu item.
+*     normal/scanline scale mode menu item.
 *-----------------------------------------------------------------------------*/
 - (void)setScaleModeMenu:(int)scaleMode
 {
 	switch(scaleMode)
 	{
 		case 0:
+        default:
 			[scaleModeNormalItem setState:NSOnState];
 			[scaleModeScanlineItem setState:NSOffState];
-			[scaleModeSmoothItem setState:NSOffState];
 			break;
 		case 1:
 			[scaleModeNormalItem setState:NSOffState];
 			[scaleModeScanlineItem setState:NSOnState];
-			[scaleModeSmoothItem setState:NSOffState];
-			break;
-		case 2:
-			[scaleModeNormalItem setState:NSOffState];
-			[scaleModeScanlineItem setState:NSOffState];
-			[scaleModeSmoothItem setState:NSOnState];
 			break;
 	}
 }
@@ -269,8 +225,48 @@ static DisplayManager *sharedInstance = nil;
 	}
 }
 
+- (bool)enable80ColModeMenu:(int)machineType:(int)xep80Enabled:(int)af80Enabled:(int)bit3Enabled
+{
+    [[MediaManager sharedInstance] enable80ColMode:machineType];
+    switch(machineType) {
+        case Atari800_MACHINE_800:
+        default:
+            [xep80Mode0Item setTarget:self];
+            [xep80Mode1Item setTarget:self];
+            [xep80Mode2Item setTarget:self];
+            [af80ModeItem setTarget:self];
+            [bit3ModeItem setTarget:self];
+            return TRUE;
+        case Atari800_MACHINE_XLXE:
+            [xep80Mode0Item setTarget:self];
+            [xep80Mode1Item setTarget:self];
+            [xep80Mode2Item setTarget:self];
+            [af80ModeItem setTarget:nil];
+            [bit3ModeItem setTarget:nil];
+            if (af80Enabled || bit3Enabled) {
+                [self set80ColModeMenu:FALSE:0:FALSE:FALSE:FALSE];
+                [[MediaManager sharedInstance]  set80ColMode:FALSE:FALSE:FALSE:FALSE];
+                [xep80Mode0Item setTarget:self];
+                return FALSE;
+            }
+            break;
+        case Atari800_MACHINE_5200:
+            [xep80Mode0Item setTarget:self];
+            [xep80Mode1Item setTarget:nil];
+            [xep80Mode2Item setTarget:nil];
+            [af80ModeItem setTarget:nil];
+            [bit3ModeItem setTarget:nil];
+            if (xep80Enabled || af80Enabled || bit3Enabled) {
+                [self set80ColModeMenu:FALSE:0:FALSE:FALSE:FALSE];
+                [[MediaManager sharedInstance]  set80ColMode:FALSE:FALSE:FALSE:FALSE];
+                return FALSE;
+            }
+            break;
+    }
+    return TRUE;
+}
 /*------------------------------------------------------------------------------
-*  setXEP80ModeMenu - This method is used to set the menu text for the
+*  set80ColModeMenu - This method is used to set the menu text for the
 *     80 Col mode menu items.
 *-----------------------------------------------------------------------------*/
 - (void)set80ColModeMenu:(int)xep80Enabled:(int)xep80Port:(int)af80Enabled:(int)bit3Enabled:(int)col80;
@@ -337,19 +333,11 @@ static DisplayManager *sharedInstance = nil;
 }
 
 /*------------------------------------------------------------------------------
-*  doubleSize - This method handles the single/double size menu selection.
-*-----------------------------------------------------------------------------*/
-- (IBAction)doubleSize:(id)sender
-{
-    requestDoubleSizeChange = [sender tag];
-}
-
-/*------------------------------------------------------------------------------
 *  fullScreen - This method handles the windowed/fullscreen menu selection.
 *-----------------------------------------------------------------------------*/
 - (IBAction)fullScreen:(id)sender
 {
-    requestFullScreenChange = 1;
+   requestFullScreenChange = 1;
 }
 
 /*------------------------------------------------------------------------------
@@ -425,7 +413,7 @@ static DisplayManager *sharedInstance = nil;
 }
 
 /*------------------------------------------------------------------------------
-*  scaleMode - This method handles the normal/scanline/smooth scale mode menu
+*  scaleMode - This method handles the normal/scanline scale mode menu
 *       selection.
 *-----------------------------------------------------------------------------*/
 - (IBAction)scaleMode:(id)sender
@@ -486,6 +474,27 @@ static DisplayManager *sharedInstance = nil;
 - (IBAction) copy:(id) sender
 {
     requestCopy = 1;
+}
+
+- (void) enableMacCopyPaste
+{
+    // Set the target of copy and paste to
+    // first responder so they will work in Mac
+    // window
+    [copyMenu setTarget:nil];
+    [pasteMenu setTarget:nil];
+    [selectAllMenu setTarget:nil];
+}
+
+
+- (void) enableAtariCopyPaste
+{
+    // Set the target of copy and paste to
+    // Display Manger so Atari cut/paste will
+    // work again.
+    [copyMenu setTarget:self];
+    [pasteMenu setTarget:self];
+    [selectAllMenu setTarget:self];
 }
 
 @end

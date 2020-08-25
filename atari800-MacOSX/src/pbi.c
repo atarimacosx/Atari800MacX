@@ -24,8 +24,6 @@
 */
 
 #include "atari.h"
-#include "af80.h"
-#include "bit3.h"
 #include "pbi.h"
 #include "memory.h"
 #include "pia.h"
@@ -45,6 +43,12 @@
 #endif
 #ifdef PBI_PROTO80
 #include "pbi_proto80.h"
+#endif
+#ifdef AF80
+#include "af80.h"
+#endif
+#ifdef BIT3
+#include "bit3.h"
 #endif
 
 /* stores the current state of the D1FF register, real hardware has 1
@@ -66,19 +70,37 @@ int PBI_IRQ = 0;
 #define D(a) do{}while(0)
 #endif
 
-void PBI_Initialise(int *argc, char *argv[])
+int PBI_Initialise(int *argc, char *argv[])
 {
+	return TRUE
 #ifdef PBI_XLD
-	PBI_XLD_Initialise(argc, argv);
+		&& PBI_XLD_Initialise(argc, argv)
 #endif
 #ifdef PBI_BB
-	PBI_BB_Initialise(argc, argv);
+		&& PBI_BB_Initialise(argc, argv)
 #endif
 #ifdef PBI_MIO
-	PBI_MIO_Initialise(argc, argv);
+		&& PBI_MIO_Initialise(argc, argv)
 #endif
 #ifdef PBI_PROTO80
-	PBI_PROTO80_Initialise(argc, argv);
+		&& PBI_PROTO80_Initialise(argc, argv)
+#endif
+	;
+}
+
+void PBI_Exit(void)
+{
+#ifdef PBI_PROTO80
+	PBI_PROTO80_Exit();
+#endif
+#ifdef PBI_MIO
+	PBI_MIO_Exit();
+#endif
+#ifdef PBI_BB
+	PBI_BB_Exit();
+#endif
+#ifdef PBI_XLD
+	PBI_XLD_Exit();
 #endif
 }
 
@@ -132,22 +154,22 @@ void PBI_Reset(void)
 	PBI_IRQ = 0;
 }
 
-UBYTE PBI_D1GetByte(UWORD addr)
+UBYTE PBI_D1GetByte(UWORD addr, int no_side_effects)
 {
 	int result = 0xff;
 	/* MIO and BB do not follow the spec, they take over the bus: */
 #ifdef PBI_MIO
-	if (PBI_MIO_enabled) return PBI_MIO_D1GetByte(addr);
+	if (PBI_MIO_enabled) return PBI_MIO_D1GetByte(addr, no_side_effects);
 #endif
 #ifdef PBI_BB
-	if (PBI_BB_enabled) return PBI_BB_D1GetByte(addr);
+	if (PBI_BB_enabled) return PBI_BB_D1GetByte(addr, no_side_effects);
 #endif
 	/* Remaining PBI devices cooperate, following spec */
 #ifdef PBI_XLD
-	if (PBI_XLD_enabled) result = PBI_XLD_D1GetByte(addr);
+	if (PBI_XLD_enabled && !no_side_effects) result = PBI_XLD_D1GetByte(addr);
 #endif
 #ifdef PBI_PROTO80
-	if (result == PBI_NOT_HANDLED && PBI_PROTO80_enabled) result = PBI_PROTO80_D1GetByte(addr);
+	if (result == PBI_NOT_HANDLED && PBI_PROTO80_enabled) result = PBI_PROTO80_D1GetByte(addr, no_side_effects);
 #endif
 	if(result != PBI_NOT_HANDLED) return (UBYTE)result;
 	/* Each bit of D1FF is set by one of the 8 PBI devices to signal IRQ */
@@ -156,13 +178,13 @@ UBYTE PBI_D1GetByte(UWORD addr)
 	/* D1FF IRQ status: */
 		result = 0;
 #ifdef PBI_XLD
-		if (PBI_XLD_enabled) result |= PBI_XLD_D1ffGetByte();
+		if (PBI_XLD_enabled && !no_side_effects) result |= PBI_XLD_D1ffGetByte();
 #endif
 		/* add more devices here... */
 		return result;
 	}
 	/* addr was not handled: */
-	D(printf("PBI_GetByte:%4x:%2x PC:%4x IRQ:%d\n",addr,result,CPU_regPC,IRQ));
+	D(printf("PBI_GetByte:%4x:%2x PC:%4x IRQ:%d\n",addr,result,CPU_regPC,CPU_IRQ));
 	return result; /* 0xff */
 }
 
@@ -229,15 +251,19 @@ void PBI_D1PutByte(UWORD addr, UBYTE byte)
 }
 
 /* $D6xx */
-UBYTE PBI_D6GetByte(UWORD addr)
+UBYTE PBI_D6GetByte(UWORD addr, int no_side_effects)
 {
-    if (AF80_enabled) return AF80_D6GetByte(addr);
-    if (BIT3_enabled) return BIT3_D6GetByte(addr);
+#ifdef AF80
+	if (AF80_enabled) return AF80_D6GetByte(addr, no_side_effects);
+#endif
+#ifdef BIT3
+	if (BIT3_enabled) return BIT3_D6GetByte(addr, no_side_effects);
+#endif
 #ifdef PBI_MIO
-	if (PBI_MIO_enabled) return PBI_MIO_D6GetByte(addr);
+	if (PBI_MIO_enabled) return PBI_MIO_D6GetByte(addr, no_side_effects);
 #endif
 #ifdef PBI_BB
-	if(PBI_BB_enabled) return PBI_BB_D6GetByte(addr);
+	if(PBI_BB_enabled) return PBI_BB_D6GetByte(addr, no_side_effects);
 #endif
 	/* XLD/1090 has ram here */
 	if (PBI_D6D7ram) return MEMORY_mem[addr];
@@ -247,14 +273,18 @@ UBYTE PBI_D6GetByte(UWORD addr)
 /* $D6xx */
 void PBI_D6PutByte(UWORD addr, UBYTE byte)
 {
-    if (AF80_enabled) {
-        AF80_D6PutByte(addr,byte);
-        return;
-    }
-    if (BIT3_enabled) {
-        BIT3_D6PutByte(addr,byte);
-        return;
-    }
+#ifdef AF80
+	if (AF80_enabled) {
+		AF80_D6PutByte(addr,byte);
+		return;
+	}
+#endif
+#ifdef BIT3
+	if (BIT3_enabled) {
+		BIT3_D6PutByte(addr,byte);
+		return;
+	}
+#endif
 #ifdef PBI_MIO
 	if (PBI_MIO_enabled) {
 		PBI_MIO_D6PutByte(addr,byte);
@@ -273,7 +303,7 @@ void PBI_D6PutByte(UWORD addr, UBYTE byte)
 
 /* read page $D7xx */
 /* XLD/1090 has ram here */
-UBYTE PBI_D7GetByte(UWORD addr)
+UBYTE PBI_D7GetByte(UWORD addr, int no_side_effects)
 {
 	D(printf("PBI_D7GetByte:%4x\n",addr));
 	if (PBI_D6D7ram) return MEMORY_mem[addr];

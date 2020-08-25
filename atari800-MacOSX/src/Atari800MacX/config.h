@@ -341,10 +341,16 @@
 
 #define XEP80_EMULATION
 
+#define AF80
 #define AF80_EMULATION
 
+#define BIT3
 #define BIT3_EMULATION
 
 #define PBI_MIO
 
 #define PBI_BB
+
+#define EMUOS_ALTIRRA       1
+
+#define ATARI800MACX

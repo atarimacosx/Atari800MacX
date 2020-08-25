@@ -21,7 +21,6 @@
 #import "PokeyDataSource.h"
 
 #define kHistorySize 25
-#define kGraphicalDrawerSize 387
 
 @interface ControlManager : NSObject
 {
@@ -79,8 +78,6 @@
     IBOutlet id monitorInputField;
     IBOutlet id monitorExeButton;
     IBOutlet id monitorDoneButton;
-	IBOutlet id monitorDrawer;
-	IBOutlet id monitorGUIButton;
 	IBOutlet id monitorTabView;
 	IBOutlet id monitorPCRegField;
 	IBOutlet id monitorARegField;
@@ -126,7 +123,7 @@
 }
 + (ControlManager *)sharedInstance;
 - (void)setLimitMenu:(int)limit;
-- (void)setDisableBasicMenu:(int)disableBasic;
+- (void)setDisableBasicMenu:(int)mode:(int)disableBasic;
 - (void)setKeyjoyEnableMenu:(int)keyjoyEnable;
 - (void)setCX85EnableMenu:(int)cx85Enable;
 - (NSString *) browseFileInDirectory:(NSString *)directory;
@@ -165,6 +162,7 @@
 - (NSPoint)functionKeysOriginSave;
 - (NSPoint)monitorOriginSave;
 - (BOOL)monitorGUIVisableSave;
+- (int)monitorHeightSave;
 - (void)monitorPrint:(char *)string;
 - (IBAction)monitorMenuRun:(id)sender;
 - (int)monitorRun;
@@ -190,7 +188,6 @@
 - (void)updateMonitorGUIDisasm:(BOOL) usePc: (unsigned short) altAddress;
 - (void)updateMonitorGUILabels;
 - (void)updateMonitorGUIHardware;
-- (IBAction) monitorDrawerToggle:(id)sender;
 - (IBAction) monitorToggleTableBreakpoint:(id)sender;
 - (IBAction) monitorAddByteWatch:(id)sender;
 - (IBAction) monitorAddWordWatch:(id)sender;
@@ -224,6 +221,16 @@
 - (IBAction)optionPressed:(id)sender;
 - (IBAction)selectPressed:(id)sender;
 - (IBAction)inversePressed:(id)sender;
+- (IBAction)clearPressed:(id)sender;
+- (IBAction)helpPressed:(id)sender;
+- (IBAction)insertCharPressed:(id)sender;
+- (IBAction)insertLinePressed:(id)sender;
+- (IBAction)deleteCharPressed:(id)sender;
+- (IBAction)deleteLinePressed:(id)sender;
+- (IBAction)f1Pressed:(id)sender;
+- (IBAction)f2Pressed:(id)sender;
+- (IBAction)f3Pressed:(id)sender;
+- (IBAction)f4Pressed:(id)sender;
 - (IBAction)functionKeyWindowShow:(id)sender;
 - (NSString *) hexStringFromShort:(unsigned short)a;
 - (NSMutableAttributedString *) colorFromShort:(unsigned short)a:(unsigned short)old_a;

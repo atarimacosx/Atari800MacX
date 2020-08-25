@@ -30,16 +30,18 @@
 #include "cpu.h"
 #include <stdlib.h>
 
+#ifdef ATARI800MACX
 extern void SetDisplayManagerDisableAF80();
+#endif
 
 static UBYTE af80_rom[0x1000];
-#ifdef MACOSX
+#ifdef ATARI800MACX
 char af80_rom_filename[FILENAME_MAX] = Util_FILENAME_NOT_SET;
 #else
 static char af80_rom_filename[FILENAME_MAX] = Util_FILENAME_NOT_SET;
 #endif
 static UBYTE af80_charset[0x1000];
-#ifdef MACOSX
+#ifdef ATARI800MACX
 char af80_charset_filename[FILENAME_MAX] = Util_FILENAME_NOT_SET;
 #else
 static char af80_charset_filename[FILENAME_MAX] = Util_FILENAME_NOT_SET;
@@ -124,7 +126,7 @@ static void update_8000_9fff(void)
 	}
 }
 
-#ifdef MACOSX
+#ifdef ATARI800MACX
 void init_af80(void)
 #else
 static void init_af80(void)
@@ -221,7 +223,7 @@ void AF80_WriteConfig(FILE *fp)
 	fprintf(fp, "AF80_CHARSET=%s\n", af80_charset_filename);
 }
 
-int AF80_D6GetByte(UWORD addr)
+int AF80_D6GetByte(UWORD addr, int no_side_effects)
 {
 	int result = 0xff;
 	if (!not_enable_2k_character_ram) {
@@ -270,7 +272,7 @@ void AF80_D6PutByte(UWORD addr, UBYTE byte)
 	}
 }
 
-int AF80_D5GetByte(UWORD addr)
+int AF80_D5GetByte(UWORD addr, int no_side_effects)
 {
 	int result = MEMORY_dGetByte(addr);
 	return result;
@@ -398,6 +400,7 @@ void AF80_Reset(void)
 	memset(crtreg, 0, sizeof(crtreg));
 }
 
+#ifdef ATARI800MACX
 int AF80GetCopyData(int startx, int endx, int starty, int endy, unsigned char *data)
 {
     int table_start = crtreg[0x0c] + ((crtreg[0x0d]&0x3f)<<8);
@@ -458,6 +461,7 @@ int AF80GetCopyData(int startx, int endx, int starty, int endy, unsigned char *d
     *data = 0;
     return(count);
 }
+#endif
 
 /*
 vim:ts=4:sw=4:

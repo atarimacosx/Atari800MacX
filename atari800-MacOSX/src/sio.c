@@ -172,8 +172,6 @@ char SIO_status[512];
 #define SIO_WriteFrame      (0x04)
 #define SIO_FinalStatus     (0x05)
 #define SIO_FormatFrame     (0x06)
-#define SIO_CasRead         (0x60)
-#define SIO_CasWrite        (0x61)
 static UBYTE CommandFrame[6];
 static int CommandIndex = 0;
 static UBYTE DataBuffer[512 + 3];
@@ -297,6 +295,7 @@ int SIO_Mount(int diskno, const char *filename, int b_open_readonly)
 	}
 
 	boot_sectors_type[diskno - 1] = BOOT_SECTORS_LOGICAL;
+
 	if (header.magic1 == AFILE_ATR_MAGIC1 && header.magic2 == AFILE_ATR_MAGIC2) {
 		/* ATR (may be temporary from DCM or ATR/ATR.GZ) */
 		image_type[diskno - 1] = IMAGE_TYPE_ATR;
@@ -510,8 +509,6 @@ int SIO_Mount(int diskno, const char *filename, int b_open_readonly)
 				(header.magic1*256 + header.magic2 == (file_length-16)/(128+12)) &&
 				header.seccountlo == 'P') {
 			pro_additional_info_t *info;
-			Log_print("Pro type '%c'",header.seccounthi);
-
 			/* .pro is read only for now */
 			if (!b_open_readonly) {
 				fclose(f);
@@ -1169,7 +1166,7 @@ static int last_ypos = 0;
 void SIO_Handler(void)
 {
 	int sector = MEMORY_dGetWordAligned(0x30a);
-	UBYTE unit = (MEMORY_dGetByte(0x300) + MEMORY_dGetByte(0x301) + 0xff ) - 0x31;
+	UBYTE unit = MEMORY_dGetByte(0x300) + MEMORY_dGetByte(0x301) + 0xff;
 	UBYTE result = 0x00;
 	UWORD data = MEMORY_dGetWordAligned(0x304);
 	int length = MEMORY_dGetWordAligned(0x308);
@@ -1182,8 +1179,22 @@ void SIO_Handler(void)
 	}
 	/* A real atari just adds the bytes and 0xff. The result could wrap.*/
 	/* XL OS: E99D: LDA $0300 ADC $0301 ADC #$FF STA 023A */
+
+	/* The OS SIO routine copies decide ID do CDEVIC, command ID to CCOMND etc.
+	   This operation is not needed with the SIO patch enabled, but we perform
+	   it anyway, since some programs rely on that. (E.g. the E.T Phone Home!
+	   cartridge would crash with SIO patch enabled.)
+	   Note: While on a real XL OS the copying is done only for SIO devices
+	   (not for PBI ones), here we copy the values for all types of devices -
+	   it's probably harmless. */
+	MEMORY_dPutByte(0x023a, unit); /* sta CDEVIC */
+	MEMORY_dPutByte(0x023b, cmd); /* sta CCOMND */
+	MEMORY_dPutWordAligned(0x023c, sector); /* sta CAUX1; sta CAUX2 */
+
 	/* Disk 1 is ASCII '1' = 0x31 etc */
 	/* Disk 1 -> unit = 0 */
+	unit -= 0x31;
+
 	if (MEMORY_dGetByte(0x300) != 0x60 && unit < SIO_MAX_DRIVES && (SIO_drive_status[unit] != SIO_OFF || BINLOAD_start_binloading)) {	/* UBYTE range ! */
 #ifdef DEBUG
 		Log_print("SIO disk command is %02x %02x %02x %02x %02x   %02x %02x %02x %02x %02x %02x",
@@ -1292,47 +1303,26 @@ void SIO_Handler(void)
 	}
 	/* cassette i/o */
 	else if (MEMORY_dGetByte(0x300) == 0x60) {
-		int storagelength = 0;
 		UBYTE gaps = MEMORY_dGetByte(0x30b);
 		switch (cmd){
 		case 0x52:	/* read */
 			/* set expected Gap */
 			CASSETTE_AddGap(gaps == 0 ? 2000 : 160);
-			SIO_last_op = SIO_LAST_READ;
-			SIO_last_drive = 0x61;
-			SIO_last_op_time = 0x10;
 			/* get record from storage medium */
-			storagelength = CASSETTE_Read();
-			if (storagelength - 1 != length)	/* includes -1 as error */
-				result = 'E';
-			else
+			if (CASSETTE_ReadToMemory(data, length))
 				result = 'C';
-			/* check checksum */
-			if (CASSETTE_buffer[length] != SIO_ChkSum(CASSETTE_buffer, length))
+			else
 				result = 'E';
-			/* if all went ok, copy to Atari */
-			if (result == 'C')
-				MEMORY_CopyToMem(CASSETTE_buffer, data, length);
 			break;
-		case 0x57:	/* write */
-			SIO_last_op = SIO_LAST_WRITE;
-			SIO_last_drive = 0x61;
-			SIO_last_op_time = 0x10;
-			/* put record into buffer */
-			MEMORY_CopyFromMem(data, CASSETTE_buffer, length);
-			/* eval checksum over buffer data */
-			CASSETTE_buffer[length] = SIO_ChkSum(CASSETTE_buffer, length);
+		case 0x50:	/* put (used by AltirraOS) */
+		case 0x57:	/* write (used by Atari OS) */
 			/* add pregap length */
 			CASSETTE_AddGap(gaps == 0 ? 3000 : 260);
 			/* write full record to storage medium */
-			storagelength = CASSETTE_Write(length + 1);
-#ifdef MACOSX
-			UpdateMediaManagerInfo();
-#endif			
-			if (storagelength - 1 != length)	/* includes -1 as error */
-				result = 'E';
-			else
+			if (CASSETTE_WriteFromMemory(data, length))
 				result = 'C';
+			else
+				result = 'E';
 			break;
 		default:
 			result = 'N';
@@ -1341,21 +1331,24 @@ void SIO_Handler(void)
 
 	switch (result) {
 	case 0x00:					/* Device disabled, generate timeout */
-		CPU_regY = 138;
+		CPU_regY = 138; /* TIMOUT: peripheral device timeout error */
 		CPU_SetN;
 		break;
 	case 'A':					/* Device acknowledge */
 	case 'C':					/* Operation complete */
-		CPU_regY = 1;
+		CPU_regY = 1; /* SUCCES: successful operation */
 		CPU_ClrN;
 		break;
 	case 'N':					/* Device NAK */
-		CPU_regY = 144;
+		CPU_regY = 139; /* DNACK: device does not acknowledge command error */
 		CPU_SetN;
 		break;
 	case 'E':					/* Device error */
+		CPU_regY = 144; /* DERROR: device done (operation incomplete) error */
+		CPU_SetN;
+		break;
 	default:
-		CPU_regY = 146;
+		CPU_regY = 146; /* FNCNOT: function not implemented in handler error */
 		CPU_SetN;
 		break;
 	}
@@ -1363,6 +1356,19 @@ void SIO_Handler(void)
 	MEMORY_dPutByte(0x0303, CPU_regY);
 	MEMORY_dPutByte(0x42,0);
 	CPU_SetC;
+
+	/* After each SIO operation a routine called SENDDS ($EC5F in OSB) is
+	   invoked, which, among other functions, silences the sound
+	   generators. With SIO patch we don't call SIOV and in effect SENDDS
+	   is not called either, but this causes a problem with tape saving.
+	   During tape saving sound generators are enabled before calling
+	   SIOV, but are not disabled later (no call to SENDDS). The effect is
+	   that after saving to tape the unwanted SIO sounds are left audible.
+	   To avoid the problem, we silence the sound registers by hand. */
+	POKEY_PutByte(POKEY_OFFSET_AUDC1, 0);
+	POKEY_PutByte(POKEY_OFFSET_AUDC2, 0);
+	POKEY_PutByte(POKEY_OFFSET_AUDC3, 0);
+	POKEY_PutByte(POKEY_OFFSET_AUDC4, 0);
 }
 
 UBYTE SIO_ChkSum(const UBYTE *buffer, int length)
@@ -1537,53 +1543,6 @@ static UBYTE Command_Frame(void)
 	}
 }
 
-/* Enable/disable the Tape Motor */
-void SIO_TapeMotor(int onoff)
-{
-	/* if sio is patched, do not do anything */
-	if (ESC_enable_sio_patch)
-		return;
-	if (onoff) {
-		/* set frame to cassette frame, if not */
-		/* in a transfer with an intelligent peripheral */
-		if (TransferStatus == SIO_NoFrame || (TransferStatus & 0xfe) == SIO_CasRead) {
-			if (CASSETTE_IsSaveFile()) {
-				TransferStatus = SIO_CasWrite;
-				CASSETTE_TapeMotor(onoff);
-				SIO_last_op = SIO_LAST_WRITE;
-			}
-			else {
-				TransferStatus = SIO_CasRead;
-				CASSETTE_TapeMotor(onoff);
-				POKEY_DELAYED_SERIN_IRQ = CASSETTE_GetInputIRQDelay();
-				SIO_last_op = SIO_LAST_READ;
-			};
-			SIO_last_drive = 0x60;
-			SIO_last_op_time = 0x10;
-		}
-		else {
-			CASSETTE_TapeMotor(onoff);
-		}
-	}
-	else {
-		/* set frame to none */
-		if (TransferStatus == SIO_CasWrite) {
-			TransferStatus = SIO_NoFrame;
-			CASSETTE_TapeMotor(onoff);
-		}
-		else if (TransferStatus == SIO_CasRead) {
-			TransferStatus = SIO_NoFrame;
-			CASSETTE_TapeMotor(onoff);
-			POKEY_DELAYED_SERIN_IRQ = 0; /* off */
-		}
-		else {
-			CASSETTE_TapeMotor(onoff);
-			POKEY_DELAYED_SERIN_IRQ = 0; /* off */
-		}
-		SIO_last_op_time = 0;
-	}
-}
-
 /* Enable/disable the command frame */
 void SIO_SwitchCommandFrame(int onoff)
 {
@@ -1680,10 +1639,8 @@ void SIO_PutByte(int byte)
 			Log_print("Invalid data frame!");
 		}
 		break;
-	case SIO_CasWrite:
-		CASSETTE_PutByte(byte);
-		break;
 	}
+	CASSETTE_PutByte(byte);
 	/* POKEY_DELAYED_SEROUT_IRQ = SIO_SEROUT_INTERVAL; */ /* already set in pokey.c */
 }
 
@@ -1691,6 +1648,7 @@ void SIO_PutByte(int byte)
 int SIO_GetByte(void)
 {
 	int byte = 0;
+
 	switch (TransferStatus) {
 	case SIO_StatusRead:
 		byte = Command_Frame();		/* Handle now the command */
@@ -1734,11 +1692,8 @@ int SIO_GetByte(void)
 			TransferStatus = SIO_NoFrame;
 		}
 		break;
-	case SIO_CasRead:
-		byte = CASSETTE_GetByte();
-		POKEY_DELAYED_SERIN_IRQ = CASSETTE_GetInputIRQDelay();
-		break;
 	default:
+		byte = CASSETTE_GetByte();
 		break;
 	}
 	return byte;

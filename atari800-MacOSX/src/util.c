@@ -33,14 +33,26 @@
 #endif /* __STRICT_ANSI__ */
 #include <stdlib.h>
 #include <string.h>
+#include <errno.h>
 #ifdef HAVE_SYS_STAT_H
 #include <sys/stat.h>
 #endif
-#ifdef WIN32
+#ifdef HAVE_WINDOWS_H
 #include <windows.h>
+#endif
+#ifdef TIME_WITH_SYS_TIME
+# include <sys/time.h>
+# include <time.h>
+#else
+# ifdef HAVE_SYS_TIME_H
+#  include <sys/time.h>
+# elif defined(HAVE_TIME_H)
+#  include <time.h>
+# endif
 #endif
 
 #include "atari.h"
+#include "platform.h"
 #include "util.h"
 
 int Util_chrieq(char c1, char c2)
@@ -56,32 +68,30 @@ int Util_chrieq(char c1, char c2)
 }
 
 #ifdef __STRICT_ANSI__
-/*
-**  STRICMP.C - Comapres strings, case-insensitive.
-**
-**  public domain by Bob Stout
-**
-*/
-
-/* from http://c.snippets.org/code/stricmp.c */
 int Util_stricmp(const char *str1, const char *str2)
 {
-      int retval = 0;
+	int retval;
 
-      while (1)
-      {
-            retval = tolower(*str1++) - tolower(*str2++);
-
-            if (retval)
-                  break;
-
-            if (*str1 && *str2)
-                  continue;
-            else  break;
-      }
-      return retval;
+	while((retval = tolower(*str1) - tolower(*str2++)) == 0)
+	{
+		if (*str1++ == '\0')
+			break;
+	}
+	return retval;
 }
 #endif
+
+int Util_strnicmp(const char *str1, const char *str2, size_t size)
+{
+	int retval = 0;
+
+	while((size-- > 0) && ((retval = tolower(*str1) - tolower(*str2++)) == 0))
+	{
+		if (*str1++ == '\0')
+			break;
+	}
+	return retval;
+}
 
 char *Util_stpcpy(char *dest, const char *src)
 {
@@ -182,7 +192,7 @@ void Util_trim(char *s)
 int Util_sscandec(const char *s)
 {
 	int result;
-	if (*s == '\0')
+	if (s == NULL || *s == '\0')
 		return -1;
 	result = 0;
 	for (;;) {
@@ -196,10 +206,46 @@ int Util_sscandec(const char *s)
 	}
 }
 
+int Util_sscansdec(char const *s, int *dest)
+{
+	int minus = FALSE;
+
+	if (s == NULL || dest == NULL) return FALSE;
+
+	switch(*s) {
+	case '-':
+		minus = TRUE;
+		/* Fallthrough! */
+	case '+':
+		++s;
+	}
+	*dest = Util_sscandec(s);
+	if (*dest == -1)
+		return FALSE;
+	if (minus)
+		*dest = -*dest;
+	return TRUE;
+}
+
+int Util_sscandouble(char const *s, double *dest)
+{
+	char *endptr;
+	double result;
+
+	if (s == NULL || dest == NULL) return FALSE;
+
+	result = strtod(s, &endptr);
+	if (endptr[0] != '\0' || errno == ERANGE)
+		return FALSE;
+	*dest = result;
+	return TRUE;
+	
+}
+
 int Util_sscanhex(const char *s)
 {
 	int result;
-	if (*s == '\0')
+	if (s == NULL || *s == '\0')
 		return -1;
 	result = 0;
 	for (;;) {
@@ -219,12 +265,20 @@ int Util_sscanhex(const char *s)
 
 int Util_sscanbool(const char *s)
 {
+	if (s == NULL) return -1;
 	if (*s == '0' && s[1] == '\0')
 		return 0;
 	if (*s == '1' && s[1] == '\0')
 		return 1;
 	return -1;
 }
+
+#if !HAVE_ROUND
+double Util_round(double x)
+{
+	return floor(x + 0.5);
+}
+#endif
 
 void *Util_malloc(size_t size)
 {
@@ -290,11 +344,7 @@ void Util_splitpath(const char *path, char *dir_part, char *file_part)
 
 void Util_catpath(char *result, const char *path1, const char *path2)
 {
-#ifdef HAVE_SNPRINTF
 	snprintf(result, FILENAME_MAX,
-#else
-	sprintf(result,
-#endif
 		path1[0] == '\0' || path2[0] == Util_DIR_SEP_CHAR || path1[strlen(path1) - 1] == Util_DIR_SEP_CHAR
 #ifdef DIR_SEP_BACKSLASH
 		 || path2[0] == '/' || path1[strlen(path1) - 1] == '/'
@@ -312,7 +362,7 @@ int Util_fileexists(const char *filename)
 	return TRUE;
 }
 
-#ifdef WIN32
+#ifdef HAVE_WINDOWS_H
 
 int Util_direxists(const char *filename)
 {
@@ -384,7 +434,7 @@ FILE *Util_uniqopen(char *filename, const char *mode)
 	/* Roll-your-own */
 	int no;
 	for (no = 0; no < 1000000; no++) {
-		sprintf(filename, "a8%06d", no);
+		snprintf(filename, FILENAME_MAX, "a8%06d", no);
 		if (!Util_fileexists(filename))
 			return fopen(filename, mode);
 	}
@@ -392,7 +442,7 @@ FILE *Util_uniqopen(char *filename, const char *mode)
 #endif
 }
 
-#if defined(WIN32) && defined(UNICODE)
+#if defined(HAVE_WINDOWS_H) && defined(UNICODE)
 int Util_unlink(const char *filename)
 {
 	WCHAR wfilename[FILENAME_MAX];
@@ -411,9 +461,74 @@ int Util_unlink(const char *filename)
 		return -1;
 	return (DeleteFile(wfilename) != 0) ? 0 : -1;
 }
-#elif defined(WIN32) && !defined(UNICODE)
+#elif defined(HAVE_WINDOWS_H) && !defined(UNICODE)
 int Util_unlink(const char *filename)
 {
 	return (DeleteFile(filename) != 0) ? 0 : -1;
 }
-#endif /* defined(WIN32) && defined(UNICODE) */
+#endif /* defined(HAVE_WINDOWS_H) && defined(UNICODE) */
+
+double Util_time(void)
+{
+#ifdef SUPPORTS_PLATFORM_TIME
+	return PLATFORM_Time();
+#elif defined(HAVE_WINDOWS_H)
+	return GetTickCount() * 1e-3;
+#elif defined(DJGPP)
+	/* DJGPP has gettimeofday, but it's not more accurate than uclock */
+	return uclock() * (1.0 / UCLOCKS_PER_SEC);
+#elif defined(HAVE_GETTIMEOFDAY)
+	struct timeval tp;
+	gettimeofday(&tp, NULL);
+	return tp.tv_sec + 1e-6 * tp.tv_usec;
+#elif defined(HAVE_UCLOCK)
+	return uclock() * (1.0 / UCLOCKS_PER_SEC);
+#elif defined(HAVE_CLOCK)
+	return clock() * (1.0 / CLOCKS_PER_SEC);
+#else
+#error No function found for Util_time()
+#endif
+}
+
+/* FIXME: Ports should use SUPPORTS_PLATFORM_SLEEP and SUPPORTS_PLATFORM_TIME */
+/* and not this mess */
+
+void Util_sleep(double s)
+{
+#ifdef SUPPORTS_PLATFORM_SLEEP
+	PLATFORM_Sleep(s);
+#else /* !SUPPORTS_PLATFORM_SLEEP */
+	if (s > 0) {
+#ifdef HAVE_WINDOWS_H
+		Sleep((DWORD) (s * 1e3));
+#elif defined(DJGPP)
+		/* DJGPP has usleep and select, but they don't work that good */
+		/* XXX: find out why */
+		double curtime = Util_time();
+		while ((curtime + s) > Util_time());
+#elif defined(HAVE_NANOSLEEP)
+		struct timespec ts;
+		ts.tv_sec = 0;
+		ts.tv_nsec = s * 1e9;
+		nanosleep(&ts, NULL);
+#elif defined(HAVE_USLEEP)
+		usleep(s * 1e6);
+#elif defined(__BEOS__)
+		/* added by Walter Las for BeOS */
+		snooze(s * 1e6);
+#elif defined(__EMX__)
+		/* added by Brian Smith for os/2 */
+		DosSleep(s);
+#elif defined(HAVE_SELECT)
+		/* linux */
+		struct timeval tp;
+		tp.tv_sec = 0;
+		tp.tv_usec = s * 1e6;
+		select(1, NULL, NULL, NULL, &tp);
+#else
+		double curtime = Util_time();
+		while ((curtime + s) > Util_time());
+#endif
+	}
+#endif /* !SUPPORTS_PLATFORM_SLEEP */
+}

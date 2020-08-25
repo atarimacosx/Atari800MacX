@@ -121,17 +121,16 @@ extern UBYTE GTIA_collisions_mask_player_player;
 extern UBYTE GTIA_TRIG[4];
 extern UBYTE GTIA_TRIG_latch[4];
 
-extern int GTIA_consol_index;
-extern UBYTE GTIA_consol_table[3];
+extern int GTIA_consol_override;
 extern int GTIA_speaker;
 
-void GTIA_Initialise(int *argc, char *argv[]);
+int GTIA_Initialise(int *argc, char *argv[]);
 void GTIA_Frame(void);
 void GTIA_NewPmScanline(void);
-UBYTE GTIA_GetByte(UWORD addr);
+UBYTE GTIA_GetByte(UWORD addr, int no_side_effects);
 void GTIA_PutByte(UWORD addr, UBYTE byte);
 void GTIA_StateSave(void);
-void GTIA_StateRead(void);
+void GTIA_StateRead(UBYTE version);
 
 #ifdef NEW_CYCLE_EXACT
 void GTIA_UpdatePmplColls(void);

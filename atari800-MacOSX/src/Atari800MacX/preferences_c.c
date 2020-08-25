@@ -47,27 +47,18 @@ extern int paletteBlack;
 extern int paletteWhite;
 extern int paletteIntensity;
 extern int paletteColorShift;
-extern int FULLSCREEN;
 extern int PLATFORM_80col;
-extern int OPENGL;
-extern int lockFullscreenSize;
-extern int FULLSCREEN_MONITOR;
-extern int fullForeRed;
-extern int fullForeGreen;
-extern int fullForeBlue;
-extern int fullBackRed;
-extern int fullBackGreen;
-extern int fullBackBlue;
-extern int DOUBLESIZE;
 extern int SCALE_MODE;
+extern int onlyIntegralScaling;
+extern int fixAspectFullscreen;
 extern int scaleFactor;
+extern double scaleFactorFloat;
 extern int WIDTH_MODE;
 extern int Screen_show_atari_speed;
 extern int Screen_show_disk_led;
 extern int Screen_show_sector_counter;
 extern int led_enabled_media;
 extern int led_counter_enabled_media;
-extern int enable_international;
 extern int JOYSTICK_MODE[4];
 extern int JOYSTICK_AUTOFIRE[4];
 extern int INPUT_mouse_mode;
@@ -129,6 +120,10 @@ extern int machine_switch_type;
 extern double emulationSpeed;
 extern int cx85_port;
 extern int useAtariCursorKeys;
+extern int Atari800_useAlitrraOSBRom;
+extern int Atari800_useAlitrraXLRom;
+extern int Atari800_useAlitrra5200Rom;
+extern int Atari800_useAlitrraBasicRom;
 
 extern int Devices_enable_h_patch;
 extern int Devices_enable_d_patch;
@@ -139,8 +134,6 @@ extern int POKEYSND_console_sound_enabled;
 extern char Devices_atari_h_dir[4][FILENAME_MAX];
 extern int Devices_h_read_only;
 extern char Devices_print_command[256];
-extern char cart_filename[FILENAME_MAX];
-extern char second_cart_filename[FILENAME_MAX];
 
 extern char bb_rom_filename[FILENAME_MAX];
 extern char mio_rom_filename[FILENAME_MAX];
@@ -168,6 +161,9 @@ char atari_state_dir[FILENAME_MAX];
 char atari_config_dir[FILENAME_MAX];
 int  refresh_rate;
 
+int PREFS_axlon_num_banks;
+int PREFS_mosaic_num_banks;
+
 /* Variables used for boot devices */
 int prefsArgc = 0;
 char *prefsArgv[15];
@@ -178,7 +174,6 @@ static ATARI800MACX_PREF prefs, lastPrefs;
 static ATARI800MACX_PREFSAVE prefssave;
 /* Variables used to determine what has changed after a preferences update */
 int displaySizeChanged;
-int openGlChanged;
 int scaleModeChanged;
 int showfpsChanged;
 int artifChanged;
@@ -188,8 +183,6 @@ int patchFlagsChanged;
 int keyboardJoystickChanged;
 int hardDiskChanged;
 int osRomsChanged;
-int fullscreenGuiColorsChanged;
-int fullscreenCrashColorsChanged;
 int af80EnabledChanged;
 int bit3EnabledChanged;
 int xep80EnabledChanged;
@@ -197,6 +190,7 @@ int xep80ColorsChanged;
 int configurationChanged;
 int mioChanged;
 int bbChanged;
+int fullscreenOptsChanged;
 int bbRequested = FALSE;
 int mioRequested = FALSE;
 int dontMuteAudio = 0;
@@ -267,25 +261,24 @@ ATARI800MACX_PREF *getPrefStorage(void) {
     }
 
 void saveMediaPrefs() {
-	if (CARTRIDGE_type == CARTRIDGE_NONE) {
-		if (CARTRIDGE_second_type == CARTRIDGE_NONE) 
-			SaveMedia(SIO_filename, cassette_filename, "", "");
+    if (CARTRIDGE_main.type == CARTRIDGE_NONE) {
+        if (CARTRIDGE_piggyback.type == CARTRIDGE_NONE)
+			SaveMedia(SIO_filename, CASSETTE_filename, "", "");
 		else
-			SaveMedia(SIO_filename, cassette_filename, "", second_cart_filename);
+            SaveMedia(SIO_filename, CASSETTE_filename, "", CARTRIDGE_piggyback.filename);
 	}
 	else {
-		if (CARTRIDGE_second_type == CARTRIDGE_NONE) 
-			SaveMedia(SIO_filename, cassette_filename, cart_filename, "");
+		if (CARTRIDGE_piggyback.type == CARTRIDGE_NONE)
+			SaveMedia(SIO_filename, CASSETTE_filename, CARTRIDGE_main.filename, "");
 		else
-			SaveMedia(SIO_filename, cassette_filename, cart_filename, second_cart_filename);
+			SaveMedia(SIO_filename, CASSETTE_filename, CARTRIDGE_main.filename, CARTRIDGE_piggyback.filename);
 	}
 }
 
 void savePrefs() {
-	prefssave.fullScreen = FULLSCREEN; 
-    prefssave.doubleSize = DOUBLESIZE; 
     prefssave.scaleFactor = scaleFactor;
-    prefssave.widthMode = WIDTH_MODE; 
+    prefssave.scaleFactorFloat = scaleFactorFloat;
+    prefssave.widthMode = WIDTH_MODE;
 	prefssave.scaleMode = SCALE_MODE;
     prefssave.showFPS = Screen_show_atari_speed;
 	prefssave.ledStatus = Screen_show_disk_led;
@@ -312,7 +305,7 @@ void savePrefs() {
 	prefssave.enableRPatch = Devices_enable_r_patch;
 		
 	prefssave.atariType = CalcAtariType(Atari800_machine_type, MEMORY_ram_size,
-										MEMORY_axlon_enabled, MEMORY_mosaic_enabled);
+										MEMORY_axlon_num_banks > 0, MEMORY_mosaic_num_banks > 0);
 
 	prefssave.currPrinter = currPrinter;
 	prefssave.artifactingMode = ANTIC_artif_mode;
@@ -324,17 +317,17 @@ void savePrefs() {
 	ReturnPreferences(&prefssave);
 	if (saveCurrentMedia)
         {
-		if (CARTRIDGE_type == CARTRIDGE_NONE) {
-			if (CARTRIDGE_second_type == CARTRIDGE_NONE) 
-				SaveMedia(SIO_filename, cassette_filename, "", "");
+        if (CARTRIDGE_main.type == CARTRIDGE_NONE) {
+            if (CARTRIDGE_piggyback.type == CARTRIDGE_NONE)
+				SaveMedia(SIO_filename, CASSETTE_filename, "", "");
 			else
-				SaveMedia(SIO_filename, cassette_filename, "", second_cart_filename);
+                SaveMedia(SIO_filename, CASSETTE_filename, "", CARTRIDGE_piggyback.filename);
 		}
 		else {
-			if (CARTRIDGE_second_type == CARTRIDGE_NONE) 
-				SaveMedia(SIO_filename, cassette_filename, cart_filename, "");
+			if (CARTRIDGE_piggyback.type == CARTRIDGE_NONE) 
+				SaveMedia(SIO_filename, CASSETTE_filename, CARTRIDGE_main.filename, "");
 			else
-				SaveMedia(SIO_filename, cassette_filename, cart_filename, second_cart_filename);
+				SaveMedia(SIO_filename, CASSETTE_filename, CARTRIDGE_main.filename, CARTRIDGE_piggyback.filename);
 		}
     }
 	if (saveCurrentMedia)
@@ -421,27 +414,7 @@ void loadPrefsBinaries() {
 
 int CalcAtariType(int machineType, int ramSize, int axlon, int mosaic)
 {
-	if (machineType == Atari800_MACHINE_OSA) {
-		if (axlon) {
-			if (ramSize == 48)
-				return 14;
-			else
-				return 0;
-		} else if (mosaic) {
-			if (ramSize == 48)
-				return 15;
-			else
-				return 0;
-		} else {
-			if (ramSize == 52)
-				return 2;
-			else if (ramSize == 48)
-				return 1;
-			else
-				return 0;
-		}
-	}
-	else if (machineType == Atari800_MACHINE_OSB) {
+	if (machineType == Atari800_MACHINE_800) {
 		if (axlon) {
 			if (ramSize == 48)
 				return 16;
@@ -498,37 +471,37 @@ void CalcMachineTypeRam(int type, int *machineType, int *ramSize,
 {
     switch(type) {
         case 0:
-            *machineType = Atari800_MACHINE_OSA;
+            *machineType = Atari800_MACHINE_800;
             *ramSize = 16;
 			*axlon = FALSE;
 			*mosaic = FALSE;
             break;
         case 1:
-            *machineType = Atari800_MACHINE_OSA;
+            *machineType = Atari800_MACHINE_800;
             *ramSize = 48;
 			*axlon = FALSE;
 			*mosaic = FALSE;
             break;
         case 2:
-            *machineType = Atari800_MACHINE_OSA;
+            *machineType = Atari800_MACHINE_800;
             *ramSize = 52;
 			*axlon = FALSE;
 			*mosaic = FALSE;
             break;
         case 3:
-            *machineType = Atari800_MACHINE_OSB;
+            *machineType = Atari800_MACHINE_800;
             *ramSize = 16;
 			*axlon = FALSE;
 			*mosaic = FALSE;
             break;
         case 4:
-            *machineType = Atari800_MACHINE_OSB;
+            *machineType = Atari800_MACHINE_800;
             *ramSize = 48;
 			*axlon = FALSE;
 			*mosaic = FALSE;
             break;
         case 5:
-            *machineType = Atari800_MACHINE_OSB;
+            *machineType = Atari800_MACHINE_800;
             *ramSize = 52;
 			*axlon = FALSE;
 			*mosaic = FALSE;
@@ -582,25 +555,25 @@ void CalcMachineTypeRam(int type, int *machineType, int *ramSize,
 			*mosaic = FALSE;
             break;
         case 14:
-            *machineType = Atari800_MACHINE_OSA;
+            *machineType = Atari800_MACHINE_800;
             *ramSize = 48;
 			*axlon = TRUE;
 			*mosaic = FALSE;
             break;
         case 15:
-            *machineType = Atari800_MACHINE_OSA;
+            *machineType = Atari800_MACHINE_800;
             *ramSize = 48;
 			*axlon = FALSE;
 			*mosaic = TRUE;
             break;
         case 16:
-            *machineType = Atari800_MACHINE_OSB;
+            *machineType = Atari800_MACHINE_800;
             *ramSize = 48;
 			*axlon = TRUE;
 			*mosaic = FALSE;
             break;
         case 17:
-            *machineType = Atari800_MACHINE_OSB;
+            *machineType = Atari800_MACHINE_800;
             *ramSize = 48;
 			*axlon = FALSE;
 			*mosaic = TRUE;
@@ -622,18 +595,10 @@ void CalculatePrefsChanged()
 	int new_axlon = 0;
 	int new_mosaic = 0;
 
-    if ((FULLSCREEN != prefs.fullScreen) ||
-        (DOUBLESIZE != prefs.doubleSize) ||
-        (WIDTH_MODE != prefs.widthMode) ||
-        ((scaleFactor != prefs.scaleFactor) && DOUBLESIZE))
+    if (WIDTH_MODE != prefs.widthMode)
         displaySizeChanged = TRUE;
     else
         displaySizeChanged = FALSE;
-		
-    if (OPENGL != prefs.openGl)
-        openGlChanged = TRUE;
-    else
-        openGlChanged = FALSE;
 		
     if (Screen_show_atari_speed != prefs.showFPS)
         showfpsChanged = TRUE;
@@ -674,10 +639,10 @@ void CalculatePrefsChanged()
 					   &new_axlon, &new_mosaic);
     if ((Atari800_machine_type != new_machine_type) ||
         (MEMORY_ram_size != new_ram_size) ||
-		(MEMORY_axlon_enabled != new_axlon) ||
-		(MEMORY_mosaic_enabled != new_mosaic) ||
-		(MEMORY_axlon_bankmask != prefs.axlonBankMask) ||
-		(MEMORY_mosaic_maxbank != prefs.mosaicMaxBank) ||
+		((MEMORY_axlon_num_banks > 0) != new_axlon) ||
+		((MEMORY_mosaic_num_banks > 0) != new_mosaic) ||
+		((MEMORY_axlon_num_banks - 1) != prefs.axlonBankMask) ||
+		((MEMORY_mosaic_num_banks - 1) != prefs.mosaicMaxBank) ||
 		(bbRequested != prefs.blackBoxEnabled) ||
 		(mioRequested != prefs.mioEnabled))
         machineTypeChanged = TRUE;
@@ -729,8 +694,7 @@ void CalculatePrefsChanged()
     else
         hardDiskChanged = FALSE;
 
-    if ((strcmp(CFG_osa_filename, prefs.osARomFile) !=0) ||
-		(strcmp(CFG_osb_filename, prefs.osBRomFile) !=0) ||
+    if ((strcmp(CFG_osb_filename, prefs.osBRomFile) !=0) ||
 		(strcmp(CFG_xlxe_filename, prefs.xlRomFile) !=0) ||
 		(strcmp(CFG_basic_filename, prefs.basicRomFile) !=0) ||
 		(strcmp(CFG_5200_filename, prefs.a5200RomFile) !=0) ||
@@ -742,7 +706,11 @@ void CalculatePrefsChanged()
         (strcmp(bb_rom_filename, prefs.blackBoxRomFile) != 0) ||
 		(strcmp(mio_rom_filename, prefs.mioRomFile) != 0) ||
 		(strcmp(bb_scsi_disk_filename, prefs.blackBoxScsiDiskFile) != 0) ||
-		(strcmp(mio_scsi_disk_filename, prefs.mioScsiDiskFile) != 0))		
+		(strcmp(mio_scsi_disk_filename, prefs.mioScsiDiskFile) != 0) ||
+        (Atari800_useAlitrraOSBRom != prefs.useAltirraOSBRom) ||
+        (Atari800_useAlitrraXLRom != prefs.useAltirraXLRom) ||
+        (Atari800_useAlitrraBasicRom != prefs.useAltirraBasicRom) ||
+        (Atari800_useAlitrra5200Rom != prefs.useAltirra5200Rom))
 		osRomsChanged = TRUE;
 	else
 		osRomsChanged = FALSE;
@@ -753,20 +721,6 @@ void CalculatePrefsChanged()
     else
         hifiSoundChanged = FALSE;
 #endif		
-
-	if ((fullForeRed != prefs.fullForeRed) ||
-	    (fullForeGreen != prefs.fullForeGreen) ||
-	    (fullForeBlue != prefs.fullForeBlue) ||
-	    (fullBackRed != prefs.fullForeRed) ||
-	    (fullBackGreen != prefs.fullBackGreen) ||
-	    (fullBackBlue != prefs.fullBackBlue)) {
-		fullscreenGuiColorsChanged = TRUE;
-		fullscreenCrashColorsChanged = TRUE;
-		}
-	else {
-		fullscreenGuiColorsChanged = FALSE;
-		fullscreenCrashColorsChanged = FALSE;
-		}
 
 	if (currPrinter != prefs.currPrinter)
 		PrintOutputControllerSelectPrinter(prefs.currPrinter);
@@ -790,33 +744,29 @@ void CalculatePrefsChanged()
 		xep80ColorsChanged = TRUE;
 	else
 		xep80ColorsChanged = FALSE;
+    
+    if ((onlyIntegralScaling != prefs.onlyIntegralScaling) ||
+        (fixAspectFullscreen != prefs.fixAspectFullscreen))
+        fullscreenOptsChanged = TRUE;
+    else
+        fullscreenOptsChanged = FALSE;
 }
 
 int loadMacPrefs(int firstTime)
 {
     int i,j;
     printf("-----------------------------------\n");
+    int axlon_enabled;
+    int mosaic_enabled;
 
-
-    FULLSCREEN = prefs.fullScreen;
-    OPENGL = prefs.openGl;
-    lockFullscreenSize = prefs.lockFullscreenSize;
-	if (lockFullscreenSize)
-		FULLSCREEN_MONITOR = prefs.fullscreenMonitor;
-	else
-		FULLSCREEN_MONITOR = 0;
-	fullForeRed = prefs.fullForeRed;
-	fullForeGreen = prefs.fullForeGreen;
-	fullForeBlue = prefs.fullForeBlue;
-	fullBackRed = prefs.fullBackRed;
-	fullBackGreen = prefs.fullBackGreen;
-	fullBackBlue = prefs.fullBackBlue;
     Atari800_collisions_in_skipped_frames = prefs.spriteCollisions;
-    DOUBLESIZE = prefs.doubleSize;
     scaleFactor = prefs.scaleFactor;
+    scaleFactorFloat = prefs.scaleFactorFloat;
 	SCALE_MODE = prefs.scaleMode; 
     WIDTH_MODE = prefs.widthMode; 
     Screen_show_atari_speed = prefs.showFPS;
+    onlyIntegralScaling = prefs.onlyIntegralScaling;
+    fixAspectFullscreen = prefs.fixAspectFullscreen;
 	Screen_show_disk_led = prefs.ledStatus;
 	Screen_show_sector_counter = prefs.ledSector;
 	led_enabled_media = prefs.ledStatusMedia;
@@ -840,9 +790,19 @@ int loadMacPrefs(int firstTime)
     paletteColorShift = prefs.colorShift; 
     strcpy(paletteFilename, prefs.paletteFile);
     CalcMachineTypeRam(prefs.atariType, &Atari800_machine_type, &MEMORY_ram_size,
-					   &MEMORY_axlon_enabled, &MEMORY_mosaic_enabled);
-	MEMORY_axlon_bankmask = prefs.axlonBankMask;
-	MEMORY_mosaic_maxbank = prefs.mosaicMaxBank;
+					   &axlon_enabled, &mosaic_enabled);
+    if (axlon_enabled) {
+        MEMORY_axlon_num_banks = prefs.axlonBankMask + 1;
+        PREFS_axlon_num_banks = MEMORY_axlon_num_banks;
+        }
+    else
+        MEMORY_axlon_num_banks = 0;
+    if (mosaic_enabled) {
+        MEMORY_mosaic_num_banks = prefs.mosaicMaxBank + 1;
+        PREFS_mosaic_num_banks = MEMORY_mosaic_num_banks;
+    }
+    else
+        MEMORY_mosaic_num_banks = 0;
 
     strcpy(af80_rom_filename, prefs.af80RomFile);
     strcpy(af80_charset_filename, prefs.af80CharsetFile);
@@ -861,11 +821,13 @@ int loadMacPrefs(int firstTime)
 			   ((strcmp(bb_rom_filename, prefs.blackBoxRomFile) != 0) ||
 				(strcmp(bb_scsi_disk_filename, prefs.blackBoxScsiDiskFile) != 0))) {
 		init_bb();
-    } else if (prefs.af80_enabled &&
+    }
+    if (prefs.af80_enabled &&
                ((strcmp(af80_rom_filename, prefs.af80RomFile) != 0) ||
                 (strcmp(af80_charset_filename, prefs.af80CharsetFile) != 0))) {
         init_af80();
-    } else if (prefs.bit3_enabled &&
+    }
+    if (prefs.bit3_enabled &&
                ((strcmp(bit3_rom_filename, prefs.af80RomFile) != 0) ||
                 (strcmp(bit3_charset_filename, prefs.bit3CharsetFile) != 0))) {
         init_bit3();
@@ -939,7 +901,6 @@ int loadMacPrefs(int firstTime)
     speed_limit = prefs.speedLimit;
     CASSETTE_hold_start_on_reboot = prefs.bootFromCassette;
     CASSETTE_hold_start = prefs.bootFromCassette;
-    enable_international = TRUE; //Always enable with libSDL 2.x prefs.enableInternational;
     strcpy(atari_image_dir, prefs.imageDir);
     strcpy(atari_print_dir, prefs.printDir);
     strcpy(Devices_atari_h_dir[0], prefs.hardDiskDir[0]);
@@ -948,11 +909,15 @@ int loadMacPrefs(int firstTime)
     strcpy(Devices_atari_h_dir[3], prefs.hardDiskDir[3]);
     Devices_h_read_only = prefs.hardDrivesReadOnly;
     strcpy(Devices_h_exe_path, prefs.hPath);
-    strcpy(CFG_osa_filename, prefs.osARomFile);
     strcpy(CFG_osb_filename, prefs.osBRomFile);
     strcpy(CFG_xlxe_filename, prefs.xlRomFile);
     strcpy(CFG_basic_filename, prefs.basicRomFile);
     strcpy(CFG_5200_filename, prefs.a5200RomFile);
+    Atari800_useAlitrraOSBRom = prefs.useAltirraOSBRom;
+    Atari800_useAlitrraXLRom = prefs.useAltirraXLRom;
+    Atari800_useAlitrra5200Rom = prefs.useAltirra5200Rom;
+    Atari800_useAlitrraBasicRom = prefs.useAltirraBasicRom;
+
     strcpy(atari_disk_dirs[0], prefs.diskImageDir);
     strcpy(atari_diskset_dir,prefs.diskSetDir);
     strcpy(atari_rom_dir, prefs.cartImageDir);

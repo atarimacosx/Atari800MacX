@@ -9,6 +9,7 @@
 */
 #import "ControlManager.h"
 #import "Preferences.h"
+#import "DisplayManager.h"
 #import "MediaManager.h"
 #import "AboutBox.h"
 #import "KeyMapper.h"
@@ -64,18 +65,26 @@ extern int startFunctionPressed;
 extern int selectFunctionPressed;
 extern int optionFunctionPressed;
 extern int inverseFunctionPressed;
-extern int FULLSCREEN;
+extern int clearFunctionPressed;
+extern int helpFunctionPressed;
+extern int insertCharFunctionPressed;
+extern int insertLineFunctionPressed;
+extern int deleteCharFunctionPressed;
+extern int deleteLineFunctionPressed;
+extern int f1FunctionPressed;
+extern int f2FunctionPressed;
+extern int f3FunctionPressed;
+extern int f4FunctionPressed;
 extern int MONITOR_break_run_to_here;
-extern int UI_alt_function;
-extern int requestFullScreenUI;
+extern int FULLSCREEN_MACOS;
 
 /* Functions which provide an interface for C code to call this object's shared Instance functions */
 void SetControlManagerLimit(int limit) {
     [[ControlManager sharedInstance] setLimitMenu:(limit)];
     }
     
-void SetControlManagerDisableBasic(int disableBasic) {
-    [[ControlManager sharedInstance] setDisableBasicMenu:(disableBasic)];
+void SetControlManagerDisableBasic(int mode, int disableBasic) {
+    [[ControlManager sharedInstance] setDisableBasicMenu:(mode):(disableBasic)];
     }
     
 void SetControlManagerCX85Enable(int cx85Enable) {
@@ -393,14 +402,28 @@ static int monitorRunFirstTime = 1;
 *  setDisableBasicMenu - This method is used to set the menu check state for the 
 *     Disable Basic menu item.
 *-----------------------------------------------------------------------------*/
-- (void)setDisableBasicMenu:(int)disableBasic
+- (void)setDisableBasicMenu:(int)mode:(int)disableBasic
 {
-    if (disableBasic)
-        [disableBasicItem setState:NSOnState];
-    else
-        [disableBasicItem setState:NSOffState];
+    switch(mode) {
+        case Atari800_MACHINE_800:
+            [disableBasicItem setEnabled:NO];
+            [disableBasicItem setTarget:nil];
+            break;
+        case Atari800_MACHINE_XLXE:
+            [disableBasicItem setEnabled:YES];
+            [disableBasicItem setTarget:self];
+            if (disableBasic)
+                [disableBasicItem setState:NSOnState];
+            else
+                [disableBasicItem setState:NSOffState];
+            break;
+        case Atari800_MACHINE_5200:
+            [disableBasicItem setEnabled:NO];
+            [disableBasicItem setTarget:nil];
+            break;
+    }
 		
-	[[MediaManager sharedInstance] setDisableBasicButton:disableBasic];
+    [[MediaManager sharedInstance] setDisableBasicButton:mode:disableBasic];
 }
 
 /*------------------------------------------------------------------------------
@@ -435,8 +458,8 @@ static int monitorRunFirstTime = 1;
 {
 	int i, type, index, ver4type;
 	type = CalcAtariType(machineType, ramSize,
-						 MEMORY_axlon_enabled, MEMORY_mosaic_enabled);
-	
+						 MEMORY_axlon_num_banks > 0, MEMORY_mosaic_num_banks > 0);
+    
 	if (type > 13) {
 		ver4type = type - 14;
 		type = 0;
@@ -445,7 +468,7 @@ static int monitorRunFirstTime = 1;
 	}
 	index = [[Preferences sharedInstance] indexFromType:type :ver4type];
 	
-	for (i=0;i<19;i++) {
+	for (i=0;i<14;i++) {
 		if (i==index)
 			[[machineTypeMenu itemAtIndex:i] setState:NSOnState];
 		else
@@ -594,13 +617,7 @@ static int monitorRunFirstTime = 1;
 - (IBAction)loadState:(id)sender
 {
     NSString *filename;
-    
-    if (FULLSCREEN) {
-        UI_alt_function = UI_MENU_LOADSTATE;
-        requestFullScreenUI = 1;
-        return;
-    }
-    
+        
     PauseAudio(1);
     filename = [self browseFileInDirectory:[NSString stringWithCString:atari_state_dir encoding:NSASCIIStringEncoding]];
     if (filename != nil) {
@@ -641,12 +658,6 @@ static int monitorRunFirstTime = 1;
 - (IBAction)saveState:(id)sender
 {
     NSString *filename;
-    
-    if (FULLSCREEN) {
-        UI_alt_function = UI_MENU_SAVESTATE;
-        requestFullScreenUI = 1;
-        return;
-    }
     
     PauseAudio(1);
     filename = [self saveFileInDirectory:[NSString stringWithCString:atari_state_dir encoding:NSASCIIStringEncoding]:@"a8s"];
@@ -835,7 +846,7 @@ static int monitorRunFirstTime = 1;
 {
 	static int firstTime = 1;
 
-	if (firstTime && !FULLSCREEN) {
+	if (firstTime) {
 		[[startButton window] setFrameOrigin:[[Preferences sharedInstance] functionKeysOrigin]];
 		firstTime = 0;
 		}
@@ -885,14 +896,31 @@ static int monitorRunFirstTime = 1;
  *-----------------------------------------------------------------------------*/
 - (BOOL)monitorGUIVisableSave
 {
-	if (monitorRunFirstTime) {
-		return [[Preferences sharedInstance] monitorGUIVisable];
-	}
-	
-	if ([monitorDrawer state] == NSDrawerClosedState) 
-		return NO;
-	else
-		return YES;
+    if (monitorRunFirstTime) {
+        return [[Preferences sharedInstance] monitorGUIVisable];
+    }
+    
+#if 0
+    if ([monitorDrawer state] == NSDrawerClosedState)
+        return NO;
+    else
+        return YES;
+#else
+    return NO;
+#endif
+}
+
+/*------------------------------------------------------------------------------
+ *  monitorHeightSave - This method saves the monitor window height.
+ *-----------------------------------------------------------------------------*/
+- (int)monitorHeightSave
+{
+    if (monitorRunFirstTime) {
+        return [[Preferences sharedInstance] monitorHeight];
+    }
+    
+    NSRect monitorRect = [[monitorOutputView window] frame];
+    return monitorRect.size.height;
 }
 
 /*------------------------------------------------------------------------------
@@ -940,14 +968,21 @@ static int monitorRunFirstTime = 1;
     int retValue = 0;
     NSRange theEnd;
     NSString *stringObj;
+    NSRect monitorRect;
+    NSPoint origin;
+    int height;
 
 	if (monitorRunFirstTime) {
-		[[monitorOutputView window] setFrameOrigin:[[Preferences sharedInstance] monitorOrigin]];
-		if ([[Preferences sharedInstance] monitorGUIVisable])
-			[self monitorDrawerToggle:self];
+        origin = [[Preferences sharedInstance] monitorOrigin];
+        height = [[Preferences sharedInstance] monitorHeight];
+        monitorRect = NSMakeRect(origin.x, origin.y, 531, height);
+        [[monitorOutputView window]
+         setFrame:monitorRect display:YES];
 		monitorRunFirstTime = 0;
 		}
 
+    [[DisplayManager sharedInstance] enableMacCopyPaste];
+    
     PauseAudio(1);
             
     MONITOR_monitorEnter();
@@ -973,12 +1008,15 @@ static int monitorRunFirstTime = 1;
 		}
     
     monitorCharCount = 0;
-	if (retValue >= -1)
-//		[[monitorInputField window] orderOut:self];
+    if (retValue >= -1) {
+		[[monitorInputField window] orderOut:self];
 		[[monitorInputField window] close];
+    }
     [self releaseKey:QZ_F8];
 
     PauseAudio(0);
+
+    [[DisplayManager sharedInstance] enableAtariCopyPaste];
     
     if (retValue < 0)
         return(1);
@@ -1105,6 +1143,96 @@ static int monitorRunFirstTime = 1;
 }
 
 /*------------------------------------------------------------------------------
+ *  clearPressed - Handle the user pressing the clear button in the function
+ *     keys window.  We want to hold it down for Duration frames.
+ *-----------------------------------------------------------------------------*/
+- (IBAction)clearPressed:(id)sender
+{
+    clearFunctionPressed = FUNCTION_KEY_PRESS_DURATION;
+}
+
+/*------------------------------------------------------------------------------
+ *  helpPressed - Handle the user pressing the help button in the function
+ *     keys window.  We want to hold it down for Duration frames.
+ *-----------------------------------------------------------------------------*/
+- (IBAction)helpPressed:(id)sender
+{
+    helpFunctionPressed = FUNCTION_KEY_PRESS_DURATION;
+}
+
+/*------------------------------------------------------------------------------
+ *  insertCharPressed - Handle the user pressing the insert char button in the function
+ *     keys window.  We want to hold it down for Duration frames.
+ *-----------------------------------------------------------------------------*/
+- (IBAction)insertCharPressed:(id)sender
+{
+    insertCharFunctionPressed = FUNCTION_KEY_PRESS_DURATION;
+}
+
+/*------------------------------------------------------------------------------
+ *  insertLinePressed - Handle the user pressing the insert line button in the function
+ *     keys window.  We want to hold it down for Duration frames.
+ *-----------------------------------------------------------------------------*/
+- (IBAction)insertLinePressed:(id)sender
+{
+    insertLineFunctionPressed = FUNCTION_KEY_PRESS_DURATION;
+}
+
+/*------------------------------------------------------------------------------
+ *  deleteCharPressed - Handle the user pressing the delete char button in the function
+ *     keys window.  We want to hold it down for Duration frames.
+ *-----------------------------------------------------------------------------*/
+- (IBAction)deleteCharPressed:(id)sender
+{
+    deleteCharFunctionPressed = FUNCTION_KEY_PRESS_DURATION;
+}
+
+/*------------------------------------------------------------------------------
+ *  deleteLinePressed - Handle the user pressing the delete line button in the function
+ *     keys window.  We want to hold it down for Duration frames.
+ *-----------------------------------------------------------------------------*/
+- (IBAction)deleteLinePressed:(id)sender
+{
+    deleteLineFunctionPressed = FUNCTION_KEY_PRESS_DURATION;
+}
+
+/*------------------------------------------------------------------------------
+ *  f1Pressed - Handle the user pressing the F1 button in the function
+ *     keys window.  We want to hold it down for Duration frames.
+ *-----------------------------------------------------------------------------*/
+- (IBAction)f1Pressed:(id)sender
+{
+    f1FunctionPressed = FUNCTION_KEY_PRESS_DURATION;
+}
+
+/*------------------------------------------------------------------------------
+ *  f2Pressed - Handle the user pressing the F1 button in the function
+ *     keys window.  We want to hold it down for Duration frames.
+ *-----------------------------------------------------------------------------*/
+- (IBAction)f2Pressed:(id)sender
+{
+    f2FunctionPressed = FUNCTION_KEY_PRESS_DURATION;
+}
+
+/*------------------------------------------------------------------------------
+ *  f3Pressed - Handle the user pressing the F1 button in the function
+ *     keys window.  We want to hold it down for Duration frames.
+ *-----------------------------------------------------------------------------*/
+- (IBAction)f3Pressed:(id)sender
+{
+    f3FunctionPressed = FUNCTION_KEY_PRESS_DURATION;
+}
+
+/*------------------------------------------------------------------------------
+ *  f4Pressed - Handle the user pressing the F1 button in the function
+ *     keys window.  We want to hold it down for Duration frames.
+ *-----------------------------------------------------------------------------*/
+- (IBAction)f4Pressed:(id)sender
+{
+    f4FunctionPressed = FUNCTION_KEY_PRESS_DURATION;
+}
+
+/*------------------------------------------------------------------------------
 *  optionPressed - Handle the user pressing the option button in the function
 *     keys window.  We want to hold it down for Duration frames.
 *-----------------------------------------------------------------------------*/
@@ -1120,38 +1248,6 @@ static int monitorRunFirstTime = 1;
 - (IBAction)selectPressed:(id)sender
 {
 	selectFunctionPressed = FUNCTION_KEY_PRESS_DURATION;
-}
-
-/*------------------------------------------------------------------------------
- *  monitorDrawerToggle - Toggle the Drawer for the GUI portion of the monitor
- *    open or closed.
- *-----------------------------------------------------------------------------*/
-- (IBAction) monitorDrawerToggle:(id)sender
-{
-	NSWindow *window;
-	NSRect frame;
-	NSRange theEnd;
-	
-	window = [monitorInputField window];
-	frame = [window frame];
-	if ([monitorDrawer state] == NSDrawerClosedState) {
-		frame.origin.y += kGraphicalDrawerSize;
-		frame.size.height -= kGraphicalDrawerSize;
-		[window setFrame:frame display:YES animate:YES];
-		[window setHasShadow:NO];
-		[monitorDrawer toggle:sender];
-		[monitorGUIButton setState:NSOnState];
-	}
-	else {
-		frame.origin.y -= kGraphicalDrawerSize;
-		frame.size.height += kGraphicalDrawerSize;
-		[monitorDrawer toggle:sender];
-		[window setHasShadow:YES];
-		[window setFrame:frame display:YES animate:YES];
-		[monitorGUIButton setState:NSOffState];
-	}
-    theEnd=NSMakeRange([[monitorOutputView string] length],0);
-    [monitorOutputView scrollRangeToVisible:theEnd];
 }
 
 /*------------------------------------------------------------------------------

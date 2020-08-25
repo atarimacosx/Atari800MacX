@@ -15,20 +15,8 @@
 #import "preferences_c.h"
 
 /* Keys in the dictionary... */
-#define FullScreen @"FullScreen"
-#define OpenGl @"OpenGl"
-#define LockFullscreenSize @"LockFullscreenSize"
-#define FullscreenMonitor @"FullscreenMonitor"
-#define FullscreenForeRed @"FullscreenForeRed"
-#define FullscreenForeBlue @"FullscreenForeBlue"
-#define FullscreenForeGreen @"FullscreenForeGreen"
-#define FullscreenForeAlpha @"FullscreenForeAlpha"
-#define FullscreenBackRed @"FullscreenBackRed"
-#define FullscreenBackBlue @"FullscreenBackBlue"
-#define FullscreenBackGreen @"FullscreenBackGreen"
-#define FullscreenBackAlpha @"FullscreenBackAlpha"
 #define ScaleFactor @"ScaleFactor"
-#define DoubleSize @"DoubleSize"
+#define ScaleFactorFloat @"ScaleFactorFloat"
 #define ScaleMode @"ScaleMode"
 #define WidthMode @"WidthMode"
 #define TvMode @"TvMode"
@@ -44,6 +32,8 @@
 #define Intensity @"Instensity"
 #define ColorShift @"ColorShift"
 #define PaletteFile @"PaletteFile"
+#define OnlyIntegralScaling @"OnlyIntegralScaling"
+#define FixAspectFullscreen @"FixAspectFullscreen"
 #define ShowFPS @"ShowFPS"
 #define LedStatus @"LedStatus"
 #define LedSector @"LedSector"
@@ -143,7 +133,10 @@
 #define HardDiskDir4 @"HardDiskDir4"
 #define HardDrivesReadOnly @"HardDrivesReadOnly"
 #define HPath @"HPath"
-#define OsARomFile @"OsARomFile"
+#define UseAltiraOSBRom @"UseAltiraOSBRom"
+#define UseAltiraXLRom @"UseAltiraXLRom"
+#define UseAltira5200Rom @"UseAltira5200Rom"
+#define UseAltiraBasicRom @"UseAltiraBasicRom"
 #define OsBRomFile @"OsBRomFile"
 #define XlRomFile @"XlRomFile"
 #define BasicRomFile @"BasicRomFile"
@@ -249,11 +242,11 @@
 #define MonitorX @"MonitorX"
 #define MonitorY @"MonitorY"
 #define MonitorGUIVisable @"MonitorGUIVisable"
+#define MonitorHeight @"MonitorHeight"
 #define FunctionKeysX @"FunctionKeysX"
 #define FunctionKeysY @"FunctionKeysY"
 #define ApplicationWindowX @"ApplicationWindowX"
 #define ApplicationWindowY @"ApplicationWindowY"
-#define EnableInternational @"EnableInternational"
 #define SaveCurrentMedia @"SaveCurrentMedia"
 #define ClearCurrentMedia @"ClearCurrentMedia"
 #define KeyjoyEnable @"KeyjoyEnable"
@@ -286,16 +279,6 @@
     IBOutlet id diskImageDirField;
     IBOutlet id diskSetDirField;
 	IBOutlet id spriteCollisionsButton;
-    IBOutlet id lockFullscreenSizeButton;
-    IBOutlet id fullscreenMonitorButton;
-	IBOutlet id fullscreenForegroundPot;
-    IBOutlet id fullscreenForegroundRed;
-    IBOutlet id fullscreenForegroundGreen;
-    IBOutlet id fullscreenForegroundBlue;
-	IBOutlet id fullscreenBackgroundPot;
-    IBOutlet id fullscreenBackgroundRed;
-    IBOutlet id fullscreenBackgroundGreen;
-    IBOutlet id fullscreenBackgroundBlue;
     IBOutlet id scaleFactorMatrix;
 	IBOutlet id scaleModeMatrix;
 	IBOutlet id ledStatusButton;
@@ -364,7 +347,6 @@
 	IBOutlet id muteAudioButton;
     IBOutlet id diskDriveSoundButton;
     IBOutlet id exeFileDirField;
-    IBOutlet id fullScreenMatrix;
     IBOutlet id fpsButton;
     IBOutlet id imageDirField;
     IBOutlet id printDirField;
@@ -375,7 +357,10 @@
     IBOutlet id hardDrivesReadOnlyButton;
     IBOutlet id hPathField;
     IBOutlet id intensityField;
-    IBOutlet id osARomFileField;
+    IBOutlet id useAlitrraOSBRomButton;
+    IBOutlet id useAlitrraXLRomButton;
+    IBOutlet id useAlitrra5200RomButton;
+    IBOutlet id useAlitrraBasicRomButton;
     IBOutlet id osBRomFileField;
     IBOutlet id af80CharsetRomFileField;
     IBOutlet id af80RomFileField;
@@ -390,9 +375,10 @@
     IBOutlet id enableHifiSoundButton;
 #endif	
 	IBOutlet id enable16BitSoundPulldown;
-	IBOutlet id internationalKeyboardButton;
     IBOutlet id enableMultijoyButton;
     IBOutlet id tvModeMatrix;
+    IBOutlet id fixAspectFullscreenButton;
+    IBOutlet id onlyIntegralScalingButton;
     IBOutlet id widthModeMatrix;
     IBOutlet id whiteLevelField;
     IBOutlet id xlRomFileField;
@@ -447,7 +433,6 @@
     IBOutlet id mouseHOffsetField;
     IBOutlet id mouseVOffsetField;
     IBOutlet id mouseInertiaField;
-	IBOutlet id openglMatrix;
     IBOutlet id paletteChooseButton;
     IBOutlet id paletteField;
     IBOutlet id gamepadConfigPulldown;
@@ -504,6 +489,11 @@
     IBOutlet id gamepadSelect4;
     IBOutlet id gamepadSelector;
     IBOutlet id errorOKButton;
+    IBOutlet id identifyOKButton;
+    IBOutlet id identifyOSBLabel;
+    IBOutlet id identifyXLLabel;
+    IBOutlet id identifyBasicLabel;
+    IBOutlet id identify5200Label;
     IBOutlet id configNameField;
     IBOutlet id leftJoyUpPulldown;
     IBOutlet id leftJoyDownPulldown;
@@ -582,7 +572,8 @@
 - (IBAction)browseAF80Rom:(id)sender;
 - (IBAction)browseBit3CharsetRom:(id)sender;
 - (IBAction)browseBit3Rom:(id)sender;
-- (void)browseOsARom:(id)sender;
+- (IBAction)identifyRom:(id)sender;
+- (IBAction)identifyRomOK:(id)sender;
 - (void)browseOsBRom:(id)sender;
 - (void)browseXlRom:(id)sender; 
 - (void)browseBasicRom:(id)sender; 
@@ -619,6 +610,7 @@
 - (NSPoint)functionKeysOrigin;
 - (NSPoint)monitorOrigin;
 - (BOOL)monitorGUIVisable;
+- (int)monitorHeight;
 - (NSPoint)applicationWindowOrigin;
 - (void)transferValuesFromEmulator:(struct ATARI800MACX_PREFSAVE *)prefssave;
 - (void) saveCurrentMediaAction:(id)sender;
@@ -638,6 +630,7 @@
 - (void)identifyTest:(id)sender;
 - (void)configNameOK:(id)sender;
 - (void)errorOK:(id)sender;
+- (IBAction)identifyOK:(id)sender;
 - (void)leftJoyConfigure:(id)sender;
 - (void)leftJoyOK:(id)sender;
 - (void)padJoyConfigure:(id)sender;

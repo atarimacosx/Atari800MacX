@@ -11,11 +11,7 @@
 
 @interface DisplayManager : NSObject
 {
-    IBOutlet id doubleSizeItem;
-	IBOutlet id scale1xItem;
-	IBOutlet id scale2xItem;
-	IBOutlet id scale3xItem;
-	IBOutlet id scale4xItem;
+
     IBOutlet id fullscreenItem;
     IBOutlet id xep80Item;
     IBOutlet id xep80AutoswitchItem;
@@ -30,28 +26,28 @@
     IBOutlet id displayFpsItem;
 	IBOutlet id scaleModeNormalItem;
 	IBOutlet id scaleModeScanlineItem;
-	IBOutlet id scaleModeSmoothItem;
     IBOutlet id grabMouseItem;
 	IBOutlet id NoArtifactItem;
 	IBOutlet id revXLXEGTIAItem;
 	IBOutlet id XLXEGTIAItem;
 	IBOutlet id GTIA400800Item;
 	IBOutlet id CTIA400800Item;
-
+    IBOutlet id copyMenu;
+    IBOutlet id pasteMenu;
+    IBOutlet id selectAllMenu;
 }
 + (DisplayManager *)sharedInstance;
-- (void)setDoublesizeMenu:(int)scale;
 - (void)setWidthmodeMenu:(int)widthMode;
 - (void)setGrabmouseMenu:(int)mouseOn;
 - (void)setFpsMenu:(int)fpsOn;
 - (void)setScaleModeMenu:(int)scaleMode;
 - (void)setArtifactModeMenu:(int)artifactMode;
+- (bool)enable80ColModeMenu:(int)machineType:(int)xep80Enabled:(int)af80Enabled:(int)bit3Enabled;
 - (void)set80ColModeMenu:(int)xep80Enabled:(int)xep80Port:(int)af80Enabled:(int)bit3Enabled:(int)col80;
 
 - (void)setXEP80AutoswitchMenu:(int)autoswitchOn;
 - (void)disableAF80;
 - (void)disableBit3;
-- (IBAction)doubleSize:(id)sender;
 - (IBAction)fullScreen:(id)sender;
 - (IBAction)xep80:(id)sender;
 - (IBAction)xep80Autoswitch:(id)sender;
@@ -65,4 +61,6 @@
 - (IBAction) paste:(id) sender;
 - (IBAction) selectAll:(id) sender;
 - (IBAction) copy:(id) sender;
+- (void) enableMacCopyPaste;
+- (void) enableAtariCopyPaste;
 @end
