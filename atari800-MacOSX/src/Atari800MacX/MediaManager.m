@@ -1732,6 +1732,7 @@ NSImage *disketteImage;
         }
 			//printf("Editor here 3\n");
     PauseAudio(0);
+    [[DisplayManager sharedInstance] enableAtariCopyPaste];
     [[KeyMapper sharedInstance] releaseCmdKeys:@"e"];
 }
 

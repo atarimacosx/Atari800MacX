@@ -365,13 +365,13 @@ static NSMutableArray *editorArray = nil;
 	[diskImageNameField setStringValue:@""];
     PauseAudio(1);
     [self.window beginSheet:diskImageNewNameSheet
-                       completionHandler:^(NSModalResponse returnCode){
-      if (returnCode) {
-          [directoryDataSource renameFile:[directoryTableView selectedRow]:
-                                          [diskImageNameField stringValue]];
-          }
-    }];
-    [NSApp runModalForWindow: diskImageNewNameSheet];
+          completionHandler:nil];
+    int returnCode = [NSApp runModalForWindow:diskImageNewNameSheet];
+    if (returnCode) {
+        [directoryDataSource renameFile:[directoryTableView selectedRow]:
+                                        [diskImageNameField stringValue]];
+        }
+
     [NSApp endSheet: diskImageNewNameSheet];
 }
 
@@ -423,7 +423,7 @@ static NSMutableArray *editorArray = nil;
           }
     }];
     [NSApp runModalForWindow: diskImageNewNameSheet];
-    [NSApp endSheet: diskImageNewNameSheet];
+    //[NSApp endSheet: diskImageNewNameSheet];
     [diskImageNewNameSheet orderOut: self];
 	[self diskImageEnableButtons];
 }
@@ -520,9 +520,8 @@ static NSMutableArray *editorArray = nil;
 *-----------------------------------------------------------------------------*/
 - (IBAction)diskImageNameOK:(id)sender
 {
-    [NSApp stopModalWithCode:1];
     PauseAudio(0);
-	[[self window] makeKeyAndOrderFront:self];
+    [NSApp stopModalWithCode:1];
 }
 
 /*------------------------------------------------------------------------------
@@ -530,9 +529,8 @@ static NSMutableArray *editorArray = nil;
 *-----------------------------------------------------------------------------*/
 - (IBAction)diskImageNameCancel:(id)sender
 {
-    [NSApp stopModalWithCode:0];
     PauseAudio(0);
-	[[self window] makeKeyAndOrderFront:self];
+    [NSApp stopModalWithCode:0];
 }
 
 /*------------------------------------------------------------------------------
