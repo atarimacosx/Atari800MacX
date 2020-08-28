@@ -79,6 +79,8 @@
 		2D587363106A8415002428EF /* ByteTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D587361106A8415002428EF /* ByteTextField.m */; };
 		2D587368106A85EA002428EF /* WordTextField.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D587366106A85EA002428EF /* WordTextField.h */; };
 		2D587369106A85EA002428EF /* WordTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D587367106A85EA002428EF /* WordTextField.m */; };
+		2D63725824F73FB700905B2E /* rtcds1305.c in Sources */ = {isa = PBXBuildFile; fileRef = 2D63725724F73FB600905B2E /* rtcds1305.c */; };
+		2D63725A24F741DA00905B2E /* rtcds1305.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D63725924F741D900905B2E /* rtcds1305.h */; };
 		2D66DBF70F538D0200F882D6 /* cfg.c in Sources */ = {isa = PBXBuildFile; fileRef = 2D66DBF60F538D0200F882D6 /* cfg.c */; };
 		2D70069D0F55F9F80092DA70 /* mac_monitor.c in Sources */ = {isa = PBXBuildFile; fileRef = 2D70069C0F55F9F80092DA70 /* mac_monitor.c */; };
 		2D76730B21EA791E00D99B0E /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2D76730A21EA791E00D99B0E /* Media.xcassets */; };
@@ -465,6 +467,8 @@
 		2D60C39503BFE68F00A8C8B4 /* Updater.esud */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Updater.esud; sourceTree = "<group>"; };
 		2D6155D8061FBD3A0030CDE5 /* AboutBoxTextView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = AboutBoxTextView.h; sourceTree = "<group>"; };
 		2D6155D9061FBD3A0030CDE5 /* AboutBoxTextView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = AboutBoxTextView.m; sourceTree = "<group>"; };
+		2D63725724F73FB600905B2E /* rtcds1305.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = rtcds1305.c; path = ../rtcds1305.c; sourceTree = "<group>"; };
+		2D63725924F741D900905B2E /* rtcds1305.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = rtcds1305.h; path = ../rtcds1305.h; sourceTree = "<group>"; };
 		2D66DBF60F538D0200F882D6 /* cfg.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = cfg.c; path = ../cfg.c; sourceTree = SOURCE_ROOT; };
 		2D68BC170607F3E800BB94D6 /* Atari800TableView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = Atari800TableView.h; sourceTree = SOURCE_ROOT; };
 		2D68BC180607F3E800BB94D6 /* Atari800TableView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = Atari800TableView.m; sourceTree = SOURCE_ROOT; };
@@ -947,6 +951,8 @@
 				F55583B7030EFA4401A8C8B4 /* prompts.c */,
 				2D10A79609B0E209001F913C /* rdevice.c */,
 				2D10A79709B0E209001F913C /* rdevice.h */,
+				2D63725724F73FB600905B2E /* rtcds1305.c */,
+				2D63725924F741D900905B2E /* rtcds1305.h */,
 				F5558359030EF4CD01A8C8B4 /* sio.h */,
 				2D1668190F51F08700A78B94 /* sio.c */,
 				2DF62CAA084D728600BBD3D2 /* screen.h */,
@@ -1106,6 +1112,7 @@
 				2DAEDAF009B69AED005FF181 /* input.h in Headers */,
 				2DAEDAF109B69AED005FF181 /* gtia.h in Headers */,
 				2DAEDAF209B69AED005FF181 /* emuos.h in Headers */,
+				2D63725A24F741DA00905B2E /* rtcds1305.h in Headers */,
 				2DAEDAF309B69AED005FF181 /* devices.h in Headers */,
 				2DAEDAF409B69AED005FF181 /* cpu.h in Headers */,
 				2DAEDAF509B69AED005FF181 /* colours.h in Headers */,
@@ -1410,6 +1417,7 @@
 				2DAEDBAC09B69AED005FF181 /* PrintablePath.m in Sources */,
 				2DAEDBAD09B69AED005FF181 /* Atari1020Simulator.m in Sources */,
 				2DAEDBAE09B69AED005FF181 /* mac_diskled.c in Sources */,
+				2D63725824F73FB700905B2E /* rtcds1305.c in Sources */,
 				2DAEDBB009B69AED005FF181 /* mac_screen.c in Sources */,
 				2DAEDBB209B69AED005FF181 /* MonitorWindow.m in Sources */,
 				2DAEDBB309B69AED005FF181 /* Atari800FunctionKeysWindow.m in Sources */,
