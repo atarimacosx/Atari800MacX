@@ -39,6 +39,9 @@
 #include "pbi.h"
 #include "pia.h"
 #include "pokey.h"
+#ifdef ULTIMATE_1MB
+#include "ultimate1mb.h"
+#endif
 #include "util.h"
 #ifndef BASIC
 #include "statesav.h"
@@ -1115,7 +1118,10 @@ UBYTE MEMORY_HwGetByte(UWORD addr, int no_side_effects)
 		byte = POKEY_GetByte(addr, no_side_effects);
 		break;
 	case 0xd300:				/* PIA */
-		byte = PIA_GetByte(addr, no_side_effects);
+        if (ULTIMATE_enabled)
+            byte = ULTIMATE_D3GetByte(addr, no_side_effects);
+        else
+            byte = PIA_GetByte(addr, no_side_effects);
 		break;
 	case 0xd400:				/* ANTIC */
 		byte = ANTIC_GetByte(addr, no_side_effects);
@@ -1192,7 +1198,10 @@ void MEMORY_HwPutByte(UWORD addr, UBYTE byte)
 		POKEY_PutByte(addr, byte);
 		break;
 	case 0xd300:				/* PIA */
-		PIA_PutByte(addr, byte);
+        if (ULTIMATE_enabled)
+            ULTIMATE_D3PutByte(addr, byte);
+        else
+            PIA_PutByte(addr, byte);
 		break;
 	case 0xd400:				/* ANTIC */
 		ANTIC_PutByte(addr, byte);

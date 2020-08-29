@@ -5,22 +5,25 @@
  *
 */
 
-#include "af80.h"
 #include "atari.h"
+#include "ultimate1mb.h"
 #include "util.h"
 #include "log.h"
 #include "memory.h"
+#include "pia.h"
+#include "pbi.h"
+#include "rtcds1305.h"
 #include "cpu.h"
 #include <stdlib.h>
 
 static UBYTE ultimate_rom[0x80000];
 #ifdef ATARI800MACX
-char ultimate_rom_filename[FILENAME_MAX] = Util_FILENAME_NOT_SET;
+char ultimate_rom_filename[FILENAME_MAX] = "/Users/markg/Atari800MacX/Altirra-3.20/ultimate.rom"; //Util_FILENAME_NOT_SET;
 #else
 static char ultimate_rom_filename[FILENAME_MAX] = Util_FILENAME_NOT_SET;
 #endif
 
-int ultimate_enabled = FALSE;
+int ULTIMATE_enabled = TRUE;
 
 /* Ultimate1MB information from Altirra Hardware Reference Manual */
 static int config_lock = FALSE;
@@ -28,6 +31,9 @@ static UBYTE pbi_bank = 0;
 static int PBI_ROM_active = FALSE;
 static int IO_RAM_enable = FALSE;
 static int SDX_module_enable = FALSE;
+static int SDX_enable = FALSE;
+static int cart_bank_offset = 0;
+static int external_cart_enable = FALSE;
 static int OS_ROM_select = 0;
 static int ultimate_mem_config = 0;
 static int flash_write_enable = FALSE;
@@ -38,9 +44,19 @@ static UBYTE signal_outputs = 0;
 static UBYTE game_rom_select = 0;
 static UBYTE basic_rom_select = 0;
 static int pbi_emulation_enable = FALSE;
+static int pbi_selected = TRUE;
 static int pbi_button_enable = FALSE;
+static int pbi_button_pressed = FALSE;
 static UBYTE pbi_device_id = 0;
 static UBYTE cold_reset_flag = 0x80;
+static int ext_cart_rd5_sense = FALSE;
+static UBYTE pbi_ram[0x1000];
+
+void Set_SDX_Bank(UBYTE bank);
+void Set_SDX_Enabled(int enabled);
+void Set_SDX_Module_Enabled(int enabled);
+void Update_External_Cart(void);
+void Update_Kernel_Bank(void);
 
 #ifdef ATARI800MACX
 void init_ultimate(void)
@@ -50,8 +66,7 @@ static void init_ultimate(void)
 {
     Log_print("Ultimate1MB enabled");
     if (!Atari800_LoadImage(ultimate_rom_filename, ultimate_rom, 0x80000)) {
-        AF80_enabled = FALSE;
-        SetDisplayManagerDisableAF80();
+        ULTIMATE_enabled = FALSE;
         Log_print("Couldn't load Ultimate1MB ROM image");
         return;
     }
@@ -60,34 +75,65 @@ static void init_ultimate(void)
     }
 }
 
-int Ultimate_Initialise(int *argc, char *argv[])
+int ULTIMATE_Initialise(int *argc, char *argv[])
 {
     init_ultimate();
 	return TRUE;
 }
 
-void Ultimate_Exit(void)
+void ULTIMATE_Exit(void)
 {
 }
 
-int Ultimate_D1GetByte(UWORD addr, int no_side_effects)
+int ULTIMATE_D1GetByte(UWORD addr, int no_side_effects)
 {
     int result = 0xff;
+    //if ( addr < 0xD1BF && (pbi_emulation_enable || IO_RAM_enable))
+    if ( addr < 0xD1BF && (pbi_selected || !config_lock))
+        return pbi_ram[addr & 0xFFF];
     return result;
 }
 
-void Ultimate_D1PutByte(UWORD addr, UBYTE byte)
+void ULTIMATE_D1PutByte(UWORD addr, UBYTE byte)
 {
-    if (addr == 0xD1BF && PBI_ROM_active) {
+    if (addr == 0xD1BF && PBI_ROM_active)
         pbi_bank = byte & 0x03;
-    }
+    //else if (addr < 0xD1BF && (pbi_emulation_enable || IO_RAM_enable))
+    else if (addr < 0xD1BF && (pbi_emulation_enable || !config_lock))
+        pbi_ram[addr & 0xFFF] = byte;
 }
 
-int Ultimate_D3GetByte(UWORD addr, int no_side_effects)
+void Set_PBI_Bank(UBYTE bank)
+{
+    memcpy(MEMORY_mem + 0xd800,
+           ultimate_rom + 0x59800 + (pbi_bank << 13), 0x800);
+}
+
+int PBI_PROTO80_D1ffPutByte(UBYTE byte)
+{
+    int result = 0; /* handled */
+    if (ULTIMATE_enabled && byte == pbi_device_id) {
+        if (pbi_selected)
+            return result;
+        pbi_selected = TRUE;
+        Set_PBI_Bank(byte & 3);
+    }
+    else {
+        result = PBI_NOT_HANDLED;
+        pbi_selected = FALSE;
+        Set_PBI_Bank(0);
+    }
+    return result;
+}
+
+int ULTIMATE_D3GetByte(UWORD addr, int no_side_effects)
 {
     int result = 0xff;
     if (addr < 0xD380) {
-        return PIA_GetByte(add, no_side_effects);
+        return PIA_GetByte(addr, no_side_effects);
+    }
+    else if (addr == 0xD383) {
+        return cold_reset_flag;
     }
     else if (addr == 0xD384) {
         return (pbi_button_pressed << 7) |
@@ -99,18 +145,20 @@ int Ultimate_D3GetByte(UWORD addr, int no_side_effects)
     return result;
 }
 
-void Ultimate_D3PutByte(UWORD addr, UBYTE byte)
+void ULTIMATE_D3PutByte(UWORD addr, UBYTE byte)
 {
     if (addr < 0xD380) {
         PIA_PutByte(addr, byte);
     }
     else if (addr == 0xD380 && !config_lock) {
-        if (byte & 0x80)
+        if (byte & 0x80) {
             config_lock = TRUE;
+            ULTIMATE_LoadRoms();
+        }
         else
             config_lock = FALSE;
         if (byte & 0x40)
-            IO_RAM_enable = TRUE:
+            IO_RAM_enable = TRUE;
         else
             IO_RAM_enable = FALSE;
         if (byte & 0x10)
@@ -126,7 +174,7 @@ void Ultimate_D3PutByte(UWORD addr, UBYTE byte)
         else
             flash_write_enable = FALSE;
         if (byte & 0x40)
-            soundBoard_enable = TRUE:
+            soundBoard_enable = TRUE;
         else
             soundBoard_enable = FALSE;
         if (byte & 0x20)
@@ -151,21 +199,166 @@ void Ultimate_D3PutByte(UWORD addr, UBYTE byte)
             pbi_emulation_enable = TRUE;
         else
             pbi_emulation_enable = FALSE;
-        pbi_device_id = byte & 0x03;
+        pbi_device_id = 0x01 << (2 * (byte & 3));
+        // TBD UpdateExternalCart();
+        // TBD UpdateKernelBank();
     }
     else if (addr == 0xD383 && !config_lock) {
         cold_reset_flag = byte;
     }
     else if (addr == 0xD3E2) {
-        CDS1305_WriteState((value & 1) != 0, !(value & 2), (value & 4) != 0);
+        CDS1305_WriteState((byte & 1) != 0, !(byte & 2), (byte & 4) != 0);
     }
 }
 
-void Ultimate_ColdStart(void)
+int ULTIMATE_D5GetByte(UWORD addr, int no_side_effects)
 {
+    int result = 0xff;
+    //if ( addr < 0xD5BF && (pbi_emulation_enable || IO_RAM_enable))
+    if ( addr <= 0xD5BF && (pbi_emulation_enable || !config_lock))
+        return pbi_ram[addr & 0xFFF];
+    return result;
 }
 
-void Ultimate_WarmStart(void)
+void ULTIMATE_D5PutByte(UWORD addr, UBYTE byte)
 {
+    //if (addr < 0xD5BF && (pbi_emulation_enable || IO_RAM_enable)) {
+    if (addr <= 0xD5BF && (pbi_emulation_enable || !config_lock)) {
+        pbi_ram[addr & 0xFFF] = byte;
+    } else if (SDX_module_enable) {
+        if (addr == 0xD5E0) {
+            // SDX control (write only)
+            //
+            // D7 = 0    => Enable SDX
+            // D6 = 0    => Enable external cartridge (only if SDX disabled)
+            // D0:D5    => SDX bank
+            //
+            // Forced to 10000000 if SDX module is disabled.
+            Set_SDX_Bank(byte & 63);
+            Set_SDX_Enabled(!(byte & 0x80));
+
+            external_cart_enable = ((byte & 0xc0) == 0x80);
+            Update_External_Cart();
+            // Pre-control lock, the SDX bank is also used for the BASIC and GAME
+            // banks (!).
+            if (!config_lock)
+                Update_Kernel_Bank();
+        }
+    }
+}
+
+int ULTIMATE_D6D7GetByte(UWORD addr, int no_side_effects)
+{
+    int result = 0xff;
+    //if ( addr < 0xD7FF && (pbi_emulation_enable || IO_RAM_enable))
+    if ( addr < 0xD7FF && (pbi_emulation_enable || !config_lock))
+        return pbi_ram[addr & 0xFFF];
+    return result;
+}
+
+void ULTIMATE_D6D7PutByte(UWORD addr, UBYTE byte)
+{
+    //if (addr <= 0xD7FF && (pbi_emulation_enable || IO_RAM_enable)) {
+    if (addr <= 0xD7FF && (pbi_emulation_enable || !config_lock)) {
+        pbi_ram[addr & 0xFFF] = byte;
+    }
+}
+
+void ULTIMATE_ColdStart(void)
+{
+    cold_reset_flag = 0x80;        // ONLY set by cold reset, not warm reset.
+    config_lock = FALSE;
+    //ULTIMATE_LoadRoms();
+
+    // The SDX module is enabled on warm reset, but the cart enables and bank
+    // are only affected by cold reset.
+    cart_bank_offset = 0;        // to force reload
+    SDX_enable = FALSE;
+    Set_SDX_Bank(0);
+    Set_SDX_Enabled(TRUE);
+    external_cart_enable = FALSE;
+    flash_write_enable = TRUE;
+
+    ULTIMATE_WarmStart();
+}
+
+void ULTIMATE_WarmStart(void)
+{
+    config_lock = FALSE;
+
+    pbi_emulation_enable = FALSE;
+    pbi_button_enable = FALSE;
+    pbi_device_id = 0;
+
+    OS_ROM_select = 0;
+    game_rom_select = 0;
+    basic_rom_select = 2;
+
+    Update_Kernel_Bank();
+    Set_PBI_Bank(0);
+
+    Set_SDX_Module_Enabled(TRUE);
+
+    //TBD UpdateExternalCart();
+    //UpdateCartLayers();
+    //UpdateFlashShadows();
+}
+
+void ULTIMATE_LoadRoms(void)
+{
+    Update_Kernel_Bank();
+}
+
+void Set_SDX_Bank(UBYTE bank) {
+    ULONG offset = (ULONG)bank << 13;
+
+    if (cart_bank_offset == offset)
+        return;
+
+    cart_bank_offset = offset;
+    MEMORY_CopyROM(0xa000, 0xbfff, ultimate_rom + cart_bank_offset);
+}
+
+void Set_SDX_Enabled(int enabled) {
+    if (SDX_enable == enabled)
+        return;
+
+    SDX_enable = enabled;
+}
+
+void Set_SDX_Module_Enabled(int enabled) {
+    if (SDX_module_enable == enabled)
+        return;
+
+    SDX_module_enable = enabled;
+
+    if (!enabled) {
+        Set_SDX_Bank(0);
+        Set_SDX_Enabled(FALSE);
+        external_cart_enable = TRUE;
+        // TBD UpdateExternalCart();
+    }
+
+    // TBD mpCartridgePort->OnLeftWindowChanged(mCartId, IsLeftCartActive());
+}
+
+void Update_External_Cart(void)
+{
+    // TBD
+}
+
+void Update_Kernel_Bank(void)
+{
+    // Prior to control lock, the kernel bank is locked to $50000 instead
+    // of $7x000. The BASIC, GAME, and PBI selects also act weirdly in this
+    // mode (they are mapped with the SDX mapping register!).
+
+    ULONG kernelbase = config_lock ? 0x70000 + (OS_ROM_select << 14) : 0x50000;
+    ULONG basicbase = config_lock ? 0x60000 + (basic_rom_select << 14) : cart_bank_offset;
+    ULONG gamebase = config_lock ? 0x68000 + (game_rom_select << 14) : cart_bank_offset;
+
+    memcpy(MEMORY_os, ultimate_rom + kernelbase, 0x4000);
+    memcpy(MEMORY_basic, ultimate_rom + basicbase, 0x2000);
+    memcpy(MEMORY_xegame, ultimate_rom + gamebase, 0x2000);
 }
 

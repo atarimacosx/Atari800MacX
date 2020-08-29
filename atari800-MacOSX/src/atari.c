@@ -92,6 +92,7 @@ biteme!
 #include "pbi.h"
 #include "sio.h"
 #include "ui.h"
+#include "ultimate1mb.h"
 #include "util.h"
 #include "colours.h"
 #include "screen.h"
@@ -182,6 +183,9 @@ void Atari800_Warmstart(void)
 		   because Reset routine vector must be read from OS ROM */
 		CPU_Reset();
 		/* note: POKEY and GTIA have no Reset pin */
+        if (ULTIMATE_enabled) {
+            ULTIMATE_ColdStart();
+        }
 	}
 	Devices_WarmCold_Start();
 }
@@ -199,6 +203,9 @@ void Atari800_Coldstart(void)
 	/* CPU_Reset() must be after PIA_Reset(),
 	   because Reset routine vector must be read from OS ROM */
 	CPU_Reset();
+    if (ULTIMATE_enabled && (Atari800_machine_type == Atari800_MACHINE_XLXE)) {
+        ULTIMATE_ColdStart();
+    }
     CARTRIDGE_ColdStart();
     /* set Atari OS Coldstart flag */
     MEMORY_dPutByte(0x244, 1);
@@ -274,6 +281,10 @@ static int load_roms(void)
     char *altirraString;
     char *machineString;
 
+    if (ULTIMATE_enabled && (Atari800_machine_type == Atari800_MACHINE_XLXE)) {
+        ULTIMATE_LoadRoms();
+        return TRUE;
+    }
     switch (Atari800_machine_type) {
         case Atari800_MACHINE_800:
         default:
@@ -617,6 +628,9 @@ int Atari800_Initialise(int *argc, char *argv[])
 #endif
 #ifdef BIT3_EMULATION
     BIT3_Initialise(argc, argv);
+#endif
+#ifdef ULTIMATE_1MB
+    ULTIMATE_Initialise(argc, argv);
 #endif
 	/* Platform Specific Initialisation */
 	PLATFORM_Initialise(argc, argv);

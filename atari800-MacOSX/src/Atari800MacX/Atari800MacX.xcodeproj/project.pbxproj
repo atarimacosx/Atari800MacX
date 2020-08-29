@@ -100,6 +100,7 @@
 		2D76733F21EA934B00D99B0E /* cartridgeoff.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D76733E21EA934A00D99B0E /* cartridgeoff.png */; };
 		2D76734121EA935F00D99B0E /* cartridgeon.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D76734021EA935E00D99B0E /* cartridgeon.png */; };
 		2D76734321EA98D100D99B0E /* diskette.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D76734221EA98D100D99B0E /* diskette.png */; };
+		2D829B3B24F9B21500AB9584 /* ultimate1mb.c in Sources */ = {isa = PBXBuildFile; fileRef = 2D829B3A24F9B21500AB9584 /* ultimate1mb.c */; };
 		2D82CFFD100591880014FE90 /* PasteWindowPanel.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D82CFFC100591880014FE90 /* PasteWindowPanel.h */; };
 		2D9627A9106C3CC00081F384 /* Breakpoint.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D9627A8106C3CC00081F384 /* Breakpoint.png */; };
 		2D9627AB106C3CD90081F384 /* CurrentLine.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D9627AA106C3CD90081F384 /* CurrentLine.png */; };
@@ -492,6 +493,8 @@
 		2D76734221EA98D100D99B0E /* diskette.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = diskette.png; sourceTree = "<group>"; };
 		2D8155210656C27C0090BE8F /* ataritiff.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = ataritiff.m; sourceTree = SOURCE_ROOT; };
 		2D81557B0656CE400090BE8F /* ataritiff.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ataritiff.h; sourceTree = SOURCE_ROOT; };
+		2D829B3A24F9B21500AB9584 /* ultimate1mb.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ultimate1mb.c; path = ../ultimate1mb.c; sourceTree = "<group>"; };
+		2D829B3C24F9D47200AB9584 /* ultimate1mb.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ultimate1mb.h; path = ../ultimate1mb.h; sourceTree = "<group>"; };
 		2D82CFFC100591880014FE90 /* PasteWindowPanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PasteWindowPanel.h; sourceTree = "<group>"; };
 		2D88C6510819D5F900C4733E /* PrintablePath.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = PrintablePath.h; sourceTree = "<group>"; };
 		2D88C6520819D5F900C4733E /* PrintablePath.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = PrintablePath.m; sourceTree = "<group>"; };
@@ -968,6 +971,8 @@
 				F555835C030EF4CD01A8C8B4 /* rtime.c */,
 				2DB0A0550F524110007879C7 /* ui_basic.c */,
 				2DB0A0580F52413B007879C7 /* ui_basic.h */,
+				2D829B3A24F9B21500AB9584 /* ultimate1mb.c */,
+				2D829B3C24F9D47200AB9584 /* ultimate1mb.h */,
 				2DF405F409A811AE009B7D4C /* util.c */,
 				2DF405F509A811AE009B7D4C /* util.h */,
 				2D2EB0050DEE1F9D00271295 /* votrax.c */,
@@ -1357,6 +1362,7 @@
 				2D0CA97B24C27B050089AC88 /* af80.c in Sources */,
 				2DE6EB7E24CE197000A55386 /* altirra_5200_os.c in Sources */,
 				2DE6EB8224CE197000A55386 /* altirraos_xl.c in Sources */,
+				2D829B3B24F9B21500AB9584 /* ultimate1mb.c in Sources */,
 				2DAEDB7009B69AED005FF181 /* SDLMain.m in Sources */,
 				2DAEDB7109B69AED005FF181 /* memory.c in Sources */,
 				2DAEDB7209B69AED005FF181 /* log.c in Sources */,
