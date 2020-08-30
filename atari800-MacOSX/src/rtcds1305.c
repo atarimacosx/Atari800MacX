@@ -30,7 +30,6 @@ static int   SPIClock;
 static UBYTE clockRAM[0x12];
 static UBYTE userRAM[0x60];
 
-static void ColdReset();
 static void ReadRegister();
 static void WriteRegister();
 static void IncrementAddressRegister();
@@ -44,10 +43,10 @@ void CDS1305_Init() {
     memset(clockRAM, 0, sizeof clockRAM);
     memset(userRAM, 0, sizeof userRAM);
 
-    ColdReset();
+    CDS1305_ColdReset();
 }
 
-static void ColdReset() {
+void CDS1305_ColdReset() {
     phase = 0;
     address = 0;
     state = TRUE;

@@ -28,7 +28,6 @@ int ULTIMATE_enabled = TRUE;
 /* Ultimate1MB information from Altirra Hardware Reference Manual */
 static int config_lock = FALSE;
 static UBYTE pbi_bank = 0;
-static int PBI_ROM_active = FALSE;
 static int IO_RAM_enable = FALSE;
 static int SDX_module_enable = FALSE;
 static int SDX_enable = FALSE;
@@ -55,6 +54,7 @@ static UBYTE pbi_ram[0x1000];
 void Set_SDX_Bank(UBYTE bank);
 void Set_SDX_Enabled(int enabled);
 void Set_SDX_Module_Enabled(int enabled);
+void Set_PBI_Bank(UBYTE bank);
 void Update_External_Cart(void);
 void Update_Kernel_Bank(void);
 
@@ -78,7 +78,8 @@ static void init_ultimate(void)
 int ULTIMATE_Initialise(int *argc, char *argv[])
 {
     init_ultimate();
-	return TRUE;
+    CDS1305_Init();
+    return TRUE;
 }
 
 void ULTIMATE_Exit(void)
@@ -96,8 +97,8 @@ int ULTIMATE_D1GetByte(UWORD addr, int no_side_effects)
 
 void ULTIMATE_D1PutByte(UWORD addr, UBYTE byte)
 {
-    if (addr == 0xD1BF && PBI_ROM_active)
-        pbi_bank = byte & 0x03;
+    if (addr == 0xD1BF && pbi_selected)
+        Set_PBI_Bank(byte & 3);
     //else if (addr < 0xD1BF && (pbi_emulation_enable || IO_RAM_enable))
     else if (addr < 0xD1BF && (pbi_emulation_enable || !config_lock))
         pbi_ram[addr & 0xFFF] = byte;
@@ -105,18 +106,20 @@ void ULTIMATE_D1PutByte(UWORD addr, UBYTE byte)
 
 void Set_PBI_Bank(UBYTE bank)
 {
-    memcpy(MEMORY_mem + 0xd800,
-           ultimate_rom + 0x59800 + (pbi_bank << 13), 0x800);
+    if (bank != pbi_bank && pbi_selected) {
+        memcpy(MEMORY_mem + 0xd800,
+               ultimate_rom + 0x59800 + (pbi_bank << 13), 0x800);
+    }
+    pbi_bank = bank;
 }
 
-int PBI_PROTO80_D1ffPutByte(UBYTE byte)
+int ULTIMATE_D1ffPutByte(UBYTE byte)
 {
     int result = 0; /* handled */
     if (ULTIMATE_enabled && byte == pbi_device_id) {
         if (pbi_selected)
             return result;
         pbi_selected = TRUE;
-        Set_PBI_Bank(byte & 3);
     }
     else {
         result = PBI_NOT_HANDLED;
@@ -140,7 +143,7 @@ int ULTIMATE_D3GetByte(UWORD addr, int no_side_effects)
                (ext_cart_rd5_sense << 6);
     }
     else if (addr == 0xD3E2) {
-        return CDS1305_ReadState();
+        return CDS1305_ReadState() ? 0x08 : 0x00;
     }
     return result;
 }
@@ -162,9 +165,9 @@ void ULTIMATE_D3PutByte(UWORD addr, UBYTE byte)
         else
             IO_RAM_enable = FALSE;
         if (byte & 0x10)
-            SDX_module_enable = TRUE;
+            Set_SDX_Module_Enabled(TRUE);
         else
-            SDX_module_enable = FALSE;
+            Set_SDX_Module_Enabled(FALSE);
         OS_ROM_select = (byte & 0x0C) >> 2;
         ultimate_mem_config = byte & 0x03;
     }
@@ -266,6 +269,7 @@ void ULTIMATE_D6D7PutByte(UWORD addr, UBYTE byte)
 
 void ULTIMATE_ColdStart(void)
 {
+    CDS1305_ColdReset();
     cold_reset_flag = 0x80;        // ONLY set by cold reset, not warm reset.
     config_lock = FALSE;
     //ULTIMATE_LoadRoms();
@@ -324,6 +328,8 @@ void Set_SDX_Enabled(int enabled) {
         return;
 
     SDX_enable = enabled;
+    if (SDX_enable)
+        MEMORY_CartA0bfEnable();
 }
 
 void Set_SDX_Module_Enabled(int enabled) {

@@ -251,8 +251,8 @@ void PBI_D1PutByte(UWORD addr, UBYTE byte)
                 return;
             }
 #endif
-#ifdef PBI_PROTO80
-            if (ULTIMATE_enabled && ULTIMAE_D1ffPutByte(byte) != PBI_NOT_HANDLED) {
+#ifdef ULTIMATE_1MB
+            if (ULTIMATE_enabled && ULTIMATE_D1ffPutByte(byte) != PBI_NOT_HANDLED) {
                 /* handled */
                 fp_active = FALSE;
                 return;
