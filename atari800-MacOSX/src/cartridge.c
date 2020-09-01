@@ -46,6 +46,9 @@
 #ifdef BIT3
 #include "bit3.h"
 #endif
+#ifdef ULTIMATE_1MB
+#include "ultimate1mb.h"
+#endif
 #include "log.h"
 
 /* #define DEBUG 1 */
@@ -1101,6 +1104,11 @@ void CARTRIDGE_PutByte(UWORD addr, UBYTE byte)
 	if (IDE_enabled && (addr <= 0xd50f)) {
 		IDE_PutByte(addr,byte);
 	}
+#endif
+#ifdef ULTIMATE_1MB
+    if (ULTIMATE_enabled) {
+        ULTIMATE_D5PutByte(addr, byte);
+    }
 #endif
 	PutByte(&CARTRIDGE_main, addr, byte);
 	PutByte(&CARTRIDGE_piggyback, addr, byte);

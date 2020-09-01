@@ -29,7 +29,7 @@ int ULTIMATE_enabled = TRUE;
 static int config_lock = FALSE;
 static UBYTE pbi_bank = 0;
 static int IO_RAM_enable = FALSE;
-static int SDX_module_enable = FALSE;
+static int SDX_module_enable = TRUE;
 static int SDX_enable = FALSE;
 static int cart_bank_offset = 0;
 static int external_cart_enable = FALSE;
@@ -276,8 +276,6 @@ void ULTIMATE_ColdStart(void)
 
     // The SDX module is enabled on warm reset, but the cart enables and bank
     // are only affected by cold reset.
-    cart_bank_offset = 0;        // to force reload
-    SDX_enable = FALSE;
     Set_SDX_Bank(0);
     Set_SDX_Enabled(TRUE);
     external_cart_enable = FALSE;
@@ -330,12 +328,11 @@ void Set_SDX_Enabled(int enabled) {
 
     SDX_enable = enabled;
     if (SDX_enable) {
-        MEMORY_Cart809fEnable();
+        MEMORY_Cart809fDisable();
         MEMORY_CartA0bfEnable();
         MEMORY_CopyROM(0xa000, 0xbfff, ultimate_rom + cart_bank_offset);
     }
     else {
-        MEMORY_Cart809fDisable();
         MEMORY_CartA0bfDisable();
     }
 }
