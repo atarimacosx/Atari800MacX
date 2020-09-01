@@ -368,8 +368,8 @@ void Update_Kernel_Bank(void)
     // mode (they are mapped with the SDX mapping register!).
 
     ULONG kernelbase = config_lock ? 0x70000 + (OS_ROM_select << 14) : 0x50000;
-    ULONG basicbase = config_lock ? 0x60000 + (basic_rom_select << 14) : cart_bank_offset;
-    ULONG gamebase = config_lock ? 0x68000 + (game_rom_select << 14) : cart_bank_offset;
+    ULONG basicbase = config_lock ? 0x60000 + (basic_rom_select << 13) : cart_bank_offset;
+    ULONG gamebase = config_lock ? 0x68000 + (game_rom_select << 13) : cart_bank_offset;
 
     memcpy(MEMORY_os, ultimate_rom + kernelbase, 0x4000);
     memcpy(MEMORY_mem + 0xc000, ultimate_rom + kernelbase, 0x4000);
