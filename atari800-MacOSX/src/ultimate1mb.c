@@ -156,10 +156,8 @@ void ULTIMATE_D3PutByte(UWORD addr, UBYTE byte)
         PIA_PutByte(addr, byte);
     }
     else if (addr == 0xD380 && !config_lock) {
-        if (byte & 0x80) {
+        if (byte & 0x80)
             config_lock = TRUE;
-            ULTIMATE_LoadRoms();
-        }
         else
             config_lock = FALSE;
         if (byte & 0x40)
@@ -172,6 +170,24 @@ void ULTIMATE_D3PutByte(UWORD addr, UBYTE byte)
             Set_SDX_Module_Enabled(FALSE);
         OS_ROM_select = (byte & 0x0C) >> 2;
         ultimate_mem_config = byte & 0x03;
+        if (config_lock) {
+            ULTIMATE_LoadRoms();
+            switch(ultimate_mem_config) {
+                case 0:
+                    MEMORY_ram_size = 64;
+                    break;
+                case 1:
+                    MEMORY_ram_size = 320;
+                    break;
+                case 2:
+                    MEMORY_ram_size = 576;
+                    break;
+                case 3:
+                    MEMORY_ram_size = 1088;
+                    break;
+            }
+            MEMORY_AllocXEMemory();
+        }
     }
     else if (addr == 0xD381 && !config_lock) {
         if (byte & 0x80)
@@ -242,10 +258,11 @@ void ULTIMATE_D5PutByte(UWORD addr, UBYTE byte)
             Set_SDX_Bank(byte & 63);
             Set_SDX_Enabled(!(byte & 0x80));
 
+            // TBD - What do we do here?
             external_cart_enable = ((byte & 0xc0) == 0x80);
             Update_External_Cart();
-            // Pre-control lock, the SDX bank is also used for the BASIC and GAME
-            // banks (!).
+            // Pre-control lock, the SDX bank is also used for the
+            // BASIC and GAME banks (!).
             if (!config_lock)
                 Update_Kernel_Bank();
         }
@@ -286,7 +303,7 @@ void ULTIMATE_ColdStart(void)
 
 void ULTIMATE_WarmStart(void)
 {
-    config_lock = FALSE;
+    //config_lock = FALSE;
 
     pbi_emulation_enable = FALSE;
     pbi_button_enable = FALSE;

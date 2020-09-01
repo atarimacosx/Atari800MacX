@@ -159,7 +159,7 @@ static void alloc_mosaic_memory(void){
 	}
 }
 
-static void AllocXEMemory(void)
+void MEMORY_AllocXEMemory(void)
 {
 	if (MEMORY_ram_size > 64) {
 		/* don't count 64 KB of base memory */
@@ -336,7 +336,7 @@ void MEMORY_InitialiseMachine(void)
 		}
 		break;
 	}
-	AllocXEMemory();
+	MEMORY_AllocXEMemory();
 	alloc_axlon_memory();
 	alloc_mosaic_memory();
 	axlon_curbank = 0;
@@ -647,7 +647,7 @@ void MEMORY_StateRead(UBYTE SaveVerbose, UBYTE StateVersion)
 		}
 	}
 	ANTIC_xe_ptr = NULL;
-	AllocXEMemory();
+	MEMORY_AllocXEMemory();
 	if (MEMORY_ram_size > 64) {
 		StateSav_ReadUBYTE(&atarixe_memory[0], atarixe_memory_size);
 		/* a hack that makes state files compatible with previous versions:

@@ -119,6 +119,7 @@ void MEMORY_Cart809fDisable(void);
 void MEMORY_Cart809fEnable(void);
 void MEMORY_CartA0bfDisable(void);
 void MEMORY_CartA0bfEnable(void);
+void MEMORY_AllocXEMemory(void);
 #define MEMORY_CopyROM(addr1, addr2, src) memcpy(MEMORY_mem + (addr1), src, (addr2) - (addr1) + 1)
 void MEMORY_GetCharset(UBYTE *cs);
 
