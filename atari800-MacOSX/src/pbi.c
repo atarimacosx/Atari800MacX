@@ -333,7 +333,10 @@ void PBI_D6PutByte(UWORD addr, UBYTE byte)
 /* XLD/1090 has ram here */
 UBYTE PBI_D7GetByte(UWORD addr, int no_side_effects)
 {
-	D(printf("PBI_D7GetByte:%4x\n",addr));
+    #ifdef ULTIMATE_1MB
+        if (ULTIMATE_enabled) return ULTIMATE_D6D7GetByte(addr, no_side_effects);
+    #endif
+    D(printf("PBI_D7GetByte:%4x\n",addr));
 	if (PBI_D6D7ram) return MEMORY_mem[addr];
 	else return 0xff;
 }
@@ -342,6 +345,12 @@ UBYTE PBI_D7GetByte(UWORD addr, int no_side_effects)
 /* XLD/1090 has ram here */
 void PBI_D7PutByte(UWORD addr, UBYTE byte)
 {
+#ifdef ULTIMATE_1MB
+    if(ULTIMATE_enabled) {
+        ULTIMATE_D6D7PutByte(addr,byte);
+        return;
+    }
+#endif
 	D(printf("PBI_D7PutByte:%4x <- %2x\n",addr,byte));
 	if (PBI_D6D7ram) MEMORY_mem[addr]=byte;
 }

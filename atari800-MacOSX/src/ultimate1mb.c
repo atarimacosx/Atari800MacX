@@ -57,6 +57,7 @@ void Set_SDX_Module_Enabled(int enabled);
 void Set_PBI_Bank(UBYTE bank);
 void Update_External_Cart(void);
 void Update_Kernel_Bank(void);
+void LoadNVRAM();
 
 #ifdef ATARI800MACX
 void init_ultimate(void)
@@ -79,6 +80,7 @@ int ULTIMATE_Initialise(int *argc, char *argv[])
 {
     init_ultimate();
     CDS1305_Init();
+    LoadNVRAM();
     return TRUE;
 }
 
@@ -133,17 +135,17 @@ int ULTIMATE_D3GetByte(UWORD addr, int no_side_effects)
 {
     int result = 0xff;
     if (addr < 0xD380) {
-        return PIA_GetByte(addr, no_side_effects);
+        result = PIA_GetByte(addr, no_side_effects);
     }
     else if (addr == 0xD383) {
-        return cold_reset_flag;
+        result = cold_reset_flag;
     }
     else if (addr == 0xD384) {
-        return (pbi_button_pressed << 7) |
+        result = (pbi_button_pressed << 7) |
                (ext_cart_rd5_sense << 6);
     }
     else if (addr == 0xD3E2) {
-        return CDS1305_ReadState() ? 0x08 : 0x00;
+        result = CDS1305_ReadState() ? 0x08 : 0x00;
     }
     return result;
 }
@@ -193,7 +195,7 @@ void ULTIMATE_D3PutByte(UWORD addr, UBYTE byte)
     }
     else if (addr == 0xD382 && !config_lock) {
         game_rom_select = (byte & 0xC0) >> 6;
-        basic_rom_select = (byte & 0xe0) >> 4;
+        basic_rom_select = (byte & 0x30) >> 4;
         if (byte & 0x08)
             pbi_button_enable = TRUE;
         else
@@ -209,7 +211,7 @@ void ULTIMATE_D3PutByte(UWORD addr, UBYTE byte)
     else if (addr == 0xD383 && !config_lock) {
         cold_reset_flag = byte;
     }
-    else if (addr == 0xD3E2) {
+    else if (addr == 0xD3E2 && !config_lock) {
         CDS1305_WriteState((byte & 1) != 0, !(byte & 2), (byte & 4) != 0);
     }
 }
@@ -253,16 +255,14 @@ void ULTIMATE_D5PutByte(UWORD addr, UBYTE byte)
 int ULTIMATE_D6D7GetByte(UWORD addr, int no_side_effects)
 {
     int result = 0xff;
-    //if ( addr < 0xD7FF && (pbi_emulation_enable || IO_RAM_enable))
-    if ( addr < 0xD7FF && (pbi_emulation_enable || !config_lock))
+    if ( addr < 0xD7FF && (pbi_emulation_enable || IO_RAM_enable))
         return pbi_ram[addr & 0xFFF];
     return result;
 }
 
 void ULTIMATE_D6D7PutByte(UWORD addr, UBYTE byte)
 {
-    //if (addr <= 0xD7FF && (pbi_emulation_enable || IO_RAM_enable)) {
-    if (addr <= 0xD7FF && (pbi_emulation_enable || !config_lock)) {
+    if (addr <= 0xD7FF && (pbi_emulation_enable || IO_RAM_enable)) {
         pbi_ram[addr & 0xFFF] = byte;
     }
 }
@@ -320,7 +320,8 @@ void Set_SDX_Bank(UBYTE bank) {
         return;
 
     cart_bank_offset = offset;
-    MEMORY_CopyROM(0xa000, 0xbfff, ultimate_rom + cart_bank_offset);
+    if (SDX_enable)
+        MEMORY_CopyROM(0xa000, 0xbfff, ultimate_rom + cart_bank_offset);
 }
 
 void Set_SDX_Enabled(int enabled) {
@@ -328,17 +329,24 @@ void Set_SDX_Enabled(int enabled) {
         return;
 
     SDX_enable = enabled;
-    if (SDX_enable)
+    if (SDX_enable) {
+        MEMORY_Cart809fEnable();
         MEMORY_CartA0bfEnable();
+        MEMORY_CopyROM(0xa000, 0xbfff, ultimate_rom + cart_bank_offset);
+    }
+    else {
+        MEMORY_Cart809fDisable();
+        MEMORY_CartA0bfDisable();
+    }
 }
 
 void Set_SDX_Module_Enabled(int enabled) {
     if (SDX_module_enable == enabled)
         return;
 
-    SDX_module_enable = enabled;
-
-    if (!enabled) {
+    if (enabled) {
+        Set_SDX_Enabled(TRUE);
+    } else {
         Set_SDX_Bank(0);
         Set_SDX_Enabled(FALSE);
         external_cart_enable = TRUE;
@@ -364,7 +372,16 @@ void Update_Kernel_Bank(void)
     ULONG gamebase = config_lock ? 0x68000 + (game_rom_select << 14) : cart_bank_offset;
 
     memcpy(MEMORY_os, ultimate_rom + kernelbase, 0x4000);
+    memcpy(MEMORY_mem + 0xc000, ultimate_rom + kernelbase, 0x4000);
+    // TBD - What about self test area? And what about getting the
+    // below into their parts of MEMORY_mem.
     memcpy(MEMORY_basic, ultimate_rom + basicbase, 0x2000);
     memcpy(MEMORY_xegame, ultimate_rom + gamebase, 0x2000);
 }
 
+void LoadNVRAM()
+{
+    UBYTE buf[0x72];
+    memset(buf, 0, sizeof(buf));
+    CDS1305_Load(buf);
+}
