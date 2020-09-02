@@ -183,8 +183,8 @@ void Atari800_Warmstart(void)
 		   because Reset routine vector must be read from OS ROM */
 		CPU_Reset();
 		/* note: POKEY and GTIA have no Reset pin */
-        if (ULTIMATE_enabled) {
-            ULTIMATE_ColdStart();
+        if (ULTIMATE_enabled && (Atari800_machine_type == Atari800_MACHINE_XLXE)) {
+            ULTIMATE_WarmStart();
         }
 	}
 	Devices_WarmCold_Start();
@@ -205,7 +205,7 @@ void Atari800_Coldstart(void)
 	CPU_Reset();
     if (ULTIMATE_enabled && (Atari800_machine_type == Atari800_MACHINE_XLXE)) {
         ULTIMATE_ColdStart();
-    }
+        }
     CARTRIDGE_ColdStart();
     /* set Atari OS Coldstart flag */
     MEMORY_dPutByte(0x244, 1);

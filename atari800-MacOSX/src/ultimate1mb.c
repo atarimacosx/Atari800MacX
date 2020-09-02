@@ -286,8 +286,9 @@ void ULTIMATE_D6D7PutByte(UWORD addr, UBYTE byte)
 
 void ULTIMATE_ColdStart(void)
 {
-    CDS1305_ColdReset();
     cold_reset_flag = 0x80;        // ONLY set by cold reset, not warm reset.
+
+    // Allow configuration changes
     config_lock = FALSE;
     //ULTIMATE_LoadRoms();
 
@@ -303,11 +304,17 @@ void ULTIMATE_ColdStart(void)
 
 void ULTIMATE_WarmStart(void)
 {
-    //config_lock = FALSE;
+    // Reset RTC Chip
+    CDS1305_ColdReset();
+
+    // Default to all of extended memory
+    MEMORY_ram_size = 1088;
+    MEMORY_AllocXEMemory();
 
     pbi_emulation_enable = FALSE;
     pbi_button_enable = FALSE;
     pbi_device_id = 0;
+    // TBD Update PBI Device
 
     OS_ROM_select = 0;
     game_rom_select = 0;
