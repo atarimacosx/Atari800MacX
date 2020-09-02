@@ -95,17 +95,16 @@ int ULTIMATE_D1GetByte(UWORD addr, int no_side_effects)
 {
     int result = 0xff;
     //if ( addr < 0xD1BF && (pbi_emulation_enable || IO_RAM_enable))
-    if ( addr < 0xD1BF && (pbi_selected || !config_lock))
+    if ( addr <= 0xD1BF) // && (pbi_selected || !config_lock))
         return pbi_ram[addr & 0xFFF];
     return result;
 }
 
 void ULTIMATE_D1PutByte(UWORD addr, UBYTE byte)
 {
-    if (addr == 0xD1BF && pbi_selected)
+    if (addr == 0xD1BF)// && pbi_selected)
         Set_PBI_Bank(byte & 3);
-    //else if (addr < 0xD1BF && (pbi_emulation_enable || IO_RAM_enable))
-    else if (addr < 0xD1BF && (pbi_emulation_enable || !config_lock))
+    if (addr <= 0xD1BF && (pbi_selected || !config_lock))
         pbi_ram[addr & 0xFFF] = byte;
 }
 
@@ -230,7 +229,7 @@ void ULTIMATE_D3PutByte(UWORD addr, UBYTE byte)
     else if (addr == 0xD383 && !config_lock) {
         cold_reset_flag = byte;
     }
-    else if (addr == 0xD3E2 && !config_lock) {
+    else if (addr == 0xD3E2) {
         CDS1305_WriteState((byte & 1) != 0, !(byte & 2), (byte & 4) != 0);
     }
 }
@@ -297,6 +296,7 @@ void ULTIMATE_ColdStart(void)
 
     // The SDX module is enabled on warm reset, but the cart enables and bank
     // are only affected by cold reset.
+    cart_bank_offset = 1;
     Set_SDX_Bank(0);
     Set_SDX_Enabled(TRUE);
     external_cart_enable = FALSE;
