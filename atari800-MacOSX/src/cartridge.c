@@ -1075,6 +1075,11 @@ UBYTE CARTRIDGE_GetByte(UWORD addr, int no_side_effects)
 	if (IDE_enabled && (addr <= 0xd50f))
 		return IDE_GetByte(addr, no_side_effects);
 #endif
+#ifdef ULTIMATE_1MB
+    if (ULTIMATE_enabled) {
+        return ULTIMATE_D5GetByte(addr, no_side_effects);
+    }
+#endif
 	/* In case 2 cartridges are inserted, reading a memory location would
 	   result in binary AND of both cartridges. */
 	return GetByte(&CARTRIDGE_main, addr, no_side_effects) & GetByte(&CARTRIDGE_piggyback, addr, no_side_effects);

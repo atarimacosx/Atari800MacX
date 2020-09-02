@@ -48,8 +48,8 @@
                 <outlet property="basicRomFileField" destination="363" id="406"/>
                 <outlet property="bit3CharsetRomFileField" destination="cv4-4v-UYO" id="UHX-De-jgi"/>
                 <outlet property="bit3RomFileField" destination="zqW-7T-CBF" id="LqM-P0-6Gy"/>
-                <outlet property="blackBoxRomFileField" destination="8353" id="8368"/>
-                <outlet property="blackBoxScsiDiskFileField" destination="7960" id="9595"/>
+                <outlet property="blackBoxRomFileField" destination="k9K-Sw-scb" id="cgo-nO-E2X"/>
+                <outlet property="blackBoxScsiDiskFileField" destination="wpa-LO-vbm" id="b1p-Jj-H45"/>
                 <outlet property="blackLevelField" destination="794" id="803"/>
                 <outlet property="bootFromCassetteButton" destination="768" id="769"/>
                 <outlet property="cart2FileEnabledButton" destination="4308" id="4311"/>
@@ -209,8 +209,8 @@
                 <outlet property="leftJoyUpLeftPulldown" destination="2019" id="2723"/>
                 <outlet property="leftJoyUpPulldown" destination="1254" id="2722"/>
                 <outlet property="leftJoyUpRightPulldown" destination="2112" id="3542"/>
-                <outlet property="mioRomFileField" destination="8359" id="8369"/>
-                <outlet property="mioScsiDiskFileField" destination="9591" id="9596"/>
+                <outlet property="mioRomFileField" destination="5k8-SK-Qgi" id="0r5-Pt-jGm"/>
+                <outlet property="mioScsiDiskFileField" destination="fE2-p8-iyx" id="hZk-X2-Z7o"/>
                 <outlet property="mosaicMemSizePulldown" destination="7120" id="8366"/>
                 <outlet property="mouseDevicePulldown" destination="719" id="749"/>
                 <outlet property="mouseHOffsetField" destination="725" id="752"/>
@@ -1470,162 +1470,173 @@ DQ
                                                 </subviews>
                                             </view>
                                         </box>
-                                        <box fixedFrame="YES" borderType="line" title="XL PBI Expansions" translatesAutoresizingMaskIntoConstraints="NO" id="7952">
-                                            <rect key="frame" x="20" y="14" width="753" height="252"/>
+                                        <tabView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="RI6-eJ-tad">
+                                            <rect key="frame" x="16" y="-1" width="761" height="273"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <view key="contentView" id="NEi-fS-4Pf">
-                                                <rect key="frame" x="3" y="3" width="747" height="234"/>
-                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                <subviews>
-                                                    <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7953">
-                                                        <rect key="frame" x="291" y="163" width="167" height="58"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                        <size key="cellSize" width="167" height="18"/>
-                                                        <size key="intercellSpacing" width="4" height="2"/>
-                                                        <buttonCell key="prototype" type="radio" title="Radio" imagePosition="leading" alignment="left" inset="2" id="13273">
-                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                            <font key="font" metaFont="system"/>
-                                                        </buttonCell>
-                                                        <cells>
-                                                            <column>
-                                                                <buttonCell type="radio" title="No PBI Expansion" imagePosition="leading" alignment="left" state="on" inset="2" id="7954">
+                                            <font key="font" metaFont="system"/>
+                                            <tabViewItems>
+                                                <tabViewItem label="XL PBI Expansions" identifier="" id="5J3-La-9M4">
+                                                    <view key="view" id="CXn-bW-Z0V">
+                                                        <rect key="frame" x="10" y="33" width="741" height="227"/>
+                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                        <subviews>
+                                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="spE-Rg-nRo">
+                                                                <rect key="frame" x="46" y="38" width="157" height="34"/>
+                                                                <autoresizingMask key="autoresizingMask"/>
+                                                                <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="BlackBox SCSI Disk File" id="LW4-DE-f7C">
+                                                                    <font key="font" metaFont="system"/>
+                                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                                </textFieldCell>
+                                                            </textField>
+                                                            <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="CWX-QD-Pmb">
+                                                                <rect key="frame" x="592" y="45" width="84" height="32"/>
+                                                                <autoresizingMask key="autoresizingMask"/>
+                                                                <buttonCell key="cell" type="push" title="Select" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="Xac-mj-sHz">
+                                                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                                    <font key="font" metaFont="system"/>
+                                                                </buttonCell>
+                                                                <connections>
+                                                                    <action selector="browseBlackBoxScsiDiskFile:" target="-2" id="ysg-qP-0pk"/>
+                                                                </connections>
+                                                            </button>
+                                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wpa-LO-vbm">
+                                                                <rect key="frame" x="199" y="47" width="382" height="30"/>
+                                                                <autoresizingMask key="autoresizingMask"/>
+                                                                <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="r9N-05-xnP">
+                                                                    <font key="font" metaFont="message" size="11"/>
+                                                                    <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                                </textFieldCell>
+                                                            </textField>
+                                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ka6-vi-p7O">
+                                                                <rect key="frame" x="75" y="-1" width="128" height="34"/>
+                                                                <autoresizingMask key="autoresizingMask"/>
+                                                                <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="MIO SCSI Disk File" id="012-bb-ze8">
+                                                                    <font key="font" metaFont="system"/>
+                                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                                </textFieldCell>
+                                                            </textField>
+                                                            <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ahn-M6-Vht">
+                                                                <rect key="frame" x="591" y="8" width="84" height="32"/>
+                                                                <autoresizingMask key="autoresizingMask"/>
+                                                                <buttonCell key="cell" type="push" title="Select" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="TdU-hu-ZOU">
+                                                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                                    <font key="font" metaFont="system"/>
+                                                                </buttonCell>
+                                                                <connections>
+                                                                    <action selector="browseMioScsiDiskFile:" target="-2" id="KYI-PQ-c3M"/>
+                                                                </connections>
+                                                            </button>
+                                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="fE2-p8-iyx">
+                                                                <rect key="frame" x="198" y="10" width="382" height="30"/>
+                                                                <autoresizingMask key="autoresizingMask"/>
+                                                                <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="EW3-AO-snu">
+                                                                    <font key="font" metaFont="message" size="11"/>
+                                                                    <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                                </textFieldCell>
+                                                            </textField>
+                                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="k9K-Sw-scb">
+                                                                <rect key="frame" x="199" y="120" width="382" height="30"/>
+                                                                <autoresizingMask key="autoresizingMask"/>
+                                                                <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="ZZw-zD-dfr">
+                                                                    <font key="font" metaFont="message" size="11"/>
+                                                                    <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                                </textFieldCell>
+                                                            </textField>
+                                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ZgM-Gc-61C">
+                                                                <rect key="frame" x="63" y="125" width="131" height="19"/>
+                                                                <autoresizingMask key="autoresizingMask"/>
+                                                                <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="BlackBox ROM File" id="md5-sD-73N">
+                                                                    <font key="font" metaFont="system"/>
+                                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                                </textFieldCell>
+                                                            </textField>
+                                                            <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="44L-hs-nh0">
+                                                                <rect key="frame" x="592" y="117" width="84" height="32"/>
+                                                                <autoresizingMask key="autoresizingMask"/>
+                                                                <buttonCell key="cell" type="push" title="Select" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="3Xa-C6-vfY">
+                                                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                                    <font key="font" metaFont="system"/>
+                                                                </buttonCell>
+                                                                <connections>
+                                                                    <action selector="browseBlackBoxRom:" target="-2" id="txy-wc-xI9"/>
+                                                                </connections>
+                                                            </button>
+                                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="5k8-SK-Qgi">
+                                                                <rect key="frame" x="199" y="84" width="382" height="30"/>
+                                                                <autoresizingMask key="autoresizingMask"/>
+                                                                <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="rA6-az-H3h">
+                                                                    <font key="font" metaFont="message" size="11"/>
+                                                                    <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                                </textFieldCell>
+                                                            </textField>
+                                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ccD-W0-mGz">
+                                                                <rect key="frame" x="63" y="89" width="131" height="19"/>
+                                                                <autoresizingMask key="autoresizingMask"/>
+                                                                <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="MIO ROM File" id="Tis-L1-0Y4">
+                                                                    <font key="font" metaFont="system"/>
+                                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                                </textFieldCell>
+                                                            </textField>
+                                                            <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="VBb-wc-v1y">
+                                                                <rect key="frame" x="592" y="81" width="84" height="32"/>
+                                                                <autoresizingMask key="autoresizingMask"/>
+                                                                <buttonCell key="cell" type="push" title="Select" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="e9q-ec-9DA">
+                                                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                                    <font key="font" metaFont="system"/>
+                                                                </buttonCell>
+                                                                <connections>
+                                                                    <action selector="browseMioRom:" target="-2" id="m32-mt-SPo"/>
+                                                                </connections>
+                                                            </button>
+                                                            <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7953">
+                                                                <rect key="frame" x="305" y="158" width="167" height="58"/>
+                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                                <size key="cellSize" width="167" height="18"/>
+                                                                <size key="intercellSpacing" width="4" height="2"/>
+                                                                <buttonCell key="prototype" type="radio" title="Radio" imagePosition="leading" alignment="left" inset="2" id="13273">
                                                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                                     <font key="font" metaFont="system"/>
                                                                 </buttonCell>
-                                                                <buttonCell type="radio" title="Black Box" imagePosition="leading" alignment="left" tag="1" inset="2" id="7955">
-                                                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                                    <font key="font" metaFont="system"/>
-                                                                </buttonCell>
-                                                                <buttonCell type="radio" title="MIO" imagePosition="leading" alignment="left" tag="2" inset="2" id="7957">
-                                                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                                    <font key="font" metaFont="system"/>
-                                                                </buttonCell>
-                                                            </column>
-                                                        </cells>
-                                                        <connections>
-                                                            <action selector="miscChanged:" target="-2" id="8799"/>
-                                                        </connections>
-                                                    </matrix>
-                                                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7958">
-                                                        <rect key="frame" x="31" y="43" width="157" height="34"/>
-                                                        <autoresizingMask key="autoresizingMask"/>
-                                                        <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="BlackBox SCSI Disk File" id="13142">
-                                                            <font key="font" metaFont="system"/>
-                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                        </textFieldCell>
-                                                    </textField>
-                                                    <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7959">
-                                                        <rect key="frame" x="577" y="50" width="84" height="32"/>
-                                                        <autoresizingMask key="autoresizingMask"/>
-                                                        <buttonCell key="cell" type="push" title="Select" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="13143">
-                                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                                            <font key="font" metaFont="system"/>
-                                                        </buttonCell>
-                                                        <connections>
-                                                            <action selector="browseBlackBoxScsiDiskFile:" target="-2" id="9597"/>
-                                                        </connections>
-                                                    </button>
-                                                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7960">
-                                                        <rect key="frame" x="184" y="52" width="382" height="30"/>
-                                                        <autoresizingMask key="autoresizingMask"/>
-                                                        <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="13144">
-                                                            <font key="font" metaFont="message" size="11"/>
-                                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                                        </textFieldCell>
-                                                    </textField>
-                                                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9589">
-                                                        <rect key="frame" x="60" y="4" width="128" height="34"/>
-                                                        <autoresizingMask key="autoresizingMask"/>
-                                                        <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="MIO SCSI Disk File" id="13151">
-                                                            <font key="font" metaFont="system"/>
-                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                        </textFieldCell>
-                                                    </textField>
-                                                    <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9590">
-                                                        <rect key="frame" x="576" y="13" width="84" height="32"/>
-                                                        <autoresizingMask key="autoresizingMask"/>
-                                                        <buttonCell key="cell" type="push" title="Select" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="13152">
-                                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                                            <font key="font" metaFont="system"/>
-                                                        </buttonCell>
-                                                        <connections>
-                                                            <action selector="browseMioScsiDiskFile:" target="-2" id="9598"/>
-                                                        </connections>
-                                                    </button>
-                                                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9591">
-                                                        <rect key="frame" x="183" y="15" width="382" height="30"/>
-                                                        <autoresizingMask key="autoresizingMask"/>
-                                                        <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="13153">
-                                                            <font key="font" metaFont="message" size="11"/>
-                                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                                        </textFieldCell>
-                                                    </textField>
-                                                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="8353">
-                                                        <rect key="frame" x="184" y="125" width="382" height="30"/>
-                                                        <autoresizingMask key="autoresizingMask"/>
-                                                        <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="13145">
-                                                            <font key="font" metaFont="message" size="11"/>
-                                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                                        </textFieldCell>
-                                                    </textField>
-                                                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="8354">
-                                                        <rect key="frame" x="48" y="130" width="131" height="19"/>
-                                                        <autoresizingMask key="autoresizingMask"/>
-                                                        <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="BlackBox ROM File" id="13146">
-                                                            <font key="font" metaFont="system"/>
-                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                        </textFieldCell>
-                                                    </textField>
-                                                    <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="8355">
-                                                        <rect key="frame" x="577" y="122" width="84" height="32"/>
-                                                        <autoresizingMask key="autoresizingMask"/>
-                                                        <buttonCell key="cell" type="push" title="Select" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="13147">
-                                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                                            <font key="font" metaFont="system"/>
-                                                        </buttonCell>
-                                                        <connections>
-                                                            <action selector="browseBlackBoxRom:" target="-2" id="8371"/>
-                                                        </connections>
-                                                    </button>
-                                                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="8359">
-                                                        <rect key="frame" x="184" y="89" width="382" height="30"/>
-                                                        <autoresizingMask key="autoresizingMask"/>
-                                                        <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="13148">
-                                                            <font key="font" metaFont="message" size="11"/>
-                                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                                        </textFieldCell>
-                                                    </textField>
-                                                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="8360">
-                                                        <rect key="frame" x="48" y="94" width="131" height="19"/>
-                                                        <autoresizingMask key="autoresizingMask"/>
-                                                        <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="MIO ROM File" id="13149">
-                                                            <font key="font" metaFont="system"/>
-                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                        </textFieldCell>
-                                                    </textField>
-                                                    <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="8361">
-                                                        <rect key="frame" x="577" y="86" width="84" height="32"/>
-                                                        <autoresizingMask key="autoresizingMask"/>
-                                                        <buttonCell key="cell" type="push" title="Select" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="13150">
-                                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                                            <font key="font" metaFont="system"/>
-                                                        </buttonCell>
-                                                        <connections>
-                                                            <action selector="browseMioRom:" target="-2" id="8372"/>
-                                                        </connections>
-                                                    </button>
-                                                </subviews>
-                                            </view>
-                                        </box>
+                                                                <cells>
+                                                                    <column>
+                                                                        <buttonCell type="radio" title="No PBI Expansion" imagePosition="leading" alignment="left" state="on" inset="2" id="7954">
+                                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                                            <font key="font" metaFont="system"/>
+                                                                        </buttonCell>
+                                                                        <buttonCell type="radio" title="Black Box" imagePosition="leading" alignment="left" tag="1" inset="2" id="7955">
+                                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                                            <font key="font" metaFont="system"/>
+                                                                        </buttonCell>
+                                                                        <buttonCell type="radio" title="MIO" imagePosition="leading" alignment="left" tag="2" inset="2" id="7957">
+                                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                                            <font key="font" metaFont="system"/>
+                                                                        </buttonCell>
+                                                                    </column>
+                                                                </cells>
+                                                                <connections>
+                                                                    <action selector="miscChanged:" target="-2" id="8799"/>
+                                                                </connections>
+                                                            </matrix>
+                                                        </subviews>
+                                                    </view>
+                                                </tabViewItem>
+                                                <tabViewItem label="XL Ultimate 1MB/SIDE" identifier="" id="LQu-Mp-HOS">
+                                                    <view key="view" id="tou-te-530">
+                                                        <rect key="frame" x="10" y="33" width="741" height="227"/>
+                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                    </view>
+                                                </tabViewItem>
+                                            </tabViewItems>
+                                        </tabView>
                                     </subviews>
                                 </view>
                             </tabViewItem>

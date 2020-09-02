@@ -301,6 +301,7 @@ void ULTIMATE_ColdStart(void)
     
     // Clear PBI Ram
     memset(pbi_ram, 0, sizeof(pbi_ram));
+    IO_RAM_enable = TRUE;
 
     ULTIMATE_WarmStart();
 }
