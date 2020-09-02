@@ -134,7 +134,7 @@ int SDLMainIsActive() {
 
 - (void) applicationWillTerminate: (NSNotification *) note
 {
-    PLATFORM_Exit(FALSE);
+    Atari800_Exit(FALSE);
  }
 /*------------------------------------------------------------------------------
 *  application openFile - Open a file dragged to the application.
