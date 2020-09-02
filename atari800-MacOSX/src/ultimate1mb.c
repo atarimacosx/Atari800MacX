@@ -298,6 +298,9 @@ void ULTIMATE_ColdStart(void)
     Set_SDX_Enabled(TRUE);
     external_cart_enable = FALSE;
     flash_write_enable = TRUE;
+    
+    // Clear PBI Ram
+    memset(pbi_ram, 0, sizeof(pbi_ram));
 
     ULTIMATE_WarmStart();
 }
