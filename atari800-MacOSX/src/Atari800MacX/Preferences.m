@@ -302,6 +302,7 @@ static NSDictionary *defaultValues() {
                 @"",Bit3RomFile,
                 @"",Bit3CharsetFile,
                 @"",MioRomFile,
+                @"",Ultimate1MBRomFile,
                 @"",BlackBoxRomFile,
                 @"",BlackBoxScsiDiskFile,
                 @"",MioScsiDiskFile,
@@ -920,6 +921,7 @@ static Preferences *sharedInstance = nil;
     [bit3CharsetRomFileField setStringValue:[displayedValues objectForKey:Bit3CharsetFile]];
     [blackBoxRomFileField setStringValue:[displayedValues objectForKey:BlackBoxRomFile]];
     [mioRomFileField setStringValue:[displayedValues objectForKey:MioRomFile]];
+    [ultimate1MBFlashFileField setStringValue:[displayedValues objectForKey:Ultimate1MBRomFile]];
     [blackBoxScsiDiskFileField setStringValue:[displayedValues objectForKey:BlackBoxScsiDiskFile]];
     [mioScsiDiskFileField setStringValue:[displayedValues objectForKey:MioScsiDiskFile]];
 	
@@ -2158,6 +2160,7 @@ static Preferences *sharedInstance = nil;
     [displayedValues setObject:[bit3CharsetRomFileField stringValue] forKey:Bit3CharsetFile];
     [displayedValues setObject:[blackBoxRomFileField stringValue] forKey:BlackBoxRomFile];
     [displayedValues setObject:[mioRomFileField stringValue] forKey:MioRomFile];
+    [displayedValues setObject:[ultimate1MBFlashFileField stringValue] forKey:Ultimate1MBRomFile];
 	[displayedValues setObject:[blackBoxScsiDiskFileField stringValue] forKey:BlackBoxScsiDiskFile];
 	[displayedValues setObject:[mioScsiDiskFileField stringValue] forKey:MioScsiDiskFile];
 	 
@@ -3061,7 +3064,19 @@ static Preferences *sharedInstance = nil;
     if (filename != nil) {
         [mioRomFileField setStringValue:filename];
         [self miscChanged:self];
-	}
+    }
+    [dir release];
+}
+
+- (void)browseUltimate1MBFlash:(id)sender {
+    NSString *filename, *dir;
+    
+    dir = [[NSString alloc] initWithCString:osromsDir encoding:NSASCIIStringEncoding];
+    filename = [self browseFileInDirectory:dir];
+    if (filename != nil) {
+        [ultimate1MBFlashFileField setStringValue:filename];
+        [self miscChanged:self];
+    }
     [dir release];
 }
 
@@ -3460,7 +3475,8 @@ static Preferences *sharedInstance = nil;
     [[curValues objectForKey:Bit3CharsetFile] getCString:prefs->bit3CharsetFile maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
     [[curValues objectForKey:Bit3RomFile] getCString:prefs->bit3RomFile maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
     [[curValues objectForKey:BlackBoxRomFile] getCString:prefs->blackBoxRomFile maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
-	[[curValues objectForKey:MioRomFile] getCString:prefs->mioRomFile maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+    [[curValues objectForKey:MioRomFile] getCString:prefs->mioRomFile maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+    [[curValues objectForKey:Ultimate1MBRomFile] getCString:prefs->ultimate1MBFlashFileName maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
 	[[curValues objectForKey:BlackBoxScsiDiskFile] getCString:prefs->blackBoxScsiDiskFile maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
 	[[curValues objectForKey:MioScsiDiskFile] getCString:prefs->mioScsiDiskFile maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
   [[curValues objectForKey:ImageDir] getCString:prefs->imageDir maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
@@ -4776,7 +4792,8 @@ static Preferences *sharedInstance = nil;
 	getIntDefault(MosaicMaxBank);
 	getBoolDefault(MioEnabled);
 	getBoolDefault(BlackBoxEnabled);
-	getStringDefault(MioRomFile);
+    getStringDefault(MioRomFile);
+    getStringDefault(Ultimate1MBRomFile);
     getStringDefault(AF80CharsetFile);
     getStringDefault(AF80RomFile);
     getStringDefault(Bit3CharsetFile);
@@ -5045,7 +5062,8 @@ static Preferences *sharedInstance = nil;
 	setIntDefault(MosaicMaxBank);
 	setBoolDefault(MioEnabled);
 	setBoolDefault(BlackBoxEnabled);
-	setStringDefault(MioRomFile);
+    setStringDefault(MioRomFile);
+    setStringDefault(Ultimate1MBRomFile);
     setStringDefault(AF80CharsetFile);
     setStringDefault(AF80RomFile);
     setStringDefault(Bit3CharsetFile);
@@ -5295,7 +5313,8 @@ static Preferences *sharedInstance = nil;
 	setConfig(MosaicMaxBank);
 	setConfig(MioEnabled);
 	setConfig(BlackBoxEnabled);
-	setConfig(MioRomFile);
+    setConfig(MioRomFile);
+    setConfig(Ultimate1MBRomFile);
     setConfig(AF80CharsetFile);
     setConfig(AF80RomFile);
     setConfig(Bit3CharsetFile);
@@ -5643,7 +5662,8 @@ static Preferences *sharedInstance = nil;
 	getConfig(MosaicMaxBank);
 	getConfig(MioEnabled);
 	getConfig(BlackBoxEnabled);
-	getConfig(MioRomFile);
+    getConfig(MioRomFile);
+    getConfig(Ultimate1MBRomFile);
     getConfig(AF80CharsetFile);
     getConfig(AF80RomFile);
     getConfig(Bit3CharsetFile);

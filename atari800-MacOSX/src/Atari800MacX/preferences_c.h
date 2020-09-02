@@ -70,6 +70,8 @@ typedef struct ATARI800MACX_PREF {
                 char bit3CharsetFile[FILENAME_MAX];
                 char bit3RomFile[FILENAME_MAX];
                 char blackBoxRomFile[FILENAME_MAX];
+                char ultimate1MBFlashFileName[FILENAME_MAX];
+                char ultimate1MBNVRAMFileName[FILENAME_MAX];
 				char mioRomFile[FILENAME_MAX];
 				char blackBoxScsiDiskFile[FILENAME_MAX]; 
 				char mioScsiDiskFile[FILENAME_MAX]; 

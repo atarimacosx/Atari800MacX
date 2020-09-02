@@ -19,6 +19,7 @@
 static UBYTE ultimate_rom[0x80000];
 #ifdef ATARI800MACX
 char ultimate_rom_filename[FILENAME_MAX] = "/Users/markg/Atari800MacX/Altirra-3.20/ultimate.rom"; //Util_FILENAME_NOT_SET;
+char ultimate_nvram_filename[FILENAME_MAX] = "/Users/markg/Atari800MacX/Altirra-3.20/ultimate.nvram"; //Util_FILENAME_NOT_SET;
 #else
 static char ultimate_rom_filename[FILENAME_MAX] = Util_FILENAME_NOT_SET;
 #endif
@@ -51,13 +52,14 @@ static UBYTE cold_reset_flag = 0x80;
 static int ext_cart_rd5_sense = FALSE;
 static UBYTE pbi_ram[0x1000];
 
-void Set_SDX_Bank(UBYTE bank);
-void Set_SDX_Enabled(int enabled);
-void Set_SDX_Module_Enabled(int enabled);
-void Set_PBI_Bank(UBYTE bank);
-void Update_External_Cart(void);
-void Update_Kernel_Bank(void);
-void LoadNVRAM();
+static void Set_SDX_Bank(UBYTE bank);
+static void Set_SDX_Enabled(int enabled);
+static void Set_SDX_Module_Enabled(int enabled);
+static void Set_PBI_Bank(UBYTE bank);
+static void Update_External_Cart(void);
+static void Update_Kernel_Bank(void);
+static void LoadNVRAM();
+static void SaveNVRAM();
 
 #ifdef ATARI800MACX
 void init_ultimate(void)
@@ -86,6 +88,7 @@ int ULTIMATE_Initialise(int *argc, char *argv[])
 
 void ULTIMATE_Exit(void)
 {
+    SaveNVRAM();
 }
 
 int ULTIMATE_D1GetByte(UWORD addr, int no_side_effects)
@@ -339,7 +342,7 @@ void ULTIMATE_LoadRoms(void)
     Update_Kernel_Bank();
 }
 
-void Set_SDX_Bank(UBYTE bank) {
+static void Set_SDX_Bank(UBYTE bank) {
     ULONG offset = (ULONG)bank << 13;
 
     if (cart_bank_offset == offset)
@@ -350,7 +353,7 @@ void Set_SDX_Bank(UBYTE bank) {
         MEMORY_CopyROM(0xa000, 0xbfff, ultimate_rom + cart_bank_offset);
 }
 
-void Set_SDX_Enabled(int enabled) {
+static void Set_SDX_Enabled(int enabled) {
     if (SDX_enable == enabled)
         return;
 
@@ -365,7 +368,7 @@ void Set_SDX_Enabled(int enabled) {
     }
 }
 
-void Set_SDX_Module_Enabled(int enabled) {
+static void Set_SDX_Module_Enabled(int enabled) {
     if (SDX_module_enable == enabled)
         return;
 
@@ -381,12 +384,12 @@ void Set_SDX_Module_Enabled(int enabled) {
     // TBD mpCartridgePort->OnLeftWindowChanged(mCartId, IsLeftCartActive());
 }
 
-void Update_External_Cart(void)
+static void Update_External_Cart(void)
 {
     // TBD
 }
 
-void Update_Kernel_Bank(void)
+static void Update_Kernel_Bank(void)
 {
     // Prior to control lock, the kernel bank is locked to $50000 instead
     // of $7x000. The BASIC, GAME, and PBI selects also act weirdly in this
@@ -404,9 +407,34 @@ void Update_Kernel_Bank(void)
     memcpy(MEMORY_xegame, ultimate_rom + gamebase, 0x2000);
 }
 
-void LoadNVRAM()
+static void LoadNVRAM()
 {
     UBYTE buf[0x72];
-    memset(buf, 0, sizeof(buf));
+    FILE *f;
+    int len;
+    
+    f = fopen(ultimate_nvram_filename, "rb");
+    if (f == NULL) {
+        memset(buf, 0, sizeof(buf));
+    } else {
+        len = fread(buf, 1, 0x72, f);
+        fclose(f);
+        if (len != 0x72) {
+            memset(buf, 0, sizeof(buf));
+        }
+    }
     CDS1305_Load(buf);
+}
+
+static void SaveNVRAM()
+{
+    UBYTE buf[0x72];
+    FILE *f;
+
+    CDS1305_Save(buf);
+    f = fopen(ultimate_nvram_filename, "wb");
+    if (f != NULL) {
+        fwrite(buf, 1, 0x72, f);
+        fclose(f);
+    }
 }
