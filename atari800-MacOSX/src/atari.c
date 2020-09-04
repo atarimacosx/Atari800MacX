@@ -376,6 +376,7 @@ int Atari800_InitialiseMachine(void)
     Atari800_UpdateJumper();
 #endif
 	MEMORY_InitialiseMachine();
+    Atari800_Coldstart();
 	Devices_UpdatePatches();
 	return TRUE;
 }

@@ -209,12 +209,6 @@ void PBI_D1PutByte(UWORD addr, UBYTE byte)
 		return;
 	}
 #endif
-#ifdef ULTIMATE_1MB
-    if (ULTIMATE_enabled) {
-        ULTIMATE_D1PutByte(addr, byte);
-        return;
-    }
-#endif
 	/* Remaining PBI devices cooperate, following spec */
 	if (addr != 0xd1ff) {
 		D(printf("PBI_PutByte:%4x <- %2x\n", addr, byte));
@@ -223,6 +217,10 @@ void PBI_D1PutByte(UWORD addr, UBYTE byte)
 #endif
 #ifdef PBI_PROTO_80
 		if (PBI_PROTO80_enabled) PBI_PROTO80_D1PutByte(addr, byte);
+#endif
+#ifdef ULTIMATE_1MB
+        if (ULTIMATE_enabled)
+            ULTIMATE_D1PutByte(addr, byte);
 #endif
 		/* add more devices here... */
 	}
@@ -260,7 +258,7 @@ void PBI_D1PutByte(UWORD addr, UBYTE byte)
 #endif
 		    /* add more devices here... */
 			/* reactivate the floating point rom */
-			if (!fp_active) {
+            if (!fp_active) {
 				memcpy(MEMORY_mem + 0xd800, MEMORY_os + 0x1800, 0x800);
 				D(printf("Floating point rom activated\n"));
 				fp_active = TRUE;

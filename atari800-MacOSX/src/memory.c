@@ -342,7 +342,6 @@ void MEMORY_InitialiseMachine(void)
 	axlon_curbank = 0;
 	mosaic_curbank = 0x3f;
 	AllocMapRAM();
-	Atari800_Coldstart();
 }
 
 #ifndef BASIC
