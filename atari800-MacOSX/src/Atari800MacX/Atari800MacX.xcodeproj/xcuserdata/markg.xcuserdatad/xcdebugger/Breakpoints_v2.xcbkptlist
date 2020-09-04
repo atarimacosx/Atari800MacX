@@ -504,7 +504,7 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "5628D8FE-8549-4A0B-9E3E-63E473764A06"
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../ultimate1mb.c"
@@ -513,6 +513,22 @@
             startingLineNumber = "118"
             endingLineNumber = "118"
             landmarkName = "Set_PBI_Bank(bank)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "6D04FF61-1101-49D1-91B1-2F517189F86F"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../ultimate1mb.c"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "398"
+            endingLineNumber = "398"
+            landmarkName = "Update_Kernel_Bank()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>

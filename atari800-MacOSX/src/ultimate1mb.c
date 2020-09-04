@@ -114,7 +114,7 @@ void ULTIMATE_D1PutByte(UWORD addr, UBYTE byte)
 
 void Set_PBI_Bank(UBYTE bank)
 {
-    if (bank != pbi_bank && pbi_selected) {
+    if (pbi_selected) {
         if (PIA_PORTB & 0x01)
             memcpy(MEMORY_mem + 0xd800,
                    ultimate_rom + 0x59800 + (bank << 13), 0x800);
@@ -465,10 +465,17 @@ static void Select_PBI_Device(int selected)
     pbi_selected = selected;
     
     if (selected) {
-        pbi_bank = 255;  // Force reload
+        //pbi_bank = 255;  // Force reload
         Set_PBI_Bank(0);
     }
     else {
-        Set_PBI_Bank(0);
+        ULONG kernelbase = config_lock ? 0x70000 + (OS_ROM_select << 14) : 0x50000;
+
+        if (PIA_PORTB & 0x01)
+            memcpy(MEMORY_mem + 0xd800,
+                   ultimate_rom + kernelbase + 0x1800, 0x800);
+        memcpy(MEMORY_os + 0x1800, ultimate_rom + kernelbase + 0x1800, 0x800);
+
+        //Set_PBI_Bank(0);
     }
 }
