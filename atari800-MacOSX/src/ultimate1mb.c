@@ -52,6 +52,7 @@ static UBYTE cold_reset_flag = 0x80;
 static int ext_cart_rd5_sense = FALSE;
 static UBYTE pbi_ram[0x1000];
 
+static void Clear_RAM(void);
 static void Set_Kernel_Bank(UBYTE bank);
 static void Set_Mem_Mode(void);
 static void Set_SDX_Bank(UBYTE bank);
@@ -297,6 +298,7 @@ void ULTIMATE_ColdStart(void)
     signal_outputs = 0;
     
     // Clear PBI Ram
+    Clear_RAM();
     memset(pbi_ram, 0, sizeof(pbi_ram));
     IO_RAM_enable = TRUE;
 
@@ -309,8 +311,8 @@ void ULTIMATE_WarmStart(void)
     CDS1305_ColdReset();
 
     // Default to all of extended memory
-    MEMORY_ram_size = 1088;
-    MEMORY_AllocXEMemory();
+    ultimate_mem_config = 3;
+    Set_Mem_Mode();
 
     pbi_emulation_enable = FALSE;
     pbi_button_enable = FALSE;
@@ -408,6 +410,7 @@ static void Update_Kernel_Bank(void)
     // below into their parts of MEMORY_mem.
     memcpy(MEMORY_basic, ultimate_rom + basicbase, 0x2000);
     memcpy(MEMORY_xegame, ultimate_rom + gamebase, 0x2000);
+    //ESC_UpdatePatches(); // TBD - Should we do this???
 }
 
 static void LoadNVRAM()
@@ -459,4 +462,22 @@ static void Set_Mem_Mode(void)
             break;
     }
     MEMORY_AllocXEMemory();
+}
+
+static void Clear_RAM(void)
+{
+    int const os_size = 0x4000;
+    int const os_rom_start = 0x10000 - os_size;
+    int const base_ram = MEMORY_ram_size > 64 ? 64 * 1024 : MEMORY_ram_size * 1024;
+    int const hole_end = (os_rom_start < 0xd000 ? os_rom_start : 0xd000);
+    int const hole_start = base_ram > hole_end ? hole_end : base_ram;
+    MEMORY_dFillMem(0x0000, 0x00, hole_start);
+    MEMORY_SetRAM(0x0000, hole_start - 1);
+    if (hole_start < hole_end) {
+        MEMORY_dFillMem(hole_start, 0xff, hole_end - hole_start);
+        MEMORY_SetROM(hole_start, hole_end - 1);
+    }
+    if (hole_end < 0xd000)
+        MEMORY_SetROM(hole_end, 0xcfff);
+    MEMORY_SetROM(0xd800, 0xffff);
 }

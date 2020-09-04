@@ -176,16 +176,17 @@ void Atari800_Warmstart(void)
 		CPU_NMI();
 	}
 	else {
+        if (ULTIMATE_enabled && (Atari800_machine_type == Atari800_MACHINE_XLXE)) {
+            ULTIMATE_WarmStart();
+        }
 		PBI_Reset();
-		PIA_Reset();
+        PIA_Reset();
 		ANTIC_Reset();
 		/* CPU_Reset() must be after PIA_Reset(),
 		   because Reset routine vector must be read from OS ROM */
 		CPU_Reset();
 		/* note: POKEY and GTIA have no Reset pin */
-        if (ULTIMATE_enabled && (Atari800_machine_type == Atari800_MACHINE_XLXE)) {
-            ULTIMATE_WarmStart();
-        }
+
 	}
 	Devices_WarmCold_Start();
 }
@@ -197,15 +198,15 @@ void Atari800_Coldstart(void)
 	MacSoundReset();
 	MacCapsLockStateReset();
 #endif	
+    if (ULTIMATE_enabled && (Atari800_machine_type == Atari800_MACHINE_XLXE)) {
+        ULTIMATE_ColdStart();
+        }
 	PBI_Reset();
 	PIA_Reset();
 	ANTIC_Reset();
 	/* CPU_Reset() must be after PIA_Reset(),
 	   because Reset routine vector must be read from OS ROM */
 	CPU_Reset();
-    if (ULTIMATE_enabled && (Atari800_machine_type == Atari800_MACHINE_XLXE)) {
-        ULTIMATE_ColdStart();
-        }
     CARTRIDGE_ColdStart();
     /* set Atari OS Coldstart flag */
     MEMORY_dPutByte(0x244, 1);
