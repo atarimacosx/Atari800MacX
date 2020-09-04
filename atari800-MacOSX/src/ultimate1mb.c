@@ -52,7 +52,7 @@ static UBYTE cold_reset_flag = 0x80;
 static int ext_cart_rd5_sense = FALSE;
 static UBYTE pbi_ram[0x1000];
 
-static void Clear_RAM(void);
+static void Select_PBI_Device(int enable);
 static void Set_Kernel_Bank(UBYTE bank);
 static void Set_Mem_Mode(void);
 static void Set_SDX_Bank(UBYTE bank);
@@ -115,8 +115,9 @@ void ULTIMATE_D1PutByte(UWORD addr, UBYTE byte)
 void Set_PBI_Bank(UBYTE bank)
 {
     if (bank != pbi_bank && pbi_selected) {
-        memcpy(MEMORY_mem + 0xd800,
-               ultimate_rom + 0x59800 + (bank << 13), 0x800);
+        if (PIA_PORTB & 0x01)
+            memcpy(MEMORY_mem + 0xd800,
+                   ultimate_rom + 0x59800 + (bank << 13), 0x800);
         memcpy(MEMORY_os + 0x1800,
                ultimate_rom + 0x59800 + (bank << 13), 0x800);
     }
@@ -128,19 +129,12 @@ int ULTIMATE_D1ffPutByte(UBYTE byte)
     int result = 0; /* handled */
     if (ULTIMATE_enabled && pbi_emulation_enable && byte == pbi_device_id) {
         if (pbi_selected)
-            return result;
-        pbi_selected = TRUE;
-        pbi_bank = 255;  // Force reload
-        Set_PBI_Bank(0);
+            return 0;
+        Select_PBI_Device(TRUE);
     }
     else {
+        Select_PBI_Device(FALSE);
         result = PBI_NOT_HANDLED;
-        pbi_selected = FALSE;
-        Set_PBI_Bank(0);
-        memcpy(MEMORY_os,
-               ultimate_rom +
-               (config_lock ? 0x70000 + (OS_ROM_select << 14) : 0x50000),
-               0x4000);
     }
     return result;
 }
@@ -298,7 +292,6 @@ void ULTIMATE_ColdStart(void)
     signal_outputs = 0;
     
     // Clear PBI Ram
-    Clear_RAM();
     memset(pbi_ram, 0, sizeof(pbi_ram));
     IO_RAM_enable = TRUE;
 
@@ -464,20 +457,18 @@ static void Set_Mem_Mode(void)
     MEMORY_AllocXEMemory();
 }
 
-static void Clear_RAM(void)
+static void Select_PBI_Device(int selected)
 {
-    int const os_size = 0x4000;
-    int const os_rom_start = 0x10000 - os_size;
-    int const base_ram = MEMORY_ram_size > 64 ? 64 * 1024 : MEMORY_ram_size * 1024;
-    int const hole_end = (os_rom_start < 0xd000 ? os_rom_start : 0xd000);
-    int const hole_start = base_ram > hole_end ? hole_end : base_ram;
-    MEMORY_dFillMem(0x0000, 0x00, hole_start);
-    MEMORY_SetRAM(0x0000, hole_start - 1);
-    if (hole_start < hole_end) {
-        MEMORY_dFillMem(hole_start, 0xff, hole_end - hole_start);
-        MEMORY_SetROM(hole_start, hole_end - 1);
+    if (pbi_selected == selected)
+        return;
+    
+    pbi_selected = selected;
+    
+    if (selected) {
+        pbi_bank = 255;  // Force reload
+        Set_PBI_Bank(0);
     }
-    if (hole_end < 0xd000)
-        MEMORY_SetROM(hole_end, 0xcfff);
-    MEMORY_SetROM(0xd800, 0xffff);
+    else {
+        Set_PBI_Bank(0);
+    }
 }
