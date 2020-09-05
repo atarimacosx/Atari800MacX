@@ -1,6 +1,7 @@
 /*
- * ultimate1mb.c - Emulation of the Austin Franklin 80 column card.
+ * ultimate1mb.c - Emulation of the Ultimate 1MB Expansion
  *
+ * Copyright (C) 2008-2012 Avery Lee
  * Copyright (C) 2020 Mark Grebe
  *
 */
@@ -117,9 +118,9 @@ void Set_PBI_Bank(UBYTE bank)
     if (pbi_selected) {
         if (PIA_PORTB & 0x01)
             memcpy(MEMORY_mem + 0xd800,
-                   ultimate_rom + 0x59800 + (bank << 13), 0x800);
+                   ultimate_rom + 0x59800 + ((UWORD) bank << 13), 0x800);
         memcpy(MEMORY_os + 0x1800,
-               ultimate_rom + 0x59800 + (bank << 13), 0x800);
+               ultimate_rom + 0x59800 + ((UWORD) bank << 13), 0x800);
     }
     pbi_bank = bank;
 }
@@ -381,10 +382,11 @@ static void Update_External_Cart(void)
 
 static void Set_Kernel_Bank(UBYTE bank)
 {
-    if (OS_ROM_select != bank)
+    if (OS_ROM_select != bank) {
         OS_ROM_select = bank;
     
-    Update_Kernel_Bank();
+        Update_Kernel_Bank();
+    }
 }
 
 static void Update_Kernel_Bank(void)
