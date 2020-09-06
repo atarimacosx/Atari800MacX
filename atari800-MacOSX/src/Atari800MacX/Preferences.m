@@ -1713,7 +1713,10 @@ static Preferences *sharedInstance = nil;
 		[ledSectorMediaButton setEnabled:NO];
 		}
  
-    type = [self typeFromIndex:[atariTypePulldown indexOfSelectedItem] :&typever4:&typever5];
+    int atariIndex = [atariTypePulldown indexOfSelectedItem];
+    if (atariIndex > 13)
+        atariIndex += 5;
+    type = [self typeFromIndex:atariIndex:&typever4:&typever5];
 	[displayedValues setObject:[NSNumber numberWithInt:type] forKey:AtariType];
     [displayedValues setObject:[NSNumber numberWithInt:typever4] forKey:AtariTypeVer4];
     [displayedValues setObject:[NSNumber numberWithInt:typever5] forKey:AtariTypeVer5];
