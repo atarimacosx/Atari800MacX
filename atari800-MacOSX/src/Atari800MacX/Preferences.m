@@ -80,7 +80,9 @@ static char paletteStr[FILENAME_MAX];
  menu to the type variables and visa versa */
 #define NUM_ORIG_TYPES	14
 #define NUM_V4_TYPES	5
-#define NUM_TOTAL_TYPES NUM_ORIG_TYPES+NUM_V4_TYPES
+#define NUM_V5_4_TYPES  1
+#define NUM_TOTAL_TYPES (NUM_ORIG_TYPES+NUM_V4_TYPES)
+#define NUM_NEW_TOTAL_TYPES (NUM_ORIG_TYPES+NUM_V4_TYPES+NUM_V5_4_TYPES)
 
 static int types[NUM_TOTAL_TYPES] =
 { 3, 4, 5, 0, 0, 6, 7, 8, 0, 9,10,11,12,13};
@@ -186,8 +188,8 @@ void PreferencesSaveDefaults(void) {
     [[Preferences sharedInstance] saveDefaults];
 }
 
-int PreferencesTypeFromIndex(int index, int *ver4type) {
-	return [[Preferences sharedInstance] typeFromIndex:index :ver4type];
+int PreferencesTypeFromIndex(int index, int *ver4type, int *ver5type) {
+    return [[Preferences sharedInstance] typeFromIndex:index :ver4type: ver5type];
 }
 
 void PreferencesSaveConfiguration() {
@@ -290,9 +292,11 @@ static NSDictionary *defaultValues() {
                 [NSNumber numberWithInt:15], XEP80OnColor,
                 [NSNumber numberWithInt:0], XEP80OffColor,
                 [NSNumber numberWithInt:4], AtariType, 
-                [NSNumber numberWithInt:-1], AtariTypeVer4, 
-                [NSNumber numberWithInt:7], AtariSwitchType, 
-                [NSNumber numberWithInt:-1], AtariSwitchTypeVer4, 
+                [NSNumber numberWithInt:-1], AtariTypeVer4,
+                [NSNumber numberWithInt:-1], AtariTypeVer5,
+                [NSNumber numberWithInt:7], AtariSwitchType,
+                [NSNumber numberWithInt:-1], AtariSwitchTypeVer4,
+                [NSNumber numberWithInt:-1], AtariSwitchTypeVer5,
                 [NSNumber numberWithInt:7],AxlonBankMask,
                 [NSNumber numberWithInt:3],MosaicMaxBank,
                 [NSNumber numberWithBool:NO],MioEnabled,
@@ -816,9 +820,11 @@ static Preferences *sharedInstance = nil;
     [ledSectorMediaButton setState:[[displayedValues objectForKey:LedSectorMedia] boolValue] ? NSOnState : NSOffState];
 
     [atariTypePulldown  selectItemAtIndex:[self indexFromType:[[displayedValues objectForKey:AtariType] intValue] :
-										   [[displayedValues objectForKey:AtariTypeVer4] intValue]]];
+                                           [[displayedValues objectForKey:AtariTypeVer4] intValue] : [[displayedValues objectForKey:AtariTypeVer5] intValue]]];
     [atariSwitchTypePulldown  selectItemAtIndex:[self indexFromType:[[displayedValues objectForKey:AtariSwitchType] intValue] :
-										   [[displayedValues objectForKey:AtariSwitchTypeVer4] intValue]]];
+                                                 [[displayedValues objectForKey:AtariSwitchTypeVer4] intValue] : [[displayedValues objectForKey:AtariSwitchTypeVer5] intValue]]];
+    [atariSwitchTypePulldown  selectItemAtIndex:[self indexFromType:[[displayedValues objectForKey:AtariSwitchType] intValue] :
+                                                 [[displayedValues objectForKey:AtariSwitchTypeVer4] intValue] : [[displayedValues objectForKey:AtariSwitchTypeVer5] intValue]]];
     [disableBasicButton setState:[[displayedValues objectForKey:DisableBasic] boolValue] ? NSOnState : NSOffState];
     [disableAllBasicButton setState:[[displayedValues objectForKey:DisableAllBasic] boolValue] ? NSOnState : NSOffState];
 	[emulationSpeedSlider setFloatValue:[[displayedValues objectForKey:EmulationSpeed] floatValue]];
@@ -1518,7 +1524,7 @@ static Preferences *sharedInstance = nil;
     int mouseCount = 0;
     int firstMouse = 0;
     float penRed, penBlue, penGreen;
-    int type, typever4;
+    int type, typever4, typever5;
     
     static NSNumber *yes = nil;
     static NSNumber *no = nil;
@@ -1707,12 +1713,14 @@ static Preferences *sharedInstance = nil;
 		[ledSectorMediaButton setEnabled:NO];
 		}
  
-	type = [self typeFromIndex:[atariTypePulldown indexOfSelectedItem] :&typever4];
+    type = [self typeFromIndex:[atariTypePulldown indexOfSelectedItem] :&typever4:&typever5];
 	[displayedValues setObject:[NSNumber numberWithInt:type] forKey:AtariType];
-	[displayedValues setObject:[NSNumber numberWithInt:typever4] forKey:AtariTypeVer4];
-	type = [self typeFromIndex:[atariSwitchTypePulldown indexOfSelectedItem] :&typever4];
+    [displayedValues setObject:[NSNumber numberWithInt:typever4] forKey:AtariTypeVer4];
+    [displayedValues setObject:[NSNumber numberWithInt:typever5] forKey:AtariTypeVer5];
+    type = [self typeFromIndex:[atariSwitchTypePulldown indexOfSelectedItem] :&typever4: &typever5];
 	[displayedValues setObject:[NSNumber numberWithInt:type] forKey:AtariSwitchType];
-	[displayedValues setObject:[NSNumber numberWithInt:typever4] forKey:AtariSwitchTypeVer4];
+    [displayedValues setObject:[NSNumber numberWithInt:typever4] forKey:AtariSwitchTypeVer4];
+    [displayedValues setObject:[NSNumber numberWithInt:typever4] forKey:AtariSwitchTypeVer5];
 
     if ([disableBasicButton state] == NSOnState)
         [displayedValues setObject:yes forKey:DisableBasic];
@@ -3415,14 +3423,23 @@ static Preferences *sharedInstance = nil;
     prefs->ledSector = [[curValues objectForKey:LedSector] intValue]; 
     prefs->ledStatusMedia = [[curValues objectForKey:LedStatusMedia] intValue]; 
     prefs->ledSectorMedia = [[curValues objectForKey:LedSectorMedia] intValue];
-	if ([[curValues objectForKey:AtariTypeVer4] intValue] == -1)
-		prefs->atariType = [[curValues objectForKey:AtariType] intValue]; 
-	else
-		prefs->atariType = [[curValues objectForKey:AtariTypeVer4] intValue] + NUM_ORIG_TYPES; 
-	if ([[curValues objectForKey:AtariSwitchTypeVer4] intValue] == -1)
-		prefs->atariSwitchType = [[curValues objectForKey:AtariSwitchType] intValue]; 
-	else
-		prefs->atariSwitchType = [[curValues objectForKey:AtariSwitchTypeVer4] intValue] + NUM_ORIG_TYPES; 
+    if ([[curValues objectForKey:AtariTypeVer5] intValue] != -1)
+        prefs->atariType = [[curValues objectForKey:AtariTypeVer5] intValue] + NUM_TOTAL_TYPES;
+    else {
+        if ([[curValues objectForKey:AtariTypeVer4] intValue] == -1)
+            prefs->atariType = [[curValues objectForKey:AtariType] intValue];
+        else
+            prefs->atariType = [[curValues objectForKey:AtariTypeVer4] intValue] + NUM_ORIG_TYPES;
+    }
+
+    if ([[curValues objectForKey:AtariSwitchTypeVer5] intValue] != -1)
+        prefs->atariSwitchType = [[curValues objectForKey:AtariSwitchTypeVer5] intValue] + NUM_TOTAL_TYPES;
+    else {
+        if ([[curValues objectForKey:AtariSwitchTypeVer4] intValue] == -1)
+            prefs->atariSwitchType = [[curValues objectForKey:AtariSwitchType] intValue];
+        else
+            prefs->atariSwitchType = [[curValues objectForKey:AtariSwitchTypeVer4] intValue] + NUM_ORIG_TYPES;
+    }
     prefs->disableBasic = [[curValues objectForKey:DisableBasic] intValue]; 
     prefs->disableAllBasic = [[curValues objectForKey:DisableAllBasic] intValue]; 
     prefs->enableSioPatch = [[curValues objectForKey:EnableSioPatch] intValue]; 
@@ -3742,12 +3759,20 @@ static Preferences *sharedInstance = nil;
             [displayedValues setObject:two forKey:UseAtariCursorKeys];
             break;
 	}
-	if (prefssave->atariType < 14) {
+    //TBDMDG
+    if (prefssave->atariType > 18) {
+        [displayedValues setObject:zero forKey:AtariType];
+        [displayedValues setObject:[NSNumber numberWithInt:-1] forKey:AtariTypeVer4];
+        [displayedValues setObject:[NSNumber numberWithInt:(prefssave->atariType-19)] forKey:AtariTypeVer5];
+    }
+	else if (prefssave->atariType < 14) {
 		[displayedValues setObject:[NSNumber numberWithInt:prefssave->atariType] forKey:AtariType];
-		[displayedValues setObject:[NSNumber numberWithInt:-1] forKey:AtariTypeVer4];
+        [displayedValues setObject:[NSNumber numberWithInt:-1] forKey:AtariTypeVer4];
+        [displayedValues setObject:[NSNumber numberWithInt:-1] forKey:AtariTypeVer5];
 	} else {
 		[displayedValues setObject:zero forKey:AtariType];
-		[displayedValues setObject:[NSNumber numberWithInt:(prefssave->atariType-14)] forKey:AtariTypeVer4];
+        [displayedValues setObject:[NSNumber numberWithInt:(prefssave->atariType-14)] forKey:AtariTypeVer4];
+        [displayedValues setObject:[NSNumber numberWithInt:-1] forKey:AtariTypeVer5];
 	}
     switch(prefssave->atariType) {
         case 0:
@@ -4681,28 +4706,42 @@ static Preferences *sharedInstance = nil;
    These functions map the position of a machine type in a pulldown
    menu to the type variables and visa versa */
 
-- (int)indexFromType:(int) type:(int) ver4type
+- (int)indexFromType:(int) type:(int) ver4type: (int) ver5type
 	{
 	int compositeType;
-		
-	if (ver4type == -1)
-		compositeType = type;
-	else
-		compositeType = NUM_ORIG_TYPES + ver4type;
-	
-	if (compositeType >= NUM_TOTAL_TYPES)
-		return(0);
-	else
-		return(indicies[compositeType]);
-	}
+        
+    if (ver5type == -1) {
+        if (ver4type == -1)
+            compositeType = type;
+        else
+            compositeType = NUM_ORIG_TYPES + ver4type;
+        
+        if (compositeType >= NUM_TOTAL_TYPES)
+            return(0);
+        else
+            return(indicies[compositeType]);
+        }
+    else {
+        return ver5type + 14;
+        }
+    }
 
-- (int)typeFromIndex:(int) index:(int *)ver4type
+- (int)typeFromIndex:(int) index:(int *)ver4type:(int *)ver5type
 	{
-	if (index >= NUM_TOTAL_TYPES)
-		{
-		*ver4type = -1;
-		return(0);
-		}
+    //index += 3;
+    if (index >= NUM_NEW_TOTAL_TYPES)
+        {
+        *ver5type = -1;
+        *ver4type = -1;
+        return(0);
+        }
+    if (index >= NUM_TOTAL_TYPES)
+        {
+        *ver5type = index - NUM_TOTAL_TYPES;
+        *ver4type = -1;
+        return(0);
+        }
+    *ver5type = -1;
 	*ver4type = v4types[index];
 	return(types[index]);
 	}
@@ -4787,7 +4826,9 @@ static Preferences *sharedInstance = nil;
     getIntDefault(AtariType);
     getIntDefault(AtariSwitchType);
     getIntDefault(AtariTypeVer4);
+    getIntDefault(AtariTypeVer5);
     getIntDefault(AtariSwitchTypeVer4);
+    getIntDefault(AtariSwitchTypeVer5);
 	getIntDefault(AxlonBankMask);
 	getIntDefault(MosaicMaxBank);
 	getBoolDefault(MioEnabled);
@@ -5057,7 +5098,9 @@ static Preferences *sharedInstance = nil;
     setIntDefault(AtariType);
     setIntDefault(AtariSwitchType);
     setIntDefault(AtariTypeVer4);
+    setIntDefault(AtariTypeVer5);
     setIntDefault(AtariSwitchTypeVer4);
+    setIntDefault(AtariSwitchTypeVer5);
 	setIntDefault(AxlonBankMask);
 	setIntDefault(MosaicMaxBank);
 	setBoolDefault(MioEnabled);
@@ -5308,7 +5351,9 @@ static Preferences *sharedInstance = nil;
     setConfig(AtariType);
     setConfig(AtariSwitchType);
     setConfig(AtariTypeVer4);
+    setConfig(AtariTypeVer5);
     setConfig(AtariSwitchTypeVer4);
+    setConfig(AtariSwitchTypeVer5);
 	setConfig(AxlonBankMask);
 	setConfig(MosaicMaxBank);
 	setConfig(MioEnabled);
@@ -5657,7 +5702,9 @@ static Preferences *sharedInstance = nil;
     getConfig(AtariType);
     getConfig(AtariSwitchType);
     getConfig(AtariTypeVer4);
+    getConfig(AtariTypeVer5);
     getConfig(AtariSwitchTypeVer4);
+    getConfig(AtariSwitchTypeVer5);
 	getConfig(AxlonBankMask);
 	getConfig(MosaicMaxBank);
 	getConfig(MioEnabled);

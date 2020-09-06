@@ -33,7 +33,7 @@
 extern void PauseAudio(int pause);
 extern void MONITOR_monitorEnter(void);
 extern int MONITOR_monitorCmd(char *input);
-extern int CalcAtariType(int machineType, int ramSize, int axlon, int mosaic);
+extern int CalcAtariType(int machineType, int ramSize, int axlon, int mosaic, int ultimate);
 
 
 extern int keyjoyEnable;
@@ -77,6 +77,7 @@ extern int f3FunctionPressed;
 extern int f4FunctionPressed;
 extern int MONITOR_break_run_to_here;
 extern int FULLSCREEN_MACOS;
+extern int ULTIMATE_enabled;
 
 /* Functions which provide an interface for C code to call this object's shared Instance functions */
 void SetControlManagerLimit(int limit) {
@@ -456,19 +457,26 @@ static int monitorRunFirstTime = 1;
  *-----------------------------------------------------------------------------*/
 - (void)setMachineTypeMenu:(int)machineType:(int)ramSize
 {
-	int i, type, index, ver4type;
+	int i, type, index, ver4type, ver5type;
 	type = CalcAtariType(machineType, ramSize,
-						 MEMORY_axlon_num_banks > 0, MEMORY_mosaic_num_banks > 0);
+						 MEMORY_axlon_num_banks > 0, MEMORY_mosaic_num_banks > 0, ULTIMATE_enabled);
     
-	if (type > 13) {
-		ver4type = type - 14;
-		type = 0;
-	} else {
-		ver4type = -1;
-	}
-	index = [[Preferences sharedInstance] indexFromType:type :ver4type];
+    if (type > 18) {
+        ver5type = type - 19;
+        ver4type = -1;
+    } else {
+        ver5type = -1;
+        if (type > 13) {
+            ver4type = type - 14;
+            type = 0;
+        } else {
+            ver4type = -1;
+        }
+    }
+
+    index = [[Preferences sharedInstance] indexFromType:type :ver4type: ver5type];
 	
-	for (i=0;i<14;i++) {
+	for (i=0;i<15;i++) {
 		if (i==index)
 			[[machineTypeMenu itemAtIndex:i] setState:NSOnState];
 		else

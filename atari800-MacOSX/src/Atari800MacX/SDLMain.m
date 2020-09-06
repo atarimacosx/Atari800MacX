@@ -36,7 +36,7 @@ extern OSErr 	CPSEnableForegroundOperation( CPSProcessSerNum *psn, UInt32 _arg2,
 extern OSErr	CPSSetFrontProcess( CPSProcessSerNum *psn);
 
 #endif /* SDL_USE_CPS */
-extern int PLATFORM_Exit(int run_monitor);
+extern int Atari800_Exit(int run_monitor);
 
 static int    gArgc;
 static char  **gArgv;

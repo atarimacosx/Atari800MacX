@@ -56,7 +56,7 @@ typedef struct {
 } Header;
 
 extern void PauseAudio(int pause);
-extern int CalcAtariType(int machineType, int ramSize, int axlon, int mosaic);
+extern int CalcAtariType(int machineType, int ramSize, int axlon, int mosaic, int ultimate);
 extern char atari_disk_dirs[][FILENAME_MAX];
 extern char atari_diskset_dir[FILENAME_MAX];
 extern char atari_rom_dir[FILENAME_MAX];
@@ -88,6 +88,7 @@ extern int diskDriveSound;
 extern int PREFS_axlon_num_banks;
 extern int PREFS_mosaic_num_banks;
 extern int XEP80_port;
+extern int ULTIMATE_enabled;
 
 /* Arrays which define the cartridge types for each size */
 static int CART2KTYPES[] = {CARTRIDGE_STD_2};
@@ -364,7 +365,7 @@ NSImage *disketteImage;
 - (void)updateInfo {
     int i;
     int noDisks = TRUE;
-	int type, ver4type, index;
+	int type, ver4type, ver5type, index;
 	
     for (i=0;i<8;i++) {
         if (SIO_drive_status[i] == SIO_OFF)
@@ -492,14 +493,20 @@ NSImage *disketteImage;
         }
 	
 	type = CalcAtariType(Atari800_machine_type, MEMORY_ram_size,
-						 MEMORY_axlon_num_banks > 0, MEMORY_mosaic_num_banks > 0);
-	if (type > 13) {
-		ver4type = type - 14;
-		type = 0;
-	} else {
-		ver4type = -1;
-	}
-	index = [[Preferences sharedInstance] indexFromType:type :ver4type];
+						 MEMORY_axlon_num_banks > 0, MEMORY_mosaic_num_banks > 0, ULTIMATE_enabled);
+    if (type > 18) {
+        ver5type = type - 19;
+        ver4type = -1;
+    } else {
+        ver5type = -1;
+        if (type > 13) {
+            ver4type = type - 14;
+            type = 0;
+        } else {
+            ver4type = -1;
+        }
+    }
+    index = [[Preferences sharedInstance] indexFromType:type :ver4type :ver5type];
 		
 	[machineTypePulldown selectItemAtIndex:index];
     if (SCALE_MODE > 1)
@@ -2568,7 +2575,11 @@ NSImage *disketteImage;
 
 - (IBAction)machineTypeChange:(id)sender
 {
-	requestMachineTypeChange = [sender indexOfSelectedItem] + 1;
+    int index = [sender indexOfSelectedItem];
+    if (index > 13)
+        requestMachineTypeChange = index + 6;
+    else
+        requestMachineTypeChange = index + 1;
 }
 
 - (IBAction)scaleModeChange:(id)sender

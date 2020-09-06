@@ -722,6 +722,11 @@ DQ
                                                 <action selector="changeMachineType:" target="524" id="1004"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem title="Atari XL Ultimate 1MB" tag="19" id="Lqx-DL-0om">
+                                            <connections>
+                                                <action selector="changeMachineType:" target="524" id="3CD-mJ-xJc"/>
+                                            </connections>
+                                        </menuItem>
                                     </items>
                                 </menu>
                             </menuItem>

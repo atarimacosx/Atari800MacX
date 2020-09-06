@@ -47,8 +47,10 @@
 #define XEP80 @"XEP80"
 #define AtariType @"AtariType"
 #define AtariTypeVer4 @"AtariTypeVer4"
+#define AtariTypeVer5 @"AtariTypeVer5"
 #define AtariSwitchType @"AtariSwitchType"
 #define AtariSwitchTypeVer4 @"AtariSwitchTypeVer4"
+#define AtariSwitchTypeVer5 @"AtariSwitchTypeVer5"
 #define AxlonBankMask @"AxlonBankMask"
 #define MosaicMaxBank @"MosaicMaxBank"
 #define MioEnabled @"MioEnabled"
@@ -639,8 +641,8 @@
 - (void)padJoyConfigure:(id)sender;
 - (void)padJoyOK:(id)sender;
 
-- (int)indexFromType:(int) type:(int) ver4type;
-- (int)typeFromIndex:(int) index:(int *)ver4type;
+- (int)indexFromType:(int) type:(int) ver4type:(int) ver5type;
+- (int)typeFromIndex:(int) index:(int *)ver4type:(int *)ver5type;
 
 - (void)generateModemList;
 - (int) getModemPaths:(io_iterator_t )serialPortIterator;

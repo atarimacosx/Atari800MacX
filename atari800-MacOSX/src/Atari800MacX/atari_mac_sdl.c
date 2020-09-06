@@ -75,6 +75,7 @@
 #include "pbi_bb.h"
 #include "pbi_mio.h"
 #include "preferences_c.h"
+#include "ultimate1mb.h"
 #include "util.h"
 
 /* Local variables that control the display and sound modes.  They need to be visable externally
@@ -295,7 +296,7 @@ extern int RtConfigLoad(char *rtconfig_filename);
 extern void CalculatePrefsChanged();
 extern void loadPrefsBinaries();
 extern void CalcMachineTypeRam(int type, int *machineType, int *ramSize,
-							   int *axlon, int *mosaic);
+							   int *axlon, int *mosaic, int *ultimate);
 extern void BasicUIInit(void);
 extern void ClearScreen();
 extern void CenterPrint(int fg, int bg, char *string, int y);
@@ -307,7 +308,7 @@ extern void Devices_H_Init(void);
 extern void PreferencesSaveDefaults(void);
 extern void loadMacPrefs(int firstTime);
 extern void reloadMacJoyPrefs();
-extern int PreferencesTypeFromIndex(int index, int *ver4type);
+extern int PreferencesTypeFromIndex(int index, int *ver4type, int *ver5type);
 extern void PreferencesSaveConfiguration();
 extern void PreferencesLoadConfiguration();
 	
@@ -4459,17 +4460,21 @@ void ProcessMacMenus()
 		SetControlManagerCX85Enable(INPUT_cx85);
 		}
 	if (requestMachineTypeChange) {
-		int compositeType, type, ver4type;
+		int compositeType, type, ver4type, ver5type;
         int axlon_enabled, mosaic_enabled;
 		
-		type = PreferencesTypeFromIndex((requestMachineTypeChange-1),&ver4type);
-		if (ver4type == -1)
-			compositeType = type;
-		else
-			compositeType = 14+ver4type;
-		CalcMachineTypeRam(compositeType, &Atari800_machine_type, 
+		type = PreferencesTypeFromIndex((requestMachineTypeChange-1),&ver4type,&ver5type);
+        if (ver5type == -1) {
+            if (ver4type == -1)
+                compositeType = type;
+            else
+                compositeType = 14+ver4type;
+        } else {
+            compositeType = 19+ver5type;
+        }
+		CalcMachineTypeRam(compositeType, &Atari800_machine_type,
 						   &MEMORY_ram_size, &axlon_enabled,
-						   &mosaic_enabled);
+						   &mosaic_enabled, &ULTIMATE_enabled);
         if (!axlon_enabled)
             MEMORY_axlon_num_banks = 0;
         else
@@ -4844,7 +4849,9 @@ void CreateWindowCaption()
             break;
         }
     
-	if (MEMORY_axlon_num_banks > 0)
+    if (ULTIMATE_enabled)
+        sprintf(windowCaption, "XL Ultimate 1MB");
+	else if (MEMORY_axlon_num_banks > 0)
         sprintf(windowCaption, "%s Axlon %dK%s", machineType,
 				((MEMORY_axlon_num_banks) * 16) + 32,xep80String);
 	else if (MEMORY_mosaic_num_banks > 0)

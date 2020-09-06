@@ -163,7 +163,7 @@ DQ
                         <rect key="frame" x="104" y="232" width="414" height="34"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="1690">
-                            <font key="font" metaFont="toolTip"/>
+                            <font key="font" metaFont="menu" size="11"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -211,7 +211,7 @@ DQ
                         <rect key="frame" x="104" y="267" width="414" height="34"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="1694">
-                            <font key="font" metaFont="toolTip"/>
+                            <font key="font" metaFont="menu" size="11"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -220,7 +220,7 @@ DQ
                         <rect key="frame" x="104" y="162" width="414" height="34"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="1695">
-                            <font key="font" metaFont="toolTip"/>
+                            <font key="font" metaFont="menu" size="11"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -242,7 +242,7 @@ DQ
                         <rect key="frame" x="104" y="337" width="414" height="34"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="1697">
-                            <font key="font" metaFont="toolTip"/>
+                            <font key="font" metaFont="menu" size="11"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -290,7 +290,7 @@ DQ
                         <rect key="frame" x="104" y="197" width="414" height="34"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="1701">
-                            <font key="font" metaFont="toolTip"/>
+                            <font key="font" metaFont="menu" size="11"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -299,7 +299,7 @@ DQ
                         <rect key="frame" x="104" y="92" width="414" height="34"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="1702">
-                            <font key="font" metaFont="toolTip"/>
+                            <font key="font" metaFont="menu" size="11"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -308,7 +308,7 @@ DQ
                         <rect key="frame" x="104" y="127" width="414" height="34"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="1703">
-                            <font key="font" metaFont="toolTip"/>
+                            <font key="font" metaFont="menu" size="11"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -317,7 +317,7 @@ DQ
                         <rect key="frame" x="104" y="302" width="414" height="34"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="1704">
-                            <font key="font" metaFont="toolTip"/>
+                            <font key="font" metaFont="menu" size="11"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -2449,6 +2449,7 @@ DQ
                                     <menuItem title="Atari 576XE (576KB)" id="1231"/>
                                     <menuItem title="Atari 1088XE (1088KB)" id="1232"/>
                                     <menuItem title="Atari 5200 (16KB)" id="1200"/>
+                                    <menuItem title="Atari XL Ultimate 1MB" id="UQ4-dl-XoR"/>
                                 </items>
                             </menu>
                         </popUpButtonCell>
@@ -2598,6 +2599,7 @@ DQ
         <view id="952">
             <rect key="frame" x="0.0" y="0.0" width="1" height="111"/>
             <autoresizingMask key="autoresizingMask"/>
+            <point key="canvasLocation" x="140" y="335"/>
         </view>
         <view id="956">
             <rect key="frame" x="0.0" y="0.0" width="1" height="111"/>
@@ -2607,6 +2609,7 @@ DQ
         <view id="957">
             <rect key="frame" x="0.0" y="0.0" width="1" height="111"/>
             <autoresizingMask key="autoresizingMask"/>
+            <point key="canvasLocation" x="140" y="335"/>
         </view>
         <view id="959">
             <rect key="frame" x="0.0" y="0.0" width="1" height="111"/>
@@ -2616,10 +2619,12 @@ DQ
         <view id="970">
             <rect key="frame" x="0.0" y="0.0" width="1" height="111"/>
             <autoresizingMask key="autoresizingMask"/>
+            <point key="canvasLocation" x="140" y="335"/>
         </view>
         <view id="1061">
             <rect key="frame" x="0.0" y="0.0" width="1" height="111"/>
             <autoresizingMask key="autoresizingMask"/>
+            <point key="canvasLocation" x="140" y="335"/>
         </view>
         <view id="1072">
             <rect key="frame" x="0.0" y="0.0" width="1" height="111"/>
