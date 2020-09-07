@@ -249,7 +249,7 @@ void ULTIMATE_D5PutByte(UWORD addr, UBYTE byte)
             Set_SDX_Enabled(!(byte & 0x80));
 
             // TBD - What do we do here?
-            Update_External_Cart();
+            //Update_External_Cart();
             // Pre-control lock, the SDX bank is also used for the
             // BASIC and GAME banks (!).
             if (!config_lock)
@@ -324,7 +324,7 @@ void ULTIMATE_WarmStart(void)
 
     Set_SDX_Module_Enabled(TRUE);
 
-    Update_External_Cart();
+    //Update_External_Cart();
     //UpdateCartLayers();
     //UpdateFlashShadows();
 }
@@ -359,9 +359,10 @@ static void Set_SDX_Enabled(int enabled) {
         MEMORY_CopyROM(0xa000, 0xbfff, ultimate_rom + cart_bank_offset);
     }
     else {
-        if (!external_cart_enable) {
+        if (external_cart_enable)
+             CARTRDIGE_Switch_To_Piggyback();
+        else
             MEMORY_CartA0bfDisable();
-        }
     }
 }
 
@@ -375,7 +376,7 @@ static void Set_SDX_Module_Enabled(int enabled) {
         external_cart_enable = TRUE;
         Set_SDX_Bank(0);
         Set_SDX_Enabled(FALSE);
-        Update_External_Cart();
+        //Update_External_Cart();
     }
 
     // TBD mpCartridgePort->OnLeftWindowChanged(mCartId, IsLeftCartActive());
@@ -383,8 +384,6 @@ static void Set_SDX_Module_Enabled(int enabled) {
 
 static void Update_External_Cart(void)
 {
-    if (external_cart_enable)
-        CARTRDIGE_Switch_To_Piggyback();
 }
 
 static void Set_Kernel_Bank(UBYTE bank)
