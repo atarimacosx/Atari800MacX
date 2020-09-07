@@ -351,10 +351,12 @@ static void Set_SDX_Enabled(int enabled) {
 
     SDX_enable = enabled;
     if (SDX_enable) {
-        //if (CARTRIDGE_main.type == CARTRIDGE_NONE)
-        CARTRIDGE_Insert_Ultimate_1MB();
-        //MEMORY_Cart809fDisable();
-        //MEMORY_CartA0bfEnable();
+        if (CARTRIDGE_main.type == CARTRIDGE_NONE)
+            CARTRIDGE_Insert_Ultimate_1MB();
+        else {
+            MEMORY_Cart809fDisable();
+            MEMORY_CartA0bfEnable();
+        }
         MEMORY_CopyROM(0xa000, 0xbfff, ultimate_rom + cart_bank_offset);
     }
     else {
