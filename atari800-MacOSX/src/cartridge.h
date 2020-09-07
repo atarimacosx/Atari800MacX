@@ -5,7 +5,8 @@
 #include "atari.h"
 
 enum {
-	CARTRIDGE_UNKNOWN        = -1,
+    CARTRIDGE_ULTIMATE_1MB   = -2,
+    CARTRIDGE_UNKNOWN        = -1,
 	CARTRIDGE_NONE           =  0,
 	CARTRIDGE_STD_8          =  1,
 	CARTRIDGE_STD_16         =  2,
@@ -183,6 +184,7 @@ void CARTRIDGE_Exit(void);
 
 #ifdef ATARI800MACX
 #define CARTRIDGE_SPECIAL_BASIC "!Builtin_BASIC_CART!"
+#define CARTRIDGE_SPECIAL_ULTIMATE "!Builtin_ULTIMATE_CART!"
 #endif
 
 /* Inserts the left cartrifge. */
@@ -190,6 +192,8 @@ int CARTRIDGE_Insert(const char *filename);
 #ifdef ATARI800MACX
 /* Inserts the BASIC cartridge and reboots the system if needed. */
 int CARTRIDGE_Insert_BASIC(void);
+/* Inserts the Ultimate 1MB cartridge */
+int CARTRIDGE_Insert_Ultimate_1MB(void);
 #endif
 /* Inserts the left cartridge and reboots the system if needed. */
 int CARTRIDGE_InsertAutoReboot(const char *filename);
@@ -201,7 +205,10 @@ int CARTRIDGE_Insert_Second(const char *filename);
 void CARTRIDGE_SetType(CARTRIDGE_image_t *cart, int type);
 /* Sets type of the cartridge and reboots the system if needed. */
 void CARTRIDGE_SetTypeAutoReboot(CARTRIDGE_image_t *cart, int type);
-
+#ifdef ATARI800MACX
+/* Switch to piggback cartridge from Ultimate. */
+void CARTRDIGE_Switch_To_Piggyback(void);
+#endif
 /* Removes the left cartridge. */
 void CARTRIDGE_Remove(void);
 /* Removes the left cartridge and reboots the system if needed. */

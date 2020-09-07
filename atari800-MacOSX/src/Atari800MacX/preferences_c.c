@@ -305,7 +305,8 @@ void savePrefs() {
 	prefssave.enablePPatch = Devices_enable_p_patch;
 	prefssave.enableRPatch = Devices_enable_r_patch;
 		
-	prefssave.atariType = CalcAtariType(Atari800_machine_type, MEMORY_ram_size,
+
+    prefssave.atariType = CalcAtariType(Atari800_machine_type, MEMORY_ram_size,
 										MEMORY_axlon_num_banks > 0, MEMORY_mosaic_num_banks > 0,
                                         ULTIMATE_enabled);
 

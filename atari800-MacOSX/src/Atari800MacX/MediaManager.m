@@ -2214,7 +2214,8 @@ NSImage *disketteImage;
 			}
 
         if (CARTRIDGE_main.type == CARTRIDGE_SDX_64 || CARTRIDGE_main.type == CARTRIDGE_SDX_128 ||
-            CARTRIDGE_main.type == CARTRIDGE_ATRAX_SDX_64 || CARTRIDGE_main.type == CARTRIDGE_ATRAX_SDX_128)
+            CARTRIDGE_main.type == CARTRIDGE_ATRAX_SDX_64 || CARTRIDGE_main.type == CARTRIDGE_ATRAX_SDX_128 ||
+            CARTRIDGE_main.type == CARTRIDGE_ULTIMATE_1MB)
 			{
             if (CARTRIDGE_piggyback.type == CARTRIDGE_NONE) {
 				[cartImageSecondNameField setStringValue:@""];

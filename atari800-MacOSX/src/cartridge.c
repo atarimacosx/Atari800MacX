@@ -651,6 +651,10 @@ static void MapActiveCart(void)
 		case CARTRIDGE_SIC_512:
 		case CARTRIDGE_MEGAMAX_2048:
 			break;
+        case CARTRIDGE_ULTIMATE_1MB:
+            MEMORY_Cart809fDisable();
+            MEMORY_CartA0bfEnable();
+            return;
 		default:
 			MEMORY_Cart809fDisable();
 			if (!Atari800_builtin_basic
@@ -1470,6 +1474,11 @@ static int InsertCartridge(const char *filename, CARTRIDGE_image_t *cart)
         cart->type = CARTRIDGE_STD_8;
         InitCartridge(cart);
         return(0);
+    } else if (strcmp(filename,CARTRIDGE_SPECIAL_ULTIMATE) == 0) {
+        strcpy(cart->filename, "SDX");
+        cart->type = CARTRIDGE_ULTIMATE_1MB;
+        InitCartridge(cart);
+        return(0);
     } else {
 #else
     {
@@ -1570,6 +1579,24 @@ int CARTRIDGE_Insert_BASIC(void)
     /* remove currently inserted cart */
     CARTRIDGE_Remove();
     return InsertCartridge(CARTRIDGE_SPECIAL_BASIC, &CARTRIDGE_main);
+}
+
+int CARTRIDGE_Insert_Ultimate_1MB(void)
+{
+    /* remove currently inserted cart */
+    CARTRIDGE_Remove();
+    return InsertCartridge(CARTRIDGE_SPECIAL_ULTIMATE, &CARTRIDGE_main);
+}
+    
+void CARTRDIGE_Switch_To_Piggyback(void)
+{
+    if (CARTRIDGE_piggyback.type == CARTRIDGE_NONE) {
+        MEMORY_Cart809fDisable();
+        MEMORY_CartA0bfDisable();
+    } else {
+        active_cart = &CARTRIDGE_piggyback;
+        MapActiveCart();
+    }
 }
 #endif
 

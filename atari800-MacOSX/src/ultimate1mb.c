@@ -8,6 +8,7 @@
 
 #include "atari.h"
 #include "ultimate1mb.h"
+#include "cartridge.h"
 #include "util.h"
 #include "log.h"
 #include "memory.h"
@@ -243,11 +244,11 @@ void ULTIMATE_D5PutByte(UWORD addr, UBYTE byte)
             // D0:D5    => SDX bank
             //
             // Forced to 10000000 if SDX module is disabled.
+            external_cart_enable = ((byte & 0xc0) == 0x80);
             Set_SDX_Bank(byte & 63);
             Set_SDX_Enabled(!(byte & 0x80));
 
             // TBD - What do we do here?
-            external_cart_enable = ((byte & 0xc0) == 0x80);
             Update_External_Cart();
             // Pre-control lock, the SDX bank is also used for the
             // BASIC and GAME banks (!).
@@ -350,12 +351,16 @@ static void Set_SDX_Enabled(int enabled) {
 
     SDX_enable = enabled;
     if (SDX_enable) {
-        MEMORY_Cart809fDisable();
-        MEMORY_CartA0bfEnable();
+        //if (CARTRIDGE_main.type == CARTRIDGE_NONE)
+        CARTRIDGE_Insert_Ultimate_1MB();
+        //MEMORY_Cart809fDisable();
+        //MEMORY_CartA0bfEnable();
         MEMORY_CopyROM(0xa000, 0xbfff, ultimate_rom + cart_bank_offset);
     }
     else {
         MEMORY_CartA0bfDisable();
+        if (external_cart_enable)
+            CARTRDIGE_Switch_To_Piggyback();
     }
 }
 
@@ -366,9 +371,9 @@ static void Set_SDX_Module_Enabled(int enabled) {
     if (enabled) {
         Set_SDX_Enabled(TRUE);
     } else {
+        external_cart_enable = TRUE;
         Set_SDX_Bank(0);
         Set_SDX_Enabled(FALSE);
-        external_cart_enable = TRUE;
         // TBD UpdateExternalCart();
     }
 
