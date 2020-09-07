@@ -1117,7 +1117,7 @@ void CARTRIDGE_PutByte(UWORD addr, UBYTE byte)
 #ifdef ULTIMATE_1MB
     if (ULTIMATE_enabled) {
         ULTIMATE_D5PutByte(addr, byte);
-    }
+    } else 
 #endif
 	PutByte(&CARTRIDGE_main, addr, byte);
 	PutByte(&CARTRIDGE_piggyback, addr, byte);
@@ -1584,7 +1584,7 @@ int CARTRIDGE_Insert_BASIC(void)
 int CARTRIDGE_Insert_Ultimate_1MB(void)
 {
     /* remove currently inserted cart */
-    CARTRIDGE_Remove();
+    //CARTRIDGE_Remove();
     return InsertCartridge(CARTRIDGE_SPECIAL_ULTIMATE, &CARTRIDGE_main);
 }
     
@@ -1598,6 +1598,13 @@ void CARTRDIGE_Switch_To_Piggyback(void)
         MapActiveCart();
     }
 }
+
+void CARTRDIGE_Switch_To_Main(void)
+{
+    active_cart = &CARTRIDGE_main;
+    MapActiveCart();
+}
+
 #endif
 
 int CARTRIDGE_InsertAutoReboot(const char *filename)

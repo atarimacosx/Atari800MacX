@@ -324,7 +324,7 @@ void ULTIMATE_WarmStart(void)
 
     Set_SDX_Module_Enabled(TRUE);
 
-    //TBD UpdateExternalCart();
+    Update_External_Cart();
     //UpdateCartLayers();
     //UpdateFlashShadows();
 }
@@ -354,15 +354,14 @@ static void Set_SDX_Enabled(int enabled) {
         if (CARTRIDGE_main.type == CARTRIDGE_NONE)
             CARTRIDGE_Insert_Ultimate_1MB();
         else {
-            MEMORY_Cart809fDisable();
-            MEMORY_CartA0bfEnable();
+            CARTRDIGE_Switch_To_Main();
         }
         MEMORY_CopyROM(0xa000, 0xbfff, ultimate_rom + cart_bank_offset);
     }
     else {
-        MEMORY_CartA0bfDisable();
-        if (external_cart_enable)
-            CARTRDIGE_Switch_To_Piggyback();
+        if (!external_cart_enable) {
+            MEMORY_CartA0bfDisable();
+        }
     }
 }
 
@@ -376,7 +375,7 @@ static void Set_SDX_Module_Enabled(int enabled) {
         external_cart_enable = TRUE;
         Set_SDX_Bank(0);
         Set_SDX_Enabled(FALSE);
-        // TBD UpdateExternalCart();
+        Update_External_Cart();
     }
 
     // TBD mpCartridgePort->OnLeftWindowChanged(mCartId, IsLeftCartActive());
@@ -384,7 +383,8 @@ static void Set_SDX_Module_Enabled(int enabled) {
 
 static void Update_External_Cart(void)
 {
-    // TBD
+    if (external_cart_enable)
+        CARTRDIGE_Switch_To_Piggyback();
 }
 
 static void Set_Kernel_Bank(UBYTE bank)
