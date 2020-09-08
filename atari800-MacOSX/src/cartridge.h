@@ -199,9 +199,12 @@ int CARTRIDGE_Insert_Ultimate_1MB(void);
 int CARTRIDGE_InsertAutoReboot(const char *filename);
 /* Inserts the piggyback cartridge. */
 int CARTRIDGE_Insert_Second(const char *filename);
+#ifdef ATARI800MACX
+int CARTRIDGE_Insert_SecondAutoReboot(const char *filename);
 /* When the cartridge type is CARTRIDGE_UNKNOWN after a call to
    CARTRIDGE_Insert(), this function should be called to set the
    cartridge's type manually to a value chosen by user. */
+#endif
 void CARTRIDGE_SetType(CARTRIDGE_image_t *cart, int type);
 /* Sets type of the cartridge and reboots the system if needed. */
 void CARTRIDGE_SetTypeAutoReboot(CARTRIDGE_image_t *cart, int type);

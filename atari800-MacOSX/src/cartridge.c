@@ -1616,9 +1616,19 @@ int CARTRIDGE_InsertAutoReboot(const char *filename)
 
 int CARTRIDGE_Insert_Second(const char *filename)
 {
-	/* remove currently inserted cart */
-	CARTRIDGE_Remove_Second();
-	return InsertCartridge(filename, &CARTRIDGE_piggyback);
+    /* remove currently inserted cart */
+    CARTRIDGE_Remove_Second();
+    return InsertCartridge(filename, &CARTRIDGE_piggyback);
+}
+
+int CARTRIDGE_Insert_SecondAutoReboot(const char *filename)
+{
+    int result;
+    /* remove currently inserted cart */
+    CARTRIDGE_Remove_Second();
+    result = InsertCartridge(filename, &CARTRIDGE_piggyback);
+    AutoReboot();
+    return result;
 }
 
 void CARTRIDGE_Remove(void)
