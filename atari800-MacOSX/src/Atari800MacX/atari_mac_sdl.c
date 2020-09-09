@@ -4462,6 +4462,7 @@ void ProcessMacMenus()
 	if (requestMachineTypeChange) {
 		int compositeType, type, ver4type, ver5type;
         int axlon_enabled, mosaic_enabled;
+        int new_ultimate_enabled;
 		
 		type = PreferencesTypeFromIndex((requestMachineTypeChange-1),&ver4type,&ver5type);
         if (ver5type == -1) {
@@ -4474,7 +4475,12 @@ void ProcessMacMenus()
         }
 		CalcMachineTypeRam(compositeType, &Atari800_machine_type,
 						   &MEMORY_ram_size, &axlon_enabled,
-						   &mosaic_enabled, &ULTIMATE_enabled);
+						   &mosaic_enabled, &new_ultimate_enabled);
+        if (ULTIMATE_enabled && !new_ultimate_enabled)
+            {
+            CARTRIDGE_Remove();
+            }
+        ULTIMATE_enabled = new_ultimate_enabled;
         if (!axlon_enabled)
             MEMORY_axlon_num_banks = 0;
         else

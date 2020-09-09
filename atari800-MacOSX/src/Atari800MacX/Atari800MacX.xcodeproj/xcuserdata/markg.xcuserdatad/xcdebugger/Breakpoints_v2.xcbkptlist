@@ -334,8 +334,8 @@
             filePath = "atari_mac_sdl.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "4565"
-            endingLineNumber = "4565"
+            startingLineNumber = "4571"
+            endingLineNumber = "4571"
             landmarkName = "ProcessMacMenus()"
             landmarkType = "9">
          </BreakpointContent>
@@ -462,8 +462,8 @@
             filePath = "atari_mac_sdl.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "4466"
-            endingLineNumber = "4466"
+            startingLineNumber = "4467"
+            endingLineNumber = "4467"
             landmarkName = "ProcessMacMenus()"
             landmarkType = "9">
          </BreakpointContent>
@@ -526,8 +526,8 @@
             filePath = "atari_mac_sdl.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "4475"
-            endingLineNumber = "4475"
+            startingLineNumber = "4476"
+            endingLineNumber = "4476"
             landmarkName = "ProcessMacMenus()"
             landmarkType = "9">
          </BreakpointContent>
