@@ -610,9 +610,15 @@ NSImage *disketteImage;
     filename = [self browseFileInDirectory:[NSString stringWithCString:atari_rom_dir encoding:NSASCIIStringEncoding]];
     if (filename != nil) {
         [filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
-        cartSize = CARTRIDGE_Insert(cfilename);
-        if (cartSize > 0)
-            CARTRIDGE_main.type = [self cartSelect:cartSize];
+        if (ULTIMATE_enabled) {
+            cartSize = CARTRIDGE_Insert_Second(cfilename);
+            if (cartSize > 0)
+                CARTRIDGE_piggyback.type = [self cartSelect:cartSize];
+        } else {
+            cartSize = CARTRIDGE_Insert(cfilename);
+            if (cartSize > 0)
+                CARTRIDGE_main.type = [self cartSelect:cartSize];
+        }
         memset(Screen_atari, 0, (Screen_HEIGHT * Screen_WIDTH));
         Atari_DisplayScreen((UBYTE *) Screen_atari);
         Atari800_Coldstart();
@@ -670,7 +676,10 @@ NSImage *disketteImage;
 *-----------------------------------------------------------------------------*/
 - (IBAction)cartRemove:(id)sender
 {
-    CARTRIDGE_Remove();
+    if (ULTIMATE_enabled)
+        CARTRIDGE_Remove_Second();
+    else
+        CARTRIDGE_Remove();
     [self updateInfo];
     [[ControlManager sharedInstance] setDisableBasicMenu:Atari800_machine_type:Atari800_disable_basic];
     Atari800_Coldstart();
@@ -1843,12 +1852,22 @@ NSImage *disketteImage;
 *-----------------------------------------------------------------------------*/
 - (IBAction)cartStatusChange:(id)sender
 {
-    if (CARTRIDGE_main.type == CARTRIDGE_NONE) {
-		[self cartInsert:self];
-		}
-	else {
-		[self cartRemove:self];
-		}
+    if (ULTIMATE_enabled) {
+        if (CARTRIDGE_piggyback.type == CARTRIDGE_NONE) {
+            [self cartInsert:self];
+            }
+        else {
+            [self cartRemove:self];
+            }
+
+    } else {
+        if (CARTRIDGE_main.type == CARTRIDGE_NONE) {
+            [self cartInsert:self];
+            }
+        else {
+            [self cartRemove:self];
+            }
+    }
 }
 
 /*------------------------------------------------------------------------------
@@ -2189,18 +2208,16 @@ NSImage *disketteImage;
 			[d4DiskImageView setImage:closed810Image];
 			break;
 		}
-		
-    if (CARTRIDGE_main.type == CARTRIDGE_NONE) {
-			[cartImageNameField setStringValue:@"Empty"];
-			[cartImageInsertButton setTitle:@"Insert"];
-			[cartImageView setImage:offCartImage];
-			}
-		else {
-            if (strcmp(CARTRIDGE_main.filename,CARTRIDGE_SPECIAL_BASIC)==0) {
-                [cartImageNameField setStringValue:@"BASIC"];
-            } else {
-                ptr = CARTRIDGE_main.filename + strlen(CARTRIDGE_main.filename) - 1;
-                while (ptr > CARTRIDGE_main.filename) {
+
+    if (ULTIMATE_enabled) {
+        if (CARTRIDGE_piggyback.type == CARTRIDGE_NONE) {
+                [cartImageNameField setStringValue:@"Empty"];
+                [cartImageInsertButton setTitle:@"Insert"];
+                [cartImageView setImage:offCartImage];
+                }
+            else {
+                ptr = CARTRIDGE_piggyback.filename + strlen(CARTRIDGE_piggyback.filename) - 1;
+                while (ptr > CARTRIDGE_piggyback.filename) {
                     if (*ptr == '/') {
                         ptr++;
                         break;
@@ -2208,45 +2225,68 @@ NSImage *disketteImage;
                     ptr--;
                     }
                 [cartImageNameField setStringValue:[NSString stringWithCString:ptr encoding:NSASCIIStringEncoding]];
-            }
-			[cartImageInsertButton setTitle:@"Eject"];
-			[cartImageView setImage:onCartImage];
-			}
+                [cartImageInsertButton setTitle:@"Eject"];
+                [cartImageView setImage:onCartImage];
+                }
+    } else {
+        if (CARTRIDGE_main.type == CARTRIDGE_NONE) {
+                [cartImageNameField setStringValue:@"Empty"];
+                [cartImageInsertButton setTitle:@"Insert"];
+                [cartImageView setImage:offCartImage];
+                }
+            else {
+                if (strcmp(CARTRIDGE_main.filename,CARTRIDGE_SPECIAL_BASIC)==0) {
+                    [cartImageNameField setStringValue:@"BASIC"];
+                } else {
+                    ptr = CARTRIDGE_main.filename + strlen(CARTRIDGE_main.filename) - 1;
+                    while (ptr > CARTRIDGE_main.filename) {
+                        if (*ptr == '/') {
+                            ptr++;
+                            break;
+                            }
+                        ptr--;
+                        }
+                    [cartImageNameField setStringValue:[NSString stringWithCString:ptr encoding:NSASCIIStringEncoding]];
+                }
+                [cartImageInsertButton setTitle:@"Eject"];
+                [cartImageView setImage:onCartImage];
+                }
 
-        if (CARTRIDGE_main.type == CARTRIDGE_SDX_64 || CARTRIDGE_main.type == CARTRIDGE_SDX_128 ||
-            CARTRIDGE_main.type == CARTRIDGE_ATRAX_SDX_64 || CARTRIDGE_main.type == CARTRIDGE_ATRAX_SDX_128 ||
-            CARTRIDGE_main.type == CARTRIDGE_ULTIMATE_1MB)
-			{
-            if (CARTRIDGE_piggyback.type == CARTRIDGE_NONE) {
-				[cartImageSecondNameField setStringValue:@""];
-				[cartImageSecondInsertButton setTitle:@"Insert 2"];
-				[cartImageSecondInsertButton setEnabled:YES];
-				[cartImageSecondInsertButton setTransparent:NO];
-				}
-			else {
-                ptr = CARTRIDGE_piggyback.filename + strlen(CARTRIDGE_piggyback.filename) - 1;
-				while (ptr > CARTRIDGE_piggyback.filename) {
-					if (*ptr == '/') {
-						ptr++;
-						break;
-						}
-					ptr--;
-					}
-				[cartImageSecondNameField setStringValue:[NSString stringWithCString:ptr encoding:NSASCIIStringEncoding]];
-				[cartImageSecondInsertButton setTitle:@"Eject 2"];
-				[cartImageSecondInsertButton setEnabled:YES];
-				[cartImageSecondInsertButton setTransparent:NO];
-				}
-			}
-		else
-			{
-			[cartImageSecondNameField setStringValue:@""];
-			[cartImageSecondInsertButton setTitle:@"Insert 2"];
-			[cartImageSecondInsertButton setEnabled:NO];
-			[cartImageSecondInsertButton setTransparent:YES];
-			}
+            if (CARTRIDGE_main.type == CARTRIDGE_SDX_64 || CARTRIDGE_main.type == CARTRIDGE_SDX_128 ||
+                CARTRIDGE_main.type == CARTRIDGE_ATRAX_SDX_64 || CARTRIDGE_main.type == CARTRIDGE_ATRAX_SDX_128 ||
+                CARTRIDGE_main.type == CARTRIDGE_ULTIMATE_1MB)
+                {
+                if (CARTRIDGE_piggyback.type == CARTRIDGE_NONE) {
+                    [cartImageSecondNameField setStringValue:@""];
+                    [cartImageSecondInsertButton setTitle:@"Insert 2"];
+                    [cartImageSecondInsertButton setEnabled:YES];
+                    [cartImageSecondInsertButton setTransparent:NO];
+                    }
+                else {
+                    ptr = CARTRIDGE_piggyback.filename + strlen(CARTRIDGE_piggyback.filename) - 1;
+                    while (ptr > CARTRIDGE_piggyback.filename) {
+                        if (*ptr == '/') {
+                            ptr++;
+                            break;
+                            }
+                        ptr--;
+                        }
+                    [cartImageSecondNameField setStringValue:[NSString stringWithCString:ptr encoding:NSASCIIStringEncoding]];
+                    [cartImageSecondInsertButton setTitle:@"Eject 2"];
+                    [cartImageSecondInsertButton setEnabled:YES];
+                    [cartImageSecondInsertButton setTransparent:NO];
+                    }
+                }
+            else
+                {
+                [cartImageSecondNameField setStringValue:@""];
+                [cartImageSecondInsertButton setTitle:@"Insert 2"];
+                [cartImageSecondInsertButton setEnabled:NO];
+                [cartImageSecondInsertButton setTransparent:YES];
+                }
+    }
 
-		if (CASSETTE_status == CASSETTE_STATUS_NONE) {
+    if (CASSETTE_status == CASSETTE_STATUS_NONE) {
 			[cassImageNameField setStringValue:@"Empty"];
 			[cassImageInsertButton setTitle:@"Insert"];
             [cassImageRecordButton setEnabled:NO];
