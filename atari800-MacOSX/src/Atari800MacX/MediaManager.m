@@ -456,10 +456,17 @@ NSImage *disketteImage;
             [removeMenu setTarget:nil];
         else 
             [removeMenu setTarget:self];
-    if (CARTRIDGE_main.type == CARTRIDGE_NONE)
-            [removeCartItem setTarget:nil];
-        else
-            [removeCartItem setTarget:self];
+    if (ULTIMATE_enabled) {
+        if (CARTRIDGE_piggyback.type == CARTRIDGE_NONE)
+                [removeCartItem setTarget:nil];
+            else
+                [removeCartItem setTarget:self];
+    } else {
+        if (CARTRIDGE_main.type == CARTRIDGE_NONE)
+                [removeCartItem setTarget:nil];
+            else
+                [removeCartItem setTarget:self];
+    }
     if (CARTRIDGE_main.type == CARTRIDGE_SDX_64 || CARTRIDGE_main.type == CARTRIDGE_SDX_128 ||
         CARTRIDGE_main.type == CARTRIDGE_ATRAX_SDX_64 || CARTRIDGE_main.type == CARTRIDGE_ATRAX_SDX_128)
         [insertSecondCartItem setTarget:self];
