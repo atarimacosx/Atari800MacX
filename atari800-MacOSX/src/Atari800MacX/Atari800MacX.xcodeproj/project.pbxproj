@@ -24,6 +24,8 @@
 		2D037E361001124F0045DB8E /* PastePanel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D037E341001124F0045DB8E /* PastePanel.m */; };
 		2D05560324C3E7690026DE9C /* bit3.c in Sources */ = {isa = PBXBuildFile; fileRef = 2D05560124C3E7690026DE9C /* bit3.c */; };
 		2D05560424C3E7690026DE9C /* bit3.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D05560224C3E7690026DE9C /* bit3.h */; };
+		2D09D06A250939B200B73A8D /* ide.c in Sources */ = {isa = PBXBuildFile; fileRef = 2D09D068250939B200B73A8D /* ide.c */; };
+		2D09D06B250939B200B73A8D /* ide.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D09D069250939B200B73A8D /* ide.h */; };
 		2D0BA11A107D6EF000DEF450 /* LabelDataSource.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D0BA118107D6EF000DEF450 /* LabelDataSource.h */; };
 		2D0BA11B107D6EF000DEF450 /* LabelDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D0BA119107D6EF000DEF450 /* LabelDataSource.m */; };
 		2D0BA125107D724600DEF450 /* Label.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D0BA123107D724600DEF450 /* Label.h */; };
@@ -390,6 +392,8 @@
 		2D068AF008DD2FA0001D855E /* SectorEditorDataSource.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SectorEditorDataSource.m; sourceTree = SOURCE_ROOT; };
 		2D068AF108DD2FA0001D855E /* SectorEditorWindow.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SectorEditorWindow.h; sourceTree = SOURCE_ROOT; };
 		2D068AF208DD2FA0001D855E /* SectorEditorWindow.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SectorEditorWindow.m; sourceTree = SOURCE_ROOT; };
+		2D09D068250939B200B73A8D /* ide.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ide.c; path = ../ide.c; sourceTree = "<group>"; };
+		2D09D069250939B200B73A8D /* ide.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ide.h; path = ../ide.h; sourceTree = "<group>"; };
 		2D0BA118107D6EF000DEF450 /* LabelDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LabelDataSource.h; sourceTree = SOURCE_ROOT; };
 		2D0BA119107D6EF000DEF450 /* LabelDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LabelDataSource.m; sourceTree = SOURCE_ROOT; };
 		2D0BA123107D724600DEF450 /* Label.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Label.h; sourceTree = SOURCE_ROOT; };
@@ -914,6 +918,8 @@
 				F5558344030EF4CD01A8C8B4 /* gtia.h */,
 				F5558345030EF4CD01A8C8B4 /* gtia.c */,
 				F5558342030EF4CD01A8C8B4 /* input.h */,
+				2D09D068250939B200B73A8D /* ide.c */,
+				2D09D069250939B200B73A8D /* ide.h */,
 				2DE6EB8324CE6BCA00A55386 /* img_tape.c */,
 				2DE6EB8424CE6BCB00A55386 /* img_tape.h */,
 				F5558340030EF4CD01A8C8B4 /* list.h */,
@@ -1142,6 +1148,7 @@
 				2DAEDB0709B69AED005FF181 /* preferences_c.h in Headers */,
 				2DA5F7BE24D090E3002EBBFA /* sysrom.h in Headers */,
 				2DAEDB0809B69AED005FF181 /* MediaManager.h in Headers */,
+				2D09D06B250939B200B73A8D /* ide.h in Headers */,
 				2DAEDB0909B69AED005FF181 /* DisplayManager.h in Headers */,
 				2DAEDB0A09B69AED005FF181 /* ControlManager.h in Headers */,
 				2DE6EB8124CE197000A55386 /* altirra_5200_os.h in Headers */,
@@ -1470,6 +1477,7 @@
 				2DE2D3AC106F04A90049A8A1 /* BreakpointsController.m in Sources */,
 				2DC936CD10701D5B0075BCBD /* Breakpoint.m in Sources */,
 				2DC936D210701D950075BCBD /* BreakpointCondition.m in Sources */,
+				2D09D06A250939B200B73A8D /* ide.c in Sources */,
 				2D013C8E10718EF8009D2E84 /* BreakpointDataSource.m in Sources */,
 				2D176A551072894F009D5644 /* BreakpointTableView.m in Sources */,
 				2D176BB010729BD4009D5644 /* BreakpointEditorDataSource.m in Sources */,

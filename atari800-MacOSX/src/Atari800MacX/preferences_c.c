@@ -538,8 +538,8 @@ void CalcMachineTypeRam(int type, int *machineType, int *ramSize,
             *ramSize = 128;
 			*axlon = FALSE;
 			*mosaic = FALSE;
-            break;
             *ultimate = FALSE;
+            break;
         case 9:
             *machineType = Atari800_MACHINE_XLXE;
             *ramSize = MEMORY_RAM_320_RAMBO;
