@@ -296,7 +296,7 @@ extern int RtConfigLoad(char *rtconfig_filename);
 extern void CalculatePrefsChanged();
 extern void loadPrefsBinaries();
 extern void CalcMachineTypeRam(int type, int *machineType, int *ramSize,
-							   int *axlon, int *mosaic, int *ultimate);
+							   int *axlon, int *mosaic, int *ultimate, int *side);
 extern void BasicUIInit(void);
 extern void ClearScreen();
 extern void CenterPrint(int fg, int bg, char *string, int y);
@@ -4260,7 +4260,7 @@ void SDL_DrawMousePointer(void)
 void CountFPS()
 {
     static int ticks1 = 0, ticks2, shortframes, fps;
-	char title[40];
+	char title[80];
     char count[20];
         
     if (Screen_show_atari_speed) {    
@@ -4462,7 +4462,7 @@ void ProcessMacMenus()
 	if (requestMachineTypeChange) {
 		int compositeType, type, ver4type, ver5type;
         int axlon_enabled, mosaic_enabled;
-        int new_ultimate_enabled;
+        int new_ultimate_enabled, new_side2_enabled;
 		
 		type = PreferencesTypeFromIndex((requestMachineTypeChange-1),&ver4type,&ver5type);
         if (ver5type == -1) {
@@ -4475,12 +4475,13 @@ void ProcessMacMenus()
         }
 		CalcMachineTypeRam(compositeType, &Atari800_machine_type,
 						   &MEMORY_ram_size, &axlon_enabled,
-						   &mosaic_enabled, &new_ultimate_enabled);
+						   &mosaic_enabled, &new_ultimate_enabled,&new_side2_enabled);
         if (ULTIMATE_enabled && !new_ultimate_enabled)
             {
             CARTRIDGE_Remove();
             }
         ULTIMATE_enabled = new_ultimate_enabled;
+        SIDE2_enabled = new_side2_enabled;
         if (!axlon_enabled)
             MEMORY_axlon_num_banks = 0;
         else
@@ -4855,8 +4856,12 @@ void CreateWindowCaption()
             break;
         }
     
-    if (ULTIMATE_enabled)
-        sprintf(windowCaption, "XL Ultimate 1MB");
+    if (ULTIMATE_enabled) {
+        if (SIDE2_enabled)
+            sprintf(windowCaption, "XL Ultimate 1MB + SIDE 2 %dK", MEMORY_ram_size);
+        else
+            sprintf(windowCaption, "XL Ultimate 1MB %dK", MEMORY_ram_size);
+    }
 	else if (MEMORY_axlon_num_banks > 0)
         sprintf(windowCaption, "%s Axlon %dK%s", machineType,
 				((MEMORY_axlon_num_banks) * 16) + 32,xep80String);

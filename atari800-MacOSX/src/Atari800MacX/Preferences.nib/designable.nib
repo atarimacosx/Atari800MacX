@@ -1019,6 +1019,7 @@ DQ
                                                         <menuItem title="Atari 1088XE (1088 KB)" id="478"/>
                                                         <menuItem title="Atari 5200 (16KB)" id="479"/>
                                                         <menuItem title="Atari XL Ultimate 1MB" id="UcN-sK-dEF"/>
+                                                        <menuItem title="Atari XL Ultimate 1MB + SIDE 2" id="jKJ-Ig-whB"/>
                                                     </items>
                                                 </menu>
                                             </popUpButtonCell>
@@ -1273,6 +1274,7 @@ DQ
                                                         <menuItem title="Atari 576XE (576 KB)" id="4270"/>
                                                         <menuItem title="Atari 1088XE (1088 KB)" id="4271"/>
                                                         <menuItem title="Atari XL Ultimate 1MB" id="T3W-ID-cYt"/>
+                                                        <menuItem title="Atari XL Ultimate 1MB + SIDE 2" id="tz0-bx-VT9"/>
                                                     </items>
                                                 </menu>
                                             </popUpButtonCell>

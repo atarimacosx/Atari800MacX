@@ -27,6 +27,7 @@ static char ultimate_rom_filename[FILENAME_MAX] = Util_FILENAME_NOT_SET;
 #endif
 
 int ULTIMATE_enabled = TRUE;
+int SIDE2_enabled = FALSE;
 
 /* Ultimate1MB information from Altirra Hardware Reference Manual */
 static int config_lock = FALSE;

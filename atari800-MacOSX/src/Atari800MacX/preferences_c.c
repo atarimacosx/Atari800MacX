@@ -200,7 +200,7 @@ int diskDriveSound = 1;
 int saveCurrentMedia = 1;
 int clearCurrentMedia = 0;
 
-int CalcAtariType(int machineType, int ramSize, int axlon, int mosaic, int ultimate);
+int CalcAtariType(int machineType, int ramSize, int axlon, int mosaic, int ultimate, int side);
 
 /* Arrays to translate menu indicies for gamepad keys to key values */
 #define AKEY_BUTTON1  		0x100
@@ -308,7 +308,7 @@ void savePrefs() {
 
     prefssave.atariType = CalcAtariType(Atari800_machine_type, MEMORY_ram_size,
 										MEMORY_axlon_num_banks > 0, MEMORY_mosaic_num_banks > 0,
-                                        ULTIMATE_enabled);
+                                        ULTIMATE_enabled, SIDE2_enabled);
 
 	prefssave.currPrinter = currPrinter;
 	prefssave.artifactingMode = ANTIC_artif_mode;
@@ -417,7 +417,7 @@ void loadPrefsBinaries() {
 *   19: Atari800_MACHINE_XLXE Ultimate 1MB
 **************************************************************/
 
-int CalcAtariType(int machineType, int ramSize, int axlon, int mosaic, int ultimate)
+int CalcAtariType(int machineType, int ramSize, int axlon, int mosaic, int ultimate, int side)
 {
 	if (machineType == Atari800_MACHINE_800) {
 		if (axlon) {
@@ -442,6 +442,8 @@ int CalcAtariType(int machineType, int ramSize, int axlon, int mosaic, int ultim
 		}
 	}
 	else if (machineType == Atari800_MACHINE_XLXE) {
+        if (ultimate && side)
+            return 20;
         if (ultimate)
             return 19;
 		if (ramSize == 16)
@@ -474,7 +476,7 @@ int CalcAtariType(int machineType, int ramSize, int axlon, int mosaic, int ultim
 }
 
 void CalcMachineTypeRam(int type, int *machineType, int *ramSize,
-						int *axlon, int *mosaic, int *ultimate)
+						int *axlon, int *mosaic, int *ultimate, int *side)
 {
     switch(type) {
         case 0:
@@ -483,6 +485,7 @@ void CalcMachineTypeRam(int type, int *machineType, int *ramSize,
 			*axlon = FALSE;
 			*mosaic = FALSE;
             *ultimate = FALSE;
+            *side = FALSE;
             break;
         case 1:
             *machineType = Atari800_MACHINE_800;
@@ -490,6 +493,7 @@ void CalcMachineTypeRam(int type, int *machineType, int *ramSize,
 			*axlon = FALSE;
 			*mosaic = FALSE;
             *ultimate = FALSE;
+            *side = FALSE;
             break;
         case 2:
             *machineType = Atari800_MACHINE_800;
@@ -497,6 +501,7 @@ void CalcMachineTypeRam(int type, int *machineType, int *ramSize,
 			*axlon = FALSE;
 			*mosaic = FALSE;
             *ultimate = FALSE;
+            *side = FALSE;
             break;
         case 3:
             *machineType = Atari800_MACHINE_800;
@@ -504,6 +509,7 @@ void CalcMachineTypeRam(int type, int *machineType, int *ramSize,
 			*axlon = FALSE;
 			*mosaic = FALSE;
             *ultimate = FALSE;
+            *side = FALSE;
             break;
         case 4:
             *machineType = Atari800_MACHINE_800;
@@ -511,6 +517,7 @@ void CalcMachineTypeRam(int type, int *machineType, int *ramSize,
 			*axlon = FALSE;
 			*mosaic = FALSE;
             *ultimate = FALSE;
+            *side = FALSE;
             break;
         case 5:
             *machineType = Atari800_MACHINE_800;
@@ -518,6 +525,7 @@ void CalcMachineTypeRam(int type, int *machineType, int *ramSize,
 			*axlon = FALSE;
 			*mosaic = FALSE;
             *ultimate = FALSE;
+            *side = FALSE;
             break;
         case 6:
             *machineType = Atari800_MACHINE_XLXE;
@@ -525,6 +533,7 @@ void CalcMachineTypeRam(int type, int *machineType, int *ramSize,
 			*axlon = FALSE;
 			*mosaic = FALSE;
             *ultimate = FALSE;
+            *side = FALSE;
             break;
         case 7:
             *machineType = Atari800_MACHINE_XLXE;
@@ -532,6 +541,7 @@ void CalcMachineTypeRam(int type, int *machineType, int *ramSize,
 			*axlon = FALSE;
 			*mosaic = FALSE;
             *ultimate = FALSE;
+            *side = FALSE;
             break;
         case 8:
             *machineType = Atari800_MACHINE_XLXE;
@@ -539,6 +549,7 @@ void CalcMachineTypeRam(int type, int *machineType, int *ramSize,
 			*axlon = FALSE;
 			*mosaic = FALSE;
             *ultimate = FALSE;
+            *side = FALSE;
             break;
         case 9:
             *machineType = Atari800_MACHINE_XLXE;
@@ -546,6 +557,7 @@ void CalcMachineTypeRam(int type, int *machineType, int *ramSize,
 			*axlon = FALSE;
 			*mosaic = FALSE;
             *ultimate = FALSE;
+            *side = FALSE;
             break;
         case 10:
             *machineType = Atari800_MACHINE_XLXE;
@@ -553,6 +565,7 @@ void CalcMachineTypeRam(int type, int *machineType, int *ramSize,
 			*axlon = FALSE;
 			*mosaic = FALSE;
             *ultimate = FALSE;
+            *side = FALSE;
             break;
         case 11:
             *machineType = Atari800_MACHINE_XLXE;
@@ -560,6 +573,7 @@ void CalcMachineTypeRam(int type, int *machineType, int *ramSize,
 			*axlon = FALSE;
 			*mosaic = FALSE;
             *ultimate = FALSE;
+            *side = FALSE;
             break;
         case 12:
             *machineType = Atari800_MACHINE_XLXE;
@@ -567,6 +581,7 @@ void CalcMachineTypeRam(int type, int *machineType, int *ramSize,
 			*axlon = FALSE;
 			*mosaic = FALSE;
             *ultimate = FALSE;
+            *side = FALSE;
             break;
         case 13:
             *machineType = Atari800_MACHINE_5200;
@@ -574,6 +589,7 @@ void CalcMachineTypeRam(int type, int *machineType, int *ramSize,
 			*axlon = FALSE;
 			*mosaic = FALSE;
             *ultimate = FALSE;
+            *side = FALSE;
             break;
         case 14:
             *machineType = Atari800_MACHINE_800;
@@ -581,6 +597,7 @@ void CalcMachineTypeRam(int type, int *machineType, int *ramSize,
 			*axlon = TRUE;
 			*mosaic = FALSE;
             *ultimate = FALSE;
+            *side = FALSE;
             break;
         case 15:
             *machineType = Atari800_MACHINE_800;
@@ -588,6 +605,7 @@ void CalcMachineTypeRam(int type, int *machineType, int *ramSize,
 			*axlon = FALSE;
 			*mosaic = TRUE;
             *ultimate = FALSE;
+            *side = FALSE;
             break;
         case 16:
             *machineType = Atari800_MACHINE_800;
@@ -595,6 +613,7 @@ void CalcMachineTypeRam(int type, int *machineType, int *ramSize,
 			*axlon = TRUE;
 			*mosaic = FALSE;
             *ultimate = FALSE;
+            *side = FALSE;
             break;
         case 17:
             *machineType = Atari800_MACHINE_800;
@@ -602,6 +621,7 @@ void CalcMachineTypeRam(int type, int *machineType, int *ramSize,
 			*axlon = FALSE;
 			*mosaic = TRUE;
             *ultimate = FALSE;
+            *side = FALSE;
             break;
         case 18:
             *machineType = Atari800_MACHINE_XLXE;
@@ -609,6 +629,7 @@ void CalcMachineTypeRam(int type, int *machineType, int *ramSize,
             *axlon = FALSE;
             *mosaic = FALSE;
             *ultimate = FALSE;
+            *side = FALSE;
             break;
         case 19:
             *machineType = Atari800_MACHINE_XLXE;
@@ -616,6 +637,15 @@ void CalcMachineTypeRam(int type, int *machineType, int *ramSize,
             *axlon = FALSE;
             *mosaic = FALSE;
             *ultimate = TRUE;
+            *side = FALSE;
+            break;
+        case 20:
+            *machineType = Atari800_MACHINE_XLXE;
+            *ramSize = 1088;
+            *axlon = FALSE;
+            *mosaic = FALSE;
+            *ultimate = TRUE;
+            *side = TRUE;
             break;
 	}
 
@@ -628,6 +658,7 @@ void CalculatePrefsChanged()
 	int new_axlon = 0;
 	int new_mosaic = 0;
     int new_ultimate = 0;
+    int new_side2 = 0;
 
     if (WIDTH_MODE != prefs.widthMode)
         displaySizeChanged = TRUE;
@@ -672,7 +703,7 @@ void CalculatePrefsChanged()
     strcpy(bit3_charset_filename, prefs.bit3CharsetFile);
 
     CalcMachineTypeRam(prefs.atariType, &new_machine_type, &new_ram_size,
-					   &new_axlon, &new_mosaic, &new_ultimate);
+					   &new_axlon, &new_mosaic, &new_ultimate, &new_side2);
     if ((Atari800_machine_type != new_machine_type) ||
         (MEMORY_ram_size != new_ram_size) ||
 		((MEMORY_axlon_num_banks > 0) != new_axlon) ||
@@ -681,7 +712,8 @@ void CalculatePrefsChanged()
 		((MEMORY_mosaic_num_banks - 1) != prefs.mosaicMaxBank) ||
 		(bbRequested != prefs.blackBoxEnabled) ||
 		(mioRequested != prefs.mioEnabled) ||
-        (ULTIMATE_enabled != new_ultimate))
+        (ULTIMATE_enabled != new_ultimate) ||
+        (SIDE2_enabled != new_side2))
         machineTypeChanged = TRUE;
     else
         machineTypeChanged = FALSE;
@@ -827,7 +859,8 @@ int loadMacPrefs(int firstTime)
     paletteColorShift = prefs.colorShift; 
     strcpy(paletteFilename, prefs.paletteFile);
     CalcMachineTypeRam(prefs.atariType, &Atari800_machine_type, &MEMORY_ram_size,
-					   &axlon_enabled, &mosaic_enabled, &ULTIMATE_enabled);
+					   &axlon_enabled, &mosaic_enabled, &ULTIMATE_enabled,
+                           &SIDE2_enabled);
     if (axlon_enabled) {
         MEMORY_axlon_num_banks = prefs.axlonBankMask + 1;
         PREFS_axlon_num_banks = MEMORY_axlon_num_banks;

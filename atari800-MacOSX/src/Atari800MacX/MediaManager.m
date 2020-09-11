@@ -72,7 +72,7 @@ extern int currPrinter;
 extern int Devices_enable_d_patch;
 extern int Devices_enable_p_patch;
 extern void CalcMachineTypeRam(int type, int *machineType, int *ramSize,
-							   int *axlon, int *mosaic);
+							   int *axlon, int *mosaic, int *ultimate, int *side);
 extern int machine_switch_type;
 extern void Atari_DisplayScreen(UBYTE * screen);
 extern int requestMachineTypeChange;
@@ -89,6 +89,7 @@ extern int PREFS_axlon_num_banks;
 extern int PREFS_mosaic_num_banks;
 extern int XEP80_port;
 extern int ULTIMATE_enabled;
+extern int SIDE2_enabled;
 
 /* Arrays which define the cartridge types for each size */
 static int CART2KTYPES[] = {CARTRIDGE_STD_2};
@@ -926,11 +927,12 @@ NSImage *disketteImage;
 - (void)changeToComputer
 {
     int axlon_enabled, mosaic_enabled;
+    
 	CARTRIDGE_Remove();
 	
 	CalcMachineTypeRam(machine_switch_type, &Atari800_machine_type, 
 					   &MEMORY_ram_size, &axlon_enabled,
-					   &mosaic_enabled);
+					   &mosaic_enabled, &ULTIMATE_enabled, &SIDE2_enabled);
 	
     if (!axlon_enabled)
         MEMORY_axlon_num_banks = 0;

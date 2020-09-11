@@ -727,6 +727,11 @@ DQ
                                                 <action selector="changeMachineType:" target="524" id="3CD-mJ-xJc"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem title="Atari XL Ultimate 1MB + SIDE 2" tag="20" id="YMd-5V-vhO">
+                                            <connections>
+                                                <action selector="changeMachineType:" target="524" id="LbU-dN-gRS"/>
+                                            </connections>
+                                        </menuItem>
                                     </items>
                                 </menu>
                             </menuItem>
