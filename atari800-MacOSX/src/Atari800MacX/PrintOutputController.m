@@ -293,7 +293,7 @@ static NSMutableArray *printArray;
     
     savePanel = [NSSavePanel savePanel];
     [savePanel setAllowedFileTypes:[NSArray arrayWithObject:@"pdf"]];
-	[savePanel setDirectoryURL:[NSURL fileURLWithPath:[NSString stringWithCString:atari_print_dir encoding:NSASCIIStringEncoding]]];
+	[savePanel setDirectoryURL:[NSURL fileURLWithPath:[NSString stringWithCString:atari_print_dir encoding:NSUTF8StringEncoding]]];
     
     if ([savePanel runModal] == NSModalResponseOK)
 		{

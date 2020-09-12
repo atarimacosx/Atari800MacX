@@ -127,7 +127,7 @@ static int idCounter = 0;
 	int status = 0;
 	char cfilename[FILENAME_MAX];
 	
-	[filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+	[filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
 	if ((status = AtrMount(cfilename ,&dosType, &readWrite, &writeProtect,&diskinfo)))
         {
 		AtrUnmount(diskinfo);
@@ -226,7 +226,7 @@ static int idCounter = 0;
 	char cstring[FILENAME_MAX];
 	int status;
 	
-	[filename getCString:cstring maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+	[filename getCString:cstring maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
 	
 	status = AtrImportFile(diskinfo, cstring, lfConvert);
 	
@@ -251,7 +251,7 @@ static int idCounter = 0;
 	
 	if (![self isDirectory:index]) {
 		[self getFilename:index:fileName];
-		[dirName getCString:cname maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+		[dirName getCString:cname maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
 		strcat(cname,"/");
 		strcat(cname, fileName);
 	
@@ -682,7 +682,7 @@ static int idCounter = 0;
 		
 		/* Delete the files, since they are no longer needed */
 		for (i=0;i<[files count];i++) {
-			[[files objectAtIndex:i] getCString:cname maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding ];
+			[[files objectAtIndex:i] getCString:cname maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding ];
 			unlink(cname);
 			}
 		

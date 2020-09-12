@@ -371,7 +371,7 @@ NSImage *disketteImage;
             strcpy(SIO_filename[i],"Off");
         switch(i) {
             case 0:
-                [d1DiskField setStringValue:[NSString stringWithCString:SIO_filename[0] encoding:NSASCIIStringEncoding]];
+                [d1DiskField setStringValue:[NSString stringWithCString:SIO_filename[0] encoding:NSUTF8StringEncoding]];
                 [d1DriveStatusPulldown selectItemAtIndex:SIO_drive_status[0]];
                 if (SIO_drive_status[0] == SIO_OFF || SIO_drive_status[0] == SIO_NO_DISK)
                     [removeD1Item setTarget:nil];
@@ -381,7 +381,7 @@ NSImage *disketteImage;
                     }
                 break;
             case 1:
-                [d2DiskField setStringValue:[NSString stringWithCString:SIO_filename[1] encoding:NSASCIIStringEncoding]];
+                [d2DiskField setStringValue:[NSString stringWithCString:SIO_filename[1] encoding:NSUTF8StringEncoding]];
                 [d2DriveStatusPulldown selectItemAtIndex:SIO_drive_status[1]];
                 if (SIO_drive_status[1] == SIO_OFF || SIO_drive_status[1] == SIO_NO_DISK)
                     [removeD2Item setTarget:nil];
@@ -390,7 +390,7 @@ NSImage *disketteImage;
                     noDisks = FALSE;
                     }
             case 2:
-                [d3DiskField setStringValue:[NSString stringWithCString:SIO_filename[2] encoding:NSASCIIStringEncoding]];
+                [d3DiskField setStringValue:[NSString stringWithCString:SIO_filename[2] encoding:NSUTF8StringEncoding]];
                 [d3DriveStatusPulldown selectItemAtIndex:SIO_drive_status[2]];
                 if (SIO_drive_status[2] == SIO_OFF || SIO_drive_status[2] == SIO_NO_DISK)
                     [removeD3Item setTarget:nil];
@@ -400,7 +400,7 @@ NSImage *disketteImage;
                     }
                 break;
             case 3:
-                [d4DiskField setStringValue:[NSString stringWithCString:SIO_filename[3] encoding:NSASCIIStringEncoding]];
+                [d4DiskField setStringValue:[NSString stringWithCString:SIO_filename[3] encoding:NSUTF8StringEncoding]];
                 [d4DriveStatusPulldown selectItemAtIndex:SIO_drive_status[3]];
                 if (SIO_drive_status[3] == SIO_OFF || SIO_drive_status[3] == SIO_NO_DISK)
                     [removeD4Item setTarget:nil];
@@ -410,7 +410,7 @@ NSImage *disketteImage;
                     }
                 break;
             case 4:
-                [d5DiskField setStringValue:[NSString stringWithCString:SIO_filename[4] encoding:NSASCIIStringEncoding]];
+                [d5DiskField setStringValue:[NSString stringWithCString:SIO_filename[4] encoding:NSUTF8StringEncoding]];
                 [d5DriveStatusPulldown selectItemAtIndex:SIO_drive_status[4]];
                 if (SIO_drive_status[4] == SIO_OFF || SIO_drive_status[4] == SIO_NO_DISK)
                     [removeD5Item setTarget:nil];
@@ -420,7 +420,7 @@ NSImage *disketteImage;
                     }
                 break;
             case 5:
-                [d6DiskField setStringValue:[NSString stringWithCString:SIO_filename[5] encoding:NSASCIIStringEncoding]];
+                [d6DiskField setStringValue:[NSString stringWithCString:SIO_filename[5] encoding:NSUTF8StringEncoding]];
                 [d6DriveStatusPulldown selectItemAtIndex:SIO_drive_status[5]];
                 if (SIO_drive_status[5] == SIO_OFF || SIO_drive_status[5] == SIO_NO_DISK)
                     [removeD6Item setTarget:nil];
@@ -430,7 +430,7 @@ NSImage *disketteImage;
                     }
                 break;
             case 6:
-                [d7DiskField setStringValue:[NSString stringWithCString:SIO_filename[6] encoding:NSASCIIStringEncoding]];
+                [d7DiskField setStringValue:[NSString stringWithCString:SIO_filename[6] encoding:NSUTF8StringEncoding]];
                 [d7DriveStatusPulldown selectItemAtIndex:SIO_drive_status[6]];
                 if (SIO_drive_status[6] == SIO_OFF || SIO_drive_status[6] == SIO_NO_DISK)
                     [removeD7Item setTarget:nil];
@@ -440,7 +440,7 @@ NSImage *disketteImage;
                     }
                 break;
             case 7:
-                [d8DiskField setStringValue:[NSString stringWithCString:SIO_filename[7] encoding:NSASCIIStringEncoding]];
+                [d8DiskField setStringValue:[NSString stringWithCString:SIO_filename[7] encoding:NSUTF8StringEncoding]];
                 [d8DriveStatusPulldown selectItemAtIndex:SIO_drive_status[7]];
                 if (SIO_drive_status[7] == SIO_OFF || SIO_drive_status[7] == SIO_NO_DISK)
                     [removeD8Item setTarget:nil];
@@ -600,9 +600,9 @@ NSImage *disketteImage;
     int cartSize;
 
     PauseAudio(1);
-    filename = [self browseFileInDirectory:[NSString stringWithCString:atari_rom_dir encoding:NSASCIIStringEncoding]];
+    filename = [self browseFileInDirectory:[NSString stringWithCString:atari_rom_dir encoding:NSUTF8StringEncoding]];
     if (filename != nil) {
-        [filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+        [filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
         cartSize = CARTRIDGE_Insert(cfilename);
         if (cartSize > 0)
             CARTRIDGE_main.type = [self cartSelect:cartSize];
@@ -626,9 +626,9 @@ NSImage *disketteImage;
     int cartSize;
 
     PauseAudio(1);
-    filename = [self browseFileInDirectory:[NSString stringWithCString:atari_rom_dir encoding:NSASCIIStringEncoding]];
+    filename = [self browseFileInDirectory:[NSString stringWithCString:atari_rom_dir encoding:NSUTF8StringEncoding]];
     if (filename != nil) {
-        [filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+        [filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
         cartSize = CARTRIDGE_Insert_Second(cfilename);
         if (cartSize > 0) 
             CARTRIDGE_piggyback.type = [self cartSelect:cartSize];
@@ -647,7 +647,7 @@ NSImage *disketteImage;
     int cartSize;
 
     if (filename != nil) {
-        [filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+        [filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
         cartSize = CARTRIDGE_Insert(cfilename);
         if (cartSize > 0)
             CARTRIDGE_main.type = [self cartSelect:cartSize];
@@ -830,9 +830,9 @@ NSImage *disketteImage;
     int ret = FALSE;
     
     PauseAudio(1);
-    filename = [self browseFileInDirectory:[NSString stringWithCString:atari_cass_dir encoding:NSASCIIStringEncoding]];
+    filename = [self browseFileInDirectory:[NSString stringWithCString:atari_cass_dir encoding:NSUTF8StringEncoding]];
     if (filename != nil) {
-        [filename getCString:tapename maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+        [filename getCString:tapename maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
         ret = CASSETTE_Insert(tapename);
         if (! ret) 
             [self displayError:@"Unable to Insert Cassette!"];
@@ -851,7 +851,7 @@ NSImage *disketteImage;
     int ret = FALSE;
     
     if (filename != nil) {
-        [filename getCString:tapename maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+        [filename getCString:tapename maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
         ret = CASSETTE_Insert(tapename);
         if (! ret) 
             [self displayError:@"Unable to Insert Cassette!"];
@@ -937,9 +937,9 @@ NSImage *disketteImage;
     int nbytes;
     FILE *f;
     
-    filename = [self browseFileInDirectory:[NSString stringWithCString:atari_rom_dir encoding:NSASCIIStringEncoding]];
+    filename = [self browseFileInDirectory:[NSString stringWithCString:atari_rom_dir encoding:NSUTF8StringEncoding]];
     if (filename != nil) {
-        [filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+        [filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
         f = fopen(cfilename, "rb");
 	if (!f) {
             [self displayError:@"Unable to Open Cartridge File!"];
@@ -954,14 +954,14 @@ NSImage *disketteImage;
         nbytes = fread(image, 1, CARTRIDGE_MAX_SIZE + 1, f);
 
         fclose(f);
-        filename = [self saveFileInDirectory:[NSString stringWithCString:atari_rom_dir encoding:NSASCIIStringEncoding]:@"rom"];
+        filename = [self saveFileInDirectory:[NSString stringWithCString:atari_rom_dir encoding:NSUTF8StringEncoding]:@"rom"];
                 
         if (filename == nil) {
             free(image);
             return;
             }
                     
-        [filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+        [filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
 	f = fopen(cfilename, "wb");
 	if (f) {
             fwrite(image, 1, nbytes, f);
@@ -986,9 +986,9 @@ NSImage *disketteImage;
     NSString *filename;
     char cfilename[FILENAME_MAX+1];
     
-    filename = [self browseFileInDirectory:[NSString stringWithCString:atari_rom_dir encoding:NSASCIIStringEncoding]];
+    filename = [self browseFileInDirectory:[NSString stringWithCString:atari_rom_dir encoding:NSUTF8StringEncoding]];
     if (filename != nil) {
-        [filename getCString:cfilename maxLength:FILENAME_MAX  encoding:NSASCIIStringEncoding];
+        [filename getCString:cfilename maxLength:FILENAME_MAX  encoding:NSUTF8StringEncoding];
 	f = fopen(cfilename, "rb");
 	if (!f) {
             [self displayError:@"Unable to Open ROM File!"];
@@ -1023,14 +1023,14 @@ NSImage *disketteImage;
                 header.gash[1] = '\0';
                 header.gash[2] = '\0';
                 header.gash[3] = '\0';
-                filename = [self saveFileInDirectory:[NSString stringWithCString:atari_rom_dir encoding:NSASCIIStringEncoding]:@"car"];
+                filename = [self saveFileInDirectory:[NSString stringWithCString:atari_rom_dir encoding:NSUTF8StringEncoding]:@"car"];
                 
                 if (filename == nil) {
                     free(image);
                     return;
                     }
                     
-                [filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+                [filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
                 f = fopen(cfilename, "wb");
                 if (f) {
                     fwrite(&header, 1, sizeof(header), f);
@@ -1081,9 +1081,9 @@ NSImage *disketteImage;
     else
         imageLength = ((sectors - 3) * bytesPerSector + 3 * bytesInBootSector) / 16;
  
-    filename = [self saveFileInDirectory:[NSString stringWithCString:atari_disk_dirs[0] encoding:NSASCIIStringEncoding]:@"atr"];
+    filename = [self saveFileInDirectory:[NSString stringWithCString:atari_disk_dirs[0] encoding:NSUTF8StringEncoding]:@"atr"];
     if (filename != nil) {
-        [filename getCString:cfilename maxLength:FILENAME_MAX  encoding:NSASCIIStringEncoding];
+        [filename getCString:cfilename maxLength:FILENAME_MAX  encoding:NSUTF8StringEncoding];
         image = fopen(cfilename, "wb");
         if (image == NULL) {
             [self displayError:@"Unable to Create Disk Image!"];
@@ -1132,9 +1132,9 @@ NSImage *disketteImage;
     char cfilename[FILENAME_MAX];
     
     PauseAudio(1);
-    filename = [self saveFileInDirectory:[NSString stringWithCString:atari_cass_dir encoding:NSASCIIStringEncoding]:@"cas"];
+    filename = [self saveFileInDirectory:[NSString stringWithCString:atari_cass_dir encoding:NSUTF8StringEncoding]:@"cas"];
     if (filename != nil) {
-        [filename getCString:cfilename maxLength:FILENAME_MAX  encoding:NSASCIIStringEncoding];
+        [filename getCString:cfilename maxLength:FILENAME_MAX  encoding:NSUTF8StringEncoding];
 #if 1
         CASSETTE_CreateCAS(cfilename, "");
         [self updateInfo];
@@ -1171,14 +1171,14 @@ NSImage *disketteImage;
     PauseAudio(1);
     readOnly = (SIO_drive_status[diskNum] == SIO_READ_ONLY ? TRUE : FALSE);
     filename = [self browseFileInDirectory:
-                [NSString stringWithCString:atari_disk_dirs[0] encoding:NSASCIIStringEncoding]];
+                [NSString stringWithCString:atari_disk_dirs[0] encoding:NSUTF8StringEncoding]];
     if (filename != nil) {
         if (diskDriveSound)
             [[NSSound soundNamed:@"close810snd"] play];
         SIO_Dismount(diskNum + 1);
         if (Atari800_machine_type == Atari800_MACHINE_5200)
 			[self changeToComputer];
-        [filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+        [filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
         diskMounted = SIO_Mount(diskNum + 1, cfilename, readOnly);
         if (!diskMounted)
             [self displayError:@"Unable to Mount Disk Image!"];
@@ -1216,7 +1216,7 @@ NSImage *disketteImage;
         SIO_Dismount(1);
         if (Atari800_machine_type == Atari800_MACHINE_5200)
 			[self changeToComputer];
-        [filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+        [filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
         diskMounted = SIO_Mount(1, cfilename, readOnly);
         if (!diskMounted)
             [self displayError:@"Unable to Mount Disk Image!"];
@@ -1242,7 +1242,7 @@ NSImage *disketteImage;
         SIO_Dismount(driveNo+1);
         if (Atari800_machine_type == Atari800_MACHINE_5200)
 			[self changeToComputer];
-        [filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+        [filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
         diskMounted = SIO_Mount(driveNo+1, cfilename, readOnly);
         if (!diskMounted)
             [self displayError:@"Unable to Mount Disk Image!"];
@@ -1266,14 +1266,14 @@ NSImage *disketteImage;
     
     PauseAudio(1);
     readOnly = (SIO_drive_status[diskNum] == SIO_READ_ONLY ? TRUE : FALSE);
-    filename = [self browseFileInDirectory:[NSString stringWithCString:atari_disk_dirs[0] encoding:NSASCIIStringEncoding]];
+    filename = [self browseFileInDirectory:[NSString stringWithCString:atari_disk_dirs[0] encoding:NSUTF8StringEncoding]];
     if (filename != nil) {
         if (diskDriveSound)
             [[NSSound soundNamed:@"close810snd"] play];
         SIO_Dismount(diskNum);
         if (Atari800_machine_type == Atari800_MACHINE_5200)
 			[self changeToComputer];
-        [filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+        [filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
         diskMounted = SIO_Mount(diskNum, cfilename, readOnly);
         if (!diskMounted)
             [self displayError:@"Unable to Mount Disk Image!"];
@@ -1336,12 +1336,12 @@ NSImage *disketteImage;
     FILE *f;
     int i;
 
-    filename = [self saveFileInDirectory:[NSString stringWithCString:atari_diskset_dir encoding:NSASCIIStringEncoding]:@"set"];
+    filename = [self saveFileInDirectory:[NSString stringWithCString:atari_diskset_dir encoding:NSUTF8StringEncoding]:@"set"];
     
     if (filename == nil)
         return;
                     
-    [filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+    [filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
 
     getcwd(dirname, FILENAME_MAX);
 
@@ -1375,12 +1375,12 @@ NSImage *disketteImage;
     int mountErrors[8];
 
     filename = [self browseFileTypeInDirectory:
-                  [NSString stringWithCString:atari_diskset_dir encoding:NSASCIIStringEncoding]:[NSArray arrayWithObjects:@"set",@"SET", nil]];
+                  [NSString stringWithCString:atari_diskset_dir encoding:NSUTF8StringEncoding]:[NSArray arrayWithObjects:@"set",@"SET", nil]];
     
     if (filename == nil)
         return;
     
-    [filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+    [filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
     f = fopen(cfilename, "r");
     if (f) {
         for (i=0;i<8;i++) {
@@ -1421,7 +1421,7 @@ NSImage *disketteImage;
     FILE *f;
     int i, readOnly;
 
-    [filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+    [filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
     f = fopen(cfilename, "r");
     if (f) {
         for (i=0;i<8;i++) {
@@ -1497,11 +1497,11 @@ NSImage *disketteImage;
     int ret = FALSE;
     
     PauseAudio(1);
-    filename = [self browseFileInDirectory:[NSString stringWithCString:atari_exe_dir encoding:NSASCIIStringEncoding]];
+    filename = [self browseFileInDirectory:[NSString stringWithCString:atari_exe_dir encoding:NSUTF8StringEncoding]];
     if (filename != nil) {
         if (Atari800_machine_type == Atari800_MACHINE_5200)
 			[self changeToComputer];
-        [filename getCString:exename maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+        [filename getCString:exename maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
         ret = BINLOAD_Loader(exename);
         if (! ret) 
             [self displayError:@"Unable to Load Binary/BASIC File!"];
@@ -1523,7 +1523,7 @@ NSImage *disketteImage;
     if (filename != nil) {
         if (Atari800_machine_type == Atari800_MACHINE_5200)
 			[self changeToComputer];
-        [filename getCString:exename maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+        [filename getCString:exename maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
         ret = BINLOAD_Loader(exename);
         if (! ret) 
             [self displayError:@"Unable to Load Binary/BASIC File!"];
@@ -1668,7 +1668,7 @@ NSImage *disketteImage;
 
     PauseAudio(1);
     filename = [self browseFileTypeInDirectory:
-                  [NSString stringWithCString:atari_disk_dirs[0] encoding:NSASCIIStringEncoding]:
+                  [NSString stringWithCString:atari_disk_dirs[0] encoding:NSUTF8StringEncoding]:
 				  [NSArray arrayWithObjects:@"atr",@"ATR", nil]];
     if (filename != nil) {
 		if ([DiskEditorWindow isAlreadyOpen:filename] != nil) {
@@ -1699,7 +1699,7 @@ NSImage *disketteImage;
     [[DisplayManager sharedInstance] enableMacCopyPaste];
     PauseAudio(1);
     filename = [self browseFileTypeInDirectory:
-                  [NSString stringWithCString:atari_disk_dirs[0] encoding:NSASCIIStringEncoding]:
+                  [NSString stringWithCString:atari_disk_dirs[0] encoding:NSUTF8StringEncoding]:
 				  [NSArray arrayWithObjects:@"atr",@"ATR", nil]];
     if (filename != nil) {
 		diskEditor = [DiskEditorWindow isAlreadyOpen:filename];
@@ -2016,7 +2016,7 @@ NSImage *disketteImage;
 					}
 				ptr--;
 				}
-			[d1DiskImageNameField setStringValue:[NSString stringWithCString:ptr encoding:NSASCIIStringEncoding]];
+			[d1DiskImageNameField setStringValue:[NSString stringWithCString:ptr encoding:NSUTF8StringEncoding]];
 			[d1DiskImagePowerButton setTitle:@"Off"];
 			[d1DiskImageInsertButton setTitle:@"Eject"];
 			[d1DiskImageInsertButton setEnabled:YES];
@@ -2066,7 +2066,7 @@ NSImage *disketteImage;
 					}
 				ptr--;
 				}
-			[d2DiskImageNameField setStringValue:[NSString stringWithCString:ptr encoding:NSASCIIStringEncoding]];
+			[d2DiskImageNameField setStringValue:[NSString stringWithCString:ptr encoding:NSUTF8StringEncoding]];
 			[d2DiskImagePowerButton setTitle:@"Off"];
 			[d2DiskImageInsertButton setTitle:@"Eject"];
 			[d2DiskImageInsertButton setEnabled:YES];
@@ -2116,7 +2116,7 @@ NSImage *disketteImage;
 					}
 				ptr--;
 				}
-			[d3DiskImageNameField setStringValue:[NSString stringWithCString:ptr encoding:NSASCIIStringEncoding]];
+			[d3DiskImageNameField setStringValue:[NSString stringWithCString:ptr encoding:NSUTF8StringEncoding]];
 			[d3DiskImagePowerButton setTitle:@"Off"];
 			[d3DiskImageInsertButton setTitle:@"Eject"];
 			[d3DiskImageInsertButton setEnabled:YES];
@@ -2166,7 +2166,7 @@ NSImage *disketteImage;
 					}
 				ptr--;
 				}
-			[d4DiskImageNameField setStringValue:[NSString stringWithCString:ptr encoding:NSASCIIStringEncoding]];
+			[d4DiskImageNameField setStringValue:[NSString stringWithCString:ptr encoding:NSUTF8StringEncoding]];
 			[d4DiskImagePowerButton setTitle:@"Off"];
 			[d4DiskImageInsertButton setTitle:@"Eject"];
 			[d4DiskImageInsertButton setEnabled:YES];
@@ -2200,7 +2200,7 @@ NSImage *disketteImage;
                         }
                     ptr--;
                     }
-                [cartImageNameField setStringValue:[NSString stringWithCString:ptr encoding:NSASCIIStringEncoding]];
+                [cartImageNameField setStringValue:[NSString stringWithCString:ptr encoding:NSUTF8StringEncoding]];
             }
 			[cartImageInsertButton setTitle:@"Eject"];
 			[cartImageView setImage:onCartImage];
@@ -2224,7 +2224,7 @@ NSImage *disketteImage;
 						}
 					ptr--;
 					}
-				[cartImageSecondNameField setStringValue:[NSString stringWithCString:ptr encoding:NSASCIIStringEncoding]];
+				[cartImageSecondNameField setStringValue:[NSString stringWithCString:ptr encoding:NSUTF8StringEncoding]];
 				[cartImageSecondInsertButton setTitle:@"Eject 2"];
 				[cartImageSecondInsertButton setEnabled:YES];
 				[cartImageSecondInsertButton setTransparent:NO];
@@ -2263,7 +2263,7 @@ NSImage *disketteImage;
 					}
 				ptr--;
 				}
-			[cassImageNameField setStringValue:[NSString stringWithCString:ptr encoding:NSASCIIStringEncoding]];
+			[cassImageNameField setStringValue:[NSString stringWithCString:ptr encoding:NSUTF8StringEncoding]];
 			[cassImageInsertButton setTitle:@"Eject"];
 			[cassImageView setImage:on410Image];
 			//printf("In UMSW curr=%d max=%d\n",current_block, max_block);
@@ -2408,16 +2408,16 @@ NSImage *disketteImage;
 		sprintf(sectorString,"  %03d",sectorNo);
 	    switch(diskNo) {
 			case 0:
-				[d1DiskImageSectorField setStringValue:[NSString stringWithCString:sectorString encoding:NSASCIIStringEncoding]];
+				[d1DiskImageSectorField setStringValue:[NSString stringWithCString:sectorString encoding:NSUTF8StringEncoding]];
 				break;
 			case 1:
-				[d2DiskImageSectorField setStringValue:[NSString stringWithCString:sectorString encoding:NSASCIIStringEncoding]];
+				[d2DiskImageSectorField setStringValue:[NSString stringWithCString:sectorString encoding:NSUTF8StringEncoding]];
 				break;
 			case 2:
-				[d3DiskImageSectorField setStringValue:[NSString stringWithCString:sectorString encoding:NSASCIIStringEncoding]];
+				[d3DiskImageSectorField setStringValue:[NSString stringWithCString:sectorString encoding:NSUTF8StringEncoding]];
 				break;
 			case 3:
-				[d4DiskImageSectorField setStringValue:[NSString stringWithCString:sectorString encoding:NSASCIIStringEncoding]];
+				[d4DiskImageSectorField setStringValue:[NSString stringWithCString:sectorString encoding:NSUTF8StringEncoding]];
 				break;
 			}
 	}
@@ -2739,9 +2739,9 @@ NSImage *disketteImage;
     int bytes;
     
     filename = [self browseFileTypeInDirectory:
-                  [NSString stringWithCString:atari_disk_dirs[0] encoding:NSASCIIStringEncoding]:[NSArray arrayWithObjects:@"xfd",@"XFD", nil]];
+                  [NSString stringWithCString:atari_disk_dirs[0] encoding:NSUTF8StringEncoding]:[NSArray arrayWithObjects:@"xfd",@"XFD", nil]];
     if (filename != nil) {
-        [filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+        [filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
 	xfd = fopen(cfilename, "rb");
 	if (!xfd) {
             [self displayError:@"Unable to Open .xfd File!"];
@@ -2772,14 +2772,14 @@ NSImage *disketteImage;
             return;
             }
             
-        filename = [self saveFileInDirectory:[NSString stringWithCString:atari_disk_dirs[0] encoding:NSASCIIStringEncoding]:@"atr"];
+        filename = [self saveFileInDirectory:[NSString stringWithCString:atari_disk_dirs[0] encoding:NSUTF8StringEncoding]:@"atr"];
                 
         if (filename == nil) {
             fclose(xfd);
             return;
             }
                     
-        [filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+        [filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
         atr = fopen(cfilename, "wb");
         if (atr) 
             {
@@ -2853,9 +2853,9 @@ NSImage *disketteImage;
     int bytes;
     
     filename = [self browseFileTypeInDirectory:
-                  [NSString stringWithCString:atari_disk_dirs[0] encoding:NSASCIIStringEncoding]:[NSArray arrayWithObjects:@"atr",@"ATR", nil]];
+                  [NSString stringWithCString:atari_disk_dirs[0] encoding:NSUTF8StringEncoding]:[NSArray arrayWithObjects:@"atr",@"ATR", nil]];
     if (filename != nil) {
-        [filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+        [filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
 	atr = fopen(cfilename, "rb");
 	if (!atr) {
             [self displayError:@"Unable to Open .atr File!"];
@@ -2887,14 +2887,14 @@ NSImage *disketteImage;
             return;
             }
 
-        filename = [self saveFileInDirectory:[NSString stringWithCString:atari_disk_dirs[0] encoding:NSASCIIStringEncoding]:@"xfd"];
+        filename = [self saveFileInDirectory:[NSString stringWithCString:atari_disk_dirs[0] encoding:NSUTF8StringEncoding]:@"xfd"];
                 
         if (filename == nil) {
             fclose(atr);
             return;
             }
                     
-        [filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+        [filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
         xfd = fopen(cfilename, "wb");
 
         if ( !xfd ) {
@@ -2944,23 +2944,23 @@ NSImage *disketteImage;
     char cfilenameout[FILENAME_MAX+1];
     
     filename = [self browseFileTypeInDirectory:
-                  [NSString stringWithCString:atari_disk_dirs[0] encoding:NSASCIIStringEncoding]:[NSArray arrayWithObjects:@"dcm",@"DCM", nil]];
+                  [NSString stringWithCString:atari_disk_dirs[0] encoding:NSUTF8StringEncoding]:[NSArray arrayWithObjects:@"dcm",@"DCM", nil]];
     if (filename != nil) {
-        [filename getCString:cfilenamein maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+        [filename getCString:cfilenamein maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
 	dcm = fopen(cfilenamein, "rb");
 	if (!dcm) {
             [self displayError:@"Unable to Open .dcm File!"];
             return;
             }
 
-        filename = [self saveFileInDirectory:[NSString stringWithCString:atari_disk_dirs[0] encoding:NSASCIIStringEncoding]:@"atr"];
+        filename = [self saveFileInDirectory:[NSString stringWithCString:atari_disk_dirs[0] encoding:NSUTF8StringEncoding]:@"atr"];
                 
         if (filename == nil) {
             fclose(dcm);
             return;
             }
                     
-        [filename getCString:cfilenameout maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+        [filename getCString:cfilenameout maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
         atr = fopen(cfilenameout, "wb");
         if (atr) 
             {
@@ -3046,9 +3046,9 @@ static BYTE*	m_pbtLastRec;
     int iDensity;
     
     filename = [self browseFileTypeInDirectory:
-                  [NSString stringWithCString:atari_disk_dirs[0] encoding:NSASCIIStringEncoding]:[NSArray arrayWithObjects:@"atr",@"ATR", nil]];
+                  [NSString stringWithCString:atari_disk_dirs[0] encoding:NSUTF8StringEncoding]:[NSArray arrayWithObjects:@"atr",@"ATR", nil]];
     if (filename != nil) {
-        [filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+        [filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
 	atr = fopen(cfilename, "rb");
 	if (!atr) {
             [self displayError:@"Unable to Open .atr File!"];
@@ -3080,14 +3080,14 @@ static BYTE*	m_pbtLastRec;
             return;
             }
 
-        filename = [self saveFileInDirectory:[NSString stringWithCString:atari_disk_dirs[0] encoding:NSASCIIStringEncoding]:@"dcm"];
+        filename = [self saveFileInDirectory:[NSString stringWithCString:atari_disk_dirs[0] encoding:NSUTF8StringEncoding]:@"dcm"];
                 
         if (filename == nil) {
             fclose(atr);
             return;
             }
                     
-        [filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+        [filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
         dcm = fopen(cfilename,"wb");
 
 	if ( !dcm )
@@ -3244,9 +3244,9 @@ static BYTE*	m_pbtLastRec;
     BYTE* pMap;
     
     filename = [self browseFileTypeInDirectory:
-                  [NSString stringWithCString:atari_disk_dirs[0] encoding:NSASCIIStringEncoding]:[NSArray arrayWithObjects:@"scp",@"SCP", nil]];
+                  [NSString stringWithCString:atari_disk_dirs[0] encoding:NSUTF8StringEncoding]:[NSArray arrayWithObjects:@"scp",@"SCP", nil]];
     if (filename != nil) {
-        [filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+        [filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
 	scp = fopen(cfilename, "rb");
 	if (!scp) {
             [self displayError:@"Unable to Open .scp File!"];
@@ -3293,14 +3293,14 @@ static BYTE*	m_pbtLastRec;
             return;
             }
             
-        filename = [self saveFileInDirectory:[NSString stringWithCString:atari_disk_dirs[0] encoding:NSASCIIStringEncoding]:@"atr"];
+        filename = [self saveFileInDirectory:[NSString stringWithCString:atari_disk_dirs[0] encoding:NSUTF8StringEncoding]:@"atr"];
                 
         if (filename == nil) {
             fclose(scp);
             return;
             }
                     
-        [filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+        [filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
         atr = fopen(cfilename, "wb");
         if (atr) 
             {
@@ -3384,9 +3384,9 @@ static BYTE*	m_pbtLastRec;
     BYTE *pMap;
     
     filename = [self browseFileTypeInDirectory:
-                  [NSString stringWithCString:atari_disk_dirs[0] encoding:NSASCIIStringEncoding]:[NSArray arrayWithObjects:@"atr",@"ATR", nil]];
+                  [NSString stringWithCString:atari_disk_dirs[0] encoding:NSUTF8StringEncoding]:[NSArray arrayWithObjects:@"atr",@"ATR", nil]];
     if (filename != nil) {
-        [filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+        [filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
 	atr = fopen(cfilename, "rb");
 	if (!atr) {
             [self displayError:@"Unable to Open .atr File!"];
@@ -3418,14 +3418,14 @@ static BYTE*	m_pbtLastRec;
             return;
             }
 
-        filename = [self saveFileInDirectory:[NSString stringWithCString:atari_disk_dirs[0] encoding:NSASCIIStringEncoding]:@"scp"];
+        filename = [self saveFileInDirectory:[NSString stringWithCString:atari_disk_dirs[0] encoding:NSUTF8StringEncoding]:@"scp"];
                 
         if (filename == nil) {
             fclose(atr);
             return;
             }
                     
-        [filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+        [filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
         scp = fopen(cfilename, "wb");
 
         if ( !scp ) {

@@ -60,11 +60,11 @@ void SDLMainLoadStartupFile() {
 		strcpy(startupFile, startupDir);
 		printf("Changed\n");
 		}
-    [SDLMain loadFile:[NSString stringWithCString:startupFile encoding:NSASCIIStringEncoding]];
+    [SDLMain loadFile:[NSString stringWithCString:startupFile encoding:NSUTF8StringEncoding]];
 }
 
 void SDLMainLoadFile(char * file) {
-    [SDLMain loadFile:[NSString stringWithCString:file encoding:NSASCIIStringEncoding]];
+    [SDLMain loadFile:[NSString stringWithCString:file encoding:NSUTF8StringEncoding]];
 }
 
 void SDLMainCloseWindow() {
@@ -145,7 +145,7 @@ int SDLMainIsActive() {
         [SDLMain loadFile:filename];
     else {
         fileToLoad = TRUE;
-        [filename getCString:startupFile maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+        [filename getCString:startupFile maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
     }
 
     return(FALSE);

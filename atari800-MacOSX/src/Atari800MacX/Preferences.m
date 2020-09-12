@@ -273,7 +273,7 @@ static NSDictionary *defaultValues() {
                 [NSNumber numberWithInt:224], WhiteLevel, 
                 [NSNumber numberWithInt:100], Intensity, 
                 [NSNumber numberWithInt:40], ColorShift, 
-                [NSString stringWithCString:paletteStr encoding:NSASCIIStringEncoding], PaletteFile, 
+                [NSString stringWithCString:paletteStr encoding:NSUTF8StringEncoding], PaletteFile,
                 [NSNumber numberWithBool:NO], ShowFPS,
                 [NSNumber numberWithBool:NO], OnlyIntegralScaling,
                 [NSNumber numberWithBool:NO], FixAspectFullscreen,
@@ -376,25 +376,25 @@ static NSDictionary *defaultValues() {
                 [NSNumber numberWithBool:YES], DiskDriveSound,
                 [NSNumber numberWithBool:NO], EnableMultijoy,
                 [NSNumber numberWithBool:NO], IgnoreHeaderWriteprotect,
-                [NSString stringWithCString:imageDirStr encoding:NSASCIIStringEncoding], ImageDir, 
-                [NSString stringWithCString:printDirStr encoding:NSASCIIStringEncoding], PrintDir, 
-                [NSString stringWithCString:hardDiskDir1Str encoding:NSASCIIStringEncoding], HardDiskDir1, 
-                [NSString stringWithCString:hardDiskDir2Str encoding:NSASCIIStringEncoding], HardDiskDir2, 
-                [NSString stringWithCString:hardDiskDir3Str encoding:NSASCIIStringEncoding], HardDiskDir3, 
-                [NSString stringWithCString:hardDiskDir4Str encoding:NSASCIIStringEncoding], HardDiskDir4, 
+                [NSString stringWithCString:imageDirStr encoding:NSUTF8StringEncoding], ImageDir,
+                [NSString stringWithCString:printDirStr encoding:NSUTF8StringEncoding], PrintDir,
+                [NSString stringWithCString:hardDiskDir1Str encoding:NSUTF8StringEncoding], HardDiskDir1,
+                [NSString stringWithCString:hardDiskDir2Str encoding:NSUTF8StringEncoding], HardDiskDir2,
+                [NSString stringWithCString:hardDiskDir3Str encoding:NSUTF8StringEncoding], HardDiskDir3,
+                [NSString stringWithCString:hardDiskDir4Str encoding:NSUTF8StringEncoding], HardDiskDir4,
                 [NSNumber numberWithBool:YES], HardDrivesReadOnly, 
                 @"H1:>DOS;>DOS",HPath,
-                [NSString stringWithCString:osBRomFileStr encoding:NSASCIIStringEncoding], OsBRomFile,
-                [NSString stringWithCString:xlRomFileStr encoding:NSASCIIStringEncoding], XlRomFile, 
-                [NSString stringWithCString:basicRomFileStr encoding:NSASCIIStringEncoding], BasicRomFile, 
-                [NSString stringWithCString:a5200RomFileStr encoding:NSASCIIStringEncoding], A5200RomFile, 
-                [NSString stringWithCString:diskImageDirStr encoding:NSASCIIStringEncoding], DiskImageDir, 
-                [NSString stringWithCString:diskSetDirStr encoding:NSASCIIStringEncoding], DiskSetDir, 
-                [NSString stringWithCString:cartImageDirStr encoding:NSASCIIStringEncoding], CartImageDir, 
-                [NSString stringWithCString:cassImageDirStr encoding:NSASCIIStringEncoding], CassImageDir, 
-                [NSString stringWithCString:exeFileDirStr encoding:NSASCIIStringEncoding], ExeFileDir, 
-                [NSString stringWithCString:savedStateDirStr encoding:NSASCIIStringEncoding], SavedStateDir, 
-                [NSString stringWithCString:configDirStr encoding:NSASCIIStringEncoding], ConfigDir, 
+                [NSString stringWithCString:osBRomFileStr encoding:NSUTF8StringEncoding], OsBRomFile,
+                [NSString stringWithCString:xlRomFileStr encoding:NSUTF8StringEncoding], XlRomFile,
+                [NSString stringWithCString:basicRomFileStr encoding:NSUTF8StringEncoding], BasicRomFile,
+                [NSString stringWithCString:a5200RomFileStr encoding:NSUTF8StringEncoding], A5200RomFile,
+                [NSString stringWithCString:diskImageDirStr encoding:NSUTF8StringEncoding], DiskImageDir,
+                [NSString stringWithCString:diskSetDirStr encoding:NSUTF8StringEncoding], DiskSetDir,
+                [NSString stringWithCString:cartImageDirStr encoding:NSUTF8StringEncoding], CartImageDir,
+                [NSString stringWithCString:cassImageDirStr encoding:NSUTF8StringEncoding], CassImageDir,
+                [NSString stringWithCString:exeFileDirStr encoding:NSUTF8StringEncoding], ExeFileDir,
+                [NSString stringWithCString:savedStateDirStr encoding:NSUTF8StringEncoding], SavedStateDir,
+                [NSString stringWithCString:configDirStr encoding:NSUTF8StringEncoding], ConfigDir,
                 @"", D1File,
                 @"", D2File,
                 @"", D3File,
@@ -2025,7 +2025,7 @@ static Preferences *sharedInstance = nil;
 		[displayedValues setObject:@"" forKey:RPatchSerialPort];
 	else
 		[displayedValues 
-			setObject:[NSString stringWithCString:bsdPaths[[rPatchSerialPulldown indexOfSelectedItem]-1] encoding:NSASCIIStringEncoding] 
+			setObject:[NSString stringWithCString:bsdPaths[[rPatchSerialPulldown indexOfSelectedItem]-1] encoding:NSUTF8StringEncoding]
 			forKey:RPatchSerialPort];
 
     switch([useAtariCursorKeysPulldown indexOfSelectedItem]) {
@@ -2834,7 +2834,7 @@ static Preferences *sharedInstance = nil;
 - (void)browsePalette:(id)sender {
     NSString *filename, *dir;
     
-    dir = [[NSString alloc] initWithCString:paletteDir encoding:NSASCIIStringEncoding];
+    dir = [[NSString alloc] initWithCString:paletteDir encoding:NSUTF8StringEncoding];
     filename = [self browseFileInDirectory:dir];
     if (filename != nil) {
         [paletteField setStringValue:filename];
@@ -2910,7 +2910,7 @@ static Preferences *sharedInstance = nil;
 - (IBAction)browseAF80Rom:(id)sender {
     NSString *filename, *dir;
 
-    dir = [[NSString alloc] initWithCString:osromsDir encoding:NSASCIIStringEncoding];
+    dir = [[NSString alloc] initWithCString:osromsDir encoding:NSUTF8StringEncoding];
     filename = [self browseFileInDirectory:dir];
     if (filename != nil) {
         [af80RomFileField setStringValue:filename];
@@ -2922,7 +2922,7 @@ static Preferences *sharedInstance = nil;
 - (IBAction)browseAF80CharsetRom:(id)sender {
     NSString *filename, *dir;
 
-    dir = [[NSString alloc] initWithCString:osromsDir encoding:NSASCIIStringEncoding];
+    dir = [[NSString alloc] initWithCString:osromsDir encoding:NSUTF8StringEncoding];
     filename = [self browseFileInDirectory:dir];
     if (filename != nil) {
         [af80CharsetRomFileField setStringValue:filename];
@@ -2934,7 +2934,7 @@ static Preferences *sharedInstance = nil;
 - (IBAction)browseBit3Rom:(id)sender {
     NSString *filename, *dir;
 
-    dir = [[NSString alloc] initWithCString:osromsDir encoding:NSASCIIStringEncoding];
+    dir = [[NSString alloc] initWithCString:osromsDir encoding:NSUTF8StringEncoding];
     filename = [self browseFileInDirectory:dir];
     if (filename != nil) {
         [bit3RomFileField setStringValue:filename];
@@ -2946,7 +2946,7 @@ static Preferences *sharedInstance = nil;
 - (IBAction)browseBit3CharsetRom:(id)sender {
     NSString *filename, *dir;
 
-    dir = [[NSString alloc] initWithCString:osromsDir encoding:NSASCIIStringEncoding];
+    dir = [[NSString alloc] initWithCString:osromsDir encoding:NSUTF8StringEncoding];
     filename = [self browseFileInDirectory:dir];
     if (filename != nil) {
         [bit3CharsetRomFileField setStringValue:filename];
@@ -2991,14 +2991,14 @@ static Preferences *sharedInstance = nil;
     if ([romFilename isEqual:@""])
         [label setStringValue:@"ROM not set - Altirra Will Be Used"];
     else {
-        [romFilename getCString:romCFilename maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+        [romFilename getCString:romCFilename maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
         
         osType = SYSROM_FindType(romDefault, romCFilename, romTypeName);
 
         if (osType == -1)
             [label setStringValue:@"Error Identifying ROM - Altirra Will Be Used"];
         else
-            [label setStringValue:[NSString stringWithCString:romTypeName encoding:NSASCIIStringEncoding]];
+            [label setStringValue:[NSString stringWithCString:romTypeName encoding:NSUTF8StringEncoding]];
         }
     }
     
@@ -3008,7 +3008,7 @@ static Preferences *sharedInstance = nil;
 - (void)browseOsBRom:(id)sender {
     NSString *filename, *dir;
     
-    dir = [[NSString alloc] initWithCString:osromsDir encoding:NSASCIIStringEncoding];
+    dir = [[NSString alloc] initWithCString:osromsDir encoding:NSUTF8StringEncoding];
     filename = [self browseFileInDirectory:dir];
     if (filename != nil) {
         [osBRomFileField setStringValue:filename];
@@ -3020,7 +3020,7 @@ static Preferences *sharedInstance = nil;
 - (void)browseXlRom:(id)sender {
     NSString *filename, *dir;
     
-    dir = [[NSString alloc] initWithCString:osromsDir encoding:NSASCIIStringEncoding];
+    dir = [[NSString alloc] initWithCString:osromsDir encoding:NSUTF8StringEncoding];
     filename = [self browseFileInDirectory:dir];
     if (filename != nil) {
         [xlRomFileField setStringValue:filename];
@@ -3032,7 +3032,7 @@ static Preferences *sharedInstance = nil;
 - (void)browseBasicRom:(id)sender {
     NSString *filename, *dir;
     
-    dir = [[NSString alloc] initWithCString:osromsDir encoding:NSASCIIStringEncoding];
+    dir = [[NSString alloc] initWithCString:osromsDir encoding:NSUTF8StringEncoding];
     filename = [self browseFileInDirectory:dir];
     if (filename != nil) {
         [basicRomFileField setStringValue:filename];
@@ -3044,7 +3044,7 @@ static Preferences *sharedInstance = nil;
 - (void)browse5200Rom:(id)sender {
     NSString *filename, *dir;
     
-    dir = [[NSString alloc] initWithCString:osromsDir encoding:NSASCIIStringEncoding];
+    dir = [[NSString alloc] initWithCString:osromsDir encoding:NSUTF8StringEncoding];
     filename = [self browseFileInDirectory:dir];
     if (filename != nil) {
         [a5200RomFileField setStringValue:filename];
@@ -3056,7 +3056,7 @@ static Preferences *sharedInstance = nil;
 - (void)browseMioRom:(id)sender {
     NSString *filename, *dir;
     
-    dir = [[NSString alloc] initWithCString:osromsDir encoding:NSASCIIStringEncoding];
+    dir = [[NSString alloc] initWithCString:osromsDir encoding:NSUTF8StringEncoding];
     filename = [self browseFileInDirectory:dir];
     if (filename != nil) {
         [mioRomFileField setStringValue:filename];
@@ -3068,7 +3068,7 @@ static Preferences *sharedInstance = nil;
 - (void)browseBlackBoxRom:(id)sender {
     NSString *filename, *dir;
     
-    dir = [[NSString alloc] initWithCString:osromsDir encoding:NSASCIIStringEncoding];
+    dir = [[NSString alloc] initWithCString:osromsDir encoding:NSUTF8StringEncoding];
     filename = [self browseFileInDirectory:dir];
     if (filename != nil) {
         [blackBoxRomFileField setStringValue:filename];
@@ -3080,7 +3080,7 @@ static Preferences *sharedInstance = nil;
 - (void)browseBlackBoxScsiDiskFile:(id)sender {
     NSString *filename, *dir;
     
-    dir = [[NSString alloc] initWithCString:diskImageDirStr encoding:NSASCIIStringEncoding];
+    dir = [[NSString alloc] initWithCString:diskImageDirStr encoding:NSUTF8StringEncoding];
     filename = [self browseFileInDirectory:dir];
     if (filename != nil) {
         [blackBoxScsiDiskFileField setStringValue:filename];
@@ -3092,7 +3092,7 @@ static Preferences *sharedInstance = nil;
 - (void)browseMioScsiDiskFile:(id)sender {
     NSString *filename, *dir;
     
-    dir = [[NSString alloc] initWithCString:diskImageDirStr encoding:NSASCIIStringEncoding];
+    dir = [[NSString alloc] initWithCString:diskImageDirStr encoding:NSUTF8StringEncoding];
     filename = [self browseFileInDirectory:dir];
     if (filename != nil) {
         [mioScsiDiskFileField setStringValue:filename];
@@ -3349,7 +3349,7 @@ static Preferences *sharedInstance = nil;
     prefsAtascii.formLength = [[curValues objectForKey:AtasciiFormLength] intValue];
     prefsAtascii.charSize = [[curValues objectForKey:AtasciiCharSize] intValue];
     prefsAtascii.lineGap = [[curValues objectForKey:AtasciiLineGap] intValue];
-        [[curValues objectForKey:AtasciiFont] getCString:prefsAtascii.font maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+        [[curValues objectForKey:AtasciiFont] getCString:prefsAtascii.font maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
     }
 
 - (void)transferValuesToEpson
@@ -3392,7 +3392,7 @@ static Preferences *sharedInstance = nil;
     prefs->whiteLevel = [[curValues objectForKey:WhiteLevel] intValue]; 
     prefs->intensity = [[curValues objectForKey:Intensity] intValue]; 
     prefs->colorShift = [[curValues objectForKey:ColorShift] intValue]; 
-    [[curValues objectForKey:PaletteFile] getCString:prefs->paletteFile maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+    [[curValues objectForKey:PaletteFile] getCString:prefs->paletteFile maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
     prefs->showFPS = [[curValues objectForKey:ShowFPS] intValue];
     prefs->onlyIntegralScaling = [[curValues objectForKey:OnlyIntegralScaling] intValue];
     prefs->fixAspectFullscreen = [[curValues objectForKey:FixAspectFullscreen] intValue];
@@ -3418,7 +3418,7 @@ static Preferences *sharedInstance = nil;
     prefs->rPatchPort = [[curValues objectForKey:RPatchPort] intValue];
 	prefs->rPatchSerialEnabled = [[curValues objectForKey:RPatchSerialEnabled] intValue];
 	prefs->useAtariCursorKeys = [[curValues objectForKey:UseAtariCursorKeys] intValue];
-    [[curValues objectForKey:RPatchSerialPort]getCString:prefs->rPatchSerialPort maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+    [[curValues objectForKey:RPatchSerialPort]getCString:prefs->rPatchSerialPort maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
     [[curValues objectForKey:PrintCommand] getCString:prefs->printCommand maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding ];
     prefs->bootFromCassette = [[curValues objectForKey:BootFromCassette] intValue]; 
     prefs->speedLimit = [[curValues objectForKey:SpeedLimit] intValue]; 
@@ -3455,45 +3455,45 @@ static Preferences *sharedInstance = nil;
     prefs->useAltirraXLRom = [[curValues objectForKey:UseAltiraXLRom] intValue];
     prefs->useAltirra5200Rom = [[curValues objectForKey:UseAltira5200Rom] intValue];
     prefs->useAltirraBasicRom = [[curValues objectForKey:UseAltiraBasicRom] intValue];
-    [[curValues objectForKey:AF80CharsetFile] getCString:prefs->af80CharsetFile maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
-    [[curValues objectForKey:AF80RomFile] getCString:prefs->af80RomFile maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
-    [[curValues objectForKey:Bit3CharsetFile] getCString:prefs->bit3CharsetFile maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
-    [[curValues objectForKey:Bit3RomFile] getCString:prefs->bit3RomFile maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
-    [[curValues objectForKey:BlackBoxRomFile] getCString:prefs->blackBoxRomFile maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
-	[[curValues objectForKey:MioRomFile] getCString:prefs->mioRomFile maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
-	[[curValues objectForKey:BlackBoxScsiDiskFile] getCString:prefs->blackBoxScsiDiskFile maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
-	[[curValues objectForKey:MioScsiDiskFile] getCString:prefs->mioScsiDiskFile maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
-  [[curValues objectForKey:ImageDir] getCString:prefs->imageDir maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
-  [[curValues objectForKey:PrintDir] getCString:prefs->printDir maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
-  [[curValues objectForKey:HardDiskDir1] getCString:prefs->hardDiskDir[0] maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
-  [[curValues objectForKey:HardDiskDir2] getCString:prefs->hardDiskDir[1] maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
-  [[curValues objectForKey:HardDiskDir3] getCString:prefs->hardDiskDir[2] maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
-  [[curValues objectForKey:HardDiskDir4] getCString:prefs->hardDiskDir[3] maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+    [[curValues objectForKey:AF80CharsetFile] getCString:prefs->af80CharsetFile maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
+    [[curValues objectForKey:AF80RomFile] getCString:prefs->af80RomFile maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
+    [[curValues objectForKey:Bit3CharsetFile] getCString:prefs->bit3CharsetFile maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
+    [[curValues objectForKey:Bit3RomFile] getCString:prefs->bit3RomFile maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
+    [[curValues objectForKey:BlackBoxRomFile] getCString:prefs->blackBoxRomFile maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
+	[[curValues objectForKey:MioRomFile] getCString:prefs->mioRomFile maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
+	[[curValues objectForKey:BlackBoxScsiDiskFile] getCString:prefs->blackBoxScsiDiskFile maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
+	[[curValues objectForKey:MioScsiDiskFile] getCString:prefs->mioScsiDiskFile maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
+  [[curValues objectForKey:ImageDir] getCString:prefs->imageDir maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
+  [[curValues objectForKey:PrintDir] getCString:prefs->printDir maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
+  [[curValues objectForKey:HardDiskDir1] getCString:prefs->hardDiskDir[0] maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
+  [[curValues objectForKey:HardDiskDir2] getCString:prefs->hardDiskDir[1] maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
+  [[curValues objectForKey:HardDiskDir3] getCString:prefs->hardDiskDir[2] maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
+  [[curValues objectForKey:HardDiskDir4] getCString:prefs->hardDiskDir[3] maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
   prefs->hardDrivesReadOnly = [[curValues objectForKey:HardDrivesReadOnly] intValue];
-  [[curValues objectForKey:HPath] getCString:prefs->hPath maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
-  [[curValues objectForKey:OsBRomFile] getCString:prefs->osBRomFile maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
-  [[curValues objectForKey:XlRomFile] getCString:prefs->xlRomFile maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
-  [[curValues objectForKey:BasicRomFile] getCString:prefs->basicRomFile maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
-  [[curValues objectForKey:A5200RomFile] getCString:prefs->a5200RomFile maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
-  [[curValues objectForKey:DiskImageDir] getCString:prefs->diskImageDir maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
-  [[curValues objectForKey:DiskSetDir] getCString:prefs->diskSetDir maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
-  [[curValues objectForKey:CartImageDir] getCString:prefs->cartImageDir maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
-  [[curValues objectForKey:CassImageDir] getCString:prefs->cassImageDir maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
-  [[curValues objectForKey:ExeFileDir] getCString:prefs->exeFileDir maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
-  [[curValues objectForKey:SavedStateDir] getCString:prefs->savedStateDir maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
-  [[curValues objectForKey:ConfigDir] getCString:prefs->configDir maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
-  [[curValues objectForKey:D1File] getCString:prefs->dFile[0] maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
-  [[curValues objectForKey:D2File] getCString:prefs->dFile[1] maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
-  [[curValues objectForKey:D3File] getCString:prefs->dFile[2] maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
-  [[curValues objectForKey:D4File] getCString:prefs->dFile[3] maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
-  [[curValues objectForKey:D5File] getCString:prefs->dFile[4] maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
-  [[curValues objectForKey:D6File] getCString:prefs->dFile[5] maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
-  [[curValues objectForKey:D7File] getCString:prefs->dFile[6] maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
-  [[curValues objectForKey:D8File] getCString:prefs->dFile[7] maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
-  [[curValues objectForKey:CartFile] getCString:prefs->cartFile maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
-  [[curValues objectForKey:Cart2File] getCString:prefs->cart2File maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
-  [[curValues objectForKey:ExeFile] getCString:prefs->exeFile maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
-  [[curValues objectForKey:CassFile] getCString:prefs->cassFile maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+  [[curValues objectForKey:HPath] getCString:prefs->hPath maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
+  [[curValues objectForKey:OsBRomFile] getCString:prefs->osBRomFile maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
+  [[curValues objectForKey:XlRomFile] getCString:prefs->xlRomFile maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
+  [[curValues objectForKey:BasicRomFile] getCString:prefs->basicRomFile maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
+  [[curValues objectForKey:A5200RomFile] getCString:prefs->a5200RomFile maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
+  [[curValues objectForKey:DiskImageDir] getCString:prefs->diskImageDir maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
+  [[curValues objectForKey:DiskSetDir] getCString:prefs->diskSetDir maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
+  [[curValues objectForKey:CartImageDir] getCString:prefs->cartImageDir maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
+  [[curValues objectForKey:CassImageDir] getCString:prefs->cassImageDir maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
+  [[curValues objectForKey:ExeFileDir] getCString:prefs->exeFileDir maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
+  [[curValues objectForKey:SavedStateDir] getCString:prefs->savedStateDir maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
+  [[curValues objectForKey:ConfigDir] getCString:prefs->configDir maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
+  [[curValues objectForKey:D1File] getCString:prefs->dFile[0] maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
+  [[curValues objectForKey:D2File] getCString:prefs->dFile[1] maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
+  [[curValues objectForKey:D3File] getCString:prefs->dFile[2] maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
+  [[curValues objectForKey:D4File] getCString:prefs->dFile[3] maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
+  [[curValues objectForKey:D5File] getCString:prefs->dFile[4] maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
+  [[curValues objectForKey:D6File] getCString:prefs->dFile[5] maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
+  [[curValues objectForKey:D7File] getCString:prefs->dFile[6] maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
+  [[curValues objectForKey:D8File] getCString:prefs->dFile[7] maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
+  [[curValues objectForKey:CartFile] getCString:prefs->cartFile maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
+  [[curValues objectForKey:Cart2File] getCString:prefs->cart2File maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
+  [[curValues objectForKey:ExeFile] getCString:prefs->exeFile maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
+  [[curValues objectForKey:CassFile] getCString:prefs->cassFile maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
   prefs->saveCurrentMedia = [[curValues objectForKey:SaveCurrentMedia] intValue];
   prefs->clearCurrentMedia = [[curValues objectForKey:ClearCurrentMedia] intValue];
   prefs->dFileEnabled[0] = [[curValues objectForKey:D1FileEnabled] intValue];
@@ -3836,7 +3836,7 @@ static Preferences *sharedInstance = nil;
 	
 	if ((strcmp(disk_filename[0],"Off") != 0) && (strcmp(disk_filename[0],"Empty") != 0)) {
 		[displayedValues setObject:yes forKey:D1FileEnabled];
-		[displayedValues setObject:[NSString stringWithCString:disk_filename[0] encoding:NSASCIIStringEncoding] forKey:D1File];
+		[displayedValues setObject:[NSString stringWithCString:disk_filename[0] encoding:NSUTF8StringEncoding] forKey:D1File];
 		}
 	else {
 		[displayedValues setObject:no forKey:D1FileEnabled];
@@ -3844,7 +3844,7 @@ static Preferences *sharedInstance = nil;
 		}
 	if ((strcmp(disk_filename[1],"Off") != 0) && (strcmp(disk_filename[1],"Empty") != 0)) {
 		[displayedValues setObject:yes forKey:D2FileEnabled];
-		[displayedValues setObject:[NSString stringWithCString:disk_filename[1] encoding:NSASCIIStringEncoding] forKey:D2File];
+		[displayedValues setObject:[NSString stringWithCString:disk_filename[1] encoding:NSUTF8StringEncoding] forKey:D2File];
 		}
 	else {
 		[displayedValues setObject:no forKey:D2FileEnabled];
@@ -3852,7 +3852,7 @@ static Preferences *sharedInstance = nil;
 		}
 	if ((strcmp(disk_filename[2],"Off") != 0) && (strcmp(disk_filename[2],"Empty") != 0)) {
 		[displayedValues setObject:yes forKey:D3FileEnabled];
-		[displayedValues setObject:[NSString stringWithCString:disk_filename[2] encoding:NSASCIIStringEncoding] forKey:D3File];
+		[displayedValues setObject:[NSString stringWithCString:disk_filename[2] encoding:NSUTF8StringEncoding] forKey:D3File];
 		}
 	else {
 		[displayedValues setObject:no forKey:D3FileEnabled];
@@ -3860,7 +3860,7 @@ static Preferences *sharedInstance = nil;
 		}
 	if ((strcmp(disk_filename[3],"Off") != 0) && (strcmp(disk_filename[3],"Empty") != 0)) {
 		[displayedValues setObject:yes forKey:D4FileEnabled];
-		[displayedValues setObject:[NSString stringWithCString:disk_filename[3] encoding:NSASCIIStringEncoding] forKey:D4File];
+		[displayedValues setObject:[NSString stringWithCString:disk_filename[3] encoding:NSUTF8StringEncoding] forKey:D4File];
 		}
 	else {
 		[displayedValues setObject:no forKey:D4FileEnabled];
@@ -3868,7 +3868,7 @@ static Preferences *sharedInstance = nil;
 		}
 	if ((strcmp(disk_filename[4],"Off") != 0) && (strcmp(disk_filename[4],"Empty") != 0)) {
 		[displayedValues setObject:yes forKey:D5FileEnabled];
-		[displayedValues setObject:[NSString stringWithCString:disk_filename[4] encoding:NSASCIIStringEncoding] forKey:D5File];
+		[displayedValues setObject:[NSString stringWithCString:disk_filename[4] encoding:NSUTF8StringEncoding] forKey:D5File];
 		}
 	else {
 		[displayedValues setObject:no forKey:D5FileEnabled];
@@ -3876,7 +3876,7 @@ static Preferences *sharedInstance = nil;
 		}
 	if ((strcmp(disk_filename[5],"Off") != 0) && (strcmp(disk_filename[5],"Empty") != 0)) {
 		[displayedValues setObject:yes forKey:D6FileEnabled];
-		[displayedValues setObject:[NSString stringWithCString:disk_filename[5] encoding:NSASCIIStringEncoding] forKey:D6File];
+		[displayedValues setObject:[NSString stringWithCString:disk_filename[5] encoding:NSUTF8StringEncoding] forKey:D6File];
 		}
 	else {
 		[displayedValues setObject:no forKey:D6FileEnabled];
@@ -3884,7 +3884,7 @@ static Preferences *sharedInstance = nil;
 		}
 	if ((strcmp(disk_filename[6],"Off") != 0) && (strcmp(disk_filename[6],"Empty") != 0)) {
 		[displayedValues setObject:yes forKey:D7FileEnabled];
-		[displayedValues setObject:[NSString stringWithCString:disk_filename[6] encoding:NSASCIIStringEncoding] forKey:D7File];
+		[displayedValues setObject:[NSString stringWithCString:disk_filename[6] encoding:NSUTF8StringEncoding] forKey:D7File];
 		}
 	else {
 		[displayedValues setObject:no forKey:D7FileEnabled];
@@ -3892,7 +3892,7 @@ static Preferences *sharedInstance = nil;
 		}
 	if ((strcmp(disk_filename[7],"Off") != 0) && (strcmp(disk_filename[7],"Empty") != 0)) {
 		[displayedValues setObject:yes forKey:D8FileEnabled];
-		[displayedValues setObject:[NSString stringWithCString:disk_filename[7] encoding:NSASCIIStringEncoding] forKey:D8File];
+		[displayedValues setObject:[NSString stringWithCString:disk_filename[7] encoding:NSUTF8StringEncoding] forKey:D8File];
 		}
 	else {
 		[displayedValues setObject:no forKey:D8FileEnabled];
@@ -3900,7 +3900,7 @@ static Preferences *sharedInstance = nil;
 		}
 	if ((strcmp(cassette_filename, "None") != 0) && (strlen(cassette_filename) != 0)) {
 		[displayedValues setObject:yes forKey:CassFileEnabled];
-		[displayedValues setObject:[NSString stringWithCString:cassette_filename encoding:NSASCIIStringEncoding] forKey:CassFile];
+		[displayedValues setObject:[NSString stringWithCString:cassette_filename encoding:NSUTF8StringEncoding] forKey:CassFile];
 		}
 	else {
 		[displayedValues setObject:no forKey:CassFileEnabled];
@@ -3908,7 +3908,7 @@ static Preferences *sharedInstance = nil;
 		}
     if (strlen(CARTRIDGE_main.filename) != 0) {
 		[displayedValues setObject:yes forKey:CartFileEnabled];
-		[displayedValues setObject:[NSString stringWithCString:CARTRIDGE_main.filename encoding:NSASCIIStringEncoding] forKey:CartFile];
+		[displayedValues setObject:[NSString stringWithCString:CARTRIDGE_main.filename encoding:NSUTF8StringEncoding] forKey:CartFile];
 		}
 	else {
 		[displayedValues setObject:no forKey:CartFileEnabled];
@@ -3916,7 +3916,7 @@ static Preferences *sharedInstance = nil;
 		}
 	if (strlen(cart2_filename) != 0) {
 		[displayedValues setObject:yes forKey:Cart2FileEnabled];
-		[displayedValues setObject:[NSString stringWithCString:cart2_filename encoding:NSASCIIStringEncoding] forKey:Cart2File];
+		[displayedValues setObject:[NSString stringWithCString:cart2_filename encoding:NSUTF8StringEncoding] forKey:Cart2File];
 		}
 	else {
 		[displayedValues setObject:no forKey:Cart2FileEnabled];
@@ -4429,7 +4429,7 @@ static Preferences *sharedInstance = nil;
         [gamepadNumHatsField setStringValue:@"0"];
         }
     else {
-        NSString *name = [NSString stringWithCString:SDL_JoystickName(joystick) encoding:NSASCIIStringEncoding];
+        NSString *name = [NSString stringWithCString:SDL_JoystickName(joystick) encoding:NSUTF8StringEncoding];
         [gamepadNameField setStringValue:[self  removeUnicode:name]];
         [gamepadNumButtonsField setIntValue:numButtons];
         [gamepadNumSticksField setIntValue:numSticks];
@@ -4703,7 +4703,7 @@ static Preferences *sharedInstance = nil;
 		
 	[modems removeAllObjects];
 	for (i=0;i<modemCount;i++) {
-		[modems addObject:[NSString stringWithCString:modemNames[i] encoding:NSASCIIStringEncoding]];
+		[modems addObject:[NSString stringWithCString:modemNames[i] encoding:NSUTF8StringEncoding]];
 	}
 }
 	
@@ -5502,7 +5502,7 @@ static Preferences *sharedInstance = nil;
 - (void)saveConfiguration:(id)sender {
 	NSString *filename;
 	
-	filename = [self saveFileInDirectory:[NSString stringWithCString:atari_config_dir  encoding:NSASCIIStringEncoding]:@"a8c"];
+	filename = [self saveFileInDirectory:[NSString stringWithCString:atari_config_dir  encoding:NSUTF8StringEncoding]:@"a8c"];
 	if (filename != nil)
 		[self saveConfigurationData:filename];
     [[KeyMapper sharedInstance] releaseCmdKeys:@"s"];
@@ -5519,7 +5519,7 @@ static Preferences *sharedInstance = nil;
 	/* Transfer the changed prefs values back from emulator */
 	savePrefs();
 	[self commitDisplayedValues];
-	[self saveConfigurationData:[NSString stringWithCString:filename encoding:NSASCIIStringEncoding]];
+	[self saveConfigurationData:[NSString stringWithCString:filename encoding:NSUTF8StringEncoding]];
 }
 
 #define getConfig(name) \
@@ -5533,7 +5533,7 @@ static Preferences *sharedInstance = nil;
 	openPanel = [NSOpenPanel openPanel];
 	[openPanel setCanChooseDirectories:NO];
 	[openPanel setCanChooseFiles:YES];
-    [openPanel setDirectoryURL:[NSURL fileURLWithPath:[NSString stringWithCString:atari_config_dir encoding:NSASCIIStringEncoding]]];
+    [openPanel setDirectoryURL:[NSURL fileURLWithPath:[NSString stringWithCString:atari_config_dir encoding:NSUTF8StringEncoding]]];
     [openPanel setAllowedFileTypes:[NSArray arrayWithObjects:@"a8c",@"A8C",nil]];
 
 	if ([openPanel runModal] != NSModalResponseOK) { 
@@ -5571,7 +5571,7 @@ static Preferences *sharedInstance = nil;
 	[self commitDisplayedValues];
 	
 	/* Load the config file */
-	[self loadConfigFile:[NSString stringWithCString:filename encoding:NSASCIIStringEncoding]];
+	[self loadConfigFile:[NSString stringWithCString:filename encoding:NSUTF8StringEncoding]];
 	
 	/* Transfer the prefs back to the emulator */
     [self transferValuesToEmulator];

@@ -52,7 +52,7 @@ static char fileToCopy[FILENAME_MAX];
 			tag += 4;
 
 		if (SIO_drive_status[tag] == SIO_READ_ONLY || SIO_drive_status[tag] == SIO_READ_WRITE) {
-            NSURL *fileURL = [NSURL fileURLWithPath: [NSString stringWithCString:SIO_filename[tag] encoding:NSASCIIStringEncoding]];
+            NSURL *fileURL = [NSURL fileURLWithPath: [NSString stringWithCString:SIO_filename[tag] encoding:NSUTF8StringEncoding]];
             NSDraggingItem* dragItem = [[NSDraggingItem alloc] initWithPasteboardWriter:fileURL];
 
             dragImage = disketteImage;
@@ -98,7 +98,7 @@ sourceOperationMaskForDraggingContext:(NSDraggingContext)context
 			[[MediaManager sharedInstance] diskRemoveKey:(driveNo + 1)];
 		else
 			[[MediaManager sharedInstance] 
-				diskNoInsertFile:[NSString stringWithCString:fileToCopy encoding:NSASCIIStringEncoding]:driveNo];
+				diskNoInsertFile:[NSString stringWithCString:fileToCopy encoding:NSUTF8StringEncoding]:driveNo];
 		}
 	else if (operation & NSDragOperationMove)
 		{
@@ -145,7 +145,7 @@ sourceOperationMaskForDraggingContext:(NSDraggingContext)context
 					[suffix isEqualToString:@"dcm"] ||
 					[suffix isEqualToString:@"DCM"]) ||
 					[[files objectAtIndex:0] 
-						isEqualToString:[NSString stringWithCString:SIO_filename[[self tag]] encoding:NSASCIIStringEncoding]])
+						isEqualToString:[NSString stringWithCString:SIO_filename[[self tag]] encoding:NSUTF8StringEncoding]])
 					return NSDragOperationNone;
 			if ([self tag] == 8)
 				if (!([suffix isEqualToString:@"cas"] ||

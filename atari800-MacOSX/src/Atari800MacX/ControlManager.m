@@ -619,9 +619,9 @@ static int monitorRunFirstTime = 1;
     NSString *filename;
         
     PauseAudio(1);
-    filename = [self browseFileInDirectory:[NSString stringWithCString:atari_state_dir encoding:NSASCIIStringEncoding]];
+    filename = [self browseFileInDirectory:[NSString stringWithCString:atari_state_dir encoding:NSUTF8StringEncoding]];
     if (filename != nil) {
-        [filename getCString:loadFilename maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+        [filename getCString:loadFilename maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
         requestLoadState = 1;
     }
 	[[MediaManager sharedInstance] updateInfo];
@@ -635,7 +635,7 @@ static int monitorRunFirstTime = 1;
 - (void)loadStateFile:(NSString *)filename
 {
     if (filename != nil) {
-        [filename getCString:loadFilename maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+        [filename getCString:loadFilename maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
         requestLoadState = 1;
     }
 }
@@ -660,9 +660,9 @@ static int monitorRunFirstTime = 1;
     NSString *filename;
     
     PauseAudio(1);
-    filename = [self saveFileInDirectory:[NSString stringWithCString:atari_state_dir encoding:NSASCIIStringEncoding]:@"a8s"];
+    filename = [self saveFileInDirectory:[NSString stringWithCString:atari_state_dir encoding:NSUTF8StringEncoding]:@"a8s"];
     if (filename != nil) {
-        [filename getCString:saveFilename maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+        [filename getCString:saveFilename maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
         requestSaveState = 1;
     }
     [[KeyMapper sharedInstance] releaseCmdKeys:@"s"];
@@ -700,7 +700,7 @@ static int monitorRunFirstTime = 1;
  *-----------------------------------------------------------------------------*/
 - (void)error2:(char *)error1:(char *)error2;
 {
-	[dualErrorTextField1 setStringValue:[NSString stringWithCString:error1 encoding:NSASCIIStringEncoding]];
+	[dualErrorTextField1 setStringValue:[NSString stringWithCString:error1 encoding:NSUTF8StringEncoding]];
 	[dualErrorTextField2 setStringValue:[NSString stringWithCString:error2 encoding:NSASCIIStringEncoding]];
     [NSApp runModalForWindow:[dualErrorTextField1 window]];
 }
@@ -1544,9 +1544,9 @@ static int monitorRunFirstTime = 1;
 {	
 	NSString *filename;
     
-    filename = [self browseFileInDirectory:[NSString stringWithCString:atari_exe_dir encoding:NSASCIIStringEncoding]];
+    filename = [self browseFileInDirectory:[NSString stringWithCString:atari_exe_dir encoding:NSUTF8StringEncoding]];
     if (filename != nil) {
-        [filename getCString:loadFilename maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+        [filename getCString:loadFilename maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
 		load_user_labels(loadFilename);
 		[self monitorSetLabelsDirty];
 		[self updateMonitorGUILabels];
