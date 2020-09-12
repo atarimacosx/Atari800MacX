@@ -674,7 +674,7 @@ int AtrSpartaDeleteFile(AtrDiskInfo *info, char *name)
     return(FALSE);
 }
 
-int AtrSpartaImportFile(AtrDiskInfo *info, char *filename, int lfConvert)
+int AtrSpartaImportFile(AtrDiskInfo *info, char *filename, int lfConvert, int tabConvert)
 {
     FILE *inFile;
     ULONG file_length, total_file_length;
@@ -780,8 +780,11 @@ int AtrSpartaImportFile(AtrDiskInfo *info, char *filename, int lfConvert)
             return(ADOS_HOST_READ_ERR);
             }
 
-		if (lfConvert)
-			HostLFToAtari(secBuff, numToWrite);
+        if (lfConvert)
+            HostLFToAtari(secBuff, numToWrite);
+        
+        if (tabConvert)
+            HostTabToAtari(secBuff, numToWrite);
         
         if (AtrWriteSector(info,sector, secBuff))
             {
@@ -872,7 +875,7 @@ int AtrSpartaImportFile(AtrDiskInfo *info, char *filename, int lfConvert)
     return FALSE;
 }
 
-int AtrSpartaExportFile(AtrDiskInfo *info, char *nameToExport, char* outFile, int lfConvert)
+int AtrSpartaExportFile(AtrDiskInfo *info, char *nameToExport, char* outFile, int lfConvert, int tabConvert)
 {
 	SpartaDirEntry* pDirEntry;
 	UBYTE secBuff[ 0x0200 ];
@@ -915,9 +918,12 @@ int AtrSpartaExportFile(AtrDiskInfo *info, char *nameToExport, char* outFile, in
 			return ADOS_FILE_READ_ERR;
 		    }
 			
-		if (lfConvert)
-			AtariLFToHost(secBuff, secBuff[ dinfo->sectorSize - 1 ]);
-					
+        if (lfConvert)
+            AtariLFToHost(secBuff, secBuff[ dinfo->sectorSize - 1 ]);
+                    
+        if (tabConvert)
+            AtariTabToHost(secBuff, secBuff[ dinfo->sectorSize - 1 ]);
+                    
 		if (fwrite( secBuff, 1, bytesToWrite ,output) != bytesToWrite)
             {
             fclose(output);

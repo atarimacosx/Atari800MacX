@@ -139,25 +139,49 @@ void NameFilter( char* host, char* atari )
 
 void AtariLFToHost(unsigned char *buffer, int len)
 {
-	int i;
-	unsigned char *ptr = buffer;
+    int i;
+    unsigned char *ptr = buffer;
 
-	for (i=0;i<len;i++,ptr++) {
-		if (*ptr == 0x9b)
-			{
-			*ptr = 0x0a;
-			}
-		}
+    for (i=0;i<len;i++,ptr++) {
+        if (*ptr == 0x9b)
+            {
+            *ptr = 0x0a;
+            }
+        }
 }
 
 void HostLFToAtari(unsigned char *buffer, int len)
 {
-	int i;
-	unsigned char *ptr = buffer;
-	
-	for (i=0;i<len;i++,ptr++) {
-		if (*ptr == 0x0a)
-			*ptr = 0x9b;
-		}
+    int i;
+    unsigned char *ptr = buffer;
+    
+    for (i=0;i<len;i++,ptr++) {
+        if (*ptr == 0x0a)
+            *ptr = 0x9b;
+        }
+}
+
+void AtariTabToHost(unsigned char *buffer, int len)
+{
+    int i;
+    unsigned char *ptr = buffer;
+
+    for (i=0;i<len;i++,ptr++) {
+        if (*ptr == 0x7F)
+            {
+            *ptr = 0x09;
+            }
+        }
+}
+
+void HostTabToAtari(unsigned char *buffer, int len)
+{
+    int i;
+    unsigned char *ptr = buffer;
+    
+    for (i=0;i<len;i++,ptr++) {
+        if (*ptr == 0x09)
+            *ptr = 0x7F;
+        }
 }
 

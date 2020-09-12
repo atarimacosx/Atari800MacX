@@ -8,7 +8,7 @@ int AtrMyDosMakeDir(AtrDiskInfo *info, char *name);
 int AtrMyDosLockFile(AtrDiskInfo *info, char *name, int lock);
 int AtrMyDosRenameFile(AtrDiskInfo *info, char *name, char *newname);
 int AtrMyDosDeleteFile(AtrDiskInfo *info, char *name);
-int AtrMyDosImportFile(AtrDiskInfo *info, char *filename, int lfConvert);
-int AtrMyDosExportFile(AtrDiskInfo *info, char *nameToExport, char* outFile, int lfConvert);
+int AtrMyDosImportFile(AtrDiskInfo *info, char *filename, int lfConvert, int tabConvert);
+int AtrMyDosExportFile(AtrDiskInfo *info, char *nameToExport, char* outFile, int lfConvert, int tabConvert);
 
 

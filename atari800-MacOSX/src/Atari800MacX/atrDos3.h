@@ -5,7 +5,7 @@ int AtrDos3GetDir(AtrDiskInfo *info, UWORD *fileCount, ADosFileEntry *files, ULO
 int AtrDos3LockFile(AtrDiskInfo *info, char *name, int lock);
 int AtrDos3RenameFile(AtrDiskInfo *info, char *name, char *newname);
 int AtrDos3DeleteFile(AtrDiskInfo *info, char *name);
-int AtrDos3ImportFile(AtrDiskInfo *info, char *filename, int lfConvert);
-int AtrDos3ExportFile(AtrDiskInfo *info, char *nameToExport, char* outFile, int lfConvert);
+int AtrDos3ImportFile(AtrDiskInfo *info, char *filename, int lfConvert, int tabConvert);
+int AtrDos3ExportFile(AtrDiskInfo *info, char *nameToExport, char* outFile, int lfConvert, int tabConvert);
 
 

@@ -68,7 +68,8 @@ static NSMutableArray *editorArray = nil;
 	diskImageReadWrite = 0;
 	diskImageSubdirs = 0;
 	diskImageWriteProtect = 0;
-	lfConvert = 0;
+    lfConvert = 0;
+    tabConvert = 0;
 	imageEditorOpen = 0;
 	imageFilename = filename;
 	[imageFilename retain];
@@ -226,10 +227,15 @@ static NSMutableArray *editorArray = nil;
 	else
 		[diskImageWriteProtectButton setEnabled:NO];		
 
-	if (lfConvert)
-		[diskImageLfTranslateButton setState:NSOnState];
-	else
-		[diskImageLfTranslateButton setState:NSOffState];
+    if (lfConvert)
+        [diskImageLfTranslateButton setState:NSOnState];
+    else
+        [diskImageLfTranslateButton setState:NSOffState];
+
+    if (tabConvert)
+        [diskImageTabTranslateButton setState:NSOnState];
+    else
+        [diskImageTabTranslateButton setState:NSOffState];
 
 }
 
@@ -285,7 +291,7 @@ static NSMutableArray *editorArray = nil;
     filenames = [self browseFiles];
 	if (filenames != nil) {
 		for (i=0;i < [filenames count]; i++)
-			[directoryDataSource importFile:[filenames objectAtIndex:i]:lfConvert];
+            [directoryDataSource importFile:[filenames objectAtIndex:i]:lfConvert:tabConvert];
 		[self diskImageEnableButtons];
 		}
 }
@@ -299,7 +305,7 @@ static NSMutableArray *editorArray = nil;
 	int i;
 	
 	for (i=0;i < [filenames count]; i++)
-		[directoryDataSource importFile:[filenames objectAtIndex:i]:lfConvert];
+        [directoryDataSource importFile:[filenames objectAtIndex:i]:lfConvert:tabConvert];
 	[self diskImageEnableButtons];
 }
 
@@ -312,7 +318,7 @@ static NSMutableArray *editorArray = nil;
 	int i;
 	
 	for (i=0;i < [filenames count]; i++)
-		[directoryDataSource importFile:[filenames objectAtIndex:i]:0];
+        [directoryDataSource importFile:[filenames objectAtIndex:i]:0:0];
 	[self diskImageEnableButtons];
 }
 
@@ -332,7 +338,7 @@ static NSMutableArray *editorArray = nil;
         NSUInteger idx = [indicies firstIndex];
         while (idx != NSNotFound)
             {
-                [directoryDataSource exportFile:idx:filename:lfConvert];
+                [directoryDataSource exportFile:idx:filename:lfConvert:tabConvert];
              idx = [indicies indexGreaterThanIndex:idx];
             }
 		}
@@ -534,14 +540,48 @@ static NSMutableArray *editorArray = nil;
 }
 
 /*------------------------------------------------------------------------------
-*  diskImageTranslateChange - Called when user clicks cancel on rename sheet.
+*  diskImageTranslateChange - Called when user clicks on lf translate button.
 *-----------------------------------------------------------------------------*/
 - (IBAction)diskImageTranslateChange:(id)sender
 {
-	if ([diskImageLfTranslateButton state] == NSOnState)
-		lfConvert = 1;
-	else
-		lfConvert = 0;
+    if ([diskImageTranslateButton state] == NSOnState) {
+        [diskImageLfTranslateButton setEnabled:YES];
+        [diskImageTabTranslateButton setEnabled:YES];
+        [diskImageLfTranslateButton setState:NSOnState];
+        [diskImageTabTranslateButton setState:NSOnState];
+        lfConvert = 1;
+        tabConvert = 1;
+    }
+    else {
+        [diskImageLfTranslateButton setEnabled:NO];
+        [diskImageTabTranslateButton setEnabled:NO];
+        [diskImageLfTranslateButton setState:NSOffState];
+        [diskImageTabTranslateButton setState:NSOffState];
+        lfConvert = 0;
+        tabConvert = 0;
+    }
+}
+
+/*------------------------------------------------------------------------------
+*  diskImageTranslateChange - Called when user clicks on lf translate button.
+*-----------------------------------------------------------------------------*/
+- (IBAction)diskImageLFTranslateChange:(id)sender
+{
+    if ([diskImageLfTranslateButton state] == NSOnState)
+        lfConvert = 1;
+    else
+        lfConvert = 0;
+}
+
+/*------------------------------------------------------------------------------
+*  diskImageTabTranslateChange - Called when user clicks on tab translate button.
+*-----------------------------------------------------------------------------*/
+- (IBAction)diskImageTabTranslateChange:(id)sender
+{
+    if ([diskImageTabTranslateButton state] == NSOnState)
+        tabConvert = 1;
+    else
+        tabConvert = 0;
 }
 
 /*------------------------------------------------------------------------------
@@ -555,7 +595,12 @@ static NSMutableArray *editorArray = nil;
 
 - (int)getLfConvert
 {
-	return lfConvert;
+    return lfConvert;
+}
+
+- (int)getTabConvert
+{
+    return tabConvert;
 }
 
 -(int)getWriteProtect

@@ -509,7 +509,7 @@ int AtrMyDosDeleteFile(AtrDiskInfo *info, char *name)
     return(FALSE);
 }
 
-int AtrMyDosImportFile(AtrDiskInfo *info, char *filename, int lfConvert)
+int AtrMyDosImportFile(AtrDiskInfo *info, char *filename, int lfConvert, int tabConvert)
 {
     FILE *inFile;
     int file_length;
@@ -599,6 +599,8 @@ int AtrMyDosImportFile(AtrDiskInfo *info, char *filename, int lfConvert)
                 }
            if (lfConvert)
               HostLFToAtari(secBuff, numToWrite);
+           if (tabConvert)
+              HostTabToAtari(secBuff, numToWrite);
            secBuff[sectorSize - 1] = numToWrite;
             first_sector = 0;
             }
@@ -625,8 +627,10 @@ int AtrMyDosImportFile(AtrDiskInfo *info, char *filename, int lfConvert)
             fclose(inFile);
             return(ADOS_HOST_READ_ERR);
             }
-		if (lfConvert)
-			HostLFToAtari(secBuff, numToWrite);
+        if (lfConvert)
+            HostLFToAtari(secBuff, numToWrite);
+        if (tabConvert)
+            HostTabToAtari(secBuff, numToWrite);
 
         secBuff[sectorSize - 1] = numToWrite;
         last_sector = curr_sector;
@@ -667,7 +671,7 @@ int AtrMyDosImportFile(AtrDiskInfo *info, char *filename, int lfConvert)
     return FALSE;
 }
 
-int AtrMyDosExportFile(AtrDiskInfo *info, char *nameToExport, char* outFile, int lfConvert)
+int AtrMyDosExportFile(AtrDiskInfo *info, char *nameToExport, char* outFile, int lfConvert, int tabConvert)
 {
 	MyDosDirEntry* pDirEntry;
 	UBYTE secBuff[ 0x0100 ];
@@ -719,9 +723,12 @@ int AtrMyDosExportFile(AtrDiskInfo *info, char *nameToExport, char* outFile, int
 			sector = secBuff[ sectorSize - 2 ] + 
                       ( 0x03 & (UWORD)secBuff[ sectorSize - 3 ] ) * 0x100;
 
-		if (lfConvert)
-			AtariLFToHost(secBuff, secBuff[ sectorSize - 1 ]);
-			
+        if (lfConvert)
+            AtariLFToHost(secBuff, secBuff[ sectorSize - 1 ]);
+
+        if (tabConvert)
+            AtariTabToHost(secBuff, secBuff[ sectorSize - 1 ]);
+                
 		if (fwrite( secBuff, 1, secBuff[ sectorSize - 1 ] ,output) != 
                secBuff[ sectorSize - 1 ])
             {

@@ -612,46 +612,46 @@ int AtrDeleteFile(AtrDiskInfo *info, char *name)
     return(ADOS_UNKNOWN_FORMAT);
 }
 
-int AtrImportFile(AtrDiskInfo *info, char *filename, int lfConvert)
+int AtrImportFile(AtrDiskInfo *info, char *filename, int lfConvert, int tabConvert)
 {
     switch (info->atr_dostype) {
         case DOS_ATARI:
         case DOS_ATARI1:
         case DOS_TOP:
         case DOS_BIBO:
-            return(AtrDos2ImportFile(info, filename, lfConvert));
+            return(AtrDos2ImportFile(info, filename, lfConvert, tabConvert));
         case DOS_ATARI3:
-            return(AtrDos3ImportFile(info, filename, lfConvert));
+            return(AtrDos3ImportFile(info, filename, lfConvert, tabConvert));
         case DOS_ATARI4:
-            return(AtrDos4ImportFile(info, filename, lfConvert));
+            return(AtrDos4ImportFile(info, filename, lfConvert, tabConvert));
         case DOS_ATARIXE:
-            return(AtrXEImportFile(info, filename, lfConvert));
+            return(AtrXEImportFile(info, filename, lfConvert, tabConvert));
         case DOS_MYDOS:
-            return(AtrMyDosImportFile(info, filename, lfConvert));
+            return(AtrMyDosImportFile(info, filename, lfConvert, tabConvert));
         case DOS_SPARTA2:
-            return(AtrSpartaImportFile(info, filename, lfConvert));
+            return(AtrSpartaImportFile(info, filename, lfConvert, tabConvert));
         }
     return(ADOS_UNKNOWN_FORMAT);
 }
 
-int AtrExportFile(AtrDiskInfo *info, char *nameToExport, char* outFile, int lfConvert)
+int AtrExportFile(AtrDiskInfo *info, char *nameToExport, char* outFile, int lfConvert, int tabConvert)
 {
     switch (info->atr_dostype) {
         case DOS_ATARI:
         case DOS_ATARI1:
         case DOS_TOP:
         case DOS_BIBO:
-            return(AtrDos2ExportFile(info, nameToExport,outFile, lfConvert));
+            return(AtrDos2ExportFile(info, nameToExport,outFile, lfConvert, tabConvert));
         case DOS_ATARI3:
-            return(AtrDos3ExportFile(info, nameToExport,outFile, lfConvert));
+            return(AtrDos3ExportFile(info, nameToExport,outFile, lfConvert, tabConvert));
         case DOS_ATARI4:
-            return(AtrDos4ExportFile(info, nameToExport,outFile, lfConvert));
+            return(AtrDos4ExportFile(info, nameToExport,outFile, lfConvert, tabConvert));
         case DOS_ATARIXE:
-            return(AtrXEExportFile(info, nameToExport,outFile, lfConvert));
+            return(AtrXEExportFile(info, nameToExport,outFile, lfConvert, tabConvert));
         case DOS_MYDOS:
-            return(AtrMyDosExportFile(info, nameToExport,outFile, lfConvert));
+            return(AtrMyDosExportFile(info, nameToExport,outFile, lfConvert, tabConvert));
         case DOS_SPARTA2:
-            return(AtrSpartaExportFile(info, nameToExport,outFile, lfConvert));
+            return(AtrSpartaExportFile(info, nameToExport,outFile, lfConvert, tabConvert));
         }
     return(ADOS_UNKNOWN_FORMAT);
 }
