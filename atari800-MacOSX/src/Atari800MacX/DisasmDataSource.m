@@ -45,27 +45,27 @@ extern unsigned short show_instruction_string(char*buff, unsigned short  pc, int
 	
 	breakpointImage = [NSImage alloc];
     strcpy(filename, "Contents/Resources/Breakpoint.png");    
-	[breakpointImage initWithContentsOfFile:[NSString stringWithCString:filename encoding:NSASCIIStringEncoding]];
+	[breakpointImage initWithContentsOfFile:[NSString stringWithCString:filename encoding:NSUTF8StringEncoding]];
 	[breakpointImage retain];
 	
 	breakpointCurrentLineImage = [NSImage alloc];
     strcpy(filename, "Contents/Resources/BreakpointCurrentLine.png");    
-	[breakpointCurrentLineImage initWithContentsOfFile:[NSString stringWithCString:filename encoding:NSASCIIStringEncoding]];
+	[breakpointCurrentLineImage initWithContentsOfFile:[NSString stringWithCString:filename encoding:NSUTF8StringEncoding]];
 	[breakpointCurrentLineImage retain];
 	
 	currentLineImage = [NSImage alloc];
     strcpy(filename, "Contents/Resources/CurrentLine.png");    
-	[currentLineImage initWithContentsOfFile:[NSString stringWithCString:filename encoding:NSASCIIStringEncoding]];
+	[currentLineImage initWithContentsOfFile:[NSString stringWithCString:filename encoding:NSUTF8StringEncoding]];
 	[currentLineImage retain];
 	
 	disabledBreakpointImage = [NSImage alloc];
     strcpy(filename, "Contents/Resources/DisabledBreakpoint.png");    
-	[disabledBreakpointImage initWithContentsOfFile:[NSString stringWithCString:filename encoding:NSASCIIStringEncoding]];
+	[disabledBreakpointImage initWithContentsOfFile:[NSString stringWithCString:filename encoding:NSUTF8StringEncoding]];
 	[disabledBreakpointImage retain];
 	
 	disabledBreakpointCurrentLineImage = [NSImage alloc];
     strcpy(filename, "Contents/Resources/DisabledBreakpointCurrentLine.png");    
-	[disabledBreakpointCurrentLineImage initWithContentsOfFile:[NSString stringWithCString:filename encoding:NSASCIIStringEncoding]];
+	[disabledBreakpointCurrentLineImage initWithContentsOfFile:[NSString stringWithCString:filename encoding:NSUTF8StringEncoding]];
 	[disabledBreakpointCurrentLineImage retain];
 	
 	instructions = nil;

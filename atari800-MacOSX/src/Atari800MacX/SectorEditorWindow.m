@@ -115,7 +115,7 @@ static SectorEditorWindow *sharedInstance = nil;
 	NSString *title;
 
 	// Call the Atr library with the filename that is passed in to mount the disk
-	[filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding];
+	[filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
 	if ((status = AtrMount(cfilename ,&dosType, &readWrite, &writeProtect,&diskinfo)))
         {
 		// If it fails, unmount the disk

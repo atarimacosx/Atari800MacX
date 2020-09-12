@@ -39,12 +39,12 @@
 
 	breakpointImage = [NSImage alloc];
     strcpy(filename, "Contents/Resources/Breakpoint.png");    
-	[breakpointImage initWithContentsOfFile:[NSString stringWithCString:filename encoding:NSASCIIStringEncoding]];
+	[breakpointImage initWithContentsOfFile:[NSString stringWithCString:filename encoding:NSUTF8StringEncoding]];
 	[breakpointImage retain];
 	
 	disabledBreakpointImage = [NSImage alloc];
     strcpy(filename, "Contents/Resources/DisabledBreakpoint.png");    
-	[disabledBreakpointImage initWithContentsOfFile:[NSString stringWithCString:filename encoding:NSASCIIStringEncoding]];
+	[disabledBreakpointImage initWithContentsOfFile:[NSString stringWithCString:filename encoding:NSUTF8StringEncoding]];
 	[disabledBreakpointImage retain];
 	
 	// init colors
