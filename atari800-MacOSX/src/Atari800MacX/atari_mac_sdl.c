@@ -1609,8 +1609,6 @@ int Atari_Keyboard_International(void)
                     key_pressed = 0;
                     if (!Atari_International_Good_Key(lastkey))
                         return AKEY_NONE;
-                    if (lastkey == SDLK_CAPSLOCK)
-                        key_pressed = 1;
                     break;
                 case SDL_QUIT:
                     return AKEY_EXIT;
@@ -2406,7 +2404,21 @@ int Atari_Keyboard_International(void)
 *-----------------------------------------------------------------------------*/
 int Atari_Keyboard(void)
 {
-    return(Atari_Keyboard_International());
+    static int key_pressed = 0;
+    static int last_key = AKEY_NONE;
+    
+    if (key_pressed > 0) {
+        if (key_pressed--)
+            return last_key;
+    }
+    
+    last_key = Atari_Keyboard_International();
+    if (last_key != AKEY_NONE) {
+        printf("LastKey 0x%x\n",last_key);
+        key_pressed = 3;
+    }
+    return(last_key);
+
 }
 
 int PLATFORM_Keyboard(void)
@@ -5402,17 +5414,20 @@ int SDL_main(int argc, char **argv)
 			}
             POKEY_SKSTAT &= ~4;
             if ((INPUT_key_code ^ last_key_code) & ~AKEY_SHFTCTRL) {
+            /* ignore if only shift or control has changed its state */
                 last_key_code = INPUT_key_code;
                 POKEY_KBCODE = (UBYTE) INPUT_key_code;
                 if (POKEY_IRQEN & 0x40) {
-                    POKEY_IRQST &= ~0x40;
-                    CPU_GenerateIRQ();
+                    if (POKEY_IRQST & 0x40) {
+                        POKEY_IRQST &= ~0x40;
+                        CPU_GenerateIRQ();
+                    }
+                    else {
+                        /* keyboard over-run */
+                        POKEY_SKSTAT &= ~0x40;
+                        /* assert(CPU_IRQ != 0); */
+                    }
                 }
-		else {
-                    /* keyboard over-run */
-                    POKEY_SKSTAT &= ~0x40;
-                    /* assert(IRQ != 0); */
-		}
             }
         }
 
