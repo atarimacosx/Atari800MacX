@@ -1609,6 +1609,8 @@ int Atari_Keyboard_International(void)
                     key_pressed = 0;
                     if (!Atari_International_Good_Key(lastkey))
                         return AKEY_NONE;
+                    if (lastkey == SDLK_CAPSLOCK)
+                        key_pressed = 1;
                     break;
                 case SDL_QUIT:
                     return AKEY_EXIT;

@@ -318,8 +318,8 @@
             filePath = "atari_mac_sdl.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "3082"
-            endingLineNumber = "3082"
+            startingLineNumber = "3084"
+            endingLineNumber = "3084"
             landmarkName = "Atari_DisplayScreen(screen)"
             landmarkType = "9">
          </BreakpointContent>
@@ -782,8 +782,8 @@
             filePath = "atari_mac_sdl.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "4872"
-            endingLineNumber = "4872"
+            startingLineNumber = "4874"
+            endingLineNumber = "4874"
             landmarkName = "CreateWindowCaption()"
             landmarkType = "9">
          </BreakpointContent>
