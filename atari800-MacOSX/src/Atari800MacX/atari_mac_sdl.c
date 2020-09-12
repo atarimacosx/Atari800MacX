@@ -124,6 +124,7 @@ int fixAspectFullscreen = FALSE;
 #define FULL_WIDTH_MODE 2
 #define NORMAL_SCALE 0
 #define SCANLINE_SCALE 1
+#define FRAMES_TO_HOLD_KEY 3;
 
 #define SCREEN_WIDTH_SHORT    (Screen_WIDTH - 2 * 24 - 2 * 8)
 #define SCREEN_WIDTH_DEFAULT  (Screen_WIDTH - 2 * 24)
@@ -1570,6 +1571,10 @@ int Atari_Keyboard_International(void)
                             return AKEY_NONE;
                         case 1:
                             text_key = Atari_International_Char_To_Key(text_input[0]);
+                            if (kbhits[SDL_SCANCODE_CAPSLOCK] &&
+                                !(kbhits[SDL_SCANCODE_LSHIFT] ||
+                                  kbhits[SDL_SCANCODE_RSHIFT]))
+                                text_key &= ~AKEY_SHFT;
                             if ((lookup(SDL_IsJoyKeyTable, SDL_GetKeyFromName(text_input)) == 1) && keyjoyEnable && !key_option &&
                                 (pasteState == PASTE_IDLE))
                                 text_key =  AKEY_NONE;
@@ -2416,11 +2421,9 @@ int Atari_Keyboard(void)
     
     last_key = Atari_Keyboard_International();
     if (last_key != AKEY_NONE) {
-        printf("LastKey 0x%x\n",last_key);
-        key_pressed = 3;
+        key_pressed = FRAMES_TO_HOLD_KEY;
     }
     return(last_key);
-
 }
 
 int PLATFORM_Keyboard(void)
