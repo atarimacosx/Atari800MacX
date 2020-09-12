@@ -22,6 +22,8 @@
                 <outlet property="diskImageNameField" destination="118" id="121"/>
                 <outlet property="diskImageNewNameSheet" destination="113" id="122"/>
                 <outlet property="diskImageRenameButton" destination="14" id="99"/>
+                <outlet property="diskImageTabTranslateButton" destination="2Ur-iB-eG2" id="Whx-0b-uhb"/>
+                <outlet property="diskImageTranslateButton" destination="oQB-Zh-JLs" id="KvY-dM-F9V"/>
                 <outlet property="diskImageUnlockButton" destination="10" id="100"/>
                 <outlet property="diskImageWriteProtectButton" destination="8" id="101"/>
                 <outlet property="errorButton" destination="124" id="130"/>
@@ -215,14 +217,25 @@
                         </connections>
                     </button>
                     <button fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="20">
-                        <rect key="frame" x="363" y="87" width="217" height="18"/>
+                        <rect key="frame" x="389" y="66" width="217" height="18"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <buttonCell key="cell" type="check" title="Atari/Mac Linefeed Translation" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="145">
+                        <buttonCell key="cell" type="check" title="Linefeed Translation" bezelStyle="regularSquare" imagePosition="left" alignment="left" enabled="NO" inset="2" id="145">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                         <connections>
-                            <action selector="diskImageTranslateChange:" target="-2" id="133"/>
+                            <action selector="diskImageLFTranslateChange:" target="-2" id="4Ax-l6-nbf"/>
+                        </connections>
+                    </button>
+                    <button fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2Ur-iB-eG2">
+                        <rect key="frame" x="389" y="43" width="217" height="18"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <buttonCell key="cell" type="check" title="Tab Translation" bezelStyle="regularSquare" imagePosition="left" alignment="left" enabled="NO" inset="2" id="f24-NP-EJq">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="diskImageTabTranslateChange:" target="-2" id="08f-HC-tY7"/>
                         </connections>
                     </button>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="134">
@@ -234,6 +247,17 @@
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
+                    <button fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="oQB-Zh-JLs">
+                        <rect key="frame" x="364" y="89" width="217" height="18"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <buttonCell key="cell" type="check" title="Atari/Mac Character Translation" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="ddq-al-1CF">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="diskImageTranslateChange:" target="-2" id="d9S-W5-dxe"/>
+                        </connections>
+                    </button>
                 </subviews>
             </view>
             <point key="canvasLocation" x="120" y="133"/>

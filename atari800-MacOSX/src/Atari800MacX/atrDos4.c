@@ -312,7 +312,7 @@ int AtrDos4DeleteFile(AtrDiskInfo *info, char *name)
     return(FALSE);
 }
 
-int AtrDos4ImportFile(AtrDiskInfo *info, char *filename, int lfConvert)
+int AtrDos4ImportFile(AtrDiskInfo *info, char *filename, int lfConvert, int tabConvert)
 {
     FILE *inFile;
     int file_length, total_length;
@@ -419,8 +419,11 @@ int AtrDos4ImportFile(AtrDiskInfo *info, char *filename, int lfConvert)
                 return(ADOS_HOST_READ_ERR);
                 }
 				
-			if (lfConvert)
-				HostLFToAtari(secBuff, numToWrite);
+            if (lfConvert)
+                HostLFToAtari(secBuff, numToWrite);
+
+             if (tabConvert)
+                 HostTabToAtari(secBuff, numToWrite);
 
              last_block = curr_block;
             }
@@ -471,7 +474,7 @@ int AtrDos4ImportFile(AtrDiskInfo *info, char *filename, int lfConvert)
     return FALSE;
 }
 
-int AtrDos4ExportFile(AtrDiskInfo *info, char *nameToExport, char* outFile, int lfConvert)
+int AtrDos4ExportFile(AtrDiskInfo *info, char *nameToExport, char* outFile, int lfConvert, int tabConvert)
 {
 	Dos4DirEntry* pDirEntry;
 	UBYTE secBuff[ 8 * 128 ];
@@ -530,10 +533,13 @@ int AtrDos4ExportFile(AtrDiskInfo *info, char *nameToExport, char* outFile, int 
 		        }
             }
  
-		if (lfConvert)
-			AtariLFToHost(secBuff, bytesToWrite);
-			
-		if (fwrite( secBuff, 1, bytesToWrite ,output) != 
+        if (lfConvert)
+            AtariLFToHost(secBuff, bytesToWrite);
+            
+        if (tabConvert)
+            AtariTabToHost(secBuff, bytesToWrite);
+            
+		if (fwrite( secBuff, 1, bytesToWrite ,output) !=
                bytesToWrite)
             {
             fclose(output);

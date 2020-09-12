@@ -26,7 +26,7 @@ int AtrMakeDir(AtrDiskInfo *info, char *name);
 int AtrLockFile(AtrDiskInfo *info, char *name, int lock);
 int AtrRenameFile(AtrDiskInfo *info, char *name, char *newname);
 int AtrDeleteFile(AtrDiskInfo *info, char *name);
-int AtrImportFile(AtrDiskInfo *info, char *filename, int lfConvert);
-int AtrExportFile(AtrDiskInfo *info, char *nameToExport, char* outFile, int lfConvert);
+int AtrImportFile(AtrDiskInfo *info, char *filename, int lfConvert, int tabConvert);
+int AtrExportFile(AtrDiskInfo *info, char *nameToExport, char* outFile, int lfConvert, int tabConvert);
 
 

@@ -36,8 +36,8 @@
 - (NSString *) getDiskInfo:(int *)readWriteFlag:
 						   (int *) subdirsFlag:
 						   (int *) writeProtectFlag;
-- (int) importFile:(NSString *)filename:(int) lfConvert;
-- (int) exportFile:(int) index:(NSString *)dirName:(int) lfConvert;
+- (int) importFile:(NSString *)filename:(int) lfConvert:(int) tabConvert;
+- (int) exportFile:(int) index:(NSString *)dirName:(int) lfConvert:(int) tabConvert;
 - (int) changeDirectory:(int) index;
 - (int) changeDirectoryUp:(int) count;
 - (int) deleteFile:(int) index;

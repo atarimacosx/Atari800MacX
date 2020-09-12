@@ -221,14 +221,14 @@ static int idCounter = 0;
 }
 	
 	
-- (int) importFile:(NSString *)filename:(int) lfConvert
+- (int) importFile:(NSString *)filename:(int) lfConvert:(int) tabConvert
 {
 	char cstring[FILENAME_MAX];
 	int status;
 	
 	[filename getCString:cstring maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
 	
-	status = AtrImportFile(diskinfo, cstring, lfConvert);
+	status = AtrImportFile(diskinfo, cstring, lfConvert, tabConvert);
 	
 	if (status == 0) {
 		status = AtrGetDir(diskinfo, &fileCount, fileList, &freeBytes);
@@ -243,7 +243,7 @@ static int idCounter = 0;
 	return(status);
 }
 
-- (int) exportFile:(int) index:(NSString *)dirName:(int) lfConvert
+- (int) exportFile:(int) index:(NSString *)dirName:(int) lfConvert:(int) tabConvert
 {
 	char fileName[13];
 	char cname[FILENAME_MAX];
@@ -255,7 +255,7 @@ static int idCounter = 0;
 		strcat(cname,"/");
 		strcat(cname, fileName);
 	
-		status = AtrExportFile(diskinfo, fileName,cname,lfConvert);
+		status = AtrExportFile(diskinfo, fileName,cname,lfConvert,tabConvert);
 	
 		if (status)
 			[self displayError:status];
@@ -742,7 +742,7 @@ static int idCounter = 0;
 		dropPath = nil;
 		for (i=0;i<[dragRows count];i++) { 
 			[self exportFile:[[dragRows objectAtIndex:i] intValue]:
-							@"/private/tmp":0];
+             @"/private/tmp":0:0];
 			[self getFilename:[[dragRows objectAtIndex:i] intValue]:fileName];
 			[filenames addObject:
 					[@"/tmp/" stringByAppendingString:[NSString stringWithCString:fileName encoding:NSASCIIStringEncoding]]];
@@ -760,7 +760,7 @@ static int idCounter = 0;
 			for (i=0;i<[dragRows count];i++) 
 				[self exportFile:[[dragRows objectAtIndex:i] intValue]:
 								dropPath:
-								[owner getLfConvert]];
+                 [owner getLfConvert]:[owner getTabConvert]];
 			}
 		}
 		

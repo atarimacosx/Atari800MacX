@@ -12,7 +12,8 @@
 	int diskImageReadWrite;
 	int diskImageSubdirs;
 	int diskImageWriteProtect;
-	int lfConvert;
+    int lfConvert;
+    int tabConvert;
 	int imageEditorOpen;
 	NSString *imageFilename;
 
@@ -30,6 +31,8 @@
     IBOutlet id diskImageNameField;
     IBOutlet id diskImageRenameButton;
     IBOutlet id diskImageUnlockButton;
+    IBOutlet id diskImageTranslateButton;
+    IBOutlet id diskImageTabTranslateButton;
     IBOutlet id diskImageWriteProtectButton;
 	IBOutlet id errorButton;
     IBOutlet id errorField;
@@ -63,6 +66,8 @@
 - (IBAction)diskImageNameOK:(id)sender;
 - (IBAction)diskImageNameCancel:(id)sender;
 - (IBAction)diskImageTranslateChange:(id)sender;
+- (IBAction)diskImageLFTranslateChange:(id)sender;
+- (IBAction)diskImageTabTranslateChange:(id)sender;
 - (BOOL)isDiskImageMounted;
 - (void)diskImageMenuAdd:(NSString *) itemName;
 - (void)diskImageMenuClear;
@@ -70,6 +75,7 @@
 - (void)diskImageDisplayFreeBytes:(int) free;
 - (void)reloadDirectoryData;
 - (int)getLfConvert;
+- (int)getTabConvert;
 - (int)getWriteProtect;
 - (void)displayErrorWindow:(NSString *)errorMsg;
 - (IBAction)errorOK:(id)sender;

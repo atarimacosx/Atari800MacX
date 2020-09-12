@@ -4,6 +4,8 @@ void Host2ADos( char* host, unsigned char* aDos );
 void NameFilter( char* host, char* atari );
 void AtariLFToHost(unsigned char *buffer, int len);
 void HostLFToAtari(unsigned char *buffer, int len);
+void AtariTabToHost(unsigned char *buffer, int len);
+void HostTabToAtari(unsigned char *buffer, int len);
 
 
 typedef struct ADosFileEntry {

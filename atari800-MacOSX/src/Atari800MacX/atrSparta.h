@@ -8,7 +8,7 @@ int AtrSpartaMakeDir(AtrDiskInfo *info, char *name);
 int AtrSpartaLockFile(AtrDiskInfo *info, char *name, int lock);
 int AtrSpartaRenameFile(AtrDiskInfo *info, char *name, char *newname);
 int AtrSpartaDeleteFile(AtrDiskInfo *info, char *name);
-int AtrSpartaImportFile(AtrDiskInfo *info, char *filename, int lfConvert);
-int AtrSpartaExportFile(AtrDiskInfo *info, char *nameToExport, char* outFile, int lfConvert);
+int AtrSpartaImportFile(AtrDiskInfo *info, char *filename, int lfConvert, int tabConvert);
+int AtrSpartaExportFile(AtrDiskInfo *info, char *nameToExport, char* outFile, int lfConvert, int tabConvert);
 
 
