@@ -243,6 +243,7 @@ extern int  Atari800IsKeyWindow(void);
 extern void Atari800MakeKeyWindow();
 extern int  Atari800GetCopyData(int startx, int endx, int starty, int endy, unsigned char *data);
 extern void UpdateMediaManagerInfo(void);
+extern void MacCapsLockStateReset(void);
 extern void MediaManagerRunDiskManagement(void);
 extern void MediaManagerRunDiskEditor(void);
 extern void MediaManagerRunSectorEditor(void);
@@ -1254,6 +1255,7 @@ void SDL_Sound_Recording()
 void MacCapsLockStateReset(void) 
 {
 	capsLockState = CAPS_UPPER;
+    MacCapsLockSet(TRUE);
 }
 
 
