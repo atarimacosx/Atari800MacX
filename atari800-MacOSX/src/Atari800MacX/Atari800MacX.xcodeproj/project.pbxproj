@@ -314,6 +314,8 @@
 		2DE6EB8524CE6BCB00A55386 /* img_tape.c in Sources */ = {isa = PBXBuildFile; fileRef = 2DE6EB8324CE6BCA00A55386 /* img_tape.c */; };
 		2DE6EB8624CE6BCB00A55386 /* img_tape.h in Headers */ = {isa = PBXBuildFile; fileRef = 2DE6EB8424CE6BCB00A55386 /* img_tape.h */; };
 		2DE7FC58250DC655000C2DAD /* capslock.c in Sources */ = {isa = PBXBuildFile; fileRef = 2DE7FC57250DC655000C2DAD /* capslock.c */; };
+		2DE7FC5B250DCC01000C2DAD /* side2.h in Headers */ = {isa = PBXBuildFile; fileRef = 2DE7FC59250DCC01000C2DAD /* side2.h */; };
+		2DE7FC5C250DCC01000C2DAD /* side2.c in Sources */ = {isa = PBXBuildFile; fileRef = 2DE7FC5A250DCC01000C2DAD /* side2.c */; };
 		2DEDFBF411FE4C18008B815C /* emuio.c in Sources */ = {isa = PBXBuildFile; fileRef = 2DEDFBF211FE4C18008B815C /* emuio.c */; };
 		2DEDFBF511FE4C18008B815C /* emuio.h in Headers */ = {isa = PBXBuildFile; fileRef = 2DEDFBF311FE4C18008B815C /* emuio.h */; };
 		2DEF29230FDCBE6E00660E07 /* PasteWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = 2DEF29210FDCBE6E00660E07 /* PasteWindow.h */; };
@@ -601,6 +603,8 @@
 		2DE6EB8324CE6BCA00A55386 /* img_tape.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = img_tape.c; path = ../img_tape.c; sourceTree = "<group>"; };
 		2DE6EB8424CE6BCB00A55386 /* img_tape.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = img_tape.h; path = ../img_tape.h; sourceTree = "<group>"; };
 		2DE7FC57250DC655000C2DAD /* capslock.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = capslock.c; path = ../capslock.c; sourceTree = "<group>"; };
+		2DE7FC59250DCC01000C2DAD /* side2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = side2.h; path = ../side2.h; sourceTree = "<group>"; };
+		2DE7FC5A250DCC01000C2DAD /* side2.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = side2.c; path = ../side2.c; sourceTree = "<group>"; };
 		2DE8B9FD07ECCF75001E5BDE /* EpsonFX80Simulator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EpsonFX80Simulator.h; sourceTree = "<group>"; };
 		2DE8B9FE07ECCF75001E5BDE /* EpsonFX80Simulator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EpsonFX80Simulator.m; sourceTree = "<group>"; };
 		2DE8BB7507ED301C001E5BDE /* PrintProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrintProtocol.h; sourceTree = "<group>"; };
@@ -965,6 +969,8 @@
 				2D10A79709B0E209001F913C /* rdevice.h */,
 				2D63725724F73FB600905B2E /* rtcds1305.c */,
 				2D63725924F741D900905B2E /* rtcds1305.h */,
+				2DE7FC5A250DCC01000C2DAD /* side2.c */,
+				2DE7FC59250DCC01000C2DAD /* side2.h */,
 				F5558359030EF4CD01A8C8B4 /* sio.h */,
 				2D1668190F51F08700A78B94 /* sio.c */,
 				2DF62CAA084D728600BBD3D2 /* screen.h */,
@@ -1185,6 +1191,7 @@
 				2DAEDB2609B69AED005FF181 /* PrintableString.h in Headers */,
 				2DAEDB2709B69AED005FF181 /* PrintableGraphics.h in Headers */,
 				2DAEDB2809B69AED005FF181 /* PrinterProtocol.h in Headers */,
+				2DE7FC5B250DCC01000C2DAD /* side2.h in Headers */,
 				2DAEDB2909B69AED005FF181 /* PrinterSimulator.h in Headers */,
 				2DAEDB2A09B69AED005FF181 /* Atari825Simulator.h in Headers */,
 				2DAEDB2B09B69AED005FF181 /* PrintablePath.h in Headers */,
@@ -1377,6 +1384,7 @@
 				2DAEDB7109B69AED005FF181 /* memory.c in Sources */,
 				2DAEDB7209B69AED005FF181 /* log.c in Sources */,
 				2DAEDB7309B69AED005FF181 /* list.c in Sources */,
+				2DE7FC5C250DCC01000C2DAD /* side2.c in Sources */,
 				2DAEDB7409B69AED005FF181 /* gtia.c in Sources */,
 				2DAEDB7509B69AED005FF181 /* cpu.c in Sources */,
 				2D05560324C3E7690026DE9C /* bit3.c in Sources */,
