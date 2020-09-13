@@ -308,6 +308,7 @@
 		2DE6EB8224CE197000A55386 /* altirraos_xl.c in Sources */ = {isa = PBXBuildFile; fileRef = 2DE6EB7A24CE197000A55386 /* altirraos_xl.c */; };
 		2DE6EB8524CE6BCB00A55386 /* img_tape.c in Sources */ = {isa = PBXBuildFile; fileRef = 2DE6EB8324CE6BCA00A55386 /* img_tape.c */; };
 		2DE6EB8624CE6BCB00A55386 /* img_tape.h in Headers */ = {isa = PBXBuildFile; fileRef = 2DE6EB8424CE6BCB00A55386 /* img_tape.h */; };
+		2DE7FC56250DC5ED000C2DAD /* capslock.c in Sources */ = {isa = PBXBuildFile; fileRef = 2DE7FC55250DC5ED000C2DAD /* capslock.c */; };
 		2DEDFBF411FE4C18008B815C /* emuio.c in Sources */ = {isa = PBXBuildFile; fileRef = 2DEDFBF211FE4C18008B815C /* emuio.c */; };
 		2DEDFBF511FE4C18008B815C /* emuio.h in Headers */ = {isa = PBXBuildFile; fileRef = 2DEDFBF311FE4C18008B815C /* emuio.h */; };
 		2DEF29230FDCBE6E00660E07 /* PasteWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = 2DEF29210FDCBE6E00660E07 /* PasteWindow.h */; };
@@ -588,6 +589,7 @@
 		2DE6EB7A24CE197000A55386 /* altirraos_xl.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = altirraos_xl.c; sourceTree = "<group>"; };
 		2DE6EB8324CE6BCA00A55386 /* img_tape.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = img_tape.c; path = ../img_tape.c; sourceTree = "<group>"; };
 		2DE6EB8424CE6BCB00A55386 /* img_tape.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = img_tape.h; path = ../img_tape.h; sourceTree = "<group>"; };
+		2DE7FC55250DC5ED000C2DAD /* capslock.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = capslock.c; path = ../capslock.c; sourceTree = "<group>"; };
 		2DE8B9FD07ECCF75001E5BDE /* EpsonFX80Simulator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EpsonFX80Simulator.h; sourceTree = "<group>"; };
 		2DE8B9FE07ECCF75001E5BDE /* EpsonFX80Simulator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EpsonFX80Simulator.m; sourceTree = "<group>"; };
 		2DE8BB7507ED301C001E5BDE /* PrintProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrintProtocol.h; sourceTree = "<group>"; };
@@ -879,6 +881,7 @@
 				F5558355030EF4CD01A8C8B4 /* binload.h */,
 				F5558356030EF4CD01A8C8B4 /* binload.c */,
 				F5558351030EF4CD01A8C8B4 /* cassette.h */,
+				2DE7FC55250DC5ED000C2DAD /* capslock.c */,
 				2D05560124C3E7690026DE9C /* bit3.c */,
 				2D05560224C3E7690026DE9C /* bit3.h */,
 				F5558352030EF4CD01A8C8B4 /* cassette.c */,
@@ -1445,6 +1448,7 @@
 				2DEF29240FDCBE6E00660E07 /* PasteWindow.m in Sources */,
 				2D14CDFF0FFEEEDF00E60EAA /* copydata.c in Sources */,
 				2D037E361001124F0045DB8E /* PastePanel.m in Sources */,
+				2DE7FC56250DC5ED000C2DAD /* capslock.c in Sources */,
 				2DC051B4106962C600B9657B /* MemoryEditorAsciiFieldCell.m in Sources */,
 				2DC051B6106962C600B9657B /* MemoryEditorByteFieldCell.m in Sources */,
 				2DC051B8106962C600B9657B /* MemoryEditorDataSource.m in Sources */,
