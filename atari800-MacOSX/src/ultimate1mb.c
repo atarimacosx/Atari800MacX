@@ -53,6 +53,7 @@ static UBYTE pbi_device_id = 0;
 static UBYTE cold_reset_flag = 0x80;
 static int ext_cart_rd5_sense = FALSE;
 static UBYTE pbi_ram[0x1000];
+static void *rtc;
 
 static void Select_PBI_Device(int enable);
 static void Set_Kernel_Bank(UBYTE bank);
@@ -86,13 +87,14 @@ static void init_ultimate(void)
 int ULTIMATE_Initialise(int *argc, char *argv[])
 {
     init_ultimate();
-    CDS1305_Init();
+    rtc = CDS1305_Init();
     LoadNVRAM();
     return TRUE;
 }
 
 void ULTIMATE_Exit(void)
 {
+    CDS1305_Exit(rtc);
     SaveNVRAM();
 }
 
@@ -145,7 +147,7 @@ UBYTE ULTIMATE_D3GetByte(UWORD addr, int no_side_effects)
 {
     int result = 0xff;
     if (addr == 0xD3E2)
-        return CDS1305_ReadState() ? 0x08 : 0x00;
+        return CDS1305_ReadState(rtc) ? 0x08 : 0x00;
     else if (addr == 0xD383) {
         result = cold_reset_flag;
     }
@@ -216,7 +218,7 @@ void ULTIMATE_D3PutByte(UWORD addr, UBYTE byte)
         }
         
         if (addr == 0xD3E2) {
-            CDS1305_WriteState((byte & 1) != 0, !(byte & 2), (byte & 4) != 0);
+            CDS1305_WriteState(rtc, (byte & 1) != 0, !(byte & 2), (byte & 4) != 0);
         }
 
     }
@@ -303,7 +305,7 @@ void ULTIMATE_ColdStart(void)
 void ULTIMATE_WarmStart(void)
 {
     // Reset RTC Chip
-    CDS1305_ColdReset();
+    CDS1305_ColdReset(rtc);
 
     // Default to all of extended memory
     ultimate_mem_config = 3;
@@ -430,7 +432,7 @@ static void LoadNVRAM()
             memset(buf, 0, sizeof(buf));
         }
     }
-    CDS1305_Load(buf);
+    CDS1305_Load(rtc, buf);
 }
 
 static void SaveNVRAM()
@@ -438,7 +440,7 @@ static void SaveNVRAM()
     UBYTE buf[0x72];
     FILE *f;
 
-    CDS1305_Save(buf);
+    CDS1305_Save(rtc, buf);
     f = fopen(ultimate_nvram_filename, "wb");
     if (f != NULL) {
         fwrite(buf, 1, 0x72, f);

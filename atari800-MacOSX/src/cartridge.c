@@ -49,6 +49,9 @@
 #ifdef ULTIMATE_1MB
 #include "ultimate1mb.h"
 #endif
+#ifdef SIDE2
+#include "side2.h"
+#endif
 #include "log.h"
 
 /* #define DEBUG 1 */
@@ -1084,6 +1087,11 @@ UBYTE CARTRIDGE_GetByte(UWORD addr, int no_side_effects)
         return ULTIMATE_D5GetByte(addr, no_side_effects);
     }
 #endif
+#ifdef SIDE2
+    if (SIDE2_enabled) {
+        return SIDE2_D5GetByte(addr, no_side_effects);
+    }
+#endif
 	/* In case 2 cartridges are inserted, reading a memory location would
 	   result in binary AND of both cartridges. */
 	return GetByte(&CARTRIDGE_main, addr, no_side_effects) & GetByte(&CARTRIDGE_piggyback, addr, no_side_effects);
@@ -1113,6 +1121,11 @@ void CARTRIDGE_PutByte(UWORD addr, UBYTE byte)
 	if (IDE_enabled && (addr <= 0xd50f)) {
 		IDE_PutByte(addr,byte);
 	}
+#endif
+#ifdef SIDE2
+    if (SIDE2_enabled) {
+        SIDE2_D5PutByte(addr, byte);
+    }
 #endif
 #ifdef ULTIMATE_1MB
     if (ULTIMATE_enabled) {

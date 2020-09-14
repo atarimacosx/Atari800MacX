@@ -91,6 +91,7 @@ biteme!
 #include "rtime.h"
 #include "pbi.h"
 #include "sio.h"
+#include "side2.h"
 #include "ui.h"
 #include "ultimate1mb.h"
 #include "util.h"
@@ -198,6 +199,9 @@ void Atari800_Coldstart(void)
 	MacSoundReset();
 	MacCapsLockStateReset();
 #endif	
+    if (SIDE2_enabled) {
+        SIDE2_ColdStart();
+        }
     if (ULTIMATE_enabled && (Atari800_machine_type == Atari800_MACHINE_XLXE)) {
         ULTIMATE_ColdStart();
         }
@@ -634,6 +638,9 @@ int Atari800_Initialise(int *argc, char *argv[])
 #ifdef ULTIMATE_1MB
     ULTIMATE_Initialise(argc, argv);
 #endif
+#ifdef SIDE2
+    SIDE2_Initialise(argc, argv);
+#endif
 	/* Platform Specific Initialisation */
 	PLATFORM_Initialise(argc, argv);
 	Screen_Initialise(argc, argv);
@@ -739,6 +746,7 @@ int Atari800_Exit(int run_monitor)
         AF80_Exit();
         BIT3_Exit();
         ULTIMATE_Exit();
+        SIDE2_Exit();
 	}
 	return restart;
 }

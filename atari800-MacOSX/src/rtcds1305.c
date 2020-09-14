@@ -17,183 +17,197 @@
 
 #include <string.h>
 #include <time.h>
+#include <stdlib.h>
 #include "atari.h"
 #include "rtcds1305.h"
 
-static UBYTE phase;
-static UBYTE address;
-static UBYTE value;
-static int   state;
-static int   chipEnable;
-static int   SPIInitialClock;
-static int   SPIClock;
-static UBYTE clockRAM[0x12];
-static UBYTE userRAM[0x60];
+typedef struct rtc {
+    UBYTE phase;
+    UBYTE address;
+    UBYTE value;
+    int   state;
+    int   chipEnable;
+    int   SPIInitialClock;
+    int   SPIClock;
+    UBYTE clockRAM[0x12];
+    UBYTE userRAM[0x60];
+} RTC;
 
-static void ReadRegister();
-static void WriteRegister();
-static void IncrementAddressRegister();
-static void UpdateClock();
+static void ReadRegister(RTC *rtc);
+static void WriteRegister(RTC *rtc);
+static void IncrementAddressRegister(RTC *rtc);
+static void UpdateClock(RTC *rtc);
 
 static UBYTE ToBCD(UBYTE v) {
     return ((v / 10) << 4) + (v % 10);
 }
 
-void CDS1305_Init() {
-    memset(clockRAM, 0, sizeof clockRAM);
-    memset(userRAM, 0, sizeof userRAM);
+void *CDS1305_Init() {
+    RTC *rtc = malloc(sizeof(RTC));
+    memset(rtc->clockRAM, 0, sizeof (rtc->clockRAM));
+    memset(rtc->userRAM, 0, sizeof (rtc->userRAM));
 
-    CDS1305_ColdReset();
+    CDS1305_ColdReset(rtc);
+    return ( (void *) rtc);
 }
 
-void CDS1305_ColdReset() {
-    phase = 0;
-    address = 0;
-    state = TRUE;
-    chipEnable = FALSE;
-    SPIClock = FALSE;
+void CDS1305_Exit(void *rtc) {
+    free(rtc);
 }
 
-void CDS1305_Load(const UBYTE *data) {
-    memcpy(clockRAM, data, 0x12);
-    memcpy(userRAM, data + 0x12, 0x60);
+void CDS1305_ColdReset(void *rtc) {
+    RTC *thisRTC = (RTC *) rtc;
+    thisRTC->phase = 0;
+    thisRTC->address = 0;
+    thisRTC->state = TRUE;
+    thisRTC->chipEnable = FALSE;
+    thisRTC->SPIClock = FALSE;
 }
 
-void CDS1305_Save(UBYTE *data)  {
-    memcpy(data, clockRAM, 0x12);
-    memcpy(data + 0x12, userRAM, 0x60);
+void CDS1305_Load(void *rtc, const UBYTE *data) {
+    RTC *thisRTC = (RTC *) rtc;
+    memcpy(thisRTC->clockRAM, data, 0x12);
+    memcpy(thisRTC->userRAM, data + 0x12, 0x60);
 }
 
-int CDS1305_ReadState() {
-    return state;
+void CDS1305_Save(void *rtc, UBYTE *data)  {
+    RTC *thisRTC = (RTC *) rtc;
+    memcpy(data, thisRTC->clockRAM, 0x12);
+    memcpy(data + 0x12, thisRTC->userRAM, 0x60);
 }
 
-void CDS1305_WriteState(int ce, int clock, int data) {
-    if (ce != chipEnable) {
-        chipEnable = ce;
+int CDS1305_ReadState(void *rtc) {
+    RTC *thisRTC = (RTC *) rtc;
+    return thisRTC->state;
+}
 
-        if (!chipEnable) {
-            phase = 0;
-            state = TRUE;
+void CDS1305_WriteState(void *rtc, int ce, int clock, int data) {
+    RTC *thisRTC = (RTC *) rtc;
+    if (ce != thisRTC->chipEnable) {
+        thisRTC->chipEnable = ce;
+
+        if (!thisRTC->chipEnable) {
+            thisRTC->phase = 0;
+            thisRTC->state = TRUE;
         } else {
-            SPIClock = clock;
-            SPIInitialClock = clock;
+            thisRTC->SPIClock = clock;
+            thisRTC->SPIInitialClock = clock;
         }
     }
 
-    if (chipEnable && SPIClock != clock) {
-        SPIClock = clock;
+    if (thisRTC->chipEnable && thisRTC->SPIClock != clock) {
+        thisRTC->SPIClock = clock;
 
-        if (clock != SPIInitialClock) {   // read (0 -> 1 clock transition)
-            if (phase >= 8 && address < 0x80) {
-                state = (value >= 0x80);
-                value += value;
+        if (clock != thisRTC->SPIInitialClock) {   // read (0 -> 1 clock transition)
+            if (thisRTC->phase >= 8 && thisRTC->address < 0x80) {
+                thisRTC->state = (thisRTC->value >= 0x80);
+                thisRTC->value += thisRTC->value;
 
-                if (++phase == 16) {
-                    phase = 8;
+                if (++thisRTC->phase == 16) {
+                    thisRTC->phase = 8;
 
-                    ReadRegister();
-                    IncrementAddressRegister();
+                    ReadRegister(thisRTC);
+                    IncrementAddressRegister(thisRTC);
                 }
             }
         } else {        // write (1 -> 0 clock transition)
-            if (phase < 8) {
+            if (thisRTC->phase < 8) {
                 // shifting in address, MSB first
-                address += address;
+                thisRTC->address += thisRTC->address;
                 if (data)
-                    ++address;
+                    ++thisRTC->address;
 
-                if (++phase == 8) {
-                    if (address < 0x80) {
-                        if (address < 0x20)
-                            UpdateClock();
+                if (++thisRTC->phase == 8) {
+                    if (thisRTC->address < 0x80) {
+                        if (thisRTC->address < 0x20)
+                            UpdateClock(thisRTC);
 
-                        ReadRegister();
-                        IncrementAddressRegister();
+                        ReadRegister(thisRTC);
+                        IncrementAddressRegister(thisRTC);
                     }
                 }
-            } else if (address >= 0x80) {
+            } else if (thisRTC->address >= 0x80) {
                 // shifting in data, MSB first
-                value += value;
+                thisRTC->value += thisRTC->value;
                 if (data)
-                    ++value;
+                    ++thisRTC->value;
 
                 // check if we're done with a byte
-                if (++phase == 16) {
-                    phase = 8;
+                if (++thisRTC->phase == 16) {
+                    thisRTC->phase = 8;
 
-                    WriteRegister();
-                    IncrementAddressRegister();
+                    WriteRegister(thisRTC);
+                    IncrementAddressRegister(thisRTC);
                 }
             }
         }
     }
 }
 
-static void ReadRegister() {
-    if (address < 0x12)
-        value = clockRAM[address];
-    else if (address < 0x20)
-        value = 0;
-    else if (address < 0x80)
-        value = userRAM[address - 0x20];
+static void ReadRegister(RTC *thisRTC) {
+    if (thisRTC->address < 0x12)
+        thisRTC->value = thisRTC->clockRAM[thisRTC->address];
+    else if (thisRTC->address < 0x20)
+        thisRTC->value = 0;
+    else if (thisRTC->address < 0x80)
+        thisRTC->value = thisRTC->userRAM[thisRTC->address - 0x20];
     else
-        value = 0xFF;
+        thisRTC->value = 0xFF;
 }
 
-static void WriteRegister() {
+static void WriteRegister(RTC *thisRTC) {
 
-    if (address < 0x92) {
+    if (thisRTC->address < 0x92) {
         static const UBYTE registerWriteMasks[0x12]={
             0x7F, 0x7F, 0x7F, 0x0F, 0x3F, 0x3F, 0xFF, 0xFF,
             0xFF, 0xFF, 0x8F, 0xFF, 0xFF, 0xFF, 0x8F, 0x87,
             0x00, 0xFF
         };
 
-        clockRAM[address - 0x80] = value & registerWriteMasks[address - 0x80];
-    } else if (address >= 0xA0)
-        userRAM[address - 0xA0] = value;
+        thisRTC->clockRAM[thisRTC->address - 0x80] = thisRTC->value & registerWriteMasks[thisRTC->address - 0x80];
+    } else if (thisRTC->address >= 0xA0)
+        thisRTC->userRAM[thisRTC->address - 0xA0] = thisRTC->value;
 }
 
-static void IncrementAddressRegister() {
-    ++address;
+static void IncrementAddressRegister(RTC *thisRTC) {
+    ++thisRTC->address;
 
-    UBYTE addr7 = address & 0x7F;
+    UBYTE addr7 = thisRTC->address & 0x7F;
     if (addr7 == 0x20)
-        address -= 0x20;
+        thisRTC->address -= 0x20;
     else if (addr7 == 0)
-        address -= 0x60;
+        thisRTC->address -= 0x60;
 }
 
-static void UpdateClock() {
+static void UpdateClock(RTC *thisRTC) {
     // copy clock to RAM
     time_t t;
 
     time(&t);
     const struct tm *p = localtime(&t);
 
-    clockRAM[0] = ToBCD(p->tm_sec);
-    clockRAM[1] = ToBCD(p->tm_min);
+    thisRTC->clockRAM[0] = ToBCD(p->tm_sec);
+    thisRTC->clockRAM[1] = ToBCD(p->tm_min);
 
-    if (clockRAM[2] & 0x40) {
+    if (thisRTC->clockRAM[2] & 0x40) {
         // 12 hour mode
         UBYTE hr = p->tm_hour;
 
         if (hr >= 12) {
             // PM
-            clockRAM[2] = ToBCD(hr - 11) + 0x20;
+            thisRTC->clockRAM[2] = ToBCD(hr - 11) + 0x20;
         } else {
             // AM
-            clockRAM[2] = ToBCD(hr + 1);
+            thisRTC->clockRAM[2] = ToBCD(hr + 1);
         }
     } else {
         // 24 hour mode
-        clockRAM[2] = ToBCD(p->tm_hour);
+        thisRTC->clockRAM[2] = ToBCD(p->tm_hour);
     }
 
-    clockRAM[3] = p->tm_wday + 1;
-    clockRAM[4] = ToBCD(p->tm_mday);
-    clockRAM[5] = ToBCD(p->tm_mon + 1);
-    clockRAM[6] = ToBCD(p->tm_year % 100);
-    clockRAM[7] = ToBCD(p->tm_mday);
+    thisRTC->clockRAM[3] = p->tm_wday + 1;
+    thisRTC->clockRAM[4] = ToBCD(p->tm_mday);
+    thisRTC->clockRAM[5] = ToBCD(p->tm_mon + 1);
+    thisRTC->clockRAM[6] = ToBCD(p->tm_year % 100);
+    thisRTC->clockRAM[7] = ToBCD(p->tm_mday);
 }
