@@ -445,6 +445,7 @@
 		2D3D18AA052BD6E600A8C8B4 /* pokey_resample.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = pokey_resample.h; path = ../pokey_resample.h; sourceTree = SOURCE_ROOT; };
 		2D3D18AB052BD6E600A8C8B4 /* remez.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = remez.c; path = ../remez.c; sourceTree = SOURCE_ROOT; };
 		2D3D18AC052BD6E600A8C8B4 /* remez.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = remez.h; path = ../remez.h; sourceTree = SOURCE_ROOT; };
+		2D3F19BD25103F620032A254 /* capslock.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = capslock.h; path = ../capslock.h; sourceTree = "<group>"; };
 		2D41BA7505AFA62800349E5F /* Atari800MediaWindow.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = Atari800MediaWindow.m; sourceTree = SOURCE_ROOT; };
 		2D432D910CB6CBCE009CAC77 /* xep80_fonts.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = xep80_fonts.c; path = ../xep80_fonts.c; sourceTree = SOURCE_ROOT; };
 		2D432D920CB6CBCE009CAC77 /* xep80_fonts.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = xep80_fonts.h; path = ../xep80_fonts.h; sourceTree = SOURCE_ROOT; };
@@ -882,6 +883,7 @@
 				F5558356030EF4CD01A8C8B4 /* binload.c */,
 				F5558351030EF4CD01A8C8B4 /* cassette.h */,
 				2DE7FC55250DC5ED000C2DAD /* capslock.c */,
+				2D3F19BD25103F620032A254 /* capslock.h */,
 				2D05560124C3E7690026DE9C /* bit3.c */,
 				2D05560224C3E7690026DE9C /* bit3.h */,
 				F5558352030EF4CD01A8C8B4 /* cassette.c */,
