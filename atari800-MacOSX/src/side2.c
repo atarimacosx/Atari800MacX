@@ -82,6 +82,16 @@ void SIDE2_Exit(void)
     CDS1305_Exit(rtc);
 }
 
+void SIDE2_SDX_Switch_Change(int state)
+{
+    
+}
+
+void SIDE2_Bank_Reset_Button_Change()
+{
+    
+}
+
 UBYTE SIDE2_D5GetByte(UWORD addr, int no_side_effects)
 {
     int result = 0xff;
