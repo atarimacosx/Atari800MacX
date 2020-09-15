@@ -1,0 +1,1 @@
+void MacCapsLockSet(int on);

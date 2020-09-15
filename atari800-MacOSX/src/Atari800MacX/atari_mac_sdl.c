@@ -77,6 +77,7 @@
 #include "preferences_c.h"
 #include "ultimate1mb.h"
 #include "util.h"
+#include "capslock.h"
 
 /* Local variables that control the display and sound modes.  They need to be visable externally
    so the preferences and menu manager Objective-C files may access them. */
@@ -2841,6 +2842,7 @@ int PLATFORM_Exit(int run_monitor)
     }
     else {
 		PreferencesSaveDefaults();
+        MacCapsLockSet(FALSE);
         return(0);
 		}
 }
