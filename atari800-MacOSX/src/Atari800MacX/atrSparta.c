@@ -919,10 +919,10 @@ int AtrSpartaExportFile(AtrDiskInfo *info, char *nameToExport, char* outFile, in
 		    }
 			
         if (lfConvert)
-            AtariLFToHost(secBuff, secBuff[ dinfo->sectorSize - 1 ]);
+            AtariLFToHost(secBuff, bytesToWrite);
                     
         if (tabConvert)
-            AtariTabToHost(secBuff, secBuff[ dinfo->sectorSize - 1 ]);
+            AtariTabToHost(secBuff, bytesToWrite);
                     
 		if (fwrite( secBuff, 1, bytesToWrite ,output) != bytesToWrite)
             {
