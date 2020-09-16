@@ -37,6 +37,7 @@
 #include "atrSparta.h"
 #include "atrErr.h"
 #include "sys/stat.h"
+#include <sys/time.h>
 
 #define SPARTA_DELETED  0x10
 #define SPARTA_INUSE    0x08
@@ -673,7 +674,7 @@ int AtrSpartaDeleteFile(AtrDiskInfo *info, char *name)
 
     return(FALSE);
 }
-
+extern int errno;
 int AtrSpartaImportFile(AtrDiskInfo *info, char *filename, int lfConvert, int tabConvert)
 {
     FILE *inFile;
@@ -688,13 +689,13 @@ int AtrSpartaImportFile(AtrDiskInfo *info, char *filename, int lfConvert, int ta
 	UBYTE dosName[12];
 	int i;
     UBYTE *mapBuffer, *mapBufferCurrent;
-    time_t currTime;
     struct tm *localTime;
     ULONG currentDirLen;
     int dirEntryIndex = 0;
     UWORD dirStartSector;
     UWORD firstMapSector;
-
+    struct stat buf;
+    
 	AtrSpartaDiskInfo *dinfo = (AtrSpartaDiskInfo *)info->atr_dosinfo;
     
     inFile = fopen( filename, "rb");
@@ -703,6 +704,9 @@ int AtrSpartaImportFile(AtrDiskInfo *info, char *filename, int lfConvert, int ta
         {
         return(ADOS_HOST_FILE_NOT_FOUND);
         }
+
+    // Get file status to get modification time
+    fstat ( fileno(inFile), &buf);
 
     if ((slash = strrchr(filename,'/')) != NULL)
         {
@@ -841,10 +845,11 @@ int AtrSpartaImportFile(AtrDiskInfo *info, char *filename, int lfConvert, int ta
     dinfo->dirBuffer[dirEntryIndex+5] = (total_file_length & 0xff0000) >> 16;
     Host2ADos(filename,&dinfo->dirBuffer[dirEntryIndex+6]);
 
-    time(&currTime);
-    localTime = localtime(&currTime);
+
+
+    localTime = localtime(&buf.st_mtime);
     dinfo->dirBuffer[dirEntryIndex+17] = localTime->tm_mday;
-    dinfo->dirBuffer[dirEntryIndex+18] = localTime->tm_mon;
+    dinfo->dirBuffer[dirEntryIndex+18] = localTime->tm_mon+1;
     if (localTime->tm_year > 99) 
         dinfo->dirBuffer[dirEntryIndex+19] = localTime->tm_year - 100;
     else
@@ -883,6 +888,8 @@ int AtrSpartaExportFile(AtrDiskInfo *info, char *nameToExport, char* outFile, in
 	UWORD sector, bytesToWrite;
 	FILE *output = NULL;
 	AtrSpartaDiskInfo *dinfo = (AtrSpartaDiskInfo *)info->atr_dosinfo;
+    struct timeval fileTime[2];
+    struct tm fileExpTime;
 
     if ((pDirEntry = AtrSpartaFindDirEntryByName(info,nameToExport)) == NULL) {
         return(ADOS_FILE_NOT_FOUND);
@@ -932,8 +939,20 @@ int AtrSpartaExportFile(AtrDiskInfo *info, char *nameToExport, char* outFile, in
 
 		bytes -= bytesToWrite;
 	}
+    fileExpTime.tm_mday = pDirEntry->day;
+    fileExpTime.tm_mon = pDirEntry->month - 1;
+    fileExpTime.tm_year = pDirEntry->year + 100;
+    fileExpTime.tm_hour = pDirEntry->hour;
+    fileExpTime.tm_min = pDirEntry->minute;
+    fileExpTime.tm_sec = pDirEntry->second;
+    fileTime[0].tv_sec = mktime(&fileExpTime);
+    fileTime[0].tv_usec = 0;
+    fileTime[1].tv_sec = fileTime[0].tv_sec;
+    fileTime[1].tv_usec = fileTime[0].tv_usec;
 
 	fclose( output );
+
+    utimes (outFile, fileTime);
 
 	return FALSE;
 }
