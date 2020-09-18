@@ -1256,7 +1256,7 @@ void SDL_Sound_Recording()
 void MacCapsLockStateReset(void) 
 {
 	capsLockState = CAPS_UPPER;
-    MacCapsLockSet(TRUE);
+    MacCapsLockSet(FALSE);
 }
 
 
@@ -2006,6 +2006,7 @@ int Atari_Keyboard_International(void)
                 key_pressed = 0;
                 lastkey = SDLK_UNKNOWN;
                 capsLockState = CAPS_UPPER;
+                MacCapsLockSet(FALSE);
                 return AKEY_CAPSLOCK;
         }
     /* Handle the key translation for non-shifted characters
@@ -2194,6 +2195,7 @@ int Atari_Keyboard_International(void)
             case SDLK_CAPSLOCK:
                 key_pressed = 0;
                 lastkey = SDLK_UNKNOWN;
+                MacCapsLockSet(FALSE);
                 if (CONTROL) {
                     capsLockState = CAPS_GRAPHICS;
                 }
