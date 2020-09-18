@@ -222,32 +222,17 @@ emulator. &nbsp;The Unrecoverable Error Dialog is show below.<br>
 
 <h1>What's New in 5.x.x?</h1>
 
-<h4>New Features/Bug Fixes (in version 5.3.0):</h4>
-
+<h4>New Features/Bug Fixes (in version 5.3.1):</h4>
 <ul>
-    <li>Add continuous scaling of Atari display by simply dragging the window resize handle.</li>
-    <li>Added ability to set scaling to integer values only, still by dragging the window resize handle.</li>
-    <li>Changed Fullscreen to use true MacOS Fullscreen, with seperate workspace.  This elimiinates the need for a Fullscreen GUI, since the normal Mac windows and dialogs work in Fullscreen now.</li>
-    <li>Added option to maintain Atari screen aspect ratio in fullsize</li>
-    <li>Added 80 column card selection pull down to Media Center</li>
-    <li>Add Touch Bar contatining special Atari keys for use on laptops with Touch Bars</li>
-    <li>Integrated features from Atari800 emulator core, version 4.2, including:</li>
-    <ul>
-        <li> Support for new ROM types</li>
-        <li> Added support for AltirraOS 400/800, AltirraOS XL, Altirra 5200 BIOS and
-         Altirra BASIC.  This means the emulator will now work out of the box without external ROMs</li>
-        <li> Many core emulator fixes around Pokey, ANTI, GTIA, PIA, and CPU.</li>
-        <li> Removed built-in Basic for 400/800 type machines for more accurate emulation, and removed seperate OS A/OS B machine types.</li>
-    </ul>
+    <li>Added tab character translation to Disk Image Editor</li>
 </ul>
 <h5>Bugs Fixed:</h5>
 <ul>
-    <li>Fixed copy/paste in Debug Monitor and Sector Editor.</li>
-    <li>Removed Drawer from Monitor/GUI Debugger which is deprecated by Apple and was not working in Fullscreen.  For now, Debug GUI is always visable, another solution may be available in the next release.</li>
-    <li>Fixed issue with Rename in Disk Editor that was introduced in 5.1.0.</li>
+    <li>Fixed issues with Atari Capslock preventing lowercases letters to be entered in the emulator, especially in XL/XE machines.</li>
+    <li>Fixed longstanding issue which prevent the emulator from opening and saving files in directories with international characters.</li>
+    <li>Fixed linefeed translation in Disk Image Editor for SpartaDOS ATRs.</li>
+    <li>Disabled D Patch for this version, as it is not functioning with the new atari800 core.  It will be readded in a future version.</li></ul>
 </ul>
-
-
 <br>
 
 
