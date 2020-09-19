@@ -658,6 +658,11 @@ static void MapActiveCart(void)
             MEMORY_Cart809fDisable();
             MEMORY_CartA0bfEnable();
             return;
+        case CARTRIDGE_SIDE2:
+            SIDE2_enabled = TRUE;
+            SIDE2_Set_Cart_Enables(TRUE, TRUE);
+            SIDE2_SDX_Switch_Change(TRUE);
+            return;
 		default:
 			MEMORY_Cart809fDisable();
 			if (!Atari800_builtin_basic

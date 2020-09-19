@@ -22,7 +22,7 @@ int SIDE2_enabled = FALSE;
 
 static UBYTE side2_rom[0x80000];
 #ifdef ATARI800MACX
-char side2_rom_filename[FILENAME_MAX] = "/Users/markg/Atari800MacX/Altirra-3.20/side2.rom"; //Util_FILENAME_NOT_SET;
+char side2_rom_filename[FILENAME_MAX] = "/Users/markg/Atari800MacX/Altirra-3.20/side2oss.rom"; //Util_FILENAME_NOT_SET;
 char side2_nvram_filename[FILENAME_MAX] = "/Users/markg/Atari800MacX/Altirra-3.20/side2.nvram"; //Util_FILENAME_NOT_SET;
 char side2_compact_flash_filename[FILENAME_MAX] = "/Users/markg/Atari800MacX/Altirra-3.20/side2.img"; //Util_FILENAME_NOT_SET;
 #else
@@ -91,7 +91,8 @@ void SIDE2_Exit(void)
 
 void SIDE2_SDX_Switch_Change(int state)
 {
-    
+    SDX_Enabled = state;
+    Update_Memory_Layers_Cart();
 }
 
 void SIDE2_Bank_Reset_Button_Change()

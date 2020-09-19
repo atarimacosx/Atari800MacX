@@ -610,7 +610,7 @@ NSImage *disketteImage;
 *-----------------------------------------------------------------------------*/
 - (IBAction)side2Insert:(id)sender
 {
-    if (Atari800_machine_type != Atari800_MACHINE_XLXE) {
+    if (Atari800_machine_type == Atari800_MACHINE_XLXE) {
         CARTRIDGE_Insert_SIDE2();
         memset(Screen_atari, 0, (Screen_HEIGHT * Screen_WIDTH));
         Atari_DisplayScreen((UBYTE *) Screen_atari);

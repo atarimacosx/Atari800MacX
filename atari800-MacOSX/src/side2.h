@@ -13,3 +13,5 @@ void SIDE2_Exit(void);
 UBYTE SIDE2_D5GetByte(UWORD addr, int no_side_effects);
 void SIDE2_D5PutByte(UWORD addr, UBYTE byte);
 void SIDE2_ColdStart(void);
+void SIDE2_Set_Cart_Enables(int leftEnable, int rightEnable);
+
