@@ -2450,7 +2450,6 @@ DQ
                                     <menuItem title="Atari 1088XE (1088KB)" id="1232"/>
                                     <menuItem title="Atari 5200 (16KB)" id="1200"/>
                                     <menuItem title="Atari XL Ultimate 1MB" id="UQ4-dl-XoR"/>
-                                    <menuItem title="Atari XL Ultimate 1MB + SIDE 2" id="S16-OD-bWy"/>
                                 </items>
                             </menu>
                         </popUpButtonCell>

@@ -72,7 +72,7 @@ extern int currPrinter;
 extern int Devices_enable_d_patch;
 extern int Devices_enable_p_patch;
 extern void CalcMachineTypeRam(int type, int *machineType, int *ramSize,
-							   int *axlon, int *mosaic, int *ultimate, int *side);
+							   int *axlon, int *mosaic, int *ultimate);
 extern int machine_switch_type;
 extern void Atari_DisplayScreen(UBYTE * screen);
 extern int requestMachineTypeChange;
@@ -606,6 +606,20 @@ NSImage *disketteImage;
 }
 
 /*------------------------------------------------------------------------------
+*  side2Insert - This method inserts the SIDE2 cartridge  into the emulator
+*-----------------------------------------------------------------------------*/
+- (IBAction)side2Insert:(id)sender
+{
+    if (Atari800_machine_type != Atari800_MACHINE_XLXE) {
+        CARTRIDGE_Insert_SIDE2();
+        memset(Screen_atari, 0, (Screen_HEIGHT * Screen_WIDTH));
+        Atari_DisplayScreen((UBYTE *) Screen_atari);
+        Atari800_Coldstart();
+        [self updateInfo];
+    }
+}
+
+/*------------------------------------------------------------------------------
 *  cartInsert - This method inserts a cartridge image into the emulator
 *-----------------------------------------------------------------------------*/
 - (IBAction)cartInsert:(id)sender
@@ -933,7 +947,7 @@ NSImage *disketteImage;
 	
 	CalcMachineTypeRam(machine_switch_type, &Atari800_machine_type, 
 					   &MEMORY_ram_size, &axlon_enabled,
-					   &mosaic_enabled, &ULTIMATE_enabled, &SIDE2_enabled);
+					   &mosaic_enabled, &ULTIMATE_enabled);
 	
     if (!axlon_enabled)
         MEMORY_axlon_num_banks = 0;
@@ -2593,6 +2607,7 @@ NSImage *disketteImage;
                 [disBasicButton setTitle:@"Load Basic"];
                 [disBasicButton setState:NSOffState];
             }
+            [insertSIDE2Item setTarget:nil];
             break;
         case Atari800_MACHINE_XLXE:
             [insertBasicItem setTarget:self];
@@ -2606,6 +2621,7 @@ NSImage *disketteImage;
                 [disBasicButton setState:NSOffState];
                 }
             [insertBasicItem setTarget:nil];
+            [insertSIDE2Item setTarget:self];
             break;
         case Atari800_MACHINE_5200:
             [disBasicButton setEnabled:NO];

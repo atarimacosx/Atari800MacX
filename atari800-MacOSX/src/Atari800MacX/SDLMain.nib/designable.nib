@@ -296,10 +296,22 @@
                                     <action selector="cartInsert:" target="473" id="489"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Insert BASIC Cartridge" keyEquivalent="b" id="WLj-Uh-rnt">
-                                <connections>
-                                    <action selector="basicInsert:" target="473" id="qAc-E9-i4U"/>
-                                </connections>
+                            <menuItem title="Insert Special Cartridge" id="he6-pG-YVh">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <menu key="submenu" title="Insert Special Cartridge" id="Wcm-vj-IoM">
+                                    <items>
+                                        <menuItem title="Insert BASIC Cartridge" keyEquivalent="b" id="9Wv-JY-H9Q">
+                                            <connections>
+                                                <action selector="basicInsert:" target="473" id="iVn-KV-m1M"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Insert SIDE2 Cartridge" keyEquivalent="i" id="r8c-Qd-O8u">
+                                            <connections>
+                                                <action selector="side2Insert:" target="473" id="PGa-Ol-PtZ"/>
+                                            </connections>
+                                        </menuItem>
+                                    </items>
+                                </menu>
                             </menuItem>
                             <menuItem title="Remove Cartridge" keyEquivalent="O" id="414">
                                 <connections>
@@ -727,11 +739,6 @@ DQ
                                                 <action selector="changeMachineType:" target="524" id="3CD-mJ-xJc"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Atari XL Ultimate 1MB + SIDE 2" tag="20" id="YMd-5V-vhO">
-                                            <connections>
-                                                <action selector="changeMachineType:" target="524" id="LbU-dN-gRS"/>
-                                            </connections>
-                                        </menuItem>
                                     </items>
                                 </menu>
                             </menuItem>
@@ -888,7 +895,8 @@ DQ
         <customObject id="315" userLabel="Preferences" customClass="Preferences"/>
         <customObject id="473" userLabel="MediaManager" customClass="MediaManager">
             <connections>
-                <outlet property="insertBasicItem" destination="WLj-Uh-rnt" id="FUW-ar-YqA"/>
+                <outlet property="insertBasicItem" destination="9Wv-JY-H9Q" id="gSh-tN-gY3"/>
+                <outlet property="insertSIDE2Item" destination="r8c-Qd-O8u" id="xhJ-au-udl"/>
                 <outlet property="insertSecondCartItem" destination="845" id="851"/>
                 <outlet property="printerPreviewItem" destination="786" id="811"/>
                 <outlet property="protectCassItem" destination="GhL-1U-SCu" id="fKd-cD-kG5"/>

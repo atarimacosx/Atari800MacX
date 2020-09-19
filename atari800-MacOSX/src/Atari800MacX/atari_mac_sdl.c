@@ -299,7 +299,7 @@ extern int RtConfigLoad(char *rtconfig_filename);
 extern void CalculatePrefsChanged();
 extern void loadPrefsBinaries();
 extern void CalcMachineTypeRam(int type, int *machineType, int *ramSize,
-							   int *axlon, int *mosaic, int *ultimate, int *side);
+							   int *axlon, int *mosaic, int *ultimate);
 extern void BasicUIInit(void);
 extern void ClearScreen();
 extern void CenterPrint(int fg, int bg, char *string, int y);
@@ -4485,7 +4485,7 @@ void ProcessMacMenus()
 	if (requestMachineTypeChange) {
 		int compositeType, type, ver4type, ver5type;
         int axlon_enabled, mosaic_enabled;
-        int new_ultimate_enabled, new_side2_enabled;
+        int new_ultimate_enabled;
 		
 		type = PreferencesTypeFromIndex((requestMachineTypeChange-1),&ver4type,&ver5type);
         if (ver5type == -1) {
@@ -4498,13 +4498,11 @@ void ProcessMacMenus()
         }
 		CalcMachineTypeRam(compositeType, &Atari800_machine_type,
 						   &MEMORY_ram_size, &axlon_enabled,
-						   &mosaic_enabled, &new_ultimate_enabled,&new_side2_enabled);
-        if (ULTIMATE_enabled && !new_ultimate_enabled)
+                           &mosaic_enabled, &new_ultimate_enabled);
             {
             CARTRIDGE_Remove();
             }
         ULTIMATE_enabled = new_ultimate_enabled;
-        SIDE2_enabled = new_side2_enabled;
         if (!axlon_enabled)
             MEMORY_axlon_num_banks = 0;
         else

@@ -5,6 +5,7 @@
 #include "atari.h"
 
 enum {
+    CARTRIDGE_SIDE2          = -3,
     CARTRIDGE_ULTIMATE_1MB   = -2,
     CARTRIDGE_UNKNOWN        = -1,
 	CARTRIDGE_NONE           =  0,
@@ -185,6 +186,7 @@ void CARTRIDGE_Exit(void);
 #ifdef ATARI800MACX
 #define CARTRIDGE_SPECIAL_BASIC "!Builtin_BASIC_CART!"
 #define CARTRIDGE_SPECIAL_ULTIMATE "!Builtin_ULTIMATE_CART!"
+#define CARTRIDGE_SPECIAL_SIDE2 "!SIDE2_CART!"
 #endif
 
 /* Inserts the left cartrifge. */
@@ -192,6 +194,8 @@ int CARTRIDGE_Insert(const char *filename);
 #ifdef ATARI800MACX
 /* Inserts the BASIC cartridge and reboots the system if needed. */
 int CARTRIDGE_Insert_BASIC(void);
+/* Inserts the SIDE2 cartridge */
+int CARTRIDGE_Insert_SIDE2(void);
 /* Inserts the Ultimate 1MB cartridge */
 int CARTRIDGE_Insert_Ultimate_1MB(void);
 #endif

@@ -1492,6 +1492,11 @@ static int InsertCartridge(const char *filename, CARTRIDGE_image_t *cart)
         cart->type = CARTRIDGE_ULTIMATE_1MB;
         InitCartridge(cart);
         return(0);
+    } else if (strcmp(filename,CARTRIDGE_SPECIAL_SIDE2) == 0) {
+        strcpy(cart->filename, "SIDE2");
+        cart->type = CARTRIDGE_SIDE2;
+        InitCartridge(cart);
+        return(0);
     } else {
 #else
     {
@@ -1601,6 +1606,13 @@ int CARTRIDGE_Insert_Ultimate_1MB(void)
     return InsertCartridge(CARTRIDGE_SPECIAL_ULTIMATE, &CARTRIDGE_main);
 }
     
+int CARTRIDGE_Insert_SIDE2(void)
+{
+    /* remove currently inserted cart */
+    CARTRIDGE_Remove();
+    return InsertCartridge(CARTRIDGE_SPECIAL_SIDE2, &CARTRIDGE_main);
+}
+
 void CARTRDIGE_Switch_To_Piggyback(void)
 {
     if (CARTRIDGE_piggyback.type == CARTRIDGE_NONE) {

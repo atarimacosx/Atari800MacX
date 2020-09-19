@@ -150,6 +150,7 @@
 	IBOutlet id speedLimitButton;
 	IBOutlet id disBasicButton;
     IBOutlet id insertBasicItem;
+    IBOutlet id insertSIDE2Item;
     IBOutlet id xep80Button;
     IBOutlet id xep80Pulldown;
 	IBOutlet id machineTypePulldown;
@@ -168,6 +169,7 @@
 - (IBAction)cancelDisk:(id)sender;
 - (IBAction)cartInsert:(id)sender;
 - (IBAction)basicInsert:(id)sender;
+- (IBAction)side2Insert:(id)sender;
 - (IBAction)cartSecondInsert:(id)sender;
 - (void)cartInsertFile:(NSString *)filename;
 - (IBAction)cartRemove:(id)sender;

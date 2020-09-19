@@ -18,7 +18,7 @@
 #include "pia.h"
 #include <stdlib.h>
 
-int SIDE2_enabled = TRUE;
+int SIDE2_enabled = FALSE;
 
 static UBYTE side2_rom[0x80000];
 #ifdef ATARI800MACX
