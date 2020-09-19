@@ -24,7 +24,7 @@ static UBYTE side2_rom[0x80000];
 #ifdef ATARI800MACX
 char side2_rom_filename[FILENAME_MAX] = "/Users/markg/Atari800MacX/Altirra-3.20/side2.rom"; //Util_FILENAME_NOT_SET;
 char side2_nvram_filename[FILENAME_MAX] = "/Users/markg/Atari800MacX/Altirra-3.20/side2.nvram"; //Util_FILENAME_NOT_SET;
-char side2_compact_flash_filename[FILENAME_MAX] = "/Users/markg/Atari800MacX/Altirra-3.20/side2.nvram"; //Util_FILENAME_NOT_SET;
+char side2_compact_flash_filename[FILENAME_MAX] = "/Users/markg/Atari800MacX/Altirra-3.20/side2.img"; //Util_FILENAME_NOT_SET;
 #else
 static char side_rom_filename[FILENAME_MAX] = Util_FILENAME_NOT_SET;
 static char side2_nvram_filename[FILENAME_MAX] = Util_FILENAME_NOT_SET;
@@ -35,12 +35,18 @@ static int Block_Device = 0;
 static int IDE_Enabled = FALSE;
 static int IDE_Removed = TRUE;
 static int IDE_Reset = FALSE;
+static int SDX_Bank = 0;
 static int SDX_Bank_Register = 0;
 static int SDX_Enabled = FALSE;
+static int Top_Bank = 0;
 static int Top_Bank_Register = 0;
 static int Top_Enable = FALSE;
 static int Top_Left_Enable = FALSE;
 static int Top_Right_Enable = FALSE;
+static int Left_Window_Enabled = FALSE;
+static int Right_Window_Enabled = FALSE;
+static UWORD Bank_Offset = 0;
+static UWORD Bank_Offset2 = 0;
 static void *rtc;
 
 static void LoadNVRAM();
@@ -49,6 +55,7 @@ static void SaveNVRAM();
 static void Set_SDX_Bank(int bank, int topEnable);
 static void Set_Top_Bank(int bank, int topLeftEnable, int topRightEnable);
 static void Update_IDE_Reset(void);
+static void Update_Memory_Layers_Cart(void);
 
 #ifdef ATARI800MACX
 void init_side2(void)
@@ -209,6 +216,24 @@ void SIDE2_ColdStart(void)
 
 }
 
+void SIDE2_Set_Cart_Enables(int leftEnable, int rightEnable) {
+    int changed = FALSE;
+
+    if (Left_Window_Enabled != leftEnable) {
+        Left_Window_Enabled = leftEnable;
+        changed = TRUE;
+    }
+
+    if (Right_Window_Enabled != rightEnable) {
+        Right_Window_Enabled = rightEnable;
+        changed = TRUE;
+    }
+    
+    if (changed)
+        Update_Memory_Layers_Cart();
+}
+
+
 static void LoadNVRAM()
 {
     UBYTE buf[0x72];
@@ -243,13 +268,13 @@ static void SaveNVRAM()
 
 static void Set_SDX_Bank(int bank, int topEnable)
 {
-    if (SDX_Bank_Register == bank && Top_Enable == topEnable)
+    if (SDX_Bank == bank && Top_Enable == topEnable)
         return;
 
-    SDX_Bank_Register = bank;
+    SDX_Bank = bank;
     Top_Enable = topEnable;
 
-    //UpdateMemoryLayersCart();
+    Update_Memory_Layers_Cart();
     //mpCartridgePort->OnLeftWindowChanged(mCartId, IsLeftCartActive());
 }
 
@@ -261,14 +286,14 @@ static void Set_Top_Bank(int bank, int topLeftEnable, int topRightEnable)
     if (topRightEnable)
         bank |= 0x01;
 
-    if (Top_Bank_Register == bank && Top_Right_Enable == topRightEnable && Top_Left_Enable == topLeftEnable)
+    if (Top_Bank == bank && Top_Right_Enable == topRightEnable && Top_Left_Enable == topLeftEnable)
         return;
 
-    Top_Bank_Register = bank;
+    Top_Bank = bank;
     Top_Left_Enable = topLeftEnable;
     Top_Right_Enable = topRightEnable;
 
-    //UpdateMemoryLayersCart();
+    Update_Memory_Layers_Cart();
     //mpCartridgePort->OnLeftWindowChanged(mCartId, IsLeftCartActive());
 }
 
@@ -286,3 +311,37 @@ static void Update_IDE_Reset(void)
     //mIDE.SetReset(IDE_Reset || !Block_Device);
 }
 
+void Update_Memory_Layers_Cart() {
+    if (SDX_Bank >= 0 && SDX_Enabled)
+        Bank_Offset = SDX_Bank << 13;
+    else if (Top_Enable || !SDX_Enabled)
+        Bank_Offset = Top_Bank << 13;
+
+    Bank_Offset2 = Bank_Offset & ~0x2000;
+
+    // SDX disabled by switch => top cartridge enabled, SDX control bits ignored
+    // else   SDX disabled, top cartridge disabled => no cartridge
+    //        SDX disabled, top cartridge enabled => top cartridge
+    //        other => SDX cartridge
+
+    int sdxRead = (SDX_Enabled && SDX_Bank >= 0);
+    int topRead = Top_Enable || !SDX_Enabled;
+    int topLeftRead = topRead && Top_Left_Enable;
+    int flashRead = Left_Window_Enabled && (sdxRead || topLeftRead);
+    int flashReadRight = Right_Window_Enabled && topRead &&
+                         !sdxRead && Top_Right_Enable;
+
+    if (flashRead) {
+        MEMORY_CartA0bfEnable();
+        MEMORY_CopyROM(0xa000, 0xbfff, side2_rom + Bank_Offset);
+    } else {
+        MEMORY_CartA0bfDisable();
+    }
+    
+    if (flashReadRight) {
+        MEMORY_Cart809fEnable();
+        MEMORY_CopyROM(0x8000, 0xbfff, side2_rom + Bank_Offset2);
+    } else {
+        MEMORY_Cart809fDisable();
+    }
+}
