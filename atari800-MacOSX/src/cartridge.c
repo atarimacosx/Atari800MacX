@@ -660,9 +660,13 @@ static void MapActiveCart(void)
             return;
         case CARTRIDGE_SIDE2:
             SIDE2_enabled = TRUE;
-            SIDE2_Set_Cart_Enables(TRUE, TRUE);
-            MEMORY_Cart809fDisable();
-            MEMORY_CartA0bfEnable();
+            if (ULTIMATE_enabled) {
+                SIDE2_Set_Cart_Enables(FALSE, FALSE);
+            } else {
+                SIDE2_Set_Cart_Enables(TRUE, TRUE);
+                MEMORY_Cart809fDisable();
+                MEMORY_CartA0bfEnable();
+            }
             return;
 		default:
 			MEMORY_Cart809fDisable();
@@ -1615,9 +1619,16 @@ int CARTRIDGE_Insert_Ultimate_1MB(void)
     
 int CARTRIDGE_Insert_SIDE2(void)
 {
-    /* remove currently inserted cart */
-    CARTRIDGE_Remove();
-    return InsertCartridge(CARTRIDGE_SPECIAL_SIDE2, &CARTRIDGE_main);
+    if (ULTIMATE_enabled) {
+        /* remove currently inserted cart */
+        CARTRIDGE_Remove_Second();
+        return InsertCartridge(CARTRIDGE_SPECIAL_SIDE2, &CARTRIDGE_piggyback);
+
+    } else {
+        /* remove currently inserted cart */
+        CARTRIDGE_Remove();
+        return InsertCartridge(CARTRIDGE_SPECIAL_SIDE2, &CARTRIDGE_main);
+    }
 }
 
 void CARTRDIGE_Switch_To_Piggyback(void)
