@@ -32,6 +32,7 @@ static char side2_compact_flash_filename[FILENAME_MAX] = Util_FILENAME_NOT_SET;
 #endif
 
 static int Block_Device = 0;
+static int Coldstarted = FALSE;
 static int IDE_Enabled = FALSE;
 static int IDE_Removed = TRUE;
 static int IDE_Reset = FALSE;
@@ -45,8 +46,8 @@ static int Top_Left_Enable = FALSE;
 static int Top_Right_Enable = FALSE;
 static int Left_Window_Enabled = FALSE;
 static int Right_Window_Enabled = FALSE;
-static UWORD Bank_Offset = 0;
-static UWORD Bank_Offset2 = 0;
+static ULONG Bank_Offset = 0;
+static ULONG Bank_Offset2 = 0;
 static void *rtc;
 
 static void LoadNVRAM();
@@ -122,7 +123,7 @@ UBYTE SIDE2_D5GetByte(UWORD addr, int no_side_effects)
         case 0xD5F5:
         case 0xD5F6:
         case 0xD5F7:
-            result = IDE_GetByte(addr, FALSE);
+             result = IDE_Enabled && Block_Device ? IDE_GetByte(addr, FALSE) : 0xFF;
             break;
         case 0xD5F8:
             return 0x32;
@@ -178,7 +179,8 @@ void SIDE2_D5PutByte(UWORD addr, UBYTE byte)
         case 0xD5F5:
         case 0xD5F6:
         case 0xD5F7:
-            IDE_PutByte(addr, byte);
+            if (IDE_Enabled && Block_Device)
+                IDE_PutByte(addr, byte);
             break;
 
         case 0xD5F8:    // F8-FB: D0 = /reset
@@ -201,10 +203,12 @@ void SIDE2_D5PutByte(UWORD addr, UBYTE byte)
 
 void SIDE2_ColdStart(void)
 {
+    Coldstarted = TRUE;
     // Reset RTC Chip
     CDS1305_ColdReset(rtc);
 
     Reset_Cart_Bank();
+    SIDE2_SDX_Switch_Change(TRUE);
 
     IDE_Reset = TRUE;
     IDE_Enabled = TRUE;
@@ -230,7 +234,7 @@ void SIDE2_Set_Cart_Enables(int leftEnable, int rightEnable) {
         changed = TRUE;
     }
     
-    if (changed)
+    if (changed && Coldstarted)
         Update_Memory_Layers_Cart();
 }
 

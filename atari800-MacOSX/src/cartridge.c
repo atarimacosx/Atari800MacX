@@ -661,7 +661,8 @@ static void MapActiveCart(void)
         case CARTRIDGE_SIDE2:
             SIDE2_enabled = TRUE;
             SIDE2_Set_Cart_Enables(TRUE, TRUE);
-            SIDE2_SDX_Switch_Change(TRUE);
+            MEMORY_Cart809fDisable();
+            MEMORY_CartA0bfEnable();
             return;
 		default:
 			MEMORY_Cart809fDisable();
@@ -1130,6 +1131,7 @@ void CARTRIDGE_PutByte(UWORD addr, UBYTE byte)
 #ifdef SIDE2
     if (SIDE2_enabled) {
         SIDE2_D5PutByte(addr, byte);
+        return;
     }
 #endif
 #ifdef ULTIMATE_1MB
