@@ -17,9 +17,10 @@
 
 extern int IDE_enabled;
 
-int     IDE_Initialise(int *argc, char *argv[]);
-void IDE_Exit(void);
-uint8_t IDE_GetByte(uint16_t addr, int no_side_effects);
-void    IDE_PutByte(uint16_t addr, uint8_t byte);
+int IDE_Initialise(int *argc, char *argv[]);
+void *IDE_Init_Drive(char *filename, int is_cf);
+void IDE_Close_Drive(void *dev);
+uint8_t IDE_GetByte(void *dev, uint16_t addr, int no_side_effects);
+void IDE_PutByte(void *dev, uint16_t addr, uint8_t byte);
 
 #endif

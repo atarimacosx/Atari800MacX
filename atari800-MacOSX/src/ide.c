@@ -89,7 +89,7 @@
 #  define PRId64 "lld"
 #endif
 
-int IDE_enabled = 0, IDE_debug = 0;
+int IDE_enabled = 1, IDE_debug = 1;
 
 struct ide_device device;
 
@@ -208,12 +208,19 @@ static void ide_reset(struct ide_device *s) {
     s->media_changed = 0;
 }
 
-static int ide_init_drive(struct ide_device *s, char *filename) {
+void *IDE_Init_Drive(char *filename, int is_cf) {
+    struct ide_device *s = (struct ide_device *) malloc(sizeof(struct ide_device));
+    memset(s, 0, sizeof(struct ide_device));
+    if (s == NULL)
+        return NULL;
+    
     if (!(s->file = fopen(filename, "rb+"))) {
         Log_print("%s: %s", filename, strerror(errno));
         return FALSE;
     }
-
+    
+    s->is_cf = is_cf;
+    s->is_cdrom = FALSE;
     s->blocksize = SECTOR_SIZE;
 
     fseeko(s->file, 0, SEEK_END);
@@ -253,7 +260,7 @@ static int ide_init_drive(struct ide_device *s, char *filename) {
 
     ide_reset(s);
 
-    return TRUE;
+    return s;
 }
 
 static uint32_t ide_ioport_read(struct ide_device *s, uint16_t addr) {
@@ -854,16 +861,17 @@ static void mmio_ide_write(struct ide_device *s, int addr, uint8_t val) {
     }
 }
 
-void IDE_PutByte(uint16_t addr, uint8_t val) {
-    struct ide_device *s = &device;
+void IDE_PutByte(void *dev, uint16_t addr, uint8_t val) {
+    struct ide_device *s = (struct ide_device *) dev;
     mmio_ide_write(s, addr, val);
 }
 
-uint8_t IDE_GetByte(uint16_t addr, int no_side_effects) {
-    struct ide_device *s = &device;
+uint8_t IDE_GetByte(void *dev, uint16_t addr, int no_side_effects) {
+    struct ide_device *s = (struct ide_device *) dev;
     return mmio_ide_read(s, addr);
 }
 
+#if 0
 int IDE_Initialise(int *argc, char *argv[]) {
     int i, j, ret = TRUE;
     char *filename = NULL;
@@ -902,11 +910,10 @@ int IDE_Initialise(int *argc, char *argv[]) {
 
     return ret;
 }
+#endif
 
-void IDE_Exit(void)
+void IDE_Close_Drive(void *dev)
 {
-	if (IDE_enabled) {
-		fclose(device.file);
-		IDE_enabled = FALSE;
-	}
+    struct ide_device *s = (struct ide_device *) dev;
+    fclose(s->file);
 }

@@ -48,6 +48,7 @@ static int Left_Window_Enabled = FALSE;
 static int Right_Window_Enabled = FALSE;
 static ULONG Bank_Offset = 0;
 static ULONG Bank_Offset2 = 0;
+static void *ide;
 static void *rtc;
 
 static void LoadNVRAM();
@@ -72,6 +73,15 @@ static void init_side2(void)
     }
     else {
         Log_print("loaded Side2 rom image");
+    }
+    ide = IDE_Init_Drive(side2_compact_flash_filename, TRUE);
+    if (ide == NULL)
+    {
+        Log_print("Couldn't attach Side2 CF Image");
+    }
+    else {
+        Log_print("Attached Side2 CF Image");
+        Block_Device = TRUE;
     }
 }
 
@@ -123,7 +133,7 @@ UBYTE SIDE2_D5GetByte(UWORD addr, int no_side_effects)
         case 0xD5F5:
         case 0xD5F6:
         case 0xD5F7:
-             result = IDE_Enabled && Block_Device ? IDE_GetByte(addr, FALSE) : 0xFF;
+             result = IDE_Enabled && Block_Device ? IDE_GetByte(ide, addr, FALSE) : 0xFF;
             break;
         case 0xD5F8:
             return 0x32;
@@ -180,7 +190,7 @@ void SIDE2_D5PutByte(UWORD addr, UBYTE byte)
         case 0xD5F6:
         case 0xD5F7:
             if (IDE_Enabled && Block_Device)
-                IDE_PutByte(addr, byte);
+                IDE_PutByte(ide, addr, byte);
             break;
 
         case 0xD5F8:    // F8-FB: D0 = /reset
