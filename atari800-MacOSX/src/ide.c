@@ -89,7 +89,7 @@
 #  define PRId64 "lld"
 #endif
 
-int IDE_enabled = 1, IDE_debug = 1;
+int IDE_enabled = 1, IDE_debug = 0;
 
 struct ide_device device;
 
@@ -126,7 +126,7 @@ static void ide_identify(struct ide_device *s) {
     LE16(p, 22, 4);                 /* number of ECC bytes */
 
     padstr(p+23*2, "5.4.0", 8);
-    padstr(p+27*2, "ATARI800 HARDDISK", 40);
+    padstr(p+27*2, "ATARI800MACX HARDDISK", 40);
 
     if (MAX_MULT_SECTORS > 1)
         LE16(p, 47, 0x8000 | MAX_MULT_SECTORS);
@@ -152,7 +152,7 @@ static void ide_identify(struct ide_device *s) {
 
     if (s->is_cf) {
         LE16(p, 0, 0x848a);         /* CF Storage Card signature */
-        padstr(p+27*2, "ATARI800 MICRODRIVE", 40);
+        padstr(p+27*2, "ATARI800MACX CF CARD", 40);
         LE16(p, 49, CAP_LBA_SUPPORTED);
         LE16(p, 51, 2);
         LE16(p, 52, 1);
@@ -164,7 +164,7 @@ static void ide_identify(struct ide_device *s) {
                    GCBI_HAS_REMOVABLE_MEDIA |
                    GCBI_50US_TILL_DRQ       |
                    GCBI_12BYTE_PACKETS);
-        padstr(p+27*2, "ATARI800 DVD-ROM", 40);
+        padstr(p+27*2, "ATARI800MACX DVD-ROM", 40);
         LE16(p, 49, CAP_LBA_SUPPORTED);
     }
 }
