@@ -6,6 +6,10 @@
 //
 
 extern int SIDE2_enabled;
+extern int SIDE2_SDX_Mode_Switch;
+extern char side2_rom_filename[FILENAME_MAX];
+extern char side2_nvram_filename[FILENAME_MAX];
+extern char side2_compact_flash_filename[FILENAME_MAX];
 
 void init_side2(void);
 int SIDE2_Initialise(int *argc, char *argv[]);

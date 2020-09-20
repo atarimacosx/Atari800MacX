@@ -57,6 +57,9 @@
 #define BlackBoxEnabled @"BlackBoxEnabled"
 #define MioRomFile @"MioRomFile"
 #define Ultimate1MBRomFile @"Ultimate1MBRomFile"
+#define Side2RomFile @"Side2RomFile"
+#define Side2CFFile @"Side2CFFile"
+#define Side2SDXMode @"Side2SDXMode"
 #define AF80Enabled @"AF80Enabled"
 #define AF80RomFile @"AF80RomFile"
 #define AF80CharsetFile @"AF80CharsetFile"
@@ -278,6 +281,9 @@
 	IBOutlet id blackBoxScsiDiskFileField;
 	IBOutlet id mioScsiDiskFileField;
     IBOutlet id ultimate1MBFlashFileField;
+    IBOutlet id side2FlashFileField;
+    IBOutlet id side2CFFileField;
+    IBOutlet id side2SDXModePulldown;
     IBOutlet id disableBasicButton;
     IBOutlet id disableAllBasicButton;
     IBOutlet id diskImageDirField;
@@ -587,6 +593,8 @@
 - (void)browseBlackBoxScsiDiskFile:(id)sender; 
 - (void)browseMioScsiDiskFile:(id)sender; 
 - (IBAction)browseUltimate1MBFlash:(id)sender;
+- (IBAction)browseSide2Flash:(id)sender;
+- (IBAction)browseSide2CF:(id)sender;
 - (void)browseDiskDir:(id)sender;
 - (void)browseDiskSetDir:(id)sender; 
 - (void)browseCartDir:(id)sender; 

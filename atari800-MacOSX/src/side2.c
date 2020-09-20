@@ -22,15 +22,16 @@ int SIDE2_enabled = FALSE;
 
 static UBYTE side2_rom[0x80000];
 #ifdef ATARI800MACX
-char side2_rom_filename[FILENAME_MAX] = "/Users/markg/Atari800MacX/Altirra-3.20/side2oss.rom"; //Util_FILENAME_NOT_SET;
-char side2_nvram_filename[FILENAME_MAX] = "/Users/markg/Atari800MacX/Altirra-3.20/side2.nvram"; //Util_FILENAME_NOT_SET;
-char side2_compact_flash_filename[FILENAME_MAX] = "/Users/markg/Atari800MacX/Altirra-3.20/side2.img"; //Util_FILENAME_NOT_SET;
+char side2_rom_filename[FILENAME_MAX] = Util_FILENAME_NOT_SET; //"/Users/markg/Atari800MacX/Altirra-3.20/side2oss.rom"; 
+char side2_nvram_filename[FILENAME_MAX] = Util_FILENAME_NOT_SET; //"/Users/markg/Atari800MacX/Altirra-3.20/side2.nvram";
+char side2_compact_flash_filename[FILENAME_MAX] = Util_FILENAME_NOT_SET; //"/Users/markg/Atari800MacX/Altirra-3.20/side2.vhd";
 #else
 static char side_rom_filename[FILENAME_MAX] = Util_FILENAME_NOT_SET;
 static char side2_nvram_filename[FILENAME_MAX] = Util_FILENAME_NOT_SET;
 static char side2_compact_flash_filename[FILENAME_MAX] = Util_FILENAME_NOT_SET;
 #endif
 
+int SIDE2_SDX_Mode_Switch = TRUE;
 static int Block_Device = 0;
 static int Coldstarted = FALSE;
 static int IDE_Enabled = FALSE;
@@ -218,7 +219,7 @@ void SIDE2_ColdStart(void)
     CDS1305_ColdReset(rtc);
 
     Reset_Cart_Bank();
-    SIDE2_SDX_Switch_Change(TRUE);
+    SIDE2_SDX_Switch_Change(SIDE2_SDX_Mode_Switch);
 
     IDE_Reset = TRUE;
     IDE_Enabled = TRUE;
