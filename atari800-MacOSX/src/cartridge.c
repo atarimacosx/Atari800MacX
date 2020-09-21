@@ -1092,14 +1092,14 @@ UBYTE CARTRIDGE_GetByte(UWORD addr, int no_side_effects)
 	if (IDE_enabled && (addr <= 0xd50f))
 		return IDE_GetByte(addr, no_side_effects);
 #endif
-#ifdef ULTIMATE_1MB
-    if (ULTIMATE_enabled) {
-        return ULTIMATE_D5GetByte(addr, no_side_effects);
-    }
-#endif
 #ifdef SIDE2
     if (SIDE2_enabled) {
         return SIDE2_D5GetByte(addr, no_side_effects);
+    }
+#endif
+#ifdef ULTIMATE_1MB
+    if (ULTIMATE_enabled) {
+        return ULTIMATE_D5GetByte(addr, no_side_effects);
     }
 #endif
 	/* In case 2 cartridges are inserted, reading a memory location would
@@ -1135,7 +1135,7 @@ void CARTRIDGE_PutByte(UWORD addr, UBYTE byte)
 #ifdef SIDE2
     if (SIDE2_enabled) {
         SIDE2_D5PutByte(addr, byte);
-        return;
+        //return;
     }
 #endif
 #ifdef ULTIMATE_1MB
