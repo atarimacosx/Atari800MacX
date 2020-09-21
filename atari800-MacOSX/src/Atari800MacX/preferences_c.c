@@ -676,7 +676,7 @@ void CalculatePrefsChanged()
     //strcpy(ultimate_nvram_filename, prefs.ultimate1MBNVRAMFileName);
     strcpy(side2_rom_filename, prefs.side2FlashFileName);
     //strcpy(side2_nvram_filename, prefs.side2NVRAMFileName);
-    strcpy(side2_compact_flash_filename, prefs.side2FlashFileName);
+    strcpy(side2_compact_flash_filename, prefs.side2CFFileName);
     strcpy(af80_rom_filename, prefs.af80RomFile);
     strcpy(af80_charset_filename, prefs.af80CharsetFile);
     strcpy(bit3_rom_filename, prefs.bit3RomFile);
@@ -859,7 +859,7 @@ int loadMacPrefs(int firstTime)
     //strcpy(ultimate_nvram_filename, prefs.ultimate1MBNVRAMFileName);
     strcpy(side2_rom_filename, prefs.side2FlashFileName);
     //strcpy(side2_nvram_filename, prefs.side2NVRAMFileName);
-    strcpy(side2_compact_flash_filename, prefs.side2FlashFileName);
+    strcpy(side2_compact_flash_filename, prefs.side2CFFileName);
     strcpy(bit3_charset_filename, prefs.bit3CharsetFile);
     SIDE2_SDX_Mode_Switch = prefs.side2SDXMode;
     strcpy(bb_rom_filename, prefs.blackBoxRomFile);

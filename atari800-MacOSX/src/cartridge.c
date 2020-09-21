@@ -1504,6 +1504,7 @@ static int InsertCartridge(const char *filename, CARTRIDGE_image_t *cart)
         InitCartridge(cart);
         return(0);
     } else if (strcmp(filename,CARTRIDGE_SPECIAL_SIDE2) == 0) {
+        SIDE2_enabled = TRUE;
         strcpy(cart->filename, "SIDE2");
         cart->type = CARTRIDGE_SIDE2;
         InitCartridge(cart);
