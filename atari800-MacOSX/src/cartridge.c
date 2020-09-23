@@ -1094,7 +1094,9 @@ UBYTE CARTRIDGE_GetByte(UWORD addr, int no_side_effects)
 #endif
 #ifdef SIDE2
     if (SIDE2_enabled) {
-        return SIDE2_D5GetByte(addr, no_side_effects);
+        int byte = SIDE2_D5GetByte(addr, no_side_effects);
+        if (byte != -1)
+            return byte;
     }
 #endif
 #ifdef ULTIMATE_1MB

@@ -112,9 +112,9 @@ void SIDE2_Bank_Reset_Button_Change()
     
 }
 
-UBYTE SIDE2_D5GetByte(UWORD addr, int no_side_effects)
+int SIDE2_D5GetByte(UWORD addr, int no_side_effects)
 {
-    int result = 0xff;
+    int result = -1;
     
     switch(addr) {
         case 0xD5E1:    // SDX bank register

@@ -14,7 +14,7 @@ extern char side2_compact_flash_filename[FILENAME_MAX];
 void init_side2(void);
 int SIDE2_Initialise(int *argc, char *argv[]);
 void SIDE2_Exit(void);
-UBYTE SIDE2_D5GetByte(UWORD addr, int no_side_effects);
+int SIDE2_D5GetByte(UWORD addr, int no_side_effects);
 void SIDE2_D5PutByte(UWORD addr, UBYTE byte);
 void SIDE2_ColdStart(void);
 void SIDE2_Set_Cart_Enables(int leftEnable, int rightEnable);

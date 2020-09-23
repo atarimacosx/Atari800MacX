@@ -70,6 +70,8 @@
 		2D2EB0080DEE1F9D00271295 /* votrax.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D2EB0060DEE1F9D00271295 /* votrax.h */; };
 		2D3A8F7C0CB3087200A18A29 /* xep80.c in Sources */ = {isa = PBXBuildFile; fileRef = 2D3A8F7A0CB3087200A18A29 /* xep80.c */; };
 		2D3A8F7D0CB3087200A18A29 /* xep80.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D3A8F7B0CB3087200A18A29 /* xep80.h */; };
+		2D3CDF6B25196803002CF9DB /* img_vhd.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D3CDF6925196803002CF9DB /* img_vhd.h */; };
+		2D3CDF6C25196803002CF9DB /* img_vhd.c in Sources */ = {isa = PBXBuildFile; fileRef = 2D3CDF6A25196803002CF9DB /* img_vhd.c */; };
 		2D432D930CB6CBCE009CAC77 /* xep80_fonts.c in Sources */ = {isa = PBXBuildFile; fileRef = 2D432D910CB6CBCE009CAC77 /* xep80_fonts.c */; };
 		2D432D940CB6CBCE009CAC77 /* xep80_fonts.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D432D920CB6CBCE009CAC77 /* xep80_fonts.h */; };
 		2D43886E1076CDD900FE40D9 /* StackDataSource.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D43886C1076CDD900FE40D9 /* StackDataSource.h */; };
@@ -448,6 +450,8 @@
 		2D35920208DE2E760041824D /* SectorEditorAsciiFieldCell.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SectorEditorAsciiFieldCell.m; sourceTree = SOURCE_ROOT; };
 		2D3A8F7A0CB3087200A18A29 /* xep80.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = xep80.c; path = ../xep80.c; sourceTree = SOURCE_ROOT; };
 		2D3A8F7B0CB3087200A18A29 /* xep80.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = xep80.h; path = ../xep80.h; sourceTree = SOURCE_ROOT; };
+		2D3CDF6925196803002CF9DB /* img_vhd.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = img_vhd.h; path = ../img_vhd.h; sourceTree = "<group>"; };
+		2D3CDF6A25196803002CF9DB /* img_vhd.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = img_vhd.c; path = ../img_vhd.c; sourceTree = "<group>"; };
 		2D3D18A7052BD6E600A8C8B4 /* mzpokeysnd.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = mzpokeysnd.c; path = ../mzpokeysnd.c; sourceTree = SOURCE_ROOT; };
 		2D3D18A8052BD6E600A8C8B4 /* mzpokeysnd.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = mzpokeysnd.h; path = ../mzpokeysnd.h; sourceTree = SOURCE_ROOT; };
 		2D3D18A9052BD6E600A8C8B4 /* pokey_resample.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = pokey_resample.c; path = ../pokey_resample.c; sourceTree = SOURCE_ROOT; };
@@ -899,7 +903,6 @@
 				F5558351030EF4CD01A8C8B4 /* cassette.h */,
 				F5558352030EF4CD01A8C8B4 /* cassette.c */,
 				2DE7FC57250DC655000C2DAD /* capslock.c */,
-				2DE7FC55250DC5ED000C2DAD /* capslock.c */,
 				2D3F19BD25103F620032A254 /* capslock.h */,
 				2D05560124C3E7690026DE9C /* bit3.c */,
 				2D05560224C3E7690026DE9C /* bit3.h */,
@@ -930,6 +933,8 @@
 				F5558342030EF4CD01A8C8B4 /* input.h */,
 				2D09D068250939B200B73A8D /* ide.c */,
 				2D09D069250939B200B73A8D /* ide.h */,
+				2D3CDF6925196803002CF9DB /* img_vhd.h */,
+				2D3CDF6A25196803002CF9DB /* img_vhd.c */,
 				2DE6EB8324CE6BCA00A55386 /* img_tape.c */,
 				2DE6EB8424CE6BCB00A55386 /* img_tape.h */,
 				F5558340030EF4CD01A8C8B4 /* list.h */,
@@ -1190,6 +1195,7 @@
 				2DAEDB2209B69AED005FF181 /* PrintOutputController.h in Headers */,
 				2DAEDB2309B69AED005FF181 /* PrinterView.h in Headers */,
 				2DAEDB2409B69AED005FF181 /* EpsonFX80Simulator.h in Headers */,
+				2D3CDF6B25196803002CF9DB /* img_vhd.h in Headers */,
 				2DAEDB2509B69AED005FF181 /* PrintProtocol.h in Headers */,
 				2DAEDB2609B69AED005FF181 /* PrintableString.h in Headers */,
 				2DAEDB2709B69AED005FF181 /* PrintableGraphics.h in Headers */,
@@ -1471,6 +1477,7 @@
 				2D1668270F51F19900A78B94 /* afile.c in Sources */,
 				2DB0A0560F524110007879C7 /* ui_basic.c in Sources */,
 				2D17D9750F537D860027F526 /* pbi_bb.c in Sources */,
+				2D3CDF6C25196803002CF9DB /* img_vhd.c in Sources */,
 				2D17D9770F537D860027F526 /* pbi_mio.c in Sources */,
 				2D17D9790F537D860027F526 /* pbi_scsi.c in Sources */,
 				2DE7FC58250DC655000C2DAD /* capslock.c in Sources */,
