@@ -15,7 +15,6 @@
 //    along with this program; if not, write to the Free Software
 //    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
@@ -89,6 +88,10 @@ typedef struct vhdImage {
     uint32_t  BlockSize;
     uint32_t  BlockBitmapSize;
 
+    uint32_t  Cylinders;
+    uint32_t  Heads;
+    uint32_t  SectorsPerTrack;
+    
     uint32_t *BlockAllocTable;
 
     uint32_t  CurrentBlock;
@@ -102,6 +105,7 @@ typedef struct vhdImage {
 } VHDImage;
 
 static void AllocateBlock(VHDImage *img);
+static void CalcCHS(uint32_t totalSectors, VHDImage *img);
 static void FlushCurrentBlockBitmap(VHDImage *img);
 static void InitCommon(VHDImage *img);
 static void ReadDynamicDiskSectors(VHDImage *img, void *data, uint32_t lba, uint32_t n);
@@ -190,20 +194,30 @@ static void SwapEndianUint32Array(uint32_t *p, uint32_t n) {
     }
 }
 
-uint32_t GetSectorCount(VHDImage *img)  {
+uint32_t VHD_Get_Sector_Count(void *image)  {
+    VHDImage *img = (VHDImage *) image;
     return img->SectorCount;
 }
 
-BlockDeviceGeometry *GetGeometry(VHDImage *img) {
-    BlockDeviceGeometry *geo = malloc(sizeof(BlockDeviceGeometry));
-    memset(geo, 0, sizeof(BlockDeviceGeometry));
+int VHD_Is_Read_Only(void *image) {
+    VHDImage *img = (VHDImage *) image;
+    return img->ReadOnly;
+}
 
+BlockDeviceGeometry *VHD_Get_Geometry(void *image) {
+    VHDImage *img = (VHDImage *) image;
+    BlockDeviceGeometry *geo = malloc(sizeof(BlockDeviceGeometry));
+
+    geo->Cylinders = img->Cylinders;
+    geo->Heads = img->Heads;
+    geo->SectorsPerTrack = img->SectorsPerTrack;
     geo->SolidState = img->SolidState;
 
     return geo;
 }
 
-uint32_t GetSerialNumber(VHDImage *img) {
+uint32_t VHD_Get_Serial_Number(void *image) {
+    VHDImage *img = (VHDImage *) image;
     return HashString32(img->Path);
 }
 
@@ -224,7 +238,7 @@ static VHDImage *VHDImageAlloc() {
     return img;
 }
 
-int VHDImageOpen(const char *path, int write, int solidState) {
+void *VHD_Image_Open(const char *path, int write, int solidState) {
     VHDImage *img = VHDImageAlloc();
     
     strcpy(img->Path, path);
@@ -282,6 +296,7 @@ int VHDImageOpen(const char *path, int write, int solidState) {
 
     // read off drive size
     img->SectorCount = ClampToUint32(img->Footer.CurrentSize >> 9);
+    CalcCHS(img->SectorCount, img);
 
     // if we've got a dynamic disk, read the dyndisk header
     if (img->Footer.DiskType == DiskTypeDynamic) {
@@ -365,10 +380,10 @@ int VHDImageOpen(const char *path, int write, int solidState) {
     }
 
     InitCommon(img);
-    return(0);
+    return(img);
 }
 
-int VHDInitNew(const char *path, uint8_t heads, uint8_t spt, uint32_t totalSectorCount, int dynamic) {
+void *VHD_Init_New(const char *path, uint8_t heads, uint8_t spt, uint32_t totalSectorCount, int dynamic) {
     VHDImage *img = VHDImageAlloc();
 
     img->SectorCount = totalSectorCount;
@@ -386,7 +401,11 @@ int VHDInitNew(const char *path, uint8_t heads, uint8_t spt, uint32_t totalSecto
 
     if (cylinders > 0xffff)
         cylinders = 0xffff;
-
+    
+    img->Cylinders = cylinders;
+    img->Heads = heads;
+    img->SectorsPerTrack = spt;
+    
     memcpy(img->Footer.Cookie, VHDFooterSignature, sizeof (img->Footer.Cookie));
     img->Footer.Features = 0x2;
     img->Footer.Version = 0x00010000;
@@ -482,7 +501,7 @@ int VHDInitNew(const char *path, uint8_t heads, uint8_t spt, uint32_t totalSecto
     img->FooterLocation = ftell(img->File);
 
     InitCommon(img);
-    return(0);
+    return(img);
 }
 
 static void InitCommon(VHDImage *img) {
@@ -492,11 +511,13 @@ static void InitCommon(VHDImage *img) {
     img->CurrentBlockAllocated = false;
 }
 
-void VHDFlush(VHDImage *img) {
+void VHD_Flush(void *image) {
+    VHDImage *img = (VHDImage *) image;
     FlushCurrentBlockBitmap(img);
 }
 
-void VHDReadSectors(VHDImage *img, void *data, uint32_t lba, uint32_t n) {
+void VHD_Read_Sectors(void *image, void *data, uint32_t lba, uint32_t n) {
+    VHDImage *img = (VHDImage *) image;
     if (img->Footer.DiskType == DiskTypeDynamic) {
         ReadDynamicDiskSectors(img, data, lba, n);
     } else {
@@ -510,7 +531,8 @@ void VHDReadSectors(VHDImage *img, void *data, uint32_t lba, uint32_t n) {
     }
 }
 
-void VHDWriteSectors(VHDImage *img, const void *data, uint32_t lba, uint32_t n) {
+void VHD_Write_Sectors(void *image, const void *data, uint32_t lba, uint32_t n) {
+    VHDImage *img = (VHDImage *) image;
     if (img->Footer.DiskType == DiskTypeDynamic) {
         WriteDynamicDiskSectors(img, data, lba, n);
     } else {
@@ -715,4 +737,38 @@ static void AllocateBlock(VHDImage *img) {
     // all done!
     img->CurrentBlockDataOffset = newBlockDataLoc;
     img->CurrentBlockAllocated = TRUE;
+}
+
+static void CalcCHS(uint32_t totalSectors, VHDImage *img) {
+    uint64_t cylinderTimesHeads;
+    
+    if (totalSectors > 65535 * 16 * 255) {
+       totalSectors = 65535 * 16 * 255;
+    }
+    
+    if (totalSectors >= 65535 * 16 * 63) {
+       img->SectorsPerTrack = 255;
+       img->Heads = 16;
+       cylinderTimesHeads = totalSectors / img->SectorsPerTrack;
+    } else {
+       img->SectorsPerTrack = 17;
+       cylinderTimesHeads = totalSectors / img->SectorsPerTrack;
+    
+       img->Heads = (cylinderTimesHeads + 1023) / 1024;
+          
+       if (img->Heads < 4) {
+          img->Heads = 4;
+       }
+       if (cylinderTimesHeads >= (img->Heads * 1024) || img->Heads > 16) {
+          img->SectorsPerTrack = 31;
+          img->Heads = 16;
+          cylinderTimesHeads = totalSectors / img->SectorsPerTrack;
+       }
+       if (cylinderTimesHeads >= (img->Heads * 1024)) {
+          img->SectorsPerTrack = 63;
+          img->Heads = 16;
+          cylinderTimesHeads = totalSectors / img->SectorsPerTrack;
+       }
+    }
+    img->Cylinders = cylinderTimesHeads / img->Heads;
 }

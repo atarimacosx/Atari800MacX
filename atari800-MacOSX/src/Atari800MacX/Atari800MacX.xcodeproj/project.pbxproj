@@ -86,6 +86,10 @@
 		2D63725824F73FB700905B2E /* rtcds1305.c in Sources */ = {isa = PBXBuildFile; fileRef = 2D63725724F73FB600905B2E /* rtcds1305.c */; };
 		2D63725A24F741DA00905B2E /* rtcds1305.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D63725924F741D900905B2E /* rtcds1305.h */; };
 		2D66DBF70F538D0200F882D6 /* cfg.c in Sources */ = {isa = PBXBuildFile; fileRef = 2D66DBF60F538D0200F882D6 /* cfg.c */; };
+		2D6A0BEA251C21050062B581 /* img_raw.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D6A0BE8251C21050062B581 /* img_raw.h */; };
+		2D6A0BEB251C21050062B581 /* img_raw.c in Sources */ = {isa = PBXBuildFile; fileRef = 2D6A0BE9251C21050062B581 /* img_raw.c */; };
+		2D6A0BEE251C225F0062B581 /* img_disk.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D6A0BEC251C225F0062B581 /* img_disk.h */; };
+		2D6A0BEF251C225F0062B581 /* img_disk.c in Sources */ = {isa = PBXBuildFile; fileRef = 2D6A0BED251C225F0062B581 /* img_disk.c */; };
 		2D70069D0F55F9F80092DA70 /* mac_monitor.c in Sources */ = {isa = PBXBuildFile; fileRef = 2D70069C0F55F9F80092DA70 /* mac_monitor.c */; };
 		2D76730B21EA791E00D99B0E /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2D76730A21EA791E00D99B0E /* Media.xcassets */; };
 		2D76730E21EA7F9A00D99B0E /* atari810off.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D76730C21EA7F9A00D99B0E /* atari810off.png */; };
@@ -485,6 +489,10 @@
 		2D66DBF60F538D0200F882D6 /* cfg.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = cfg.c; path = ../cfg.c; sourceTree = SOURCE_ROOT; };
 		2D68BC170607F3E800BB94D6 /* Atari800TableView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = Atari800TableView.h; sourceTree = SOURCE_ROOT; };
 		2D68BC180607F3E800BB94D6 /* Atari800TableView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = Atari800TableView.m; sourceTree = SOURCE_ROOT; };
+		2D6A0BE8251C21050062B581 /* img_raw.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = img_raw.h; path = ../img_raw.h; sourceTree = "<group>"; };
+		2D6A0BE9251C21050062B581 /* img_raw.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = img_raw.c; path = ../img_raw.c; sourceTree = "<group>"; };
+		2D6A0BEC251C225F0062B581 /* img_disk.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = img_disk.h; path = ../img_disk.h; sourceTree = "<group>"; };
+		2D6A0BED251C225F0062B581 /* img_disk.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = img_disk.c; path = ../img_disk.c; sourceTree = "<group>"; };
 		2D70069C0F55F9F80092DA70 /* mac_monitor.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = mac_monitor.c; sourceTree = SOURCE_ROOT; };
 		2D76730A21EA791E00D99B0E /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
 		2D76730C21EA7F9A00D99B0E /* atari810off.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = atari810off.png; sourceTree = "<group>"; };
@@ -933,6 +941,10 @@
 				F5558342030EF4CD01A8C8B4 /* input.h */,
 				2D09D068250939B200B73A8D /* ide.c */,
 				2D09D069250939B200B73A8D /* ide.h */,
+				2D6A0BEC251C225F0062B581 /* img_disk.h */,
+				2D6A0BED251C225F0062B581 /* img_disk.c */,
+				2D6A0BE8251C21050062B581 /* img_raw.h */,
+				2D6A0BE9251C21050062B581 /* img_raw.c */,
 				2D3CDF6925196803002CF9DB /* img_vhd.h */,
 				2D3CDF6A25196803002CF9DB /* img_vhd.c */,
 				2DE6EB8324CE6BCA00A55386 /* img_tape.c */,
@@ -1179,6 +1191,7 @@
 				2DAEDB1209B69AED005FF181 /* DiskEditorDataSource.h in Headers */,
 				2DAEDB1309B69AED005FF181 /* atrDos2.h in Headers */,
 				2DE6EB7B24CE197000A55386 /* altirra_basic.h in Headers */,
+				2D6A0BEE251C225F0062B581 /* img_disk.h in Headers */,
 				2DAEDB1409B69AED005FF181 /* atrErr.h in Headers */,
 				2DAEDB1509B69AED005FF181 /* atrMount.h in Headers */,
 				2DAEDB1609B69AED005FF181 /* atrMyDos.h in Headers */,
@@ -1257,6 +1270,7 @@
 				2D4389331076D9D000FE40D9 /* WatchDataSource.h in Headers */,
 				2D975D3824E388A800B8A7F5 /* Atari800WindowController.h in Headers */,
 				2DA74FB110782987008F0171 /* WatchTableView.h in Headers */,
+				2D6A0BEA251C21050062B581 /* img_raw.h in Headers */,
 				2D1A748A107A66C0000049E3 /* MemoryEditorTableView.h in Headers */,
 				2D0BA11A107D6EF000DEF450 /* LabelDataSource.h in Headers */,
 				2D0BA125107D724600DEF450 /* Label.h in Headers */,
@@ -1455,11 +1469,13 @@
 				2DAEDBB209B69AED005FF181 /* MonitorWindow.m in Sources */,
 				2DAEDBB309B69AED005FF181 /* Atari800FunctionKeysWindow.m in Sources */,
 				2DAEDBC009B69AED005FF181 /* SectorEditorByteFieldCell.m in Sources */,
+				2D6A0BEB251C21050062B581 /* img_raw.c in Sources */,
 				2DE6EB7C24CE197000A55386 /* altirraos_800.c in Sources */,
 				2DAEDBC109B69AED005FF181 /* SectorEditorDataSource.m in Sources */,
 				2DAEDBC209B69AED005FF181 /* SectorEditorWindow.m in Sources */,
 				2DAEDBC309B69AED005FF181 /* SectorEditorAsciiFieldCell.m in Sources */,
 				2DAEDBC409B69AED005FF181 /* util.c in Sources */,
+				2D6A0BEF251C225F0062B581 /* img_disk.c in Sources */,
 				2DAEDBC509B69AED005FF181 /* rdevice.c in Sources */,
 				2DA5816309C5F38700331696 /* devices.c in Sources */,
 				2DF39C950A07024E00206A1B /* statesav.c in Sources */,
