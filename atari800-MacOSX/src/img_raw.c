@@ -113,7 +113,7 @@ void RAW_Read_Sectors(void *image, void *data, uint32_t lba, uint32_t n)
     fseek(img->File, (int64_t)lba << 9, SEEK_SET);
 
     uint32_t requested = n << 9;
-    uint32_t actual = fread(img->File, data, 1, requested);
+    uint32_t actual = fread(data, 1, requested, img->File);
 
     if (requested < actual)
         memset((char *)data + actual, 0, requested - actual);
@@ -125,7 +125,7 @@ void RAW_Write_Sectors(void *image, const void *data, uint32_t lba, uint32_t n)
     RAWImage *img = (RAWImage *) image;
 
     fseek(img->File, (int64_t)lba << 9, SEEK_SET);
-    fwrite(img->File, data, 512, n);
+    fwrite(data, 512, n, img->File);
 
     if (lba + n > img->SectorCount)
         img->SectorCount = lba + n;

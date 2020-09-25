@@ -260,7 +260,7 @@ void *VHD_Image_Open(const char *path, int write, int solidState) {
     fseek(img->File, img->FooterLocation, SEEK_SET);
 
     uint8_t footerbuf[512];
-    fread(img->File, footerbuf, 512, 1);
+    fread(footerbuf, 512, 1, img->File);
 
     // We need to handle either 511 or 512 byte headers here, per the spec.
     if (!memcmp(footerbuf + 1, VHDFooterSignature, 8)) {
@@ -306,7 +306,7 @@ void *VHD_Image_Open(const char *path, int write, int solidState) {
         uint8_t rawdynheader[1024];
 
         fseek(img->File, img->Footer.DataOffset, SEEK_SET);
-        fread(img->File, rawdynheader, sizeof rawdynheader, 1);
+        fread(rawdynheader, sizeof rawdynheader, 1, img->File);
 
         // validate signature
         if (memcmp(rawdynheader, VHDDynamicHeaderSignature, 8))
@@ -355,7 +355,7 @@ void *VHD_Image_Open(const char *path, int write, int solidState) {
         img->BlockAllocTable = malloc(blockCount * sizeof(uint32_t));
 
         fseek(img->File, img->DynamicHeader.TableOffset, SEEK_SET);
-        fread(img->File, img->BlockAllocTable, blockCount, sizeof(uint32_t));
+        fread(img->BlockAllocTable, blockCount, sizeof(uint32_t), img->File);
 
         // swizzle the BAT
         SwapEndianUint32Array(img->BlockAllocTable, blockCount);
@@ -436,7 +436,7 @@ void *VHD_Init_New(const char *path, uint8_t heads, uint8_t spt, uint32_t totalS
     // check if we are creating a dynamic disk
     if (dynamic) {
         // write out the footer copy
-        fwrite(img->File, &rawFooter, 1, sizeof(rawFooter));
+        fwrite(&rawFooter, 1, sizeof(rawFooter), img->File);
 
         // initialize dynamic parameters and the BAT
         img->BlockSize = 0x200000;        // 2MB
@@ -463,14 +463,14 @@ void *VHD_Init_New(const char *path, uint8_t heads, uint8_t spt, uint32_t totalS
         VHDDynamicDiskHeader rawDynamicHeader;
         memcpy(&rawDynamicHeader, &img->DynamicHeader, sizeof(rawDynamicHeader));
         SwapEndianHeader(&rawDynamicHeader);
-        fwrite(img->File, &rawDynamicHeader, sizeof(rawDynamicHeader), 1);
+        fwrite(&rawDynamicHeader, sizeof(rawDynamicHeader), 1, img->File);
 
         // write out the BAT
         uint32_t *batBuf= malloc(16384*sizeof(uint32_t));
 
         memset(batBuf, 0xFF, 16384*sizeof(uint32_t));
 
-        fwrite(img->File, batBuf, sizeof(uint32_t), 16384);
+        fwrite(batBuf, sizeof(uint32_t), 16384, img->File);
 
         // init runtime buffers
         
@@ -489,7 +489,7 @@ void *VHD_Init_New(const char *path, uint8_t heads, uint8_t spt, uint32_t totalS
         while(sectorsToClear) {
             uint32_t tc = sectorsToClear < 512 ? sectorsToClear : 512;
 
-            fwrite(img->File, clearData, tc, 512);
+            fwrite(clearData, tc, 512, img->File);
 
             sectorsCleared += tc;
             sectorsToClear -= tc;
@@ -497,7 +497,7 @@ void *VHD_Init_New(const char *path, uint8_t heads, uint8_t spt, uint32_t totalS
     }
 
     // write out the footer
-    fwrite(img->File, &rawFooter, sizeof(rawFooter), 1);
+    fwrite(&rawFooter, sizeof(rawFooter), 1, img->File);
     img->FooterLocation = ftell(img->File);
 
     InitCommon(img);
@@ -524,7 +524,7 @@ void VHD_Read_Sectors(void *image, void *data, uint32_t lba, uint32_t n) {
         fseek(img->File, (int64_t)lba << 9, SEEK_SET);
 
         uint32_t requested = n << 9;
-        uint32_t actual = fread(img->File, data, 1, requested);
+        uint32_t actual = fread(data, 1, requested, img->File);
 
         if (requested < actual)
             memset((char *)data + actual, 0, requested - actual);
@@ -537,7 +537,7 @@ void VHD_Write_Sectors(void *image, const void *data, uint32_t lba, uint32_t n) 
         WriteDynamicDiskSectors(img, data, lba, n);
     } else {
         fseek(img->File, (int64_t)lba << 9, SEEK_SET);
-        fwrite(img->File, data, 1, 512 * n);
+        fwrite(data, 1, 512 * n, img->File);
     }
 }
 
@@ -562,7 +562,7 @@ static void ReadDynamicDiskSectors(VHDImage *img, void *data, uint32_t lba, uint
         for(uint32_t i=0; i<blockCount; ++i) {
             if (img->CurrentBlockBitmap[blockSectorOffset >> 3] & (0x80 >> (blockSectorOffset & 7))) {
                 fseek(img->File, img->CurrentBlockDataOffset + ((int64_t)(blockSectorOffset + i) << 9), SEEK_SET);
-                fread(img->File, (char *)data + i*512, 1, 512);
+                fread((char *)data + i*512, 1, 512, img->File);
             }
         }
 
@@ -630,7 +630,7 @@ static void WriteDynamicDiskSectors(VHDImage *img, const void *data, uint32_t lb
             // sectors must still be zero).
             if (!writingZero || !wasZero) {
                 fseek(img->File, img->CurrentBlockDataOffset + ((int64_t)(blockSectorOffset + i) << 9), SEEK_SET);
-                fwrite(img->File, secsrc, 1, 512);
+                fwrite(secsrc, 1, 512, img->File);
             }
         }
 
@@ -663,7 +663,7 @@ static void SetCurrentBlock(VHDImage *img, uint32_t blockIndex) {
     } else {
         // yes it is -- read in the bitmap from the new block
         fseek(img->File, (int64_t)sectorOffset << 9, SEEK_SET);
-        fread(img->File, img->CurrentBlockBitmap, 1, img->BlockBitmapSize);
+        fread(img->CurrentBlockBitmap, 1, img->BlockBitmapSize, img->File);
         img->CurrentBlockAllocated = true;
         img->CurrentBlockDataOffset = ((int64_t)sectorOffset << 9) + img->BlockBitmapSize;
     }
@@ -676,7 +676,7 @@ static void FlushCurrentBlockBitmap(VHDImage *img) {
     if (img->CurrentBlockBitmapDirty) {
         uint32_t sectorOffset = img->BlockAllocTable[img->CurrentBlock];
         fseek(img->File, (uint64_t)sectorOffset << 9, SEEK_SET);
-        fwrite(img->File, img->CurrentBlockBitmap, 1, img->BlockBitmapSize);
+        fwrite(img->CurrentBlockBitmap, 1, img->BlockBitmapSize, img->File);
        img->CurrentBlockBitmapDirty = false;
     }
 }
@@ -703,7 +703,7 @@ static void AllocateBlock(VHDImage *img) {
     SwapEndianFooter(rawFooter);
 
     fseek(img->File, newFooterLocation, SEEK_SET);
-    fwrite(img->File, &rawFooter, sizeof(rawFooter), 1);
+    fwrite(&rawFooter, sizeof(rawFooter), 1, img->File);
 
     // Flush to disk so we know the VHD is valid again.
     fflush(img->File);
@@ -711,13 +711,13 @@ static void AllocateBlock(VHDImage *img) {
 
     // Write the new block bitmap.
     fseek(img->File, newBlockBitmapLoc, SEEK_SET);
-    fwrite(img->File, img->CurrentBlockBitmap, 1, img->BlockBitmapSize);
+    fwrite(img->CurrentBlockBitmap, 1, img->BlockBitmapSize, img->File);
 
     // Zero the data; technically not needed with NTFS since the bitmap is always at least
     // as big as the footer and NTFS zeroes new space, but we might be running on FAT32
     uint8_t *zerobuf = malloc(65536);
     memset(zerobuf, 0, 65536);
-    fwrite(img->File, zerobuf, 1, 65536);
+    fwrite(zerobuf, 1, 65536, img->File);
 
     // flush again, so the block is OK on disk
     fflush(img->File);
@@ -732,7 +732,7 @@ static void AllocateBlock(VHDImage *img) {
     uint8_t rawSectorOffset[4];
     WriteUnalignedBEU32(&rawSectorOffset, sectorOffset);
 
-    fwrite(img->File, rawSectorOffset, 1, 4);
+    fwrite(rawSectorOffset, 1, 4, img->File);
 
     // all done!
     img->CurrentBlockDataOffset = newBlockDataLoc;
