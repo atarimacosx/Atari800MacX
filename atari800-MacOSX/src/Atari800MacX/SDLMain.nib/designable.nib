@@ -242,6 +242,11 @@
                                     <action selector="showCreatePanel:" target="473" id="780"/>
                                 </connections>
                             </menuItem>
+                            <menuItem title="New Hard Disk Image..." keyEquivalent="s" id="z3a-n0-jgV">
+                                <connections>
+                                    <action selector="showHardCreatePanel:" target="473" id="DGm-qL-FBm"/>
+                                </connections>
+                            </menuItem>
                             <menuItem title="Edit an .atr Disk Image..." keyEquivalent="e" id="771">
                                 <connections>
                                     <action selector="showEditorPanel:" target="473" id="772"/>

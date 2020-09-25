@@ -590,6 +590,16 @@ NSImage *disketteImage;
 }
 
 /*------------------------------------------------------------------------------
+*  cancelHardDisk - This method handles the cancel button from the disk image
+*     creation window.
+*-----------------------------------------------------------------------------*/
+- (IBAction)cancelHardDisk:(id)sender
+{
+    [NSApp stopModal];
+    [[hardDiskFmtMatrix window] close];
+}
+
+/*------------------------------------------------------------------------------
 *  basicInsert - This method inserts the BASIC cartridge image into the emulator
 *-----------------------------------------------------------------------------*/
 - (IBAction)basicInsert:(id)sender
@@ -1570,6 +1580,27 @@ NSImage *disketteImage;
     }
 }
 
+
+/*------------------------------------------------------------------------------
+*  hardSecUpdate - This method handles control updates in the hard disk image creation
+*     window.
+*-----------------------------------------------------------------------------*/
+- (IBAction)hardSecUpdate:(id)sender
+{
+    int sectors = [hardDiskFmtCusSecField intValue];
+    [hardDiskFmtCusMBField setIntValue:(sectors/(2*1024))];
+}
+
+/*------------------------------------------------------------------------------
+*  hardMBUpdate - This method handles control updates in the hard disk image creation
+*     window.
+*-----------------------------------------------------------------------------*/
+- (IBAction)hardMBUpdate:(id)sender
+{
+    int mbs = [hardDiskFmtCusMBField intValue];
+    [hardDiskFmtCusSecField setIntValue:(mbs*2*1024)];
+}
+
 /*------------------------------------------------------------------------------
 *  miscUpdate - This method handles control updates in the disk image creation
 *     window.
@@ -1651,19 +1682,19 @@ NSImage *disketteImage;
 *-----------------------------------------------------------------------------*/
 - (IBAction)showCreatePanel:(id)sender
 {
-	int driveNo;
+    int driveNo;
 
     [diskFmtMatrix selectCellWithTag:0];
     [diskFmtCusBytesPulldown setEnabled:NO];
     [diskFmtCusSecField setEnabled:NO];
     [diskFmtDDBytesPulldown setEnabled:NO];
-	for (driveNo=0;driveNo<8;driveNo++) {
-		if (SIO_drive_status[driveNo] == SIO_NO_DISK ||
-			SIO_drive_status[driveNo] == SIO_OFF) 
-			break;
-		}
-	if (driveNo == 8)
-		driveNo = 0;
+    for (driveNo=0;driveNo<8;driveNo++) {
+        if (SIO_drive_status[driveNo] == SIO_NO_DISK ||
+            SIO_drive_status[driveNo] == SIO_OFF)
+            break;
+        }
+    if (driveNo == 8)
+        driveNo = 0;
     [diskFmtInsertDrivePulldown selectItemAtIndex:driveNo];
     [diskFmtInsertDrivePulldown setEnabled:NO];
     [diskFmtCusBytesPulldown selectItemAtIndex:0];
@@ -1672,6 +1703,19 @@ NSImage *disketteImage;
     [diskFmtInsertNewButton setState:NSOffState];
     [NSApp runModalForWindow:[diskFmtMatrix window]];
     [[KeyMapper sharedInstance] releaseCmdKeys:@"n"];
+}
+
+/*------------------------------------------------------------------------------
+*  showHardCreatePanel - This method displays a window which allows the creation of
+*     blank floppy images.
+*-----------------------------------------------------------------------------*/
+- (IBAction)showHardCreatePanel:(id)sender
+{
+    [hardDiskFmtMatrix selectCellWithTag:1];
+    [hardDiskFmtCusSecField setIntValue:(64*2*1024)];
+    [hardDiskFmtCusMBField setIntValue:64];
+    [diskFmtInsertNewButton setState:NSOffState];
+    [NSApp runModalForWindow:[hardDiskFmtMatrix window]];
 }
 
 /*------------------------------------------------------------------------------

@@ -38,12 +38,16 @@
 	IBOutlet id d6SwitchButton;
 	IBOutlet id d7SwitchButton;
 	IBOutlet id d8SwitchButton;
-	IBOutlet id diskFmtCusBytesPulldown;
+    IBOutlet id diskFmtCusBytesPulldown;
     IBOutlet id diskFmtCusSecField;
     IBOutlet id diskFmtDDBytesPulldown;
     IBOutlet id diskFmtInsertDrivePulldown;
     IBOutlet id diskFmtInsertNewButton;
     IBOutlet id diskFmtMatrix;
+    IBOutlet id hardDiskFmtCusMBField;
+    IBOutlet id hardDiskFmtCusSecField;
+    IBOutlet id hardDiskFmtInsertNewButton;
+    IBOutlet id hardDiskFmtMatrix;
 	IBOutlet id insertSecondCartItem;
     IBOutlet id removeMenu;
     IBOutlet id removeD1Item;
@@ -167,6 +171,7 @@
 - (NSString *) browseFileTypeInDirectory:(NSString *)directory:(NSArray *) filetypes;
 - (NSString *) saveFileInDirectory:(NSString *)directory:(NSString *)type;
 - (IBAction)cancelDisk:(id)sender;
+- (IBAction)cancelHardDisk:(id)sender;
 - (IBAction)cartInsert:(id)sender;
 - (IBAction)basicInsert:(id)sender;
 - (IBAction)side2Insert:(id)sender;
@@ -187,6 +192,7 @@
 - (IBAction)convertCartRom:(id)sender;
 - (IBAction)convertRomCart:(id)sender;
 - (IBAction)createDisk:(id)sender;
+- (IBAction)createHardDisk:(id)sender;
 - (IBAction)createCassette:(id)sender;
 - (IBAction)diskInsert:(id)sender;
 - (IBAction)diskRotate:(id)sender;
@@ -209,8 +215,11 @@
 - (IBAction)convertATRtoSCP:(id)sender;
 - (IBAction)convertSCPtoATR:(id)sender;
 - (IBAction)miscUpdate:(id)sender;
+- (IBAction)hardSecUpdate:(id)sender;
+- (IBAction)hardMBUpdate:(id)sender;
 - (IBAction)ok:(id)sender;
 - (IBAction)showCreatePanel:(id)sender;
+- (IBAction)showHardCreatePanel:(id)sender;
 - (IBAction)showManagementPanel:(id)sender;
 - (IBAction)showSectorPanel:(id)sender;
 - (IBAction)showEditorPanel:(id)sender;

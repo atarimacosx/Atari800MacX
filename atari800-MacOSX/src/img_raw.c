@@ -17,11 +17,12 @@ typedef struct rawImage {
     FILE * File;
     char Path[FILENAME_MAX];
     uint32_t SectorCount;
-    uint32_t SectorCountLimit;
     int ReadOnly;
 
     BlockDeviceGeometry Geometry;
 } RAWImage;
+
+static int SetGeometry(RAWImage *img);
 
 static uint32_t HashString32(const char *s) {
     uint32_t len = (uint32_t)strlen(s);
@@ -56,17 +57,10 @@ void *RAW_Image_Open(const char *path, int write, int solidState)
     img->Geometry.SolidState = solidState;
 
     /* use standard physical disk geometry */
-    img->Geometry.Cylinders = img->SectorCount / (STD_HEADS * STD_SECTORS);
-
-    if (img->Geometry.Cylinders > 16383)
-        img->Geometry.Cylinders = 16383;
-    else if (img->Geometry.Cylinders < 2) {
+    if (!SetGeometry(img)) {
         fclose(img->File);
         return NULL;
     }
-
-    img->Geometry.Heads = STD_HEADS;
-    img->Geometry.SectorsPerTrack = STD_SECTORS;
 
     return img;
 }
@@ -75,7 +69,53 @@ void *RAW_Init_New(const char *path, uint32_t totalSectorCount)
 {
     RAWImage *img = (RAWImage *) malloc(sizeof(RAWImage));
 
+    img->SectorCount = totalSectorCount;
+    img->File = fopen(path, "rb+");
+    if (img->File == NULL)
+        return NULL; // TBD    img->ReadOnly = FALSE;
+
+    if (!SetGeometry(img)) {
+        fclose(img->File);
+        return NULL;
+    }
+
     return img;
+
+    // write blank data
+    uint8_t *clearData = malloc(262144);
+
+    memset(clearData, 0, 262144);
+
+    uint32_t sectorsToClear = img->SectorCount;
+    uint32_t sectorsCleared = 0;
+
+    while(sectorsToClear) {
+        uint32_t tc = sectorsToClear < 512 ? sectorsToClear : 512;
+
+        fwrite(clearData, tc, 512, img->File);
+
+        sectorsCleared += tc;
+        sectorsToClear -= tc;
+    }
+    fflush(img->File);
+    
+    return(img);
+}
+
+static int SetGeometry(RAWImage *img)
+{
+    /* use standard physical disk geometry */
+    img->Geometry.Cylinders = img->SectorCount / (STD_HEADS * STD_SECTORS);
+
+    if (img->Geometry.Cylinders > 16383)
+        img->Geometry.Cylinders = 16383;
+    else if (img->Geometry.Cylinders < 2) {
+        return 0;
+    }
+
+    img->Geometry.Heads = STD_HEADS;
+    img->Geometry.SectorsPerTrack = STD_SECTORS;
+    return 1;
 }
 
 int RAW_Is_Read_Only(void *image)
