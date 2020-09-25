@@ -18,8 +18,9 @@ struct ide_device {
 
     int is_cdrom, is_cf;
 
-    FILE *file;
-    off_t filesize;
+    void *IMGImage;
+    //FILE *file;
+    //off_t filesize;
     int blocksize;
 
     int cylinders, heads, sectors;

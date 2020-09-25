@@ -21,5 +21,6 @@ uint32_t VHD_Get_Sector_Count(void *img);
 uint32_t VHD_Get_Serial_Number(void *img);
 void VHD_Read_Sectors(void *img, void *data, uint32_t lba, uint32_t n);
 void VHD_Write_Sectors(void *img, const void *data, uint32_t lba, uint32_t n);
+void VHD_Image_Close(void *img);
 
 #endif /* img_vhd_h */

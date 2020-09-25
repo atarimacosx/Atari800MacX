@@ -772,3 +772,15 @@ static void CalcCHS(uint32_t totalSectors, VHDImage *img) {
     }
     img->Cylinders = cylinderTimesHeads / img->Heads;
 }
+
+void VHD_Image_Close(void *image)
+{
+    VHDImage *img = (VHDImage *) image;
+
+    fclose(img->File);
+    if (img->BlockAllocTable)
+        free(img->BlockAllocTable);
+    if (img->CurrentBlockBitmap)
+        free(img->CurrentBlockBitmap);
+    free(img);
+}

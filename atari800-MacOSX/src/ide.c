@@ -58,6 +58,7 @@
 #include "atari.h"
 #include "log.h"
 #include "util.h"
+#include "img_disk.h"
 #include "ide_internal.h"
 
 #include <string.h>
@@ -209,13 +210,16 @@ static void ide_reset(struct ide_device *s) {
 }
 
 void *IDE_Init_Drive(char *filename, int is_cf) {
+    BlockDeviceGeometry *geo;
+    
     struct ide_device *s = (struct ide_device *) malloc(sizeof(struct ide_device));
     memset(s, 0, sizeof(struct ide_device));
     if (s == NULL)
         return NULL;
     
-    if (!(s->file = fopen(filename, "rb+"))) {
-        Log_print("%s: %s", filename, strerror(errno));
+    s->IMGImage = IMG_Image_Open(filename, TRUE, TRUE);
+    if (!s->IMGImage) {
+        Log_print("%s: Failed to open image", filename);
         return FALSE;
     }
     
@@ -223,40 +227,27 @@ void *IDE_Init_Drive(char *filename, int is_cf) {
     s->is_cdrom = FALSE;
     s->blocksize = SECTOR_SIZE;
 
-    fseeko(s->file, 0, SEEK_END);
-    s->filesize = ftello(s->file);
-
-    if (IDE_debug)
-        fprintf(stderr, "ide: filesize: %"PRId64"\n", (int64_t)s->filesize);
-
     if (!s->io_buffer) {
         s->io_buffer_size = SECTOR_SIZE * MAX_MULT_SECTORS;
         s->io_buffer      = Util_malloc(s->io_buffer_size);
     }
-
-    s->nb_sectors = s->filesize / SECTOR_SIZE;
+    
+    geo = IMG_Get_Geometry(s->IMGImage);
+    s->nb_sectors = IMG_Get_Sector_Count(s->IMGImage);
 
     /* use standard physical disk geometry */
-    s->cylinders = s->nb_sectors / (STD_HEADS * STD_SECTORS);
-
-    if (s->cylinders > 16383)
-        s->cylinders = 16383;
-    else if (s->cylinders < 2) {
-        Log_print("%s: image file too small\n", filename);
-        fclose(s->file);
-        return FALSE;
-    }
-
-    s->heads   = STD_HEADS;
-    s->sectors = STD_SECTORS;
+    s->cylinders = geo->Cylinders;
+    s->heads     = geo->Heads;
+    s->sectors   = geo->SectorsPerTrack;
 
     if (IDE_debug)
         fprintf(stderr, "ide: cyls/heads/secs - %d/%d/%d\n", 
                 s->cylinders, s->heads, s->sectors);
 
     s->drive_serial = 1;
+    uint32_t ser = IMG_Get_Serial_Number(s->IMGImage);
     snprintf(s->drive_serial_str, sizeof(s->drive_serial_str),
-            "QM%05d", s->drive_serial);
+            "%010u", ser);
 
     ide_reset(s);
 
@@ -405,10 +396,7 @@ static void ide_sector_read(struct ide_device *s) {
         if (n > s->req_nb_sectors)
             n = s->req_nb_sectors;
 
-        if (fseeko(s->file, sector_num * SECTOR_SIZE, SEEK_SET) < 0)
-            goto fail;
-        if (fread(s->io_buffer, n * SECTOR_SIZE, 1, s->file) != 1)
-            goto fail;
+        IMG_Read_Sectors(s->IMGImage, s->io_buffer, sector_num, n);
 
         if (IDE_debug) fprintf(stderr, "sector read OK\n");
 
@@ -418,9 +406,6 @@ static void ide_sector_read(struct ide_device *s) {
     }
     return;
 
-fail:
-    ide_abort_command(s);
-    if (IDE_debug) fprintf(stderr, "sector read FAILED\n");
 }
 
 static void ide_sector_write(struct ide_device *s) {
@@ -437,15 +422,8 @@ static void ide_sector_write(struct ide_device *s) {
     if (n > s->req_nb_sectors)
         n = s->req_nb_sectors;
 
-    if (fseeko(s->file, sector_num * SECTOR_SIZE, SEEK_SET) < 0) {
-        fprintf(stderr, "FSEEKO FAILED\n");
-        goto fail;
-    }
-    if (fwrite(s->io_buffer, n * SECTOR_SIZE, 1, s->file) != 1) {
-        fprintf(stderr, "FWRITE FAILED\n");
-        goto fail;
-    }
-    fflush(s->file);
+    IMG_Write_Sectors(s->IMGImage, s->io_buffer, sector_num, n);
+    IMG_Flush(s->IMGImage);
 
     s->nsector -= n;
     if (s->nsector == 0) {
@@ -459,8 +437,6 @@ static void ide_sector_write(struct ide_device *s) {
     ide_set_sector(s, sector_num + n + (s->nsector ? 0 : -1));
     return;
 
-fail:
-    ide_abort_command(s);
 }
 
 static void ide_command(struct ide_device *s, uint8_t val) {
@@ -617,7 +593,7 @@ static void ide_command(struct ide_device *s, uint8_t val) {
 
     case WIN_FLUSH_CACHE:
     case WIN_FLUSH_CACHE_EXT:
-        fflush(s->file);
+        IMG_Flush(s->IMGImage);
         break;
 
     case WIN_STANDBY:
@@ -915,5 +891,5 @@ int IDE_Initialise(int *argc, char *argv[]) {
 void IDE_Close_Drive(void *dev)
 {
     struct ide_device *s = (struct ide_device *) dev;
-    fclose(s->file);
+    IMG_Image_Close(s->IMGImage);
 }

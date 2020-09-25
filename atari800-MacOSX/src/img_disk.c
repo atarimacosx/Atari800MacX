@@ -102,3 +102,14 @@ void IMG_Write_Sectors(void *img, const void *data, uint32_t lba, uint32_t n)
     else
         VHD_Write_Sectors(image->image, data, lba, n);
 }
+
+void IMG_Image_Close(void *img)
+{
+    IMGImage *image = (IMGImage *) img;
+    
+    if (image->imgType == DiskTypeRaw)
+        RAW_Image_Close(image->image);
+    else
+        VHD_Image_Close(image->image);
+
+}

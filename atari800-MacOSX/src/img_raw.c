@@ -71,7 +71,7 @@ void *RAW_Image_Open(const char *path, int write, int solidState)
     return img;
 }
 
-void *RAW_Init_New(const char *path, uint8_t heads, uint8_t spt, uint32_t totalSectorCount)
+void *RAW_Init_New(const char *path, uint32_t totalSectorCount)
 {
     RAWImage *img = (RAWImage *) malloc(sizeof(RAWImage));
 
@@ -129,4 +129,12 @@ void RAW_Write_Sectors(void *image, const void *data, uint32_t lba, uint32_t n)
 
     if (lba + n > img->SectorCount)
         img->SectorCount = lba + n;
+}
+
+void RAW_Image_Close(void *image)
+{
+    RAWImage *img = (RAWImage *) image;
+
+    fclose(img->File);
+    free(img);
 }

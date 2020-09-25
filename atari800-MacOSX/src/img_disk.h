@@ -36,5 +36,6 @@ uint32_t IMG_Get_Sector_Count(void *img);
 uint32_t IMG_Get_Serial_Number(void *img);
 void IMG_Read_Sectors(void *img, void *data, uint32_t lba, uint32_t n);
 void IMG_Write_Sectors(void *img, const void *data, uint32_t lba, uint32_t n);
+void IMG_Image_Close(void *img);
 
 #endif /* img_disk_h */
