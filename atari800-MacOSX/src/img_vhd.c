@@ -244,7 +244,7 @@ void *VHD_Image_Open(const char *path, int write, int solidState) {
     strcpy(img->Path, path);
     img->File = fopen(img->Path, write ? "rb+" : "rb");
     if (img->File == NULL)
-        return -10; // TBD
+        return NULL; // TBD
     img->ReadOnly = !write;
     img->SolidState = solidState;
 
@@ -254,7 +254,7 @@ void *VHD_Image_Open(const char *path, int write, int solidState) {
     uint64_t size = info.st_size;
 
     if (size < 512)
-        return -10; // TBD Return invalid image error
+        return NULL; // TBD Return invalid image error
 
     img->FooterLocation = size - 512;
     fseek(img->File, img->FooterLocation, SEEK_SET);
@@ -269,7 +269,7 @@ void *VHD_Image_Open(const char *path, int write, int solidState) {
         footerbuf[511] = 0;
         img->FooterLocation++;
     } else if (memcmp(footerbuf, VHDFooterSignature, 8))
-        return -10; // TBD
+        return NULL; // TBD
 
     memcpy(&img->Footer, footerbuf, 512);
 
@@ -278,21 +278,21 @@ void *VHD_Image_Open(const char *path, int write, int solidState) {
 
     // validate the footer
     if ((img->Footer.Version & 0xffff0000) != 0x00010000)
-        return -10; // TBD
+        return NULL; // TBD
 
     if (!(img->Footer.Features & 0x2)) {
         // reserved bit in features mask was not set
-        return -10; // TBD
+        return NULL; // TBD
     }
 
     // checksum the footer (~ of sum of all bytes except checksum field at 64-67); note
     // that we do this on the *unswizzled* buffer
     if (img->Footer.Checksum != ComputeFooterChecksum(&img->Footer))
-        return -10; // TBD
+        return NULL; // TBD
 
     // check for a supported disk type
     if (img->Footer.DiskType != DiskTypeFixed && img->Footer.DiskType != DiskTypeDynamic)
-        return -10; // TBD
+        return NULL; // TBD
 
     // read off drive size
     img->SectorCount = ClampToUint32(img->Footer.CurrentSize >> 9);
@@ -301,7 +301,7 @@ void *VHD_Image_Open(const char *path, int write, int solidState) {
     // if we've got a dynamic disk, read the dyndisk header
     if (img->Footer.DiskType == DiskTypeDynamic) {
         if (img->Footer.DataOffset >= size || size - img->Footer.DataOffset < sizeof(VHDDynamicDiskHeader))
-            return -10; //TBD
+            return NULL; //TBD
 
         uint8_t rawdynheader[1024];
 
@@ -310,7 +310,7 @@ void *VHD_Image_Open(const char *path, int write, int solidState) {
 
         // validate signature
         if (memcmp(rawdynheader, VHDDynamicHeaderSignature, 8))
-            return -10; // TBD
+            return NULL; // TBD
 
         // swizzle to local endian
         memcpy(&img->DynamicHeader, rawdynheader, sizeof(img->DynamicHeader));
@@ -318,15 +318,15 @@ void *VHD_Image_Open(const char *path, int write, int solidState) {
 
         // validate the version
         if ((img->DynamicHeader.HeaderVersion & 0xffff0000) != 0x00010000)
-            return -10; // TBD
+            return NULL; // TBD
 
         // checksum the header
         if (img->DynamicHeader.Checksum != ComputeHeaderChecksum(&img->DynamicHeader))
-            return -10; // TBD
+            return NULL; // TBD
 
         // block size must always be a power of two
         if (img->DynamicHeader.BlockSize < 512 || (img->DynamicHeader.BlockSize & (img->DynamicHeader.BlockSize - 1)))
-            return -10; // TBD
+            return NULL; // TBD
 
         img->BlockSize = img->DynamicHeader.BlockSize;
         img->BlockSizeShift = FindLowestSetBit(img->BlockSize);
@@ -341,7 +341,7 @@ void *VHD_Image_Open(const char *path, int write, int solidState) {
         uint64_t blockCount64 = ((img->Footer.OriginalSize - 1) >> img->BlockSizeShift) + 1;
 
         if (blockCount64 != img->DynamicHeader.MaxTableEntries)
-            return -10; // TBD
+            return NULL; // TBD
 
         uint32_t blockCount = (uint32_t)blockCount64;
 
@@ -349,7 +349,7 @@ void *VHD_Image_Open(const char *path, int write, int solidState) {
         uint32_t batSize = sizeof(uint64_t) * blockCount;
         if (img->DynamicHeader.TableOffset >= size &&
             size - img->DynamicHeader.TableOffset < batSize)
-            return -10; // TBD
+            return NULL; // TBD
 
         // read in the BAT
         img->BlockAllocTable = malloc(blockCount * sizeof(uint32_t));
@@ -373,7 +373,7 @@ void *VHD_Image_Open(const char *path, int write, int solidState) {
                 if (byteOffset >= size || size - byteOffset < img->BlockSize + img->BlockBitmapSize ||
                     byteOffset < sizeof(VHDFooter))
                 {
-                    return -10; // TBD
+                    return NULL; // TBD
                 }
             }
         }
@@ -389,7 +389,7 @@ void *VHD_Init_New(const char *path, uint8_t heads, uint8_t spt, uint32_t totalS
     img->SectorCount = totalSectorCount;
     img->File = fopen(path, "rb+");
     if (img->File == NULL)
-        return -10; // TBD    img->ReadOnly = FALSE;
+        return NULL; // TBD    img->ReadOnly = FALSE;
     img->SolidState = FALSE;
 
     // set up footer
