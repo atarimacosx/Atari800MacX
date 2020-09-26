@@ -319,6 +319,9 @@ void savePrefs() {
 	prefssave.mioEnabled = mioRequested;
 	prefssave.useAtariCursorKeys = useAtariCursorKeys;
     prefssave.side2SDXMode = SIDE2_SDX_Mode_Switch;
+    strcpy(prefssave.side2FlashFileName, side2_rom_filename);
+    //strcpy(prefssave.side2NVRAMFileName, side2_nvram_filename);
+    strcpy(prefssave.side2CFFileName, side2_compact_flash_filename);
 
 	ReturnPreferences(&prefssave);
 	if (saveCurrentMedia)

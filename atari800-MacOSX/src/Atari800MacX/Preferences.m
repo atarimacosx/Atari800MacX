@@ -2186,11 +2186,11 @@ static Preferences *sharedInstance = nil;
     [displayedValues setObject:[side2FlashFileField stringValue] forKey:Side2RomFile];
     [displayedValues setObject:[side2CFFileField stringValue] forKey:Side2CFFile];
     switch([side2SDXModePulldown indexOfSelectedItem]) {
-        case 0:
+        case 1:
         default:
             [displayedValues setObject:yes forKey:Side2SDXMode];
             break;
-        case 1:
+        case 0:
             [displayedValues setObject:no forKey:Side2SDXMode];
             break;
     }
@@ -3769,7 +3769,6 @@ static Preferences *sharedInstance = nil;
             break;
 		}
     [displayedValues setObject:prefssave->showFPS ? yes : no forKey:ShowFPS];
-    [displayedValues setObject:prefssave->side2SDXMode ? yes : no forKey:Side2SDXMode];
     [displayedValues setObject:prefssave->ledStatus ? yes : no forKey:LedStatus];
     [displayedValues setObject:prefssave->ledSector ? yes : no forKey:LedSector];
     [displayedValues setObject:prefssave->speedLimit ? yes : no forKey:SpeedLimit];
@@ -3910,6 +3909,8 @@ static Preferences *sharedInstance = nil;
 	[displayedValues setObject:prefssave->blackBoxEnabled ? yes : no forKey:BlackBoxEnabled];
 	[displayedValues setObject:prefssave->mioEnabled ? yes : no forKey:MioEnabled];
     [displayedValues setObject:prefssave->side2SDXMode ? yes : no forKey:Side2SDXMode];
+    [displayedValues setObject:[NSString stringWithCString:prefssave->side2CFFileName encoding:NSUTF8StringEncoding] forKey:Side2CFFile];
+    [displayedValues setObject:[NSString stringWithCString:prefssave->side2FlashFileName encoding:NSUTF8StringEncoding] forKey:Side2RomFile];
 	}
 
 - (void) saveCurrentMediaAction:(id)sender

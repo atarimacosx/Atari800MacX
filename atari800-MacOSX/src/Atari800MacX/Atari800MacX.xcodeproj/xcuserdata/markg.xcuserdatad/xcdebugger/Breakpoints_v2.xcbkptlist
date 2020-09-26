@@ -414,8 +414,8 @@
             filePath = "Preferences.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "4781"
-            endingLineNumber = "4781"
+            startingLineNumber = "4782"
+            endingLineNumber = "4782"
             landmarkName = "-indexFromType:::"
             landmarkType = "7">
          </BreakpointContent>
@@ -430,8 +430,8 @@
             filePath = "Preferences.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "4785"
-            endingLineNumber = "4785"
+            startingLineNumber = "4786"
+            endingLineNumber = "4786"
             landmarkName = "-typeFromIndex:::"
             landmarkType = "7">
          </BreakpointContent>
@@ -446,8 +446,8 @@
             filePath = "preferences_c.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "482"
-            endingLineNumber = "482"
+            startingLineNumber = "485"
+            endingLineNumber = "485"
             landmarkName = "CalcMachineTypeRam(type, machineType, ramSize, axlon, mosaic, ultimate)"
             landmarkType = "9">
          </BreakpointContent>
@@ -782,8 +782,8 @@
             filePath = "Preferences.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "4778"
-            endingLineNumber = "4778"
+            startingLineNumber = "4779"
+            endingLineNumber = "4779"
             landmarkName = "-indexFromType:::"
             landmarkType = "7">
          </BreakpointContent>
@@ -1038,8 +1038,8 @@
             filePath = "preferences_c.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "679"
-            endingLineNumber = "679"
+            startingLineNumber = "682"
+            endingLineNumber = "682"
             landmarkName = "CalculatePrefsChanged()"
             landmarkType = "9">
          </BreakpointContent>
@@ -1054,8 +1054,8 @@
             filePath = "preferences_c.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "866"
-            endingLineNumber = "866"
+            startingLineNumber = "869"
+            endingLineNumber = "869"
             landmarkName = "loadMacPrefs(firstTime)"
             landmarkType = "9">
          </BreakpointContent>
@@ -1582,8 +1582,8 @@
             filePath = "Preferences.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "3912"
-            endingLineNumber = "3912"
+            startingLineNumber = "3911"
+            endingLineNumber = "3911"
             landmarkName = "-transferValuesFromEmulator:"
             landmarkType = "7">
          </BreakpointContent>
