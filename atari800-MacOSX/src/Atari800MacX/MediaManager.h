@@ -155,6 +155,13 @@
 	IBOutlet id disBasicButton;
     IBOutlet id insertBasicItem;
     IBOutlet id insertSIDE2Item;
+    IBOutlet id changeSIDE2RomItem;
+    IBOutlet id attachSIDE2CFItem;
+    IBOutlet id removeSIDE2CFItem;
+    IBOutlet id slideSIDE2ButtonMenu;
+    IBOutlet id slideSIDE2ButtonSDXItem;
+    IBOutlet id slideSIDE2ButtonLoaderItem;
+    IBOutlet id pressSIDE2ButtonItem;
     IBOutlet id xep80Button;
     IBOutlet id xep80Pulldown;
 	IBOutlet id machineTypePulldown;

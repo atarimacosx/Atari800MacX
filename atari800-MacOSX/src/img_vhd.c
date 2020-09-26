@@ -223,6 +223,7 @@ uint32_t VHD_Get_Serial_Number(void *image) {
 
 static VHDImage *VHDImageAlloc() {
     VHDImage *img = malloc(sizeof(VHDImage));
+    memset(img, 0, sizeof(VHDImage));
     
     img->ReadOnly = FALSE;
     img->FooterLocation = 0;
@@ -387,7 +388,7 @@ void *VHD_Init_New(const char *path, uint8_t heads, uint8_t spt, uint32_t totalS
     VHDImage *img = VHDImageAlloc();
 
     img->SectorCount = totalSectorCount;
-    img->File = fopen(path, "rb+");
+    img->File = fopen(path, "wb");
     if (img->File == NULL)
         return NULL; // TBD    img->ReadOnly = FALSE;
     img->SolidState = FALSE;
@@ -467,16 +468,16 @@ void *VHD_Init_New(const char *path, uint8_t heads, uint8_t spt, uint32_t totalS
 
         // write out the BAT
         uint32_t *batBuf= malloc(16384*sizeof(uint32_t));
-
         memset(batBuf, 0xFF, 16384*sizeof(uint32_t));
-
         fwrite(batBuf, sizeof(uint32_t), 16384, img->File);
+        free(batBuf);
 
         // init runtime buffers
         
         img->BlockAllocTable = malloc(blockCount * sizeof(uint32_t));
-        memset(img->BlockAllocTable, 0xFF, 16384*sizeof(uint32_t));
+        memset(img->BlockAllocTable, 0xFF, blockCount*sizeof(uint32_t));
         img->CurrentBlockBitmap = malloc(img->BlockBitmapSize);
+        memset(img->CurrentBlockBitmap, 0, img->BlockBitmapSize);
     } else {
         // write blank data
         uint8_t *clearData = malloc(262144);

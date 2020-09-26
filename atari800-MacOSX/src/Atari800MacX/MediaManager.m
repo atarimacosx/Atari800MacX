@@ -34,6 +34,9 @@
 #import "SDL.h"
 #import "esc.h"
 #import "ui.h"
+#import "img_raw.h"
+#import "img_vhd.h"
+#import "side2.h"
 #import <sys/stat.h>
 #import <unistd.h>
 
@@ -242,8 +245,10 @@ NSImage *disketteImage;
  			}
             [top retain];
             }
-	[[diskFmtMatrix window] setExcludedFromWindowsMenu:YES];
-	[[diskFmtMatrix window] setMenu:nil];
+    [[diskFmtMatrix window] setExcludedFromWindowsMenu:YES];
+    [[diskFmtMatrix window] setMenu:nil];
+    [[hardDiskFmtMatrix window] setExcludedFromWindowsMenu:YES];
+    [[hardDiskFmtMatrix window] setMenu:nil];
 	[[d1DiskField window] setExcludedFromWindowsMenu:YES];
 	[[d1DiskField window] setMenu:nil];
 	[[errorButton window] setExcludedFromWindowsMenu:YES];
@@ -1170,6 +1175,62 @@ NSImage *disketteImage;
     
     [NSApp stopModal];
     [[diskFmtMatrix window] close];
+}
+
+/*------------------------------------------------------------------------------
+*  createHardDisk - This method responds to the create disk button push in the hard disk
+*     creation window, and actually creates the disk image.
+*-----------------------------------------------------------------------------*/
+- (IBAction)createHardDisk:(id)sender;
+{
+    void *image;
+    NSString *filename;
+    NSString *fileType;
+    int diskMounted;
+    char cfilename[FILENAME_MAX];
+    
+    int sectors = [hardDiskFmtCusSecField intValue];
+    int type = [[hardDiskFmtMatrix selectedCell] tag];
+    
+    if (type == 0)
+        fileType = @"raw";
+    else
+        fileType = @"vhd";
+    
+    filename = [self saveFileInDirectory:[NSString stringWithCString:atari_disk_dirs[0] encoding:NSUTF8StringEncoding]:fileType];
+    if (filename != nil) {
+        [filename getCString:cfilename maxLength:FILENAME_MAX  encoding:NSUTF8StringEncoding];
+        switch (type) {
+            case 0:
+                image = RAW_Init_New(cfilename, sectors);
+                break;
+            case 1:
+            default:
+                image = VHD_Init_New(cfilename, 4, 4, sectors, FALSE);
+                break;
+            case 2:
+                image = VHD_Init_New(cfilename, 4, 4, sectors, TRUE);
+                break;
+        }
+        if (image == NULL) {
+            [self displayError:@"Unable to Create Disk Image!"];
+            }
+        else {
+            VHD_Image_Close(image);
+            if ([hardDiskFmtInsertNewButton state] == NSOnState) {
+                strcpy(side2_compact_flash_filename, cfilename);
+                if (SIDE2_enabled) {
+                    diskMounted = SIDE2_Add_Block_Device(cfilename);
+                    if (!diskMounted)
+                        [self displayError:@"Unable to Mount Disk Image!"];
+                    [self updateInfo];
+                }
+            }
+        }
+    }
+    
+    [NSApp stopModal];
+    [[hardDiskFmtMatrix window] close];
 }
 
 /*------------------------------------------------------------------------------

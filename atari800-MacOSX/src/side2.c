@@ -79,11 +79,38 @@ static void init_side2(void)
     if (ide == NULL)
     {
         Log_print("Couldn't attach Side2 CF Image");
+        Block_Device = FALSE;
     }
     else {
         Log_print("Attached Side2 CF Image");
         Block_Device = TRUE;
     }
+}
+
+void SIDE2_Remove_Block_Device(void)
+{
+    if (Block_Device) {
+        IDE_Close_Drive(ide);
+        side2_compact_flash_filename[0] = 0;
+        Block_Device = FALSE;
+    }
+}
+
+int SIDE2_Add_Block_Device(char *filename) {
+    if (Block_Device)
+        SIDE2_Remove_Block_Device();
+    ide = IDE_Init_Drive(filename, TRUE);
+    if (ide == NULL)
+    {
+        Log_print("Couldn't attach Side2 CF Image");
+        Block_Device = FALSE;
+    }
+    else {
+        Log_print("Attached Side2 CF Image");
+        strcpy(side2_compact_flash_filename, filename);
+        Block_Device = TRUE;
+    }
+    return Block_Device;
 }
 
 int SIDE2_Initialise(int *argc, char *argv[])

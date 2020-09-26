@@ -18,4 +18,6 @@ int SIDE2_D5GetByte(UWORD addr, int no_side_effects);
 void SIDE2_D5PutByte(UWORD addr, UBYTE byte);
 void SIDE2_ColdStart(void);
 void SIDE2_Set_Cart_Enables(int leftEnable, int rightEnable);
+void SIDE2_Remove_Block_Device(void);
+int SIDE2_Add_Block_Device(char *filename);
 

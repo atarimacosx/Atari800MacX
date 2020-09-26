@@ -301,27 +301,48 @@
                                     <action selector="cartInsert:" target="473" id="489"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Insert Special Cartridge" id="he6-pG-YVh">
+                            <menuItem title="Remove Cartridge" keyEquivalent="O" id="414">
+                                <connections>
+                                    <action selector="cartRemove:" target="473" id="490"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Handle Special Cartridge" id="he6-pG-YVh">
                                 <modifierMask key="keyEquivalentModifierMask"/>
-                                <menu key="submenu" title="Insert Special Cartridge" id="Wcm-vj-IoM">
+                                <menu key="submenu" title="Handle Special Cartridge" id="Wcm-vj-IoM">
                                     <items>
                                         <menuItem title="Insert BASIC Cartridge" keyEquivalent="b" id="9Wv-JY-H9Q">
                                             <connections>
                                                 <action selector="basicInsert:" target="473" id="iVn-KV-m1M"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="ySb-r7-nca">
+                                            <modifierMask key="keyEquivalentModifierMask" command="YES"/>
+                                        </menuItem>
                                         <menuItem title="Insert SIDE2 Cartridge" keyEquivalent="i" id="r8c-Qd-O8u">
                                             <connections>
                                                 <action selector="side2Insert:" target="473" id="PGa-Ol-PtZ"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem title="Change SIDE2 ROM Image..." id="mHm-CR-SdA">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                        </menuItem>
+                                        <menuItem title="Attach SIDE2 Hard Disk..." id="XiC-uU-bmv">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                        </menuItem>
+                                        <menuItem title="Remove SIDE2 Hard Disk" id="ZkG-z7-B3L">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                        </menuItem>
+                                        <menuItem title="SIDE2 Switch - SDX" id="wDl-Q2-THn">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                        </menuItem>
+                                        <menuItem title="SIDE2 Switch - Loader" id="YW3-c1-TfY">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                        </menuItem>
+                                        <menuItem title="Press SIDE2 Button" id="VXx-ja-L1S">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                        </menuItem>
                                     </items>
                                 </menu>
-                            </menuItem>
-                            <menuItem title="Remove Cartridge" keyEquivalent="O" id="414">
-                                <connections>
-                                    <action selector="cartRemove:" target="473" id="490"/>
-                                </connections>
                             </menuItem>
                             <menuItem title="Insert SDX Piggyback Cartridge..." id="845">
                                 <connections>
@@ -900,9 +921,12 @@ DQ
         <customObject id="315" userLabel="Preferences" customClass="Preferences"/>
         <customObject id="473" userLabel="MediaManager" customClass="MediaManager">
             <connections>
+                <outlet property="attachSIDE2CFItem" destination="XiC-uU-bmv" id="yhb-TF-MA1"/>
+                <outlet property="changeSIDE2RomItem" destination="mHm-CR-SdA" id="LzM-A3-YER"/>
                 <outlet property="insertBasicItem" destination="9Wv-JY-H9Q" id="gSh-tN-gY3"/>
                 <outlet property="insertSIDE2Item" destination="r8c-Qd-O8u" id="xhJ-au-udl"/>
                 <outlet property="insertSecondCartItem" destination="845" id="851"/>
+                <outlet property="pressSIDE2ButtonItem" destination="VXx-ja-L1S" id="Mev-AV-366"/>
                 <outlet property="printerPreviewItem" destination="786" id="811"/>
                 <outlet property="protectCassItem" destination="GhL-1U-SCu" id="fKd-cD-kG5"/>
                 <outlet property="recordCassItem" destination="96g-1U-6SU" id="pLM-F1-oVp"/>
@@ -917,6 +941,7 @@ DQ
                 <outlet property="removeD7Item" destination="401" id="511"/>
                 <outlet property="removeD8Item" destination="399" id="512"/>
                 <outlet property="removeMenu" destination="471" id="550"/>
+                <outlet property="removeSIDE2CFItem" destination="ZkG-z7-B3L" id="0Xk-cK-MG5"/>
                 <outlet property="removeSecondCartItem" destination="846" id="850"/>
                 <outlet property="resetPrinterItem" destination="798" id="808"/>
                 <outlet property="resetPrinterMenuItem" destination="798" id="809"/>
@@ -932,6 +957,8 @@ DQ
                 <outlet property="selectPrinterMenu" destination="792" id="810"/>
                 <outlet property="selectTextItem" destination="791" id="804"/>
                 <outlet property="selectTextMenuItem" destination="791" id="812"/>
+                <outlet property="slideSIDE2ButtonLoaderItem" destination="YW3-c1-TfY" id="ZhK-gB-5za"/>
+                <outlet property="slideSIDE2ButtonSDXItem" destination="wDl-Q2-THn" id="gdV-r4-Bn4"/>
             </connections>
         </customObject>
         <customObject id="498" userLabel="DisplayManager" customClass="DisplayManager">
