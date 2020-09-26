@@ -150,7 +150,7 @@ void SIDE2_SDX_Switch_Change(int state)
 
 void SIDE2_Bank_Reset_Button_Change()
 {
-    
+    Reset_Cart_Bank();
 }
 
 int SIDE2_D5GetByte(UWORD addr, int no_side_effects)
