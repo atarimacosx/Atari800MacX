@@ -878,9 +878,9 @@
             filePath = "../side2.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "373"
-            endingLineNumber = "373"
-            landmarkName = "Update_Memory_Layers_Cart()"
+            startingLineNumber = "367"
+            endingLineNumber = "367"
+            landmarkName = "Update_IDE_Reset()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1015,22 +1015,6 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "84AF6E62-171B-45F0-8549-99BFE5C58E4D"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Preferences.m"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2186"
-            endingLineNumber = "2186"
-            landmarkName = "-miscChanged:"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
             uuid = "EA5153E2-013C-4B24-A002-B50C4D04C517"
             shouldBeEnabled = "No"
             ignoreCount = "0"
@@ -1105,38 +1089,6 @@
             startingLineNumber = "207"
             endingLineNumber = "207"
             landmarkName = "SIDE2_D5PutByte(addr, byte)"
-            landmarkType = "9">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "1299CF46-B9D6-4E2A-959F-1891DC2FF2ED"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../side2.c"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "393"
-            endingLineNumber = "393"
-            landmarkName = "Update_Memory_Layers_Cart()"
-            landmarkType = "9">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "847E627F-1002-4938-BCE7-6E951276CFA4"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../side2.c"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "400"
-            endingLineNumber = "400"
-            landmarkName = "Update_Memory_Layers_Cart()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1486,8 +1438,8 @@
             filePath = "../ide.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "220"
-            endingLineNumber = "220"
+            startingLineNumber = "225"
+            endingLineNumber = "225"
             landmarkName = "IDE_Init_Drive(filename, is_cf)"
             landmarkType = "9">
          </BreakpointContent>

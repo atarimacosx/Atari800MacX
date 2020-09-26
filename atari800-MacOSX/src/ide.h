@@ -22,5 +22,6 @@ void *IDE_Init_Drive(char *filename, int is_cf);
 void IDE_Close_Drive(void *dev);
 uint8_t IDE_GetByte(void *dev, uint16_t addr, int no_side_effects);
 void IDE_PutByte(void *dev, uint16_t addr, uint8_t byte);
+void IDE_Reset_Device(void *dev);
 
 #endif

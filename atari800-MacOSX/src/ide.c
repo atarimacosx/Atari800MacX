@@ -209,6 +209,11 @@ static void ide_reset(struct ide_device *s) {
     s->media_changed = 0;
 }
 
+void IDE_Reset_Device(void *dev) {
+    struct ide_device *s = (struct ide_device *) dev;
+    ide_reset(s);
+}
+
 void *IDE_Init_Drive(char *filename, int is_cf) {
     BlockDeviceGeometry *geo;
     

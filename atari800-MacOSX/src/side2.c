@@ -57,7 +57,6 @@ static void Reset_Cart_Bank(void);
 static void SaveNVRAM();
 static void Set_SDX_Bank(int bank, int topEnable);
 static void Set_Top_Bank(int bank, int topLeftEnable, int topRightEnable);
-static void Update_IDE_Reset(void);
 static void Update_Memory_Layers_Cart(void);
 
 #ifdef ATARI800MACX
@@ -93,6 +92,7 @@ void SIDE2_Remove_Block_Device(void)
         IDE_Close_Drive(ide);
         side2_compact_flash_filename[0] = 0;
         SIDE2_Block_Device = FALSE;
+        IDE_Reset_Device(ide);
     }
 }
 
@@ -269,8 +269,7 @@ void SIDE2_ColdStart(void)
     // cleared. If it's present, the removed flag is cleared on powerup.
     IDE_Removed = !SIDE2_Block_Device;
 
-    Update_IDE_Reset();
-
+    IDE_Reset_Device(ide);
 }
 
 void SIDE2_Set_Cart_Enables(int leftEnable, int rightEnable) {
@@ -361,11 +360,6 @@ static void Reset_Cart_Bank(void)
 
     Top_Bank_Register = 0x00;
     Set_Top_Bank(0x20, TRUE, FALSE);
-}
-
-static void Update_IDE_Reset(void)
-{
-    //mIDE.SetReset(IDE_Reset || !Block_Device);
 }
 
 void Update_Memory_Layers_Cart() {
