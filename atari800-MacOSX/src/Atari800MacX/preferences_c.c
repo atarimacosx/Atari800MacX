@@ -318,6 +318,8 @@ void savePrefs() {
 	prefssave.blackBoxEnabled = bbRequested;
 	prefssave.mioEnabled = mioRequested;
 	prefssave.useAtariCursorKeys = useAtariCursorKeys;
+    prefssave.side2SDXMode = SIDE2_SDX_Mode_Switch;
+
 	ReturnPreferences(&prefssave);
 	if (saveCurrentMedia)
         {

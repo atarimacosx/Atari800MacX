@@ -32,7 +32,7 @@ static char side2_compact_flash_filename[FILENAME_MAX] = Util_FILENAME_NOT_SET;
 #endif
 
 int SIDE2_SDX_Mode_Switch = TRUE;
-static int Block_Device = 0;
+int SIDE2_Block_Device = 0;
 static int Coldstarted = FALSE;
 static int IDE_Enabled = FALSE;
 static int IDE_Removed = TRUE;
@@ -79,38 +79,51 @@ static void init_side2(void)
     if (ide == NULL)
     {
         Log_print("Couldn't attach Side2 CF Image");
-        Block_Device = FALSE;
+        SIDE2_Block_Device = FALSE;
     }
     else {
         Log_print("Attached Side2 CF Image");
-        Block_Device = TRUE;
+        SIDE2_Block_Device = TRUE;
     }
 }
 
 void SIDE2_Remove_Block_Device(void)
 {
-    if (Block_Device) {
+    if (SIDE2_Block_Device) {
         IDE_Close_Drive(ide);
         side2_compact_flash_filename[0] = 0;
-        Block_Device = FALSE;
+        SIDE2_Block_Device = FALSE;
     }
 }
 
 int SIDE2_Add_Block_Device(char *filename) {
-    if (Block_Device)
+    if (SIDE2_Block_Device)
         SIDE2_Remove_Block_Device();
     ide = IDE_Init_Drive(filename, TRUE);
     if (ide == NULL)
     {
         Log_print("Couldn't attach Side2 CF Image");
-        Block_Device = FALSE;
+        SIDE2_Block_Device = FALSE;
     }
     else {
         Log_print("Attached Side2 CF Image");
         strcpy(side2_compact_flash_filename, filename);
-        Block_Device = TRUE;
+        SIDE2_Block_Device = TRUE;
     }
-    return Block_Device;
+    return SIDE2_Block_Device;
+}
+
+int SIDE2_Change_Rom(char *filename) {
+    int romLoaded;
+
+    strcpy(side2_rom_filename, filename);
+    romLoaded = Atari800_LoadImage(side2_rom_filename, side2_rom, 0x80000);
+    if (!romLoaded) {
+        SIDE2_enabled = FALSE;
+        side2_compact_flash_filename[0] = 0;
+    }
+    
+    return romLoaded;
 }
 
 int SIDE2_Initialise(int *argc, char *argv[])
@@ -131,6 +144,7 @@ void SIDE2_Exit(void)
 void SIDE2_SDX_Switch_Change(int state)
 {
     SDX_Enabled = state;
+    SIDE2_SDX_Mode_Switch = state;
     Update_Memory_Layers_Cart();
 }
 
@@ -161,7 +175,7 @@ int SIDE2_D5GetByte(UWORD addr, int no_side_effects)
         case 0xD5F5:
         case 0xD5F6:
         case 0xD5F7:
-             result = IDE_Enabled && Block_Device ? IDE_GetByte(ide, addr, FALSE) : 0xFF;
+             result = IDE_Enabled && SIDE2_Block_Device ? IDE_GetByte(ide, addr, FALSE) : 0xFF;
             break;
         case 0xD5F8:
             return 0x32;
@@ -217,7 +231,7 @@ void SIDE2_D5PutByte(UWORD addr, UBYTE byte)
         case 0xD5F5:
         case 0xD5F6:
         case 0xD5F7:
-            if (IDE_Enabled && Block_Device)
+            if (IDE_Enabled && SIDE2_Block_Device)
                 IDE_PutByte(ide, addr, byte);
             break;
 
@@ -228,7 +242,7 @@ void SIDE2_D5PutByte(UWORD addr, UBYTE byte)
             if (addr == 0xD5F9) {
                 // Strobe to clear CARD_REMOVED. This can't be done if there isn't actually a
                 // card.
-                if (Block_Device)
+                if (SIDE2_Block_Device)
                     IDE_Removed = FALSE;
             }
 
@@ -253,7 +267,7 @@ void SIDE2_ColdStart(void)
 
     // If the CF card is absent, the removed flag is always set and can't be
     // cleared. If it's present, the removed flag is cleared on powerup.
-    IDE_Removed = !Block_Device;
+    IDE_Removed = !SIDE2_Block_Device;
 
     Update_IDE_Reset();
 

@@ -325,21 +325,39 @@
                                         </menuItem>
                                         <menuItem title="Change SIDE2 ROM Image..." id="mHm-CR-SdA">
                                             <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="side2ChangeRom:" target="473" id="O3y-5m-KLR"/>
+                                            </connections>
                                         </menuItem>
                                         <menuItem title="Attach SIDE2 Hard Disk..." id="XiC-uU-bmv">
                                             <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="side2AttachCF:" target="473" id="z6e-v6-Hy7"/>
+                                            </connections>
                                         </menuItem>
                                         <menuItem title="Remove SIDE2 Hard Disk" id="ZkG-z7-B3L">
                                             <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="side2RemoveCF:" target="473" id="oMG-3w-hV8"/>
+                                            </connections>
                                         </menuItem>
-                                        <menuItem title="SIDE2 Switch - SDX" id="wDl-Q2-THn">
+                                        <menuItem title="SIDE2 Switch - SDX" tag="1" id="wDl-Q2-THn">
                                             <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="side2SlideSwitch:" target="473" id="x3e-mL-wPe"/>
+                                            </connections>
                                         </menuItem>
                                         <menuItem title="SIDE2 Switch - Loader" id="YW3-c1-TfY">
                                             <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="side2SlideSwitch:" target="473" id="iE6-AD-mZr"/>
+                                            </connections>
                                         </menuItem>
                                         <menuItem title="Press SIDE2 Button" id="VXx-ja-L1S">
                                             <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="side2Button:" target="473" id="J6e-x1-wHg"/>
+                                            </connections>
                                         </menuItem>
                                     </items>
                                 </menu>

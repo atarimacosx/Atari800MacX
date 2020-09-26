@@ -482,6 +482,33 @@ NSImage *disketteImage;
         [removeSecondCartItem setTarget:nil];
     else
         [removeSecondCartItem setTarget:self];
+    if (SIDE2_enabled) {
+        [changeSIDE2RomItem setTarget:self];
+        if (SIDE2_Block_Device) {
+            [attachSIDE2CFItem setTarget:self];
+            [removeSIDE2CFItem setTarget:self];
+        } else {
+            [attachSIDE2CFItem setTarget:self];
+            [removeSIDE2CFItem setTarget:nil];
+        }
+        [slideSIDE2ButtonSDXItem setTarget:self];
+        [slideSIDE2ButtonLoaderItem setTarget:self];
+        [pressSIDE2ButtonItem setTarget:self];
+    } else {
+        [changeSIDE2RomItem setTarget:nil];
+        [attachSIDE2CFItem setTarget:nil];
+        [removeSIDE2CFItem setTarget:nil];
+        [slideSIDE2ButtonSDXItem setTarget:nil];
+        [slideSIDE2ButtonLoaderItem setTarget:nil];
+        [pressSIDE2ButtonItem setTarget:nil];
+    }
+    if (SIDE2_SDX_Mode_Switch) {
+        [slideSIDE2ButtonSDXItem setState:NSOnState];
+        [slideSIDE2ButtonLoaderItem setState:NSOffState];
+    } else {
+        [slideSIDE2ButtonSDXItem setState:NSOffState];
+        [slideSIDE2ButtonLoaderItem setState:NSOnState];
+    }
     if (CASSETTE_status == CASSETTE_STATUS_NONE)
         {
         [protectCassItem setTarget:nil];
@@ -2903,6 +2930,66 @@ NSImage *disketteImage;
 {
     request80ColChange = 1;
 }
+
+- (IBAction)side2ChangeRom:(id)sender
+{
+    NSString *filename;
+    char cfilename[FILENAME_MAX];
+    int loaded;
+    
+    filename = [self browseFileInDirectory:[NSString stringWithCString:atari_rom_dir encoding:NSUTF8StringEncoding]];
+    if (filename != nil) {
+        [filename getCString:cfilename maxLength:FILENAME_MAX  encoding:NSUTF8StringEncoding];
+        loaded = SIDE2_Change_Rom(cfilename);
+        if (loaded) {
+            memset(Screen_atari, 0, (Screen_HEIGHT * Screen_WIDTH));
+            Atari_DisplayScreen((UBYTE *) Screen_atari);
+            Atari800_Coldstart();
+        }
+    }
+    [self updateInfo];
+}
+
+- (IBAction)side2AttachCF:(id)sender
+{
+    NSString *filename;
+    int diskMounted;
+    char cfilename[FILENAME_MAX];
+    
+    filename = [self browseFileInDirectory:[NSString stringWithCString:atari_disk_dirs[0] encoding:NSUTF8StringEncoding]];
+    if (filename != nil) {
+        [filename getCString:cfilename maxLength:FILENAME_MAX  encoding:NSUTF8StringEncoding];
+        strcpy(side2_compact_flash_filename, cfilename);
+        if (SIDE2_enabled) {
+            diskMounted = SIDE2_Add_Block_Device(cfilename);
+            if (!diskMounted)
+                [self displayError:@"Unable to Mount Disk Image!"];
+            [self updateInfo];
+        }
+    }
+    [self updateInfo];
+}
+
+- (IBAction)side2RemoveCF:(id)sender
+{
+    SIDE2_Remove_Block_Device();
+    [self updateInfo];
+}
+
+- (IBAction)side2SlideSwitch:(id)sender
+{
+    SIDE2_SDX_Switch_Change([sender tag]);
+    memset(Screen_atari, 0, (Screen_HEIGHT * Screen_WIDTH));
+    Atari_DisplayScreen((UBYTE *) Screen_atari);
+    Atari800_Coldstart();
+    [self updateInfo];
+}
+
+- (IBAction)side2Button:(id)sender
+{
+    SIDE2_Bank_Reset_Button_Change();
+}
+
 
 /*------------------------------------------------------------------------------
 *  convertXFDtoATR - This method converts an XFD disk image to an ATR disk

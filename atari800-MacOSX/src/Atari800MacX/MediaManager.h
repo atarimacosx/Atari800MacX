@@ -158,7 +158,6 @@
     IBOutlet id changeSIDE2RomItem;
     IBOutlet id attachSIDE2CFItem;
     IBOutlet id removeSIDE2CFItem;
-    IBOutlet id slideSIDE2ButtonMenu;
     IBOutlet id slideSIDE2ButtonSDXItem;
     IBOutlet id slideSIDE2ButtonLoaderItem;
     IBOutlet id pressSIDE2ButtonItem;
@@ -264,5 +263,10 @@
 - (void)enable80ColMode:(int)machineType;
 - (void)set80ColMode:(int)xep80Enabled:(int)af80Enabled:(int)bit3Enabled:(int)xep80;
 - (IBAction)xep80Mode:(id)sender;
+- (IBAction)side2ChangeRom:(id)sender;
+- (IBAction)side2AttachCF:(id)sender;
+- (IBAction)side2RemoveCF:(id)sender;
+- (IBAction)side2SlideSwitch:(id)sender;
+- (IBAction)side2Button:(id)sender;
 
 @end

@@ -206,6 +206,9 @@ typedef struct ATARI800MACX_PREFSAVE {
 				int blackBoxEnabled;
 				int mioEnabled;
 				int useAtariCursorKeys;
+                char side2CFFileName[FILENAME_MAX];
+                char side2FlashFileName[FILENAME_MAX];
+                int side2SDXMode;
 } ATARI800MACX_PREFSAVE;
 
 extern int clearCurrentMedia;

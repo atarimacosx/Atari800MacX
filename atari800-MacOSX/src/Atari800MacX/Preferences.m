@@ -936,9 +936,9 @@ static Preferences *sharedInstance = nil;
     [side2FlashFileField setStringValue:[displayedValues objectForKey:Side2RomFile]];
     [side2CFFileField setStringValue:[displayedValues objectForKey:Side2CFFile]];
     if ([[displayedValues objectForKey:Side2SDXMode] boolValue])
-        [side2SDXModePulldown selectItemAtIndex:0];
-    else
         [side2SDXModePulldown selectItemAtIndex:1];
+    else
+        [side2SDXModePulldown selectItemAtIndex:0];
     [blackBoxScsiDiskFileField setStringValue:[displayedValues objectForKey:BlackBoxScsiDiskFile]];
     [mioScsiDiskFileField setStringValue:[displayedValues objectForKey:MioScsiDiskFile]];
 	
@@ -3769,6 +3769,7 @@ static Preferences *sharedInstance = nil;
             break;
 		}
     [displayedValues setObject:prefssave->showFPS ? yes : no forKey:ShowFPS];
+    [displayedValues setObject:prefssave->side2SDXMode ? yes : no forKey:Side2SDXMode];
     [displayedValues setObject:prefssave->ledStatus ? yes : no forKey:LedStatus];
     [displayedValues setObject:prefssave->ledSector ? yes : no forKey:LedSector];
     [displayedValues setObject:prefssave->speedLimit ? yes : no forKey:SpeedLimit];
@@ -3908,6 +3909,7 @@ static Preferences *sharedInstance = nil;
 
 	[displayedValues setObject:prefssave->blackBoxEnabled ? yes : no forKey:BlackBoxEnabled];
 	[displayedValues setObject:prefssave->mioEnabled ? yes : no forKey:MioEnabled];
+    [displayedValues setObject:prefssave->side2SDXMode ? yes : no forKey:Side2SDXMode];
 	}
 
 - (void) saveCurrentMediaAction:(id)sender
