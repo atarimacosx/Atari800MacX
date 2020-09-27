@@ -2413,12 +2413,17 @@ NSImage *disketteImage;
                 [cartImageRomInsertButton setTransparent:NO];
                 [cartImageSDXButton setEnabled:YES];
                 [cartImageSDXButton setTransparent:NO];
+                if (SIDE2_SDX_Mode_Switch)
+                    [cartImageSDXButton setTitle:@"SDX"];
+                else
+                    [cartImageSDXButton setTitle:@"Load"];
                 NSRect r = [cartImageInsertButton frame];
                 r.size.width = 48.0;
                 [cartImageInsertButton setFrame:r];
                 r = [cartImageSecondInsertButton frame];
                 r.size.width = 48.0;
                 [cartImageSecondInsertButton setFrame:r];
+                [cartImageSecondInsertButton setAction:@selector(side2AttachCF:)];
             } else {
                 [cartImageRomInsertButton setEnabled:NO];
                 [cartImageRomInsertButton setTransparent:YES];
@@ -2430,6 +2435,7 @@ NSImage *disketteImage;
                 r = [cartImageSecondInsertButton frame];
                 r.size.width = 96.0;
                 [cartImageSecondInsertButton setFrame:r];
+                [cartImageSecondInsertButton setAction:@selector(cartSecondStatusChange::)];
             }
         
             if (CARTRIDGE_main.type == CARTRIDGE_SDX_64 || CARTRIDGE_main.type == CARTRIDGE_SDX_128 ||
@@ -3018,7 +3024,13 @@ NSImage *disketteImage;
 
 - (IBAction)side2SlideSwitch:(id)sender
 {
-    SIDE2_SDX_Switch_Change([sender tag]);
+    int changeToValue;
+    if ([sender tag] == 2) {
+        changeToValue = !SIDE2_SDX_Mode_Switch;
+    } else {
+        changeToValue = [sender tag];
+    }
+    SIDE2_SDX_Switch_Change(changeToValue);
     memset(Screen_atari, 0, (Screen_HEIGHT * Screen_WIDTH));
     Atari_DisplayScreen((UBYTE *) Screen_atari);
     Atari800_Coldstart();

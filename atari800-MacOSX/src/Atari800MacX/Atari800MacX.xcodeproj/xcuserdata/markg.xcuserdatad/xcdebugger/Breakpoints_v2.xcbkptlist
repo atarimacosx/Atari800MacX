@@ -718,8 +718,8 @@
             filePath = "MediaManager.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2816"
-            endingLineNumber = "2816"
+            startingLineNumber = "2822"
+            endingLineNumber = "2822"
             landmarkName = "-machineTypeChange:"
             landmarkType = "7">
          </BreakpointContent>
