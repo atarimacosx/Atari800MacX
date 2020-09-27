@@ -267,6 +267,7 @@
 - (IBAction)xep80Mode:(id)sender;
 - (IBAction)side2ChangeRom:(id)sender;
 - (IBAction)side2AttachCF:(id)sender;
+- (IBAction)side2AttachCFFile:(NSString *)filename;
 - (IBAction)side2RemoveCF:(id)sender;
 - (IBAction)side2SlideSwitch:(id)sender;
 - (IBAction)side2Button:(id)sender;

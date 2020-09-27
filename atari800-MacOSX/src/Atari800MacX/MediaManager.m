@@ -2999,10 +2999,16 @@ NSImage *disketteImage;
 - (IBAction)side2AttachCF:(id)sender
 {
     NSString *filename;
+    
+    filename = [self browseFileInDirectory:[NSString stringWithCString:atari_disk_dirs[0] encoding:NSUTF8StringEncoding]];
+    [self side2AttachCFFile:filename];
+}
+
+- (IBAction)side2AttachCFFile:(NSString *)filename
+{
     int diskMounted;
     char cfilename[FILENAME_MAX];
     
-    filename = [self browseFileInDirectory:[NSString stringWithCString:atari_disk_dirs[0] encoding:NSUTF8StringEncoding]];
     if (filename != nil) {
         [filename getCString:cfilename maxLength:FILENAME_MAX  encoding:NSUTF8StringEncoding];
         strcpy(side2_compact_flash_filename, cfilename);
@@ -3010,7 +3016,6 @@ NSImage *disketteImage;
             diskMounted = SIDE2_Add_Block_Device(cfilename);
             if (!diskMounted)
                 [self displayError:@"Unable to Mount Disk Image!"];
-            [self updateInfo];
         }
     }
     [self updateInfo];
