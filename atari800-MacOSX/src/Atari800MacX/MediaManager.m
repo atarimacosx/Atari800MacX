@@ -2408,6 +2408,30 @@ NSImage *disketteImage;
                 [cartImageView setImage:onCartImage];
                 }
 
+            if (CARTRIDGE_main.type == CARTRIDGE_SIDE2) {
+                [cartImageRomInsertButton setEnabled:YES];
+                [cartImageRomInsertButton setTransparent:NO];
+                [cartImageSDXButton setEnabled:YES];
+                [cartImageSDXButton setTransparent:NO];
+                NSRect r = [cartImageInsertButton frame];
+                r.size.width = 48.0;
+                [cartImageInsertButton setFrame:r];
+                r = [cartImageSecondInsertButton frame];
+                r.size.width = 48.0;
+                [cartImageSecondInsertButton setFrame:r];
+            } else {
+                [cartImageRomInsertButton setEnabled:NO];
+                [cartImageRomInsertButton setTransparent:YES];
+                [cartImageSDXButton setEnabled:NO];
+                [cartImageSDXButton setTransparent:YES];
+                NSRect r = [cartImageInsertButton frame];
+                r.size.width = 96.0;
+                [cartImageInsertButton setFrame:r];
+                r = [cartImageSecondInsertButton frame];
+                r.size.width = 96.0;
+                [cartImageSecondInsertButton setFrame:r];
+            }
+        
             if (CARTRIDGE_main.type == CARTRIDGE_SDX_64 || CARTRIDGE_main.type == CARTRIDGE_SDX_128 ||
                 CARTRIDGE_main.type == CARTRIDGE_ATRAX_SDX_64 || CARTRIDGE_main.type == CARTRIDGE_ATRAX_SDX_128 ||
                 CARTRIDGE_main.type == CARTRIDGE_ULTIMATE_1MB)
@@ -2435,10 +2459,26 @@ NSImage *disketteImage;
                 }
             else
                 {
-                [cartImageSecondNameField setStringValue:@""];
-                [cartImageSecondInsertButton setTitle:@"Insert 2"];
-                [cartImageSecondInsertButton setEnabled:NO];
-                [cartImageSecondInsertButton setTransparent:YES];
+                if (CARTRIDGE_main.type == CARTRIDGE_SIDE2) {
+                    [cartImageSecondNameField setStringValue:@""];
+                    [cartImageSecondInsertButton setTitle:@"Disk"];
+                    [cartImageSecondInsertButton setEnabled:YES];
+                    [cartImageSecondInsertButton setTransparent:NO];
+                    ptr = side2_compact_flash_filename + strlen(side2_compact_flash_filename) - 1;
+                    while (ptr > side2_compact_flash_filename) {
+                        if (*ptr == '/') {
+                            ptr++;
+                            break;
+                            }
+                        ptr--;
+                        }
+                    [cartImageSecondNameField setStringValue:[NSString stringWithCString:ptr encoding:NSASCIIStringEncoding]];
+                } else {
+                    [cartImageSecondNameField setStringValue:@""];
+                    [cartImageSecondInsertButton setTitle:@"Insert 2"];
+                    [cartImageSecondInsertButton setEnabled:NO];
+                    [cartImageSecondInsertButton setTransparent:YES];
+                }
                 }
     }
 

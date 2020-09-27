@@ -26,6 +26,8 @@
                 <outlet property="cart8KMatrix" destination="565" id="635"/>
                 <outlet property="cartImageInsertButton" destination="924" id="932"/>
                 <outlet property="cartImageNameField" destination="926" id="931"/>
+                <outlet property="cartImageRomInsertButton" destination="Wl1-bJ-ce2" id="wdO-dy-qyM"/>
+                <outlet property="cartImageSDXButton" destination="tW2-KL-Ntg" id="9fc-oS-QZY"/>
                 <outlet property="cartImageSecondInsertButton" destination="1258" id="1261"/>
                 <outlet property="cartImageSecondNameField" destination="1259" id="1260"/>
                 <outlet property="cartImageView" destination="925" id="930"/>
@@ -2106,7 +2108,7 @@ DQ
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="924">
-                        <rect key="frame" x="564" y="21" width="57" height="16"/>
+                        <rect key="frame" x="564" y="21" width="48" height="16"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="Insert" bezelStyle="rounded" alignment="center" controlSize="mini" borderStyle="border" inset="2" id="1792">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -2115,6 +2117,22 @@ DQ
                         <connections>
                             <action selector="cartStatusChange:" target="-2" id="934"/>
                         </connections>
+                    </button>
+                    <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Wl1-bJ-ce2">
+                        <rect key="frame" x="609" y="21" width="48" height="16"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <buttonCell key="cell" type="push" title="ROM" bezelStyle="rounded" alignment="center" controlSize="mini" borderStyle="border" inset="2" id="dWi-o8-sOM">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="label" size="9"/>
+                        </buttonCell>
+                    </button>
+                    <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="tW2-KL-Ntg">
+                        <rect key="frame" x="609" y="36" width="48" height="16"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <buttonCell key="cell" type="push" title="SDX" bezelStyle="rounded" alignment="center" controlSize="mini" borderStyle="border" inset="2" id="PKM-OY-xSX">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="label" size="9"/>
+                        </buttonCell>
                     </button>
                     <imageView fixedFrame="YES" tag="9" translatesAutoresizingMaskIntoConstraints="NO" id="925" customClass="Atari800ImageView">
                         <rect key="frame" x="590" y="66" width="45" height="46"/>
@@ -2427,10 +2445,6 @@ DQ
                             <action selector="createCassette:" target="-2" id="1193"/>
                         </connections>
                     </button>
-                    <box verticalHuggingPriority="750" fixedFrame="YES" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="1194">
-                        <rect key="frame" x="-3" y="18" width="803" height="5"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </box>
                     <popUpButton verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1196">
                         <rect key="frame" x="1" y="-2" width="226" height="22"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -2500,7 +2514,7 @@ DQ
                         </connections>
                     </popUpButton>
                     <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1258">
-                        <rect key="frame" x="564" y="36" width="57" height="16"/>
+                        <rect key="frame" x="564" y="36" width="48" height="16"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="Insert 2" bezelStyle="rounded" alignment="center" controlSize="mini" enabled="NO" borderStyle="border" inset="2" id="1825">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -2595,6 +2609,10 @@ DQ
                             <action selector="cassRecord:" target="-2" id="nan-rB-xHI"/>
                         </connections>
                     </button>
+                    <box verticalHuggingPriority="750" fixedFrame="YES" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="1194">
+                        <rect key="frame" x="13" y="24" width="803" height="5"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </box>
                 </subviews>
             </view>
             <point key="canvasLocation" x="-243.5" y="2386.5"/>
