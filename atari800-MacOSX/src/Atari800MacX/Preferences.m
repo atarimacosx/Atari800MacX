@@ -936,9 +936,9 @@ static Preferences *sharedInstance = nil;
     [side2FlashFileField setStringValue:[displayedValues objectForKey:Side2RomFile]];
     [side2CFFileField setStringValue:[displayedValues objectForKey:Side2CFFile]];
     if ([[displayedValues objectForKey:Side2SDXMode] boolValue])
-        [side2SDXModePulldown selectItemAtIndex:1];
-    else
         [side2SDXModePulldown selectItemAtIndex:0];
+    else
+        [side2SDXModePulldown selectItemAtIndex:1];
     [blackBoxScsiDiskFileField setStringValue:[displayedValues objectForKey:BlackBoxScsiDiskFile]];
     [mioScsiDiskFileField setStringValue:[displayedValues objectForKey:MioScsiDiskFile]];
 	
@@ -2188,10 +2188,10 @@ static Preferences *sharedInstance = nil;
     switch([side2SDXModePulldown indexOfSelectedItem]) {
         case 1:
         default:
-            [displayedValues setObject:yes forKey:Side2SDXMode];
+            [displayedValues setObject:no forKey:Side2SDXMode];
             break;
         case 0:
-            [displayedValues setObject:no forKey:Side2SDXMode];
+            [displayedValues setObject:yes forKey:Side2SDXMode];
             break;
     }
     [displayedValues setObject:[blackBoxScsiDiskFileField stringValue] forKey:BlackBoxScsiDiskFile];
@@ -3545,7 +3545,7 @@ static Preferences *sharedInstance = nil;
     [[curValues objectForKey:Ultimate1MBRomFile] getCString:prefs->ultimate1MBFlashFileName maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
     [[curValues objectForKey:Side2RomFile] getCString:prefs->side2FlashFileName maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
     [[curValues objectForKey:Side2CFFile] getCString:prefs->side2CFFileName maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
-    prefs->side2SDXMode = ![[curValues objectForKey:Side2SDXMode] boolValue];
+    prefs->side2SDXMode = [[curValues objectForKey:Side2SDXMode] intValue];
 	[[curValues objectForKey:BlackBoxScsiDiskFile] getCString:prefs->blackBoxScsiDiskFile maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
 	[[curValues objectForKey:MioScsiDiskFile] getCString:prefs->mioScsiDiskFile maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
   [[curValues objectForKey:ImageDir] getCString:prefs->imageDir maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
@@ -4890,6 +4890,7 @@ static Preferences *sharedInstance = nil;
 	getBoolDefault(BlackBoxEnabled);
     getStringDefault(MioRomFile);
     getStringDefault(Ultimate1MBRomFile);
+    getBoolDefault(Side2SDXMode);
     getStringDefault(Side2RomFile);
     getStringDefault(Side2CFFile);
     getStringDefault(AF80CharsetFile);
@@ -5164,6 +5165,7 @@ static Preferences *sharedInstance = nil;
 	setBoolDefault(BlackBoxEnabled);
     setStringDefault(MioRomFile);
     setStringDefault(Ultimate1MBRomFile);
+    setBoolDefault(Side2SDXMode);
     setStringDefault(Side2RomFile);
     setStringDefault(Side2CFFile);
     setStringDefault(AF80CharsetFile);
@@ -5419,6 +5421,7 @@ static Preferences *sharedInstance = nil;
 	setConfig(BlackBoxEnabled);
     setConfig(MioRomFile);
     setConfig(Ultimate1MBRomFile);
+    setConfig(Side2SDXMode);
     setConfig(Side2RomFile);
     setConfig(Side2CFFile);
     setConfig(AF80CharsetFile);
@@ -5772,6 +5775,7 @@ static Preferences *sharedInstance = nil;
 	getConfig(BlackBoxEnabled);
     getConfig(MioRomFile);
     getConfig(Ultimate1MBRomFile);
+    getConfig(Side2SDXMode);
     getConfig(Side2RomFile);
     getConfig(Side2CFFile);
     getConfig(AF80CharsetFile);

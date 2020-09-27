@@ -251,6 +251,7 @@
                 <outlet property="serioSoundEnableButton" destination="3876" id="3899"/>
                 <outlet property="side2CFFileField" destination="fXW-NQ-3J1" id="5do-4R-E01"/>
                 <outlet property="side2FlashFileField" destination="hjd-La-4JB" id="Ga3-Td-UuS"/>
+                <outlet property="side2SDXModePulldown" destination="jCj-Lh-1oH" id="eH9-jZ-O8b"/>
                 <outlet property="speedLimitButton" destination="344" id="3901"/>
                 <outlet property="spriteCollisionsButton" destination="4243" id="4244"/>
                 <outlet property="tvModeMatrix" destination="296" id="315"/>
