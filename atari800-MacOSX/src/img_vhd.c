@@ -659,7 +659,7 @@ static void SetCurrentBlock(VHDImage *img, uint32_t blockIndex) {
     uint32_t sectorOffset = img->BlockAllocTable[blockIndex];
     if (sectorOffset == 0xFFFFFFFFU) {
         // no -- set the block bitmap to all unallocated (0)
-        memset(&img->CurrentBlockBitmap, 0, img->BlockBitmapSize);
+        memset(img->CurrentBlockBitmap, 0, img->BlockBitmapSize);
         img->CurrentBlockAllocated = false;
     } else {
         // yes it is -- read in the bitmap from the new block
