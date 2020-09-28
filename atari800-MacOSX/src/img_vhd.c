@@ -435,7 +435,8 @@ void *VHD_Init_New(const char *path, uint8_t heads, uint8_t spt, uint32_t totalS
     img->Footer.Checksum = ComputeFooterChecksum(&img->Footer);
 
     // copy to raw buffer and swizzle
-    VHDFooter rawFooter = img->Footer;
+    VHDFooter rawFooter;
+    memcpy(&rawFooter, &img->Footer, sizeof(VHDFooter));
     SwapEndianFooter(&rawFooter);
 
     // check if we are creating a dynamic disk
