@@ -336,6 +336,8 @@ void *VHD_Image_Open(const char *path, int write, int solidState) {
         // compute additional size with bitmap -- the bitmap is always padded
         // to a 512 byte sector (4096 bits, or equivalent to 2MB)
         img->BlockBitmapSize = (((img->BlockSize - 1) >> 21) + 1) * 512;
+        if (img->CurrentBlockBitmap != NULL)
+            free(img->CurrentBlockBitmap);
         img->CurrentBlockBitmap = malloc(img->BlockBitmapSize);
 
         // validate the size of the block allocation table
@@ -353,6 +355,8 @@ void *VHD_Image_Open(const char *path, int write, int solidState) {
             return NULL; // TBD
 
         // read in the BAT
+        if (img->BlockAllocTable != NULL)
+            free(img->BlockAllocTable);
         img->BlockAllocTable = malloc(blockCount * sizeof(uint32_t));
 
         fseek(img->File, img->DynamicHeader.TableOffset, SEEK_SET);
@@ -474,8 +478,12 @@ void *VHD_Init_New(const char *path, uint8_t heads, uint8_t spt, uint32_t totalS
 
         // init runtime buffers
         
+        if (img->BlockAllocTable != NULL)
+            free(img->BlockAllocTable);
         img->BlockAllocTable = malloc(blockCount * sizeof(uint32_t));
         memset(img->BlockAllocTable, 0xFF, blockCount*sizeof(uint32_t));
+        if (img->CurrentBlockBitmap != NULL)
+            free(img->CurrentBlockBitmap);
         img->CurrentBlockBitmap = malloc(img->BlockBitmapSize);
         memset(img->CurrentBlockBitmap, 0, img->BlockBitmapSize);
     } else {
@@ -620,7 +628,7 @@ static void WriteDynamicDiskSectors(VHDImage *img, const void *data, uint32_t lb
             if (wasZero != writingZero) {
                 // if this block is not allocated, we must be trying to allocate a sector in it,
                 // and must extend the file to allocate the block now
-                if (!writingZero && img->CurrentBlockAllocated)
+                if (!writingZero && !img->CurrentBlockAllocated)
                     AllocateBlock(img);
 
                 sectorMaskByte ^= sectorBit;
