@@ -173,6 +173,7 @@ static void SwapEndianFooter(VHDFooter *footer) {
     footer->DataOffset = bswap_64(footer->DataOffset);
     footer->CreatorApplication = bswap_32(footer->CreatorApplication);
     footer->CreatorHostOS = bswap_32(footer->CreatorHostOS);
+    footer->OriginalSize = bswap_64(footer->OriginalSize);
     footer->CurrentSize = bswap_64(footer->CurrentSize);
     footer->DiskType = bswap_32(footer->DiskType);
     footer->Checksum = bswap_32(footer->Checksum);
