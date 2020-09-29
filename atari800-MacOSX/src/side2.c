@@ -78,6 +78,7 @@ static void init_side2(void)
     if (ide == NULL)
     {
         Log_print("Couldn't attach Side2 CF Image");
+        side2_compact_flash_filename[0] = 0;
         SIDE2_Block_Device = FALSE;
     }
     else {

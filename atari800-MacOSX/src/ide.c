@@ -211,7 +211,8 @@ static void ide_reset(struct ide_device *s) {
 
 void IDE_Reset_Device(void *dev) {
     struct ide_device *s = (struct ide_device *) dev;
-    ide_reset(s);
+    if (s != NULL)
+        ide_reset(s);
 }
 
 void *IDE_Init_Drive(char *filename, int is_cf) {

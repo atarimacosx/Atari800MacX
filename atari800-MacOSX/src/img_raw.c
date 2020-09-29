@@ -43,7 +43,7 @@ void *RAW_Image_Open(const char *path, int write, int solidState)
     strcpy(img->Path, path);
     img->File = fopen(img->Path, write ? "rb+" : "rb");
     if (img->File == NULL)
-        return -10; // TBD
+        return NULL; // TBD
     img->ReadOnly = !write;
 
     struct stat info;
