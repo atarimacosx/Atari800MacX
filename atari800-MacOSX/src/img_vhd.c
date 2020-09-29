@@ -104,6 +104,8 @@ typedef struct vhdImage {
     VHDDynamicDiskHeader DynamicHeader;
 } VHDImage;
 
+static uint8_t zerobuf[65536];
+
 static void AllocateBlock(VHDImage *img);
 static void CalcCHS(uint32_t totalSectors, VHDImage *img);
 static void FlushCurrentBlockBitmap(VHDImage *img);
@@ -152,8 +154,6 @@ static uint32_t ClampToUint32(uint64_t v) {
     return v >= 0x100000000UL ? 0xFFFFFFFFUL : (uint32_t)v;
 }
 
-static void WriteUnalignedBEU32(void *p, uint32_t v) { *(uint32_t *)p = bswap_32(v); }
-
 static int FindLowestSetBit(uint32_t v) {
     for(int i=0; i<32; ++i) {
         if (v & 1)
@@ -189,7 +189,7 @@ static void SwapEndianHeader(VHDDynamicDiskHeader *header) {
 
 static void SwapEndianUint32Array(uint32_t *p, uint32_t n) {
     while(n--) {
-        bswap_32(*p);
+        *p = bswap_32(*p);
         p++;
     }
 }
@@ -600,7 +600,7 @@ static void WriteDynamicDiskSectors(VHDImage *img, const void *data, uint32_t lb
         uint32_t blockSectorOffset = lba & img->BlockLBAMask;
 
         for(uint32_t i=0; i<blockCount; ++i) {
-            uint8_t sectorMaskByte = img->CurrentBlockBitmap[blockSectorOffset >> 3];
+            uint8_t* sectorMaskByte = &img->CurrentBlockBitmap[blockSectorOffset >> 3];
             const uint8_t sectorBit = (0x80 >> (blockSectorOffset & 7));
 
             // check if we're writing zeroes to this sector
@@ -624,7 +624,7 @@ static void WriteDynamicDiskSectors(VHDImage *img, const void *data, uint32_t lb
             //    yes            no            write sector
             //    yes            yes            deallocate and write sector
 
-            int wasZero = !(sectorMaskByte & sectorBit);
+            int wasZero = !(*sectorMaskByte & sectorBit);
 
             if (wasZero != writingZero) {
                 // if this block is not allocated, we must be trying to allocate a sector in it,
@@ -632,7 +632,7 @@ static void WriteDynamicDiskSectors(VHDImage *img, const void *data, uint32_t lb
                 if (!writingZero && !img->CurrentBlockAllocated)
                     AllocateBlock(img);
 
-                sectorMaskByte ^= sectorBit;
+                *sectorMaskByte ^= sectorBit;
                 img->CurrentBlockBitmapDirty = TRUE;
             }
 
@@ -708,9 +708,9 @@ static void AllocateBlock(VHDImage *img) {
     // Extend the file and rewrite the footer. There is nothing we need to change
     // here so this is pretty easy. We do, however, need to swizzle it back. The
     // checksum should still be valid.
-    VHDFooter *rawFooter = malloc(sizeof(img->Footer));
-    memcpy(rawFooter, &img->Footer, sizeof(img->Footer));
-    SwapEndianFooter(rawFooter);
+    VHDFooter rawFooter;
+    memcpy(&rawFooter, &img->Footer, sizeof(img->Footer));
+    SwapEndianFooter(&rawFooter);
 
     fseek(img->File, newFooterLocation, SEEK_SET);
     fwrite(&rawFooter, sizeof(rawFooter), 1, img->File);
@@ -725,9 +725,15 @@ static void AllocateBlock(VHDImage *img) {
 
     // Zero the data; technically not needed with NTFS since the bitmap is always at least
     // as big as the footer and NTFS zeroes new space, but we might be running on FAT32
-    uint8_t *zerobuf = malloc(65536);
     memset(zerobuf, 0, 65536);
-    fwrite(zerobuf, 1, 65536, img->File);
+    
+    uint32_t bytesLeft = img->BlockSize;
+    while(bytesLeft) {
+        uint32_t tc = img->BlockSize < 65536 ? img->BlockSize : 65536;
+
+        fwrite(zerobuf, 1, tc, img->File);
+        bytesLeft -= tc;
+    }
 
     // flush again, so the block is OK on disk
     fflush(img->File);
@@ -739,10 +745,8 @@ static void AllocateBlock(VHDImage *img) {
     uint32_t sectorOffset = (uint32_t)(newBlockBitmapLoc >> 9);
     img->BlockAllocTable[img->CurrentBlock] = sectorOffset;
 
-    uint8_t rawSectorOffset[4];
-    WriteUnalignedBEU32(&rawSectorOffset, sectorOffset);
-
-    fwrite(rawSectorOffset, 1, 4, img->File);
+    uint32_t rawSectorOffset = bswap_32(sectorOffset);
+    fwrite(&rawSectorOffset, 1, 4, img->File);
 
     // all done!
     img->CurrentBlockDataOffset = newBlockDataLoc;
