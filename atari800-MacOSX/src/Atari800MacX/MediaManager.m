@@ -2365,7 +2365,39 @@ NSImage *disketteImage;
 			break;
 		}
 
-    if (ULTIMATE_enabled) {
+       if ((CARTRIDGE_main.type == CARTRIDGE_SIDE2) ||
+           (ULTIMATE_enabled && (CARTRIDGE_piggyback.type == CARTRIDGE_SIDE2)))
+       {
+           [cartImageRomInsertButton setEnabled:YES];
+           [cartImageRomInsertButton setTransparent:NO];
+           [cartImageSDXButton setEnabled:YES];
+           [cartImageSDXButton setTransparent:NO];
+           if (SIDE2_SDX_Mode_Switch)
+               [cartImageSDXButton setTitle:@"SDX"];
+           else
+               [cartImageSDXButton setTitle:@"Load"];
+           NSRect r = [cartImageInsertButton frame];
+           r.size.width = 48.0;
+           [cartImageInsertButton setFrame:r];
+           r = [cartImageSecondInsertButton frame];
+           r.size.width = 48.0;
+           [cartImageSecondInsertButton setFrame:r];
+           [cartImageSecondInsertButton setAction:@selector(side2AttachCF:)];
+       } else {
+           [cartImageRomInsertButton setEnabled:NO];
+           [cartImageRomInsertButton setTransparent:YES];
+           [cartImageSDXButton setEnabled:NO];
+           [cartImageSDXButton setTransparent:YES];
+           NSRect r = [cartImageInsertButton frame];
+           r.size.width = 96.0;
+           [cartImageInsertButton setFrame:r];
+           r = [cartImageSecondInsertButton frame];
+           r.size.width = 96.0;
+           [cartImageSecondInsertButton setFrame:r];
+           [cartImageSecondInsertButton setAction:@selector(cartSecondStatusChange::)];
+       }
+           
+        if (ULTIMATE_enabled) {
         if (CARTRIDGE_piggyback.type == CARTRIDGE_NONE) {
                 [cartImageNameField setStringValue:@"Empty"];
                 [cartImageInsertButton setTitle:@"Insert"];
