@@ -6,6 +6,7 @@
 //
 
 #include <stdlib.h>
+#include <string.h>
 #include "img_disk.h"
 #include "img_raw.h"
 #include "img_vhd.h"
@@ -13,10 +14,29 @@
 void *IMG_Image_Open(const char *path, int write, int solidState)
 {
     void *img;
+    char *ext;
+    int is_vhd;
     IMGImage *image = malloc(sizeof(IMGImage));
     
-    img = VHD_Image_Open(path, write, solidState);
-    if (img == NULL) {
+    ext = strrchr(path, '.');
+    if (!ext) {
+        is_vhd = 0;
+    } else {
+        is_vhd = (strcmp(ext+1, "vhd") == 0) ||
+                 (strcmp(ext+1, "VHD") == 0);
+    }
+    
+    if (is_vhd) {
+        img = VHD_Image_Open(path, write, solidState);
+        if (img == NULL) {
+            free(image);
+            return(NULL);
+        } else {
+            image->imgType = DiskTypeVHD;
+            image->image = img;
+            return(image);
+        }
+    } else {
         img = RAW_Image_Open(path, write, solidState);
         if (img == NULL) {
             free(image);
@@ -26,10 +46,6 @@ void *IMG_Image_Open(const char *path, int write, int solidState)
             image->image = img;
             return(image);
         }
-    } else {
-        image->imgType = DiskTypeVHD;
-        image->image = img;
-        return(image);
     }
 }
 
