@@ -2383,6 +2383,7 @@ NSImage *disketteImage;
            r.size.width = 48.0;
            [cartImageSecondInsertButton setFrame:r];
            [cartImageSecondInsertButton setAction:@selector(side2AttachCF:)];
+           [cartImageNameField setStringValue:@"SIDE2"];
        } else {
            [cartImageRomInsertButton setEnabled:NO];
            [cartImageRomInsertButton setTransparent:YES];
@@ -2397,25 +2398,43 @@ NSImage *disketteImage;
            [cartImageSecondInsertButton setAction:@selector(cartSecondStatusChange::)];
        }
            
-        if (ULTIMATE_enabled) {
+    if (ULTIMATE_enabled) {
         if (CARTRIDGE_piggyback.type == CARTRIDGE_NONE) {
                 [cartImageNameField setStringValue:@"Empty"];
                 [cartImageInsertButton setTitle:@"Insert"];
+                [cartImageSecondNameField setStringValue:@""];
+                [cartImageSecondInsertButton setTransparent:YES];
                 [cartImageView setImage:offCartImage];
                 }
-            else {
-                ptr = CARTRIDGE_piggyback.filename + strlen(CARTRIDGE_piggyback.filename) - 1;
-                while (ptr > CARTRIDGE_piggyback.filename) {
-                    if (*ptr == '/') {
-                        ptr++;
-                        break;
-                        }
-                    ptr--;
+        else if (CARTRIDGE_piggyback.type == CARTRIDGE_SIDE2){
+            [cartImageSecondNameField setStringValue:@""];
+            [cartImageSecondInsertButton setTitle:@"Disk"];
+            [cartImageSecondInsertButton setEnabled:YES];
+            [cartImageSecondInsertButton setTransparent:NO];
+            ptr = side2_compact_flash_filename + strlen(side2_compact_flash_filename) - 1;
+            while (ptr > side2_compact_flash_filename) {
+                if (*ptr == '/') {
+                    ptr++;
+                    break;
                     }
-                [cartImageNameField setStringValue:[NSString stringWithCString:ptr encoding:NSUTF8StringEncoding]];
-                [cartImageInsertButton setTitle:@"Eject"];
-                [cartImageView setImage:onCartImage];
+                ptr--;
                 }
+            [cartImageSecondNameField setStringValue:[NSString stringWithCString:ptr encoding:NSASCIIStringEncoding]];
+            [cartImageView setImage:onCartImage];
+        }
+        else {
+            ptr = CARTRIDGE_piggyback.filename + strlen(CARTRIDGE_piggyback.filename) - 1;
+            while (ptr > CARTRIDGE_piggyback.filename) {
+                if (*ptr == '/') {
+                    ptr++;
+                    break;
+                    }
+                ptr--;
+                }
+            [cartImageNameField setStringValue:[NSString stringWithCString:ptr encoding:NSUTF8StringEncoding]];
+            [cartImageInsertButton setTitle:@"Eject"];
+            [cartImageView setImage:onCartImage];
+            }
     } else {
         if (CARTRIDGE_main.type == CARTRIDGE_NONE) {
                 [cartImageNameField setStringValue:@"Empty"];
@@ -2439,7 +2458,7 @@ NSImage *disketteImage;
                 [cartImageInsertButton setTitle:@"Eject"];
                 [cartImageView setImage:onCartImage];
                 }
-
+#if 0
             if (CARTRIDGE_main.type == CARTRIDGE_SIDE2) {
                 [cartImageRomInsertButton setEnabled:YES];
                 [cartImageRomInsertButton setTransparent:NO];
@@ -2469,7 +2488,7 @@ NSImage *disketteImage;
                 [cartImageSecondInsertButton setFrame:r];
                 [cartImageSecondInsertButton setAction:@selector(cartSecondStatusChange::)];
             }
-        
+#endif
             if (CARTRIDGE_main.type == CARTRIDGE_SDX_64 || CARTRIDGE_main.type == CARTRIDGE_SDX_128 ||
                 CARTRIDGE_main.type == CARTRIDGE_ATRAX_SDX_64 || CARTRIDGE_main.type == CARTRIDGE_ATRAX_SDX_128 ||
                 CARTRIDGE_main.type == CARTRIDGE_ULTIMATE_1MB)
@@ -2497,7 +2516,8 @@ NSImage *disketteImage;
                 }
             else
                 {
-                if (CARTRIDGE_main.type == CARTRIDGE_SIDE2) {
+                if ((CARTRIDGE_main.type == CARTRIDGE_SIDE2) ||
+                    (CARTRIDGE_piggyback.type == CARTRIDGE_SIDE2)){
                     [cartImageSecondNameField setStringValue:@""];
                     [cartImageSecondInsertButton setTitle:@"Disk"];
                     [cartImageSecondInsertButton setEnabled:YES];
@@ -2517,7 +2537,7 @@ NSImage *disketteImage;
                     [cartImageSecondInsertButton setEnabled:NO];
                     [cartImageSecondInsertButton setTransparent:YES];
                 }
-                }
+            }
     }
 
     if (CASSETTE_status == CASSETTE_STATUS_NONE) {
