@@ -2370,6 +2370,7 @@ NSImage *disketteImage;
        {
            [cartImageRomInsertButton setEnabled:YES];
            [cartImageRomInsertButton setTransparent:NO];
+           [cartImageInsertButton setTitle:@"Eject"];
            [cartImageSDXButton setEnabled:YES];
            [cartImageSDXButton setTransparent:NO];
            if (SIDE2_SDX_Mode_Switch)
