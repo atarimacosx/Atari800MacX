@@ -109,10 +109,11 @@ UBYTE ULTIMATE_D1GetByte(UWORD addr, int no_side_effects)
 void ULTIMATE_D1PutByte(UWORD addr, UBYTE byte)
 {
     if (addr <= 0xD1BF) {
+        if (pbi_selected || !config_lock) {
         if (addr == 0xD1BF)
             Set_PBI_Bank(byte & 3);
-        if (pbi_selected || !config_lock)
-            pbi_ram[addr & 0xFFF] = byte;
+        pbi_ram[addr & 0xFFF] = byte;
+        }
     }
 }
 
@@ -131,7 +132,7 @@ void Set_PBI_Bank(UBYTE bank)
 int ULTIMATE_D1ffPutByte(UBYTE byte)
 {
     int result = 0; /* handled */
-    if (ULTIMATE_enabled && pbi_emulation_enable && byte == pbi_device_id) {
+    if (ULTIMATE_enabled && pbi_emulation_enable && config_lock && byte == pbi_device_id) {
         if (pbi_selected)
             return 0;
         Select_PBI_Device(TRUE);

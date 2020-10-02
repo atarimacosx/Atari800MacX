@@ -1438,6 +1438,9 @@ static void RemoveCart(CARTRIDGE_image_t *cart)
 		free(cart->image);
 		cart->image = NULL;
 	}
+    if (cart->type == CARTRIDGE_SIDE2) {
+        SIDE2_enabled = FALSE;
+    }
 	if (cart->type != CARTRIDGE_NONE) {
 		cart->type = CARTRIDGE_NONE;
 		if (cart == active_cart)

@@ -293,6 +293,8 @@
 		2DC051B8106962C600B9657B /* MemoryEditorDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DC051B2106962C600B9657B /* MemoryEditorDataSource.m */; };
 		2DC223D3106B04A20096626C /* DisasmDataSource.h in Headers */ = {isa = PBXBuildFile; fileRef = 2DC223D1106B04A20096626C /* DisasmDataSource.h */; };
 		2DC223D4106B04A20096626C /* DisasmDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DC223D2106B04A20096626C /* DisasmDataSource.m */; };
+		2DC8D7872526B8C6006F537F /* flash.c in Sources */ = {isa = PBXBuildFile; fileRef = 2DC8D7852526B8C5006F537F /* flash.c */; };
+		2DC8D7882526B8C6006F537F /* flash.h in Headers */ = {isa = PBXBuildFile; fileRef = 2DC8D7862526B8C6006F537F /* flash.h */; };
 		2DC936CC10701D5B0075BCBD /* Breakpoint.h in Headers */ = {isa = PBXBuildFile; fileRef = 2DC936CA10701D5B0075BCBD /* Breakpoint.h */; };
 		2DC936CD10701D5B0075BCBD /* Breakpoint.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DC936CB10701D5B0075BCBD /* Breakpoint.m */; };
 		2DC936D110701D950075BCBD /* BreakpointCondition.h in Headers */ = {isa = PBXBuildFile; fileRef = 2DC936CF10701D950075BCBD /* BreakpointCondition.h */; };
@@ -584,6 +586,8 @@
 		2DC1975009B69F6200906A5A /* Atari800MacX.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Atari800MacX.xcconfig; sourceTree = "<group>"; };
 		2DC223D1106B04A20096626C /* DisasmDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DisasmDataSource.h; sourceTree = SOURCE_ROOT; };
 		2DC223D2106B04A20096626C /* DisasmDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DisasmDataSource.m; sourceTree = SOURCE_ROOT; };
+		2DC8D7852526B8C5006F537F /* flash.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = flash.c; path = ../flash.c; sourceTree = "<group>"; };
+		2DC8D7862526B8C6006F537F /* flash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = flash.h; path = ../flash.h; sourceTree = "<group>"; };
 		2DC936CA10701D5B0075BCBD /* Breakpoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Breakpoint.h; sourceTree = "<group>"; };
 		2DC936CB10701D5B0075BCBD /* Breakpoint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Breakpoint.m; sourceTree = "<group>"; };
 		2DC936CF10701D950075BCBD /* BreakpointCondition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BreakpointCondition.h; sourceTree = "<group>"; };
@@ -939,6 +943,8 @@
 				F5558344030EF4CD01A8C8B4 /* gtia.h */,
 				F5558345030EF4CD01A8C8B4 /* gtia.c */,
 				F5558342030EF4CD01A8C8B4 /* input.h */,
+				2DC8D7852526B8C5006F537F /* flash.c */,
+				2DC8D7862526B8C6006F537F /* flash.h */,
 				2D09D068250939B200B73A8D /* ide.c */,
 				2D09D069250939B200B73A8D /* ide.h */,
 				2D6A0BEC251C225F0062B581 /* img_disk.h */,
@@ -1213,6 +1219,7 @@
 				2DAEDB2609B69AED005FF181 /* PrintableString.h in Headers */,
 				2DAEDB2709B69AED005FF181 /* PrintableGraphics.h in Headers */,
 				2DAEDB2809B69AED005FF181 /* PrinterProtocol.h in Headers */,
+				2DC8D7882526B8C6006F537F /* flash.h in Headers */,
 				2DE7FC5B250DCC01000C2DAD /* side2.h in Headers */,
 				2DAEDB2909B69AED005FF181 /* PrinterSimulator.h in Headers */,
 				2DAEDB2A09B69AED005FF181 /* Atari825Simulator.h in Headers */,
@@ -1501,6 +1508,7 @@
 				2D66DBF70F538D0200F882D6 /* cfg.c in Sources */,
 				2D70069D0F55F9F80092DA70 /* mac_monitor.c in Sources */,
 				2DBBC09C0FDC448800FD54E5 /* PasteManager.m in Sources */,
+				2DC8D7872526B8C6006F537F /* flash.c in Sources */,
 				2DEF29240FDCBE6E00660E07 /* PasteWindow.m in Sources */,
 				2D14CDFF0FFEEEDF00E60EAA /* copydata.c in Sources */,
 				2D037E361001124F0045DB8E /* PastePanel.m in Sources */,

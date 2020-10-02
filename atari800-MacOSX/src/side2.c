@@ -16,6 +16,7 @@
 #include "rtcds1305.h"
 #include "util.h"
 #include "pia.h"
+#include "flash.h"
 #include <stdlib.h>
 
 int SIDE2_enabled = FALSE;
@@ -51,6 +52,7 @@ static ULONG Bank_Offset = 0;
 static ULONG Bank_Offset2 = 0;
 static void *ide;
 static void *rtc;
+static FlashEmu *flash;
 
 static void LoadNVRAM();
 static void Reset_Cart_Bank(void);
@@ -85,6 +87,7 @@ static void init_side2(void)
         Log_print("Attached Side2 CF Image");
         SIDE2_Block_Device = TRUE;
     }
+    flash = Flash_Init(side2_rom, Flash_TypeAm29F040B);
 }
 
 void SIDE2_Remove_Block_Device(void)
@@ -396,4 +399,17 @@ void Update_Memory_Layers_Cart() {
     } else {
         MEMORY_Cart809fDisable();
     }
+}
+
+UBYTE SIDE2_Flash_Read(UWORD addr) {
+    UBYTE value;
+
+    Flash_Read_Byte(flash, Bank_Offset + (addr - 0xA000), &value);
+        
+    return(value);
+}
+
+void SIDE2_Flash_Write(UWORD addr, UBYTE value) {
+
+    Flash_Write_Byte(flash, Bank_Offset + (addr - 0xA000), value);
 }
