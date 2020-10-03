@@ -771,7 +771,7 @@ static uint16_t ide_data_readw(struct ide_device *s, int addr) {
         count &= 0xff;
     }
 
-    if (p >= s->data_end) s->end_transfer_func(s);
+    if (p > s->data_end) s->end_transfer_func(s);
 
     return ret;
 }
@@ -791,7 +791,7 @@ static void ide_data_writew(struct ide_device *s, int addr, uint16_t val) {
     p          += 2;
     s->data_ptr = p;
 
-    if (p >= s->data_end) s->end_transfer_func(s);
+    if (p > s->data_end) s->end_transfer_func(s);
 }
 
 static uint8_t mmio_ide_read(struct ide_device *s, int addr) {
