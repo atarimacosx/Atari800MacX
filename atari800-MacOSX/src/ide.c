@@ -1,901 +1,1127 @@
-/*
- * ide.c - Emulate IDE interface
- *
- * Copyright (C) 2010 Ivo van Poorten
- *
- * Based on QEMU IDE disk emulator (hw/ide/{core.c,microdrive.c,mmio.c})
- * Copyright (C) 2003 Fabrice Bellard
- * Copyright (C) 2006 Openhand Ltd.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
- * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
-*/
+//  Altirra - Atari 800/800XL/5200 emulator
+//  Copyright (C) 2009-2011 Avery Lee
+//
+//  This program is free software; you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation; either version 2 of the License, or
+//  (at your option) any later version.
+//
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with this program; if not, write to the Free Software
+//  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-/* Emulate 8-bit and 16-bit IDE interface at $D500-$D50F
- *
- * Eight 16-bit IDE registers:
- *
- * LSB (bit 0..7)  at 0xd500-0xd507
- * MSB (bit 8..15) at 0xd508-0xd50f
- *
- * Full 16-bits are read and written when accessing the LSB (latch)
- *
- * If the MSB is ignored, the interface is compatible with MyIDE
- *
- * 16-bit operations:
- *
- * Read:    read LSB (device returns 1 16-bit word), read MSB
- * Write:   write MSB, write LSB (16-bit word is written to device)
- */
-
-#define _XOPEN_SOURCE 600
-
-#include "config.h"
-/* allow non-ansi fseek/ftell functions */
-#ifdef __STRICT_ANSI__
-#  undef __STRICT_ANSI__
-#  include <stdio.h>
-#  define __STRICT_ANSI__ 1
-#else
-#  include <stdio.h>
-#endif
-#include "ide.h"
-#include "atari.h"
-#include "log.h"
-#include "util.h"
-#include "img_disk.h"
-#include "ide_internal.h"
-
-#include <string.h>
-#ifdef HAVE_INTTYPES_H
-#  include <inttypes.h>
-#endif
 #include <stdlib.h>
-#include <errno.h>
-#ifdef HAVE_UNISTD_H
-#  include <unistd.h>
-#endif
+#include <string.h>
+#include "img_disk.h"
+#include "ide.h"
 
-#define SECTOR_SIZE 512
-#define STD_HEADS   16          
-#define STD_SECTORS 63
+void AbortCommand(IDEEmu *ide, uint8_t error);
+void AdjustCHSTranslation(IDEEmu *ide);
+void BeginReadTransfer(IDEEmu *ide, uint32_t bytes);
+void BeginWriteTransfer(IDEEmu *ide, uint32_t bytes);
+void ColdReset(IDEEmu *ide);
+void CompleteCommand(IDEEmu *ide);
+int ReadLBA(IDEEmu *ide, uint32_t *lba);
+void ResetCHSTranslation(IDEEmu *ide);
+void ResetDevice(IDEEmu *ide);
+void Shutdown(IDEEmu *ide);
+void StartCommand(IDEEmu *ide, uint8_t cmd);
+void UpdateStatus(IDEEmu *ide);
+void WriteLBA(IDEEmu *ide, uint32_t lba);
 
-#if defined (HAVE_WINDOWS_H)
-#  define fseeko fseeko64
-#  define ftello ftello64
-#elif defined (__BEOS__)
-#  define fseeko _fseek
-#  define ftello _ftell
-#  define PRId64 "lld"
-#elif defined (__DJGPP__)
-#  define fseeko fseek
-#  define ftello ftell
-#  define PRId64 "lld"
-#elif defined (ATARI800MACX)
-#  define PRId64 "lld"
-#endif
+inline void VDWriteUnalignedLEU32(void *p, uint32_t v) { *(uint32_t *)p = v; }
+inline void VDWriteUnalignedLEU64(void *p, uint64_t v) { *(uint64_t *)p = v; }
 
-int IDE_enabled = 1, IDE_debug = 0;
-
-struct ide_device device;
-
-static int count = 0;     /* for debug stuff */
-
-static inline void padstr(uint8_t *str, const char *src, int len) {
-    int i;
-    for(i = 0; i < len; i++)
-        str[i^1] = *src ? *src++ : ' ';
-}
-
-#define LE16(x,y,z) { (x)[(y)<<1] = (z)&0xff; (x)[((y)<<1)+1] = ((uint16_t)z)>>8; }
-
-static void ide_identify(struct ide_device *s) {
-    unsigned int oldsize;
-    uint8_t *p = s->io_buffer;
-    memset(p, 0, 512);
-
-    LE16(p, 0, GCBI_FIXED_DRIVE);
-    LE16(p, 1, s->cylinders);
-    LE16(p, 3, s->heads);
-/*
-    LE16(p, 4, 512 * s->sectors);   // bytes per track, obsolete ATA2
-    LE16(p, 5, 512);                // bytes per sector, obsolete ATA2
-*/
-    LE16(p, 6, s->sectors);         /* sectors per track */
-
-    padstr(p+10*2, s->drive_serial_str, 20);
-
-/*
-    LE16(p, 20, 3);                 // buffer type, obsolete ATA2
-    LE16(p, 21, 16);                // cache size in sectors, obsolete ATA2
-*/
-    LE16(p, 22, 4);                 /* number of ECC bytes */
-
-    padstr(p+23*2, "5.4.0", 8);
-    padstr(p+27*2, "ATARI800MACX HARDDISK", 40);
-
-    if (MAX_MULT_SECTORS > 1)
-        LE16(p, 47, 0x8000 | MAX_MULT_SECTORS);
-
-    LE16(p, 48, 0);                 /* cannot perform double word I/O */
-    LE16(p, 49, CAP_LBA_SUPPORTED);
-    LE16(p, 51, 0x0200);            /* PIO transfer cycle */
-/*
-    LE16(p, 52, 0x0200);            // DMA transfer cycle, obsolete ATA3
-*/
-    LE16(p, 53, 1/*+2+4*/);         /* words 54-58[,64-70,88] are valid */
-    LE16(p, 54, s->cylinders);
-    LE16(p, 55, s->heads);
-    LE16(p, 56, s->sectors);
-    oldsize = s->cylinders * s->heads * s->sectors;
-    LE16(p, 57, oldsize);
-    LE16(p, 58, oldsize >> 16);
-    if (s->mult_sectors)
-        LE16(p, 59, 0x100 | s->mult_sectors);
-
-    LE16(p, 60, s->nb_sectors);     /* total number of LBA sectors */
-    LE16(p, 61, s->nb_sectors >> 16);
-
-    if (s->is_cf) {
-        LE16(p, 0, 0x848a);         /* CF Storage Card signature */
-        padstr(p+27*2, "ATARI800MACX CF CARD", 40);
-        LE16(p, 49, CAP_LBA_SUPPORTED);
-        LE16(p, 51, 2);
-        LE16(p, 52, 1);
-    }
-
-    if (s->is_cdrom) {
-        LE16(p, 0, GCBI_HAS_PACKET_FEAT_SET |
-                   GCBI_CDROM_DEVICE        |
-                   GCBI_HAS_REMOVABLE_MEDIA |
-                   GCBI_50US_TILL_DRQ       |
-                   GCBI_12BYTE_PACKETS);
-        padstr(p+27*2, "ATARI800MACX DVD-ROM", 40);
-        LE16(p, 49, CAP_LBA_SUPPORTED);
-    }
-}
-
-static void ide_dummy_transfer_stop(struct ide_device *s) {
-    s->data_ptr = s->data_end = s->io_buffer;
-    s->io_buffer[0] = s->io_buffer[1] = 
-    s->io_buffer[2] = s->io_buffer[3] = 0xff;
-    count = 0;
-}
-
-static void ide_reset(struct ide_device *s) {
-    if (IDE_debug) fprintf(stderr, "ide: reset\n");
-
-    if (s->is_cf) s->mult_sectors = 0;
-    else          s->mult_sectors = MAX_MULT_SECTORS;
-
-    /* ide regs */
-    s->feature = s->error = s->nsector = s->sector = s->lcyl = s->hcyl = 0;
-
-    /* lba48 */
-    s->hob_feature = s->hob_sector = s->hob_nsector =
-    s->hob_lcyl = s->hob_hcyl = s->lba48 = 0;
-
-    s->select = 0xa0;
-    s->status = READY_STAT | SEEK_STAT;
-
-    /* ATAPI stuff skipped */
-
-    s->select &= 0xf0;  /* clear head */
-    s->nsector = s->sector = 1;
-    if (s->is_cdrom) {
-        s->lcyl = 0x14;
-        s->hcyl = 0xeb;
-    } else {
-        s->lcyl = s->hcyl = 0;
-    }
-
-    s->end_transfer_func = ide_dummy_transfer_stop;
-    ide_dummy_transfer_stop(s);
-    s->media_changed = 0;
-}
-
-void IDE_Reset_Device(void *dev) {
-    struct ide_device *s = (struct ide_device *) dev;
-    if (s != NULL)
-        ide_reset(s);
-}
-
-void *IDE_Init_Drive(char *filename, int is_cf) {
-    BlockDeviceGeometry *geo;
+IDEEmu *IDE_Init()
+{
+    IDEEmu *ide = (IDEEmu *) malloc(sizeof(IDEEmu));
+    memset(ide, 0, sizeof(IDEEmu));
     
-    struct ide_device *s = (struct ide_device *) malloc(sizeof(struct ide_device));
-    memset(s, 0, sizeof(struct ide_device));
-    if (s == NULL)
-        return NULL;
-    
-    s->IMGImage = IMG_Image_Open(filename, TRUE, TRUE);
-    if (!s->IMGImage) {
-        Log_print("%s: Failed to open image", filename);
-        return FALSE;
-    }
-    
-    s->is_cf = is_cf;
-    s->is_cdrom = FALSE;
-    s->blocksize = SECTOR_SIZE;
+    ide->Disk = NULL;
+    ide->HardwareReset = FALSE;
+    ide->SoftwareReset = FALSE;
+    ide->TransferLength = 0;
+    ide->TransferIndex = 0;
+    ide->SectorCount = 0;
+    ide->SectorsPerTrack = 0;
+    ide->HeadCount = 0;
+    ide->CylinderCount = 0;
+    ide->IODelaySetting = 0;
+    ide->Scheduler = TBD;
+    ide->IsSingle = FALSE;
+    ide->IsSlave = FALSE;
 
-    if (!s->io_buffer) {
-        s->io_buffer_size = SECTOR_SIZE * MAX_MULT_SECTORS;
-        s->io_buffer      = Util_malloc(s->io_buffer_size);
-    }
-    
-    geo = IMG_Get_Geometry(s->IMGImage);
-    s->nb_sectors = IMG_Get_Sector_Count(s->IMGImage);
-
-    /* use standard physical disk geometry */
-    s->cylinders = geo->Cylinders;
-    s->heads     = geo->Heads;
-    s->sectors   = geo->SectorsPerTrack;
-
-    if (IDE_debug)
-        fprintf(stderr, "ide: cyls/heads/secs - %d/%d/%d\n", 
-                s->cylinders, s->heads, s->sectors);
-
-    s->drive_serial = 1;
-    uint32_t ser = IMG_Get_Serial_Number(s->IMGImage);
-    snprintf(s->drive_serial_str, sizeof(s->drive_serial_str),
-            "%010u", ser);
-
-    ide_reset(s);
-
-    return s;
+    ColdReset(ide);
 }
 
-static uint32_t ide_ioport_read(struct ide_device *s, uint16_t addr) {
-    int ret = 0xff, hob = 0;
-
-    addr &= 7;
-    /* hob   = s->select & (1<<7); */
-    /* FIXME: HOB stuff is broken/disabled in QEMU */
-
-    switch(addr) {
-    case 0: /* bottom ide layer does nothing here */        break;
-    case 1: ret = hob ? s->hob_feature : s->error;          break;
-    case 2: ret = hob ? s->hob_nsector : s->nsector & 0xff; break;
-    case 3: ret = hob ? s->hob_sector  : s->sector;         break;
-    case 4: ret = hob ? s->hob_lcyl    : s->lcyl;           break;
-    case 5: ret = hob ? s->hob_hcyl    : s->hcyl;           break;
-    case 6: ret = s->select;                                break;
-    default:
-    case 7: ret = s->status;                                break;
-    }
-
-    if (IDE_debug)
-        fprintf(stderr, "ide: get: addr: %04x, ret: %02x\n", addr, ret);
-
-    return ret;
+void IDE_Exit(IDEEmu *ide) {
+    Shutdown(ide);
 }
 
-static inline void not_implemented(uint8_t val) {
-    if (IDE_debug) fprintf(stderr, "\tIDE: %02x not implemented\n", val);
+void IDE_Set_Is_Single(IDEEmu *ide, int single) {
+    ide->IsSingle = single;
 }
 
-static inline void ide_abort_command(struct ide_device *s) {
-    s->status = READY_STAT | ERR_STAT;
-    s->error  = ABRT_ERR;
+void Shutdown(IDEEmu *ide) {
+    IDE_Close_Image(ide);
+
+    ide->Scheduler = NULL;
 }
 
-static void ide_cmd_lba48_transform(struct ide_device *s, int lba48) {
-    s->lba48 = lba48;
-    if (!s->lba48) {
-        if (!s->nsector)
-            s->nsector = 256;
-    } else {
-        if (!s->nsector && !s->hob_nsector)
-            s->nsector = 65536;
-        else      
-            s->nsector = (s->hob_nsector << 8) | s->nsector;
-    }
-}
-static int64_t ide_get_sector(struct ide_device *s) {
-    int64_t sector_num;
-    if (s->select & 0x40) {         /* lba */
-        if (IDE_debug)
-            fprintf(stderr, "get_sector: lba\n");
-        if (!s->lba48) {
-            sector_num = ((s->select & 0x0f) << 24) |
-                         ( s->hcyl           << 16) |
-                         ( s->lcyl           <<  8) | s->sector;
-        } else {
-            sector_num = ((int64_t) s->hob_hcyl   << 40) |
-                         ((int64_t) s->hob_lcyl   << 32) |
-                         ((int64_t) s->hob_sector << 24) |
-                         ((int64_t) s->hcyl       << 16) |
-                         ((int64_t) s->lcyl       <<  8) | s->sector;
-        }
-    } else {
-        sector_num = ((s->hcyl << 8) | s->lcyl) * s->heads * s->sectors +
-                      (s->select & 0x0f) * s->sectors + 
-                      (s->sector - 1);
+void IDE_Open_Image(IDEEmu *ide, char *filename) {
+    IDE_Close_Image(ide);
 
-        if (IDE_debug)
-            fprintf(stderr, "get_sector: large: hcyl %02x  lcyl %02x  heads %02x  sectors %02x  select&f %1x  sector-1 %d  sector_num %"PRId64"\n", s->hcyl, s->lcyl, s->heads, s->sectors, s->select&0x0f, s->sector-1, sector_num);
-
-    }
-    return sector_num;
-}
-
-static void ide_transfer_start(struct ide_device *s, uint8_t *buf, int size,
-                                       EndTransferFunc *end_transfer_func) {
-    if (IDE_debug) fprintf(stderr, "transfer start\n");
-
-    s->end_transfer_func = end_transfer_func;
-    s->data_ptr          = buf;
-    s->data_end          = buf + size;
-    s->cycle             = 0;
-
-    if (!(s->status & ERR_STAT)) s->status |= DRQ_STAT;
-}
-
-static void ide_transfer_stop(struct ide_device *s) {
-    if (IDE_debug) fprintf(stderr, "transfer stop\n");
-
-    s->end_transfer_func = ide_transfer_stop;
-    s->data_ptr          = s->io_buffer;
-    s->data_end          = s->io_buffer;
-    s->status           &= ~DRQ_STAT;
-    count                = 0;
-}
-
-static void ide_set_sector(struct ide_device *s, int64_t sector_num) {
-    unsigned int cyl, r;
-
-    if (s->select & 0x40) {
-        if (!s->lba48) {
-            s->select = (s->select & 0xf0) | (sector_num >> 24);
-            s->hcyl   =                       sector_num >> 16 ;
-            s->lcyl   =                       sector_num >>  8 ;
-            s->sector =                       sector_num       ;
-        } else {
-            s->sector     = sector_num      ;
-            s->lcyl       = sector_num >>  8;
-            s->hcyl       = sector_num >> 16;
-            s->hob_sector = sector_num >> 24;
-            s->hob_lcyl   = sector_num >> 32;
-            s->hob_hcyl   = sector_num >> 40;
-        }
-    } else {
-        cyl = sector_num / (s->heads * s->sectors);
-        r   = sector_num % (s->heads * s->sectors);
-
-        s->hcyl   = cyl >> 8;
-        s->lcyl   = cyl     ;
-        s->select = (s->select & 0xf0) | ((r / s->sectors) & 0x0f);
-        s->sector =                       (r % s->sectors) + 1;
-    }
-}
-
-static void ide_sector_read(struct ide_device *s) {
-    int64_t sector_num;
-    int n;
-
-    s->status  = READY_STAT | SEEK_STAT;
-    s->error   = 0;
-    sector_num = ide_get_sector(s);
-    n          = s->nsector;
-
-    if (!n) {
-        ide_transfer_stop(s);
-    } else {
-        if (IDE_debug)
-            fprintf(stderr, "IDE: read sector=%" PRId64 "\n", sector_num);
-
-        if (n > s->req_nb_sectors)
-            n = s->req_nb_sectors;
-
-        IMG_Read_Sectors(s->IMGImage, s->io_buffer, sector_num, n);
-
-        if (IDE_debug) fprintf(stderr, "sector read OK\n");
-
-        ide_transfer_start(s, s->io_buffer, 512*n, ide_sector_read);
-        s->nsector -= n;
-        ide_set_sector(s, sector_num + n + (s->nsector ? 0 : -1));
-    }
-    return;
-
-}
-
-static void ide_sector_write(struct ide_device *s) {
-    int64_t sector_num;
-    int n, n1;
-
-    s->status  = READY_STAT | SEEK_STAT;
-    sector_num = ide_get_sector(s);
-
-    if (IDE_debug)
-        fprintf(stderr, "IDE: write sector=%" PRId64 "\n", sector_num);
-
-    n = s->nsector;
-    if (n > s->req_nb_sectors)
-        n = s->req_nb_sectors;
-
-    IMG_Write_Sectors(s->IMGImage, s->io_buffer, sector_num, n);
-    IMG_Flush(s->IMGImage);
-
-    s->nsector -= n;
-    if (s->nsector == 0) {
-        ide_transfer_stop(s);
-    } else {
-        n1 = s->nsector;
-        if (n1 > s->req_nb_sectors)
-            n1 = s->req_nb_sectors;
-        ide_transfer_start(s, s->io_buffer, 512 * n1, ide_sector_write);
-    }
-    ide_set_sector(s, sector_num + n + (s->nsector ? 0 : -1));
-    return;
-
-}
-
-static void ide_command(struct ide_device *s, uint8_t val) {
-    int lba48 = 0, n;
-
-    switch(val) {
-    case WIN_IDENTIFY:
-        ide_identify(s);
-        s->status = READY_STAT | SEEK_STAT;
-        ide_transfer_start(s, s->io_buffer, 512, ide_transfer_stop);
-        break;
-
-    case WIN_SPECIFY:
-    case WIN_RECAL:
-        s->error = 0;
-        s->status = READY_STAT | SEEK_STAT;
-        break;
-
-    case WIN_SETMULT:
-        if (s->is_cf && !s->nsector) {
-            s->mult_sectors = 0;
-            s->status = READY_STAT | SEEK_STAT;
-        } else if ((s->nsector & 0xff) != 0
-               && ((s->nsector & 0xff) > MAX_MULT_SECTORS
-               ||  (s->nsector & (s->nsector - 1)) != 0)) {
-            ide_abort_command(s);
-        } else {
-            s->mult_sectors = s->nsector & 0xff;
-            s->status       = READY_STAT | SEEK_STAT;
-        } 
-        break;
-
-    case WIN_VERIFY_EXT:
-        lba48 = 1;
-    case WIN_VERIFY:
-    case WIN_VERIFY_ONCE:
-        /* do sector number check ? */
-        ide_cmd_lba48_transform(s, lba48);
-        s->status = READY_STAT | SEEK_STAT;
-        break;
-
-    case WIN_READ_EXT:
-        lba48 = 1;
-    case WIN_READ:
-    case WIN_READ_ONCE:
-        ide_cmd_lba48_transform(s, lba48);
-        s->req_nb_sectors = 1;
-        ide_sector_read(s);
-        break;
-
-    case WIN_WRITE_EXT:
-        lba48 = 1;
-    case WIN_WRITE:
-    case WIN_WRITE_ONCE:
-    case CFA_WRITE_SECT_WO_ERASE:
-    case WIN_WRITE_VERIFY:
-        ide_cmd_lba48_transform(s, lba48);
-        s->error          = 0;
-        s->status         = SEEK_STAT | READY_STAT;
-        s->req_nb_sectors = 1;
-        ide_transfer_start(s, s->io_buffer, 512, ide_sector_write);
-        s->media_changed = 1;
-        break;
-
-    case WIN_MULTREAD_EXT:
-        lba48 = 1;
-    case WIN_MULTREAD:
-        if (!s->mult_sectors) goto abort_cmd;
-
-        ide_cmd_lba48_transform(s, lba48);
-        s->req_nb_sectors = s->mult_sectors;
-        ide_sector_read(s);
-        break;
-
-    case WIN_MULTWRITE_EXT:
-        lba48 = 1;
-    case WIN_MULTWRITE:
-    case CFA_WRITE_MULTI_WO_ERASE:
-        if (!s->mult_sectors) goto abort_cmd;
-
-        ide_cmd_lba48_transform(s, lba48);
-        s->error          = 0;
-        s->status         = SEEK_STAT | READY_STAT;
-        s->req_nb_sectors = s->mult_sectors;
-        n                 = s->nsector;
-        if (n > s->req_nb_sectors)
-            n = s->req_nb_sectors;
-        ide_transfer_start(s, s->io_buffer, 512 * n, ide_sector_write);
-        s->media_changed = 1;
-        break;
-
-    case WIN_READDMA_EXT:
-    case WIN_READDMA:
-    case WIN_READDMA_ONCE:
-    case WIN_WRITEDMA_EXT:
-    case WIN_WRITEDMA:
-    case WIN_WRITEDMA_ONCE:
-        not_implemented(val);
-        goto abort_cmd;
-        break;
-
-    case WIN_READ_NATIVE_MAX_EXT:
-        lba48 = 1;
-    case WIN_READ_NATIVE_MAX:
-        ide_cmd_lba48_transform(s, lba48);
-        ide_set_sector(s, s->nb_sectors - 1);
-        s->status = READY_STAT | SEEK_STAT;
-        break;
-
-    case WIN_CHECKPOWERMODE1:
-    case WIN_CHECKPOWERMODE2:
-        s->nsector = 0xff;                      /* device active or idle */
-        s->status = READY_STAT | SEEK_STAT;
-        break;
-
-    case WIN_SETFEATURES:
-        switch(s->feature) {
-        case FEAT_ENABLE_REVERTING_TO_DEFAULTS:
-        case FEAT_DISABLE_REVERTING_TO_DEFAULTS:
-        case FEAT_ENABLE_WRITE_CACHE:
-        case FEAT_DISABLE_WRITE_CACHE:
-        case FEAT_ENABLE_READ_LOOKAHEAD:
-        case FEAT_DISABLE_READ_LOOKAHEAD:
-        case FEAT_ENABLE_ADVANCED_PM:
-        case FEAT_DISABLE_ADVANCED_PM:
-        case FEAT_ENABLE_AUTO_ACOUSTIC_MNGMNT:
-        case FEAT_DISABLE_AUTO_ACOUSTIC_MNGMNT:
-            s->status = READY_STAT | SEEK_STAT;
-            break;
-        case FEAT_SET_TRANSFER_MODE:
-            if ( (s->nsector >> 3) <= 1) { /* 0: pio default, 1: pio mode */
-                /* set identify_data accordingly */
-            } else { /* single word dma, mdma and udma mode */
-                goto abort_cmd;
-            }
-            s->status = READY_STAT | SEEK_STAT;
-            break;
-        case FEAT_ENABLE_8BIT_DATA_TRANSFERS:
-            if (IDE_debug) fprintf(stderr, "ide: enable 8-bit mode\n");
-            s->do_8bit = 1;
-            s->cycle   = 0;
-            s->status  = READY_STAT | SEEK_STAT;
-            break;
-        case FEAT_DISABLE_8BIT_DATA_TRANSFERS:
-            if (IDE_debug) fprintf(stderr, "ide: disable 8-bit mode\n");
-            s->do_8bit = 0;
-            s->status  = READY_STAT | SEEK_STAT;
-            break;
-        default:
-            goto abort_cmd;
-            break;
-        }
-        break;
-
-    case WIN_FLUSH_CACHE:
-    case WIN_FLUSH_CACHE_EXT:
-        IMG_Flush(s->IMGImage);
-        break;
-
-    case WIN_STANDBY:
-    case WIN_STANDBY2:
-    case WIN_STANDBYNOW1:
-    case WIN_STANDBYNOW2:
-    case WIN_IDLEIMMEDIATE:
-    case CFA_IDLEIMMEDIATE:
-    case WIN_SETIDLE1:
-    case WIN_SETIDLE2:
-    case WIN_SLEEPNOW1:
-    case WIN_SLEEPNOW2:
-        s->status = READY_STAT;
-        break;
-
-    case WIN_SEEK:
-        if(s->is_cdrom) goto abort_cmd;
-        /* XXX: Check that seek is within bounds and return error if not */
-        s->status = READY_STAT | SEEK_STAT;
-        break;
-
-    /* ATAPI Commands SKIPPED */
-
-    /* CF-ATA commands */
-    case CFA_REQ_EXT_ERROR_CODE:
-        if (!s->is_cf) goto abort_cmd;
-        s->error  = 0x09;    /* miscellaneous error, MARK_ERR | MCR_ERR */
-        s->status = READY_STAT | SEEK_STAT;
-        break;
-
-    case CFA_ERASE_SECTORS:
-    case CFA_WEAR_LEVEL:
-        if (!s->is_cf)                goto abort_cmd;
-        if (val == CFA_WEAR_LEVEL)    s->nsector = 0;
-        if (val == CFA_ERASE_SECTORS) s->media_changed = 1;
-        s->error  = 0;
-        s->status = READY_STAT | SEEK_STAT;
-        break;
-
-    case CFA_TRANSLATE_SECTOR:
-        if (!s->is_cf) goto abort_cmd;
-        s->error  = 0;
-        s->status = READY_STAT | SEEK_STAT;
-        memset(s->io_buffer, 0, 0x200);
-        s->io_buffer[0x00] = s->hcyl;                       /* Cyl MSB */
-        s->io_buffer[0x01] = s->lcyl;                       /* Cyl LSB */
-        s->io_buffer[0x02] = s->select;                     /* Head */
-        s->io_buffer[0x03] = s->sector;                     /* Sector */
-        s->io_buffer[0x04] = ide_get_sector(s) >> 16;       /* LBA MSB */
-        s->io_buffer[0x05] = ide_get_sector(s) >> 8;        /* LBA */
-        s->io_buffer[0x06] = ide_get_sector(s) >> 0;        /* LBA LSB */
-        s->io_buffer[0x13] = 0x00;                          /* Erase flag */
-        s->io_buffer[0x18] = 0x00;                          /* Hot count */
-        s->io_buffer[0x19] = 0x00;                          /* Hot count */
-        s->io_buffer[0x1a] = 0x01;                          /* Hot count */
-        ide_transfer_start(s, s->io_buffer, 0x200, ide_transfer_stop);
-        break;
-
-    case CFA_ACCESS_METADATA_STORAGE:
-        if (!s->is_cf) goto abort_cmd;
-        not_implemented(val);   /* FIXME: ... not yet */
-        goto abort_cmd;
-        break;
-
-    case IBM_SENSE_CONDITION:
-        if (!s->is_cf) goto abort_cmd;
-        switch (s->feature) {
-            case 0x01:  /* sense temperature in device */
-                s->nsector = 0x50;      /* +20 C */
-                break;
-            default:
-                goto abort_cmd;
-        }
-        s->status = READY_STAT | SEEK_STAT;
-        break;
-
-    case WIN_SMART:
-        not_implemented(val);   /* FIXME: ... not yet */
-        goto abort_cmd;
-        break;
-
-    default:
-    abort_cmd:
-        ide_abort_command(s);
-        break;
-    }
-}
-
-static void ide_clear_hob(struct ide_device *s) {
-    s->select &= ~(1<<7);
-}
-
-static void ide_ioport_write(struct ide_device *s, uint16_t addr, uint8_t val){
-    if (IDE_debug)
-        fprintf(stderr, "ide: put: addr: %04x, byte: %02x\n", addr, val);
-
-    addr &= 7;
-
-    /* ignore writes to command block while busy */
-    if (addr != 7 && s->bus_status & (BUSY_STAT|DRQ_STAT))
+    ide->Disk = IMG_Image_Open(filename, TRUE, TRUE);
+    if (!ide->Disk)
         return;
 
-    switch(addr) {
-    case 0: /* bottom ide layer does nothing here */ break;
-    case 1:
-        ide_clear_hob(s);
-        s->hob_feature = s->feature;
-        s->feature = val;
-        break;
-    case 2:
-        ide_clear_hob(s);
-        s->hob_nsector = s->nsector;
-        s->nsector = val;
-        break;
-    case 3:
-        ide_clear_hob(s);
-        s->hob_sector = s->sector;
-        s->sector = val;
-        break;
-    case 4:
-        ide_clear_hob(s);
-        s->hob_lcyl = s->lcyl;
-        s->lcyl = val;
-        break;
-    case 5:
-        ide_clear_hob(s);
-        s->hob_hcyl = s->hcyl;
-        s->hcyl = val;
-        break;
-    case 6:
-        /* FIXME: HOB readback uses bit 7 */
-        s->select = (val & ~0x10) | 0xa0;
-        s->bus_unit = (val>>4)&1;
-        break;
-    default:
-    case 7:
-        if (IDE_debug) fprintf(stderr, "\tIDE: CMD=%02x\n", val);
+    ide->WriteEnabled =  !IMG_Is_Read_Only(ide->Disk);
+    ide->SectorCount = IMG_Get_Sector_Count(ide->Disk);
 
-        ide_transfer_stop(s);
+    BlockDeviceGeometry *geo = IMG_Get_Geometry(ide->Disk);
 
-/*
-        if ( (s->status & (BUSY_STAT|DRQ_STAT)) && val != WIN_DEVICE_RESET)
-            break;
-*/
-
-        ide_command(s, val);
-
-        break;
-    }
-}
-
-static uint16_t ide_data_readw(struct ide_device *s, int addr) {
-    uint8_t *p;
-    uint16_t ret;
-
-    /* PIO data access only when DRQ bit is set */
-    if (!(s->status & DRQ_STAT)) return 0;
-
-    /* LE16 */
-    p           = s->data_ptr;
-    ret         = p[0];
-    ret        |= p[1] << 8;
-    p          += 2;
-    s->data_ptr = p;
-
-    if (IDE_debug) {
-        fprintf(stderr, "data_readw: %d, %04x (count: %d)\n", addr, ret, count);
-        count++;
-        count &= 0xff;
-    }
-
-    if (p > s->data_end) s->end_transfer_func(s);
-
-    return ret;
-}
-
-static void ide_data_writew(struct ide_device *s, int addr, uint16_t val) {
-    uint8_t *p;
-
-    if (IDE_debug) fprintf(stderr, "data_writew: %d, %04x\n", addr, val);
-
-    /* PIO data access only when DRQ bit is set */
-    if (!(s->status & DRQ_STAT)) return;
-
-    /* LE16 */
-    p           = s->data_ptr;
-    p[0]        = val & 0xff;
-    p[1]        = val >> 8;
-    p          += 2;
-    s->data_ptr = p;
-
-    if (p > s->data_end) s->end_transfer_func(s);
-}
-
-static uint8_t mmio_ide_read(struct ide_device *s, int addr) {
-    uint16_t ret;   /* will be cast at return */
-
-    addr &= 15;
-
-    if (addr == 0) {
-        if (!s->do_8bit) {
-            ret = ide_data_readw(s, 0);
-            s->upperhalf[0] = ret & 0xff00;
-            return ret;
-        }
-        if (!s->cycle) {
-            s->data = ide_data_readw(s, 0);
-            ret = s->data & 0xff;
-        } else {
-            ret = s->data >> 8;
-        }
-        s->cycle = !s->cycle;
-        return ret;
-    } else if (addr >= 8) {
-        return s->upperhalf[addr-8] >> 8;
+    // Check if the geometry is IDE and BIOS compatible.
+    //
+    // IDE compatibility requires:
+    //  cylinders <= 16777216
+    //  heads <= 16
+    //  sectors <= 255
+    //
+    // BIOS compatibility requires:
+    //  cylinders <= 65535
+    //  heads <= 16
+    //  sectors <= 63
+    //
+    if (ide->SectorCount > 16514064) {          // >16*63*16383 - advertise max to BIOS
+        ide->SectorsPerTrack = 63;
+        ide->HeadCount = 15;                    // ATA-4 B.2.2 -- yes, we switch to 15 for BIGGER drives.
+        ide->CylinderCount = 16383;
+    } else if (geo->Cylinders && geo->Heads && geo->SectorsPerTrack && geo->Cylinders <= 1024 && geo->Heads <= 16 && geo->SectorsPerTrack <= 63) {
+        // BIOS compatible - use geometry directly
+        ide->CylinderCount = geo->Cylinders;
+        ide->HeadCount = geo->Heads;
+        ide->SectorsPerTrack = geo->SectorsPerTrack;
     } else {
-        ret = ide_ioport_read(s, addr);
-        s->upperhalf[addr] = ret & 0xff00;
-        return ret;
+        // create alternate geometry (see ATA-4 Annex B)
+        ide->SectorsPerTrack = 63;
+
+        if (ide->SectorCount < 8257536 || !geo->Heads || geo->Heads > 16)
+            ide->HeadCount = 16;
+        else
+            ide->HeadCount = geo->Heads;
+
+        ide->CylinderCount = ide->SectorCount / (ide->SectorsPerTrack * ide->HeadCount);
+        if (ide->CylinderCount < 1)
+            ide->CylinderCount = 1;
+
+        if (ide->CylinderCount > 16383)
+            ide->CylinderCount = 16383;
     }
+
+    ResetCHSTranslation(ide);
+
+    ide->IODelaySetting = geo->SolidState ? IODelayFast : IODelaySlow;
+    ide->FastDevice = geo->SolidState;
+
+    ColdReset(ide);
 }
 
-static void mmio_ide_write(struct ide_device *s, int addr, uint8_t val) {
-    addr &= 15;
+void IDE_Close_Image(IDEEmu *ide) {
+    ide->Disk = NULL;
 
-    if (addr == 0) {
-        if (!s->do_8bit) {
-            ide_data_writew(s, 0, s->upperhalf[0] | val);
-            return;
-        }
-        if (!s->cycle) {
-            s->data = val & 0xff;
-        } else {
-            ide_data_writew(s, 0, s->data | (val << 8));
-        }
-        s->cycle = !s->cycle;
-    } else if (addr >= 8) {
-        s->upperhalf[addr-8] = val << 8;
-    } else {
-        ide_ioport_write(s, addr, s->upperhalf[addr] | val);
+    ide->SectorCount = 0;
+    ide->CylinderCount = 0;
+    ide->HeadCount = 0;
+    ide->SectorsPerTrack = 0;
+
+    ResetCHSTranslation(ide);
+
+    ColdReset(ide);
+}
+
+void ColdReset(IDEEmu *ide) {
+    ide->HardwareReset = FALSE;
+    ide->SoftwareReset = FALSE;
+    ResetDevice(ide);
+}
+
+void IDE_Set_Reset(IDEEmu *ide, int asserted) {
+    if (ide->HardwareReset == asserted)
+        return;
+
+    ide->HardwareReset = asserted;
+
+    if (asserted && ide->SoftwareReset)
+        ResetDevice(ide);
+}
+
+uint32_t IDE_Read_Data_Latch(IDEEmu *ide, int advance) {
+    if (ide->HardwareReset || ide->SoftwareReset || !ide->Disk)
+        return 0xFFFF;
+
+    uint32_t v = 0xFF;
+    
+    if (ide->TransferIndex < TransferBufferSize) {
+        v = ide->TransferBuffer[ide->TransferIndex];
+
+        if (ide->Transfer16Bit) {
+            if (ide->TransferIndex + 1 < TransferBufferSize)
+                v += (uint32_t)ide->TransferBuffer[ide->TransferIndex + 1] << 8;
+            else
+                v += 0xFF00;
+        } else
+            v += 0xFF00;
     }
+
+    if (advance && !ide->TransferAsWrites && ide->TransferIndex < ide->TransferLength) {
+        ++(ide->TransferIndex);
+
+        if (ide->Transfer16Bit)
+            ++(ide->TransferIndex);
+
+        if (ide->TransferIndex >= ide->TransferLength)
+            CompleteCommand(ide);
+    }
+
+    return v;
 }
 
-void IDE_PutByte(void *dev, uint16_t addr, uint8_t val) {
-    struct ide_device *s = (struct ide_device *) dev;
-    mmio_ide_write(s, addr, val);
-}
+void IDE_Write_Data_Latch(IDEEmu *ide, uint8_t lo, uint8_t hi) {
+    if (ide->HardwareReset || ide->SoftwareReset || !ide->Disk)
+        return;
 
-uint8_t IDE_GetByte(void *dev, uint16_t addr, int no_side_effects) {
-    struct ide_device *s = (struct ide_device *) dev;
-    return mmio_ide_read(s, addr);
-}
+    if (ide->TransferAsWrites && ide->TransferIndex < ide->TransferLength) {
+        ide->TransferBuffer[ide->TransferIndex] = lo;
 
-#if 0
-int IDE_Initialise(int *argc, char *argv[]) {
-    int i, j, ret = TRUE;
-    char *filename = NULL;
+        ++(ide->TransferIndex);
 
-    if (IDE_debug)
-        fprintf(stderr, "ide: init\n");
+        if (ide->Transfer16Bit) {
+            if (ide->TransferIndex < ide->TransferLength) {
+                ide->TransferBuffer[ide->TransferIndex] = hi;
 
-    for (i = j = 1; i < *argc; i++) {
-        int available = i + 1 < *argc;
-
-        if (!strcmp(argv[i], "-ide"  )) {
-            if (!available) {
-                Log_print("Missing argument for '%s'", argv[i]);
-                return FALSE;
+                ++ide->TransferIndex;
             }
-            filename = Util_strdup(argv[++i]);
-        } else if (!strcmp(argv[i], "-ide_debug")) {
-            IDE_debug = 1;
-        } else if (!strcmp(argv[i], "-ide_cf")) {
-            device.is_cf = 1;
-        } else {
-             if (!strcmp(argv[i], "-help")) {
-                 Log_print("\t-ide <file>      Enable IDE emulation");
-                 Log_print("\t-ide_debug       Enable IDE Debug Output");
-                 Log_print("\t-ide_cf          Enable CF emulation");
-             }
-             argv[j++] = argv[i];
+        }
+
+        if (ide->TransferIndex >= ide->TransferLength) {
+            ide->RFile.Status &= ~IDEStatus_DRQ;
+            ide->RFile.Status |= IDEStatus_BSY;
+
+            UpdateStatus(ide);
         }
     }
-    *argc = j;
+}
 
-    if (filename) {
-        IDE_enabled = ret = ide_init_drive(&device, filename);
-        free(filename);
+uint8_t IDE_Debug_Read_Byte(IDEEmu *ide, uint8_t address) {
+    if (ide->HardwareReset || ide->SoftwareReset || !ide->Disk)
+        return 0xD0;
+
+    if (address >= 8)
+        return 0xFF;
+
+    uint32_t idx = address & 7;
+
+    UpdateStatus(ide);
+
+    // ATA/ATAPI-4 9.16.0 -- when device 1 is selected with only device 0 present,
+    // status and alternate status return 00h, while all other reads are the same as
+    // device 0.
+    if (ide->IsSingle) {
+        if (ide->RFile.Head & 0x10) {
+            if (idx == 7)
+                return 0;
+        }
     }
 
-    return ret;
-}
-#endif
+    // ATA-1 7.2.13 - if BSY=1, all reads of the command block return the status register
+    if (ide->RFile.Status & IDEStatus_BSY)
+        return ide->RFile.Status;
 
-void IDE_Close_Drive(void *dev)
-{
-    struct ide_device *s = (struct ide_device *) dev;
-    IMG_Image_Close(s->IMGImage);
+    if (idx == 0)
+        return (uint8_t)IDE_Read_Data_Latch(ide, FALSE);
+
+    return ide->Registers[idx];
+}
+
+uint8_t IDE_Read_Byte(IDEEmu *ide, uint8_t address) {
+    if (ide->HardwareReset || ide->SoftwareReset || !ide->Disk)
+        return 0xD0;
+
+    if (address >= 8)
+        return 0xFF;
+
+    uint32_t idx = address & 7;
+
+    UpdateStatus(ide);
+
+    // ATA/ATAPI-4 9.16.0 -- when device 1 is selected with only device 0 present,
+    // status and alternate status return 00h, while all other reads are the same as
+    // device 0.
+    if (ide->IsSingle) {
+        if (ide->RFile.Head & 0x10) {
+            if (idx == 7)
+                return 0;
+        }
+    }
+
+    // ATA-1 7.2.13 - if BSY=1, all reads of the command block return the status register
+    if (ide->RFile.Status & IDEStatus_BSY)
+        return ide->RFile.Status;
+
+    if (idx == 0) {
+        uint8_t v = (uint8_t)IDE_Read_Data_Latch(ide, TRUE);
+        return v;
+    }
+
+    return ide->Registers[idx];
+}
+
+void IDE_Write_Byte(IDEEmu *ide, uint8_t address, uint8_t value) {
+    if (address >= 8 || ide->HardwareReset || ide->SoftwareReset || !ide->Disk)
+        return;
+
+    uint32_t idx = address & 7;
+
+    switch(idx) {
+        case 0:     // data
+            IDE_Write_Data_Latch(ide, value, 0xFF);
+            break;
+
+        case 1:     // features
+            ide->Features = value;
+            break;
+
+        case 2:     // sector count
+        case 3:     // sector number / LBA 0-7
+        case 4:     // cylinder low / LBA 8-15
+        case 5:     // cylinder high / LBA 16-23
+        case 6:     // drive/head / LBA 24-27
+            UpdateStatus(ide);
+
+            if (ide->RFile.Status & IDEStatus_BSY) {
+                printf("IDE: Attempted write of $%02x to register file index $%02x while drive is busy.\n", value, idx);
+//              g_sim.PostInterruptingEvent(kATSimEvent_VerifierFailure);
+            } else {
+                // bits 7 and 5 in the drive/head register are always 1
+                if (idx == 6)
+                    value |= 0xa0;
+
+                ide->Registers[idx] = value;
+            }
+            break;
+
+        case 7:     // command
+            // ignore other drive commands except for EXECUTE DEVICE DIAGNOSTIC
+            if (((ide->RFile.Head & 0x10) != (ide->IsSlave ? 0x10 : 0x00)) && value != 0x90)
+                return;
+
+            // check if drive is busy
+            UpdateStatus(ide);
+
+            if (ide->RFile.Status & IDEStatus_BSY) {
+                printf("IDE: Attempt to start command $%02x while drive is busy.\n", value);
+            } else {
+                StartCommand(ide, value);
+            }
+            break;
+    }
+}
+
+uint8_t IDE_Read_Byte_Alt(IDEEmu *ide, uint8_t address) {
+    switch(address & 7) {
+        default:
+            return 0xFF;
+
+        case 0x06:  // alternate status
+            if (ide->IsSingle && (ide->RFile.Head & 0x10))
+                return 0;
+
+            if (ide->HardwareReset || ide->SoftwareReset)
+                return 0xD0;
+
+            UpdateStatus(ide);
+            return ide->RFile.Status;
+
+        case 0x07:  // device address (drive address)
+            UpdateStatus(ide);
+
+            return (ide->IsSlave ? 0x01 : 0x02) + ((~ide->RFile.Head & 0x0f) << 2) + (ide->WriteInProgress ? 0x00 : 0x40);
+    }
+}
+
+void IDE_Write_Byte_Alt(IDEEmu *ide, uint8_t address, uint8_t value) {
+    if ((address & 7) == 6) {   // device control
+        // bit 2 = SRST (software reset)
+        // bit 1 = nIEN (inverted interrupt enable)
+
+        int srst = (value & 0x02) != 0;
+
+        if (ide->SoftwareReset != srst) {
+            ide->SoftwareReset = srst;
+
+            if (srst && !ide->HardwareReset)
+                ResetDevice(ide);
+        }
+    }
+}
+
+int IDE_Debug_Read_Sector(IDEEmu *ide, uint32_t lba, void *dst) {
+    if (ide->Disk)
+        return(-1);
+    
+    if (lba >= ide->SectorCount)
+        return(-1);
+
+    IMG_Read_Sectors(ide->Disk, dst, lba, 1);
+    return(0);
+}
+
+int IDE_Debug_Write_Sector(IDEEmu *ide, uint32_t lba, const void *dst) {
+    if (ide->Disk)
+        return(-1);
+
+    if (lba >= ide->SectorCount)
+        return(-1);
+
+    if (!ide->WriteEnabled)
+        return(-1);
+
+    IMG_Write_Sectors(ide->Disk, dst, lba, 1);
+    return(0);
+}
+
+void ResetDevice(IDEEmu *ide) {
+    ide->ActiveCommand = 0;
+    ide->ActiveCommandNextTime = 0;
+    ide->ActiveCommandState = 0;
+
+    // ATA-1 8.1 Reset Response / ATA-4 9.1 Signature and persistence
+    ide->RFile.Data            = 0x00;
+    ide->RFile.Errors          = 0x01;
+    ide->RFile.SectorCount     = 0x01;
+    ide->RFile.SectorNumber    = 0x01;
+    ide->RFile.CylinderLow     = 0x00;
+    ide->RFile.CylinderHigh    = 0x00;
+    ide->RFile.Head            = 0x00;
+    ide->RFile.Status          = IDEStatus_DRDY | IDEStatus_DSC;
+
+    ide->Features = 0;
+    ide->Transfer16Bit = TRUE;
+
+    ide->WriteInProgress = FALSE;
+
+    memset(ide->TransferBuffer, 0, TransferBufferSize);
+
+    // Default to READ/WRITE MULTIPLE commands being enabled and specify a preferred
+    // default of 32 sectors.
+    ide->SectorsPerBlock = 32;
+}
+
+void UpdateStatus(IDEEmu *ide) {
+    if (ide->ActiveCommandState || !ide->Disk)
+        return;
+
+    uint32_t t = ATSCHEDULER_GETTIME(ide->Scheduler);
+
+    if ((int32_t)(t - ide->ActiveCommandNextTime) < 0)
+        return;
+
+    switch(ide->ActiveCommand) {
+        case 0x10:      case 0x11:      case 0x12:      case 0x13:
+        case 0x14:      case 0x15:      case 0x16:      case 0x17:
+        case 0x18:      case 0x19:      case 0x1A:      case 0x1B:
+        case 0x1C:      case 0x1D:      case 0x1E:      case 0x1F:
+            // recalibrate (ATA-1 mandatory)
+            switch(ide->ActiveCommandState) {
+                case 1:
+                    ide->RFile.Status |= IDEStatus_BSY;
+                    ++(ide->ActiveCommandState);
+                    ide->ActiveCommandNextTime = t + 100000;
+                    break;
+
+                case 2:
+                    CompleteCommand(ide);
+                    break;
+            }
+            break;
+
+        case 0x20:  // read sector(s) w/retry
+        case 0x21:  // read sector(s) w/o retry
+        case 0xC4:  // read multiple
+            switch(ide->ActiveCommandState) {
+                case 1:
+                    ide->RFile.Status |= IDEStatus_BSY;
+                    ++(ide->ActiveCommandState);
+
+                    // BOGUS: FDISK.BAS requires a delay before BSY drops since it needs to see
+                    // BSY=1. ATA-4 7.15.6.1 BSY (Busy) states that this is not safe as the drive
+                    // may operate too quickly to spot this.
+                    ide->ActiveCommandNextTime = t + ide->IODelaySetting;
+                    break;
+
+                case 2:
+                    // If the command is READ MULTIPLE and multiple commands are disabled, fail the command.
+                    if (ide->ActiveCommand == 0xC4 && ide->SectorsPerBlock == 0) {
+                        printf("Failing READ MULTIPLE command as multiple commands are disabled.");
+                        AbortCommand(ide, 0);
+                        return;
+                    }
+
+                    {
+                        uint32_t lba;
+                        uint32_t nsecs = ide->RFile.SectorCount;
+
+                        if (!nsecs)
+                            nsecs = 256;
+
+                        if (!ReadLBA(ide, &lba)) {
+                            AbortCommand(ide, 0);
+                            return;
+                        }
+
+                        printf("IDE: Reading %u sectors starting at LBA %u.\n", nsecs, lba);
+
+                        if (lba >= ide->SectorCount || ide->SectorCount - lba < nsecs || nsecs > MaxSectorTransferCount) {
+                            ide->RFile.Status |= IDEStatus_ERR;
+                            CompleteCommand(ide);
+                        } else {
+                            IMG_Read_Sectors(ide->Disk, ide->TransferBuffer, lba, nsecs);
+
+                            WriteLBA(ide, lba + nsecs - 1);
+
+                            BeginReadTransfer(ide, nsecs << 9);
+
+                            // ATA-1 7.2.11 specifies that at command completion the Sector Count register
+                            // should contain the number of unsuccessful sectors or zero for completion.
+                            // Modern CF devices still do this.
+                            ide->RFile.SectorCount = 0;
+                        }
+
+                        ide->ActiveCommandState = 0;
+                    }
+                    break;
+
+            }
+            break;
+
+        case 0x30:  // write sector(s) w/retry
+        case 0x31:  // write sector(s) w/o retry
+        case 0xC5:  // write multiple
+            switch(ide->ActiveCommandState) {
+                case 1:
+                    ide->RFile.Status |= IDEStatus_BSY;
+                    ++(ide->ActiveCommandState);
+                    ide->ActiveCommandNextTime = t + 250;
+                    break;
+
+                case 2:
+                    // If the command is WRITE MULTIPLE and multiple commands are disabled, fail the command.
+                    if (ide->ActiveCommand == 0xC5 && ide->SectorsPerBlock == 0) {
+                        printf("Failing WRITE MULTIPLE command as multiple commands are disabled.");
+                        AbortCommand(ide, 0);
+                        return;
+                    }
+
+                    {
+                        uint32_t lba;
+                        if (!ReadLBA(ide, &lba)) {
+                            AbortCommand(ide, 0);
+                            return;
+                        }
+
+                        uint32_t nsecs = ide->RFile.SectorCount;
+
+                        if (!nsecs)
+                            nsecs = 256;
+
+                        printf("IDE: Writing %u sectors starting at LBA %u .\n", nsecs, lba);
+
+                        if (!ide->WriteEnabled) {
+                            printf("IDE: Write blocked due to read-only status.\n");
+                            AbortCommand(ide, 0);
+                        }
+
+                        if (lba >= ide->SectorCount || ide->SectorCount - lba < nsecs || nsecs >= MaxSectorTransferCount) {
+                            printf("IDE: Returning error due to invalid command parameters.\n");
+                            ide->RFile.Status |= IDEStatus_ERR;
+                            CompleteCommand(ide);
+                        } else {
+                            // Note that we are actually transferring 256 words, but the Atari only reads
+                            // the low bytes.
+                            ide->TransferLBA = lba;
+                            ide->TransferSectorCount = nsecs;
+                            BeginWriteTransfer(ide, nsecs << 9);
+                            ++(ide->ActiveCommandState);
+                        }
+                    }
+                    break;
+
+                case 3:
+                    if (ide->TransferIndex < ide->TransferLength)
+                        break;
+
+                    IMG_Write_Sectors(ide->Disk, ide->TransferBuffer, ide->TransferLBA, ide->TransferSectorCount);
+
+                    IMG_Flush(ide->Disk);
+
+                    WriteLBA(ide, ide->TransferLBA + ide->TransferSectorCount - 1);
+
+                    // ATA-1 7.2.11 specifies that at command completion the Sector Count register
+                    // should contain the number of unsuccessful sectors or zero for completion.
+                    // Modern CF devices still do this.
+                    ide->RFile.SectorCount = 0;
+
+                    ide->RFile.Status |= IDEStatus_BSY;
+                    ++(ide->ActiveCommandState);
+                    ide->ActiveCommandNextTime = t + ide->IODelaySetting;
+                    ide->WriteInProgress = TRUE;
+                    break;
+
+                case 4:
+                    CompleteCommand(ide);
+                    break;
+            }
+            break;
+
+        case 0x40:  // read verify sectors w/retry (ATA-1 mandatory)
+        case 0x41:  // read verify sectors w/o retry (ATA-1 mandatory)
+            switch(ide->ActiveCommandState) {
+                case 1:
+                    ide->RFile.Status |= IDEStatus_BSY;
+                    ++(ide->ActiveCommandState);
+
+                    // BOGUS: FDISK.BAS requires a delay before BSY drops since it needs to see
+                    // BSY=1. ATA-4 7.15.6.1 BSY (Busy) states that this is not safe as the drive
+                    // may operate too quickly to spot this.
+                    ide->ActiveCommandNextTime = t + ide->IODelaySetting;
+                    break;
+
+                case 2:
+                    {
+                        uint32_t lba;
+                        uint32_t nsecs = ide->RFile.SectorCount;
+
+                        if (!nsecs)
+                            nsecs = 256;
+
+                        if (!ReadLBA(ide, &lba)) {
+                            AbortCommand(ide, 0);
+                            return;
+                        }
+
+                        printf("IDE: Verifying %u sectors starting at LBA %u .\n", nsecs, lba);
+
+                        if (lba >= ide->SectorCount || ide->SectorCount - lba < nsecs || nsecs >= MaxSectorTransferCount) {
+                            ide->RFile.Status |= IDEStatus_ERR;
+                            CompleteCommand(ide);
+                        } else {
+                            WriteLBA(ide, lba + nsecs - 1);
+                        }
+
+                        ide->ActiveCommandState = 0;
+                    }
+                    break;
+
+            }
+            break;
+
+        case 0x70:      case 0x71:      case 0x72:      case 0x73:
+        case 0x74:      case 0x75:      case 0x76:      case 0x77:
+        case 0x78:      case 0x79:      case 0x7A:      case 0x7B:
+        case 0x7C:      case 0x7D:      case 0x7E:      case 0x7F:
+            // seek (ATA-1 mandatory)
+            switch(ide->ActiveCommandState) {
+                case 1:
+                    ide->RFile.Status |= IDEStatus_BSY;
+                    ide->RFile.Status &= ~IDEStatus_DSC;
+                    ++(ide->ActiveCommandState);
+                    ide->ActiveCommandNextTime = t + 5000;
+                    break;
+
+                case 2:
+                    ide->RFile.Status |= IDEStatus_DSC;
+                    CompleteCommand(ide);
+                    break;
+            }
+            break;
+
+        case 0x90:  // execute device diagnostic
+            switch(ide->ActiveCommandState) {
+                case 1:
+                    ide->RFile.Status |= IDEStatus_BSY;
+                    ++(ide->ActiveCommandState);
+                    ide->ActiveCommandNextTime = t + 500;
+                    break;
+
+                case 2:
+                    // ATA/ATAPI-4 Table 10 (p.72)
+                    ide->RFile.Errors = 0x01;
+                    ide->RFile.SectorCount = 0x01;
+                    ide->RFile.SectorNumber = 0x01;
+                    ide->RFile.CylinderLow = 0;
+                    ide->RFile.CylinderHigh = 0;
+                    CompleteCommand(ide);
+                    break;
+            }
+            break;
+
+        case 0x91:  // initialize device parameters
+            switch(ide->ActiveCommandState) {
+                case 1:
+                    ide->RFile.Status |= IDEStatus_BSY;
+                    ++(ide->ActiveCommandState);
+                    ide->ActiveCommandNextTime = t + 500;
+                    break;
+
+                case 2:
+                    if (!ide->RFile.SectorCount) {
+                        AbortCommand(ide, 0);
+                        break;
+                    }
+
+                    ide->CurrentSectorsPerTrack = ide->RFile.SectorCount;
+                    ide->CurrentHeadCount = (ide->RFile.Head & 15) + 1;
+                    ide->CurrentCylinderCount = ide->SectorCount / (ide->CurrentHeadCount * ide->CurrentSectorsPerTrack);
+                    AdjustCHSTranslation(ide);
+                    CompleteCommand(ide);
+                    break;
+            }
+            break;
+
+        case 0xc6:  // set multiple mode
+            switch(ide->ActiveCommandState) {
+                case 1:
+                    ide->RFile.Status |= IDEStatus_BSY;
+                    ++(ide->ActiveCommandState);
+                    ide->ActiveCommandNextTime = t + 500;
+                    break;
+
+                case 2:
+                    // sector count must be a power of two and cannot be 0
+                    if (ide->RFile.SectorCount >= 2 && !(ide->RFile.SectorCount & (ide->RFile.SectorCount - 1))) {
+                        ide->SectorsPerBlock = ide->RFile.SectorCount;
+                        CompleteCommand(ide);
+                    } else
+                        AbortCommand(ide, 0);
+                    break;
+            }
+            break;
+
+        case 0xec:  // identify drive
+            switch(ide->ActiveCommandState) {
+                case 1:
+                    ide->RFile.Status |= IDEStatus_BSY;
+                    ++(ide->ActiveCommandState);
+                    ide->ActiveCommandNextTime = t + 10000;
+                    break;
+
+                case 2:
+                    {
+                        uint8_t *dst = ide->TransferBuffer;
+
+                        // See ATA-1 Table 11 for format.
+                        memset(dst, 0, 512);
+
+                        // word 0: capabilities
+                        dst[ 0*2+0] = 0x4c;     // soft sectored, not MFM encoded, fixed drive
+                        dst[ 0*2+1] = 0x04;     // xfer >10Mbps
+
+                        // word 1: cylinder count
+                        dst[ 1*2+1] = (uint8_t)(ide->CylinderCount >> 8);
+                        dst[ 1*2+0] = (uint8_t)ide->CylinderCount;    // cylinder count
+
+                        // word 2: reserved
+                        dst[ 2*2+0] = 0;            // reserved
+                        dst[ 2*2+1] = 0;
+
+                        // word 3: number of logical heads
+                        // ATA-4 B.2.2 specifies the value of this parameter.
+                        dst[ 3*2+0] = (uint8_t)ide->HeadCount;            // number of heads
+                        dst[ 3*2+1] = 0;
+
+                        // word 4: number of unformatted bytes per track
+                        dst[ 4*2+0] = 0;
+                        dst[ 4*2+1] = (uint8_t)(2 * ide->SectorsPerTrack);
+
+                        // word 5: number of unformatted bytes per sector (ATA-1), retired (ATA-4)
+                        dst[ 5*2+0] = 0;
+                        dst[ 5*2+1] = 2;
+
+                        // word 6: number of sectors per track (ATA-1), retired (ATA-4)
+                        // ATA-4 B.2.3 specifies the value of this parameter.
+                        dst[ 6*2+0] = (uint8_t)ide->SectorsPerTrack;      // sectors per track
+                        dst[ 6*2+1] = 0;
+
+                        // words 7-9: vendor unique (ATA-1), retired (ATA-4)
+
+                        // words 10-19: serial number
+                        char buf[40+1] = {};
+                        sprintf(buf, "%010u", ide->Disk ? IMG_Get_Serial_Number(ide->Disk) : 0);
+
+                        for(int i=0; i<20; ++i)
+                            dst[10*2 + (i ^ 1)] = buf[i] ? (uint8_t)buf[i] : 0x20;
+
+                        // word 20: buffer type (ATA-1), retired (ATA-4)
+                        dst[20*2+1] = 0x00;
+                        dst[20*2+0] = 0x03;     // dual ported w/ read caching
+
+                        // word 21: buffer size (ATA-1), retired (ATA-4)
+                        dst[21*2+1] = 0x00;
+                        dst[21*2+0] = 0x00;     // not specified
+
+                        // word 22: ECC bytes for read/write long commands (ATA-1), obsolete (ATA-4)
+                        dst[22*2+1] = 0x00;
+                        dst[22*2+0] = 0x04;
+
+                        // words 23-26: firmware revision
+                        dst[23*2+1] = '1';
+                        dst[23*2+0] = '.';
+                        dst[24*2+1] = '0';
+                        dst[24*2+0] = ' ';
+                        dst[25*2+1] = ' ';
+                        dst[25*2+0] = ' ';
+                        dst[26*2+1] = ' ';
+                        dst[26*2+0] = ' ';
+
+                        // words 27-46: model number (note that we need to byte swap)
+                        sprintf(buf, "GENERIC %uM %s", (unsigned)ide->SectorCount >> 11, ide->FastDevice ? "SSD" : "HDD");
+                        memset(&dst[27*2], ' ', 40);
+                        memcpy(&dst[27*2], buf, strlen(buf));
+
+                        for(int i=0; i<40; i+=2) {
+                            uint8_t tmp;
+                            tmp = dst[27*2+i];
+                            dst[27*2+i] = dst[27*2+i+1];
+                            dst[27*2+i+1] = tmp;
+                        }
+                        
+                        // word 47
+                        dst[47*2+0] = 0xFF;     // max sectors/interrupt
+                        dst[47*2+1] = 0x80;
+
+                        // word 48: reserved
+                        // word 49: capabilities
+                        dst[49*2+1] = 0x0F;
+                        dst[49*2+0] = 0;        // capabilities (LBA supported, DMA supported)
+
+                        // word 50: reserved (ATA-1), capabilities (ATA-4)
+                        dst[50*2+1] = 0x40;
+                        dst[50*2+0] = 0x00;
+
+                        // word 51: PIO data transfer timing mode (ATA-1)
+                        dst[51*2+1] = 2;
+                        dst[51*2+0] = 0;        // PIO data transfer timing mode (PIO 2)
+
+                        // word 52: DMA data transfer timing mode (ATA-1)
+                        dst[52*2+1] = 0;
+                        dst[52*2+0] = 0;        // DMA data transfer timing mode (DMA 0)
+
+                        // word 53: misc
+                        dst[53*2+1] = 0x00;
+                        dst[53*2+0] = 0x03;     // words 54-58 are valid
+
+                        // word 54: number of current logical cylinders
+                        dst[54*2+1] = (uint8_t)(ide->CurrentCylinderCount >> 8);
+                        dst[54*2+0] = (uint8_t)(ide->CurrentCylinderCount     );
+
+                        // word 55: number of current logical heads
+                        dst[55*2+1] = (uint8_t)(ide->CurrentHeadCount >> 8);
+                        dst[55*2+0] = (uint8_t)(ide->CurrentHeadCount     );
+
+                        // word 56: number of current logical sectors per track
+                        dst[55*2+1] = (uint8_t)(ide->CurrentSectorsPerTrack >> 8);
+                        dst[55*2+0] = (uint8_t)(ide->CurrentSectorsPerTrack     );
+
+                        // words 57-58: current capacity in sectors
+                        VDWriteUnalignedLEU32(&dst[57*2], ide->CurrentCylinderCount * ide->CurrentHeadCount * ide->CurrentSectorsPerTrack);
+
+                        // word 59: multiple sector setting
+                        dst[59*2+1] = ide->SectorsPerBlock ? 1 : 0;
+                        dst[59*2+0] = ide->SectorsPerBlock;
+
+                        // words 60-61: total number of user addressable LBA sectors (28-bit)
+                        VDWriteUnalignedLEU32(&dst[60*2], ide->SectorCount < 0x0FFFFFFF ? ide->SectorCount : 0x0FFFFFFF);
+
+                        // words 62-63: single/multiword DMA status
+                        dst[62*2+1] = 0x01;     // DMA 0 active
+                        dst[62*2+0] = 0x07;     // DMA 0-2 supported
+                        dst[63*2+1] = 0x01;     // DMA 0 active
+                        dst[63*2+0] = 0x07;     // DMA 0-2 supported
+
+                        if (ide->FastDevice) {
+                            // word 64: PIO transfer modes supported
+                            dst[64*2+1] = 0x00;
+                            dst[64*2+0] = 0x0F;     // PIO modes 3-6 supported
+
+                            // word 65: minimum multiword DMA transfer cycle time per word
+                            dst[65*2+1] = 0x00;
+                            dst[65*2+0] = 0x50;     // 80ns rate (25MB/sec)
+
+                            // word 66: recommended multiword DMA transfer cycle time
+                            dst[66*2+1] = 0x00;
+                            dst[66*2+0] = 0x50;     // 80ns rate (25MB/sec)
+
+                            // word 67: minimum PIO transfer without flow control cycle time
+                            dst[67*2+1] = 0x00;
+                            dst[67*2+0] = 0x50;     // 80ns rate (25MB/sec)
+
+                            // word 68: minimum PIO transfer with IORDY
+                            dst[68*2+1] = 0x00;
+                            dst[68*2+0] = 0x50;     // 80ns rate (25MB/sec)
+                        } else {
+                            // word 64: PIO transfer modes supported
+                            dst[64*2+1] = 0x00;
+                            dst[64*2+0] = 0x03;     // PIO modes 3-4 supported
+
+                            // word 65: minimum multiword DMA transfer cycle time per word
+                            dst[65*2+1] = 0x00;
+                            dst[65*2+0] = 0x78;     // 120ns rate (16.7MB/sec)
+
+                            // word 66: recommended multiword DMA transfer cycle time
+                            dst[66*2+1] = 0x00;
+                            dst[66*2+0] = 0x78;     // 120ns rate (16.7MB/sec)
+
+                            // word 67: minimum PIO transfer without flow control cycle time
+                            dst[67*2+1] = 0x00;
+                            dst[67*2+0] = 0x78;     // 120ns rate (16.7MB/sec)
+
+                            // word 68: minimum PIO transfer with IORDY
+                            dst[68*2+1] = 0x00;
+                            dst[68*2+0] = 0x78;     // 120ns rate (16.7MB/sec)
+                        }
+
+                        // words 100-103: total user addressable sectors in 48-bit LBA mode
+                        VDWriteUnalignedLEU64(&dst[100*2], ide->SectorCount);
+
+                        BeginReadTransfer(ide, 512);
+                        ide->ActiveCommandState = 0;
+                    }
+                    break;
+
+            }
+            break;
+
+        case 0xef:  // set features
+            switch(ide->ActiveCommandState) {
+                case 1:
+                    ide->RFile.Status |= IDEStatus_BSY;
+                    ++(ide->ActiveCommandState);
+                    ide->ActiveCommandNextTime = t + 250;
+                    break;
+
+                case 2:
+                    switch(ide->Features) {
+                        case 0x01:      // enable 8-bit data transfers
+                            ide->Transfer16Bit = FALSE;
+                            CompleteCommand(ide);
+                            break;
+
+                        case 0x03:      // set transfer mode (based on sector count register)
+                            switch(ide->RFile.SectorCount) {
+                                case 0x00:  // PIO default mode
+                                case 0x01:  // PIO default mode, disable IORDY
+                                case 0x08:  // PIO mode 0
+                                case 0x09:  // PIO mode 1
+                                case 0x0A:  // PIO mode 2
+                                case 0x0B:  // PIO mode 3
+                                case 0x0C:  // PIO mode 4
+                                case 0x20:  // DMA mode 0
+                                case 0x21:  // DMA mode 1
+                                case 0x22:  // DMA mode 2
+                                    CompleteCommand(ide);
+                                    break;
+
+                                case 0x0D:  // PIO mode 5 (CF)
+                                case 0x0E:  // PIO mode 6 (CF)
+                                    if (ide->FastDevice) {
+                                        CompleteCommand(ide);
+                                        break;
+                                    }
+
+                                    // fall through
+
+                                default:
+                                    printf("Unsupported transfer mode: %02x\n", ide->RFile.SectorCount);
+                                    AbortCommand(ide, 0);
+                                    break;
+                            }
+                            break;
+
+                        case 0x05:  // Enable advanced power management
+                        case 0x0A:  // Enable CFA power mode 1
+                            CompleteCommand(ide);
+                            break;
+
+                        case 0x81:      // disable 8-bit data transfers
+                            ide->Transfer16Bit = TRUE;
+                            CompleteCommand(ide);
+                            break;
+
+                        default:
+                            printf("Unsupported set feature parameter: %02x\n", ide->Features);
+                            AbortCommand(ide, 0);
+                            break;
+                    }
+                    break;
+            }
+            break;
+
+        default:
+            printf("IDE: Unrecognized command $%02x.\n", ide->ActiveCommand);
+            AbortCommand(ide, 0);
+            break;
+    }
+}
+
+void StartCommand(IDEEmu *ide, uint8_t cmd) {
+    ide->RFile.Status &= IDEStatus_ERR;
+
+    // BOGUS: This is unfortunately necessary to get FDISK.BAS to work, but it shouldn't
+    // be necessary: ATA-4 7.15.6.6 ERR (Error) states that the ERR register shall
+    // be ignored by the host when the ERR bit is 0.
+    ide->RFile.Errors = 0;
+
+    ide->ActiveCommand = cmd;
+    ide->ActiveCommandState = 1;
+    ide->ActiveCommandNextTime = ATSCHEDULER_GETTIME(ide->Scheduler);
+
+    printf("Executing command: %02X %02X %02X %02X %02X %02X %02X %02X\n"
+        , ide->Registers[0]
+        , ide->Registers[1]
+        , ide->Registers[2]
+        , ide->Registers[3]
+        , ide->Registers[4]
+        , ide->Registers[5]
+        , ide->Registers[6]
+        , cmd
+    );
+
+    UpdateStatus(ide);
+}
+
+void BeginReadTransfer(IDEEmu *ide, uint32_t bytes) {
+    ide->RFile.Status |= IDEStatus_DRQ;
+    ide->RFile.Status &= ~IDEStatus_BSY;
+    ide->TransferIndex = 0;
+    ide->TransferLength = bytes;
+    ide->TransferAsWrites = FALSE;
+}
+
+void BeginWriteTransfer(IDEEmu *ide, uint32_t bytes) {
+    ide->RFile.Status |= IDEStatus_DRQ;
+    ide->RFile.Status &= ~IDEStatus_BSY;
+    ide->TransferIndex = 0;
+    ide->TransferLength = bytes;
+    ide->TransferAsWrites = TRUE;
+}
+
+void CompleteCommand(IDEEmu *ide) {
+    ide->RFile.Status &= ~IDEStatus_BSY;
+    ide->RFile.Status &= ~IDEStatus_DRQ;
+    ide->ActiveCommand = 0;
+    ide->ActiveCommandState = 0;
+    ide->WriteInProgress = FALSE;
+}
+
+void AbortCommand(IDEEmu *ide, uint8_t error) {
+    ide->RFile.Status &= ~IDEStatus_BSY;
+    ide->RFile.Status &= ~IDEStatus_DRQ;
+    ide->RFile.Status |= IDEStatus_ERR;
+    ide->RFile.Errors = error | IDEError_ABRT;
+    ide->ActiveCommand = 0;
+    ide->ActiveCommandState = 0;
+    ide->WriteInProgress = FALSE;
+}
+
+int ReadLBA(IDEEmu *ide, uint32_t *lba) {
+    if (ide->RFile.Head & 0x40) {
+        // LBA mode
+        *lba = ((uint32_t)(ide->RFile.Head & 0x0f) << 24)
+             + ((uint32_t)ide->RFile.CylinderHigh << 16)
+             + ((uint32_t)ide->RFile.CylinderLow << 8)
+             + (uint32_t)ide->RFile.SectorNumber;
+
+        if (*lba >= ide->SectorCount) {
+            printf("IDE: Invalid LBA %u >= %u\n", *lba, ide->SectorCount);
+            return FALSE;
+        }
+
+        return TRUE;
+    } else {
+        // CHS mode
+        uint32_t head = ide->RFile.Head & 15;
+        uint32_t sector = ide->RFile.SectorNumber;
+        uint32_t cylinder = ((uint32_t)ide->RFile.CylinderHigh << 8) + ide->RFile.CylinderLow;
+
+        if (!sector || sector > ide->CurrentSectorsPerTrack) {
+            printf("IDE: Invalid CHS %u/%u/%u (bad sector number)\n", cylinder, head, sector);
+            return FALSE;
+        }
+
+        lba = (sector - 1) + (cylinder*ide->CurrentHeadCount + head)*ide->CurrentSectorsPerTrack;
+        if (*lba >= ide->SectorCount) {
+            printf("IDE: Invalid CHS %u/%u/%u (beyond total sector count of %u)\n", cylinder, head, sector, ide->SectorCount);
+            return FALSE;
+        }
+
+        return TRUE;
+    }
+}
+
+void WriteLBA(IDEEmu *ide, uint32_t lba) {
+    if (ide->RFile.Head & 0x40) {
+        // LBA mode
+        ide->RFile.Head = (ide->RFile.Head & 0xf0) + ((lba >> 24) & 0x0f);
+        ide->RFile.CylinderHigh = (uint8_t)(lba >> 16);
+        ide->RFile.CylinderLow = (uint8_t)(lba >> 8);
+        ide->RFile.SectorNumber = (uint8_t)lba;
+    } else if (ide->CurrentSectorsPerTrack && ide->CurrentHeadCount) {
+        // CHS mode
+        uint32_t track = lba / ide->CurrentSectorsPerTrack;
+        uint32_t sector = lba % ide->CurrentSectorsPerTrack;
+        uint32_t cylinder = track / ide->CurrentHeadCount;
+        uint32_t head = track % ide->CurrentHeadCount;
+
+        ide->RFile.Head = (ide->RFile.Head & 0xf0) + head;
+        ide->RFile.CylinderHigh = (uint8_t)(cylinder >> 8);
+        ide->RFile.CylinderLow = (uint8_t)cylinder;
+        ide->RFile.SectorNumber = sector + 1;
+    } else {
+        // uh...
+
+        ide->RFile.Head = (ide->RFile.Head & 0xf0);
+        ide->RFile.CylinderHigh = 0;
+        ide->RFile.CylinderLow = 0;
+        ide->RFile.SectorNumber = 1;
+    }
+}
+
+void ResetCHSTranslation(IDEEmu *ide) {
+    ide->CurrentCylinderCount = ide->CylinderCount;
+    ide->CurrentSectorsPerTrack = ide->SectorsPerTrack;
+    ide->CurrentHeadCount = ide->HeadCount;
+
+    if (ide->CurrentSectorsPerTrack > 63) {
+        ide->CurrentSectorsPerTrack = 63;
+        ide->CurrentCylinderCount = ide->SectorCount / (ide->CurrentHeadCount * 63);
+    }
+
+    AdjustCHSTranslation(ide);
+}
+
+void AdjustCHSTranslation(IDEEmu *ide) {
+    if (ide->CurrentCylinderCount > 65535)
+        ide->CurrentCylinderCount = 65535;
+
+    if (ide->SectorCount >= 16514064) {
+        uint32_t limitCyl = 16514064 / (ide->CurrentHeadCount * ide->CurrentSectorsPerTrack);
+
+        if (ide->CurrentCylinderCount > limitCyl)
+            ide->CurrentCylinderCount = limitCyl;
+    }
 }
