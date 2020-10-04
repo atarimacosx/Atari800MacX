@@ -41,12 +41,18 @@ const uint32_t IODelaySlow = 10000;  // ~5.5ms
 void VDWriteUnalignedLEU32(void *p, uint32_t v) { *(uint32_t *)p = v; }
 void VDWriteUnalignedLEU64(void *p, uint64_t v) { *(uint64_t *)p = v; }
 
-uint32_t GetTimeUS() {
+uint32_t GetTimeTicks() {
     struct timespec time;
-
+    uint32_t usecs;
+    double altirraTicks;
+    
     clock_gettime(CLOCK_REALTIME, &time);
 
-    return(time.tv_nsec / 1000);
+    usecs = time.tv_nsec / 1000;
+    
+    altirraTicks = (double) usecs * 1.81818181;
+    
+    return ((uint32_t) altirraTicks);
 }
 
 IDEEmu *IDE_Init()
@@ -437,9 +443,9 @@ void UpdateStatus(IDEEmu *ide) {
     if (!ide->ActiveCommandState || !ide->Disk)
         return;
 
-    uint32_t t = GetTimeUS();
+    uint32_t t = GetTimeTicks();
 
-    if (0)//(int32_t)(t - ide->ActiveCommandNextTime) < 0)
+    if ((int32_t)(t - ide->ActiveCommandNextTime) < 0)
         return;
 
     switch(ide->ActiveCommand) {
@@ -999,7 +1005,7 @@ void StartCommand(IDEEmu *ide, uint8_t cmd) {
 
     ide->ActiveCommand = cmd;
     ide->ActiveCommandState = 1;
-    ide->ActiveCommandNextTime = GetTimeUS();
+    ide->ActiveCommandNextTime = GetTimeTicks();
 
     printf("Executing command: %02X %02X %02X %02X %02X %02X %02X %02X\n"
         , ide->Registers[0]
