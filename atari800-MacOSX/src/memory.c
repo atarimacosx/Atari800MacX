@@ -1233,4 +1233,40 @@ void MEMORY_HwPutByte(UWORD addr, UBYTE byte)
 		break;
 	}
 }
+
+UBYTE DefaultFlashGetByte(UWORD addr)
+{
+    return MEMORY_mem[addr];
+}
+
+void DefaultFlashPutByte(UWORD addr, UBYTE byte)
+{
+}
+
+UBYTE (*FlashGetPtr)(UWORD) = &DefaultFlashGetByte;
+void (*FlashPutPtr)(UWORD, UBYTE) = &DefaultFlashPutByte;
+
+void MEMORY_SetDefaultFlashRoutines(void)
+{
+    FlashGetPtr = &DefaultFlashGetByte;
+    FlashPutPtr = &DefaultFlashPutByte;
+}
+
+void MEMORY_SetFlashRoutines(UBYTE (*get)(UWORD), void (*put)(UWORD, UBYTE))
+{
+    FlashGetPtr = get;
+    FlashPutPtr = put;
+}
+
+UBYTE MEMORY_FlashGetByte(UWORD addr)
+{
+    return (*FlashGetPtr)(addr);
+}
+
+/* Stores a byte at the specified programmable flash address  */
+void MEMORY_FlashPutByte(UWORD addr, UBYTE byte)
+{
+    (*FlashPutPtr)(addr, byte);
+}
+
 #endif /* PAGED_MEM */
