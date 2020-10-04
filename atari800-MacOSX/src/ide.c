@@ -21,6 +21,11 @@
 #include "img_disk.h"
 #include "ide.h"
 
+#undef IDE_DEBUG
+#ifndef IDE_DEBUG
+#define printf(fmt, ...) (0)
+#endif
+
 void AbortCommand(IDEEmu *ide, uint8_t error);
 void AdjustCHSTranslation(IDEEmu *ide);
 void BeginReadTransfer(IDEEmu *ide, uint32_t bytes);
@@ -445,7 +450,7 @@ void UpdateStatus(IDEEmu *ide) {
 
     uint32_t t = GetTimeTicks();
 
-    if ((int32_t)(t - ide->ActiveCommandNextTime) < 0)
+    if (0) //(int32_t)(t - ide->ActiveCommandNextTime) < 0)
         return;
 
     switch(ide->ActiveCommand) {
