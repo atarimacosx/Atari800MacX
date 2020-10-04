@@ -50,7 +50,7 @@ static int Left_Window_Enabled = FALSE;
 static int Right_Window_Enabled = FALSE;
 static ULONG Bank_Offset = 0;
 static ULONG Bank_Offset2 = 0;
-static void *ide;
+static IDEEmu *ide;
 static void *rtc;
 static FlashEmu *flash;
 
@@ -76,8 +76,10 @@ static void init_side2(void)
     else {
         Log_print("loaded Side2 rom image");
     }
-    ide = IDE_Init_Drive(side2_compact_flash_filename, TRUE);
-    if (ide == NULL)
+    
+    ide = IDE_Init();
+    IDE_Open_Image(ide, side2_compact_flash_filename);
+    if (ide->Disk == NULL)
     {
         Log_print("Couldn't attach Side2 CF Image");
         side2_compact_flash_filename[0] = 0;
@@ -93,7 +95,7 @@ static void init_side2(void)
 void SIDE2_Remove_Block_Device(void)
 {
     if (SIDE2_Block_Device) {
-        IDE_Close_Drive(ide);
+        IDE_Close_Image(ide);
         side2_compact_flash_filename[0] = 0;
         SIDE2_Block_Device = FALSE;
         IDE_Reset_Device(ide);
@@ -103,8 +105,8 @@ void SIDE2_Remove_Block_Device(void)
 int SIDE2_Add_Block_Device(char *filename) {
     if (SIDE2_Block_Device)
         SIDE2_Remove_Block_Device();
-    ide = IDE_Init_Drive(filename, TRUE);
-    if (ide == NULL)
+    IDE_Open_Image(ide, filename);
+    if (ide->Disk == NULL)
     {
         Log_print("Couldn't attach Side2 CF Image");
         SIDE2_Block_Device = FALSE;
@@ -179,7 +181,8 @@ int SIDE2_D5GetByte(UWORD addr, int no_side_effects)
         case 0xD5F5:
         case 0xD5F6:
         case 0xD5F7:
-             result = IDE_Enabled && SIDE2_Block_Device ? IDE_GetByte(ide, addr, FALSE) : 0xFF;
+             result = IDE_Enabled && SIDE2_Block_Device ?
+                        IDE_Read_Byte(ide, addr&0x07) : 0xFF;
             break;
         case 0xD5F8:
             return 0x32;
@@ -236,7 +239,7 @@ void SIDE2_D5PutByte(UWORD addr, UBYTE byte)
         case 0xD5F6:
         case 0xD5F7:
             if (IDE_Enabled && SIDE2_Block_Device)
-                IDE_PutByte(ide, addr, byte);
+                IDE_Write_Byte(ide, addr&0x07, byte);
             break;
 
         case 0xD5F8:    // F8-FB: D0 = /reset

@@ -30,11 +30,6 @@ enum {
     IDEError_AMNF    = 0x01      // address mark not found
 };
 
-// These control the amount of time that BSY is asserted during a sector
-// read or write.
-const uint32_t IODelayFast = 100;    //
-const uint32_t IODelaySlow = 10000;  // ~5.5ms
-
 typedef struct r_file {
         uint8_t Data;
         uint8_t Errors;
@@ -84,6 +79,7 @@ typedef struct IDE_Emu {
 
 } IDEEmu;
 
+IDEEmu *IDE_Init();
 void IDE_Close_Image(IDEEmu *ide);
 void IDE_Open_Image(IDEEmu *ide, char *filename);
 void IDE_Set_Reset(IDEEmu *ide, int asserted);
@@ -91,6 +87,7 @@ uint32_t IDE_Read_Data_Latch(IDEEmu *ide, int advance);
 void IDE_Write_Data_Latch(IDEEmu *ide, uint8_t lo, uint8_t hi);
 uint8_t IDE_Debug_Read_Byte(IDEEmu *ide, uint8_t address);
 uint8_t IDE_Read_Byte(IDEEmu *ide, uint8_t address);
+void IDE_Reset_Device(IDEEmu *ide);
 void IDE_Write_Byte(IDEEmu *ide, uint8_t address, uint8_t value);
 uint8_t IDE_Read_Byte_Alt(IDEEmu *ide, uint8_t address);
 void IDE_Write_Byte_Alt(IDEEmu *ide, uint8_t address, uint8_t value);

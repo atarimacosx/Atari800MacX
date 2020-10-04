@@ -17,6 +17,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include "img_disk.h"
 #include "ide.h"
 
@@ -28,14 +29,25 @@ void ColdReset(IDEEmu *ide);
 void CompleteCommand(IDEEmu *ide);
 int ReadLBA(IDEEmu *ide, uint32_t *lba);
 void ResetCHSTranslation(IDEEmu *ide);
-void ResetDevice(IDEEmu *ide);
 void Shutdown(IDEEmu *ide);
 void StartCommand(IDEEmu *ide, uint8_t cmd);
 void UpdateStatus(IDEEmu *ide);
 void WriteLBA(IDEEmu *ide, uint32_t lba);
 
-inline void VDWriteUnalignedLEU32(void *p, uint32_t v) { *(uint32_t *)p = v; }
-inline void VDWriteUnalignedLEU64(void *p, uint64_t v) { *(uint64_t *)p = v; }
+// read or write.
+const uint32_t IODelayFast = 100;    //
+const uint32_t IODelaySlow = 10000;  // ~5.5ms
+
+void VDWriteUnalignedLEU32(void *p, uint32_t v) { *(uint32_t *)p = v; }
+void VDWriteUnalignedLEU64(void *p, uint64_t v) { *(uint64_t *)p = v; }
+
+uint32_t GetTimeUS() {
+    struct timespec time;
+
+    clock_gettime(CLOCK_REALTIME, &time);
+
+    return(time.tv_nsec / 1000);
+}
 
 IDEEmu *IDE_Init()
 {
@@ -52,11 +64,12 @@ IDEEmu *IDE_Init()
     ide->HeadCount = 0;
     ide->CylinderCount = 0;
     ide->IODelaySetting = 0;
-    ide->Scheduler = TBD;
-    ide->IsSingle = FALSE;
+    ide->IsSingle = TRUE;
     ide->IsSlave = FALSE;
 
     ColdReset(ide);
+    
+    return(ide);
 }
 
 void IDE_Exit(IDEEmu *ide) {
@@ -69,8 +82,6 @@ void IDE_Set_Is_Single(IDEEmu *ide, int single) {
 
 void Shutdown(IDEEmu *ide) {
     IDE_Close_Image(ide);
-
-    ide->Scheduler = NULL;
 }
 
 void IDE_Open_Image(IDEEmu *ide, char *filename) {
@@ -147,7 +158,7 @@ void IDE_Close_Image(IDEEmu *ide) {
 void ColdReset(IDEEmu *ide) {
     ide->HardwareReset = FALSE;
     ide->SoftwareReset = FALSE;
-    ResetDevice(ide);
+    IDE_Reset_Device(ide);
 }
 
 void IDE_Set_Reset(IDEEmu *ide, int asserted) {
@@ -157,7 +168,7 @@ void IDE_Set_Reset(IDEEmu *ide, int asserted) {
     ide->HardwareReset = asserted;
 
     if (asserted && ide->SoftwareReset)
-        ResetDevice(ide);
+        IDE_Reset_Device(ide);
 }
 
 uint32_t IDE_Read_Data_Latch(IDEEmu *ide, int advance) {
@@ -365,7 +376,7 @@ void IDE_Write_Byte_Alt(IDEEmu *ide, uint8_t address, uint8_t value) {
             ide->SoftwareReset = srst;
 
             if (srst && !ide->HardwareReset)
-                ResetDevice(ide);
+                IDE_Reset_Device(ide);
         }
     }
 }
@@ -395,7 +406,7 @@ int IDE_Debug_Write_Sector(IDEEmu *ide, uint32_t lba, const void *dst) {
     return(0);
 }
 
-void ResetDevice(IDEEmu *ide) {
+void IDE_Reset_Device(IDEEmu *ide) {
     ide->ActiveCommand = 0;
     ide->ActiveCommandNextTime = 0;
     ide->ActiveCommandState = 0;
@@ -423,12 +434,12 @@ void ResetDevice(IDEEmu *ide) {
 }
 
 void UpdateStatus(IDEEmu *ide) {
-    if (ide->ActiveCommandState || !ide->Disk)
+    if (!ide->ActiveCommandState || !ide->Disk)
         return;
 
-    uint32_t t = ATSCHEDULER_GETTIME(ide->Scheduler);
+    uint32_t t = GetTimeUS();
 
-    if ((int32_t)(t - ide->ActiveCommandNextTime) < 0)
+    if (0)//(int32_t)(t - ide->ActiveCommandNextTime) < 0)
         return;
 
     switch(ide->ActiveCommand) {
@@ -979,7 +990,7 @@ void UpdateStatus(IDEEmu *ide) {
 }
 
 void StartCommand(IDEEmu *ide, uint8_t cmd) {
-    ide->RFile.Status &= IDEStatus_ERR;
+    ide->RFile.Status &= ~IDEStatus_ERR;
 
     // BOGUS: This is unfortunately necessary to get FDISK.BAS to work, but it shouldn't
     // be necessary: ATA-4 7.15.6.6 ERR (Error) states that the ERR register shall
@@ -988,7 +999,7 @@ void StartCommand(IDEEmu *ide, uint8_t cmd) {
 
     ide->ActiveCommand = cmd;
     ide->ActiveCommandState = 1;
-    ide->ActiveCommandNextTime = ATSCHEDULER_GETTIME(ide->Scheduler);
+    ide->ActiveCommandNextTime = GetTimeUS();
 
     printf("Executing command: %02X %02X %02X %02X %02X %02X %02X %02X\n"
         , ide->Registers[0]
