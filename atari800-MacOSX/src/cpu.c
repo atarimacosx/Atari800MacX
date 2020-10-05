@@ -88,6 +88,7 @@ extern UBYTE CPU_IRQ;
 void CPU_Initialise(void)
 {
 	CPU_INIT();
+    CPU_cycle_count = 0;
 }
 
 void CPU_GetStatus(void)
@@ -229,6 +230,8 @@ void (*CPU_rts_handler)(void) = NULL;
 #ifdef MONITOR_PROFILE
 int CPU_instruction_count[256];
 #endif
+
+uint64_t CPU_cycle_count;
 
 UBYTE CPU_cim_encountered = FALSE;
 
@@ -890,7 +893,7 @@ void CPU_GO(int limit)
 #ifndef CYCLES_PER_OPCODE
 		ANTIC_xpos += cycles[insn];
 #endif
-
+        CPU_cycle_count += cycles[insn];
 #ifdef MONITOR_PROFILE
 		CPU_instruction_count[insn]++;
 		MONITOR_coverage[old_PC = PC - 1].count++;

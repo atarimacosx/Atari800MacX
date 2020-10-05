@@ -18,6 +18,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include "cpu.h"
 #include "img_disk.h"
 #include "ide.h"
 
@@ -46,7 +47,10 @@ const uint32_t IODelaySlow = 10000;  // ~5.5ms
 void VDWriteUnalignedLEU32(void *p, uint32_t v) { *(uint32_t *)p = v; }
 void VDWriteUnalignedLEU64(void *p, uint64_t v) { *(uint64_t *)p = v; }
 
-uint32_t GetTimeTicks() {
+uint64_t GetTimeTicks() {
+#if 1
+    return CPU_cycle_count;
+#else
     struct timespec time;
     uint32_t usecs;
     double altirraTicks;
@@ -58,6 +62,7 @@ uint32_t GetTimeTicks() {
     altirraTicks = (double) usecs * 1.81818181;
     
     return ((uint32_t) altirraTicks);
+#endif
 }
 
 IDEEmu *IDE_Init()
@@ -448,9 +453,9 @@ void UpdateStatus(IDEEmu *ide) {
     if (!ide->ActiveCommandState || !ide->Disk)
         return;
 
-    uint32_t t = GetTimeTicks();
+    uint64_t t = GetTimeTicks();
 
-    if (0) //(int32_t)(t - ide->ActiveCommandNextTime) < 0)
+    if ((int64_t)(t - ide->ActiveCommandNextTime) < 0)
         return;
 
     switch(ide->ActiveCommand) {

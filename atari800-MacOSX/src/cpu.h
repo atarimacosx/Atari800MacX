@@ -1,6 +1,7 @@
 #ifndef CPU_H_
 #define CPU_H_
 
+#include <stdint.h>
 #include "config.h"
 #ifdef ASAP /* external project, see http://asap.sf.net */
 #include "asap_internal.h"
@@ -80,5 +81,7 @@ extern unsigned int CPU_remember_jmp_curpos;
 #ifdef MONITOR_PROFILE
 extern int CPU_instruction_count[256];
 #endif
+
+extern uint64_t CPU_cycle_count;
 
 #endif /* CPU_H_ */

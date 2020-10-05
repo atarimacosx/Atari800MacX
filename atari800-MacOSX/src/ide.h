@@ -61,7 +61,7 @@ typedef struct IDE_Emu {
     uint32_t TransferLength;
     uint32_t TransferSectorCount;
     uint32_t TransferLBA;
-    uint32_t ActiveCommandNextTime;
+    uint64_t ActiveCommandNextTime;
     uint8_t ActiveCommand;
     uint8_t ActiveCommandState;
     int TransferAsWrites;
