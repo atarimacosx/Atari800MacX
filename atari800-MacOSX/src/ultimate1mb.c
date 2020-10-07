@@ -119,7 +119,7 @@ void ULTIMATE_D1PutByte(UWORD addr, UBYTE byte)
 
 void Set_PBI_Bank(UBYTE bank)
 {
-    if (pbi_selected) {
+    if (pbi_selected || !config_lock) {
         if ((PIA_PORTB | PIA_PORTB_mask) & 0x01)
             memcpy(MEMORY_mem + 0xd800,
                    ultimate_rom + 0x59800 + ((UWORD) bank << 13), 0x800);
