@@ -120,7 +120,7 @@ void ULTIMATE_D1PutByte(UWORD addr, UBYTE byte)
 void Set_PBI_Bank(UBYTE bank)
 {
     if (pbi_selected) {
-        if (PIA_PORTB & 0x01)
+        if ((PIA_PORTB | PIA_PORTB_mask) & 0x01)
             memcpy(MEMORY_mem + 0xd800,
                    ultimate_rom + 0x59800 + ((UWORD) bank << 13), 0x800);
         memcpy(MEMORY_os + 0x1800,
@@ -410,6 +410,8 @@ static void Update_Kernel_Bank(void)
 
     memcpy(MEMORY_os, ultimate_rom + kernelbase, 0x4000);
     memcpy(MEMORY_mem + 0xc000, ultimate_rom + kernelbase, 0x4000);
+    if (MEMORY_selftest_enabled)
+        memcpy(MEMORY_mem + 0x5000, ultimate_rom + kernelbase + 0x1000, 0x800);
     // TBD - What about self test area? And what about getting the
     // below into their parts of MEMORY_mem.
     memcpy(MEMORY_basic, ultimate_rom + basicbase, 0x2000);
@@ -477,12 +479,13 @@ static void Select_PBI_Device(int selected)
     
     if (selected) {
         //pbi_bank = 255;  // Force reload
-        Set_PBI_Bank(0);
+        Set_PBI_Bank(pbi_bank);
     }
     else {
+        Set_PBI_Bank(0);
         ULONG kernelbase = config_lock ? 0x70000 + (OS_ROM_select << 14) : 0x50000;
 
-        if (PIA_PORTB & 0x01)
+        if ((PIA_PORTB | PIA_PORTB_mask) & 0x01)
             memcpy(MEMORY_mem + 0xd800,
                    ultimate_rom + kernelbase + 0x1800, 0x800);
         memcpy(MEMORY_os + 0x1800, ultimate_rom + kernelbase + 0x1800, 0x800);
