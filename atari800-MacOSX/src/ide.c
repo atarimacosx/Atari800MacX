@@ -22,7 +22,7 @@
 #include "img_disk.h"
 #include "ide.h"
 
-#undef IDE_DEBUG
+#define IDE_DEBUG
 #ifndef IDE_DEBUG
 #define printf(fmt, ...) (0)
 #endif
@@ -183,7 +183,7 @@ void IDE_Set_Reset(IDEEmu *ide, int asserted) {
 
     ide->HardwareReset = asserted;
 
-    if (asserted && ide->SoftwareReset)
+    if (asserted && !ide->SoftwareReset)
         IDE_Reset_Device(ide);
 }
 
