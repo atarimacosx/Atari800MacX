@@ -59,6 +59,7 @@ static void Reset_Cart_Bank(void);
 static void SaveNVRAM();
 static void Set_SDX_Bank(int bank, int topEnable);
 static void Set_Top_Bank(int bank, int topLeftEnable, int topRightEnable);
+static void Update_IDE_Reset(void);
 static void Update_Memory_Layers_Cart(void);
 
 #ifdef ATARI800MACX
@@ -98,7 +99,7 @@ void SIDE2_Remove_Block_Device(void)
         IDE_Close_Image(ide);
         side2_compact_flash_filename[0] = 0;
         SIDE2_Block_Device = FALSE;
-        IDE_Reset_Device(ide);
+        Update_IDE_Reset();
     }
 }
 
@@ -115,6 +116,7 @@ int SIDE2_Add_Block_Device(char *filename) {
         Log_print("Attached Side2 CF Image");
         strcpy(side2_compact_flash_filename, filename);
         SIDE2_Block_Device = TRUE;
+        Update_IDE_Reset();
     }
     return SIDE2_Block_Device;
 }
@@ -183,15 +185,18 @@ int SIDE2_D5GetByte(UWORD addr, int no_side_effects)
         case 0xD5F7:
              result = IDE_Enabled && SIDE2_Block_Device ?
                         IDE_Read_Byte(ide, addr&0x07) : 0xFF;
+            //if (addr == 0xD5F7) printf("Status: %02x\n",result);
             break;
         case 0xD5F8:
             return 0x32;
             break;
         case 0xD5F9:
             result = IDE_Removed ? 1 : 0;
+            //printf("CardPresent: %01x\n",result);
             break;
         case 0xD5FC:
             result = SDX_Enabled ? 'S' : ' ';
+            //printf("SDXEnabled: %c\n",result);
             break;
         case 0xD5FD:
             result = 'I';
@@ -252,8 +257,13 @@ void SIDE2_D5PutByte(UWORD addr, UBYTE byte)
                 if (SIDE2_Block_Device)
                     IDE_Removed = FALSE;
             }
-
             IDE_Enabled = !(byte & 0x80);
+
+            // SIDE 1 allows reset on F8-FB; SIDE 2 is only F8
+            if (addr == 0xD5F8) {
+                IDE_Reset = !(byte & 0x01);
+                Update_IDE_Reset();
+            }
             break;
         default:
             break;
@@ -276,7 +286,7 @@ void SIDE2_ColdStart(void)
     // cleared. If it's present, the removed flag is cleared on powerup.
     IDE_Removed = !SIDE2_Block_Device;
 
-    IDE_Reset_Device(ide);
+    Update_IDE_Reset();
 }
 
 void SIDE2_Set_Cart_Enables(int leftEnable, int rightEnable) {
@@ -367,6 +377,10 @@ static void Reset_Cart_Bank(void)
 
     Top_Bank_Register = 0x00;
     Set_Top_Bank(0x20, TRUE, FALSE);
+}
+
+static void Update_IDE_Reset(void) {
+    IDE_Set_Reset(ide, IDE_Reset || !SIDE2_Block_Device);
 }
 
 void Update_Memory_Layers_Cart() {
