@@ -105,6 +105,8 @@ static UBYTE antic_bank_under_selftest[0x800];
 
 int MEMORY_have_basic = FALSE; /* Atari BASIC image has been successfully read (Atari 800 only) */
 
+static int pbi_overlay = FALSE;
+
 /* Axlon and Mosaic RAM expansions for Atari 400/800 only */
 static void MosaicPutByte(UWORD addr, UBYTE byte);
 static UBYTE MosaicGetByte(UWORD addr, int no_side_effects);
@@ -820,16 +822,28 @@ void MEMORY_HandlePORTB(UBYTE byte, UBYTE oldval)
 				MEMORY_SetROM(0xd800, 0xffff);
 			}
 			memcpy(MEMORY_mem + 0xc000, MEMORY_os, 0x1000);
-			memcpy(MEMORY_mem + 0xd800, MEMORY_os + 0x1800, 0x2800);
+            if (pbi_overlay) {
+                memcpy(MEMORY_mem + 0xe000, MEMORY_os + 0x1800, 0x2000);
+            } else {
+                memcpy(MEMORY_mem + 0xd800, MEMORY_os + 0x1800, 0x2800);
+            }
 			ESC_PatchOS();
 		}
 		else {
 			/* Disable OS ROM */
 			if (MEMORY_ram_size > 48) {
 				memcpy(MEMORY_mem + 0xc000, under_atarixl_os, 0x1000);
-				memcpy(MEMORY_mem + 0xd800, under_atarixl_os + 0x1800, 0x2800);
+                if (pbi_overlay) {
+                    memcpy(MEMORY_mem + 0xe000, under_atarixl_os + 0x2000, 0x2000);
+                } else {
+                    memcpy(MEMORY_mem + 0xd800, under_atarixl_os + 0x1800, 0x2800);
+                }
 				MEMORY_SetRAM(0xc000, 0xcfff);
-				MEMORY_SetRAM(0xd800, 0xffff);
+                if (pbi_overlay) {
+                    MEMORY_SetRAM(0xe000, 0xffff);
+                } else {
+                    MEMORY_SetRAM(0xd800, 0xffff);
+                }
 			} else {
 				MEMORY_dFillMem(0xc000, 0xff, 0x1000);
 				MEMORY_dFillMem(0xd800, 0xff, 0x2800);
@@ -917,7 +931,25 @@ void MEMORY_HandlePORTB(UBYTE byte, UBYTE oldval)
 	}
 }
 
-/* Mosaic banking scheme: writing to 0xffc0+<n> selects ram bank <n>, if 
+void MEMORY_StartPBIOverlay(void)
+{
+    if (!((PIA_PORTB | PIA_PORTB_mask) & 0x01)) {
+        memcpy(under_atarixl_os + 0x1800, MEMORY_mem + 0xd800, 0x800);
+        MEMORY_SetROM(0xd800, 0xdfff);
+    }
+    pbi_overlay = TRUE;
+}
+
+void MEMORY_StopPBIOverlay(void)
+{
+    if (!((PIA_PORTB | PIA_PORTB_mask) & 0x01)) {
+        MEMORY_SetRAM(0xd800, 0xdfff);
+        memcpy(MEMORY_mem + 0xd800, under_atarixl_os + 0x1800, 0x800);
+    }
+    pbi_overlay = FALSE;
+}
+
+/* Mosaic banking scheme: writing to 0xffc0+<n> selects ram bank <n>, if
  * that is past the last available bank, selects rom.  Banks are 4k, 
  * located at 0xc000-0xcfff.  Tested: Rambrandt (drawing program), Topdos1.5.
  * Reverse engineered from software that uses it.  May be incorrect in some

@@ -125,6 +125,9 @@ void MEMORY_AllocXEMemory(void);
 #define MEMORY_CopyROM(addr1, addr2, src) memcpy(MEMORY_mem + (addr1), src, (addr2) - (addr1) + 1)
 void MEMORY_GetCharset(UBYTE *cs);
 
+void MEMORY_StartPBIOverlay(void);
+void MEMORY_StopPBIOverlay(void);
+
 /* Mosaic and Axlon 400/800 RAM extensions */
 extern int MEMORY_mosaic_num_banks;
 extern int MEMORY_axlon_0f_mirror;

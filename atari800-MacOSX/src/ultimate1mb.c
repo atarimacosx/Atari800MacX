@@ -119,11 +119,9 @@ void ULTIMATE_D1PutByte(UWORD addr, UBYTE byte)
 
 void Set_PBI_Bank(UBYTE bank)
 {
-    if (pbi_selected || !config_lock) {
-        if ((PIA_PORTB | PIA_PORTB_mask) & 0x01)
-            memcpy(MEMORY_mem + 0xd800,
-                   ultimate_rom + 0x59800 + ((UWORD) bank << 13), 0x800);
-        memcpy(MEMORY_os + 0x1800,
+    if (pbi_selected) { //} || !config_lock) {
+        //printf("PBI Bank: %01x\n",bank);
+        memcpy(MEMORY_mem + 0xd800,
                ultimate_rom + 0x59800 + ((UWORD) bank << 13), 0x800);
     }
     pbi_bank = bank;
@@ -316,6 +314,7 @@ void ULTIMATE_WarmStart(void)
     pbi_button_enable = FALSE;
     pbi_device_id = 0;
     pbi_selected = FALSE;
+    Select_PBI_Device(FALSE);
     // TBD Update PBI Device
 
     OS_ROM_select = 0;
@@ -478,18 +477,16 @@ static void Select_PBI_Device(int selected)
     pbi_selected = selected;
     
     if (selected) {
-        //pbi_bank = 255;  // Force reload
+        MEMORY_StartPBIOverlay();
         Set_PBI_Bank(pbi_bank);
     }
     else {
         Set_PBI_Bank(0);
+        MEMORY_StopPBIOverlay();
         ULONG kernelbase = config_lock ? 0x70000 + (OS_ROM_select << 14) : 0x50000;
 
         if ((PIA_PORTB | PIA_PORTB_mask) & 0x01)
             memcpy(MEMORY_mem + 0xd800,
                    ultimate_rom + kernelbase + 0x1800, 0x800);
-        memcpy(MEMORY_os + 0x1800, ultimate_rom + kernelbase + 0x1800, 0x800);
-
-        //Set_PBI_Bank(0);
     }
 }
