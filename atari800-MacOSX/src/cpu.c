@@ -1571,13 +1571,13 @@ void CPU_GO(int limit)
 		ABSOLUTE;
 #ifdef CPU65C02
 		/* XXX: if ((UBYTE) addr == 0xff) ANTIC_xpos++; */
-		SET_PC(MEMORY_dGetWord(addr));
+		SET_PC((MEMORY_GetByte(addr) + (MEMORY_GetByte((addr) + 1) << 8)));
 #else
 		/* original 6502 had a bug in JMP (addr) when addr crossed page boundary */
 		if ((UBYTE) addr == 0xff)
-			SET_PC((MEMORY_dGetByte(addr - 0xff) << 8) + MEMORY_dGetByte(addr));
+			SET_PC((MEMORY_GetByte(addr - 0xff) << 8) + MEMORY_GetByte(addr));
 		else
-			SET_PC(MEMORY_dGetWord(addr));
+			SET_PC((MEMORY_GetByte(addr) + (MEMORY_GetByte((addr) + 1) << 8)));
 #endif
 		DONE
 
