@@ -183,8 +183,9 @@ int SIDE2_D5GetByte(UWORD addr, int no_side_effects)
         case 0xD5F5:
         case 0xD5F6:
         case 0xD5F7:
-             result = IDE_Enabled && SIDE2_Block_Device ?
+            result = IDE_Enabled && SIDE2_Block_Device ?
                         IDE_Read_Byte(ide, addr&0x07) : 0xFF;
+            //printf("IDERead :%d %02x\n", addr&0x07, result);
             //if (addr == 0xD5F7) printf("Status: %02x\n",result);
             break;
         case 0xD5F8:
@@ -243,6 +244,7 @@ void SIDE2_D5PutByte(UWORD addr, UBYTE byte)
         case 0xD5F5:
         case 0xD5F6:
         case 0xD5F7:
+            //printf("IDEWrite:%d %02x\n", addr&0x07, byte);
             if (IDE_Enabled && SIDE2_Block_Device)
                 IDE_Write_Byte(ide, addr&0x07, byte);
             break;
