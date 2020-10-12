@@ -102,7 +102,7 @@ UBYTE ULTIMATE_D1GetByte(UWORD addr, int no_side_effects)
 {
     int result = 0xff;
     if ( addr <= 0xD1BF && (pbi_selected || !config_lock))
-        return pbi_ram[addr & 0xFFF];
+        result = pbi_ram[addr & 0xFFF];
     return result;
 }
 
@@ -120,7 +120,7 @@ void ULTIMATE_D1PutByte(UWORD addr, UBYTE byte)
 void Set_PBI_Bank(UBYTE bank)
 {
     if (pbi_selected) { //} || !config_lock) {
-        //printf("PBI Bank: %01x\n",bank);
+        //printf("PBIBank: %01x\n",bank);
         memcpy(MEMORY_mem + 0xd800,
                ultimate_rom + 0x59800 + ((UWORD) bank << 13), 0x800);
     }
@@ -224,9 +224,9 @@ void ULTIMATE_D3PutByte(UWORD addr, UBYTE byte)
 
 }
 
-UBYTE ULTIMATE_D5GetByte(UWORD addr, int no_side_effects)
+int ULTIMATE_D5GetByte(UWORD addr, int no_side_effects)
 {
-    int result = 0xff;
+    int result = -1;
     if ( addr <= 0xD5BF && (pbi_selected || !config_lock))
         return pbi_ram[addr & 0xFFF];
     return result;
@@ -342,6 +342,7 @@ static void Set_SDX_Bank(UBYTE bank) {
     if (cart_bank_offset == offset)
         return;
 
+    //printf("SDX: %d\n",bank);
     cart_bank_offset = offset;
     if (SDX_enable)
         MEMORY_CopyROM(0xa000, 0xbfff, ultimate_rom + cart_bank_offset);
