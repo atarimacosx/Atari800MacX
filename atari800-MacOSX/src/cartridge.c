@@ -1101,7 +1101,9 @@ UBYTE CARTRIDGE_GetByte(UWORD addr, int no_side_effects)
 #endif
 #ifdef ULTIMATE_1MB
     if (ULTIMATE_enabled) {
-        return ULTIMATE_D5GetByte(addr, no_side_effects);
+        int byte = ULTIMATE_D5GetByte(addr, no_side_effects);
+        if (byte != -1)
+            return byte;
     }
 #endif
 	/* In case 2 cartridges are inserted, reading a memory location would
