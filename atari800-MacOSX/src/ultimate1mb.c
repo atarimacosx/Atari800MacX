@@ -362,7 +362,8 @@ static void Set_SDX_Enabled(int enabled) {
         MEMORY_CopyROM(0xa000, 0xbfff, ultimate_rom + cart_bank_offset);
     }
     else {
-        if (external_cart_enable)
+        if (external_cart_enable &&
+            (CARTRIDGE_piggyback.type != CARTRIDGE_SIDE2))
              CARTRDIGE_Switch_To_Piggyback();
         else
             MEMORY_CartA0bfDisable();
