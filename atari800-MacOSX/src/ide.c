@@ -22,7 +22,7 @@
 #include "img_disk.h"
 #include "ide.h"
 
-#define IDE_DEBUG
+#undef IDE_DEBUG
 #ifndef IDE_DEBUG
 #define printf(fmt, ...) (0)
 #endif
