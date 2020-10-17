@@ -356,7 +356,6 @@ static void Set_Top_Bank(int bank, int topLeftEnable, int topRightEnable)
     // If the top cartridge is enabled in 16K mode, the LSB bank bit is ignored.
     // We force the LSB on in that case so the right cart window is in the right
     // place and the left cart window is 8K below that (mask LSB back off).
-    printf("Top: %d %d\n", topLeftEnable, topRightEnable);
     if (topRightEnable)
         bank |= 0x01;
 

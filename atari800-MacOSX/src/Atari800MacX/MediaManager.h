@@ -147,6 +147,7 @@
 	IBOutlet id cartImageNameField;
 	IBOutlet id cartImageSecondNameField;
 	IBOutlet id cartImageView;
+    IBOutlet id cartImageSIDEButton;
     IBOutlet id cartImageSDXButton;
     IBOutlet id cartImageRomInsertButton;
     IBOutlet id printerImageView;

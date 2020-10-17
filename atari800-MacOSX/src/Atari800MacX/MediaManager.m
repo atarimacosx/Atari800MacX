@@ -2371,6 +2371,9 @@ NSImage *disketteImage;
            [cartImageRomInsertButton setEnabled:YES];
            [cartImageRomInsertButton setTransparent:NO];
            [cartImageInsertButton setTitle:@"Eject"];
+           [cartImageSIDEButton setEnabled:YES];
+           [cartImageSIDEButton setTransparent:NO];
+           [cartImageSIDEButton setImage:[NSImage imageNamed:NSImageNameStatusNone]];
            [cartImageSDXButton setEnabled:YES];
            [cartImageSDXButton setTransparent:NO];
            if (SIDE2_SDX_Mode_Switch)
@@ -2388,6 +2391,9 @@ NSImage *disketteImage;
        } else {
            [cartImageRomInsertButton setEnabled:NO];
            [cartImageRomInsertButton setTransparent:YES];
+           [cartImageSIDEButton setEnabled:NO];
+           [cartImageSIDEButton setTransparent:YES];
+           [cartImageSIDEButton setImage:nil];
            [cartImageSDXButton setEnabled:NO];
            [cartImageSDXButton setTransparent:YES];
            NSRect r = [cartImageInsertButton frame];
@@ -2459,37 +2465,6 @@ NSImage *disketteImage;
                 [cartImageInsertButton setTitle:@"Eject"];
                 [cartImageView setImage:onCartImage];
                 }
-#if 0
-            if (CARTRIDGE_main.type == CARTRIDGE_SIDE2) {
-                [cartImageRomInsertButton setEnabled:YES];
-                [cartImageRomInsertButton setTransparent:NO];
-                [cartImageSDXButton setEnabled:YES];
-                [cartImageSDXButton setTransparent:NO];
-                if (SIDE2_SDX_Mode_Switch)
-                    [cartImageSDXButton setTitle:@"SDX"];
-                else
-                    [cartImageSDXButton setTitle:@"Load"];
-                NSRect r = [cartImageInsertButton frame];
-                r.size.width = 48.0;
-                [cartImageInsertButton setFrame:r];
-                r = [cartImageSecondInsertButton frame];
-                r.size.width = 48.0;
-                [cartImageSecondInsertButton setFrame:r];
-                [cartImageSecondInsertButton setAction:@selector(side2AttachCF:)];
-            } else {
-                [cartImageRomInsertButton setEnabled:NO];
-                [cartImageRomInsertButton setTransparent:YES];
-                [cartImageSDXButton setEnabled:NO];
-                [cartImageSDXButton setTransparent:YES];
-                NSRect r = [cartImageInsertButton frame];
-                r.size.width = 96.0;
-                [cartImageInsertButton setFrame:r];
-                r = [cartImageSecondInsertButton frame];
-                r.size.width = 96.0;
-                [cartImageSecondInsertButton setFrame:r];
-                [cartImageSecondInsertButton setAction:@selector(cartSecondStatusChange::)];
-            }
-#endif
             if (CARTRIDGE_main.type == CARTRIDGE_SDX_64 || CARTRIDGE_main.type == CARTRIDGE_SDX_128 ||
                 CARTRIDGE_main.type == CARTRIDGE_ATRAX_SDX_64 || CARTRIDGE_main.type == CARTRIDGE_ATRAX_SDX_128 ||
                 CARTRIDGE_main.type == CARTRIDGE_ULTIMATE_1MB)
