@@ -184,7 +184,6 @@ void ULTIMATE_D3PutByte(UWORD addr, UBYTE byte)
                 IO_RAM_enable = (byte & 0x40) != 0;
                 if (byte & 0x80) {
                     config_lock = TRUE;
-                    GTIA_consol_override = 20;
                     Update_Kernel_Bank();
                     // TBD Update_PBI_Device();
                 }
@@ -251,7 +250,6 @@ void ULTIMATE_D5PutByte(UWORD addr, UBYTE byte)
             Set_SDX_Bank(byte & 63);
             Set_SDX_Enabled(!(byte & 0x80));
 
-            // TBD - What do we do here?
             //Update_External_Cart();
             // Pre-control lock, the SDX bank is also used for the
             // BASIC and GAME banks (!).
