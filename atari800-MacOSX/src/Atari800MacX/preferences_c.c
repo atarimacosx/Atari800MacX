@@ -687,21 +687,31 @@ void CalculatePrefsChanged()
     strcpy(bit3_rom_filename, prefs.bit3RomFile);
     strcpy(bit3_charset_filename, prefs.bit3CharsetFile);
 
-    CalcMachineTypeRam(prefs.atariType, &new_machine_type, &new_ram_size,
-					   &new_axlon, &new_mosaic, &new_ultimate);
-    if ((Atari800_machine_type != new_machine_type) ||
-        (MEMORY_ram_size != new_ram_size) ||
-		((MEMORY_axlon_num_banks > 0) != new_axlon) ||
-		((MEMORY_mosaic_num_banks > 0) != new_mosaic) ||
-		((MEMORY_axlon_num_banks - 1) != prefs.axlonBankMask) ||
-		((MEMORY_mosaic_num_banks - 1) != prefs.mosaicMaxBank) ||
-		(bbRequested != prefs.blackBoxEnabled) ||
-		(mioRequested != prefs.mioEnabled) ||
-        (ULTIMATE_enabled != new_ultimate))
-        machineTypeChanged = TRUE;
-    else
-        machineTypeChanged = FALSE;
-	
+    if (ULTIMATE_enabled) {
+        CalcMachineTypeRam(prefs.atariType, &new_machine_type, &new_ram_size,
+                           &new_axlon, &new_mosaic, &new_ultimate);
+        if (ULTIMATE_enabled != new_ultimate)
+            machineTypeChanged = TRUE;
+        else
+            machineTypeChanged = FALSE;
+        
+    } else {
+        CalcMachineTypeRam(prefs.atariType, &new_machine_type, &new_ram_size,
+                           &new_axlon, &new_mosaic, &new_ultimate);
+        if ((Atari800_machine_type != new_machine_type) ||
+            (MEMORY_ram_size != new_ram_size) ||
+            ((MEMORY_axlon_num_banks > 0) != new_axlon) ||
+            ((MEMORY_mosaic_num_banks > 0) != new_mosaic) ||
+            ((MEMORY_axlon_num_banks - 1) != prefs.axlonBankMask) ||
+            ((MEMORY_mosaic_num_banks - 1) != prefs.mosaicMaxBank) ||
+            (bbRequested != prefs.blackBoxEnabled) ||
+            (mioRequested != prefs.mioEnabled) ||
+            (ULTIMATE_enabled != new_ultimate))
+            machineTypeChanged = TRUE;
+        else
+            machineTypeChanged = FALSE;
+    }
+    
     if ((Atari800_disable_basic != prefs.disableBasic) ||
         (disable_all_basic != prefs.disableAllBasic) ||
         (ESC_enable_sio_patch != prefs.enableSioPatch) ||
