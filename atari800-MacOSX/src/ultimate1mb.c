@@ -16,6 +16,7 @@
 #include "pbi.h"
 #include "rtcds1305.h"
 #include "cpu.h"
+#include "gtia.h"
 #include <stdlib.h>
 
 static UBYTE ultimate_rom[0x80000];
@@ -183,6 +184,7 @@ void ULTIMATE_D3PutByte(UWORD addr, UBYTE byte)
                 IO_RAM_enable = (byte & 0x40) != 0;
                 if (byte & 0x80) {
                     config_lock = TRUE;
+                    GTIA_consol_override = 20;
                     Update_Kernel_Bank();
                     // TBD Update_PBI_Device();
                 }
@@ -362,8 +364,7 @@ static void Set_SDX_Enabled(int enabled) {
         MEMORY_CopyROM(0xa000, 0xbfff, ultimate_rom + cart_bank_offset);
     }
     else {
-        if (external_cart_enable &&
-            (CARTRIDGE_piggyback.type != CARTRIDGE_SIDE2))
+        if (external_cart_enable)
              CARTRDIGE_Switch_To_Piggyback();
         else
             MEMORY_CartA0bfDisable();

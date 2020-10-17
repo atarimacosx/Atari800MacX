@@ -660,13 +660,7 @@ static void MapActiveCart(void)
             return;
         case CARTRIDGE_SIDE2:
             SIDE2_enabled = TRUE;
-            if (ULTIMATE_enabled) {
-                SIDE2_Set_Cart_Enables(FALSE, FALSE);
-            } else {
-                SIDE2_Set_Cart_Enables(TRUE, TRUE);
-                MEMORY_Cart809fDisable();
-                MEMORY_CartA0bfEnable();
-            }
+            SIDE2_Set_Cart_Enables(TRUE, TRUE);
             return;
 		default:
 			MEMORY_Cart809fDisable();
@@ -1515,6 +1509,8 @@ static int InsertCartridge(const char *filename, CARTRIDGE_image_t *cart)
         strcpy(cart->filename, "SIDE2");
         cart->type = CARTRIDGE_SIDE2;
         InitCartridge(cart);
+        if (ULTIMATE_enabled)
+            SIDE2_Set_Cart_Enables(FALSE, FALSE);
         return(0);
     } else {
 #else
@@ -1653,6 +1649,9 @@ void CARTRDIGE_Switch_To_Piggyback(void)
 void CARTRDIGE_Switch_To_Main(void)
 {
     active_cart = &CARTRIDGE_main;
+    if (CARTRIDGE_piggyback.type == CARTRIDGE_SIDE2) {
+        SIDE2_Set_Cart_Enables(FALSE, FALSE);
+    }
     MapActiveCart();
 }
 

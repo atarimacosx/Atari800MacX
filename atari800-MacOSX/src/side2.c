@@ -304,8 +304,7 @@ void SIDE2_Set_Cart_Enables(int leftEnable, int rightEnable) {
         changed = TRUE;
     }
     
-    if (changed && Coldstarted)
-        Update_Memory_Layers_Cart();
+    Update_Memory_Layers_Cart();
 }
 
 
@@ -350,7 +349,6 @@ static void Set_SDX_Bank(int bank, int topEnable)
     Top_Enable = topEnable;
 
     Update_Memory_Layers_Cart();
-    //mpCartridgePort->OnLeftWindowChanged(mCartId, IsLeftCartActive());
 }
 
 static void Set_Top_Bank(int bank, int topLeftEnable, int topRightEnable)
@@ -358,6 +356,7 @@ static void Set_Top_Bank(int bank, int topLeftEnable, int topRightEnable)
     // If the top cartridge is enabled in 16K mode, the LSB bank bit is ignored.
     // We force the LSB on in that case so the right cart window is in the right
     // place and the left cart window is 8K below that (mask LSB back off).
+    printf("Top: %d %d\n", topLeftEnable, topRightEnable);
     if (topRightEnable)
         bank |= 0x01;
 
@@ -369,7 +368,6 @@ static void Set_Top_Bank(int bank, int topLeftEnable, int topRightEnable)
     Top_Right_Enable = topRightEnable;
 
     Update_Memory_Layers_Cart();
-    //mpCartridgePort->OnLeftWindowChanged(mCartId, IsLeftCartActive());
 }
 
 static void Reset_Cart_Bank(void)
@@ -385,7 +383,7 @@ static void Update_IDE_Reset(void) {
     IDE_Set_Reset(ide, IDE_Reset || !SIDE2_Block_Device);
 }
 
-void Update_Memory_Layers_Cart() {
+static void Update_Memory_Layers_Cart(void) {
     if (SDX_Bank >= 0 && SDX_Enabled)
         Bank_Offset = SDX_Bank << 13;
     else if (Top_Enable || !SDX_Enabled)
