@@ -38,7 +38,7 @@ static int SDX_enable = FALSE;
 static int cart_bank_offset = 0;
 static int external_cart_enable = FALSE;
 static int OS_ROM_select = 0;
-static int ultimate_mem_config = 0;
+static int ultimate_mem_config = 3;
 static int flash_write_enable = FALSE;
 static int soundBoard_enable = FALSE;
 static int VBXE_enabled = FALSE;
@@ -297,6 +297,10 @@ void ULTIMATE_ColdStart(void)
     memset(pbi_ram, 0, sizeof(pbi_ram));
     IO_RAM_enable = TRUE;
 
+    // Default to all of extended memory
+    ultimate_mem_config = 3;
+    Set_Mem_Mode();
+
     ULTIMATE_WarmStart();
 }
 
@@ -304,10 +308,6 @@ void ULTIMATE_WarmStart(void)
 {
     // Reset RTC Chip
     CDS1305_ColdReset(rtc);
-
-    // Default to all of extended memory
-    ultimate_mem_config = 3;
-    Set_Mem_Mode();
 
     pbi_emulation_enable = FALSE;
     pbi_button_enable = FALSE;
@@ -466,7 +466,6 @@ static void Set_Mem_Mode(void)
             MEMORY_ram_size = 1088;
             break;
     }
-    MEMORY_AllocXEMemory();
 }
 
 static void Select_PBI_Device(int selected)
