@@ -55,6 +55,7 @@ static int ext_cart_rd5_sense = FALSE;
 static UBYTE pbi_ram[0x1000];
 static void *rtc;
 
+void CreateWindowCaption(void);
 static void Select_PBI_Device(int enable);
 static void Set_Kernel_Bank(UBYTE bank);
 static void Set_Mem_Mode(void);
@@ -466,6 +467,7 @@ static void Set_Mem_Mode(void)
             MEMORY_ram_size = 1088;
             break;
     }
+    CreateWindowCaption();
 }
 
 static void Select_PBI_Device(int selected)
