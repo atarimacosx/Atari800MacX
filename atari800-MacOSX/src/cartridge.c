@@ -659,7 +659,6 @@ static void MapActiveCart(void)
             MEMORY_CartA0bfEnable();
             return;
         case CARTRIDGE_SIDE2:
-            SIDE2_enabled = TRUE;
             SIDE2_Set_Cart_Enables(TRUE, TRUE);
             return;
 		default:
@@ -1635,14 +1634,14 @@ int CARTRIDGE_Insert_SIDE2(void)
     }
 }
 
-void CARTRDIGE_Switch_To_Piggyback(void)
+void CARTRDIGE_Switch_To_Piggyback(int pbi_button)
 {
     if (CARTRIDGE_piggyback.type == CARTRIDGE_NONE) {
         MEMORY_Cart809fDisable();
         MEMORY_CartA0bfDisable();
     } else {
         active_cart = &CARTRIDGE_piggyback;
-        MapActiveCart();
+        SIDE2_Set_Cart_Enables(!pbi_button, TRUE);
     }
 }
 

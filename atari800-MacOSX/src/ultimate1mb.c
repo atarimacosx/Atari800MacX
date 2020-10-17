@@ -49,7 +49,6 @@ static UBYTE basic_rom_select = 0;
 static int pbi_emulation_enable = FALSE;
 static int pbi_selected = FALSE;
 static int pbi_button_enable = FALSE;
-static int pbi_button_pressed = FALSE;
 static UBYTE pbi_device_id = 0;
 static UBYTE cold_reset_flag = 0x80;
 static int ext_cart_rd5_sense = FALSE;
@@ -154,7 +153,7 @@ UBYTE ULTIMATE_D3GetByte(UWORD addr, int no_side_effects)
     else if (addr == 0xD384) {
         UBYTE v = 0;
         
-        if (pbi_button_pressed)
+        if (pbi_button_enable)
             v += 0x80;
         
         if (external_cart_enable)
@@ -363,7 +362,7 @@ static void Set_SDX_Enabled(int enabled) {
     }
     else {
         if (external_cart_enable)
-             CARTRDIGE_Switch_To_Piggyback();
+            CARTRDIGE_Switch_To_Piggyback(pbi_button_enable);
         else
             MEMORY_CartA0bfDisable();
     }
