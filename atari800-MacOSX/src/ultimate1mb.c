@@ -16,6 +16,7 @@
 #include "pbi.h"
 #include "rtcds1305.h"
 #include "cpu.h"
+#include "flash.h"
 #include "gtia.h"
 #include <stdlib.h>
 
@@ -54,6 +55,7 @@ static UBYTE cold_reset_flag = 0x80;
 static int ext_cart_rd5_sense = FALSE;
 static UBYTE pbi_ram[0x1000];
 static void *rtc;
+static FlashEmu *flash;
 
 void CreateWindowCaption(void);
 static void Select_PBI_Device(int enable);
@@ -83,6 +85,7 @@ static void init_ultimate(void)
     else {
         Log_print("loaded Ultimate1MB rom image");
     }
+    flash = Flash_Init(ultimate_rom, Flash_TypeAm29F040B);
 }
 
 int ULTIMATE_Initialise(int *argc, char *argv[])
@@ -302,6 +305,8 @@ void ULTIMATE_ColdStart(void)
     ultimate_mem_config = 3;
     Set_Mem_Mode();
 
+    MEMORY_SetFlashRoutines(ULTIMATE_Flash_Read, ULTIMATE_Flash_Write);
+
     ULTIMATE_WarmStart();
 }
 
@@ -359,6 +364,7 @@ static void Set_SDX_Enabled(int enabled) {
         else {
             CARTRDIGE_Switch_To_Main();
         }
+        MEMORY_SetFlash(0xa000, 0xbfff);
         MEMORY_CopyROM(0xa000, 0xbfff, ultimate_rom + cart_bank_offset);
     }
     else {
@@ -490,4 +496,17 @@ static void Select_PBI_Device(int selected)
             memcpy(MEMORY_mem + 0xd800,
                    ultimate_rom + kernelbase + 0x1800, 0x800);
     }
+}
+
+UBYTE ULTIMATE_Flash_Read(UWORD addr) {
+    UBYTE value;
+
+    Flash_Read_Byte(flash, cart_bank_offset + (addr - 0xA000), &value);
+        
+    return(value);
+}
+
+void ULTIMATE_Flash_Write(UWORD addr, UBYTE value) {
+    if (flash_write_enable)
+        Flash_Write_Byte(flash, cart_bank_offset + (addr - 0xA000), value);
 }

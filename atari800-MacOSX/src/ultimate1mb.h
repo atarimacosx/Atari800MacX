@@ -28,5 +28,7 @@ void ULTIMATE_D6D7PutByte(UWORD addr, UBYTE byte);
 void ULTIMATE_ColdStart(void);
 void ULTIMATE_WarmStart(void);
 void ULTIMATE_LoadRoms(void);
+UBYTE ULTIMATE_Flash_Read(UWORD addr);
+void ULTIMATE_Flash_Write(UWORD addr, UBYTE value);
 
 #endif /* ultimate1mb_h */
