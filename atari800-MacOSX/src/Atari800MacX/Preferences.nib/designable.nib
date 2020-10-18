@@ -8,6 +8,7 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="Preferences">
             <connections>
+                <outlet property="a1200xlRomFileField" destination="5et-DW-KMZ" id="9g7-t5-jNt"/>
                 <outlet property="a5200RomFileField" destination="366" id="407"/>
                 <outlet property="adjustPaletteButton" destination="802" id="807"/>
                 <outlet property="af80CharsetRomFileField" destination="nmH-4T-a90" id="NPh-8N-c8W"/>
@@ -171,10 +172,12 @@
                 <outlet property="hardDiskDir3Field" destination="373" id="401"/>
                 <outlet property="hardDiskDir4Field" destination="377" id="402"/>
                 <outlet property="hardDrivesReadOnlyButton" destination="350" id="412"/>
+                <outlet property="identify1200XLLabel" destination="tmf-yu-vvO" id="zge-GK-aQw"/>
                 <outlet property="identify5200Label" destination="eGh-WU-9R7" id="leq-Yp-3K1"/>
                 <outlet property="identifyBasicLabel" destination="KNI-Kb-6BR" id="ajc-sO-N3k"/>
                 <outlet property="identifyOKButton" destination="ffE-fv-U1c" id="Zse-Sb-mhc"/>
                 <outlet property="identifyOSBLabel" destination="eGR-vq-gK5" id="laN-1a-wFB"/>
+                <outlet property="identifyXEGSLabel" destination="Zo1-Et-5bq" id="bpu-mS-8Ob"/>
                 <outlet property="identifyXLLabel" destination="gUl-6b-5Aj" id="uUj-F5-CNG"/>
                 <outlet property="ignoreHeaderWriteprotectButton" destination="3816" id="3817"/>
                 <outlet property="imageDirField" destination="3926" id="3928"/>
@@ -256,13 +259,16 @@
                 <outlet property="spriteCollisionsButton" destination="4243" id="4244"/>
                 <outlet property="tvModeMatrix" destination="296" id="315"/>
                 <outlet property="ultimate1MBFlashFileField" destination="L66-Kk-m97" id="fLk-DD-8pF"/>
+                <outlet property="useAlitrra1200XLRomButton" destination="WQF-lH-Skv" id="4r9-Db-fEk"/>
                 <outlet property="useAlitrra5200RomButton" destination="eGe-8L-cpr" id="tGN-Li-oWY"/>
                 <outlet property="useAlitrraBasicRomButton" destination="oS6-bh-UTz" id="lFS-o4-c4z"/>
                 <outlet property="useAlitrraOSBRomButton" destination="R7g-e0-jXo" id="KQL-Rk-tO6"/>
+                <outlet property="useAlitrraXEGSRomButton" destination="fmW-Ou-PQn" id="7eC-xM-j2A"/>
                 <outlet property="useAlitrraXLRomButton" destination="Ltf-sW-tEh" id="qsc-X7-BST"/>
                 <outlet property="useAtariCursorKeysPulldown" destination="12860" id="12867"/>
                 <outlet property="whiteLevelField" destination="796" id="805"/>
                 <outlet property="widthModeMatrix" destination="270" id="291"/>
+                <outlet property="xegsRomFileField" destination="9Sn-X7-9V1" id="TtW-qh-ydb"/>
                 <outlet property="xep80AutoswitchButton" destination="6Qw-Dv-qgO" id="DAY-qd-ddz"/>
                 <outlet property="xep80BackgroundField" destination="4371" id="4378"/>
                 <outlet property="xep80ForegroundField" destination="4369" id="4377"/>
@@ -3640,6 +3646,92 @@ Command Path for Hx: Devices
                                                                     <action selector="miscChanged:" target="-2" id="r7Z-Av-Sod"/>
                                                                 </connections>
                                                             </button>
+                                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9Sn-X7-9V1">
+                                                                <rect key="frame" x="134" y="96" width="382" height="35"/>
+                                                                <autoresizingMask key="autoresizingMask"/>
+                                                                <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="WFH-SP-AaA">
+                                                                    <font key="font" metaFont="message" size="11"/>
+                                                                    <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                                </textFieldCell>
+                                                                <connections>
+                                                                    <action selector="miscChanged:" target="-2" id="0Jo-KQ-QA4"/>
+                                                                </connections>
+                                                            </textField>
+                                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Yad-aB-OzY">
+                                                                <rect key="frame" x="15" y="104" width="114" height="17"/>
+                                                                <autoresizingMask key="autoresizingMask"/>
+                                                                <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Atari XEGS" id="SJK-A3-yPh">
+                                                                    <font key="font" metaFont="system"/>
+                                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                                </textFieldCell>
+                                                            </textField>
+                                                            <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="VIG-IM-Rtt">
+                                                                <rect key="frame" x="520" y="93" width="84" height="32"/>
+                                                                <autoresizingMask key="autoresizingMask"/>
+                                                                <buttonCell key="cell" type="push" title="Select" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="7cQ-Jv-qiY">
+                                                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                                    <font key="font" metaFont="system"/>
+                                                                </buttonCell>
+                                                                <connections>
+                                                                    <action selector="browseXEGSRom:" target="-2" id="NLp-Nr-Z10"/>
+                                                                </connections>
+                                                            </button>
+                                                            <button fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="fmW-Ou-PQn">
+                                                                <rect key="frame" x="645" y="103" width="43" height="19"/>
+                                                                <autoresizingMask key="autoresizingMask"/>
+                                                                <buttonCell key="cell" type="check" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="Jfk-QR-hdR">
+                                                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                                    <font key="font" metaFont="system"/>
+                                                                </buttonCell>
+                                                                <connections>
+                                                                    <action selector="miscChanged:" target="-2" id="lAp-jP-cig"/>
+                                                                </connections>
+                                                            </button>
+                                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="5et-DW-KMZ">
+                                                                <rect key="frame" x="134" y="56" width="382" height="35"/>
+                                                                <autoresizingMask key="autoresizingMask"/>
+                                                                <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="qSA-eD-8cy">
+                                                                    <font key="font" metaFont="message" size="11"/>
+                                                                    <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                                </textFieldCell>
+                                                                <connections>
+                                                                    <action selector="miscChanged:" target="-2" id="ljN-i2-ZsL"/>
+                                                                </connections>
+                                                            </textField>
+                                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6OP-b9-c61">
+                                                                <rect key="frame" x="15" y="64" width="114" height="17"/>
+                                                                <autoresizingMask key="autoresizingMask"/>
+                                                                <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Atari 1200XL" id="epN-dM-0Fc">
+                                                                    <font key="font" metaFont="system"/>
+                                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                                </textFieldCell>
+                                                            </textField>
+                                                            <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Iec-zj-EEE">
+                                                                <rect key="frame" x="520" y="53" width="84" height="32"/>
+                                                                <autoresizingMask key="autoresizingMask"/>
+                                                                <buttonCell key="cell" type="push" title="Select" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="F3D-4B-XlR">
+                                                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                                    <font key="font" metaFont="system"/>
+                                                                </buttonCell>
+                                                                <connections>
+                                                                    <action selector="browse1200XLRom:" target="-2" id="xgn-6o-5gR"/>
+                                                                </connections>
+                                                            </button>
+                                                            <button fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="WQF-lH-Skv">
+                                                                <rect key="frame" x="645" y="63" width="43" height="19"/>
+                                                                <autoresizingMask key="autoresizingMask"/>
+                                                                <buttonCell key="cell" type="check" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="8B1-X6-BFA">
+                                                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                                    <font key="font" metaFont="system"/>
+                                                                </buttonCell>
+                                                                <connections>
+                                                                    <action selector="miscChanged:" target="-2" id="biH-to-LzV"/>
+                                                                </connections>
+                                                            </button>
                                                             <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="s9h-OU-P3F">
                                                                 <rect key="frame" x="597" y="290" width="114" height="17"/>
                                                                 <autoresizingMask key="autoresizingMask"/>
@@ -3650,7 +3742,7 @@ Command Path for Hx: Devices
                                                                 </textFieldCell>
                                                             </textField>
                                                             <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="AtJ-q6-mW1">
-                                                                <rect key="frame" x="309" y="83" width="148" height="32"/>
+                                                                <rect key="frame" x="251" y="10" width="148" height="32"/>
                                                                 <autoresizingMask key="autoresizingMask"/>
                                                                 <buttonCell key="cell" type="push" title="Identify OS ROMs" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="Rfi-eE-iKt">
                                                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -8043,11 +8135,11 @@ DQ
         <window title="Identify ROM Types" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="lk6-bt-SjB" userLabel="IdentifyRomPanel">
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="90" y="168" width="440" height="246"/>
+            <rect key="contentRect" x="90" y="168" width="440" height="278"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
             <value key="minSize" type="size" width="81" height="2"/>
             <view key="contentView" id="W5O-IV-EP4">
-                <rect key="frame" x="0.0" y="0.0" width="440" height="246"/>
+                <rect key="frame" x="0.0" y="0.0" width="440" height="278"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ffE-fv-U1c">
@@ -8065,7 +8157,7 @@ DQ
                         </connections>
                     </button>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="In7-Wt-WSU">
-                        <rect key="frame" x="4" y="160" width="134" height="17"/>
+                        <rect key="frame" x="4" y="199" width="134" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Atari OS Rev. B ROM:" id="VGA-ZW-CSU">
                             <font key="font" metaFont="system"/>
@@ -8074,7 +8166,7 @@ DQ
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="eGR-vq-gK5">
-                        <rect key="frame" x="142" y="161" width="300" height="17"/>
+                        <rect key="frame" x="142" y="200" width="300" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title=" " id="rDa-p2-jip">
                             <font key="font" metaFont="system"/>
@@ -8083,7 +8175,7 @@ DQ
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lX9-pu-y5K">
-                        <rect key="frame" x="4" y="134" width="134" height="17"/>
+                        <rect key="frame" x="4" y="173" width="134" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Atari XL ROM:" id="4nZ-9r-khZ">
                             <font key="font" metaFont="system"/>
@@ -8092,7 +8184,7 @@ DQ
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gUl-6b-5Aj">
-                        <rect key="frame" x="142" y="135" width="300" height="17"/>
+                        <rect key="frame" x="142" y="174" width="300" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title=" " id="H9f-mF-mbc">
                             <font key="font" metaFont="system"/>
@@ -8101,7 +8193,7 @@ DQ
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3A7-Qh-DRI">
-                        <rect key="frame" x="4" y="108" width="134" height="17"/>
+                        <rect key="frame" x="4" y="147" width="134" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Atari Basic ROM:" id="qh6-JT-PVg">
                             <font key="font" metaFont="system"/>
@@ -8110,7 +8202,7 @@ DQ
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="KNI-Kb-6BR">
-                        <rect key="frame" x="142" y="109" width="300" height="17"/>
+                        <rect key="frame" x="142" y="148" width="300" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title=" " id="Vxa-O8-45e">
                             <font key="font" metaFont="system"/>
@@ -8119,7 +8211,7 @@ DQ
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cw4-SL-sOv">
-                        <rect key="frame" x="4" y="83" width="134" height="17"/>
+                        <rect key="frame" x="4" y="122" width="134" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Atari 5200 ROM:" id="gla-hX-MHe">
                             <font key="font" metaFont="system"/>
@@ -8128,7 +8220,7 @@ DQ
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="eGh-WU-9R7">
-                        <rect key="frame" x="142" y="84" width="300" height="17"/>
+                        <rect key="frame" x="142" y="123" width="300" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title=" " id="uxq-nL-LSU">
                             <font key="font" metaFont="system"/>
@@ -8136,9 +8228,45 @@ DQ
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="VQm-pX-dzq">
+                        <rect key="frame" x="4" y="97" width="134" height="17"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Atari XEGS ROM:" id="xK3-C5-v1m">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Zo1-Et-5bq">
+                        <rect key="frame" x="142" y="98" width="300" height="17"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title=" " id="3TI-gf-a0m">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="NT6-u2-rwj">
+                        <rect key="frame" x="4" y="72" width="134" height="17"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Atari 1200XL ROM:" id="bxx-Qi-Sto">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="tmf-yu-vvO">
+                        <rect key="frame" x="142" y="73" width="300" height="17"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title=" " id="mIa-u8-DTi">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
                 </subviews>
             </view>
-            <point key="canvasLocation" x="195" y="1370"/>
+            <point key="canvasLocation" x="195" y="1345"/>
         </window>
     </objects>
     <resources>

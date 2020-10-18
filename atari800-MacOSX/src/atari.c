@@ -127,6 +127,8 @@ int machine_switch_type = 7;
 int Atari800_machine_type = Atari800_MACHINE_XLXE;
 int Atari800_tv_mode = Atari800_TV_PAL;
 int Atari800_disable_basic = TRUE;
+int Atari800_useAlitrraXEGSRom;
+int Atari800_useAlitrra1200XLRom;
 int Atari800_useAlitrraOSBRom;
 int Atari800_useAlitrraXLRom;
 int Atari800_useAlitrra5200Rom;

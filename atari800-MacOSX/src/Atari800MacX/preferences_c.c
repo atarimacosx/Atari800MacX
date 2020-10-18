@@ -122,6 +122,8 @@ extern int machine_switch_type;
 extern double emulationSpeed;
 extern int cx85_port;
 extern int useAtariCursorKeys;
+extern int Atari800_useAlitrraXEGSRom;
+extern int Atari800_useAlitrra1200XLRom;
 extern int Atari800_useAlitrraOSBRom;
 extern int Atari800_useAlitrraXLRom;
 extern int Atari800_useAlitrra5200Rom;
@@ -758,6 +760,8 @@ void CalculatePrefsChanged()
         hardDiskChanged = FALSE;
 
     if ((strcmp(CFG_osb_filename, prefs.osBRomFile) !=0) ||
+        (strcmp(CFG_xegs_filename, prefs.xegsRomFile) !=0) ||
+        (strcmp(CFG_1200xl_filename, prefs.a1200XLRomFile) !=0) ||
 		(strcmp(CFG_xlxe_filename, prefs.xlRomFile) !=0) ||
 		(strcmp(CFG_basic_filename, prefs.basicRomFile) !=0) ||
 		(strcmp(CFG_5200_filename, prefs.a5200RomFile) !=0) ||
@@ -770,6 +774,8 @@ void CalculatePrefsChanged()
 		(strcmp(mio_rom_filename, prefs.mioRomFile) != 0) ||
 		(strcmp(bb_scsi_disk_filename, prefs.blackBoxScsiDiskFile) != 0) ||
 		(strcmp(mio_scsi_disk_filename, prefs.mioScsiDiskFile) != 0) ||
+        (Atari800_useAlitrraXEGSRom != prefs.useAltirraXEGSRom) ||
+        (Atari800_useAlitrra1200XLRom != prefs.useAltirra1200XLRom) ||
         (Atari800_useAlitrraOSBRom != prefs.useAltirraOSBRom) ||
         (Atari800_useAlitrraXLRom != prefs.useAltirraXLRom) ||
         (Atari800_useAlitrraBasicRom != prefs.useAltirraBasicRom) ||
@@ -978,10 +984,14 @@ int loadMacPrefs(int firstTime)
     strcpy(Devices_atari_h_dir[3], prefs.hardDiskDir[3]);
     Devices_h_read_only = prefs.hardDrivesReadOnly;
     strcpy(Devices_h_exe_path, prefs.hPath);
+    strcpy(CFG_xegs_filename, prefs.xegsRomFile);
+    strcpy(CFG_1200xl_filename, prefs.a1200XLRomFile);
     strcpy(CFG_osb_filename, prefs.osBRomFile);
     strcpy(CFG_xlxe_filename, prefs.xlRomFile);
     strcpy(CFG_basic_filename, prefs.basicRomFile);
     strcpy(CFG_5200_filename, prefs.a5200RomFile);
+    Atari800_useAlitrraXEGSRom = prefs.useAltirraXEGSRom;
+    Atari800_useAlitrra1200XLRom = prefs.useAltirra1200XLRom;
     Atari800_useAlitrraOSBRom = prefs.useAltirraOSBRom;
     Atari800_useAlitrraXLRom = prefs.useAltirraXLRom;
     Atari800_useAlitrra5200Rom = prefs.useAltirra5200Rom;

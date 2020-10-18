@@ -36,6 +36,8 @@
 #include "util.h"
 
 
+char CFG_xegs_filename[FILENAME_MAX] = Util_FILENAME_NOT_SET;
+char CFG_1200xl_filename[FILENAME_MAX] = Util_FILENAME_NOT_SET;
 char CFG_osb_filename[FILENAME_MAX] = Util_FILENAME_NOT_SET;
 char CFG_xlxe_filename[FILENAME_MAX] = Util_FILENAME_NOT_SET;
 char CFG_5200_filename[FILENAME_MAX] = Util_FILENAME_NOT_SET;

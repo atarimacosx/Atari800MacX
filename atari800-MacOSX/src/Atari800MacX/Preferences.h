@@ -139,10 +139,14 @@
 #define HardDiskDir4 @"HardDiskDir4"
 #define HardDrivesReadOnly @"HardDrivesReadOnly"
 #define HPath @"HPath"
+#define UseAltiraXEGSRom @"UseAltiraXEGSRom"
+#define UseAltira1200XLRom @"UseAltira1200XLRom"
 #define UseAltiraOSBRom @"UseAltiraOSBRom"
 #define UseAltiraXLRom @"UseAltiraXLRom"
 #define UseAltira5200Rom @"UseAltira5200Rom"
 #define UseAltiraBasicRom @"UseAltiraBasicRom"
+#define XEGSRomFile @"XEGSRomFile"
+#define A1200XLRomFile @"A1200XLRomFile"
 #define OsBRomFile @"OsBRomFile"
 #define XlRomFile @"XlRomFile"
 #define BasicRomFile @"BasicRomFile"
@@ -263,6 +267,8 @@
 @interface Preferences : NSObject {
     IBOutlet id prefTabView;
     IBOutlet id a5200RomFileField;
+    IBOutlet id a1200xlRomFileField;
+    IBOutlet id xegsRomFileField;
     IBOutlet id adjustPaletteButton;
     IBOutlet id artifactingPulldown;
     IBOutlet id artifactNewButton;
@@ -367,6 +373,8 @@
     IBOutlet id hardDrivesReadOnlyButton;
     IBOutlet id hPathField;
     IBOutlet id intensityField;
+    IBOutlet id useAlitrraXEGSRomButton;
+    IBOutlet id useAlitrra1200XLRomButton;
     IBOutlet id useAlitrraOSBRomButton;
     IBOutlet id useAlitrraXLRomButton;
     IBOutlet id useAlitrra5200RomButton;
@@ -500,6 +508,8 @@
     IBOutlet id gamepadSelector;
     IBOutlet id errorOKButton;
     IBOutlet id identifyOKButton;
+    IBOutlet id identifyXEGSLabel;
+    IBOutlet id identify1200XLLabel;
     IBOutlet id identifyOSBLabel;
     IBOutlet id identifyXLLabel;
     IBOutlet id identifyBasicLabel;
@@ -584,8 +594,10 @@
 - (IBAction)browseBit3Rom:(id)sender;
 - (IBAction)identifyRom:(id)sender;
 - (IBAction)identifyRomOK:(id)sender;
+- (IBAction)browseXEGSRom:(id)sender;
+- (IBAction)browse1200XLRom:(id)sender;
 - (void)browseOsBRom:(id)sender;
-- (void)browseXlRom:(id)sender; 
+- (void)browseXlRom:(id)sender;
 - (void)browseBasicRom:(id)sender; 
 - (void)browse5200Rom:(id)sender; 
 - (void)browseMioRom:(id)sender; 
