@@ -20,6 +20,11 @@
 #include <stdlib.h>
 #include <string.h>
 
+#undef FLASH_DEBUG
+#ifndef FLASH_DEBUG
+#define printf(fmt, ...) (0)
+#endif
+
 FlashEmu *Flash_Init(void *mem, int type) {
     FlashEmu *flash = (FlashEmu *) malloc(sizeof(FlashEmu));
     
@@ -111,6 +116,7 @@ int Flash_Debug_Read_Byte(FlashEmu *flash, uint32_t address, uint8_t *data) {
     switch(flash->ReadMode) {
         case ReadMode_Normal:
             *data = flash->Memory[address];
+            //printf("Read[$%05X] = $%02X\n", address, *data);
             return TRUE;
 
         case ReadMode_Autoselect:

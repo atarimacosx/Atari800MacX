@@ -289,6 +289,8 @@ void SIDE2_ColdStart(void)
     IDE_Removed = !SIDE2_Block_Device;
 
     Update_IDE_Reset();
+    
+    MEMORY_SetFlashRoutines(SIDE2_Flash_Read, SIDE2_Flash_Write);
 }
 
 void SIDE2_Set_Cart_Enables(int leftEnable, int rightEnable) {
@@ -404,6 +406,7 @@ static void Update_Memory_Layers_Cart(void) {
 
     if (flashRead) {
         MEMORY_CartA0bfEnable();
+        MEMORY_SetFlash(0xa000, 0xbfff);
         MEMORY_CopyROM(0xa000, 0xbfff, side2_rom + Bank_Offset);
     } else {
         MEMORY_CartA0bfDisable();
