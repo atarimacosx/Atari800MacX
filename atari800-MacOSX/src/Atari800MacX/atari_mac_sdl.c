@@ -1455,6 +1455,11 @@ int Atari_Keyboard_International(void)
                 pasteState = PASTE_END;
             }
             
+            if (lastkeyuni & 0x100) {
+                CONTROL = AKEY_CTRL;
+                lastkeyuni &= ~0x100;
+            }
+            
             if (lastkeyuni >= 'A' && lastkeyuni <= 'Z') {
                 INPUT_key_shift = 1;
                 lastkey = lastkeyuni + 0x20;

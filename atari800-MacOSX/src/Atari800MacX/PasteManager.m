@@ -35,25 +35,36 @@ static PasteManager *sharedInstance = nil;
         [super init];
         sharedInstance = self;
 		charCount = 0;
+        ctrlMode = FALSE;
     }
     return sharedInstance;
 }
 
 - (int)getChar:(unsigned short *) character
 {
-	if (charCount) {
-		*character = [pasteString characterAtIndex:([pasteString length] - charCount)];
-		charCount--;
-		if (charCount)
-			return(TRUE);
-		else {
-			[pasteString release];
-			return(FALSE);
-			}
-		}
-	else {
-		return(FALSE);
-		}
+    bool done = FALSE;
+    unsigned short theChar;
+    
+    while(!done) {
+        if (charCount) {
+            theChar = [pasteString characterAtIndex:([pasteString length] - charCount)];
+            charCount--;
+            if (theChar == '{')
+                ctrlMode = YES;
+            else if (theChar == '}')
+                ctrlMode = NO;
+            else {
+                if (ctrlMode)
+                    *character = theChar | 0x100;
+                else
+                    *character = theChar;
+                return(TRUE);
+            }
+        } else {
+            return(FALSE);
+        }
+    }
+    return(FALSE);
 }
 
 - (int)startPaste {

@@ -11,6 +11,7 @@
 @interface PasteManager : NSObject {
 	NSString *pasteString;
 	int charCount;
+    int ctrlMode;
 }
 
 + (PasteManager *)sharedInstance;
