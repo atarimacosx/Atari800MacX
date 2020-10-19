@@ -86,6 +86,7 @@ typedef struct ATARI800MACX_PREF {
                 int hardDrivesReadOnly;
                 char hPath[FILENAME_MAX];
                 char xegsRomFile[FILENAME_MAX];
+                char xegsGameRomFile[FILENAME_MAX];
                 char a1200XLRomFile[FILENAME_MAX];
                 char osBRomFile[FILENAME_MAX];
                 char xlRomFile[FILENAME_MAX];

@@ -896,6 +896,7 @@ void CalculatePrefsChanged()
 
     if ((strcmp(CFG_osb_filename, prefs.osBRomFile) !=0) ||
         (strcmp(CFG_xegs_filename, prefs.xegsRomFile) !=0) ||
+        (strcmp(CFG_xegsGame_filename, prefs.xegsGameRomFile) !=0) ||
         (strcmp(CFG_1200xl_filename, prefs.a1200XLRomFile) !=0) ||
 		(strcmp(CFG_xlxe_filename, prefs.xlRomFile) !=0) ||
 		(strcmp(CFG_basic_filename, prefs.basicRomFile) !=0) ||
@@ -1125,6 +1126,7 @@ int loadMacPrefs(int firstTime)
     Devices_h_read_only = prefs.hardDrivesReadOnly;
     strcpy(Devices_h_exe_path, prefs.hPath);
     strcpy(CFG_xegs_filename, prefs.xegsRomFile);
+    strcpy(CFG_xegsGame_filename, prefs.xegsGameRomFile);
     strcpy(CFG_1200xl_filename, prefs.a1200XLRomFile);
     strcpy(CFG_osb_filename, prefs.osBRomFile);
     strcpy(CFG_xlxe_filename, prefs.xlRomFile);

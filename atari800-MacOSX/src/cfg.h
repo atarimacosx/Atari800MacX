@@ -14,6 +14,7 @@ int CFG_WriteConfig(void);
 
 /* Paths to ROM images. */
 extern char CFG_xegs_filename[FILENAME_MAX];
+extern char CFG_xegsGame_filename[FILENAME_MAX];
 extern char CFG_1200xl_filename[FILENAME_MAX];
 extern char CFG_osb_filename[FILENAME_MAX];
 extern char CFG_xlxe_filename[FILENAME_MAX];

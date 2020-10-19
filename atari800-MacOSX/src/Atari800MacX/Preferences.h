@@ -147,6 +147,7 @@
 #define UseAltira5200Rom @"UseAltira5200Rom"
 #define UseAltiraBasicRom @"UseAltiraBasicRom"
 #define XEGSRomFile @"XEGSRomFile"
+#define XEGSGameRomFile @"XEGSGameRomFile"
 #define A1200XLRomFile @"A1200XLRomFile"
 #define OsBRomFile @"OsBRomFile"
 #define XlRomFile @"XlRomFile"
@@ -270,6 +271,7 @@
     IBOutlet id a5200RomFileField;
     IBOutlet id a1200xlRomFileField;
     IBOutlet id xegsRomFileField;
+    IBOutlet id xegsGameRomFileField;
     IBOutlet id adjustPaletteButton;
     IBOutlet id artifactingPulldown;
     IBOutlet id artifactNewButton;
@@ -597,6 +599,7 @@
 - (IBAction)identifyRom:(id)sender;
 - (IBAction)identifyRomOK:(id)sender;
 - (IBAction)browseXEGSRom:(id)sender;
+- (IBAction)browseXEGSGameRom:(id)sender;
 - (IBAction)browse1200XLRom:(id)sender;
 - (void)browseOsBRom:(id)sender;
 - (void)browseXlRom:(id)sender;

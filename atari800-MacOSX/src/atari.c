@@ -306,15 +306,25 @@ static int load_roms(void)
             machineString = "Loading ROMS for OSB Machine";
             break;
         case Atari800_MACHINE_XLXE:
-            osFilename = CFG_xlxe_filename;
+            if (Atari800_builtin_game) {
+                osFilename = CFG_xegs_filename;
+                useAltira = Atari800_useAlitrraXEGSRom;
+                machineString = "Loading ROMS for XEGS Machine";
+            } else if (Atari800_keyboard_leds) {
+                osFilename = CFG_1200xl_filename;
+                useAltira = Atari800_useAlitrra1200XLRom;
+                machineString = "Loading ROMS for 1200XL Machine";
+            } else {
+                osFilename = CFG_xlxe_filename;
+                useAltira = Atari800_useAlitrraXLRom;
+                machineString = "Loading ROMS for XL/XE Machine";
+            }
             defaultType = SYSROM_XL_CUSTOM;
             altirraType = SYSROM_ALTIRRA_XL;
             osSize = 0x4000;
             loadBasic = TRUE;
-            useAltira = Atari800_useAlitrraXLRom;
             altirraRom = ROM_altirraos_xl;
             altirraString = "Using Alitrra XL/XE OS";
-            machineString = "Loading ROMS for XL/XE Machine";
             break;
         case Atari800_MACHINE_5200:
             osFilename = CFG_5200_filename;

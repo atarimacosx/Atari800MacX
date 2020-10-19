@@ -68,7 +68,8 @@ static char workingDirectory[FILENAME_MAX], osromsDir[FILENAME_MAX], paletteDir[
 static char imageDirStr[FILENAME_MAX],printDirStr[FILENAME_MAX];
 static char hardDiskDir1Str[FILENAME_MAX], hardDiskDir2Str[FILENAME_MAX], hardDiskDir3Str[FILENAME_MAX];
 static char hardDiskDir4Str[FILENAME_MAX], osBRomFileStr[FILENAME_MAX];
-static char xegsRomFileStr[FILENAME_MAX], a1200XLRomFileStr[FILENAME_MAX];
+static char xegsRomFileStr[FILENAME_MAX], xegsGameRomFileStr[FILENAME_MAX];
+static char a1200XLRomFileStr[FILENAME_MAX];
 static char xlRomFileStr[FILENAME_MAX], basicRomFileStr[FILENAME_MAX], a5200RomFileStr[FILENAME_MAX];
 static char diskImageDirStr[FILENAME_MAX],diskSetDirStr[FILENAME_MAX], cartImageDirStr[FILENAME_MAX], cassImageDirStr[FILENAME_MAX];
 static char exeFileDirStr[FILENAME_MAX], savedStateDirStr[FILENAME_MAX], configDirStr[FILENAME_MAX];
@@ -238,6 +239,8 @@ static NSDictionary *defaultValues() {
     strcat(osromsDir, "/OSRoms");
     strcpy(xegsRomFileStr, workingDirectory);
     strcat(xegsRomFileStr, "/OSRoms/xegs.rom");
+    strcpy(xegsGameRomFileStr, workingDirectory);
+    strcat(xegsGameRomFileStr, "/OSRoms/xegsGame.rom");
     strcpy(a1200XLRomFileStr, workingDirectory);
     strcat(a1200XLRomFileStr, "/OSRoms/a1200xl.rom");
     strcpy(osBRomFileStr, workingDirectory);
@@ -403,6 +406,7 @@ static NSDictionary *defaultValues() {
                 [NSNumber numberWithBool:YES], HardDrivesReadOnly, 
                 @"H1:>DOS;>DOS",HPath,
                 [NSString stringWithCString:xegsRomFileStr encoding:NSUTF8StringEncoding], XEGSRomFile,
+                [NSString stringWithCString:xegsGameRomFileStr encoding:NSUTF8StringEncoding], XEGSGameRomFile,
                 [NSString stringWithCString:a1200XLRomFileStr encoding:NSUTF8StringEncoding], A1200XLRomFile,
                 [NSString stringWithCString:osBRomFileStr encoding:NSUTF8StringEncoding], OsBRomFile,
                 [NSString stringWithCString:xlRomFileStr encoding:NSUTF8StringEncoding], XlRomFile,
@@ -972,6 +976,7 @@ static Preferences *sharedInstance = nil;
     [hPathField setStringValue:[displayedValues objectForKey:HPath]];
 
     [xegsRomFileField setStringValue:[displayedValues objectForKey:XEGSRomFile]];
+    [xegsGameRomFileField setStringValue:[displayedValues objectForKey:XEGSGameRomFile]];
     [a1200xlRomFileField setStringValue:[displayedValues objectForKey:A1200XLRomFile]];
     [osBRomFileField setStringValue:[displayedValues objectForKey:OsBRomFile]];
     [xlRomFileField setStringValue:[displayedValues objectForKey:XlRomFile]];
@@ -2243,6 +2248,7 @@ static Preferences *sharedInstance = nil;
     [displayedValues setObject:[hPathField stringValue] forKey:HPath];
 
     [displayedValues setObject:[xegsRomFileField stringValue] forKey:XEGSRomFile];
+    [displayedValues setObject:[xegsGameRomFileField stringValue] forKey:XEGSGameRomFile];
     [displayedValues setObject:[a1200xlRomFileField stringValue] forKey:A1200XLRomFile];
     [displayedValues setObject:[osBRomFileField stringValue] forKey:OsBRomFile];
     [displayedValues setObject:[xlRomFileField stringValue] forKey:XlRomFile];
@@ -3142,6 +3148,17 @@ static Preferences *sharedInstance = nil;
     [dir release];
     }
 
+- (void)browseXEGSGameRom:(id)sender {
+    NSString *filename, *dir;
+
+    dir = [[NSString alloc] initWithCString:osromsDir encoding:NSUTF8StringEncoding];
+    filename = [self browseFileInDirectory:dir];
+    if (filename != nil) {
+        [xegsGameRomFileField setStringValue:filename];
+        [self miscChanged:self];
+        }
+    [dir release];
+    }
 
 - (void)browseBasicRom:(id)sender {
     NSString *filename, *dir;
@@ -3649,6 +3666,7 @@ static Preferences *sharedInstance = nil;
   prefs->hardDrivesReadOnly = [[curValues objectForKey:HardDrivesReadOnly] intValue];
   [[curValues objectForKey:HPath] getCString:prefs->hPath maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
   [[curValues objectForKey:XEGSRomFile] getCString:prefs->xegsRomFile maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
+  [[curValues objectForKey:XEGSGameRomFile] getCString:prefs->xegsGameRomFile maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
   [[curValues objectForKey:A1200XLRomFile] getCString:prefs->a1200XLRomFile maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
   [[curValues objectForKey:OsBRomFile] getCString:prefs->osBRomFile maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
   [[curValues objectForKey:XlRomFile] getCString:prefs->xlRomFile maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
@@ -5071,6 +5089,7 @@ static Preferences *sharedInstance = nil;
     getBoolDefault(HardDrivesReadOnly);
     getStringDefault(HPath);
     getStringDefault(XEGSRomFile);
+    getStringDefault(XEGSGameRomFile);
     getStringDefault(A1200XLRomFile);
     getStringDefault(OsBRomFile);
     getStringDefault(XlRomFile);
@@ -5347,6 +5366,7 @@ static Preferences *sharedInstance = nil;
     setBoolDefault(HardDrivesReadOnly);
     setStringDefault(HPath);
     setStringDefault(XEGSRomFile);
+    setStringDefault(XEGSGameRomFile);
     setStringDefault(A1200XLRomFile);
     setStringDefault(OsBRomFile);
     setStringDefault(XlRomFile);
@@ -5608,6 +5628,7 @@ static Preferences *sharedInstance = nil;
     setConfig(HardDrivesReadOnly);
     setConfig(HPath);
     setConfig(XEGSRomFile);
+    setConfig(XEGSGameRomFile);
     setConfig(A1200XLRomFile);
     setConfig(OsBRomFile);
     setConfig(XlRomFile);
@@ -5967,6 +5988,7 @@ static Preferences *sharedInstance = nil;
     getConfig(HardDrivesReadOnly);
     getConfig(HPath);
     getConfig(XEGSRomFile);
+    getConfig(XEGSGameRomFile);
     getConfig(A1200XLRomFile);
     getConfig(OsBRomFile);
     getConfig(XlRomFile);
