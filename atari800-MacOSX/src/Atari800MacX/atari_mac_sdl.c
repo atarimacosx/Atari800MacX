@@ -299,7 +299,8 @@ extern int RtConfigLoad(char *rtconfig_filename);
 extern void CalculatePrefsChanged();
 extern void loadPrefsBinaries();
 extern void CalcMachineTypeRam(int type, int *machineType, int *ramSize,
-							   int *axlon, int *mosaic, int *ultimate);
+int *axlon, int *mosaic, int *ultimate,
+int *basic, int *game, int *leds, int *jumper);
 extern void BasicUIInit(void);
 extern void ClearScreen();
 extern void CenterPrint(int fg, int bg, char *string, int y);
@@ -4485,9 +4486,8 @@ void ProcessMacMenus()
 	if (requestMachineTypeChange) {
 		int compositeType, type, ver4type, ver5type;
         int axlon_enabled, mosaic_enabled;
-        int new_ultimate_enabled;
-		
-		type = PreferencesTypeFromIndex((requestMachineTypeChange-1),&ver4type,&ver5type);
+
+        type = PreferencesTypeFromIndex((requestMachineTypeChange-1),&ver4type,&ver5type);
         if (ver5type == -1) {
             if (ver4type == -1)
                 compositeType = type;
@@ -4498,11 +4498,10 @@ void ProcessMacMenus()
         }
 		CalcMachineTypeRam(compositeType, &Atari800_machine_type,
 						   &MEMORY_ram_size, &axlon_enabled,
-                           &mosaic_enabled, &new_ultimate_enabled);
-            {
-            CARTRIDGE_Remove();
-            }
-        ULTIMATE_enabled = new_ultimate_enabled;
+                           &mosaic_enabled, &ULTIMATE_enabled,
+                           &Atari800_builtin_basic, &Atari800_builtin_game,
+                           &Atari800_keyboard_leds, &Atari800_jumper);
+        CARTRIDGE_Remove();
         if (!axlon_enabled)
             MEMORY_axlon_num_banks = 0;
         else
@@ -4867,7 +4866,12 @@ void CreateWindowCaption()
             machineType = "400/800";
             break;
         case Atari800_MACHINE_XLXE:
-            machineType = "XL/XE";
+            if (Atari800_builtin_game)
+                machineType = "XEGS";
+            else if (Atari800_keyboard_leds)
+                machineType = "1200XL";
+            else
+                machineType = "XL/XE";
             break;
         case Atari800_MACHINE_5200:
             machineType = "5200";
@@ -4878,10 +4882,17 @@ void CreateWindowCaption()
         }
     
     if (ULTIMATE_enabled) {
-        if (SIDE2_enabled)
-            sprintf(windowCaption, "XL Ultimate 1MB + SIDE 2 %dK", MEMORY_ram_size);
-        else
-            sprintf(windowCaption, "XL Ultimate 1MB %dK", MEMORY_ram_size);
+        if (Atari800_builtin_game) {
+            if (SIDE2_enabled)
+                sprintf(windowCaption, "XEGS Ultimate 1MB + SIDE 2 %dK", MEMORY_ram_size);
+            else
+                sprintf(windowCaption, "XEGS Ultimate 1MB %dK", MEMORY_ram_size);
+        } else {
+            if (SIDE2_enabled)
+                sprintf(windowCaption, "XL Ultimate 1MB + SIDE 2 %dK", MEMORY_ram_size);
+            else
+                sprintf(windowCaption, "XL Ultimate 1MB %dK", MEMORY_ram_size);
+        }
     }
 	else if (MEMORY_axlon_num_banks > 0)
         sprintf(windowCaption, "%s Axlon %dK%s", machineType,

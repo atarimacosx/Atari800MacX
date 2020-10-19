@@ -778,9 +778,24 @@ DQ
                                                 <action selector="changeMachineType:" target="524" id="1004"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Atari XL Ultimate 1MB" tag="19" id="Lqx-DL-0om">
+                                        <menuItem title="Atari 1200XL (64KB)" tag="14" id="GmC-LE-ik4">
+                                            <connections>
+                                                <action selector="changeMachineType:" target="524" id="20J-dy-2ob"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Atari XEGS (64KB)" tag="15" id="fqw-J3-iaT">
+                                            <connections>
+                                                <action selector="changeMachineType:" target="524" id="o2l-Sj-H5N"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Atari XL Ultimate 1MB" tag="16" id="Lqx-DL-0om">
                                             <connections>
                                                 <action selector="changeMachineType:" target="524" id="3CD-mJ-xJc"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Atari XEGS Ultimate 1MB" tag="17" id="Grx-9F-6gu">
+                                            <connections>
+                                                <action selector="changeMachineType:" target="524" id="pgC-6c-Qlw"/>
                                             </connections>
                                         </menuItem>
                                     </items>

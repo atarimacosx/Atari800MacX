@@ -59,7 +59,7 @@ typedef struct {
 } Header;
 
 extern void PauseAudio(int pause);
-extern int CalcAtariType(int machineType, int ramSize, int axlon, int mosaic, int ultimate);
+extern int CalcAtariType(int machineType, int ramSize, int axlon, int mosaic, int ultimate, int basic, int game, int leds, int jumper);
 extern char atari_disk_dirs[][FILENAME_MAX];
 extern char atari_diskset_dir[FILENAME_MAX];
 extern char atari_rom_dir[FILENAME_MAX];
@@ -75,7 +75,8 @@ extern int currPrinter;
 extern int Devices_enable_d_patch;
 extern int Devices_enable_p_patch;
 extern void CalcMachineTypeRam(int type, int *machineType, int *ramSize,
-							   int *axlon, int *mosaic, int *ultimate);
+                        int *axlon, int *mosaic, int *ultimate,
+                        int *basic, int *game, int *leds, int *jumper);
 extern int machine_switch_type;
 extern void Atari_DisplayScreen(UBYTE * screen);
 extern int requestMachineTypeChange;
@@ -533,7 +534,11 @@ NSImage *disketteImage;
         }
 	
 	type = CalcAtariType(Atari800_machine_type, MEMORY_ram_size,
-						 MEMORY_axlon_num_banks > 0, MEMORY_mosaic_num_banks > 0, ULTIMATE_enabled);
+						 MEMORY_axlon_num_banks > 0, MEMORY_mosaic_num_banks > 0, ULTIMATE_enabled,
+                         Atari800_builtin_basic,
+                         Atari800_builtin_game,
+                         Atari800_keyboard_leds,
+                         Atari800_jumper);
     if (type > 18) {
         ver5type = type - 19;
         ver4type = -1;
@@ -987,10 +992,12 @@ NSImage *disketteImage;
     
 	CARTRIDGE_Remove();
 	
-	CalcMachineTypeRam(machine_switch_type, &Atari800_machine_type, 
-					   &MEMORY_ram_size, &axlon_enabled,
-					   &mosaic_enabled, &ULTIMATE_enabled);
-	
+    CalcMachineTypeRam(machine_switch_type, &Atari800_machine_type,
+                       &MEMORY_ram_size, &axlon_enabled,
+                       &mosaic_enabled, &ULTIMATE_enabled,
+                       &Atari800_builtin_basic, &Atari800_builtin_game,
+                       &Atari800_keyboard_leds, &Atari800_jumper);
+
     if (!axlon_enabled)
         MEMORY_axlon_num_banks = 0;
     else

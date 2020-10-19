@@ -203,7 +203,7 @@ int diskDriveSound = 1;
 int saveCurrentMedia = 1;
 int clearCurrentMedia = 0;
 
-int CalcAtariType(int machineType, int ramSize, int axlon, int mosaic, int ultimate);
+int CalcAtariType(int machineType, int ramSize, int axlon, int mosaic, int ultimate, int basic, int game, int leds, int jumper);
 
 /* Arrays to translate menu indicies for gamepad keys to key values */
 #define AKEY_BUTTON1  		0x100
@@ -311,7 +311,11 @@ void savePrefs() {
 
     prefssave.atariType = CalcAtariType(Atari800_machine_type, MEMORY_ram_size,
 										MEMORY_axlon_num_banks > 0, MEMORY_mosaic_num_banks > 0,
-                                        ULTIMATE_enabled);
+                                        ULTIMATE_enabled,
+                                        Atari800_builtin_basic,
+                                        Atari800_builtin_game,
+                                        Atari800_keyboard_leds,
+                                        Atari800_jumper);
 
 	prefssave.currPrinter = currPrinter;
 	prefssave.artifactingMode = ANTIC_artif_mode;
@@ -422,10 +426,13 @@ void loadPrefsBinaries() {
 *   17: Atari800_MACHINE_OSB, Mosaic Ram Expansion
 *   18: Atari800_MACHINE_XLXE, 192
 * Version 5.4+ adds the following types:
-*   19: Atari800_MACHINE_XLXE Ultimate 1MB
+*   19: Atari800_MACHINE_XLXE, 1200XL 64
+*   20: Atari800_MACHINE_XLXE, XEGS, 64
+*   21: Atari800_MACHINE_XLXE XL Ultimate 1MB
+*   22: Atari800_MACHINE_XLXE XEGS Ultimate 1MB
 **************************************************************/
 
-int CalcAtariType(int machineType, int ramSize, int axlon, int mosaic, int ultimate)
+int CalcAtariType(int machineType, int ramSize, int axlon, int mosaic, int ultimate, int basic, int game, int leds, int jumper)
 {
 	if (machineType == Atari800_MACHINE_800) {
 		if (axlon) {
@@ -450,7 +457,15 @@ int CalcAtariType(int machineType, int ramSize, int axlon, int mosaic, int ultim
 		}
 	}
 	else if (machineType == Atari800_MACHINE_XLXE) {
-        if (ultimate)
+        if (ultimate) {
+            if (game)
+                return 22;
+            else
+                return 21;
+        }
+        if (game)
+            return 20;
+        if (leds)
             return 19;
 		if (ramSize == 16)
 			return 6;
@@ -482,7 +497,7 @@ int CalcAtariType(int machineType, int ramSize, int axlon, int mosaic, int ultim
 }
 
 void CalcMachineTypeRam(int type, int *machineType, int *ramSize,
-						int *axlon, int *mosaic, int *ultimate)
+						int *axlon, int *mosaic, int *ultimate, int *basic, int *game, int *leds, int *jumper)
 {
     switch(type) {
         case 0:
@@ -491,6 +506,10 @@ void CalcMachineTypeRam(int type, int *machineType, int *ramSize,
 			*axlon = FALSE;
 			*mosaic = FALSE;
             *ultimate = FALSE;
+            *basic = FALSE;
+            *game = FALSE;
+            *leds = FALSE;
+            *jumper = FALSE;
             break;
         case 1:
             *machineType = Atari800_MACHINE_800;
@@ -498,6 +517,10 @@ void CalcMachineTypeRam(int type, int *machineType, int *ramSize,
 			*axlon = FALSE;
 			*mosaic = FALSE;
             *ultimate = FALSE;
+            *basic = FALSE;
+            *game = FALSE;
+            *leds = FALSE;
+            *jumper = FALSE;
             break;
         case 2:
             *machineType = Atari800_MACHINE_800;
@@ -505,6 +528,10 @@ void CalcMachineTypeRam(int type, int *machineType, int *ramSize,
 			*axlon = FALSE;
 			*mosaic = FALSE;
             *ultimate = FALSE;
+            *basic = FALSE;
+            *game = FALSE;
+            *leds = FALSE;
+            *jumper = FALSE;
             break;
         case 3:
             *machineType = Atari800_MACHINE_800;
@@ -512,6 +539,10 @@ void CalcMachineTypeRam(int type, int *machineType, int *ramSize,
 			*axlon = FALSE;
 			*mosaic = FALSE;
             *ultimate = FALSE;
+            *basic = FALSE;
+            *game = FALSE;
+            *leds = FALSE;
+            *jumper = FALSE;
             break;
         case 4:
             *machineType = Atari800_MACHINE_800;
@@ -519,6 +550,10 @@ void CalcMachineTypeRam(int type, int *machineType, int *ramSize,
 			*axlon = FALSE;
 			*mosaic = FALSE;
             *ultimate = FALSE;
+            *basic = FALSE;
+            *game = FALSE;
+            *leds = FALSE;
+            *jumper = FALSE;
             break;
         case 5:
             *machineType = Atari800_MACHINE_800;
@@ -526,6 +561,10 @@ void CalcMachineTypeRam(int type, int *machineType, int *ramSize,
 			*axlon = FALSE;
 			*mosaic = FALSE;
             *ultimate = FALSE;
+            *basic = FALSE;
+            *game = FALSE;
+            *leds = FALSE;
+            *jumper = FALSE;
             break;
         case 6:
             *machineType = Atari800_MACHINE_XLXE;
@@ -533,6 +572,10 @@ void CalcMachineTypeRam(int type, int *machineType, int *ramSize,
 			*axlon = FALSE;
 			*mosaic = FALSE;
             *ultimate = FALSE;
+            *basic = TRUE;
+            *game = FALSE;
+            *leds = FALSE;
+            *jumper = FALSE;
             break;
         case 7:
             *machineType = Atari800_MACHINE_XLXE;
@@ -540,6 +583,10 @@ void CalcMachineTypeRam(int type, int *machineType, int *ramSize,
 			*axlon = FALSE;
 			*mosaic = FALSE;
             *ultimate = FALSE;
+            *basic = TRUE;
+            *game = FALSE;
+            *leds = FALSE;
+            *jumper = FALSE;
             break;
         case 8:
             *machineType = Atari800_MACHINE_XLXE;
@@ -547,6 +594,10 @@ void CalcMachineTypeRam(int type, int *machineType, int *ramSize,
 			*axlon = FALSE;
 			*mosaic = FALSE;
             *ultimate = FALSE;
+            *basic = TRUE;
+            *game = FALSE;
+            *leds = FALSE;
+            *jumper = FALSE;
             break;
         case 9:
             *machineType = Atari800_MACHINE_XLXE;
@@ -554,6 +605,10 @@ void CalcMachineTypeRam(int type, int *machineType, int *ramSize,
 			*axlon = FALSE;
 			*mosaic = FALSE;
             *ultimate = FALSE;
+            *basic = TRUE;
+            *game = FALSE;
+            *leds = FALSE;
+            *jumper = FALSE;
             break;
         case 10:
             *machineType = Atari800_MACHINE_XLXE;
@@ -561,6 +616,10 @@ void CalcMachineTypeRam(int type, int *machineType, int *ramSize,
 			*axlon = FALSE;
 			*mosaic = FALSE;
             *ultimate = FALSE;
+            *basic = TRUE;
+            *game = FALSE;
+            *leds = FALSE;
+            *jumper = FALSE;
             break;
         case 11:
             *machineType = Atari800_MACHINE_XLXE;
@@ -568,6 +627,10 @@ void CalcMachineTypeRam(int type, int *machineType, int *ramSize,
 			*axlon = FALSE;
 			*mosaic = FALSE;
             *ultimate = FALSE;
+            *basic = TRUE;
+            *game = FALSE;
+            *leds = FALSE;
+            *jumper = FALSE;
             break;
         case 12:
             *machineType = Atari800_MACHINE_XLXE;
@@ -575,6 +638,10 @@ void CalcMachineTypeRam(int type, int *machineType, int *ramSize,
 			*axlon = FALSE;
 			*mosaic = FALSE;
             *ultimate = FALSE;
+            *basic = TRUE;
+            *game = FALSE;
+            *leds = FALSE;
+            *jumper = FALSE;
             break;
         case 13:
             *machineType = Atari800_MACHINE_5200;
@@ -582,6 +649,10 @@ void CalcMachineTypeRam(int type, int *machineType, int *ramSize,
 			*axlon = FALSE;
 			*mosaic = FALSE;
             *ultimate = FALSE;
+            *basic = FALSE;
+            *game = FALSE;
+            *leds = FALSE;
+            *jumper = FALSE;
             break;
         case 14:
             *machineType = Atari800_MACHINE_800;
@@ -589,6 +660,10 @@ void CalcMachineTypeRam(int type, int *machineType, int *ramSize,
 			*axlon = TRUE;
 			*mosaic = FALSE;
             *ultimate = FALSE;
+            *basic = FALSE;
+            *game = FALSE;
+            *leds = FALSE;
+            *jumper = FALSE;
             break;
         case 15:
             *machineType = Atari800_MACHINE_800;
@@ -596,6 +671,10 @@ void CalcMachineTypeRam(int type, int *machineType, int *ramSize,
 			*axlon = FALSE;
 			*mosaic = TRUE;
             *ultimate = FALSE;
+            *basic = FALSE;
+            *game = FALSE;
+            *leds = FALSE;
+            *jumper = FALSE;
             break;
         case 16:
             *machineType = Atari800_MACHINE_800;
@@ -603,6 +682,10 @@ void CalcMachineTypeRam(int type, int *machineType, int *ramSize,
 			*axlon = TRUE;
 			*mosaic = FALSE;
             *ultimate = FALSE;
+            *basic = FALSE;
+            *game = FALSE;
+            *leds = FALSE;
+            *jumper = FALSE;
             break;
         case 17:
             *machineType = Atari800_MACHINE_800;
@@ -610,6 +693,10 @@ void CalcMachineTypeRam(int type, int *machineType, int *ramSize,
 			*axlon = FALSE;
 			*mosaic = TRUE;
             *ultimate = FALSE;
+            *basic = FALSE;
+            *game = FALSE;
+            *leds = FALSE;
+            *jumper = FALSE;
             break;
         case 18:
             *machineType = Atari800_MACHINE_XLXE;
@@ -617,20 +704,54 @@ void CalcMachineTypeRam(int type, int *machineType, int *ramSize,
             *axlon = FALSE;
             *mosaic = FALSE;
             *ultimate = FALSE;
+            *basic = TRUE;
+            *game = FALSE;
+            *leds = FALSE;
+            *jumper = FALSE;
             break;
-        case 19:
+        case 19: // 1200XL
+            *machineType = Atari800_MACHINE_XLXE;
+            *ramSize = 64;
+            *axlon = FALSE;
+            *mosaic = FALSE;
+            *ultimate = FALSE;
+            *basic = FALSE;
+            *game = FALSE;
+            *leds = TRUE;
+            *jumper = TRUE;
+            break;
+        case 20: // XEGS
+            *machineType = Atari800_MACHINE_XLXE;
+            *ramSize = 64;
+            *axlon = FALSE;
+            *mosaic = FALSE;
+            *ultimate = FALSE;
+            *basic = TRUE;
+            *game = TRUE;
+            *leds = FALSE;
+            *jumper = FALSE;
+            break;
+        case 21: // Ultimate XL
             *machineType = Atari800_MACHINE_XLXE;
             *ramSize = 1088;
             *axlon = FALSE;
             *mosaic = FALSE;
             *ultimate = TRUE;
+            *basic = TRUE;
+            *game = FALSE;
+            *leds = FALSE;
+            *jumper = FALSE;
             break;
-        case 20:
+        case 22: // Ultimate XEGS
             *machineType = Atari800_MACHINE_XLXE;
             *ramSize = 1088;
             *axlon = FALSE;
             *mosaic = FALSE;
             *ultimate = TRUE;
+            *basic = TRUE;
+            *game = TRUE;
+            *leds = FALSE;
+            *jumper = FALSE;
             break;
 	}
 
@@ -643,6 +764,10 @@ void CalculatePrefsChanged()
 	int new_axlon = 0;
 	int new_mosaic = 0;
     int new_ultimate = 0;
+    int new_basic = 0;
+    int new_game = 0;
+    int new_leds = 0;
+    int new_jumper = 0;
  
     if (WIDTH_MODE != prefs.widthMode)
         displaySizeChanged = TRUE;
@@ -690,22 +815,32 @@ void CalculatePrefsChanged()
     strcpy(bit3_charset_filename, prefs.bit3CharsetFile);
 
     if (ULTIMATE_enabled) {
-        CalcMachineTypeRam(prefs.atariType, &new_machine_type, &new_ram_size,
-                           &new_axlon, &new_mosaic, &new_ultimate);
+        CalcMachineTypeRam(prefs.atariType, &new_machine_type,
+                           &new_ram_size, &new_axlon,
+                           &new_mosaic, &new_ultimate,
+                           &new_basic, &new_game,
+                           &new_leds, &new_jumper);
         if (ULTIMATE_enabled != new_ultimate)
             machineTypeChanged = TRUE;
         else
             machineTypeChanged = FALSE;
         
     } else {
-        CalcMachineTypeRam(prefs.atariType, &new_machine_type, &new_ram_size,
-                           &new_axlon, &new_mosaic, &new_ultimate);
+        CalcMachineTypeRam(prefs.atariType, &new_machine_type,
+                           &new_ram_size, &new_axlon,
+                           &new_mosaic, &new_ultimate,
+                           &new_basic, &new_game,
+                           &new_leds, &new_jumper);
         if ((Atari800_machine_type != new_machine_type) ||
             (MEMORY_ram_size != new_ram_size) ||
             ((MEMORY_axlon_num_banks > 0) != new_axlon) ||
             ((MEMORY_mosaic_num_banks > 0) != new_mosaic) ||
             ((MEMORY_axlon_num_banks - 1) != prefs.axlonBankMask) ||
             ((MEMORY_mosaic_num_banks - 1) != prefs.mosaicMaxBank) ||
+            (Atari800_builtin_basic != new_basic) ||
+            (Atari800_builtin_game != new_game) ||
+            (Atari800_keyboard_leds != new_leds) ||
+            (Atari800_jumper != new_jumper) ||
             (bbRequested != prefs.blackBoxEnabled) ||
             (mioRequested != prefs.mioEnabled) ||
             (ULTIMATE_enabled != new_ultimate))
@@ -858,8 +993,11 @@ int loadMacPrefs(int firstTime)
     paletteIntensity = prefs.intensity;
     paletteColorShift = prefs.colorShift; 
     strcpy(paletteFilename, prefs.paletteFile);
-    CalcMachineTypeRam(prefs.atariType, &Atari800_machine_type, &MEMORY_ram_size,
-					   &axlon_enabled, &mosaic_enabled, &ULTIMATE_enabled);
+    CalcMachineTypeRam(prefs.atariType, &Atari800_machine_type,
+                       &MEMORY_ram_size, &axlon_enabled,
+                       &mosaic_enabled, &ULTIMATE_enabled,
+                       &Atari800_builtin_basic, &Atari800_builtin_game,
+                       &Atari800_keyboard_leds, &Atari800_jumper);
     if (axlon_enabled) {
         MEMORY_axlon_num_banks = prefs.axlonBankMask + 1;
         PREFS_axlon_num_banks = MEMORY_axlon_num_banks;

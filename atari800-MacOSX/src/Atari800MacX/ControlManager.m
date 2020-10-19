@@ -33,7 +33,7 @@
 extern void PauseAudio(int pause);
 extern void MONITOR_monitorEnter(void);
 extern int MONITOR_monitorCmd(char *input);
-extern int CalcAtariType(int machineType, int ramSize, int axlon, int mosaic, int ultimate);
+extern int CalcAtariType(int machineType, int ramSize, int axlon, int mosaic, int ultimate, int basic, int game, int leds, int jumper);
 
 
 extern int keyjoyEnable;
@@ -460,7 +460,11 @@ static int monitorRunFirstTime = 1;
 {
 	int i, type, index, ver4type, ver5type;
 	type = CalcAtariType(machineType, ramSize,
-						 MEMORY_axlon_num_banks > 0, MEMORY_mosaic_num_banks > 0, ULTIMATE_enabled);
+						 MEMORY_axlon_num_banks > 0, MEMORY_mosaic_num_banks > 0, ULTIMATE_enabled,
+                         Atari800_builtin_basic,
+                         Atari800_builtin_game,
+                         Atari800_keyboard_leds,
+                         Atari800_jumper);
     
     if (type > 18) {
         ver5type = type - 19;
@@ -477,7 +481,7 @@ static int monitorRunFirstTime = 1;
 
     index = [[Preferences sharedInstance] indexFromType:type :ver4type: ver5type];
 	
-	for (i=0;i<15;i++) {
+	for (i=0;i<18;i++) {
 		if (i==index)
 			[[machineTypeMenu itemAtIndex:i] setState:NSOnState];
 		else
