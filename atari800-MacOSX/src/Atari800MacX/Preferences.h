@@ -60,6 +60,7 @@
 #define Side2RomFile @"Side2RomFile"
 #define Side2CFFile @"Side2CFFile"
 #define Side2SDXMode @"Side2SDXMode"
+#define Side2UltimateFlashType @"Side2UltimateFlashType"
 #define AF80Enabled @"AF80Enabled"
 #define AF80RomFile @"AF80RomFile"
 #define AF80CharsetFile @"AF80CharsetFile"
@@ -290,6 +291,7 @@
     IBOutlet id side2FlashFileField;
     IBOutlet id side2CFFileField;
     IBOutlet id side2SDXModePulldown;
+    IBOutlet id side2UltimateFlashTypePulldown;
     IBOutlet id disableBasicButton;
     IBOutlet id disableAllBasicButton;
     IBOutlet id diskImageDirField;

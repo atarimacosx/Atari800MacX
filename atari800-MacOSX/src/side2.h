@@ -7,6 +7,7 @@
 
 extern int SIDE2_enabled;
 extern int SIDE2_SDX_Mode_Switch;
+extern int SIDE2_Flash_Type;
 extern int SIDE2_Block_Device;
 extern char side2_rom_filename[FILENAME_MAX];
 extern char side2_nvram_filename[FILENAME_MAX];

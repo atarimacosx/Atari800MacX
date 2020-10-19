@@ -29,6 +29,7 @@ static char ultimate_rom_filename[FILENAME_MAX] = Util_FILENAME_NOT_SET;
 #endif
 
 int ULTIMATE_enabled = TRUE;
+int ULTIMATE_Flash_Type = 0;
 
 /* Ultimate1MB information from Altirra Hardware Reference Manual */
 static int config_lock = FALSE;
@@ -85,7 +86,10 @@ static void init_ultimate(void)
     else {
         Log_print("loaded Ultimate1MB rom image");
     }
-    flash = Flash_Init(ultimate_rom, Flash_TypeAm29F040B);
+    if (ULTIMATE_Flash_Type == 0)
+        flash = Flash_Init(ultimate_rom, Flash_TypeAm29F040B);
+    else
+        flash = Flash_Init(ultimate_rom, Flash_TypeSST39SF040);
 }
 
 int ULTIMATE_Initialise(int *argc, char *argv[])

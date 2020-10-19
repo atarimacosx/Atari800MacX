@@ -883,6 +883,8 @@ int loadMacPrefs(int firstTime)
     strcpy(side2_compact_flash_filename, prefs.side2CFFileName);
     strcpy(bit3_charset_filename, prefs.bit3CharsetFile);
     SIDE2_SDX_Mode_Switch = prefs.side2SDXMode;
+    SIDE2_Flash_Type = prefs.side2UltimateFlashType;
+    ULTIMATE_Flash_Type = prefs.side2UltimateFlashType;
     strcpy(bb_rom_filename, prefs.blackBoxRomFile);
 	strcpy(mio_rom_filename, prefs.mioRomFile);
 	strcpy(bb_scsi_disk_filename, prefs.blackBoxScsiDiskFile);

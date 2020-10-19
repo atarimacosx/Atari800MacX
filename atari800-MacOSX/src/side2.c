@@ -20,6 +20,7 @@
 #include <stdlib.h>
 
 int SIDE2_enabled = FALSE;
+int SIDE2_Flash_Type = 0;
 
 static UBYTE side2_rom[0x80000];
 #ifdef ATARI800MACX
@@ -90,7 +91,11 @@ static void init_side2(void)
         Log_print("Attached Side2 CF Image");
         SIDE2_Block_Device = TRUE;
     }
-    flash = Flash_Init(side2_rom, Flash_TypeAm29F040B);
+    if (SIDE2_Flash_Type == 0)
+        flash = Flash_Init(side2_rom, Flash_TypeAm29F040B);
+    else
+        flash = Flash_Init(side2_rom, Flash_TypeSST39SF040);
+
 }
 
 void SIDE2_Remove_Block_Device(void)
