@@ -139,6 +139,20 @@ int SIDE2_Change_Rom(char *filename) {
     return romLoaded;
 }
 
+int SIDE2_Save_Rom(char *filename)
+{
+    FILE *f;
+
+    f = fopen(filename, "wb");
+    if (f != NULL) {
+        fwrite(side2_rom, 1, 0x80000, f);
+        fclose(f);
+        return 0;
+    } else {
+        return -1;
+    }
+}
+
 int SIDE2_Initialise(int *argc, char *argv[])
 {
     init_side2();

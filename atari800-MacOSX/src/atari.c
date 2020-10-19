@@ -378,10 +378,8 @@ int Atari800_InitialiseMachine(void)
 	ESC_ClearAll();
 	if (!load_roms())
 		return FALSE;
-#ifndef ATARI800MACX
     Atari800_UpdateKeyboardDetached();
     Atari800_UpdateJumper();
-#endif
 	MEMORY_InitialiseMachine();
     Atari800_Coldstart();
 	Devices_UpdatePatches();

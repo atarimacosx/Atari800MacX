@@ -24,6 +24,7 @@ int SIDE2_Add_Block_Device(char *filename);
 void SIDE2_Remove_Block_Device(void);
 void SIDE2_SDX_Switch_Change(int state);
 int SIDE2_Change_Rom(char *filename);
+int SIDE2_Save_Rom(char *filename);
 void SIDE2_Bank_Reset_Button_Change();
 UBYTE SIDE2_Flash_Read(UWORD addr);
 void SIDE2_Flash_Write(UWORD addr, UBYTE value);

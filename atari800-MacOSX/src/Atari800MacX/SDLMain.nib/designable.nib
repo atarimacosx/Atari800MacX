@@ -329,6 +329,12 @@
                                                 <action selector="side2ChangeRom:" target="473" id="O3y-5m-KLR"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem title="Save SIDE2 ROM Image..." id="QFy-6q-EPo">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="side2SaveRom:" target="473" id="ACQ-rD-elq"/>
+                                            </connections>
+                                        </menuItem>
                                         <menuItem title="Attach SIDE2 Hard Disk..." id="XiC-uU-bmv">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
@@ -382,7 +388,13 @@
                                     <action selector="convertCartRom:" target="473" id="492"/>
                                 </connections>
                             </menuItem>
-                            <menuItem isSeparatorItem="YES" id="415">
+                            <menuItem title="Save Ultimate ROM Image..." id="VCY-bH-CkS">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="ultimateSaveRom:" target="473" id="bRe-Zi-EkY"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem isSeparatorItem="YES" id="ip7-e8-GSu">
                                 <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                             </menuItem>
                             <menuItem title="Insert Cassette..." id="416">
@@ -979,6 +991,8 @@ DQ
                 <outlet property="resetPrinterItem" destination="798" id="808"/>
                 <outlet property="resetPrinterMenuItem" destination="798" id="809"/>
                 <outlet property="rewindCassItem" destination="472" id="555"/>
+                <outlet property="saveSIDE2RomItem" destination="QFy-6q-EPo" id="m38-pj-124"/>
+                <outlet property="saveUltimateRomItem" destination="VCY-bH-CkS" id="fkJ-yq-hhW"/>
                 <outlet property="selectAtari1020Item" destination="794" id="806"/>
                 <outlet property="selectAtari1020MenuItem" destination="794" id="814"/>
                 <outlet property="selectAtari825Item" destination="793" id="805"/>

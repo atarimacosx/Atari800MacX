@@ -37,6 +37,7 @@
 #import "img_raw.h"
 #import "img_vhd.h"
 #import "side2.h"
+#import "ultimate1mb.h"
 #import <sys/stat.h>
 #import <unistd.h>
 
@@ -483,7 +484,12 @@ NSImage *disketteImage;
         [removeSecondCartItem setTarget:nil];
     else
         [removeSecondCartItem setTarget:self];
+    if (ULTIMATE_enabled)
+        [saveUltimateRomItem setTarget:self];
+    else
+        [saveUltimateRomItem setTarget:nil];
     if (SIDE2_enabled) {
+        [saveSIDE2RomItem setTarget:self];
         [changeSIDE2RomItem setTarget:self];
         if (SIDE2_Block_Device) {
             [attachSIDE2CFItem setTarget:self];
@@ -496,6 +502,7 @@ NSImage *disketteImage;
         [slideSIDE2ButtonLoaderItem setTarget:self];
         [pressSIDE2ButtonItem setTarget:self];
     } else {
+        [saveSIDE2RomItem setTarget:nil];
         [changeSIDE2RomItem setTarget:nil];
         [attachSIDE2CFItem setTarget:nil];
         [removeSIDE2CFItem setTarget:nil];
@@ -1802,7 +1809,7 @@ NSImage *disketteImage;
 
 /*------------------------------------------------------------------------------
 *  showHardCreatePanel - This method displays a window which allows the creation of
-*     blank floppy images.
+*     blank hard disk images.
 *-----------------------------------------------------------------------------*/
 - (IBAction)showHardCreatePanel:(id)sender
 {
@@ -3010,6 +3017,44 @@ NSImage *disketteImage;
 -(IBAction)changeXEP80:(id)sender
 {
     request80ColChange = 1;
+}
+
+- (IBAction)side2SaveRom:(id)sender
+{
+    NSString *filename;
+    char cfilename[FILENAME_MAX+1];
+    NSString *oldRom = [NSString stringWithCString:side2_rom_filename encoding:NSASCIIStringEncoding];
+    
+    filename = [self saveFileInDirectory:[oldRom stringByDeletingLastPathComponent]:@"rom"];
+            
+    if (filename == nil) {
+        return;
+        }
+                
+    [filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
+    
+    if (SIDE2_Save_Rom(cfilename) < 0) {
+        [self displayError:@"Unable to Save SIDE2 ROM Image!"];
+    }
+}
+
+- (IBAction)ultimateSaveRom:(id)sender
+{
+    NSString *filename;
+    char cfilename[FILENAME_MAX+1];
+    NSString *oldRom = [NSString stringWithCString:ultimate_rom_filename encoding:NSASCIIStringEncoding];
+    
+    filename = [self saveFileInDirectory:[oldRom stringByDeletingLastPathComponent]:@"rom"];
+
+    if (filename == nil) {
+        return;
+        }
+                
+    [filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
+    
+    if (ULTIMATE_Save_Rom(cfilename) < 0) {
+        [self displayError:@"Unable to Save ULTIMATE ROM Image!"];
+    }
 }
 
 - (IBAction)side2ChangeRom:(id)sender

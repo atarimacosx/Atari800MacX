@@ -159,6 +159,8 @@
     IBOutlet id insertBasicItem;
     IBOutlet id insertSIDE2Item;
     IBOutlet id changeSIDE2RomItem;
+    IBOutlet id saveSIDE2RomItem;
+    IBOutlet id saveUltimateRomItem;
     IBOutlet id attachSIDE2CFItem;
     IBOutlet id removeSIDE2CFItem;
     IBOutlet id slideSIDE2ButtonSDXItem;
@@ -266,6 +268,8 @@
 - (void)enable80ColMode:(int)machineType;
 - (void)set80ColMode:(int)xep80Enabled:(int)af80Enabled:(int)bit3Enabled:(int)xep80;
 - (IBAction)xep80Mode:(id)sender;
+- (IBAction)side2SaveRom:(id)sender;
+- (IBAction)ultimateSaveRom:(id)sender;
 - (IBAction)side2ChangeRom:(id)sender;
 - (IBAction)side2AttachCF:(id)sender;
 - (IBAction)side2AttachCFFile:(NSString *)filename;

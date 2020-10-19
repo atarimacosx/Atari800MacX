@@ -345,6 +345,20 @@ void ULTIMATE_LoadRoms(void)
     Update_Kernel_Bank();
 }
 
+int ULTIMATE_Save_Rom(char *filename)
+{
+    FILE *f;
+
+    f = fopen(filename, "wb");
+    if (f != NULL) {
+        fwrite(ultimate_rom, 1, 0x80000, f);
+        fclose(f);
+        return 0;
+    } else {
+        return -1;
+    }
+}
+
 static void Set_SDX_Bank(UBYTE bank) {
     ULONG offset = (ULONG)bank << 13;
 
