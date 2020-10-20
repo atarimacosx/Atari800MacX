@@ -354,6 +354,16 @@ static int load_roms(void)
         Atari800_os_version = altirraType;
         Log_print(altirraString);
     }
+
+    if (Atari800_builtin_game) {
+        /* Try loading built-in XEGS game. */
+        if (Atari800_LoadImage(CFG_xegsGame_filename, MEMORY_xegame, 0x2000))
+            Log_print("Loaded XEGS Game ROM");
+        else {
+            memcpy(MEMORY_xegame, ROM_altirra_basic, 0x2000);
+            Log_print("Error Loading XEGS Game ROM - Substituting Altirra Basic");
+        }
+    }
     
     if (!loadBasic) {
         MEMORY_have_basic = FALSE;
