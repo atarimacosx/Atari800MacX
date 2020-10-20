@@ -3049,7 +3049,7 @@ static Preferences *sharedInstance = nil;
     char romTypeName[40];
     int rom;
     
-    for (rom = 1; rom < 7; rom ++) {
+    for (rom = 1; rom < 8; rom ++) {
     switch( rom ) {
         case 1:
             romFilename = [curValues objectForKey:OsBRomFile];
@@ -3080,6 +3080,11 @@ static Preferences *sharedInstance = nil;
             romFilename = [curValues objectForKey:A1200XLRomFile];
             label = identify1200XLLabel;
             romDefault = SYSROM_XL_CUSTOM;
+            break;
+        case 7:
+            romFilename = [curValues objectForKey:XEGSGameRomFile];
+            label = identifyXEGSGameLabel;
+            romDefault = SYSROM_XEGAME_CUSTOM;
             break;
     }
     

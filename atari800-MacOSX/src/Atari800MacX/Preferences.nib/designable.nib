@@ -177,6 +177,7 @@
                 <outlet property="identifyBasicLabel" destination="KNI-Kb-6BR" id="ajc-sO-N3k"/>
                 <outlet property="identifyOKButton" destination="ffE-fv-U1c" id="Zse-Sb-mhc"/>
                 <outlet property="identifyOSBLabel" destination="eGR-vq-gK5" id="laN-1a-wFB"/>
+                <outlet property="identifyXEGSGameLabel" destination="DIr-Sq-2zd" id="Cp3-q9-Shm"/>
                 <outlet property="identifyXEGSLabel" destination="Zo1-Et-5bq" id="bpu-mS-8Ob"/>
                 <outlet property="identifyXLLabel" destination="gUl-6b-5Aj" id="uUj-F5-CNG"/>
                 <outlet property="ignoreHeaderWriteprotectButton" destination="3816" id="3817"/>
@@ -8197,11 +8198,11 @@ DQ
         <window title="Identify ROM Types" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="lk6-bt-SjB" userLabel="IdentifyRomPanel">
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="90" y="168" width="440" height="278"/>
+            <rect key="contentRect" x="90" y="168" width="478" height="295"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
             <value key="minSize" type="size" width="81" height="2"/>
             <view key="contentView" id="W5O-IV-EP4">
-                <rect key="frame" x="0.0" y="0.0" width="440" height="278"/>
+                <rect key="frame" x="0.0" y="0.0" width="478" height="295"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ffE-fv-U1c">
@@ -8219,7 +8220,7 @@ DQ
                         </connections>
                     </button>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="In7-Wt-WSU">
-                        <rect key="frame" x="4" y="199" width="134" height="17"/>
+                        <rect key="frame" x="26" y="222" width="134" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Atari OS Rev. B ROM:" id="VGA-ZW-CSU">
                             <font key="font" metaFont="system"/>
@@ -8228,7 +8229,7 @@ DQ
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="eGR-vq-gK5">
-                        <rect key="frame" x="142" y="200" width="300" height="17"/>
+                        <rect key="frame" x="164" y="223" width="300" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title=" " id="rDa-p2-jip">
                             <font key="font" metaFont="system"/>
@@ -8237,7 +8238,7 @@ DQ
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lX9-pu-y5K">
-                        <rect key="frame" x="4" y="173" width="134" height="17"/>
+                        <rect key="frame" x="26" y="196" width="134" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Atari XL ROM:" id="4nZ-9r-khZ">
                             <font key="font" metaFont="system"/>
@@ -8246,7 +8247,7 @@ DQ
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gUl-6b-5Aj">
-                        <rect key="frame" x="142" y="174" width="300" height="17"/>
+                        <rect key="frame" x="164" y="197" width="300" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title=" " id="H9f-mF-mbc">
                             <font key="font" metaFont="system"/>
@@ -8255,7 +8256,7 @@ DQ
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3A7-Qh-DRI">
-                        <rect key="frame" x="4" y="147" width="134" height="17"/>
+                        <rect key="frame" x="26" y="170" width="134" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Atari Basic ROM:" id="qh6-JT-PVg">
                             <font key="font" metaFont="system"/>
@@ -8264,7 +8265,7 @@ DQ
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="KNI-Kb-6BR">
-                        <rect key="frame" x="142" y="148" width="300" height="17"/>
+                        <rect key="frame" x="164" y="171" width="300" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title=" " id="Vxa-O8-45e">
                             <font key="font" metaFont="system"/>
@@ -8273,7 +8274,7 @@ DQ
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cw4-SL-sOv">
-                        <rect key="frame" x="4" y="122" width="134" height="17"/>
+                        <rect key="frame" x="26" y="145" width="134" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Atari 5200 ROM:" id="gla-hX-MHe">
                             <font key="font" metaFont="system"/>
@@ -8282,7 +8283,7 @@ DQ
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="eGh-WU-9R7">
-                        <rect key="frame" x="142" y="123" width="300" height="17"/>
+                        <rect key="frame" x="164" y="146" width="300" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title=" " id="uxq-nL-LSU">
                             <font key="font" metaFont="system"/>
@@ -8291,7 +8292,7 @@ DQ
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="VQm-pX-dzq">
-                        <rect key="frame" x="4" y="97" width="134" height="17"/>
+                        <rect key="frame" x="26" y="95" width="134" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Atari XEGS ROM:" id="xK3-C5-v1m">
                             <font key="font" metaFont="system"/>
@@ -8300,7 +8301,7 @@ DQ
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Zo1-Et-5bq">
-                        <rect key="frame" x="142" y="98" width="300" height="17"/>
+                        <rect key="frame" x="164" y="96" width="300" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title=" " id="3TI-gf-a0m">
                             <font key="font" metaFont="system"/>
@@ -8308,8 +8309,26 @@ DQ
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="syu-CM-5ef">
+                        <rect key="frame" x="14" y="72" width="146" height="17"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Atari XEGS Game ROM:" id="dWm-eS-g1D">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="DIr-Sq-2zd">
+                        <rect key="frame" x="164" y="73" width="300" height="17"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title=" " id="17G-sx-s8v">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="NT6-u2-rwj">
-                        <rect key="frame" x="4" y="72" width="134" height="17"/>
+                        <rect key="frame" x="26" y="120" width="134" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Atari 1200XL ROM:" id="bxx-Qi-Sto">
                             <font key="font" metaFont="system"/>
@@ -8318,7 +8337,7 @@ DQ
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="tmf-yu-vvO">
-                        <rect key="frame" x="142" y="73" width="300" height="17"/>
+                        <rect key="frame" x="164" y="121" width="300" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title=" " id="mIa-u8-DTi">
                             <font key="font" metaFont="system"/>
@@ -8328,7 +8347,7 @@ DQ
                     </textField>
                 </subviews>
             </view>
-            <point key="canvasLocation" x="195" y="1345"/>
+            <point key="canvasLocation" x="238" y="1340"/>
         </window>
     </objects>
     <resources>

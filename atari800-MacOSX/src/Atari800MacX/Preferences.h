@@ -513,6 +513,7 @@
     IBOutlet id errorOKButton;
     IBOutlet id identifyOKButton;
     IBOutlet id identifyXEGSLabel;
+    IBOutlet id identifyXEGSGameLabel;
     IBOutlet id identify1200XLLabel;
     IBOutlet id identifyOSBLabel;
     IBOutlet id identifyXLLabel;
