@@ -1314,6 +1314,19 @@ static int Atari_International_Good_Key(int key) {
     return FALSE;
     }
 
+void Atari_Consol_Key_Input() {
+    UInt8 *kbhits;
+    
+    /* Handle the Atari Console Keys */
+    kbhits = (Uint8 *) SDL_GetKeyboardState(NULL);
+    if (kbhits[SDL_SCANCODE_F2] && !kbhits[SDL_SCANCODE_LGUI])
+        INPUT_key_consol &= (~INPUT_CONSOL_OPTION);
+    if (kbhits[SDL_SCANCODE_F3] && !kbhits[SDL_SCANCODE_LGUI])
+        INPUT_key_consol &= (~INPUT_CONSOL_SELECT);
+    if (kbhits[SDL_SCANCODE_F4] && !kbhits[SDL_SCANCODE_LGUI])
+        INPUT_key_consol &= (~INPUT_CONSOL_START);
+}
+
 /*------------------------------------------------------------------------------
  *  Atari_Keyboard_International - This function is called once per main loop to handle
  *    keyboard input.  It handles keys like the original SDL version,  with
@@ -1556,6 +1569,7 @@ int Atari_Keyboard_International(void)
         /* Poll for SDL events.  All we want here are Keydown and Keyup events,
          and the quit event. */
         checkForNewJoysticks();
+        Atari_Consol_Key_Input();
         int pollEvent;
         if ((pollEvent = SDL_PollEvent(&event))) {
             switch (event.type) {
@@ -1861,15 +1875,6 @@ int Atari_Keyboard_International(void)
         key_pressed = 0;
         return AKEY_NONE;
     }
-    
-    
-    /* Handle the Atari Console Keys */
-    if (kbhits[SDL_SCANCODE_F2] && !kbhits[SDL_SCANCODE_LGUI])
-        INPUT_key_consol &= (~INPUT_CONSOL_OPTION);
-    if (kbhits[SDL_SCANCODE_F3] && !kbhits[SDL_SCANCODE_LGUI])
-        INPUT_key_consol &= (~INPUT_CONSOL_SELECT);
-    if (kbhits[SDL_SCANCODE_F4] && !kbhits[SDL_SCANCODE_LGUI])
-        INPUT_key_consol &= (~INPUT_CONSOL_START);
     
     if (key_pressed == 0) {
         return AKEY_NONE;
