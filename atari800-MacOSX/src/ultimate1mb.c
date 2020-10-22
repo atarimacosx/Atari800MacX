@@ -128,7 +128,6 @@ void ULTIMATE_D1PutByte(UWORD addr, UBYTE byte)
 void Set_PBI_Bank(UBYTE bank)
 {
     if (pbi_selected) { //} || !config_lock) {
-        //printf("PBIBank: %01x\n",bank);
         memcpy(MEMORY_mem + 0xd800,
                ultimate_rom + 0x59800 + ((UWORD) bank << 13), 0x800);
     }
@@ -154,7 +153,7 @@ UBYTE ULTIMATE_D3GetByte(UWORD addr, int no_side_effects)
 {
     int result = 0xff;
     if (addr == 0xD3E2)
-        return CDS1305_ReadState(rtc) ? 0x08 : 0x00;
+        result = CDS1305_ReadState(rtc) ? 0x08 : 0x00;
     else if (addr == 0xD383) {
         result = cold_reset_flag;
     }
@@ -173,7 +172,7 @@ UBYTE ULTIMATE_D3GetByte(UWORD addr, int no_side_effects)
         return PIA_GetByte(addr, no_side_effects);
     }
     
-    return 0xFF;
+    return result;
 }
 
 void ULTIMATE_D3PutByte(UWORD addr, UBYTE byte)
@@ -283,14 +282,17 @@ void ULTIMATE_D6D7PutByte(UWORD addr, UBYTE byte)
 
 void ULTIMATE_ColdStart(void)
 {
+    Flash_Cold_Reset(flash);
+    
     cold_reset_flag = 0x80;        // ONLY set by cold reset, not warm reset.
 
     // Allow configuration changes
-    config_lock = FALSE;
+    //config_lock = FALSE;
 
     // The SDX module is enabled on warm reset, but the cart enables and bank
     // are only affected by cold reset.
     cart_bank_offset = 1;
+    SDX_enable = FALSE;
     Set_SDX_Bank(0);
     Set_SDX_Enabled(TRUE);
     external_cart_enable = FALSE;
@@ -305,10 +307,6 @@ void ULTIMATE_ColdStart(void)
     memset(pbi_ram, 0, sizeof(pbi_ram));
     IO_RAM_enable = TRUE;
 
-    // Default to all of extended memory
-    ultimate_mem_config = 3;
-    Set_Mem_Mode();
-
     MEMORY_SetFlashRoutines(ULTIMATE_Flash_Read, ULTIMATE_Flash_Write);
 
     ULTIMATE_WarmStart();
@@ -318,6 +316,13 @@ void ULTIMATE_WarmStart(void)
 {
     // Reset RTC Chip
     CDS1305_ColdReset(rtc);
+
+    // Default to all of extended memory
+    ultimate_mem_config = 3;
+    Set_Mem_Mode();
+
+    // Allow configuration changes
+    config_lock = FALSE;
 
     pbi_emulation_enable = FALSE;
     pbi_button_enable = FALSE;
@@ -365,7 +370,6 @@ static void Set_SDX_Bank(UBYTE bank) {
     if (cart_bank_offset == offset)
         return;
 
-    //printf("SDX: %d\n",bank);
     cart_bank_offset = offset;
     if (SDX_enable)
         MEMORY_CopyROM(0xa000, 0xbfff, ultimate_rom + cart_bank_offset);
@@ -382,10 +386,12 @@ static void Set_SDX_Enabled(int enabled) {
         else {
             CARTRDIGE_Switch_To_Main();
         }
+        MEMORY_SetFlashRoutines(ULTIMATE_Flash_Read, ULTIMATE_Flash_Write);
         MEMORY_SetFlash(0xa000, 0xbfff);
         MEMORY_CopyROM(0xa000, 0xbfff, ultimate_rom + cart_bank_offset);
     }
     else {
+        MEMORY_SetROM(0xa000, 0xbfff);
         if (external_cart_enable)
             CARTRDIGE_Switch_To_Piggyback(pbi_button_enable);
         else
@@ -439,6 +445,9 @@ static void Update_Kernel_Bank(void)
     // TBD - What about self test area? And what about getting the
     // below into their parts of MEMORY_mem.
     memcpy(MEMORY_basic, ultimate_rom + basicbase, 0x2000);
+    //if (!((PIA_PORTB | PIA_PORTB_mask) & 0x01))
+    //    memcpy(MEMORY_mem + 0xA000, ultimate_rom + basicbase, 0x2000);
+
     memcpy(MEMORY_xegame, ultimate_rom + gamebase, 0x2000);
     //ESC_UpdatePatches(); // TBD - Should we do this???
 }
