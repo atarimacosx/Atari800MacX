@@ -39,6 +39,7 @@
 #define LedSector @"LedSector"
 #define LedStatusMedia @"LedStatusMedia"
 #define LedSectorMedia @"LedSectorMedia"
+#define LedFKeys @"LedFKeys"
 #define XEP80Enabled @"XEP80Enabled"
 #define XEP80Autoswitch @"XEP80Autoswitch"
 #define XEP80Port @"XEP80Port"

@@ -115,6 +115,26 @@ SYSROM_t SYSROM_roms[SYSROM_SIZE] = {
 #endif /* EMUOS_ALTIRRA */
 };
 
+#define SYSROM_ALTIRRA_800_LOADABLE_SIZE (4)
+#define SYSROM_ALTIRRA_XL_LOADABLE_SIZE  (5)
+
+ULONG SYSROM_Altirra_800_Rom_Crcs[SYSROM_ALTIRRA_800_LOADABLE_SIZE] =
+    {
+    0x4C11FE5E,
+    0x3A1AB83A,
+    0x340487A4,
+    0xEDB88320
+    };
+
+ULONG SYSROM_Altirra_XL_Rom_Crcs[SYSROM_ALTIRRA_XL_LOADABLE_SIZE] =
+    {
+    0xB50233E0,
+    0xA2091315,
+    0x5166e00b,
+    0xBA1E2018,
+    0x6B0F8E75
+    };
+
 #ifdef ATARI800MACX
 /* Used in reading the config file to match option names. */
 static char const * const readable_strings[SYSROM_LOADABLE_SIZE] = {
@@ -144,6 +164,22 @@ static char const * const readable_strings[SYSROM_LOADABLE_SIZE] = {
     "Atari Custom BASIC",
     "Atari XE Game System Custom OS",
 };
+
+static char const * const altira800_readable_strings[SYSROM_ALTIRRA_800_LOADABLE_SIZE] = {
+    "Altirra 400/800 OS 3.9",
+    "Altirra 400/800 OS 3.2",
+    "Altirra 400/800 OS 3.1",
+    "Altirra 400/800 OS 3.0"
+};
+
+static char const * const altiraxl_readable_strings[SYSROM_ALTIRRA_XL_LOADABLE_SIZE] = {
+    "Altirra XL/XE OS 3.9",
+    "Altirra XL/XE OS 3.2",
+    "Altirra XL/XE OS 3.2",
+    "Altirra XL/XE OS 3.1",
+    "Altirra XL/XE OS 3.0"
+};
+
 #else
 
 /* Used in reading the config file to match option names. */
@@ -203,10 +239,10 @@ static char const * const cfg_strings_rev[SYSROM_SIZE+1] = {
     "CUSTOM", /* SYSROM_BASIC_CUSTOM */
     "CUSTOM", /* SYSROM_XEGAME_CUSTOM */
 #if EMUOS_ALTIRRA
-    "ALTIRRA", /* SYSROM_ALTIRRA_800 */
-    "ALTIRRA", /* SYSROM_ALTIRRA_XL */
-    "ALTIRRA", /* SYSROM_ALTIRRA_5200 */
-    "ALTIRRA", /* SYSROM_ALTIRRA_BASIC */
+    "ALTIRRA3.9", /* SYSROM_ALTIRRA_800 */
+    "ALTIRRA3.9", /* SYSROM_ALTIRRA_XL */
+    "ALTIRRA3.9", /* SYSROM_ALTIRRA_5200 */
+    "ALTIRRA3.9", /* SYSROM_ALTIRRA_BASIC */
 #endif /* EMUOS_ALTIRRA */
     "AUTO" /* SYSROM_AUTO */
 };
@@ -250,6 +286,28 @@ int SYSROM_FindType(int defaultType, char const *filename, char *romTypeName)
         }
     }
     
+    for (id = 0; id < SYSROM_ALTIRRA_800_LOADABLE_SIZE; ++id) {
+        if (SYSROM_roms[id].size == len
+            && SYSROM_roms[id].crc32 != CRC_NULL && SYSROM_roms[id].crc32 == crc) {
+            strcpy(romTypeName, readable_strings[id]);
+            return id;
+        }
+    }
+    
+    for (id = 0; id < SYSROM_ALTIRRA_800_LOADABLE_SIZE; ++id) {
+        if (SYSROM_Altirra_800_Rom_Crcs[id] == crc) {
+            strcpy(romTypeName, altira800_readable_strings[id]);
+            return SYSROM_ALTIRRA_800;
+        }
+    }
+    
+    for (id = 0; id < SYSROM_ALTIRRA_800_LOADABLE_SIZE; ++id) {
+        if (SYSROM_Altirra_XL_Rom_Crcs[id] == crc) {
+            strcpy(romTypeName, altiraxl_readable_strings[id]);
+            return SYSROM_ALTIRRA_XL;
+        }
+    }
+    
     if (defaultType >= 0 && defaultType <= SYSROM_LOADABLE_SIZE) {
         strcpy(romTypeName, readable_strings[defaultType]);
         return defaultType;
@@ -263,6 +321,33 @@ int SYSROM_FindImageType(const unsigned char *image)
     int id;
     ULONG crc = 0xffffffff;
 
+    // Check to see if image is 0xff padded at front
+    // which would indicate an 400/800 type OS.
+    if ((image[0] == 0xff) && (image[1] == 0xff) &&
+        (image[2] == 0xff) && (image[3] == 0xff) &&
+        (image[0x17fc] == 0xff) && (image[0x17fd] == 0xff) &&
+        (image[0x17fe] == 0xff) && (image[0x17ff] == 0xff))
+        {
+        // Then try a 400/800 CRC length....
+        crc = CRC32_Update(crc, image+0x1800, 0x2800);
+        crc = ~crc;
+        
+        /* Match ROM image by CRC. */
+        for (id = 0; id < SYSROM_LOADABLE_SIZE; ++id) {
+            if (SYSROM_roms[id].crc32 != CRC_NULL &&    SYSROM_roms[id].crc32 == crc) {
+                return id;
+            }
+        }
+            
+        for (id = 0; id < SYSROM_ALTIRRA_800_LOADABLE_SIZE; ++id) {
+            if (SYSROM_Altirra_800_Rom_Crcs[id] == crc)
+                return SYSROM_ALTIRRA_800;
+            }
+        
+        return SYSROM_800_CUSTOM;
+        }
+    
+    // Try an OS XL length ROM CRC first
     crc = CRC32_Update(crc, image, 0x4000);
     crc = ~crc;
     
@@ -272,8 +357,13 @@ int SYSROM_FindImageType(const unsigned char *image)
             return id;
         }
     }
+ 
+    for (id = 0; id < SYSROM_ALTIRRA_XL_LOADABLE_SIZE; ++id) {
+        if (SYSROM_Altirra_XL_Rom_Crcs[id] == crc)
+            return SYSROM_ALTIRRA_XL;
+        }
     
-    return -1;
+    return SYSROM_XL_CUSTOM;
 }
 
 #else

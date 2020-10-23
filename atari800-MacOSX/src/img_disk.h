@@ -28,6 +28,10 @@ typedef struct imgImage {
     void *image;
 } IMGImage;
 
+extern int IMG_last_op_read;
+extern int IMG_last_op_time;
+extern int IMG_last_sector;
+
 void *IMG_Image_Open(const char *path, int write, int solidState);
 int IMG_Is_Read_Only(void *img);
 void IMG_Flush(void *img);

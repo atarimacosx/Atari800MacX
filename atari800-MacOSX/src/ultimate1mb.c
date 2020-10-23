@@ -41,6 +41,7 @@ static int SDX_module_enable = TRUE;
 static int SDX_enable = FALSE;
 static int cart_bank_offset = 0;
 static int external_cart_enable = FALSE;
+static int external_cart_active = FALSE;
 static int OS_ROM_select = 0;
 static int ultimate_mem_config = 3;
 static int flash_write_enable = FALSE;
@@ -151,6 +152,11 @@ int ULTIMATE_D1ffPutByte(UBYTE byte)
     return result;
 }
 
+void ULTIMATE_Subcart_Left_Active(int active)
+{
+    external_cart_active = active;
+}
+
 UBYTE ULTIMATE_D3GetByte(UWORD addr, int no_side_effects)
 {
     int result = 0xff;
@@ -165,7 +171,7 @@ UBYTE ULTIMATE_D3GetByte(UWORD addr, int no_side_effects)
         if (pbi_button_enable)
             v += 0x80;
         
-        if (external_cart_enable)
+        if (external_cart_active)
             v += 0x40;
         
         return v;
@@ -418,10 +424,6 @@ static void Set_SDX_Module_Enabled(int enabled) {
     }
 
     // TBD mpCartridgePort->OnLeftWindowChanged(mCartId, IsLeftCartActive());
-}
-
-static void Update_External_Cart(void)
-{
 }
 
 static void Set_Kernel_Bank(UBYTE bank)

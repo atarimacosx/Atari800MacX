@@ -17,6 +17,7 @@
 #include "util.h"
 #include "pia.h"
 #include "flash.h"
+#include "ultimate1mb.h"
 #include <stdlib.h>
 
 int SIDE2_enabled = FALSE;
@@ -423,13 +424,17 @@ static void Update_Memory_Layers_Cart(void) {
     int flashReadRight = Right_Window_Enabled && topRead &&
                          !sdxRead && Top_Right_Enable;
 
+    if (ULTIMATE_enabled) {
+        ULTIMATE_Subcart_Left_Active(flashRead);
+    }
+
     if (flashRead) {
         MEMORY_CartA0bfEnable();
         MEMORY_SetFlashRoutines(SIDE2_Flash_Read, SIDE2_Flash_Write);
         MEMORY_SetFlash(0xa000, 0xbfff);
         MEMORY_CopyROM(0xa000, 0xbfff, side2_rom + Bank_Offset);
     } else {
-        MEMORY_SetROM(0xa000, 0xbfff);
+        //MEMORY_SetROM(0xa000, 0xbfff);
         MEMORY_CartA0bfDisable();
     }
     
