@@ -1641,7 +1641,10 @@ void CARTRDIGE_Switch_To_Piggyback(int pbi_button)
         MEMORY_CartA0bfDisable();
     } else {
         active_cart = &CARTRIDGE_piggyback;
-        SIDE2_Set_Cart_Enables(!pbi_button, TRUE);
+        if (CARTRIDGE_piggyback.type == CARTRIDGE_SIDE2)
+            SIDE2_Set_Cart_Enables(!pbi_button, TRUE);
+        else
+            MapActiveCart();
     }
 }
 
