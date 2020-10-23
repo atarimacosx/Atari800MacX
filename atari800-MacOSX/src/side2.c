@@ -425,9 +425,11 @@ static void Update_Memory_Layers_Cart(void) {
 
     if (flashRead) {
         MEMORY_CartA0bfEnable();
+        MEMORY_SetFlashRoutines(SIDE2_Flash_Read, SIDE2_Flash_Write);
         MEMORY_SetFlash(0xa000, 0xbfff);
         MEMORY_CopyROM(0xa000, 0xbfff, side2_rom + Bank_Offset);
     } else {
+        MEMORY_SetROM(0xa000, 0xbfff);
         MEMORY_CartA0bfDisable();
     }
     
