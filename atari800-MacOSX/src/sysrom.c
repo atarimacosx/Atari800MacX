@@ -258,6 +258,24 @@ int SYSROM_FindType(int defaultType, char const *filename, char *romTypeName)
         return -1;
 }
 
+int SYSROM_FindImageType(const unsigned char *image)
+{
+    int id;
+    ULONG crc = 0xffffffff;
+
+    crc = CRC32_Update(crc, image, 0x4000);
+    crc = ~crc;
+    
+    /* Match ROM image by CRC. */
+    for (id = 0; id < SYSROM_LOADABLE_SIZE; ++id) {
+        if (SYSROM_roms[id].crc32 != CRC_NULL && SYSROM_roms[id].crc32 == crc) {
+            return id;
+        }
+    }
+    
+    return -1;
+}
+
 #else
 
 /* Number of ROM paths not set during initialisation. */

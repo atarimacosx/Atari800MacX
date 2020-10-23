@@ -18,6 +18,8 @@
 #include "cpu.h"
 #include "flash.h"
 #include "gtia.h"
+#include "esc.h"
+#include "sysrom.h"
 #include <stdlib.h>
 
 static UBYTE ultimate_rom[0x80000];
@@ -191,7 +193,10 @@ void ULTIMATE_D3PutByte(UWORD addr, UBYTE byte)
                 if (byte & 0x80) {
                     config_lock = TRUE;
                     Update_Kernel_Bank();
-                    // TBD Update_PBI_Device();
+                    ULONG osbase =  0x70000 + (OS_ROM_select << 14);
+                    Atari800_os_version = SYSROM_FindImageType(&ultimate_rom[osbase]);
+                    if (Atari800_os_version > 0)
+                        ESC_UpdatePatches();
                 }
             }
             else if (addr == 0xD381) {
