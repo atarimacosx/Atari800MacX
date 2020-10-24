@@ -30,7 +30,9 @@ typedef struct ATARI800MACX_PREF {
                 int onlyIntegralScaling;
                 int fixAspectFullscreen;
 				int ledStatus;
-				int ledSector;
+                int ledSector;
+                int ledHDSector;
+                int ledFKeys;
 				int ledStatusMedia;
 				int ledSectorMedia;
                 int atariType; 

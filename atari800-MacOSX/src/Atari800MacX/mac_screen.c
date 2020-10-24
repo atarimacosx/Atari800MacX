@@ -69,6 +69,7 @@ int Screen_visible_y2 = Screen_HEIGHT;	/* 0 .. Screen_HEIGHT */
 int Screen_show_atari_speed = FALSE;
 int Screen_show_disk_led = TRUE;
 int Screen_show_sector_counter = FALSE;
+int Screen_show_hd_sector_counter = FALSE;
 int Screen_show_1200_leds = TRUE;
 
 #ifdef HAVE_LIBPNG

@@ -58,7 +58,9 @@ extern double scaleFactorFloat;
 extern int WIDTH_MODE;
 extern int Screen_show_atari_speed;
 extern int Screen_show_disk_led;
+extern int Screen_show_hd_sector_counter;
 extern int Screen_show_sector_counter;
+extern int Screen_show_1200_leds;
 extern int led_enabled_media;
 extern int led_counter_enabled_media;
 extern int JOYSTICK_MODE[4];
@@ -975,7 +977,9 @@ int loadMacPrefs(int firstTime)
     onlyIntegralScaling = prefs.onlyIntegralScaling;
     fixAspectFullscreen = prefs.fixAspectFullscreen;
 	Screen_show_disk_led = prefs.ledStatus;
-	Screen_show_sector_counter = prefs.ledSector;
+    Screen_show_sector_counter = prefs.ledSector;
+    Screen_show_1200_leds = prefs.ledFKeys;
+    Screen_show_hd_sector_counter = prefs.ledHDSector;
 	led_enabled_media = prefs.ledStatusMedia;
 	led_counter_enabled_media = prefs.ledSectorMedia;
 

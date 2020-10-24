@@ -378,7 +378,7 @@ static int load_roms(void)
         }
     else if (Atari800_LoadImage(CFG_basic_filename, MEMORY_basic, 0x2000)) {
         Atari800_basic_version = SYSROM_FindType(SYSROM_BASIC_CUSTOM, CFG_basic_filename, OSType);
-        Log_print("Loaded OS: %s",OSType);
+        Log_print("Loaded BASIC: %s",OSType);
         }
     else {
         memcpy(MEMORY_basic, ROM_altirra_basic, 0x2000);

@@ -291,6 +291,8 @@ static NSDictionary *defaultValues() {
                 [NSNumber numberWithBool:YES], LedSector,
                 [NSNumber numberWithBool:YES], LedStatusMedia,
                 [NSNumber numberWithBool:YES], LedSectorMedia,
+                [NSNumber numberWithBool:YES], LedHDSector,
+                [NSNumber numberWithBool:YES], LedFKeys,
                 [NSNumber numberWithBool:NO], AF80Enabled,
                 [NSNumber numberWithBool:NO], Bit3Enabled,
                 [NSNumber numberWithBool:NO], XEP80Enabled,
@@ -837,6 +839,8 @@ static Preferences *sharedInstance = nil;
     [fixAspectFullscreenButton setState:[[displayedValues objectForKey:FixAspectFullscreen] boolValue] ? NSOnState : NSOffState];
     [ledStatusButton setState:[[displayedValues objectForKey:LedStatus] boolValue] ? NSOnState : NSOffState];
     [ledSectorButton setState:[[displayedValues objectForKey:LedSector] boolValue] ? NSOnState : NSOffState];
+    [ledHDSectorButton setState:[[displayedValues objectForKey:LedHDSector] boolValue] ? NSOnState : NSOffState];
+    [ledFKeyButton setState:[[displayedValues objectForKey:LedFKeys] boolValue] ? NSOnState : NSOffState];
     [ledStatusMediaButton setState:[[displayedValues objectForKey:LedStatusMedia] boolValue] ? NSOnState : NSOffState];
     [ledSectorMediaButton setState:[[displayedValues objectForKey:LedSectorMedia] boolValue] ? NSOnState : NSOffState];
 
@@ -1734,6 +1738,14 @@ static Preferences *sharedInstance = nil;
         [displayedValues setObject:yes forKey:LedSector];
     else
         [displayedValues setObject:no forKey:LedSector];
+    if ([ledHDSectorButton state] == NSOnState)
+        [displayedValues setObject:yes forKey:LedHDSector];
+    else
+        [displayedValues setObject:no forKey:LedHDSector];
+    if ([ledFKeyButton state] == NSOnState)
+        [displayedValues setObject:yes forKey:LedFKeys];
+    else
+        [displayedValues setObject:no forKey:LedFKeys];
     if ([ledStatusButton state] == NSOnState) {
         [displayedValues setObject:yes forKey:LedStatus];
 		[ledSectorButton setEnabled:YES];
@@ -1743,6 +1755,14 @@ static Preferences *sharedInstance = nil;
 		[ledSectorButton setState:NSOffState];
 		[ledSectorButton setEnabled:NO];
 		}
+    if ([ledHDSectorButton state] == NSOnState)
+        [displayedValues setObject:yes forKey:LedHDSector];
+    else
+        [displayedValues setObject:no forKey:LedHDSector];
+    if ([ledFKeyButton state] == NSOnState)
+        [displayedValues setObject:yes forKey:LedFKeys];
+    else
+        [displayedValues setObject:no forKey:LedFKeys];
     if ([ledSectorMediaButton state] == NSOnState)
         [displayedValues setObject:yes forKey:LedSectorMedia];
     else
@@ -3584,8 +3604,10 @@ static Preferences *sharedInstance = nil;
     prefs->onlyIntegralScaling = [[curValues objectForKey:OnlyIntegralScaling] intValue];
     prefs->fixAspectFullscreen = [[curValues objectForKey:FixAspectFullscreen] intValue];
     prefs->ledStatus = [[curValues objectForKey:LedStatus] intValue];
-    prefs->ledSector = [[curValues objectForKey:LedSector] intValue]; 
-    prefs->ledStatusMedia = [[curValues objectForKey:LedStatusMedia] intValue]; 
+    prefs->ledSector = [[curValues objectForKey:LedSector] intValue];
+    prefs->ledHDSector = [[curValues objectForKey:LedHDSector] intValue];
+    prefs->ledFKeys = [[curValues objectForKey:LedFKeys] intValue];
+    prefs->ledStatusMedia = [[curValues objectForKey:LedStatusMedia] intValue];
     prefs->ledSectorMedia = [[curValues objectForKey:LedSectorMedia] intValue];
     if ([[curValues objectForKey:AtariTypeVer5] intValue] != -1)
         prefs->atariType = [[curValues objectForKey:AtariTypeVer5] intValue] + NUM_TOTAL_TYPES;
@@ -5001,6 +5023,8 @@ static Preferences *sharedInstance = nil;
     getBoolDefault(FixAspectFullscreen);
     getBoolDefault(LedStatus);
     getBoolDefault(LedSector);
+    getBoolDefault(LedHDSector);
+    getBoolDefault(LedFKeys);
     getBoolDefault(LedStatusMedia);
     getBoolDefault(LedSectorMedia);
     getBoolDefault(AF80Enabled);
@@ -5284,6 +5308,8 @@ static Preferences *sharedInstance = nil;
     setBoolDefault(FixAspectFullscreen);
     setBoolDefault(LedStatus);
     setBoolDefault(LedSector);
+    setBoolDefault(LedHDSector);
+    setBoolDefault(LedFKeys);
     setBoolDefault(LedStatusMedia);
     setBoolDefault(LedSectorMedia);
     setBoolDefault(AF80Enabled);
@@ -5548,6 +5574,8 @@ static Preferences *sharedInstance = nil;
     setConfig(FixAspectFullscreen);
     setConfig(LedStatus);
     setConfig(LedSector);
+    setConfig(LedHDSector);
+    setConfig(LedFKeys);
     setConfig(LedStatusMedia);
     setConfig(LedSectorMedia);
     setConfig(AF80Enabled);
@@ -5910,6 +5938,8 @@ static Preferences *sharedInstance = nil;
     getConfig(FixAspectFullscreen);
     getConfig(LedStatus);
     getConfig(LedSector);
+    getConfig(LedHDSector);
+    getConfig(LedFKeys);
     getConfig(LedStatusMedia);
     getConfig(LedSectorMedia);
     getConfig(AF80Enabled);
