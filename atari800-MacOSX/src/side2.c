@@ -425,7 +425,7 @@ static void Update_Memory_Layers_Cart(void) {
                          !sdxRead && Top_Right_Enable;
 
     if (ULTIMATE_enabled) {
-        ULTIMATE_Subcart_Left_Active(flashRead);
+        ULTIMATE_Subcart_Left_Active(sdxRead || topLeftRead);
     }
 
     if (flashRead) {
