@@ -366,6 +366,7 @@
     IBOutlet id bootFromCassetteButton;
     IBOutlet id ignoreHeaderWriteprotectButton;
     IBOutlet id xegsKeyboadButton;
+    IBOutlet id a1200ForceSelfTestButton;
     IBOutlet id consoleSoundEnableButton;
     IBOutlet id serioSoundEnableButton;
 	IBOutlet id muteAudioButton;

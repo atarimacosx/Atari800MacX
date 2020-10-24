@@ -8,6 +8,7 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="Preferences">
             <connections>
+                <outlet property="a1200ForceSelfTestButton" destination="j8a-bv-qLm" id="ebP-ij-8tU"/>
                 <outlet property="a1200xlRomFileField" destination="5et-DW-KMZ" id="9g7-t5-jNt"/>
                 <outlet property="a5200RomFileField" destination="366" id="407"/>
                 <outlet property="adjustPaletteButton" destination="802" id="807"/>
@@ -1007,7 +1008,7 @@ DQ
                                                         </popUpButtonCell>
                                                     </popUpButton>
                                                     <button fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cLz-OT-mui">
-                                                        <rect key="frame" x="18" y="49" width="349" height="18"/>
+                                                        <rect key="frame" x="18" y="49" width="176" height="18"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <buttonCell key="cell" type="check" title="XEGS Keybaord Attached" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="BEJ-ZV-02B">
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -1015,6 +1016,17 @@ DQ
                                                         </buttonCell>
                                                         <connections>
                                                             <action selector="miscChanged:" target="-2" id="JV9-1r-wZs"/>
+                                                        </connections>
+                                                    </button>
+                                                    <button fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="j8a-bv-qLm">
+                                                        <rect key="frame" x="205" y="49" width="162" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask"/>
+                                                        <buttonCell key="cell" type="check" title="1200XL Force Self Test" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="MPm-Gv-DWj">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                        <connections>
+                                                            <action selector="miscChanged:" target="-2" id="mGO-0N-mAD"/>
                                                         </connections>
                                                     </button>
                                                 </subviews>

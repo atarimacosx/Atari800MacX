@@ -920,6 +920,7 @@ static Preferences *sharedInstance = nil;
     [enableMultijoyButton setState:[[displayedValues objectForKey:EnableMultijoy] boolValue] ? NSOnState : NSOffState];
     [ignoreHeaderWriteprotectButton setState:[[displayedValues objectForKey:IgnoreHeaderWriteprotect] boolValue] ? NSOnState : NSOffState];
     [xegsKeyboadButton setState:[[displayedValues objectForKey:XEGSKeyboard] boolValue] ? NSOnState : NSOffState];
+    [a1200ForceSelfTestButton setState:[[displayedValues objectForKey:A1200XLJumper] boolValue] ? NSOnState : NSOffState];
 	foundMatch = FALSE;
 	for (i=0;axlonBankMasks[i] != 0;i++) {
 		if (axlonBankMasks[i] == [[displayedValues objectForKey:AxlonBankMask] intValue]) {
@@ -2194,6 +2195,10 @@ static Preferences *sharedInstance = nil;
         [displayedValues setObject:yes forKey:XEGSKeyboard];
     else
         [displayedValues setObject:no forKey:XEGSKeyboard];
+    if ([a1200ForceSelfTestButton state] == NSOnState)
+        [displayedValues setObject:yes forKey:A1200XLJumper];
+    else
+        [displayedValues setObject:no forKey:A1200XLJumper];
 
 	[displayedValues setObject:[NSNumber numberWithInt:axlonBankMasks[[axlonMemSizePulldown indexOfSelectedItem]]] forKey:AxlonBankMask];
 	[displayedValues setObject:[NSNumber numberWithInt:mosaicBankMaxs[[mosaicMemSizePulldown indexOfSelectedItem]]] forKey:MosaicMaxBank];
