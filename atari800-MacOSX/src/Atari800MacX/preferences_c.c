@@ -315,7 +315,7 @@ void savePrefs() {
                                         Atari800_builtin_basic,
                                         Atari800_builtin_game,
                                         Atari800_keyboard_leds,
-                                        Atari800_jumper);
+                                        Atari800_jumper_present);
 
 	prefssave.currPrinter = currPrinter;
 	prefssave.artifactingMode = ANTIC_artif_mode;
@@ -324,6 +324,8 @@ void savePrefs() {
 	prefssave.blackBoxEnabled = bbRequested;
 	prefssave.mioEnabled = mioRequested;
 	prefssave.useAtariCursorKeys = useAtariCursorKeys;
+    prefssave.a1200xlJumper = Atari800_jumper;
+    prefssave.xegsKeyboard = !Atari800_keyboard_detached;
     prefssave.side2SDXMode = SIDE2_SDX_Mode_Switch;
     strcpy(prefssave.side2FlashFileName, side2_rom_filename);
     //strcpy(prefssave.side2NVRAMFileName, side2_nvram_filename);
@@ -840,7 +842,7 @@ void CalculatePrefsChanged()
             (Atari800_builtin_basic != new_basic) ||
             (Atari800_builtin_game != new_game) ||
             (Atari800_keyboard_leds != new_leds) ||
-            (Atari800_jumper != new_jumper) ||
+            (Atari800_jumper_present != new_jumper) ||
             (bbRequested != prefs.blackBoxEnabled) ||
             (mioRequested != prefs.mioEnabled) ||
             (ULTIMATE_enabled != new_ultimate))
@@ -998,7 +1000,7 @@ int loadMacPrefs(int firstTime)
                        &MEMORY_ram_size, &axlon_enabled,
                        &mosaic_enabled, &ULTIMATE_enabled,
                        &Atari800_builtin_basic, &Atari800_builtin_game,
-                       &Atari800_keyboard_leds, &Atari800_jumper);
+                       &Atari800_keyboard_leds, &Atari800_jumper_present);
     if (axlon_enabled) {
         MEMORY_axlon_num_banks = prefs.axlonBankMask + 1;
         PREFS_axlon_num_banks = MEMORY_axlon_num_banks;
@@ -1094,6 +1096,8 @@ int loadMacPrefs(int firstTime)
 	XEP80_port = prefs.xep80_port;
 	XEP80_FONTS_oncolor = prefs.xep80_oncolor;
 	XEP80_FONTS_offcolor = prefs.xep80_offcolor;
+    Atari800_jumper = prefs.a1200xlJumper;
+    Atari800_keyboard_detached = !prefs.xegsKeyboard;
     sound_enabled = prefs.enableSound;
 	sound_volume = prefs.soundVolume;
     POKEYSND_stereo_enabled = prefs.enableStereo;

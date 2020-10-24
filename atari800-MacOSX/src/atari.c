@@ -141,7 +141,8 @@ int verbose = FALSE;
 
 int Atari800_keyboard_leds = FALSE;
 int Atari800_f_keys = FALSE;
-int Atari800_jumper;
+int Atari800_jumper = FALSE;
+int Atari800_jumper_present = FALSE;
 int Atari800_builtin_game = FALSE;
 int Atari800_keyboard_detached = FALSE;
 
@@ -399,8 +400,9 @@ int Atari800_InitialiseMachine(void)
 	if (!load_roms())
 		return FALSE;
     Atari800_UpdateKeyboardDetached();
-    Atari800_UpdateJumper();
-	MEMORY_InitialiseMachine();
+    if (Atari800_jumper_present)
+        Atari800_UpdateJumper();
+    MEMORY_InitialiseMachine();
     Atari800_Coldstart();
 	Devices_UpdatePatches();
 	return TRUE;
@@ -917,7 +919,8 @@ void Atari800_StateRead(UBYTE version)
             Atari800_f_keys = temp != 0;
             StateSav_ReadUBYTE(&temp, 1);
             Atari800_jumper = temp != 0;
-            Atari800_UpdateJumper();
+            if (Atari800_jumper_present)
+                Atari800_UpdateJumper();
             StateSav_ReadUBYTE(&temp, 1);
             Atari800_builtin_game = temp != 0;
             StateSav_ReadUBYTE(&temp, 1);
@@ -1021,6 +1024,6 @@ void Atari800_UpdateKeyboardDetached(void)
 void Atari800_UpdateJumper(void)
 {
     if (Atari800_machine_type == Atari800_MACHINE_XLXE)
-            POKEY_POT_input[4] = Atari800_jumper ? 0 : 228;
+        POKEY_POT_input[4] = Atari800_jumper ? 0 : 228;
 }
 

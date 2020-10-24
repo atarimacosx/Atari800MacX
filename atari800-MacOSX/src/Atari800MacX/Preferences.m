@@ -299,7 +299,9 @@ static NSDictionary *defaultValues() {
                 [NSNumber numberWithBool:NO], XEP80,
                 [NSNumber numberWithInt:15], XEP80OnColor,
                 [NSNumber numberWithInt:0], XEP80OffColor,
-                [NSNumber numberWithInt:4], AtariType, 
+                [NSNumber numberWithBool:YES], XEGSKeyboard,
+                [NSNumber numberWithBool:NO], A1200XLJumper,
+                [NSNumber numberWithInt:4], AtariType,
                 [NSNumber numberWithInt:-1], AtariTypeVer4,
                 [NSNumber numberWithInt:-1], AtariTypeVer5,
                 [NSNumber numberWithInt:7], AtariSwitchType,
@@ -3616,6 +3618,8 @@ static Preferences *sharedInstance = nil;
     prefs->xep80 = [[curValues objectForKey:XEP80] intValue];
     prefs->xep80_oncolor = [[curValues objectForKey:XEP80OnColor] intValue];
     prefs->xep80_offcolor = [[curValues objectForKey:XEP80OffColor] intValue];
+    prefs->a1200xlJumper = [[curValues objectForKey:A1200XLJumper] intValue];
+    prefs->xegsKeyboard = [[curValues objectForKey:XEGSKeyboard] intValue];
     prefs->enableStereo = [[curValues objectForKey:EnableStereo] intValue]; 
 #if 0 /* enableHifiSound is deprecated from 4.2.2 on */    	
     prefs->enableHifiSound = [[curValues objectForKey:EnableHifiSound] intValue]; 
@@ -3890,6 +3894,8 @@ static Preferences *sharedInstance = nil;
     [displayedValues setObject:prefssave->ledSector ? yes : no forKey:LedSector];
     [displayedValues setObject:prefssave->speedLimit ? yes : no forKey:SpeedLimit];
     [displayedValues setObject:prefssave->enableSound ? yes : no forKey:EnableSound];
+    [displayedValues setObject:prefssave->a1200xlJumper ? yes : no forKey:A1200XLJumper];
+    [displayedValues setObject:prefssave->xegsKeyboard ? yes : no forKey:XEGSKeyboard];
     [displayedValues setObject:prefssave->xep80 ? yes : no forKey:XEP80];
     [displayedValues setObject:prefssave->xep80_enabled ? yes : no forKey:XEP80Enabled];
     [displayedValues setObject:prefssave->af80_enabled ? yes : no forKey:AF80Enabled];
@@ -4995,6 +5001,8 @@ static Preferences *sharedInstance = nil;
 	getBoolDefault(XEP80);
 	getIntDefault(XEP80OnColor);
 	getIntDefault(XEP80OffColor);
+    getIntDefault(A1200XLJumper);
+    getIntDefault(XEGSKeyboard);
     getIntDefault(AtariType);
     getIntDefault(AtariSwitchType);
     getIntDefault(AtariTypeVer4);
@@ -5276,6 +5284,8 @@ static Preferences *sharedInstance = nil;
 	setBoolDefault(XEP80);
 	setIntDefault(XEP80OnColor);
 	setIntDefault(XEP80OffColor);
+    setIntDefault(A1200XLJumper);
+    setIntDefault(XEGSKeyboard);
     setIntDefault(AtariType);
     setIntDefault(AtariSwitchType);
     setIntDefault(AtariTypeVer4);
@@ -5538,6 +5548,8 @@ static Preferences *sharedInstance = nil;
 	setConfig(XEP80);
 	setConfig(XEP80OnColor);
 	setConfig(XEP80OffColor);
+    setConfig(A1200XLJumper);
+    setConfig(XEGSKeyboard);
     setConfig(AtariType);
     setConfig(AtariSwitchType);
     setConfig(AtariTypeVer4);
@@ -5898,7 +5910,9 @@ static Preferences *sharedInstance = nil;
 	getConfig(XEP80);
 	getConfig(XEP80OnColor);
 	getConfig(XEP80OffColor);
-    getConfig(AtariType);
+    setConfig(A1200XLJumper);
+    setConfig(XEGSKeyboard);
+    setConfig(AtariType);
     getConfig(AtariSwitchType);
     getConfig(AtariTypeVer4);
     getConfig(AtariTypeVer5);

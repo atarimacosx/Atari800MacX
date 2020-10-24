@@ -72,6 +72,7 @@ extern int Atari800_f_keys;
    Used only for Atari800_MACHINE_XLXE. Always call
    Atari800_UpdateJumper() after changing this variable. */
 extern int Atari800_jumper;
+extern int Atari800_jumper_present;
 void Atari800_UpdateJumper(void);
 
 /* Indicates existence of XEGS' built-in game.

@@ -173,6 +173,8 @@ typedef struct ATARI800MACX_PREF {
 				int xep80_port;
 				int xep80_oncolor;
 				int xep80_offcolor;
+                int a1200xlJumper;
+                int xegsKeyboard;
 				int useAtariCursorKeys;
 } ATARI800MACX_PREF;
 
@@ -209,6 +211,8 @@ typedef struct ATARI800MACX_PREFSAVE {
                 int xep80_enabled;
                 int COL80_autoswitch;
 				int xep80_port;
+                int a1200xlJumper;
+                int xegsKeyboard;
 				int blackBoxEnabled;
 				int mioEnabled;
 				int useAtariCursorKeys;

@@ -843,6 +843,11 @@ DQ
                                     <action selector="disableBasic:" target="524" id="724"/>
                                 </connections>
                             </menuItem>
+                            <menuItem title="XEGS Keyboard Attached" id="Sdp-iv-Asq">
+                                <connections>
+                                    <action selector="changeXEGSKeyboard:" target="524" id="eo6-VI-qi7"/>
+                                </connections>
+                            </menuItem>
                             <menuItem isSeparatorItem="YES" id="467">
                                 <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                             </menuItem>
@@ -1060,6 +1065,7 @@ DQ
                 <outlet property="pbiExpansionMenu" destination="888" id="982"/>
                 <outlet property="saveStateItem" destination="468" id="535"/>
                 <outlet property="warmResetItem" destination="451" id="533"/>
+                <outlet property="xegsKeyboardItem" destination="Sdp-iv-Asq" id="2xV-50-diG"/>
             </connections>
         </customObject>
         <customObject id="788" userLabel="PrintOutputController" customClass="PrintOutputController"/>

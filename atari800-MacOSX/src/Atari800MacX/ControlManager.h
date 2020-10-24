@@ -63,6 +63,7 @@
     IBOutlet id coldResetItem;
     IBOutlet id limitItem;
     IBOutlet id disableBasicItem;
+    IBOutlet id xegsKeyboardItem;
     IBOutlet id cx85EnableItem;
     IBOutlet id keyjoyEnableItem;
     IBOutlet id loadStateItem;
@@ -131,6 +132,7 @@
 - (IBAction)coldReset:(id)sender;
 - (IBAction)limit:(id)sender;
 - (IBAction)disableBasic:(id)sender;
+- (IBAction)changeXEGSKeyboard:(id)sender;
 - (IBAction)keyjoyEnable:(id)sender;
 - (IBAction)cx85Enable:(id)sender;
 - (IBAction)loadState:(id)sender;

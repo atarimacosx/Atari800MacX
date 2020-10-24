@@ -46,6 +46,8 @@
 #define XEP80OnColor @"XEP80OnColor"
 #define XEP80OffColor @"XEP800OffColor"
 #define XEP80 @"XEP80"
+#define A1200XLJumper @"A1200XLJumper"
+#define XEGSKeyboard @"XEGSKeyboard"
 #define AtariType @"AtariType"
 #define AtariTypeVer4 @"AtariTypeVer4"
 #define AtariTypeVer5 @"AtariTypeVer5"

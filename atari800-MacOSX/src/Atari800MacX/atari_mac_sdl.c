@@ -4505,7 +4505,7 @@ void ProcessMacMenus()
 						   &MEMORY_ram_size, &axlon_enabled,
                            &mosaic_enabled, &ULTIMATE_enabled,
                            &Atari800_builtin_basic, &Atari800_builtin_game,
-                           &Atari800_keyboard_leds, &Atari800_jumper);
+                           &Atari800_keyboard_leds, &Atari800_jumper_present);
         CARTRIDGE_Remove();
         if (!axlon_enabled)
             MEMORY_axlon_num_banks = 0;

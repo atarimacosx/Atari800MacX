@@ -469,7 +469,7 @@ static int monitorRunFirstTime = 1;
                          Atari800_builtin_basic,
                          Atari800_builtin_game,
                          Atari800_keyboard_leds,
-                         Atari800_jumper);
+                         Atari800_jumper_present);
     
     if (type > 18) {
         ver5type = type - 19;
@@ -607,6 +607,14 @@ static int monitorRunFirstTime = 1;
 - (IBAction)disableBasic:(id)sender
 {
     requestDisableBasicChange = 1;
+}
+
+/*------------------------------------------------------------------------------
+*  changeXEGSKeyboard - Change XEGS Keyboard from attached/detached
+*-----------------------------------------------------------------------------*/
+- (IBAction)changeXEGSKeyboard:(id)sender
+{
+    
 }
 
 /*------------------------------------------------------------------------------
