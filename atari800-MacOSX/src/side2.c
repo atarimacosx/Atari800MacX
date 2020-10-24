@@ -25,9 +25,9 @@ int SIDE2_Flash_Type = 0;
 
 static UBYTE side2_rom[0x80000];
 #ifdef ATARI800MACX
-char side2_rom_filename[FILENAME_MAX] = Util_FILENAME_NOT_SET; //"/Users/markg/Atari800MacX/Altirra-3.20/side2oss.rom"; 
-char side2_nvram_filename[FILENAME_MAX] = Util_FILENAME_NOT_SET; //"/Users/markg/Atari800MacX/Altirra-3.20/side2.nvram";
-char side2_compact_flash_filename[FILENAME_MAX] = Util_FILENAME_NOT_SET; //"/Users/markg/Atari800MacX/Altirra-3.20/side2.vhd";
+char side2_rom_filename[FILENAME_MAX] = Util_FILENAME_NOT_SET;
+char side2_nvram_filename[FILENAME_MAX] = Util_FILENAME_NOT_SET;
+char side2_compact_flash_filename[FILENAME_MAX] = Util_FILENAME_NOT_SET;
 #else
 static char side_rom_filename[FILENAME_MAX] = Util_FILENAME_NOT_SET;
 static char side2_nvram_filename[FILENAME_MAX] = Util_FILENAME_NOT_SET;

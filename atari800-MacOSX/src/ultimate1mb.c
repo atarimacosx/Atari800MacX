@@ -24,8 +24,8 @@
 
 static UBYTE ultimate_rom[0x80000];
 #ifdef ATARI800MACX
-char ultimate_rom_filename[FILENAME_MAX] = "/Users/markg/Atari800MacX/Altirra-3.20/ultimate.rom"; //Util_FILENAME_NOT_SET;
-char ultimate_nvram_filename[FILENAME_MAX] = "/Users/markg/Atari800MacX/Altirra-3.20/ultimate.nvram"; //Util_FILENAME_NOT_SET;
+char ultimate_rom_filename[FILENAME_MAX] = "/Users/markg/Atari800MacX/Altirra-3.20/ultimate.rom";
+char ultimate_nvram_filename[FILENAME_MAX] = "/Users/markg/Atari800MacX/Altirra-3.20/ultimate.nvram";
 #else
 static char ultimate_rom_filename[FILENAME_MAX] = Util_FILENAME_NOT_SET;
 #endif
@@ -128,7 +128,7 @@ void ULTIMATE_D1PutByte(UWORD addr, UBYTE byte)
 
 void Set_PBI_Bank(UBYTE bank)
 {
-    if (pbi_selected) { //} || !config_lock) {
+    if (pbi_selected) {
         memcpy(MEMORY_mem + 0xd800,
                ultimate_rom + 0x59800 + ((UWORD) bank << 13), 0x800);
     }
@@ -223,8 +223,6 @@ void ULTIMATE_D3PutByte(UWORD addr, UBYTE byte)
                 pbi_button_enable = (byte & 0x08) != 0;
                 basic_rom_select = (byte >> 4) & 3;
                 game_rom_select = (byte >> 6) & 3;
-                // TBD UpdatePBIDevice();
-                // TBD UpdateExternalCart();
                 Update_Kernel_Bank();
             }
             else if (addr == 0xD383) {
@@ -295,9 +293,6 @@ void ULTIMATE_ColdStart(void)
     
     cold_reset_flag = 0x80;        // ONLY set by cold reset, not warm reset.
 
-    // Allow configuration changes
-    //config_lock = FALSE;
-
     // The SDX module is enabled on warm reset, but the cart enables and bank
     // are only affected by cold reset.
     cart_bank_offset = 1;
@@ -338,7 +333,6 @@ void ULTIMATE_WarmStart(void)
     pbi_device_id = 0;
     pbi_selected = FALSE;
     Select_PBI_Device(FALSE);
-    // TBD Update PBI Device
 
     OS_ROM_select = 0;
     game_rom_select = 0;
@@ -348,10 +342,6 @@ void ULTIMATE_WarmStart(void)
     Set_PBI_Bank(0);
 
     Set_SDX_Module_Enabled(TRUE);
-
-    //Update_External_Cart();
-    //UpdateCartLayers();
-    //UpdateFlashShadows();
 }
 
 void ULTIMATE_LoadRoms(void)
@@ -418,10 +408,8 @@ static void Set_SDX_Module_Enabled(int enabled) {
         external_cart_enable = TRUE;
         Set_SDX_Bank(0);
         Set_SDX_Enabled(FALSE);
-        //Update_External_Cart();
     }
 
-    // TBD mpCartridgePort->OnLeftWindowChanged(mCartId, IsLeftCartActive());
 }
 
 static void Set_Kernel_Bank(UBYTE bank)
@@ -447,14 +435,10 @@ static void Update_Kernel_Bank(void)
     memcpy(MEMORY_mem + 0xc000, ultimate_rom + kernelbase, 0x4000);
     if (MEMORY_selftest_enabled)
         memcpy(MEMORY_mem + 0x5000, ultimate_rom + kernelbase + 0x1000, 0x800);
-    // TBD - What about self test area? And what about getting the
-    // below into their parts of MEMORY_mem.
     memcpy(MEMORY_basic, ultimate_rom + basicbase, 0x2000);
-    //if (!((PIA_PORTB | PIA_PORTB_mask) & 0x01))
-    //    memcpy(MEMORY_mem + 0xA000, ultimate_rom + basicbase, 0x2000);
+
 
     memcpy(MEMORY_xegame, ultimate_rom + gamebase, 0x2000);
-    //ESC_UpdatePatches(); // TBD - Should we do this???
 }
 
 static void LoadNVRAM()
