@@ -29,6 +29,7 @@
 #include <dirent.h>
 #endif
 #include <stdarg.h>
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -118,23 +119,6 @@ SYSROM_t SYSROM_roms[SYSROM_SIZE] = {
 #define SYSROM_ALTIRRA_800_LOADABLE_SIZE (4)
 #define SYSROM_ALTIRRA_XL_LOADABLE_SIZE  (5)
 
-ULONG SYSROM_Altirra_800_Rom_Crcs[SYSROM_ALTIRRA_800_LOADABLE_SIZE] =
-    {
-    0x4C11FE5E,
-    0x3A1AB83A,
-    0x340487A4,
-    0xEDB88320
-    };
-
-ULONG SYSROM_Altirra_XL_Rom_Crcs[SYSROM_ALTIRRA_XL_LOADABLE_SIZE] =
-    {
-    0xB50233E0,
-    0xA2091315,
-    0x5166e00b,
-    0xBA1E2018,
-    0x6B0F8E75
-    };
-
 #ifdef ATARI800MACX
 /* Used in reading the config file to match option names. */
 static char const * const readable_strings[SYSROM_LOADABLE_SIZE] = {
@@ -163,21 +147,6 @@ static char const * const readable_strings[SYSROM_LOADABLE_SIZE] = {
     "Atari 5200 Custom OS",
     "Atari Custom BASIC",
     "Atari XE Game System Custom OS",
-};
-
-static char const * const altira800_readable_strings[SYSROM_ALTIRRA_800_LOADABLE_SIZE] = {
-    "Altirra 400/800 OS 3.9",
-    "Altirra 400/800 OS 3.2",
-    "Altirra 400/800 OS 3.1",
-    "Altirra 400/800 OS 3.0"
-};
-
-static char const * const altiraxl_readable_strings[SYSROM_ALTIRRA_XL_LOADABLE_SIZE] = {
-    "Altirra XL/XE OS 3.9",
-    "Altirra XL/XE OS 3.2",
-    "Altirra XL/XE OS 3.2",
-    "Altirra XL/XE OS 3.1",
-    "Altirra XL/XE OS 3.0"
 };
 
 #else
@@ -249,6 +218,20 @@ static char const * const cfg_strings_rev[SYSROM_SIZE+1] = {
 #endif
 
 #ifdef ATARI800MACX
+
+char *memstr(char *buffer, char *str, int size)
+{
+    char *p;
+    int strsize = strlen(str);
+
+    for (p = buffer; p <= (buffer-strsize+size); p++)
+    {
+        if (memcmp(p, str, strsize) == 0)
+            return p; /* found */
+    }
+    return NULL;
+}
+
 int SYSROM_FindType(int defaultType, char const *filename, char *romTypeName)
 {
     FILE *file;
@@ -275,39 +258,48 @@ int SYSROM_FindType(int defaultType, char const *filename, char *romTypeName)
         fclose(file);
         return(-1);
     }
-    fclose(file);
 
     /* Match ROM image by CRC. */
     for (id = 0; id < SYSROM_LOADABLE_SIZE; ++id) {
         if (SYSROM_roms[id].size == len
             && SYSROM_roms[id].crc32 != CRC_NULL && SYSROM_roms[id].crc32 == crc) {
             strcpy(romTypeName, readable_strings[id]);
+            fclose(file);
             return id;
         }
     }
+        
+    Util_rewind(file);
+    char *image;
     
-    for (id = 0; id < SYSROM_ALTIRRA_800_LOADABLE_SIZE; ++id) {
-        if (SYSROM_roms[id].size == len
-            && SYSROM_roms[id].crc32 != CRC_NULL && SYSROM_roms[id].crc32 == crc) {
-            strcpy(romTypeName, readable_strings[id]);
-            return id;
+    if (len == 0x2800) {
+        image = Util_malloc(len);
+        if (image != NULL) {
+            size_t rlen = fread(image, 1, 0x2800, file);
+            // Check for Altirra specific string
+            if (memstr((char *)image, "!ltirra", rlen)) {
+                strcpy(romTypeName, "Altirra 400/800 OS");
+                free(image);
+                return SYSROM_ALTIRRA_800;
+            }
+            free(image);
         }
     }
-    
-    for (id = 0; id < SYSROM_ALTIRRA_800_LOADABLE_SIZE; ++id) {
-        if (SYSROM_Altirra_800_Rom_Crcs[id] == crc) {
-            strcpy(romTypeName, altira800_readable_strings[id]);
-            return SYSROM_ALTIRRA_800;
+
+    if (len == 0x4000) {
+        image = Util_malloc(len);
+        if (image != NULL) {
+            size_t rlen = fread(image, 1, 0x4000, file);
+            // Check for Altirra specific string
+            if (memstr((char *)image, "!ltirra", rlen)) {
+                strcpy(romTypeName, "Altirra XL/XE OS");
+                free(image);
+                return SYSROM_ALTIRRA_XL;
+            }
+            free(image);
         }
     }
-    
-    for (id = 0; id < SYSROM_ALTIRRA_800_LOADABLE_SIZE; ++id) {
-        if (SYSROM_Altirra_XL_Rom_Crcs[id] == crc) {
-            strcpy(romTypeName, altiraxl_readable_strings[id]);
-            return SYSROM_ALTIRRA_XL;
-        }
-    }
-    
+
     if (defaultType >= 0 && defaultType <= SYSROM_LOADABLE_SIZE) {
         strcpy(romTypeName, readable_strings[defaultType]);
         return defaultType;
@@ -338,12 +330,11 @@ int SYSROM_FindImageType(const unsigned char *image)
                 return id;
             }
         }
-            
-        for (id = 0; id < SYSROM_ALTIRRA_800_LOADABLE_SIZE; ++id) {
-            if (SYSROM_Altirra_800_Rom_Crcs[id] == crc)
-                return SYSROM_ALTIRRA_800;
-            }
-        
+         
+        // Check for Altirra specific string
+        if (memstr((char *)image, "!ltirra", 0x2800))
+            return SYSROM_ALTIRRA_800;
+
         return SYSROM_800_CUSTOM;
         }
     
@@ -358,11 +349,10 @@ int SYSROM_FindImageType(const unsigned char *image)
         }
     }
  
-    for (id = 0; id < SYSROM_ALTIRRA_XL_LOADABLE_SIZE; ++id) {
-        if (SYSROM_Altirra_XL_Rom_Crcs[id] == crc)
-            return SYSROM_ALTIRRA_XL;
-        }
-    
+    // Check for Altirra specific string
+    if (memstr((char *)image, "!ltirra", 0x4000))
+        return SYSROM_ALTIRRA_XL;
+
     return SYSROM_XL_CUSTOM;
 }
 
