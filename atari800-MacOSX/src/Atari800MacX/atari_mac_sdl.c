@@ -158,6 +158,7 @@ int requestArtifChange = 0;
 int requestDisableBasicChange = 0;
 int requestKeyjoyEnableChange = 0;
 int requestCX85EnableChange = 0;
+int requestXEGSKeyboardChange = 0;
 int requestMachineTypeChange = 0;
 int requestPBIExpansionChange = 0;
 int requestSoundEnabledChange = 0;
@@ -273,6 +274,7 @@ extern void SetControlManagerLimit(int limit);
 extern void SetControlManagerDisableBasic(int mode, int disableBasic);
 extern void SetControlManagerKeyjoyEnable(int keyjoyEnable);
 extern void SetControlManagerCX85Enable(int cx85enabled);
+extern void SetControlManagerXEGSKeyboard(int attached);
 extern void SetControlManagerMachineType(int machineType, int ramSize);
 extern void SetControlManagerPBIExpansion(int type);
 extern void SetControlManagerArrowKeys(int keys);
@@ -4484,10 +4486,16 @@ void ProcessMacMenus()
          SetControlManagerKeyjoyEnable(keyjoyEnable);
          }
     if (requestCX85EnableChange) {
-		INPUT_cx85 = !INPUT_cx85;
-		requestCX85EnableChange = 0;
-		SetControlManagerCX85Enable(INPUT_cx85);
-		}
+        INPUT_cx85 = !INPUT_cx85;
+        requestCX85EnableChange = 0;
+        SetControlManagerCX85Enable(INPUT_cx85);
+        }
+    if (requestXEGSKeyboardChange) {
+        Atari800_keyboard_detached = !Atari800_keyboard_detached;
+        requestXEGSKeyboardChange = 0;
+        SetControlManagerXEGSKeyboard(!Atari800_keyboard_detached);
+        Atari800_UpdateKeyboardDetached();
+        }
 	if (requestMachineTypeChange) {
 		int compositeType, type, ver4type, ver5type;
         int axlon_enabled, mosaic_enabled;
@@ -4804,7 +4812,8 @@ void ProcessMacPrefsChange()
     real_deltatime = deltatime;
 	SetControlManagerDisableBasic(Atari800_machine_type, Atari800_disable_basic);
 	SetControlManagerKeyjoyEnable(keyjoyEnable);
-	SetControlManagerCX85Enable(INPUT_cx85);
+    SetControlManagerCX85Enable(INPUT_cx85);
+    SetControlManagerXEGSKeyboard(!Atari800_keyboard_detached);
     SetControlManagerLimit(speed_limit);
 	SetControlManagerMachineType(Atari800_machine_type, MEMORY_ram_size);
     if (!EnableDisplayManager80ColMode(Atari800_machine_type, XEP80_enabled, AF80_enabled, BIT3_enabled))
@@ -5260,6 +5269,7 @@ int SDL_main(int argc, char **argv)
 	SetControlManagerDisableBasic(Atari800_machine_type, Atari800_disable_basic);
 	SetControlManagerKeyjoyEnable(keyjoyEnable);
 	SetControlManagerCX85Enable(INPUT_cx85);
+    SetControlManagerXEGSKeyboard(!Atari800_keyboard_detached);
 	SetControlManagerMachineType(Atari800_machine_type, MEMORY_ram_size);
 	if (bbRequested)
 		SetControlManagerPBIExpansion(1);

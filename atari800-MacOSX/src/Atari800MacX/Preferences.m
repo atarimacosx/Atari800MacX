@@ -919,6 +919,7 @@ static Preferences *sharedInstance = nil;
     [diskDriveSoundButton setState:[[displayedValues objectForKey:DiskDriveSound] boolValue] ? NSOnState : NSOffState];
     [enableMultijoyButton setState:[[displayedValues objectForKey:EnableMultijoy] boolValue] ? NSOnState : NSOffState];
     [ignoreHeaderWriteprotectButton setState:[[displayedValues objectForKey:IgnoreHeaderWriteprotect] boolValue] ? NSOnState : NSOffState];
+    [xegsKeyboadButton setState:[[displayedValues objectForKey:XEGSKeyboard] boolValue] ? NSOnState : NSOffState];
 	foundMatch = FALSE;
 	for (i=0;axlonBankMasks[i] != 0;i++) {
 		if (axlonBankMasks[i] == [[displayedValues objectForKey:AxlonBankMask] intValue]) {
@@ -2189,7 +2190,11 @@ static Preferences *sharedInstance = nil;
         [displayedValues setObject:yes forKey:IgnoreHeaderWriteprotect];
     else
         [displayedValues setObject:no forKey:IgnoreHeaderWriteprotect];
-	
+    if ([xegsKeyboadButton state] == NSOnState)
+        [displayedValues setObject:yes forKey:XEGSKeyboard];
+    else
+        [displayedValues setObject:no forKey:XEGSKeyboard];
+
 	[displayedValues setObject:[NSNumber numberWithInt:axlonBankMasks[[axlonMemSizePulldown indexOfSelectedItem]]] forKey:AxlonBankMask];
 	[displayedValues setObject:[NSNumber numberWithInt:mosaicBankMaxs[[mosaicMemSizePulldown indexOfSelectedItem]]] forKey:MosaicMaxBank];
 	switch([[pbiExpansionMatrix selectedCell] tag]) {

@@ -271,6 +271,7 @@
                 <outlet property="whiteLevelField" destination="796" id="805"/>
                 <outlet property="widthModeMatrix" destination="270" id="291"/>
                 <outlet property="xegsGameRomFileField" destination="fqD-d4-OtW" id="PNl-bT-4v0"/>
+                <outlet property="xegsKeyboadButton" destination="cLz-OT-mui" id="7CO-ze-obV"/>
                 <outlet property="xegsRomFileField" destination="9Sn-X7-9V1" id="TtW-qh-ydb"/>
                 <outlet property="xep80AutoswitchButton" destination="6Qw-Dv-qgO" id="DAY-qd-ddz"/>
                 <outlet property="xep80BackgroundField" destination="4371" id="4378"/>
@@ -1005,6 +1006,17 @@ DQ
                                                             </menu>
                                                         </popUpButtonCell>
                                                     </popUpButton>
+                                                    <button fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cLz-OT-mui">
+                                                        <rect key="frame" x="18" y="49" width="349" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask"/>
+                                                        <buttonCell key="cell" type="check" title="XEGS Keybaord Attached" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="BEJ-ZV-02B">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                        <connections>
+                                                            <action selector="miscChanged:" target="-2" id="JV9-1r-wZs"/>
+                                                        </connections>
+                                                    </button>
                                                 </subviews>
                                             </view>
                                         </box>

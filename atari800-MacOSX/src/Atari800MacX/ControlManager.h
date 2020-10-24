@@ -127,6 +127,7 @@
 - (void)setDisableBasicMenu:(int)mode:(int)disableBasic;
 - (void)setKeyjoyEnableMenu:(int)keyjoyEnable;
 - (void)setCX85EnableMenu:(int)cx85Enable;
+- (void)setXEGSKeyboardMenu:(int)attached;
 - (NSString *) browseFileInDirectory:(NSString *)directory;
 - (NSString *) saveFileInDirectory:(NSString *)directory:(NSString *)type;
 - (IBAction)coldReset:(id)sender;

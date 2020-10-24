@@ -365,6 +365,7 @@
     IBOutlet id enableSioPatchButton;
     IBOutlet id bootFromCassetteButton;
     IBOutlet id ignoreHeaderWriteprotectButton;
+    IBOutlet id xegsKeyboadButton;
     IBOutlet id consoleSoundEnableButton;
     IBOutlet id serioSoundEnableButton;
 	IBOutlet id muteAudioButton;

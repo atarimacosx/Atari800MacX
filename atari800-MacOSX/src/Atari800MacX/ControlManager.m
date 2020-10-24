@@ -47,6 +47,7 @@ extern int requestLimitChange;
 extern int requestDisableBasicChange;
 extern int requestKeyjoyEnableChange;
 extern int requestCX85EnableChange;
+extern int requestXEGSKeyboardChange;
 extern int requestMachineTypeChange;
 extern int requestPBIExpansionChange;
 extern int requestMonitor;
@@ -91,6 +92,10 @@ void SetControlManagerDisableBasic(int mode, int disableBasic) {
     
 void SetControlManagerCX85Enable(int cx85Enable) {
     [[ControlManager sharedInstance] setCX85EnableMenu:(cx85Enable)];
+}
+
+void SetControlManagerXEGSKeyboard(int attached) {
+    [[ControlManager sharedInstance] setXEGSKeyboardMenu:(attached)];
 }
 
 void SetControlManagerKeyjoyEnable(int keyjoyEnable) {
@@ -446,6 +451,18 @@ static int monitorRunFirstTime = 1;
 }
 
 /*------------------------------------------------------------------------------
+*  setXEGSKeyboardMenu - This method is used to set the menu check state for the
+*     XEGS Keyboard Attached menu item.
+*-----------------------------------------------------------------------------*/
+- (void)setXEGSKeyboardMenu:(int)attached;
+{
+    if (attached)
+        [xegsKeyboardItem setState:NSOnState];
+    else
+        [xegsKeyboardItem setState:NSOffState];
+}
+
+/*------------------------------------------------------------------------------
  *  setKeyjoyEnableMenu - This method is used to set the menu check state for the 
  *     Enable Keyboard Joystcks menu item.
  *-----------------------------------------------------------------------------*/
@@ -614,7 +631,7 @@ static int monitorRunFirstTime = 1;
 *-----------------------------------------------------------------------------*/
 - (IBAction)changeXEGSKeyboard:(id)sender
 {
-    
+    requestXEGSKeyboardChange = 1;
 }
 
 /*------------------------------------------------------------------------------
