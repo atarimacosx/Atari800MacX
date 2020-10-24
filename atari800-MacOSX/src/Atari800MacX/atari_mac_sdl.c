@@ -5529,6 +5529,7 @@ int SDL_main(int argc, char **argv)
 			if (speed_limit == 0 || (speed_limit == 1 && deltatime <= 1.0/Atari800_FPS_PAL)) {
 				if (Atari800Time() >= last_time + 1.0/60.0) {
                     Screen_DrawDiskLED();
+                    Screen_DrawHDDiskLED();
                     if (FULLSCREEN_MACOS)
                         Screen_DrawAtariSpeed(currentFps);
                     Screen_Draw1200LED();
@@ -5539,6 +5540,7 @@ int SDL_main(int argc, char **argv)
 				}
 			else {
                 Screen_DrawDiskLED();
+                Screen_DrawHDDiskLED();
                 Screen_Draw1200LED();
 				Atari_DisplayScreen((UBYTE *) Screen_atari);
 				}

@@ -200,6 +200,8 @@
                 <outlet property="joystick4NumPulldown" destination="3801" id="3807"/>
                 <outlet property="joystick4Pulldown" destination="645" id="657"/>
                 <outlet property="joystick4TypePulldown" destination="3687" id="3741"/>
+                <outlet property="ledFKeyButton" destination="9yX-aZ-eEW" id="5xn-hQ-vLy"/>
+                <outlet property="ledHDSectorButton" destination="Fr3-Su-Zp0" id="cU0-Xu-tjM"/>
                 <outlet property="ledSectorButton" destination="3864" id="3866"/>
                 <outlet property="ledSectorMediaButton" destination="3914" id="3917"/>
                 <outlet property="ledStatusButton" destination="3863" id="3865"/>
@@ -682,6 +684,9 @@ DQ
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                             <font key="font" metaFont="system"/>
                                                         </buttonCell>
+                                                        <connections>
+                                                            <action selector="miscChanged:" target="-2" id="zmH-0a-X9l"/>
+                                                        </connections>
                                                     </button>
                                                     <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9yX-aZ-eEW">
                                                         <rect key="frame" x="14" y="9" width="236" height="18"/>
@@ -690,6 +695,9 @@ DQ
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                             <font key="font" metaFont="system"/>
                                                         </buttonCell>
+                                                        <connections>
+                                                            <action selector="miscChanged:" target="-2" id="7d5-o8-PTT"/>
+                                                        </connections>
                                                     </button>
                                                 </subviews>
                                             </view>

@@ -39,6 +39,7 @@ int Screen_ReadConfig(char *string, char *ptr);
 void Screen_WriteConfig(FILE *fp);
 void Screen_DrawAtariSpeed(int);
 void Screen_DrawDiskLED(void);
+void Screen_DrawHDDiskLED(void);
 void Screen_Draw1200LED(void);
 void Screen_FindScreenshotFilename(char *buffer);
 int Screen_SaveScreenshot(const char *filename, int interlaced);

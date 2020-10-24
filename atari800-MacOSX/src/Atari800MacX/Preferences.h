@@ -593,7 +593,7 @@
 - (void)ok:(id)sender;		/* Calls commitUI to commit the displayed values as current */
 - (void)revertToDefault:(id)sender;    
 
-- (void)miscChanged:(id)sender;	/* Action message for most of the misc items in the UI to get displayedValues  */
+- (IBAction)miscChanged:(id)sender;	/* Action message for most of the misc items in the UI to get displayedValues  */
 - (void)browsePalette:(id)sender; 
 - (void)browseImage:(id)sender; 
 - (void)browsePrint:(id)sender; 

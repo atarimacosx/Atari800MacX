@@ -40,6 +40,7 @@
 #include "screen.h"
 #include "sio.h"
 #include "util.h"
+#include "img_disk.h"
 
 #define ATARI_VISIBLE_WIDTH 336
 #define ATARI_LEFT_MARGIN 24
@@ -88,6 +89,8 @@ static int screenshot_no_max = 1000;
 #define SMALLFONT_D        12
 #define SMALLFONT_L        13
 #define SMALLFONT_SLASH    14
+#define SMALLFONT_R        15
+#define SMALLFONT_W        16
 #define SMALLFONT_____ 0x00
 #define SMALLFONT___X_ 0x02
 #define SMALLFONT__X__ 0x04
@@ -261,6 +264,16 @@ static UBYTE *SmallFont_DrawInt(UBYTE *screen, int n, UBYTE color1, UBYTE color2
     return screen;
 }
 
+static UBYTE *SmallFont_DrawLong(UBYTE *screen, long n, UBYTE color1, UBYTE color2)
+{
+    do {
+        SmallFont_DrawChar(screen, n % 10, color1, color2);
+        screen -= SMALLFONT_WIDTH;
+        n /= 10;
+    } while (n > 0);
+    return screen;
+}
+
 void Screen_DrawAtariSpeed(int fps)
 {
     if (Screen_show_atari_speed) {
@@ -301,6 +314,18 @@ void Screen_DrawDiskLED(void)
                 }
                 SmallFont_DrawInt(screen - SMALLFONT_WIDTH, CASSETTE_GetPosition(), 0x00, 0x88);
             }
+        }
+    }
+}
+
+void Screen_DrawHDDiskLED(void)
+{
+    if (Screen_show_hd_sector_counter) {
+        UBYTE *screen = (UBYTE *) Screen_atari + Screen_visible_x1 + SMALLFONT_WIDTH * 21
+            + (Screen_visible_y2 - SMALLFONT_HEIGHT) * Screen_WIDTH;
+        if (IMG_last_op_time > 0) {
+            IMG_last_op_time--;
+            screen = SmallFont_DrawLong(screen, IMG_last_sector, 0x00, (UBYTE) (IMG_last_op_read ? 0xac : 0x2b));
         }
     }
 }

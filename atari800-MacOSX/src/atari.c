@@ -853,7 +853,8 @@ void Atari800_Frame(void)
 		ANTIC_Frame(TRUE);
 		INPUT_DrawMousePointer();
 		Screen_DrawAtariSpeed(Atari_time());
-		Screen_DrawDiskLED();
+        Screen_DrawDiskLED();
+        Screen_DrawHDDiskLED();
 		Atari800_display_screen = TRUE;
 	}
 	else {
