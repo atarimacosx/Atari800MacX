@@ -412,12 +412,17 @@ static int monitorRunFirstTime = 1;
             [disableBasicItem setTarget:nil];
             break;
         case Atari800_MACHINE_XLXE:
-            [disableBasicItem setEnabled:YES];
-            [disableBasicItem setTarget:self];
-            if (disableBasic)
-                [disableBasicItem setState:NSOnState];
-            else
-                [disableBasicItem setState:NSOffState];
+            if (Atari800_builtin_basic && !ULTIMATE_enabled) {
+                [disableBasicItem setEnabled:YES];
+                [disableBasicItem setTarget:self];
+                if (disableBasic)
+                    [disableBasicItem setState:NSOnState];
+                else
+                    [disableBasicItem setState:NSOffState];
+            } else {
+                [disableBasicItem setEnabled:NO];
+                [disableBasicItem setTarget:nil];
+            }
             break;
         case Atari800_MACHINE_5200:
             [disableBasicItem setEnabled:NO];

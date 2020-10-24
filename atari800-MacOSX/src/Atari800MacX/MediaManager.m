@@ -2788,7 +2788,10 @@ NSImage *disketteImage;
             [self basicInsert:self];
             break;
         case Atari800_MACHINE_XLXE:
-            [[ControlManager sharedInstance] disableBasic:sender];
+            if (Atari800_builtin_basic)
+                [[ControlManager sharedInstance] disableBasic:sender];
+            else
+                [self basicInsert:self];
             break;
     }
 }
@@ -2830,18 +2833,41 @@ NSImage *disketteImage;
             [insertSIDE2Item setTarget:nil];
             break;
         case Atari800_MACHINE_XLXE:
-            [insertBasicItem setTarget:self];
-            [disBasicButton setEnabled:YES];
-            if (onoff) {
-                [disBasicButton setTitle:@"Disable Basic"];
-                [disBasicButton setState:NSOnState];
+            if (ULTIMATE_enabled) {
+               [disBasicButton setEnabled:NO];
+               [disBasicButton setTitle:@""];
+               [disBasicButton setState:NSOffState];
+               [insertBasicItem setTarget:nil];
+            } else {
+                if (Atari800_builtin_basic) {
+                    [insertBasicItem setTarget:self];
+                    [disBasicButton setEnabled:YES];
+                    if (onoff) {
+                        [disBasicButton setTitle:@"Disable Basic"];
+                        [disBasicButton setState:NSOnState];
+                        }
+                    else {
+                        [disBasicButton setTitle:@"Disable Basic"];
+                        [disBasicButton setState:NSOffState];
+                        }
+                    [insertBasicItem setTarget:nil];
+                    [insertSIDE2Item setTarget:self];
+                } else {
+                    if (CARTRIDGE_main.type != CARTRIDGE_NONE &&
+                        (strcmp(CARTRIDGE_main.filename, CARTRIDGE_SPECIAL_BASIC) == 0)) {
+                        [disBasicButton setEnabled:NO];
+                        [disBasicButton setTitle:@""];
+                        [disBasicButton setState:NSOffState];
+                        [insertBasicItem setTarget:nil];
+                    } else {
+                        [insertBasicItem setTarget:self];
+                        [disBasicButton setEnabled:YES];
+                        [disBasicButton setTitle:@"Load Basic"];
+                        [disBasicButton setState:NSOffState];
+                    }
+                    [insertSIDE2Item setTarget:nil];
                 }
-            else {
-                [disBasicButton setTitle:@"Disable Basic"];
-                [disBasicButton setState:NSOffState];
-                }
-            [insertBasicItem setTarget:nil];
-            [insertSIDE2Item setTarget:self];
+            }
             break;
         case Atari800_MACHINE_5200:
             [disBasicButton setEnabled:NO];
