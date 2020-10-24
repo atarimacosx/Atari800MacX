@@ -205,19 +205,15 @@ int SIDE2_D5GetByte(UWORD addr, int no_side_effects)
         case 0xD5F7:
             result = IDE_Enabled && SIDE2_Block_Device ?
                         IDE_Read_Byte(ide, addr&0x07) : 0xFF;
-            //printf("IDERead :%d %02x\n", addr&0x07, result);
-            //if (addr == 0xD5F7) printf("Status: %02x\n",result);
             break;
         case 0xD5F8:
             return 0x32;
             break;
         case 0xD5F9:
             result = IDE_Removed ? 1 : 0;
-            //printf("CardPresent: %01x\n",result);
             break;
         case 0xD5FC:
             result = SDX_Enabled ? 'S' : ' ';
-            //printf("SDXEnabled: %c\n",result);
             break;
         case 0xD5FD:
             result = 'I';
@@ -264,7 +260,6 @@ void SIDE2_D5PutByte(UWORD addr, UBYTE byte)
         case 0xD5F5:
         case 0xD5F6:
         case 0xD5F7:
-            //printf("IDEWrite:%d %02x\n", addr&0x07, byte);
             if (IDE_Enabled && SIDE2_Block_Device)
                 IDE_Write_Byte(ide, addr&0x07, byte);
             break;
