@@ -4848,6 +4848,9 @@ void ProcessMacPrefsChange()
 		screenSwitchEnabled = TRUE;
 		}
 
+    Atari800_UpdateKeyboardDetached();
+    if (Atari800_jumper_present)
+        Atari800_UpdateJumper();
     requestPrefsChange = 0;
 	}
                     
