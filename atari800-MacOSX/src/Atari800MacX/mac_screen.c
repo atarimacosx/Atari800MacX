@@ -72,7 +72,7 @@ int Screen_show_disk_led = TRUE;
 int Screen_show_sector_counter = FALSE;
 int Screen_show_hd_sector_counter = FALSE;
 int Screen_show_1200_leds = TRUE;
-int Screen_show_capslock = TRUE;
+int Screen_show_capslock = FALSE;
 
 #ifdef HAVE_LIBPNG
 #define DEFAULT_SCREENSHOT_FILENAME_FORMAT "atari%03d.png"
@@ -379,19 +379,22 @@ void Screen_DrawCapslock(int state)
             /* space for 5 digits - up to 99999% Atari speed */
         UBYTE *screen = (UBYTE *) Screen_atari + Screen_visible_x1 + 6 * SMALLFONT_WIDTH
                       + (Screen_visible_y2 - SMALLFONT_HEIGHT) * Screen_WIDTH;
-        if (state == 0) {            SmallFont_DrawChar(screen, SMALLFONT_U, 0x00, 0x88);
+        if (state == 64) {
+#if 0
+            SmallFont_DrawChar(screen, SMALLFONT_U, 0x00, 0x88);
             SmallFont_DrawChar(screen += SMALLFONT_WIDTH, SMALLFONT_P, 0x00, 0x88);
             SmallFont_DrawChar(screen += SMALLFONT_WIDTH, SMALLFONT_P, 0x00, 0x88);
             SmallFont_DrawChar(screen += SMALLFONT_WIDTH, SMALLFONT_E, 0x00, 0x88);
             SmallFont_DrawChar(screen += SMALLFONT_WIDTH, SMALLFONT_R, 0x00, 0x88);
-        } else if (state == 1) {
+#endif
+        } else if (state == 0) {
             SmallFont_DrawChar(screen, SMALLFONT_L, 0x00, 0x88);
             SmallFont_DrawChar(screen += SMALLFONT_WIDTH, SMALLFONT_O, 0x00, 0x88);
             SmallFont_DrawChar(screen += SMALLFONT_WIDTH, SMALLFONT_W, 0x00, 0x88);
             SmallFont_DrawChar(screen += SMALLFONT_WIDTH, SMALLFONT_E, 0x00, 0x88);
             SmallFont_DrawChar(screen += SMALLFONT_WIDTH, SMALLFONT_R, 0x00, 0x88);
-        } else if (state == 2) {
-            SmallFont_DrawChar(screen += SMALLFONT_WIDTH, SMALLFONT_G, 0x00, 0x88);
+        } else if (state == 128) {
+            SmallFont_DrawChar(screen, SMALLFONT_G, 0x00, 0x88);
             SmallFont_DrawChar(screen += SMALLFONT_WIDTH, SMALLFONT_R, 0x00, 0x88);
             SmallFont_DrawChar(screen += SMALLFONT_WIDTH, SMALLFONT_A, 0x00, 0x88);
             SmallFont_DrawChar(screen += SMALLFONT_WIDTH, SMALLFONT_P, 0x00, 0x88);
@@ -449,7 +452,7 @@ void Screen_DrawHDDiskLED(void)
 void Screen_Draw1200LED(void)
 {
     if (Screen_show_1200_leds && Atari800_keyboard_leds) {
-        UBYTE *screen = (UBYTE *) Screen_atari + Screen_visible_x1 + SMALLFONT_WIDTH * 10
+        UBYTE *screen = (UBYTE *) Screen_atari + Screen_visible_x1 + SMALLFONT_WIDTH * 12
             + (Screen_visible_y2 - SMALLFONT_HEIGHT) * Screen_WIDTH;
         UBYTE portb = PIA_PORTB;
         if ((portb & 0x04) == 0) {
