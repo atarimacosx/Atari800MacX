@@ -657,19 +657,15 @@ static void MapActiveCart(void)
         case CARTRIDGE_ULTIMATE_1MB:
             MEMORY_Cart809fDisable();
             MEMORY_CartA0bfEnable();
+            /* No need to call SwitchBank(), return. */
             return;
         case CARTRIDGE_SIDE2:
             SIDE2_Set_Cart_Enables(TRUE, TRUE);
+            /* No need to call SwitchBank(), return. */
             return;
 		default:
 			MEMORY_Cart809fDisable();
-			if (!Atari800_builtin_basic
-			&& (!Atari800_disable_basic || BINLOAD_loading_basic) && MEMORY_have_basic) {
-				MEMORY_CartA0bfEnable();
-				MEMORY_CopyROM(0xa000, 0xbfff, MEMORY_basic);
-			}
-			else
-				MEMORY_CartA0bfDisable();
+            MEMORY_CartA0bfDisable();
 			/* No need to call SwitchBank(), return. */
 			return;
 		}
