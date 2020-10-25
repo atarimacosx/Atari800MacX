@@ -5533,6 +5533,7 @@ int SDL_main(int argc, char **argv)
                     if (FULLSCREEN_MACOS)
                         Screen_DrawAtariSpeed(currentFps);
                     Screen_Draw1200LED();
+                    Screen_DrawCapslock(capsLockState);
 					Atari_DisplayScreen((UBYTE *) Screen_atari);
 					last_time = Atari800Time();
 					screenSwitchEnabled = TRUE;
@@ -5542,6 +5543,7 @@ int SDL_main(int argc, char **argv)
                 Screen_DrawDiskLED();
                 Screen_DrawHDDiskLED();
                 Screen_Draw1200LED();
+                Screen_DrawCapslock(capsLockState);
 				Atari_DisplayScreen((UBYTE *) Screen_atari);
 				}
             }

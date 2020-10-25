@@ -72,6 +72,7 @@ int Screen_show_disk_led = TRUE;
 int Screen_show_sector_counter = FALSE;
 int Screen_show_hd_sector_counter = FALSE;
 int Screen_show_1200_leds = TRUE;
+int Screen_show_capslock = TRUE;
 
 #ifdef HAVE_LIBPNG
 #define DEFAULT_SCREENSHOT_FILENAME_FORMAT "atari%03d.png"
@@ -89,8 +90,15 @@ static int screenshot_no_max = 1000;
 #define SMALLFONT_D        12
 #define SMALLFONT_L        13
 #define SMALLFONT_SLASH    14
-#define SMALLFONT_R        15
-#define SMALLFONT_W        16
+#define SMALLFONT_U        15
+#define SMALLFONT_P        16
+#define SMALLFONT_E        17
+#define SMALLFONT_R        18
+#define SMALLFONT_O        19
+#define SMALLFONT_W        20
+#define SMALLFONT_G        21
+#define SMALLFONT_A        22
+#define SMALLFONT_H        23
 #define SMALLFONT_____ 0x00
 #define SMALLFONT___X_ 0x02
 #define SMALLFONT__X__ 0x04
@@ -102,7 +110,7 @@ static int screenshot_no_max = 1000;
 
 static void SmallFont_DrawChar(UBYTE *screen, int ch, UBYTE color1, UBYTE color2)
 {
-    static const UBYTE font[15][SMALLFONT_HEIGHT] = {
+    static const UBYTE font[24][SMALLFONT_HEIGHT] = {
         {
             SMALLFONT_____,
             SMALLFONT__X__,
@@ -237,7 +245,88 @@ static void SmallFont_DrawChar(UBYTE *screen, int ch, UBYTE color1, UBYTE color2
             SMALLFONT__X__,
             SMALLFONT_X___,
             SMALLFONT_____
-        }
+        },
+        {
+            SMALLFONT_____,
+            SMALLFONT_X_X_,
+            SMALLFONT_X_X_,
+            SMALLFONT_X_X_,
+            SMALLFONT_X_X_,
+            SMALLFONT_XXX_,
+            SMALLFONT_____
+        },
+        {
+            SMALLFONT_____,
+            SMALLFONT_XXX_,
+            SMALLFONT_X_X_,
+            SMALLFONT_XXX_,
+            SMALLFONT_X___,
+            SMALLFONT_X___,
+            SMALLFONT_____
+        },
+        {
+            SMALLFONT_____,
+            SMALLFONT_XXX_,
+            SMALLFONT_X___,
+            SMALLFONT_XXX_,
+            SMALLFONT_X___,
+            SMALLFONT_XXX_,
+            SMALLFONT_____
+        },
+        {
+            SMALLFONT_____,
+            SMALLFONT_XXX_,
+            SMALLFONT_X_X_,
+            SMALLFONT_XXX_,
+            SMALLFONT_XX__,
+            SMALLFONT_X_X_,
+            SMALLFONT_____
+        },
+        {
+            SMALLFONT_____,
+            SMALLFONT_XXX_,
+            SMALLFONT_X_X_,
+            SMALLFONT_X_X_,
+            SMALLFONT_X_X_,
+            SMALLFONT_XXX_,
+            SMALLFONT_____
+        },
+        {
+            SMALLFONT_____,
+            SMALLFONT_X_X_,
+            SMALLFONT_X_X_,
+            SMALLFONT_X_X_,
+            SMALLFONT_XXX_,
+            SMALLFONT_X_X_,
+            SMALLFONT_____
+        },
+        {
+            SMALLFONT_____,
+            SMALLFONT_XXX_,
+            SMALLFONT_X___,
+            SMALLFONT_X___,
+            SMALLFONT_X_X_,
+            SMALLFONT_XXX_,
+            SMALLFONT_____
+        },
+        {
+            SMALLFONT_____,
+            SMALLFONT_XXX_,
+            SMALLFONT_X_X_,
+            SMALLFONT_XXX_,
+            SMALLFONT_X_X_,
+            SMALLFONT_X_X_,
+            SMALLFONT_____
+        },
+        {
+            SMALLFONT_____,
+            SMALLFONT_X_X_,
+            SMALLFONT_X_X_,
+            SMALLFONT_XXX_,
+            SMALLFONT_X_X_,
+            SMALLFONT_X_X_,
+            SMALLFONT_____
+        },
     };
     int y;
     for (y = 0; y < SMALLFONT_HEIGHT; y++) {
@@ -281,6 +370,33 @@ void Screen_DrawAtariSpeed(int fps)
         UBYTE *screen = (UBYTE *) Screen_atari + Screen_visible_x1 + 5 * SMALLFONT_WIDTH
                       + (Screen_visible_y2 - SMALLFONT_HEIGHT) * Screen_WIDTH;
         SmallFont_DrawInt(screen - SMALLFONT_WIDTH, fps, 0x0c, 0x00);
+    }
+}
+
+void Screen_DrawCapslock(int state)
+{
+    if (Screen_show_capslock) {
+            /* space for 5 digits - up to 99999% Atari speed */
+        UBYTE *screen = (UBYTE *) Screen_atari + Screen_visible_x1 + 6 * SMALLFONT_WIDTH
+                      + (Screen_visible_y2 - SMALLFONT_HEIGHT) * Screen_WIDTH;
+        if (state == 0) {            SmallFont_DrawChar(screen, SMALLFONT_U, 0x00, 0x88);
+            SmallFont_DrawChar(screen += SMALLFONT_WIDTH, SMALLFONT_P, 0x00, 0x88);
+            SmallFont_DrawChar(screen += SMALLFONT_WIDTH, SMALLFONT_P, 0x00, 0x88);
+            SmallFont_DrawChar(screen += SMALLFONT_WIDTH, SMALLFONT_E, 0x00, 0x88);
+            SmallFont_DrawChar(screen += SMALLFONT_WIDTH, SMALLFONT_R, 0x00, 0x88);
+        } else if (state == 1) {
+            SmallFont_DrawChar(screen, SMALLFONT_L, 0x00, 0x88);
+            SmallFont_DrawChar(screen += SMALLFONT_WIDTH, SMALLFONT_O, 0x00, 0x88);
+            SmallFont_DrawChar(screen += SMALLFONT_WIDTH, SMALLFONT_W, 0x00, 0x88);
+            SmallFont_DrawChar(screen += SMALLFONT_WIDTH, SMALLFONT_E, 0x00, 0x88);
+            SmallFont_DrawChar(screen += SMALLFONT_WIDTH, SMALLFONT_R, 0x00, 0x88);
+        } else if (state == 2) {
+            SmallFont_DrawChar(screen += SMALLFONT_WIDTH, SMALLFONT_G, 0x00, 0x88);
+            SmallFont_DrawChar(screen += SMALLFONT_WIDTH, SMALLFONT_R, 0x00, 0x88);
+            SmallFont_DrawChar(screen += SMALLFONT_WIDTH, SMALLFONT_A, 0x00, 0x88);
+            SmallFont_DrawChar(screen += SMALLFONT_WIDTH, SMALLFONT_P, 0x00, 0x88);
+            SmallFont_DrawChar(screen += SMALLFONT_WIDTH, SMALLFONT_H, 0x00, 0x88);
+        }
     }
 }
 
