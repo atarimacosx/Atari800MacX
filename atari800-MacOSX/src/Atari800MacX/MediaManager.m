@@ -2839,7 +2839,7 @@ NSImage *disketteImage;
                [disBasicButton setState:NSOffState];
                [insertBasicItem setTarget:nil];
             } else {
-                if (Atari800_builtin_basic || Atari800_jumper_present) {
+                if (Atari800_builtin_basic) {
                     [insertBasicItem setTarget:self];
                     [disBasicButton setEnabled:YES];
                     if (onoff) {
