@@ -41,6 +41,7 @@
 #define LedSectorMedia @"LedSectorMedia"
 #define LedHDSector @"LedHDSector"
 #define LedFKeys @"LedFKeys"
+#define LedCapsLock @"LedCapsLock"
 #define XEP80Enabled @"XEP80Enabled"
 #define XEP80Autoswitch @"XEP80Autoswitch"
 #define XEP80Port @"XEP80Port"
@@ -311,6 +312,7 @@
 	IBOutlet id ledSectorMediaButton;
     IBOutlet id ledHDSectorButton;
     IBOutlet id ledFKeyButton;
+    IBOutlet id ledCapsLockButton;
     IBOutlet id xep80AutoswitchButton;
 	IBOutlet id xep80PortPulldown;
 	IBOutlet id xep80ForegroundField;

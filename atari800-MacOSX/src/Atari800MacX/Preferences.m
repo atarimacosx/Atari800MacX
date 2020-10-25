@@ -293,6 +293,7 @@ static NSDictionary *defaultValues() {
                 [NSNumber numberWithBool:YES], LedSectorMedia,
                 [NSNumber numberWithBool:YES], LedHDSector,
                 [NSNumber numberWithBool:YES], LedFKeys,
+                [NSNumber numberWithBool:NO], LedCapsLock,
                 [NSNumber numberWithBool:NO], AF80Enabled,
                 [NSNumber numberWithBool:NO], Bit3Enabled,
                 [NSNumber numberWithBool:NO], XEP80Enabled,
@@ -841,6 +842,7 @@ static Preferences *sharedInstance = nil;
     [ledSectorButton setState:[[displayedValues objectForKey:LedSector] boolValue] ? NSOnState : NSOffState];
     [ledHDSectorButton setState:[[displayedValues objectForKey:LedHDSector] boolValue] ? NSOnState : NSOffState];
     [ledFKeyButton setState:[[displayedValues objectForKey:LedFKeys] boolValue] ? NSOnState : NSOffState];
+    [ledCapsLockButton setState:[[displayedValues objectForKey:LedCapsLock] boolValue] ? NSOnState : NSOffState];
     [ledStatusMediaButton setState:[[displayedValues objectForKey:LedStatusMedia] boolValue] ? NSOnState : NSOffState];
     [ledSectorMediaButton setState:[[displayedValues objectForKey:LedSectorMedia] boolValue] ? NSOnState : NSOffState];
 
@@ -1746,6 +1748,10 @@ static Preferences *sharedInstance = nil;
         [displayedValues setObject:yes forKey:LedFKeys];
     else
         [displayedValues setObject:no forKey:LedFKeys];
+    if ([ledCapsLockButton state] == NSOnState)
+        [displayedValues setObject:yes forKey:LedCapsLock];
+    else
+        [displayedValues setObject:no forKey:LedCapsLock];
     if ([ledStatusButton state] == NSOnState) {
         [displayedValues setObject:yes forKey:LedStatus];
 		[ledSectorButton setEnabled:YES];
@@ -1763,6 +1769,10 @@ static Preferences *sharedInstance = nil;
         [displayedValues setObject:yes forKey:LedFKeys];
     else
         [displayedValues setObject:no forKey:LedFKeys];
+    if ([ledCapsLockButton state] == NSOnState)
+        [displayedValues setObject:yes forKey:LedCapsLock];
+    else
+        [displayedValues setObject:no forKey:LedCapsLock];
     if ([ledSectorMediaButton state] == NSOnState)
         [displayedValues setObject:yes forKey:LedSectorMedia];
     else
@@ -3607,6 +3617,7 @@ static Preferences *sharedInstance = nil;
     prefs->ledSector = [[curValues objectForKey:LedSector] intValue];
     prefs->ledHDSector = [[curValues objectForKey:LedHDSector] intValue];
     prefs->ledFKeys = [[curValues objectForKey:LedFKeys] intValue];
+    prefs->ledCapsLock = [[curValues objectForKey:LedCapsLock] intValue];
     prefs->ledStatusMedia = [[curValues objectForKey:LedStatusMedia] intValue];
     prefs->ledSectorMedia = [[curValues objectForKey:LedSectorMedia] intValue];
     if ([[curValues objectForKey:AtariTypeVer5] intValue] != -1)
@@ -5025,6 +5036,7 @@ static Preferences *sharedInstance = nil;
     getBoolDefault(LedSector);
     getBoolDefault(LedHDSector);
     getBoolDefault(LedFKeys);
+    getBoolDefault(LedCapsLock);
     getBoolDefault(LedStatusMedia);
     getBoolDefault(LedSectorMedia);
     getBoolDefault(AF80Enabled);
@@ -5310,6 +5322,7 @@ static Preferences *sharedInstance = nil;
     setBoolDefault(LedSector);
     setBoolDefault(LedHDSector);
     setBoolDefault(LedFKeys);
+    setBoolDefault(LedCapsLock);
     setBoolDefault(LedStatusMedia);
     setBoolDefault(LedSectorMedia);
     setBoolDefault(AF80Enabled);
@@ -5576,6 +5589,7 @@ static Preferences *sharedInstance = nil;
     setConfig(LedSector);
     setConfig(LedHDSector);
     setConfig(LedFKeys);
+    setConfig(LedCapsLock);
     setConfig(LedStatusMedia);
     setConfig(LedSectorMedia);
     setConfig(AF80Enabled);
@@ -5940,6 +5954,7 @@ static Preferences *sharedInstance = nil;
     getConfig(LedSector);
     getConfig(LedHDSector);
     getConfig(LedFKeys);
+    getConfig(LedCapsLock);
     getConfig(LedStatusMedia);
     getConfig(LedSectorMedia);
     getConfig(AF80Enabled);

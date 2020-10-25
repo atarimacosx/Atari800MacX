@@ -200,6 +200,7 @@
                 <outlet property="joystick4NumPulldown" destination="3801" id="3807"/>
                 <outlet property="joystick4Pulldown" destination="645" id="657"/>
                 <outlet property="joystick4TypePulldown" destination="3687" id="3741"/>
+                <outlet property="ledCapsLockButton" destination="IgS-f8-yN2" id="PjV-RJ-sA1"/>
                 <outlet property="ledFKeyButton" destination="9yX-aZ-eEW" id="5xn-hQ-vLy"/>
                 <outlet property="ledHDSectorButton" destination="Fr3-Su-Zp0" id="cU0-Xu-tjM"/>
                 <outlet property="ledSectorButton" destination="3864" id="3866"/>
@@ -626,83 +627,6 @@ DQ
                                             </view>
                                             <font key="titleFont" metaFont="system"/>
                                         </box>
-                                        <box fixedFrame="YES" title="LEDs/Status Indicators" translatesAutoresizingMaskIntoConstraints="NO" id="3860">
-                                            <rect key="frame" x="389" y="10" width="327" height="148"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <view key="contentView" id="j5j-NJ-9Sj">
-                                                <rect key="frame" x="3" y="3" width="321" height="128"/>
-                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                <subviews>
-                                                    <button fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3863">
-                                                        <rect key="frame" x="14" y="105" width="239" height="18"/>
-                                                        <autoresizingMask key="autoresizingMask"/>
-                                                        <buttonCell key="cell" type="check" title="Display Status LED on Atari Screen" bezelStyle="regularSquare" imagePosition="leading" alignment="left" inset="2" id="12931">
-                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                            <font key="font" metaFont="system"/>
-                                                        </buttonCell>
-                                                        <connections>
-                                                            <action selector="miscChanged:" target="-2" id="3867"/>
-                                                        </connections>
-                                                    </button>
-                                                    <button fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3864">
-                                                        <rect key="frame" x="34" y="86" width="266" height="18"/>
-                                                        <autoresizingMask key="autoresizingMask"/>
-                                                        <buttonCell key="cell" type="check" title="Display Sector Number on Atari Screen" bezelStyle="regularSquare" imagePosition="leading" alignment="left" inset="2" id="12932">
-                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                            <font key="font" metaFont="system"/>
-                                                        </buttonCell>
-                                                        <connections>
-                                                            <action selector="miscChanged:" target="-2" id="3868"/>
-                                                        </connections>
-                                                    </button>
-                                                    <button fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3914">
-                                                        <rect key="frame" x="34" y="49" width="277" height="18"/>
-                                                        <autoresizingMask key="autoresizingMask"/>
-                                                        <buttonCell key="cell" type="check" title="Display Sector Number in Media Window" bezelStyle="regularSquare" imagePosition="leading" alignment="left" inset="2" id="12933">
-                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                            <font key="font" metaFont="system"/>
-                                                        </buttonCell>
-                                                        <connections>
-                                                            <action selector="miscChanged:" target="-2" id="3919"/>
-                                                        </connections>
-                                                    </button>
-                                                    <button fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3915">
-                                                        <rect key="frame" x="14" y="68" width="250" height="18"/>
-                                                        <autoresizingMask key="autoresizingMask"/>
-                                                        <buttonCell key="cell" type="check" title="Display Status LED in Media Window" bezelStyle="regularSquare" imagePosition="leading" alignment="left" inset="2" id="12934">
-                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                            <font key="font" metaFont="system"/>
-                                                        </buttonCell>
-                                                        <connections>
-                                                            <action selector="miscChanged:" target="-2" id="3918"/>
-                                                        </connections>
-                                                    </button>
-                                                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Fr3-Su-Zp0">
-                                                        <rect key="frame" x="14" y="29" width="258" height="18"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <buttonCell key="cell" type="check" title="Show Hard Disk Sector on Atari Screen" bezelStyle="regularSquare" imagePosition="left" inset="2" id="ozW-J1-2qa">
-                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                            <font key="font" metaFont="system"/>
-                                                        </buttonCell>
-                                                        <connections>
-                                                            <action selector="miscChanged:" target="-2" id="zmH-0a-X9l"/>
-                                                        </connections>
-                                                    </button>
-                                                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9yX-aZ-eEW">
-                                                        <rect key="frame" x="14" y="9" width="236" height="18"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <buttonCell key="cell" type="check" title="Show 1200XL LEDs on Atari Screen" bezelStyle="regularSquare" imagePosition="left" inset="2" id="cZC-gL-VKZ">
-                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                            <font key="font" metaFont="system"/>
-                                                        </buttonCell>
-                                                        <connections>
-                                                            <action selector="miscChanged:" target="-2" id="7d5-o8-PTT"/>
-                                                        </connections>
-                                                    </button>
-                                                </subviews>
-                                            </view>
-                                            <font key="titleFont" metaFont="system"/>
-                                        </box>
                                         <box fixedFrame="YES" title="Display Width" translatesAutoresizingMaskIntoConstraints="NO" id="283">
                                             <rect key="frame" x="43" y="292" width="327" height="88"/>
                                             <autoresizingMask key="autoresizingMask"/>
@@ -864,6 +788,94 @@ DQ
                                                 <action selector="miscChanged:" target="-2" id="sEn-l6-N7x"/>
                                             </connections>
                                         </button>
+                                        <box fixedFrame="YES" title="LEDs/Status Indicators" translatesAutoresizingMaskIntoConstraints="NO" id="3860">
+                                            <rect key="frame" x="389" y="5" width="327" height="168"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <view key="contentView" id="j5j-NJ-9Sj">
+                                                <rect key="frame" x="3" y="3" width="321" height="148"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <subviews>
+                                                    <button fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3863">
+                                                        <rect key="frame" x="14" y="125" width="239" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask"/>
+                                                        <buttonCell key="cell" type="check" title="Display Status LED on Atari Screen" bezelStyle="regularSquare" imagePosition="leading" alignment="left" inset="2" id="12931">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                        <connections>
+                                                            <action selector="miscChanged:" target="-2" id="3867"/>
+                                                        </connections>
+                                                    </button>
+                                                    <button fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3864">
+                                                        <rect key="frame" x="34" y="106" width="266" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask"/>
+                                                        <buttonCell key="cell" type="check" title="Display Sector Number on Atari Screen" bezelStyle="regularSquare" imagePosition="leading" alignment="left" inset="2" id="12932">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                        <connections>
+                                                            <action selector="miscChanged:" target="-2" id="3868"/>
+                                                        </connections>
+                                                    </button>
+                                                    <button fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3914">
+                                                        <rect key="frame" x="35" y="68" width="277" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask"/>
+                                                        <buttonCell key="cell" type="check" title="Display Sector Number in Media Window" bezelStyle="regularSquare" imagePosition="leading" alignment="left" inset="2" id="12933">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                        <connections>
+                                                            <action selector="miscChanged:" target="-2" id="3919"/>
+                                                        </connections>
+                                                    </button>
+                                                    <button fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3915">
+                                                        <rect key="frame" x="14" y="88" width="250" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask"/>
+                                                        <buttonCell key="cell" type="check" title="Display Status LED in Media Window" bezelStyle="regularSquare" imagePosition="leading" alignment="left" inset="2" id="12934">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                        <connections>
+                                                            <action selector="miscChanged:" target="-2" id="3918"/>
+                                                        </connections>
+                                                    </button>
+                                                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Fr3-Su-Zp0">
+                                                        <rect key="frame" x="14" y="28" width="258" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <buttonCell key="cell" type="check" title="Show Hard Disk Sector on Atari Screen" bezelStyle="regularSquare" imagePosition="left" inset="2" id="ozW-J1-2qa">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                        <connections>
+                                                            <action selector="miscChanged:" target="-2" id="zmH-0a-X9l"/>
+                                                        </connections>
+                                                    </button>
+                                                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9yX-aZ-eEW">
+                                                        <rect key="frame" x="14" y="48" width="236" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <buttonCell key="cell" type="check" title="Show 1200XL LEDs on Atari Screen" bezelStyle="regularSquare" imagePosition="left" inset="2" id="cZC-gL-VKZ">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                        <connections>
+                                                            <action selector="miscChanged:" target="-2" id="7d5-o8-PTT"/>
+                                                        </connections>
+                                                    </button>
+                                                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="iCL-Aa-vuI">
+                                                        <rect key="frame" x="14" y="5" width="272" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <buttonCell key="cell" type="check" title="Show CapsLock indicator on Atari Screen" bezelStyle="regularSquare" imagePosition="left" inset="2" id="IgS-f8-yN2">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                        <connections>
+                                                            <action selector="miscChanged:" target="-2" id="4fo-xs-Mgq"/>
+                                                        </connections>
+                                                    </button>
+                                                </subviews>
+                                            </view>
+                                            <font key="titleFont" metaFont="system"/>
+                                        </box>
                                     </subviews>
                                 </view>
                             </tabViewItem>
