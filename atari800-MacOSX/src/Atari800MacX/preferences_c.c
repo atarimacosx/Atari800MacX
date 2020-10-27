@@ -389,10 +389,18 @@ void loadPrefsBinaries() {
 	int i;
 	
     if (prefs.cartFileEnabled) {
-        CARTRIDGE_Insert(prefs.cartFile);
+        if (strcmp(prefs.cartFile, "SIDE2") == 0)
+            CARTRIDGE_Insert_SIDE2();
+        else if (strcmp(prefs.cartFile, "BASIC") == 0)
+            CARTRIDGE_Insert_BASIC();
+        else if (strcmp(prefs.cartFile, "ULTIMATE-SDX") != 0)
+            CARTRIDGE_Insert(prefs.cartFile);
 	}
     if (prefs.cart2FileEnabled) {
-        CARTRIDGE_Insert_Second(prefs.cart2File);
+        if (strcmp(prefs.cart2File, "SIDE2") == 0)
+            CARTRIDGE_Insert_SIDE2();
+        else
+            CARTRIDGE_Insert_Second(prefs.cart2File);
 	}
     if (prefs.exeFileEnabled) {
         BINLOAD_Loader(prefs.exeFile);

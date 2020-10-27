@@ -1488,14 +1488,14 @@ static int InsertCartridge(const char *filename, CARTRIDGE_image_t *cart)
         len = 0x2000;
         cart->image = (UBYTE *) Util_malloc(len);
         memcpy(cart->image, MEMORY_basic, len);
-        strcpy(cart->filename, CARTRIDGE_SPECIAL_BASIC);
+        strcpy(cart->filename, "BASIC");
         len >>= 10;    /* number of kilobytes */
         cart->size = len;
         cart->type = CARTRIDGE_STD_8;
         InitCartridge(cart);
         return(0);
     } else if (strcmp(filename,CARTRIDGE_SPECIAL_ULTIMATE) == 0) {
-        strcpy(cart->filename, "SDX");
+        strcpy(cart->filename, "ULTIMATE-SDX");
         cart->type = CARTRIDGE_ULTIMATE_1MB;
         InitCartridge(cart);
         return(0);
