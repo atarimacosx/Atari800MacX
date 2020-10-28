@@ -1758,9 +1758,6 @@ int Atari_Keyboard_International(void)
                 case SDLK_COMMA:
                     RunPreferences();
                     break;
-                case SDLK_k:
-                    SwitchShowFps();
-                    break;
                 case SDLK_r:
                     MediaManagerLoadExe();
                     break;
