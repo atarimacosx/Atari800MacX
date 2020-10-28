@@ -472,14 +472,32 @@ int CalcAtariType(int machineType, int ramSize, int axlon, int mosaic, int ultim
 	else if (machineType == Atari800_MACHINE_XLXE) {
         if (ultimate) {
             if (game)
-                return 22;
+                return 29;
+            else if (leds)
+                return 28;
             else
-                return 21;
+                return 27;
         }
-        if (game)
-            return 20;
-        if (leds)
-            return 19;
+        if (game) {
+            if (ramSize == 64)
+                return 23;
+            else if (ramSize == MEMORY_RAM_320_RAMBO)
+                return 24;
+            else if (ramSize == 576)
+                return 25;
+            else if (ramSize == 1088)
+                return 26;
+        }
+        if (leds) {
+            if (ramSize == 64)
+                return 19;
+            else if (ramSize == MEMORY_RAM_320_RAMBO)
+                return 20;
+            else if (ramSize == 576)
+                return 21;
+            else if (ramSize == 1088)
+                return 22;
+        }
 		if (ramSize == 16)
 			return 6;
 		else if (ramSize == 64)
@@ -733,7 +751,40 @@ void CalcMachineTypeRam(int type, int *machineType, int *ramSize,
             *leds = TRUE;
             *jumper = TRUE;
             break;
-        case 20: // XEGS
+        case 20: // 1200XL
+            *machineType = Atari800_MACHINE_XLXE;
+            *ramSize = MEMORY_RAM_320_RAMBO;
+            *axlon = FALSE;
+            *mosaic = FALSE;
+            *ultimate = FALSE;
+            *basic = FALSE;
+            *game = FALSE;
+            *leds = TRUE;
+            *jumper = TRUE;
+            break;
+        case 21: // 1200XL
+            *machineType = Atari800_MACHINE_XLXE;
+            *ramSize = 576;
+            *axlon = FALSE;
+            *mosaic = FALSE;
+            *ultimate = FALSE;
+            *basic = FALSE;
+            *game = FALSE;
+            *leds = TRUE;
+            *jumper = TRUE;
+            break;
+        case 22: // 1200XL
+            *machineType = Atari800_MACHINE_XLXE;
+            *ramSize = 1088;
+            *axlon = FALSE;
+            *mosaic = FALSE;
+            *ultimate = FALSE;
+            *basic = FALSE;
+            *game = FALSE;
+            *leds = TRUE;
+            *jumper = TRUE;
+            break;
+        case 23: // XEGS
             *machineType = Atari800_MACHINE_XLXE;
             *ramSize = 64;
             *axlon = FALSE;
@@ -744,7 +795,40 @@ void CalcMachineTypeRam(int type, int *machineType, int *ramSize,
             *leds = FALSE;
             *jumper = FALSE;
             break;
-        case 21: // Ultimate XL
+        case 24: // XEGS
+            *machineType = Atari800_MACHINE_XLXE;
+            *ramSize = MEMORY_RAM_320_RAMBO;
+            *axlon = FALSE;
+            *mosaic = FALSE;
+            *ultimate = FALSE;
+            *basic = TRUE;
+            *game = TRUE;
+            *leds = FALSE;
+            *jumper = FALSE;
+            break;
+        case 25: // XEGS
+            *machineType = Atari800_MACHINE_XLXE;
+            *ramSize = 576;
+            *axlon = FALSE;
+            *mosaic = FALSE;
+            *ultimate = FALSE;
+            *basic = TRUE;
+            *game = TRUE;
+            *leds = FALSE;
+            *jumper = FALSE;
+            break;
+        case 26: // XEGS
+            *machineType = Atari800_MACHINE_XLXE;
+            *ramSize = 1088;
+            *axlon = FALSE;
+            *mosaic = FALSE;
+            *ultimate = FALSE;
+            *basic = TRUE;
+            *game = TRUE;
+            *leds = FALSE;
+            *jumper = FALSE;
+            break;
+        case 27: // Ultimate XL
             *machineType = Atari800_MACHINE_XLXE;
             *ramSize = 1088;
             *axlon = FALSE;
@@ -755,7 +839,18 @@ void CalcMachineTypeRam(int type, int *machineType, int *ramSize,
             *leds = FALSE;
             *jumper = FALSE;
             break;
-        case 22: // Ultimate XEGS
+        case 28: // Ultimate 100XL
+            *machineType = Atari800_MACHINE_XLXE;
+            *ramSize = 1088;
+            *axlon = FALSE;
+            *mosaic = FALSE;
+            *ultimate = TRUE;
+            *basic = FALSE;
+            *game = FALSE;
+            *leds = TRUE;
+            *jumper = TRUE;
+            break;
+        case 29: // Ultimate XEGS
             *machineType = Atari800_MACHINE_XLXE;
             *ramSize = 1088;
             *axlon = FALSE;

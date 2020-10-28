@@ -82,7 +82,7 @@ static char paletteStr[FILENAME_MAX];
  menu to the type variables and visa versa */
 #define NUM_ORIG_TYPES	14
 #define NUM_V4_TYPES	5
-#define NUM_V5_4_TYPES  4
+#define NUM_V5_4_TYPES  11
 #define NUM_TOTAL_TYPES (NUM_ORIG_TYPES+NUM_V4_TYPES)
 #define NUM_NEW_TOTAL_TYPES (NUM_ORIG_TYPES+NUM_V4_TYPES+NUM_V5_4_TYPES)
 

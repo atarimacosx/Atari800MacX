@@ -4904,6 +4904,11 @@ void CreateWindowCaption()
                 sprintf(windowCaption, "XEGS Ultimate 1MB + SIDE 2 %dK", MEMORY_ram_size);
             else
                 sprintf(windowCaption, "XEGS Ultimate 1MB %dK", MEMORY_ram_size);
+        } else if (Atari800_keyboard_leds) {
+            if (SIDE2_enabled)
+                sprintf(windowCaption, "1200XL Ultimate 1MB + SIDE 2 %dK", MEMORY_ram_size);
+            else
+                sprintf(windowCaption, "1200XL Ultimate 1MB %dK", MEMORY_ram_size);
         } else {
             if (SIDE2_enabled)
                 sprintf(windowCaption, "XL Ultimate 1MB + SIDE 2 %dK", MEMORY_ram_size);
