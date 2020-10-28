@@ -1091,8 +1091,15 @@ DQ
                                                         <menuItem title="Atari 1088XE (1088 KB)" id="478"/>
                                                         <menuItem title="Atari 5200 (16KB)" id="479"/>
                                                         <menuItem title="Atari 1200XL (64KB)" id="meq-Hk-a7r"/>
+                                                        <menuItem title="Atari 1200XL (320KB RAMBO)" id="vr8-dE-Nhe"/>
+                                                        <menuItem title="Atari 1200XL (576KB)" id="aVJ-lX-cmx"/>
+                                                        <menuItem title="Atari 1200XL (1088KB)" id="cRB-cf-rec"/>
                                                         <menuItem title="Atari XEGS (64KB)" id="bxc-z6-DJc"/>
+                                                        <menuItem title="Atari XEGS (320KB RAMBO)" id="7gq-XP-kEu"/>
+                                                        <menuItem title="Atari XEGS (576KB)" id="9wq-qq-ohX"/>
+                                                        <menuItem title="Atari XEGS (1088KB)" id="qgm-iM-UU5"/>
                                                         <menuItem title="Atari XL Ultimate 1MB" id="UcN-sK-dEF"/>
+                                                        <menuItem title="Atari 1200XL Ultimate 1MB" id="IQy-1K-yys"/>
                                                         <menuItem title="Atari XEGS Ultimate 1MB" id="MvN-7b-maK"/>
                                                     </items>
                                                 </menu>
@@ -1348,7 +1355,15 @@ DQ
                                                         <menuItem title="Atari 576XE (576 KB)" id="4270"/>
                                                         <menuItem title="Atari 1088XE (1088 KB)" id="4271"/>
                                                         <menuItem title="Atari 1200XL (64 KB)" id="imi-7R-J0Q"/>
+                                                        <menuItem title="Atari 1200XL (320 KB RAMBO)" id="o4Y-ms-Leg"/>
+                                                        <menuItem title="Atari 1200XL (576 KB)" id="vCp-Xg-aJB"/>
+                                                        <menuItem title="Atari 1200XL (1088 KB)" id="zTX-Vd-o00"/>
+                                                        <menuItem title="Atari XEGS (64 KB)" id="Wjs-0U-eg2"/>
+                                                        <menuItem title="Atari XEGS (320 KB RAMBO)" id="Ove-EL-COb"/>
+                                                        <menuItem title="Atari XEGS (576 KB)" id="dPr-J7-qoO"/>
+                                                        <menuItem title="Atari XEGS (1088 KB)" id="BY1-Em-4Bz"/>
                                                         <menuItem title="Atari XL Ultimate 1MB" id="T3W-ID-cYt"/>
+                                                        <menuItem title="Atari 1200XL Ultimate 1MB" id="o6W-Bh-FlM"/>
                                                         <menuItem title="Atari XEGS Ultimate 1MB" id="yDC-RA-9x4"/>
                                                     </items>
                                                 </menu>

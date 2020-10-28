@@ -795,17 +795,52 @@ DQ
                                                 <action selector="changeMachineType:" target="524" id="20J-dy-2ob"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Atari XEGS (64KB)" tag="15" id="fqw-J3-iaT">
+                                        <menuItem title="Atari 1200XL (320KB RAMBO)" tag="15" id="h8E-TM-TPk">
+                                            <connections>
+                                                <action selector="changeMachineType:" target="524" id="CaN-fz-mAJ"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Atari 1200XL (576KB)" tag="16" id="cK8-Kw-uK3">
+                                            <connections>
+                                                <action selector="changeMachineType:" target="524" id="Lb3-yl-gCg"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Atari 1200XL (1088KB)" tag="17" id="vzq-eT-3QY">
+                                            <connections>
+                                                <action selector="changeMachineType:" target="524" id="0cD-OT-akV"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Atari XEGS (64KB)" tag="18" id="fqw-J3-iaT">
                                             <connections>
                                                 <action selector="changeMachineType:" target="524" id="o2l-Sj-H5N"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Atari XL Ultimate 1MB" tag="16" id="Lqx-DL-0om">
+                                        <menuItem title="Atari XEGS (320KB RAMBO)" tag="19" id="U80-1c-jfD">
+                                            <connections>
+                                                <action selector="changeMachineType:" target="524" id="w0x-3V-JTz"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Atari XEGS (576KB)" tag="20" id="Yuo-TR-SzN">
+                                            <connections>
+                                                <action selector="changeMachineType:" target="524" id="Xcr-Cp-Mcv"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Atari XEGS (1088KB)" tag="21" id="62v-5z-jem">
+                                            <connections>
+                                                <action selector="changeMachineType:" target="524" id="UEm-z1-9Er"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Atari XL Ultimate 1MB" tag="22" id="Lqx-DL-0om">
                                             <connections>
                                                 <action selector="changeMachineType:" target="524" id="3CD-mJ-xJc"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Atari XEGS Ultimate 1MB" tag="17" id="Grx-9F-6gu">
+                                        <menuItem title="Atari 1200XL Ultimate 1MB" tag="23" id="JOa-gW-8Q9">
+                                            <connections>
+                                                <action selector="changeMachineType:" target="524" id="VS7-a6-eLL"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Atari XEGS Ultimate 1MB" tag="24" id="Grx-9F-6gu">
                                             <connections>
                                                 <action selector="changeMachineType:" target="524" id="pgC-6c-Qlw"/>
                                             </connections>

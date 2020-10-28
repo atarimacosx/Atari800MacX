@@ -734,7 +734,7 @@ int get_hex(char *string, UWORD *hexval)
 
 static UBYTE get_dlist_byte(UWORD *addr)
 {
-	UBYTE result = MEMORY_dGetByte(*addr);
+	UBYTE result = MEMORY_SafeGetByte(*addr);
 	(*addr)++;
 	if ((*addr & 0x03ff) == 0)
 		(*addr) -= 0x0400;
@@ -1068,7 +1068,7 @@ int MONITOR_monitorCmd(char *input)
 					mon_printf("%3d  ", (CPU_remember_xpos[(CPU_remember_PC_curpos+i)%CPU_REMEMBER_PC_STEPS]&0xff));
 #endif
 					show_instruction(addr, 22);
-					mon_printf("; %Xcyc ; ", cycles[MEMORY_dGetByte(addr)]);
+					mon_printf("; %Xcyc ; ", cycles[MEMORY_SafeGetByte(addr)]);
 					mon_printf("A=%02x S=%02x X=%02x Y=%02x P=",
 						CPU_remember_A[(CPU_remember_PC_curpos+i)%CPU_REMEMBER_PC_STEPS],
 						CPU_remember_S[(CPU_remember_PC_curpos+i)%CPU_REMEMBER_PC_STEPS],
@@ -1302,16 +1302,16 @@ int MONITOR_monitorCmd(char *input)
 			UWORD ts,ta;
 			for( ts = 0x101+CPU_regS; ts<0x200; ) {
 				if( ts<0x1ff ) {
-					ta = MEMORY_dGetByte(ts) | ( MEMORY_dGetByte(ts+1) << 8 );
-					if( MEMORY_dGetByte(ta-2)==0x20 ) {
+					ta = MEMORY_SafeGetByte(ts) | ( MEMORY_SafeGetByte(ts+1) << 8 );
+					if( MEMORY_SafeGetByte(ta-2)==0x20 ) {
 						mon_printf("%04X : %02X %02X\t%04X : JSR %04X\n",
-						ts, MEMORY_dGetByte(ts), MEMORY_dGetByte(ts+1), ta-2,
-						MEMORY_dGetByte(ta-1) | ( MEMORY_dGetByte(ta) << 8 ) );
+						ts, MEMORY_SafeGetByte(ts), MEMORY_SafeGetByte(ts+1), ta-2,
+						MEMORY_SafeGetByte(ta-1) | ( MEMORY_SafeGetByte(ta) << 8 ) );
 						ts+=2;
 						continue;
 					}
 				}
-				mon_printf("%04X : %02X\n", ts, MEMORY_dGetByte(ts) );
+				mon_printf("%04X : %02X\n", ts, MEMORY_SafeGetByte(ts) );
 				ts++;
 			}
 		}
@@ -1594,7 +1594,7 @@ int MONITOR_monitorCmd(char *input)
 				int i;
 
 				for (i = addr1; i <= addr2; i++)
-					sum += (UWORD) MEMORY_dGetByte(i);
+					sum += (UWORD) MEMORY_SafeGetByte(i);
 				mon_printf("SUM: %X\n", sum);
 			}
 		}
@@ -1612,12 +1612,12 @@ int MONITOR_monitorCmd(char *input)
 				linePtr += sprintf(linePtr,"%04X : ", addr);
 				for (i = 0; i < 16; i++)
                     {
-                    linePtr += sprintf(linePtr,"%02X ", MEMORY_dGetByte((UWORD) (addr + i)));
+                    linePtr += sprintf(linePtr,"%02X ", MEMORY_SafeGetByte((UWORD) (addr + i)));
                     }
 				mon_printf("\t");
 				for(i=0;i<16;i++) {
 					char c;
-					c=MEMORY_dGetByte((UWORD)(addr+i));
+					c=MEMORY_SafeGetByte((UWORD)(addr+i));
 					linePtr += sprintf(linePtr,"%c",c>=' '&&c<='z'&&c!='\x60'?c:'.');
 				}
                 linePtr += sprintf(linePtr,"\n");
@@ -1693,7 +1693,7 @@ int MONITOR_monitorCmd(char *input)
 
 				for (addr = addr1; addr <= addr2; addr++) {
 					int i = 0;
-					while (MEMORY_dGetByte(addr + i) == tab[i]) {
+					while (MEMORY_SafeGetByte(addr + i) == tab[i]) {
 						i++;
 						if (i >= n) {
 							mon_printf("Found at %04x\n", addr);
@@ -1734,11 +1734,11 @@ int MONITOR_monitorCmd(char *input)
 		}
 		else if (strcmp(t, "O") == 0) {
 #if 1			
-			UBYTE opcode = MEMORY_dGetByte(CPU_regPC);
+			UBYTE opcode = MEMORY_SafeGetByte(CPU_regPC);
 			
 			if (opcode == 0x20) {
 				/* JSR: set breakpoint after it */
-				MONITOR_break_addr = CPU_regPC + (MONITOR_optype6502[MEMORY_dGetByte(CPU_regPC)] & 0x3);
+				MONITOR_break_addr = CPU_regPC + (MONITOR_optype6502[MEMORY_SafeGetByte(CPU_regPC)] & 0x3);
 				MONITOR_break_active=TRUE;
 				break_over = TRUE;
 			}
@@ -2439,11 +2439,11 @@ UWORD show_instruction_string(char*buff, UWORD pc, int wid)
 	if (mylabel == NULL)
 		mylabel = "        ";
 #endif
-	insn = MEMORY_dGetByte(pc++);
+	insn = MEMORY_SafeGetByte(pc++);
 	mnemonic = instr6502[insn];
 	for (p = mnemonic + 3; *p != '\0'; p++) {
 		if (*p == '1') {
-			value = MEMORY_dGetByte(pc++);
+			value = MEMORY_SafeGetByte(pc++);
 #ifdef MACOSX_MON_ENHANCEMENTS
 			nchars = sprintf(buff, "%04X:%02X %02X    %-8s " /*"%Xcyc  "*/ "%.*s$%02X%s",
 			                 addr, insn, value,  mylabel,/*cycles[insn],*/ (int) (p - mnemonic), mnemonic, value, p + 1);
@@ -2468,7 +2468,7 @@ UWORD show_instruction_string(char*buff, UWORD pc, int wid)
 			break;
 		}
 		if (*p == '0') {
-			UBYTE op = MEMORY_dGetByte(pc++);
+			UBYTE op = MEMORY_SafeGetByte(pc++);
 			value = (UWORD) (pc + (SBYTE) op);
 #ifdef MACOSX_MON_ENHANCEMENTS
 			nchars = sprintf(buff, "%04X:%02X %02X    %-8s " /*"3cyc  "*/ "%.4s$%04X", addr, insn, op, mylabel, mnemonic, value);
@@ -2594,7 +2594,7 @@ UWORD assembler(char *input)
 			for (i = 0; i < 256; i++) {
 				if (strcmp(instr6502[i], c) == 0) {
 					if (tp == NULL) {
-						MEMORY_dPutByte(addr, (UBYTE) i);
+						MEMORY_PutByte(addr, (UBYTE) i);
 						addr++;
 					}
 					else if (*tp == '0') {
@@ -2602,9 +2602,9 @@ UWORD assembler(char *input)
 						if ((SWORD) value < -128 || (SWORD) value > 127)
 							mon_printf("Branch out of range!\n");
 						else {
-							MEMORY_dPutByte(addr, (UBYTE) i);
+							MEMORY_PutByte(addr, (UBYTE) i);
 							addr++;
-							MEMORY_dPutByte(addr, (UBYTE) value);
+							MEMORY_PutByte(addr, (UBYTE) value);
 							addr++;
 						}
 					}
@@ -2616,14 +2616,14 @@ UWORD assembler(char *input)
 							       "Use \"%s\" for accumulator mode or \"%s 0A\" for zeropage mode.\n", c, c, c);
 						}
 						else {
-							MEMORY_dPutByte(addr, (UBYTE) i);
+							MEMORY_PutByte(addr, (UBYTE) i);
 							addr++;
-							MEMORY_dPutByte(addr, (UBYTE) value);
+							MEMORY_PutByte(addr, (UBYTE) value);
 							addr++;
 						}
 					}
 					else { /* *tp == '2' */
-						MEMORY_dPutByte(addr, (UBYTE) i);
+						MEMORY_PutByte(addr, (UBYTE) i);
 						addr++;
 						MEMORY_dPutWord(addr, value);
 						addr += 2;
