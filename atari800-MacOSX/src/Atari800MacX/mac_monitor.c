@@ -2455,7 +2455,7 @@ UWORD show_instruction_string(char*buff, UWORD pc, int wid)
 			break;
 		}
 		if (*p == '2') {
-			value = MEMORY_dGetWord(pc);
+			value = MEMORY_GetWord(pc);
 #ifdef MACOSX_MON_ENHANCEMENTS
 			nchars = sprintf(buff, "%04X:%02X %02X %02X %-8s " /*"%Xcyc  "*/ "%.*s$%04X%s",
 			                 addr, insn, value & 0xff, value >> 8, mylabel, /*cycles[insn],*/ (int) (p - mnemonic), mnemonic, value, p + 1);
@@ -2625,7 +2625,7 @@ UWORD assembler(char *input)
 					else { /* *tp == '2' */
 						MEMORY_PutByte(addr, (UBYTE) i);
 						addr++;
-						MEMORY_dPutWord(addr, value);
+						MEMORY_PutWord(addr, value);
 						addr += 2;
 					}
 					mon_printf("%X : ",(int)addr);

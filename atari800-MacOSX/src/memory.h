@@ -60,6 +60,8 @@ extern UBYTE MEMORY_attrib[65536];
 /* Reads a byte from ADDR. Can potentially have side effects, when reading
    from hardware area. */
 #define MEMORY_GetByte(addr)		(MEMORY_attrib[addr] == MEMORY_HARDWARE ? MEMORY_HwGetByte(addr, FALSE) : (MEMORY_attrib[addr] == MEMORY_FLASH ? MEMORY_FlashGetByte(addr) : MEMORY_mem[addr]))
+#define MEMORY_GetWord(x)                (MEMORY_GetByte(x) + (MEMORY_GetByte((x) + 1) << 8))
+#define MEMORY_PutWord(x, y)            MEMORY_PutByte(x, (UBYTE) (y)); MEMORY_PutByte((x) + 1, (UBYTE) ((y) >> 8));
 /* Reads a byte from ADDR, but without any side effects. */
 #define MEMORY_SafeGetByte(addr)        (MEMORY_attrib[addr] == MEMORY_HARDWARE ? MEMORY_HwGetByte(addr, TRUE) : (MEMORY_attrib[addr] == MEMORY_FLASH ? MEMORY_FlashGetByte(addr) : MEMORY_mem[addr]))
 #define MEMORY_PutByte(addr, byte)	 do { if (MEMORY_attrib[addr] == MEMORY_RAM) MEMORY_mem[addr] = byte; else if (MEMORY_attrib[addr] == MEMORY_HARDWARE) MEMORY_HwPutByte(addr, byte); else if (MEMORY_attrib[addr] == MEMORY_FLASH) MEMORY_FlashPutByte(addr, byte);} while (0)
