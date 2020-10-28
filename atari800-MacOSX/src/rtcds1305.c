@@ -52,7 +52,8 @@ void *CDS1305_Init() {
 }
 
 void CDS1305_Exit(void *rtc) {
-    free(rtc);
+    if (rtc)
+        free(rtc);
 }
 
 void CDS1305_ColdReset(void *rtc) {

@@ -767,8 +767,10 @@ int Atari800_Exit(int run_monitor)
 #endif
         AF80_Exit();
         BIT3_Exit();
-        ULTIMATE_Exit();
-        SIDE2_Exit();
+        if (ULTIMATE_enabled)
+            ULTIMATE_Exit();
+        if (SIDE2_enabled)
+            SIDE2_Exit();
 	}
 	return restart;
 }
