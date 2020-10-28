@@ -357,7 +357,12 @@ int ULTIMATE_Change_Rom(char *filename) {
     if (!romLoaded) {
         ULTIMATE_enabled = FALSE;
     }
-    
+    SaveNVRAM();
+    strcpy(ultimate_nvram_filename, ultimate_rom_filename);
+    UTIL_strip_ext(ultimate_nvram_filename);
+    strcat(ultimate_nvram_filename,".nvram");
+    LoadNVRAM();
+
     return romLoaded;
 }
 

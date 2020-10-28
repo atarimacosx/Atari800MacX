@@ -136,6 +136,11 @@ int SIDE2_Change_Rom(char *filename) {
         SIDE2_enabled = FALSE;
         side2_compact_flash_filename[0] = 0;
     }
+    SaveNVRAM();
+    strcpy(side2_nvram_filename, side2_rom_filename);
+    UTIL_strip_ext(side2_nvram_filename);
+    strcat(side2_nvram_filename,".nvram");
+    LoadNVRAM();
     
     return romLoaded;
 }
