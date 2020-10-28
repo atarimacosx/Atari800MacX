@@ -30,6 +30,7 @@ void ULTIMATE_ColdStart(void);
 void ULTIMATE_WarmStart(void);
 void ULTIMATE_LoadRoms(void);
 int ULTIMATE_Save_Rom(char *filename);
+int ULTIMATE_Change_Rom(char *filename);
 UBYTE ULTIMATE_Flash_Read(UWORD addr);
 void ULTIMATE_Flash_Write(UWORD addr, UBYTE value);
 void ULTIMATE_Subcart_Left_Active(int active);

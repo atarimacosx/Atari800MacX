@@ -484,10 +484,13 @@ NSImage *disketteImage;
         [removeSecondCartItem setTarget:nil];
     else
         [removeSecondCartItem setTarget:self];
-    if (ULTIMATE_enabled)
+    if (ULTIMATE_enabled) {
         [saveUltimateRomItem setTarget:self];
-    else
+        [changeUltimateRomItem setTarget:self];
+    } else {
         [saveUltimateRomItem setTarget:nil];
+        [changeUltimateRomItem setTarget:nil];
+    }
     if (SIDE2_enabled) {
         [saveSIDE2RomItem setTarget:self];
         [changeSIDE2RomItem setTarget:self];
@@ -3093,6 +3096,25 @@ NSImage *disketteImage;
     if (filename != nil) {
         [filename getCString:cfilename maxLength:FILENAME_MAX  encoding:NSUTF8StringEncoding];
         loaded = SIDE2_Change_Rom(cfilename);
+        if (loaded) {
+            memset(Screen_atari, 0, (Screen_HEIGHT * Screen_WIDTH));
+            Atari_DisplayScreen((UBYTE *) Screen_atari);
+            Atari800_Coldstart();
+        }
+    }
+    [self updateInfo];
+}
+
+- (IBAction)ultimateChangeRom:(id)sender
+{
+    NSString *filename;
+    char cfilename[FILENAME_MAX];
+    int loaded;
+    
+    filename = [self browseFileInDirectory:[NSString stringWithCString:atari_rom_dir encoding:NSUTF8StringEncoding]];
+    if (filename != nil) {
+        [filename getCString:cfilename maxLength:FILENAME_MAX  encoding:NSUTF8StringEncoding];
+        loaded = ULTIMATE_Change_Rom(cfilename);
         if (loaded) {
             memset(Screen_atari, 0, (Screen_HEIGHT * Screen_WIDTH));
             Atari_DisplayScreen((UBYTE *) Screen_atari);

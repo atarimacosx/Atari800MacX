@@ -388,6 +388,12 @@
                                     <action selector="convertCartRom:" target="473" id="492"/>
                                 </connections>
                             </menuItem>
+                            <menuItem title="Change Ultimate ROM Image..." id="rbf-ie-DEf">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="ultimateChangeRom:" target="473" id="13l-GZ-lip"/>
+                                </connections>
+                            </menuItem>
                             <menuItem title="Save Ultimate ROM Image..." id="VCY-bH-CkS">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
@@ -1008,6 +1014,7 @@ DQ
             <connections>
                 <outlet property="attachSIDE2CFItem" destination="XiC-uU-bmv" id="yhb-TF-MA1"/>
                 <outlet property="changeSIDE2RomItem" destination="mHm-CR-SdA" id="LzM-A3-YER"/>
+                <outlet property="changeUltimateRomItem" destination="rbf-ie-DEf" id="bkw-Px-cXP"/>
                 <outlet property="insertBasicItem" destination="9Wv-JY-H9Q" id="gSh-tN-gY3"/>
                 <outlet property="insertSIDE2Item" destination="r8c-Qd-O8u" id="xhJ-au-udl"/>
                 <outlet property="insertSecondCartItem" destination="845" id="851"/>

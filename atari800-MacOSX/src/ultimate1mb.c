@@ -349,6 +349,18 @@ void ULTIMATE_LoadRoms(void)
     Update_Kernel_Bank();
 }
 
+int ULTIMATE_Change_Rom(char *filename) {
+    int romLoaded;
+
+    strcpy(ultimate_rom_filename, filename);
+    romLoaded = Atari800_LoadImage(ultimate_rom_filename, ultimate_rom, 0x80000);
+    if (!romLoaded) {
+        ULTIMATE_enabled = FALSE;
+    }
+    
+    return romLoaded;
+}
+
 int ULTIMATE_Save_Rom(char *filename)
 {
     FILE *f;

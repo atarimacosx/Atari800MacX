@@ -160,6 +160,7 @@
     IBOutlet id insertSIDE2Item;
     IBOutlet id changeSIDE2RomItem;
     IBOutlet id saveSIDE2RomItem;
+    IBOutlet id changeUltimateRomItem;
     IBOutlet id saveUltimateRomItem;
     IBOutlet id attachSIDE2CFItem;
     IBOutlet id removeSIDE2CFItem;
@@ -271,6 +272,7 @@
 - (IBAction)side2SaveRom:(id)sender;
 - (IBAction)ultimateSaveRom:(id)sender;
 - (IBAction)side2ChangeRom:(id)sender;
+- (IBAction)ultimateChangeRom:(id)sender;
 - (IBAction)side2AttachCF:(id)sender;
 - (IBAction)side2AttachCFFile:(NSString *)filename;
 - (IBAction)side2RemoveCF:(id)sender;
