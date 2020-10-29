@@ -407,12 +407,6 @@
                                     <action selector="convertCartRom:" target="473" id="492"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Save Ultimate ROM Image..." id="VCY-bH-CkS">
-                                <modifierMask key="keyEquivalentModifierMask"/>
-                                <connections>
-                                    <action selector="ultimateSaveRom:" target="473" id="bRe-Zi-EkY"/>
-                                </connections>
-                            </menuItem>
                             <menuItem isSeparatorItem="YES" id="ip7-e8-GSu">
                                 <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                             </menuItem>
