@@ -9,6 +9,7 @@
 #define ultimate1mb_h
 
 extern int ULTIMATE_enabled;
+extern int ULTIMATE_have_rom;
 extern int SIDE2_enabled;
 extern char ultimate_rom_filename[FILENAME_MAX];
 extern char ultimate_nvram_filename[FILENAME_MAX];

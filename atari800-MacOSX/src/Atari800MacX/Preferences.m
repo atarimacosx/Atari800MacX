@@ -4077,6 +4077,7 @@ static Preferences *sharedInstance = nil;
     [displayedValues setObject:prefssave->side2SDXMode ? yes : no forKey:Side2SDXMode];
     [displayedValues setObject:[NSString stringWithCString:prefssave->side2CFFileName encoding:NSUTF8StringEncoding] forKey:Side2CFFile];
     [displayedValues setObject:[NSString stringWithCString:prefssave->side2FlashFileName encoding:NSUTF8StringEncoding] forKey:Side2RomFile];
+    [displayedValues setObject:[NSString stringWithCString:prefssave->ultimate1MBFlashFileName encoding:NSUTF8StringEncoding] forKey:Ultimate1MBRomFile];
 	}
 
 - (void) saveCurrentMediaAction:(id)sender

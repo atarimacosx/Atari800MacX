@@ -333,6 +333,7 @@ void savePrefs() {
     strcpy(prefssave.side2FlashFileName, side2_rom_filename);
     //strcpy(prefssave.side2NVRAMFileName, side2_nvram_filename);
     strcpy(prefssave.side2CFFileName, side2_compact_flash_filename);
+    strcpy(prefssave.ultimate1MBFlashFileName, ultimate_rom_filename);
 
 	ReturnPreferences(&prefssave);
 	if (saveCurrentMedia)

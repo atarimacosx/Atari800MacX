@@ -31,6 +31,7 @@ static char ultimate_rom_filename[FILENAME_MAX] = Util_FILENAME_NOT_SET;
 #endif
 
 int ULTIMATE_enabled = TRUE;
+int ULTIMATE_have_rom = FALSE;
 int ULTIMATE_Flash_Type = 0;
 
 /* Ultimate1MB information from Altirra Hardware Reference Manual */
@@ -82,10 +83,12 @@ static void init_ultimate(void)
     if (!Atari800_LoadImage(ultimate_rom_filename, ultimate_rom, 0x80000)) {
         ULTIMATE_enabled = FALSE;
         Log_print("Couldn't load Ultimate1MB ROM image");
+        ULTIMATE_have_rom = FALSE;
         return;
     }
     else {
         Log_print("loaded Ultimate1MB rom image");
+        ULTIMATE_have_rom = TRUE;
     }
     if (ULTIMATE_Flash_Type == 0)
         flash = Flash_Init(ultimate_rom, Flash_TypeAm29F040B);
@@ -352,16 +355,18 @@ void ULTIMATE_LoadRoms(void)
 int ULTIMATE_Change_Rom(char *filename) {
     int romLoaded;
 
-    strcpy(ultimate_rom_filename, filename);
-    romLoaded = Atari800_LoadImage(ultimate_rom_filename, ultimate_rom, 0x80000);
-    if (!romLoaded) {
-        ULTIMATE_enabled = FALSE;
-    }
     SaveNVRAM();
-    strcpy(ultimate_nvram_filename, ultimate_rom_filename);
-    UTIL_strip_ext(ultimate_nvram_filename);
-    strcat(ultimate_nvram_filename,".nvram");
-    LoadNVRAM();
+    romLoaded = Atari800_LoadImage(filename, ultimate_rom, 0x80000);
+    if (!romLoaded) {
+        ULTIMATE_have_rom = FALSE;
+    } else {
+        ULTIMATE_have_rom = TRUE;
+        strcpy(ultimate_rom_filename, filename);
+        strcpy(ultimate_nvram_filename, ultimate_rom_filename);
+            UTIL_strip_ext(ultimate_nvram_filename);
+        strcat(ultimate_nvram_filename,".nvram");
+        LoadNVRAM();
+    }
 
     return romLoaded;
 }

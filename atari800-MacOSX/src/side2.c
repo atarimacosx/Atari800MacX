@@ -21,6 +21,7 @@
 #include <stdlib.h>
 
 int SIDE2_enabled = FALSE;
+int SIDE2_have_rom = FALSE;
 int SIDE2_Flash_Type = 0;
 
 static UBYTE side2_rom[0x80000];
@@ -72,11 +73,12 @@ static void init_side2(void)
 {
     Log_print("Side2 enabled");
     if (!Atari800_LoadImage(side2_rom_filename, side2_rom, 0x80000)) {
-        SIDE2_enabled = FALSE;
+        SIDE2_have_rom = FALSE;
         Log_print("Couldn't load Side2 ROM image");
         return;
     }
     else {
+        SIDE2_have_rom = TRUE;
         Log_print("loaded Side2 rom image");
     }
     
@@ -130,17 +132,19 @@ int SIDE2_Add_Block_Device(char *filename) {
 int SIDE2_Change_Rom(char *filename) {
     int romLoaded;
 
-    strcpy(side2_rom_filename, filename);
-    romLoaded = Atari800_LoadImage(side2_rom_filename, side2_rom, 0x80000);
-    if (!romLoaded) {
-        SIDE2_enabled = FALSE;
-        side2_compact_flash_filename[0] = 0;
-    }
     SaveNVRAM();
-    strcpy(side2_nvram_filename, side2_rom_filename);
-    UTIL_strip_ext(side2_nvram_filename);
-    strcat(side2_nvram_filename,".nvram");
-    LoadNVRAM();
+    romLoaded = Atari800_LoadImage(filename, side2_rom, 0x80000);
+    if (!romLoaded) {
+        SIDE2_have_rom = FALSE;
+        side2_compact_flash_filename[0] = 0;
+    } else {
+        SIDE2_have_rom = TRUE;
+        strcpy(side2_rom_filename, filename);
+        strcpy(side2_nvram_filename, side2_rom_filename);
+        UTIL_strip_ext(side2_nvram_filename);
+        strcat(side2_nvram_filename,".nvram");
+        LoadNVRAM();
+    }
     
     return romLoaded;
 }

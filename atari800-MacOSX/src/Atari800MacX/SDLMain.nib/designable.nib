@@ -368,6 +368,25 @@
                                     </items>
                                 </menu>
                             </menuItem>
+                            <menuItem title="Handle Ultimate1mb ROM Images" id="FH3-Kn-Z89">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <menu key="submenu" title="Handle Ultimate1mb ROM Images" id="DXN-pH-Rsg">
+                                    <items>
+                                        <menuItem title="Change Ultimate ROM Image..." id="pbK-qu-x45">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="ultimateChangeRom:" target="473" id="9pR-Sr-8gv"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Save Ultimate ROM Image..." id="eyc-Pv-07K">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="ultimateSaveRom:" target="473" id="7ov-Qw-u1a"/>
+                                            </connections>
+                                        </menuItem>
+                                    </items>
+                                </menu>
+                            </menuItem>
                             <menuItem title="Insert SDX Piggyback Cartridge..." id="845">
                                 <connections>
                                     <action selector="cartSecondInsert:" target="473" id="847"/>
@@ -386,12 +405,6 @@
                             <menuItem title="Create ROM File From .car..." id="461">
                                 <connections>
                                     <action selector="convertCartRom:" target="473" id="492"/>
-                                </connections>
-                            </menuItem>
-                            <menuItem title="Change Ultimate ROM Image..." id="rbf-ie-DEf">
-                                <modifierMask key="keyEquivalentModifierMask"/>
-                                <connections>
-                                    <action selector="ultimateChangeRom:" target="473" id="13l-GZ-lip"/>
                                 </connections>
                             </menuItem>
                             <menuItem title="Save Ultimate ROM Image..." id="VCY-bH-CkS">
@@ -1014,7 +1027,7 @@ DQ
             <connections>
                 <outlet property="attachSIDE2CFItem" destination="XiC-uU-bmv" id="yhb-TF-MA1"/>
                 <outlet property="changeSIDE2RomItem" destination="mHm-CR-SdA" id="LzM-A3-YER"/>
-                <outlet property="changeUltimateRomItem" destination="rbf-ie-DEf" id="bkw-Px-cXP"/>
+                <outlet property="changeUltimateRomItem" destination="pbK-qu-x45" id="lu9-58-Y7J"/>
                 <outlet property="insertBasicItem" destination="9Wv-JY-H9Q" id="gSh-tN-gY3"/>
                 <outlet property="insertSIDE2Item" destination="r8c-Qd-O8u" id="xhJ-au-udl"/>
                 <outlet property="insertSecondCartItem" destination="845" id="851"/>
@@ -1039,7 +1052,7 @@ DQ
                 <outlet property="resetPrinterMenuItem" destination="798" id="809"/>
                 <outlet property="rewindCassItem" destination="472" id="555"/>
                 <outlet property="saveSIDE2RomItem" destination="QFy-6q-EPo" id="m38-pj-124"/>
-                <outlet property="saveUltimateRomItem" destination="VCY-bH-CkS" id="fkJ-yq-hhW"/>
+                <outlet property="saveUltimateRomItem" destination="eyc-Pv-07K" id="yxW-Sf-6yJ"/>
                 <outlet property="selectAtari1020Item" destination="794" id="806"/>
                 <outlet property="selectAtari1020MenuItem" destination="794" id="814"/>
                 <outlet property="selectAtari825Item" destination="793" id="805"/>

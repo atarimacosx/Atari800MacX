@@ -489,7 +489,7 @@ NSImage *disketteImage;
         [changeUltimateRomItem setTarget:self];
     } else {
         [saveUltimateRomItem setTarget:nil];
-        [changeUltimateRomItem setTarget:nil];
+        [saveUltimateRomItem setTarget:nil];
     }
     if (SIDE2_enabled) {
         [saveSIDE2RomItem setTarget:self];

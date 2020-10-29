@@ -202,11 +202,12 @@ void Atari800_Coldstart(void)
 	MacSoundReset();
 	MacCapsLockStateReset();
 #endif	
-    if (SIDE2_enabled) {
+    if (SIDE2_enabled && SIDE2_have_rom) {
         SIDE2_ColdStart();
         }
     if (ULTIMATE_enabled && (Atari800_machine_type == Atari800_MACHINE_XLXE)) {
-        ULTIMATE_ColdStart();
+        if (ULTIMATE_have_rom)
+            ULTIMATE_ColdStart();
         }
 	PBI_Reset();
 	PIA_Reset();

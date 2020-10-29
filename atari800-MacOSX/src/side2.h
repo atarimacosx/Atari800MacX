@@ -6,6 +6,7 @@
 //
 
 extern int SIDE2_enabled;
+extern int SIDE2_have_rom;
 extern int SIDE2_SDX_Mode_Switch;
 extern int SIDE2_Flash_Type;
 extern int SIDE2_Block_Device;

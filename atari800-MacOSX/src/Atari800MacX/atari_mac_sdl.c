@@ -76,6 +76,7 @@
 #include "pbi_mio.h"
 #include "preferences_c.h"
 #include "ultimate1mb.h"
+#include "side2.h"
 #include "util.h"
 #include "capslock.h"
 
@@ -5512,8 +5513,28 @@ int SDL_main(int argc, char **argv)
             XEP80_last_sent_count = XEP80_sent_count;
         }
 
+        /* If emulator is in Ultimate mode without a valid ROM */
+        if (ULTIMATE_enabled && !ULTIMATE_have_rom) {
+            /* Clear the screen if we are in 5200 mode, with no cartridge */
+            BasicUIInit();
+            memset(Screen_atari_b, 0, (Screen_HEIGHT * Screen_WIDTH));
+            ClearScreen();
+            CenterPrint(0x9e, 0x94, "Atari Ultimate1mb Emulator", 11);
+            CenterPrint(0x9e, 0x94, "Error Loading Ultimate1mb ROM File", 12);
+            Atari_DisplayScreen((UBYTE *) Screen_atari);
+        }
+        /* If emulator is in SIDE2 mode without a valid ROM */
+        else if (((CARTRIDGE_main.type == CARTRIDGE_SIDE2) || (CARTRIDGE_piggyback.type == CARTRIDGE_SIDE2)) && !SIDE2_have_rom) {
+            /* Clear the screen if we are in 5200 mode, with no cartridge */
+            BasicUIInit();
+            memset(Screen_atari_b, 0, (Screen_HEIGHT * Screen_WIDTH));
+            ClearScreen();
+            CenterPrint(0x9e, 0x94, "Atari SIDE2 Emulator", 11);
+            CenterPrint(0x9e, 0x94, "Error Loading SIDE2 ROM File", 12);
+            Atari_DisplayScreen((UBYTE *) Screen_atari);
+        }
         /* If emulator isn't paused, and 5200 has a cartridge */
-        if (!pauseEmulator && !((Atari800_machine_type == Atari800_MACHINE_5200) && (CARTRIDGE_main.type == CARTRIDGE_NONE))) {
+        else if (!pauseEmulator && !((Atari800_machine_type == Atari800_MACHINE_5200) && (CARTRIDGE_main.type == CARTRIDGE_NONE)) && ((ULTIMATE_enabled && ULTIMATE_have_rom) || !ULTIMATE_enabled)) {
 			PBI_BB_Frame(); /* just to make the menu key go up automatically */
             Devices_Frame();
             GTIA_Frame();
