@@ -702,7 +702,13 @@ int Atari800_Initialise(int *argc, char *argv[])
 
 	/* Install requested ROM cartridge */
 	if (rom_filename) {
-		int r = CARTRIDGE_InsertAutoReboot(rom_filename);
+        int r = 0;
+        if (strcmp(rom_filename, "SIDE2") == 0)
+            r = CARTRIDGE_Insert_SIDE2();
+        else if (strcmp(rom_filename, "BASIC") == 0)
+            r = CARTRIDGE_Insert_BASIC();
+        else if (strcmp(rom_filename, "ULTIMATE-SDX") != 0)
+            r = CARTRIDGE_InsertAutoReboot(rom_filename);
 		if (r < 0) {
 			Log_print("Error inserting cartridge \"%s\": %s", rom_filename,
 			r == CARTRIDGE_CANT_OPEN ? "Can't open file" :
@@ -716,8 +722,14 @@ int Atari800_Initialise(int *argc, char *argv[])
 	}
 
 	/* Install requested second ROM cartridge, if first is SpartaX */
-    if (((CARTRIDGE_main.type == CARTRIDGE_SDX_64) || (CARTRIDGE_main.type == CARTRIDGE_SDX_128) || (CARTRIDGE_main.type == CARTRIDGE_ATRAX_SDX_64) || (CARTRIDGE_main.type == CARTRIDGE_ATRAX_SDX_128)) && rom2_filename) {
-		int r = CARTRIDGE_Insert_Second(rom2_filename);
+    if (((CARTRIDGE_main.type == CARTRIDGE_SDX_64) || (CARTRIDGE_main.type == CARTRIDGE_SDX_128) || (CARTRIDGE_main.type == CARTRIDGE_ATRAX_SDX_64) ||
+         (CARTRIDGE_main.type == CARTRIDGE_ATRAX_SDX_128) ||
+         (CARTRIDGE_main.type == CARTRIDGE_ULTIMATE_1MB)) && rom2_filename) {
+        int r = 0;
+        if (strcmp(rom2_filename, "SIDE2") == 0)
+            r = CARTRIDGE_Insert_SIDE2();
+        else
+            r = CARTRIDGE_Insert_Second(rom2_filename);
 		if (r < 0) {
 			Log_print("Error inserting cartridge \"%s\": %s", rom2_filename,
 			r == CARTRIDGE_CANT_OPEN ? "Can't open file" :
