@@ -126,7 +126,7 @@ int fixAspectFullscreen = FALSE;
 #define FULL_WIDTH_MODE 2
 #define NORMAL_SCALE 0
 #define SCANLINE_SCALE 1
-#define FRAMES_TO_HOLD_KEY 3;
+#define FRAMES_TO_HOLD_KEY 1;
 
 #define SCREEN_WIDTH_SHORT    (Screen_WIDTH - 2 * 24 - 2 * 8)
 #define SCREEN_WIDTH_DEFAULT  (Screen_WIDTH - 2 * 24)
