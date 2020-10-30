@@ -779,12 +779,22 @@ static int monitorRunFirstTime = 1;
 }
 
 /*------------------------------------------------------------------------------
-*  ejectCartridgeSelected - This method handles the eject cartridge button from 
+*  ejectCartridgeSelected - This method handles the eject cartridge button from
 *     the fatal error dialogue.
 *-----------------------------------------------------------------------------*/
 - (IBAction)ejectCartridgeSelected:(id)sender
 {
     [NSApp stopModalWithCode:4];
+    [[sender window] close];
+}
+
+/*------------------------------------------------------------------------------
+*  runPreferencesSelected - This method handles the run preferences button from
+*     the fatal error dialogue.
+*-----------------------------------------------------------------------------*/
+- (IBAction)runPreferencesSelected:(id)sender
+{
+    [NSApp stopModalWithCode:6];
     [[sender window] close];
 }
 

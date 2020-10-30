@@ -136,7 +136,7 @@
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="85">
-                        <rect key="frame" x="92" y="12" width="133" height="32"/>
+                        <rect key="frame" x="46" y="13" width="133" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="Eject Cartridge" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="5001">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -147,7 +147,7 @@
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="86">
-                        <rect key="frame" x="219" y="12" width="114" height="32"/>
+                        <rect key="frame" x="172" y="13" width="114" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="Eject Disk 1" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="5002">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -155,6 +155,17 @@
                         </buttonCell>
                         <connections>
                             <action selector="ejectDiskSelected:" target="-2" id="88"/>
+                        </connections>
+                    </button>
+                    <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="xZI-qJ-2Vi">
+                        <rect key="frame" x="278" y="13" width="114" height="32"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <buttonCell key="cell" type="push" title="Preferences" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="xkZ-W6-Oxx">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="runPreferencesSelected:" target="-2" id="llP-7u-4yk"/>
                         </connections>
                     </button>
                 </subviews>
@@ -1246,7 +1257,7 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <buttonCell key="cell" type="bevel" title="OUT" bezelStyle="regularSquare" imagePosition="overlaps" alignment="center" borderStyle="border" inset="2" id="5033">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                    <font key="font" metaFont="system" size="10"/>
+                                    <font key="font" metaFont="menu" size="10"/>
                                 </buttonCell>
                                 <connections>
                                     <action selector="monitorStepOutButton:" target="-2" id="472"/>
@@ -1257,7 +1268,7 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <buttonCell key="cell" type="bevel" title="OVER" bezelStyle="regularSquare" imagePosition="overlaps" alignment="center" borderStyle="border" inset="2" id="5032">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                    <font key="font" metaFont="system" size="10"/>
+                                    <font key="font" metaFont="menu" size="10"/>
                                 </buttonCell>
                                 <connections>
                                     <action selector="monitorStepOverButton:" target="-2" id="471"/>
@@ -1268,7 +1279,7 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <buttonCell key="cell" type="bevel" title="STEP" bezelStyle="regularSquare" imagePosition="overlaps" alignment="center" borderStyle="border" inset="2" id="5031">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                    <font key="font" metaFont="system" size="10"/>
+                                    <font key="font" metaFont="menu" size="10"/>
                                 </buttonCell>
                                 <connections>
                                     <action selector="monitorStepButton:" target="-2" id="470"/>
@@ -1279,7 +1290,7 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <buttonCell key="cell" type="bevel" title="GO    " bezelStyle="regularSquare" imagePosition="overlaps" alignment="center" borderStyle="border" inset="2" id="5030">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                    <font key="font" metaFont="system" size="10"/>
+                                    <font key="font" metaFont="menu" size="10"/>
                                 </buttonCell>
                                 <connections>
                                     <action selector="monitorGoButton:" target="-2" id="469"/>

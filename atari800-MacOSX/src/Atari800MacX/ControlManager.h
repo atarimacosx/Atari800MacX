@@ -144,6 +144,7 @@
 - (int)fatalError;
 - (void)error:(NSString *)errorString;
 - (void)error2:(char *)error1:(char *)error2;
+- (IBAction)runPreferencesSelected:(id)sender;
 - (IBAction)ejectCartridgeSelected:(id)sender;
 - (IBAction)ejectDiskSelected:(id)sender;
 - (IBAction)coldStartSelected:(id)sender;

@@ -39,22 +39,6 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "442B2BE9-B61D-4ED5-9EAF-BCAFD372C45D"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "atari_mac_sdl.c"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1627"
-            endingLineNumber = "1627"
-            landmarkName = "Atari_Keyboard_International()"
-            landmarkType = "9">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
             uuid = "15CE99F2-DE39-4009-8F37-4072E7A2E45B"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
@@ -142,9 +126,25 @@
             filePath = "atari_mac_sdl.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "5606"
-            endingLineNumber = "5606"
+            startingLineNumber = "5610"
+            endingLineNumber = "5610"
             landmarkName = "SDL_main(argc, argv)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "B6A27BCB-21BA-4444-9DAC-43F558BAB745"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "atari_mac_sdl.c"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "2844"
+            endingLineNumber = "2844"
+            landmarkName = "PLATFORM_Exit(run_monitor)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>

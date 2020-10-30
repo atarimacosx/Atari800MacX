@@ -2840,6 +2840,10 @@ int PLATFORM_Exit(int run_monitor)
                 Atari800_Coldstart();
                 restart = TRUE;
                 }
+            else if (action == 6) {
+                RunPreferences();
+                restart = TRUE;
+                }
             else {
                 restart = FALSE;
                 }
