@@ -198,6 +198,9 @@ int configurationChanged;
 int mioChanged;
 int bbChanged;
 int fullscreenOptsChanged;
+int ultimateRomChanged;
+int side2RomChanged;
+int side2CFChanged;
 int bbRequested = FALSE;
 int mioRequested = FALSE;
 int dontMuteAudio = 0;
@@ -909,15 +912,24 @@ void CalculatePrefsChanged()
 		scaleModeChanged = TRUE;
 	else
 		scaleModeChanged = FALSE;
+
+    if (strcmp(ultimate_rom_filename, prefs.ultimate1MBFlashFileName) != 0)
+        ultimateRomChanged = TRUE;
+    else
+        ultimateRomChanged = FALSE;
+    if (strcmp(side2_rom_filename, prefs.side2FlashFileName) != 0)
+        side2RomChanged = TRUE;
+    else
+        side2RomChanged = FALSE;
+    if (strcmp(side2_compact_flash_filename, prefs.side2CFFileName) != 0)
+        side2CFChanged = TRUE;
+    else
+        side2CFChanged = FALSE;
+
     strcpy(bb_rom_filename, prefs.blackBoxRomFile);
 	strcpy(mio_rom_filename, prefs.mioRomFile);
 	strcpy(bb_scsi_disk_filename, prefs.blackBoxScsiDiskFile);
 	strcpy(mio_scsi_disk_filename, prefs.mioScsiDiskFile);
-    strcpy(ultimate_rom_filename, prefs.ultimate1MBFlashFileName);
-    strcpy(ultimate_nvram_filename, prefs.ultimate1MBNVRAMFileName);
-    strcpy(side2_rom_filename, prefs.side2FlashFileName);
-    strcpy(side2_nvram_filename, prefs.side2NVRAMFileName);
-    strcpy(side2_compact_flash_filename, prefs.side2CFFileName);
     strcpy(af80_rom_filename, prefs.af80RomFile);
     strcpy(af80_charset_filename, prefs.af80CharsetFile);
     strcpy(bit3_rom_filename, prefs.bit3RomFile);

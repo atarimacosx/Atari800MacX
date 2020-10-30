@@ -216,6 +216,10 @@ extern int xep80EnabledChanged;
 extern int xep80ColorsChanged;
 extern int configurationChanged;
 extern int fullscreenOptsChanged;
+extern int ultimateRomChanged;
+extern int side2RomChanged;
+extern int side2CFChanged;
+
 extern int fileToLoad;
 extern int CARTRIDGE_type;
 int disable_all_basic = 1;
@@ -4788,7 +4792,27 @@ void ProcessMacPrefsChange()
         if (fullscreenOptsChanged && FULLSCREEN_MACOS) {
             HandleScreenChange(current_w, current_h);
         }
-
+        if (ultimateRomChanged) {
+            int loaded;
+            loaded = ULTIMATE_Change_Rom(ultimate_rom_filename, FALSE);
+            if (loaded) {
+                memset(Screen_atari, 0, (Screen_HEIGHT * Screen_WIDTH));
+                Atari_DisplayScreen((UBYTE *) Screen_atari);
+                Atari800_Coldstart();
+            }
+        }
+        if (side2RomChanged) {
+            int loaded;
+            loaded = SIDE2_Change_Rom(side2_rom_filename, FALSE);
+            if (loaded) {
+                memset(Screen_atari, 0, (Screen_HEIGHT * Screen_WIDTH));
+                Atari_DisplayScreen((UBYTE *) Screen_atari);
+                Atari800_Coldstart();
+            }
+        }
+        if (side2CFChanged) {
+            SIDE2_Add_Block_Device(side2_nvram_filename);
+        }
     if (Atari800_tv_mode == Atari800_TV_PAL)
             deltatime = (1.0 / 50.0) / emulationSpeed;
     else

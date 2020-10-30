@@ -352,7 +352,7 @@ void ULTIMATE_LoadRoms(void)
     Update_Kernel_Bank();
 }
 
-int ULTIMATE_Change_Rom(char *filename) {
+int ULTIMATE_Change_Rom(char *filename, int new) {
     int romLoaded;
 
     SaveNVRAM();
@@ -361,9 +361,10 @@ int ULTIMATE_Change_Rom(char *filename) {
         ULTIMATE_have_rom = FALSE;
     } else {
         ULTIMATE_have_rom = TRUE;
-        strcpy(ultimate_rom_filename, filename);
+        if (new)
+            strcpy(ultimate_rom_filename, filename);
         strcpy(ultimate_nvram_filename, ultimate_rom_filename);
-            UTIL_strip_ext(ultimate_nvram_filename);
+        UTIL_strip_ext(ultimate_nvram_filename);
         strcat(ultimate_nvram_filename,".nvram");
         LoadNVRAM();
     }

@@ -3095,7 +3095,7 @@ NSImage *disketteImage;
     filename = [self browseFileInDirectory:[NSString stringWithCString:atari_rom_dir encoding:NSUTF8StringEncoding]];
     if (filename != nil) {
         [filename getCString:cfilename maxLength:FILENAME_MAX  encoding:NSUTF8StringEncoding];
-        loaded = SIDE2_Change_Rom(cfilename);
+        loaded = SIDE2_Change_Rom(cfilename, TRUE);
         if (loaded) {
             memset(Screen_atari, 0, (Screen_HEIGHT * Screen_WIDTH));
             Atari_DisplayScreen((UBYTE *) Screen_atari);
@@ -3114,7 +3114,7 @@ NSImage *disketteImage;
     filename = [self browseFileInDirectory:[NSString stringWithCString:atari_rom_dir encoding:NSUTF8StringEncoding]];
     if (filename != nil) {
         [filename getCString:cfilename maxLength:FILENAME_MAX  encoding:NSUTF8StringEncoding];
-        loaded = ULTIMATE_Change_Rom(cfilename);
+        loaded = ULTIMATE_Change_Rom(cfilename, TRUE);
         if (loaded) {
             memset(Screen_atari, 0, (Screen_HEIGHT * Screen_WIDTH));
             Atari_DisplayScreen((UBYTE *) Screen_atari);

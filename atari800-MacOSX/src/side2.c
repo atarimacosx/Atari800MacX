@@ -129,7 +129,7 @@ int SIDE2_Add_Block_Device(char *filename) {
     return SIDE2_Block_Device;
 }
 
-int SIDE2_Change_Rom(char *filename) {
+int SIDE2_Change_Rom(char *filename, int new) {
     int romLoaded;
 
     SaveNVRAM();
@@ -139,7 +139,8 @@ int SIDE2_Change_Rom(char *filename) {
         side2_compact_flash_filename[0] = 0;
     } else {
         SIDE2_have_rom = TRUE;
-        strcpy(side2_rom_filename, filename);
+        if (new)
+            strcpy(side2_rom_filename, filename);
         strcpy(side2_nvram_filename, side2_rom_filename);
         UTIL_strip_ext(side2_nvram_filename);
         strcat(side2_nvram_filename,".nvram");
