@@ -417,7 +417,7 @@ static int monitorRunFirstTime = 1;
             [disableBasicItem setTarget:nil];
             break;
         case Atari800_MACHINE_XLXE:
-            if (Atari800_builtin_basic && !ULTIMATE_enabled) {
+            if (Atari800_builtin_basic && !ULTIMATE_enabled && !Atari800_keyboard_leds) {
                 [disableBasicItem setEnabled:YES];
                 [disableBasicItem setTarget:self];
                 if (disableBasic)

@@ -2842,7 +2842,7 @@ NSImage *disketteImage;
                [disBasicButton setState:NSOffState];
                [insertBasicItem setTarget:nil];
             } else {
-                if (Atari800_builtin_basic || Atari800_jumper_present) {
+                if (Atari800_builtin_basic) {
                     [insertBasicItem setTarget:self];
                     [disBasicButton setEnabled:YES];
                     if (onoff) {
@@ -2853,11 +2853,10 @@ NSImage *disketteImage;
                         [disBasicButton setTitle:@"Disable Basic"];
                         [disBasicButton setState:NSOffState];
                         }
-                    [insertBasicItem setTarget:nil];
                     [insertSIDE2Item setTarget:self];
                 } else {
                     if (CARTRIDGE_main.type != CARTRIDGE_NONE &&
-                        (strcmp(CARTRIDGE_main.filename, CARTRIDGE_SPECIAL_BASIC) == 0)) {
+                        (strcmp(CARTRIDGE_main.filename, "BASIC") == 0)) {
                         [disBasicButton setEnabled:NO];
                         [disBasicButton setTitle:@""];
                         [disBasicButton setState:NSOffState];
