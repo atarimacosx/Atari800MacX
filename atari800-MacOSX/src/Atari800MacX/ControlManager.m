@@ -1841,9 +1841,9 @@ static int monitorRunFirstTime = 1;
 - (NSAttributedString *) colorFromByte:(unsigned char)b:(unsigned char)old_b
 {
 	if (b == old_b)
-        return [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%04X",b] attributes:blackDict];
+        return [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%02X",b] attributes:blackDict];
     else
-        return [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%04X",b] attributes:redDict];
+        return [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%02X",b] attributes:redDict];
 }
 
 - (NSString *) hexStringFromByte:(unsigned char)b
