@@ -272,6 +272,7 @@
 	[copyBreak setStartIndex:start];
 	[copyBreak setEndIndex:start];
 	conds = [NSMutableArray arrayWithCapacity:10];
+    [conds retain];
 	count = [self conditionCount];
 	for (i=0;i<count;i++)
 		[conds addObject:[[self conditionAtIndex:i] copy]];
