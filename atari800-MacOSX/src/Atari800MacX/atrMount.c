@@ -226,9 +226,12 @@ static int AtrDiskType(AtrDiskInfo *info)
     if (AtrReadSector(info,1, buffer1))
         return -1;
 
-	/* TBD - MDG - Need to add other changes for SpartDos format 2.1 */
-    if (( buffer1[7] == 0x80 ) && ((buffer1[32] == 0x20 ) ||
-								   (buffer1[32] == 0x21 )))
+	/* Check for 2.0 and 2.1 SpartDos format, either 128/256 or
+       512 byte sectors */
+    if ((((buffer1[7] == 0x80) && (buffer1[8] == 0x30)) ||
+         ((buffer1[7] == 0x40) && (buffer1[8] == 0x04)))
+        && ((buffer1[32] == 0x20 ) ||
+           (buffer1[32] == 0x21 )))
         return(DOS_SPARTA2);
     /*  Check for AtariDos 2.0 and compatibles */
     else {
