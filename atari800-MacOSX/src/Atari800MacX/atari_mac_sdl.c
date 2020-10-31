@@ -1346,7 +1346,8 @@ int Atari_Keyboard_International(void)
     int key_option = 0;
     static int key_was_pressed = 0;
     char *text_input;
-    int text_key = AKEY_NONE;
+    static int text_key = AKEY_NONE;
+    int text_type;
 
     /* Check for presses in function keys window */
     INPUT_key_consol = INPUT_CONSOL_NONE;
@@ -1577,8 +1578,9 @@ int Atari_Keyboard_International(void)
          and the quit event. */
         checkForNewJoysticks();
         Atari_Consol_Key_Input();
-        int pollEvent;
-        if ((pollEvent = SDL_PollEvent(&event))) {
+        int pollEvent = 0;
+        while ((pollEvent = SDL_PollEvent(&event))) {
+            pollEvent++;
             switch (event.type) {
                 case SDL_DROPFILE:
                     SDLMainLoadFile(event.drop.file);
@@ -1590,6 +1592,7 @@ int Atari_Keyboard_International(void)
                 case SDL_TEXTINPUT:
                     kbhits = (Uint8 *) SDL_GetKeyboardState(NULL);
                     text_input = event.text.text;
+                    text_type = TRUE;
                     switch(strlen(text_input)) {
                         case 0:
                         default:
@@ -1611,12 +1614,15 @@ int Atari_Keyboard_International(void)
                     break;
                 case SDL_KEYDOWN:
                     kbhits = (Uint8 *) SDL_GetKeyboardState(NULL);
-                    if (!SDLMainIsActive())
+                    if (!SDLMainIsActive()) {
                         return AKEY_NONE;
+                    }
+                    text_type = FALSE;
                     lastkey = event.key.keysym.sym;
                     if ((lookup(SDL_IsJoyKeyTable, event.key.keysym.scancode) == 1) && keyjoyEnable && !key_option &&
-                        (pasteState == PASTE_IDLE))
+                        (pasteState == PASTE_IDLE)) {
                         return AKEY_NONE;
+                    }
                     if (kbhits[SDL_SCANCODE_LGUI] ||
                         kbhits[SDL_SCANCODE_RCTRL] ||
                         kbhits[SDL_SCANCODE_LCTRL] ||
@@ -1624,7 +1630,7 @@ int Atari_Keyboard_International(void)
                         key_pressed = 1;
                     }
                     else if (event.key.repeat) {
-                        return text_key;
+                        continue;
                     }
                     else {
                         key_pressed = 0;
@@ -1646,10 +1652,11 @@ int Atari_Keyboard_International(void)
                     return AKEY_EXIT;
                     break;
                 default:
+                    if (key_pressed)
+                        break;
                     return AKEY_NONE;
             }
         }
-
         if (kbhits == NULL) {
             Log_print("oops, kbhits is NULL!");
             Log_flushlog();
@@ -1682,7 +1689,14 @@ int Atari_Keyboard_International(void)
         }
         
         if (!pollEvent) {
-            return AKEY_NONE;
+            if (key_pressed) {
+                if (text_type) {
+                    return text_key;
+                }
+            }
+            else {
+                return AKEY_NONE;
+            }
         }
     }
     
@@ -2321,7 +2335,6 @@ int Atari_Keyboard_International(void)
             else
                 return AKEY_RETURN;
         case SDLK_F9:
-            //printf("%d\n",FullscreenCrashGUIRun(renderer));
             return AKEY_EXIT;
         case SDLK_F1:
             return AKEY_UI;
@@ -2421,8 +2434,7 @@ int Atari_Keyboard_International(void)
 
 /*------------------------------------------------------------------------------
 *  Atari_Keyboard - This function is called once per main loop to handle 
-*    keyboard input.  Depening on if international translation is enabled,
-*    it will call one of two functions 
+*    keyboard input.
 *-----------------------------------------------------------------------------*/
 int Atari_Keyboard(void)
 {
@@ -2436,7 +2448,7 @@ int Atari_Keyboard(void)
     
     last_key = Atari_Keyboard_International();
     if (last_key != AKEY_NONE) {
-        key_pressed = FRAMES_TO_HOLD_KEY;
+        key_pressed = 0;
     }
     return(last_key);
 }

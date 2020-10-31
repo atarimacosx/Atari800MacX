@@ -126,8 +126,8 @@
             filePath = "atari_mac_sdl.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "5610"
-            endingLineNumber = "5610"
+            startingLineNumber = "5622"
+            endingLineNumber = "5622"
             landmarkName = "SDL_main(argc, argv)"
             landmarkType = "9">
          </BreakpointContent>
@@ -142,8 +142,8 @@
             filePath = "atari_mac_sdl.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2844"
-            endingLineNumber = "2844"
+            startingLineNumber = "2856"
+            endingLineNumber = "2856"
             landmarkName = "PLATFORM_Exit(run_monitor)"
             landmarkType = "9">
          </BreakpointContent>
@@ -190,8 +190,8 @@
             filePath = "atari_mac_sdl.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "4839"
-            endingLineNumber = "4839"
+            startingLineNumber = "4851"
+            endingLineNumber = "4851"
             landmarkName = "ProcessMacPrefsChange()"
             landmarkType = "9">
          </BreakpointContent>
@@ -206,8 +206,40 @@
             filePath = "atari_mac_sdl.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "5303"
-            endingLineNumber = "5303"
+            startingLineNumber = "5315"
+            endingLineNumber = "5315"
+            landmarkName = "SDL_main(argc, argv)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "5FCA74E3-CF6B-4D0E-8B21-96DA5B500988"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "atari_mac_sdl.c"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "5504"
+            endingLineNumber = "5504"
+            landmarkName = "SDL_main(argc, argv)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "745EF241-D1F3-4DB9-8DCA-E3C1040A59DC"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "atari_mac_sdl.c"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "5448"
+            endingLineNumber = "5448"
             landmarkName = "SDL_main(argc, argv)"
             landmarkType = "9">
          </BreakpointContent>
