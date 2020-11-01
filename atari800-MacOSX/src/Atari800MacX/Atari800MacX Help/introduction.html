@@ -222,16 +222,28 @@ emulator. &nbsp;The Unrecoverable Error Dialog is show below.<br>
 
 <h1>What's New in 5.x.x?</h1>
 
-<h4>New Features/Bug Fixes (in version 5.3.1):</h4>
+<h4>New Features/Bug Fixes (in version 5.4.0):</h4>
 <ul>
-    <li>Added tab character translation to Disk Image Editor</li>
+    <li>Added emulation of Ultimate1mb upgrade</li>
+    <li>Added emulation of SIDE2 cartridge</li>
+    <li>Added emulation of XEGS</li>
+    <li>Added emulation of 1200XL</li>
+    <li>Added Hard Drive image creation to support SIDE2 emulation.</li>
+    <li>Added Atari Caps Lock indicator LED option</li>
+    <li>Added Hard Disk sector indicator LED</li>
+    <li>Added option to enter Preferences dialog from Fatal Error dialog box.</li>
 </ul>
 <h5>Bugs Fixed:</h5>
 <ul>
-    <li>Fixed issues with Atari Capslock preventing lowercases letters to be entered in the emulator, especially in XL/XE machines.</li>
-    <li>Fixed longstanding issue which prevent the emulator from opening and saving files in directories with international characters.</li>
-    <li>Fixed linefeed translation in Disk Image Editor for SpartaDOS ATRs.</li>
-    <li>Disabled D Patch for this version, as it is not functioning with the new atari800 core.  It will be readded in a future version.</li></ul>
+    <li>Fixed keyboard repeat issue which was
+        introducted in 5.0</li>
+    <li>Fixed issue with erroneous debugger display issue which was introduced in 5.3.</li>
+    <li>Fixed issue with editing of SpartaDOS ATR images with 512 byte sectors.</li>
+    <li>Fixed issue with Sector Editing of ATR images with 512 byte sectors.</li>
+    <li>Fixed issues with Breakpoint Edtior causing emulator to crash</li>
+    <li>Fixed dark mode issues with Graphical Debugger</li>
+    <li>Fixed issue wih Cmd-K shortcut not working</li>
+    </ul>
 </ul>
 <br>
 
