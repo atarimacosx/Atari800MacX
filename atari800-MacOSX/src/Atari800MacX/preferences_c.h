@@ -30,7 +30,10 @@ typedef struct ATARI800MACX_PREF {
                 int onlyIntegralScaling;
                 int fixAspectFullscreen;
 				int ledStatus;
-				int ledSector;
+                int ledSector;
+                int ledHDSector;
+                int ledFKeys;
+                int ledCapsLock;
 				int ledStatusMedia;
 				int ledSectorMedia;
                 int atariType; 
@@ -70,6 +73,13 @@ typedef struct ATARI800MACX_PREF {
                 char bit3CharsetFile[FILENAME_MAX];
                 char bit3RomFile[FILENAME_MAX];
                 char blackBoxRomFile[FILENAME_MAX];
+                char ultimate1MBFlashFileName[FILENAME_MAX];
+                char ultimate1MBNVRAMFileName[FILENAME_MAX];
+                char side2FlashFileName[FILENAME_MAX];
+                char side2NVRAMFileName[FILENAME_MAX];
+                int  side2SDXMode;
+                int  side2UltimateFlashType;
+                char side2CFFileName[FILENAME_MAX];
 				char mioRomFile[FILENAME_MAX];
 				char blackBoxScsiDiskFile[FILENAME_MAX]; 
 				char mioScsiDiskFile[FILENAME_MAX]; 
@@ -78,10 +88,15 @@ typedef struct ATARI800MACX_PREF {
                 char hardDiskDir[4][FILENAME_MAX]; 
                 int hardDrivesReadOnly;
                 char hPath[FILENAME_MAX];
+                char xegsRomFile[FILENAME_MAX];
+                char xegsGameRomFile[FILENAME_MAX];
+                char a1200XLRomFile[FILENAME_MAX];
                 char osBRomFile[FILENAME_MAX];
-                char xlRomFile[FILENAME_MAX]; 
+                char xlRomFile[FILENAME_MAX];
                 char basicRomFile[FILENAME_MAX];
                 char a5200RomFile[FILENAME_MAX];
+                int  useAltirraXEGSRom;
+                int  useAltirra1200XLRom;
                 int  useAltirraOSBRom;
                 int  useAltirraXLRom;
                 int  useAltirra5200Rom;
@@ -161,6 +176,8 @@ typedef struct ATARI800MACX_PREF {
 				int xep80_port;
 				int xep80_oncolor;
 				int xep80_offcolor;
+                int a1200xlJumper;
+                int xegsKeyboard;
 				int useAtariCursorKeys;
 } ATARI800MACX_PREF;
 
@@ -197,9 +214,17 @@ typedef struct ATARI800MACX_PREFSAVE {
                 int xep80_enabled;
                 int COL80_autoswitch;
 				int xep80_port;
+                int a1200xlJumper;
+                int xegsKeyboard;
 				int blackBoxEnabled;
 				int mioEnabled;
 				int useAtariCursorKeys;
+                char side2CFFileName[FILENAME_MAX];
+                char side2FlashFileName[FILENAME_MAX];
+                char side2NVRAMFileName[FILENAME_MAX];
+                int side2SDXMode;
+                char ultimate1MBFlashFileName[FILENAME_MAX];
+                char ultimate1MBNVRAMFileName[FILENAME_MAX];
 } ATARI800MACX_PREFSAVE;
 
 extern int clearCurrentMedia;

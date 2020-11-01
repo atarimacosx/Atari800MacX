@@ -34,6 +34,10 @@
 #import "SDL.h"
 #import "esc.h"
 #import "ui.h"
+#import "img_raw.h"
+#import "img_vhd.h"
+#import "side2.h"
+#import "ultimate1mb.h"
 #import <sys/stat.h>
 #import <unistd.h>
 
@@ -56,7 +60,7 @@ typedef struct {
 } Header;
 
 extern void PauseAudio(int pause);
-extern int CalcAtariType(int machineType, int ramSize, int axlon, int mosaic);
+extern int CalcAtariType(int machineType, int ramSize, int axlon, int mosaic, int ultimate, int basic, int game, int leds, int jumper);
 extern char atari_disk_dirs[][FILENAME_MAX];
 extern char atari_diskset_dir[FILENAME_MAX];
 extern char atari_rom_dir[FILENAME_MAX];
@@ -72,7 +76,8 @@ extern int currPrinter;
 extern int Devices_enable_d_patch;
 extern int Devices_enable_p_patch;
 extern void CalcMachineTypeRam(int type, int *machineType, int *ramSize,
-							   int *axlon, int *mosaic);
+                        int *axlon, int *mosaic, int *ultimate,
+                        int *basic, int *game, int *leds, int *jumper);
 extern int machine_switch_type;
 extern void Atari_DisplayScreen(UBYTE * screen);
 extern int requestMachineTypeChange;
@@ -88,6 +93,8 @@ extern int diskDriveSound;
 extern int PREFS_axlon_num_banks;
 extern int PREFS_mosaic_num_banks;
 extern int XEP80_port;
+extern int ULTIMATE_enabled;
+extern int SIDE2_enabled;
 
 /* Arrays which define the cartridge types for each size */
 static int CART2KTYPES[] = {CARTRIDGE_STD_2};
@@ -240,8 +247,10 @@ NSImage *disketteImage;
  			}
             [top retain];
             }
-	[[diskFmtMatrix window] setExcludedFromWindowsMenu:YES];
-	[[diskFmtMatrix window] setMenu:nil];
+    [[diskFmtMatrix window] setExcludedFromWindowsMenu:YES];
+    [[diskFmtMatrix window] setMenu:nil];
+    [[hardDiskFmtMatrix window] setExcludedFromWindowsMenu:YES];
+    [[hardDiskFmtMatrix window] setMenu:nil];
 	[[d1DiskField window] setExcludedFromWindowsMenu:YES];
 	[[d1DiskField window] setMenu:nil];
 	[[errorButton window] setExcludedFromWindowsMenu:YES];
@@ -364,7 +373,7 @@ NSImage *disketteImage;
 - (void)updateInfo {
     int i;
     int noDisks = TRUE;
-	int type, ver4type, index;
+	int type, ver4type, ver5type, index;
 	
     for (i=0;i<8;i++) {
         if (SIO_drive_status[i] == SIO_OFF)
@@ -455,10 +464,17 @@ NSImage *disketteImage;
             [removeMenu setTarget:nil];
         else 
             [removeMenu setTarget:self];
-    if (CARTRIDGE_main.type == CARTRIDGE_NONE)
-            [removeCartItem setTarget:nil];
-        else
-            [removeCartItem setTarget:self];
+    if (ULTIMATE_enabled) {
+        if (CARTRIDGE_piggyback.type == CARTRIDGE_NONE)
+                [removeCartItem setTarget:nil];
+            else
+                [removeCartItem setTarget:self];
+    } else {
+        if (CARTRIDGE_main.type == CARTRIDGE_NONE)
+                [removeCartItem setTarget:nil];
+            else
+                [removeCartItem setTarget:self];
+    }
     if (CARTRIDGE_main.type == CARTRIDGE_SDX_64 || CARTRIDGE_main.type == CARTRIDGE_SDX_128 ||
         CARTRIDGE_main.type == CARTRIDGE_ATRAX_SDX_64 || CARTRIDGE_main.type == CARTRIDGE_ATRAX_SDX_128)
         [insertSecondCartItem setTarget:self];
@@ -468,6 +484,42 @@ NSImage *disketteImage;
         [removeSecondCartItem setTarget:nil];
     else
         [removeSecondCartItem setTarget:self];
+    if (ULTIMATE_enabled) {
+        [saveUltimateRomItem setTarget:self];
+        [changeUltimateRomItem setTarget:self];
+    } else {
+        [saveUltimateRomItem setTarget:nil];
+        [saveUltimateRomItem setTarget:nil];
+    }
+    if (SIDE2_enabled) {
+        [saveSIDE2RomItem setTarget:self];
+        [changeSIDE2RomItem setTarget:self];
+        if (SIDE2_Block_Device) {
+            [attachSIDE2CFItem setTarget:self];
+            [removeSIDE2CFItem setTarget:self];
+        } else {
+            [attachSIDE2CFItem setTarget:self];
+            [removeSIDE2CFItem setTarget:nil];
+        }
+        [slideSIDE2ButtonSDXItem setTarget:self];
+        [slideSIDE2ButtonLoaderItem setTarget:self];
+        [pressSIDE2ButtonItem setTarget:self];
+    } else {
+        [saveSIDE2RomItem setTarget:nil];
+        [changeSIDE2RomItem setTarget:nil];
+        [attachSIDE2CFItem setTarget:nil];
+        [removeSIDE2CFItem setTarget:nil];
+        [slideSIDE2ButtonSDXItem setTarget:nil];
+        [slideSIDE2ButtonLoaderItem setTarget:nil];
+        [pressSIDE2ButtonItem setTarget:nil];
+    }
+    if (SIDE2_SDX_Mode_Switch) {
+        [slideSIDE2ButtonSDXItem setState:NSOnState];
+        [slideSIDE2ButtonLoaderItem setState:NSOffState];
+    } else {
+        [slideSIDE2ButtonSDXItem setState:NSOffState];
+        [slideSIDE2ButtonLoaderItem setState:NSOnState];
+    }
     if (CASSETTE_status == CASSETTE_STATUS_NONE)
         {
         [protectCassItem setTarget:nil];
@@ -492,14 +544,24 @@ NSImage *disketteImage;
         }
 	
 	type = CalcAtariType(Atari800_machine_type, MEMORY_ram_size,
-						 MEMORY_axlon_num_banks > 0, MEMORY_mosaic_num_banks > 0);
-	if (type > 13) {
-		ver4type = type - 14;
-		type = 0;
-	} else {
-		ver4type = -1;
-	}
-	index = [[Preferences sharedInstance] indexFromType:type :ver4type];
+						 MEMORY_axlon_num_banks > 0, MEMORY_mosaic_num_banks > 0, ULTIMATE_enabled,
+                         Atari800_builtin_basic,
+                         Atari800_builtin_game,
+                         Atari800_keyboard_leds,
+                         Atari800_jumper_present);
+    if (type > 18) {
+        ver5type = type - 19;
+        ver4type = -1;
+    } else {
+        ver5type = -1;
+        if (type > 13) {
+            ver4type = type - 14;
+            type = 0;
+        } else {
+            ver4type = -1;
+        }
+    }
+    index = [[Preferences sharedInstance] indexFromType:type :ver4type :ver5type];
 		
 	[machineTypePulldown selectItemAtIndex:index];
     if (SCALE_MODE > 1)
@@ -575,6 +637,16 @@ NSImage *disketteImage;
 }
 
 /*------------------------------------------------------------------------------
+*  cancelHardDisk - This method handles the cancel button from the disk image
+*     creation window.
+*-----------------------------------------------------------------------------*/
+- (IBAction)cancelHardDisk:(id)sender
+{
+    [NSApp stopModal];
+    [[hardDiskFmtMatrix window] close];
+}
+
+/*------------------------------------------------------------------------------
 *  basicInsert - This method inserts the BASIC cartridge image into the emulator
 *-----------------------------------------------------------------------------*/
 - (IBAction)basicInsert:(id)sender
@@ -591,6 +663,20 @@ NSImage *disketteImage;
 }
 
 /*------------------------------------------------------------------------------
+*  side2Insert - This method inserts the SIDE2 cartridge  into the emulator
+*-----------------------------------------------------------------------------*/
+- (IBAction)side2Insert:(id)sender
+{
+    if (Atari800_machine_type == Atari800_MACHINE_XLXE) {
+        CARTRIDGE_Insert_SIDE2();
+        memset(Screen_atari, 0, (Screen_HEIGHT * Screen_WIDTH));
+        Atari_DisplayScreen((UBYTE *) Screen_atari);
+        Atari800_Coldstart();
+        [self updateInfo];
+    }
+}
+
+/*------------------------------------------------------------------------------
 *  cartInsert - This method inserts a cartridge image into the emulator
 *-----------------------------------------------------------------------------*/
 - (IBAction)cartInsert:(id)sender
@@ -603,9 +689,16 @@ NSImage *disketteImage;
     filename = [self browseFileInDirectory:[NSString stringWithCString:atari_rom_dir encoding:NSUTF8StringEncoding]];
     if (filename != nil) {
         [filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
-        cartSize = CARTRIDGE_Insert(cfilename);
-        if (cartSize > 0)
-            CARTRIDGE_main.type = [self cartSelect:cartSize];
+        if (ULTIMATE_enabled) {
+            cartSize = CARTRIDGE_Insert_Second(cfilename);
+            if (cartSize > 0)
+                CARTRIDGE_piggyback.type = [self cartSelect:cartSize];
+        } else {
+            cartSize = CARTRIDGE_Insert(cfilename);
+            if (cartSize > 0)
+                CARTRIDGE_main.type = [self cartSelect:cartSize];
+        }
+
         memset(Screen_atari, 0, (Screen_HEIGHT * Screen_WIDTH));
         Atari_DisplayScreen((UBYTE *) Screen_atari);
         Atari800_Coldstart();
@@ -663,7 +756,10 @@ NSImage *disketteImage;
 *-----------------------------------------------------------------------------*/
 - (IBAction)cartRemove:(id)sender
 {
-    CARTRIDGE_Remove();
+    if (ULTIMATE_enabled)
+        CARTRIDGE_Remove_Second();
+    else
+        CARTRIDGE_Remove();
     [self updateInfo];
     [[ControlManager sharedInstance] setDisableBasicMenu:Atari800_machine_type:Atari800_disable_basic];
     Atari800_Coldstart();
@@ -903,12 +999,15 @@ NSImage *disketteImage;
 - (void)changeToComputer
 {
     int axlon_enabled, mosaic_enabled;
+    
 	CARTRIDGE_Remove();
 	
-	CalcMachineTypeRam(machine_switch_type, &Atari800_machine_type, 
-					   &MEMORY_ram_size, &axlon_enabled,
-					   &mosaic_enabled);
-	
+    CalcMachineTypeRam(machine_switch_type, &Atari800_machine_type,
+                       &MEMORY_ram_size, &axlon_enabled,
+                       &mosaic_enabled, &ULTIMATE_enabled,
+                       &Atari800_builtin_basic, &Atari800_builtin_game,
+                       &Atari800_keyboard_leds, &Atari800_jumper_present);
+
     if (!axlon_enabled)
         MEMORY_axlon_num_banks = 0;
     else
@@ -1120,6 +1219,62 @@ NSImage *disketteImage;
     
     [NSApp stopModal];
     [[diskFmtMatrix window] close];
+}
+
+/*------------------------------------------------------------------------------
+*  createHardDisk - This method responds to the create disk button push in the hard disk
+*     creation window, and actually creates the disk image.
+*-----------------------------------------------------------------------------*/
+- (IBAction)createHardDisk:(id)sender;
+{
+    void *image;
+    NSString *filename;
+    NSString *fileType;
+    int diskMounted;
+    char cfilename[FILENAME_MAX];
+    
+    int sectors = [hardDiskFmtCusSecField intValue];
+    int type = [[hardDiskFmtMatrix selectedCell] tag];
+    
+    if (type == 0)
+        fileType = @"raw";
+    else
+        fileType = @"vhd";
+    
+    filename = [self saveFileInDirectory:[NSString stringWithCString:atari_disk_dirs[0] encoding:NSUTF8StringEncoding]:fileType];
+    if (filename != nil) {
+        [filename getCString:cfilename maxLength:FILENAME_MAX  encoding:NSUTF8StringEncoding];
+        switch (type) {
+            case 0:
+                image = RAW_Init_New(cfilename, sectors);
+                break;
+            case 1:
+            default:
+                image = VHD_Init_New(cfilename, 4, 4, sectors, FALSE);
+                break;
+            case 2:
+                image = VHD_Init_New(cfilename, 4, 4, sectors, TRUE);
+                break;
+        }
+        if (image == NULL) {
+            [self displayError:@"Unable to Create Disk Image!"];
+            }
+        else {
+            VHD_Image_Close(image);
+            if ([hardDiskFmtInsertNewButton state] == NSOnState) {
+                strcpy(side2_compact_flash_filename, cfilename);
+                if (SIDE2_enabled) {
+                    diskMounted = SIDE2_Add_Block_Device(cfilename);
+                    if (!diskMounted)
+                        [self displayError:@"Unable to Mount Disk Image!"];
+                    [self updateInfo];
+                }
+            }
+        }
+    }
+    
+    [NSApp stopModal];
+    [[hardDiskFmtMatrix window] close];
 }
 
 /*------------------------------------------------------------------------------
@@ -1530,6 +1685,27 @@ NSImage *disketteImage;
     }
 }
 
+
+/*------------------------------------------------------------------------------
+*  hardSecUpdate - This method handles control updates in the hard disk image creation
+*     window.
+*-----------------------------------------------------------------------------*/
+- (IBAction)hardSecUpdate:(id)sender
+{
+    int sectors = [hardDiskFmtCusSecField intValue];
+    [hardDiskFmtCusMBField setIntValue:(sectors/(2*1024))];
+}
+
+/*------------------------------------------------------------------------------
+*  hardMBUpdate - This method handles control updates in the hard disk image creation
+*     window.
+*-----------------------------------------------------------------------------*/
+- (IBAction)hardMBUpdate:(id)sender
+{
+    int mbs = [hardDiskFmtCusMBField intValue];
+    [hardDiskFmtCusSecField setIntValue:(mbs*2*1024)];
+}
+
 /*------------------------------------------------------------------------------
 *  miscUpdate - This method handles control updates in the disk image creation
 *     window.
@@ -1611,19 +1787,19 @@ NSImage *disketteImage;
 *-----------------------------------------------------------------------------*/
 - (IBAction)showCreatePanel:(id)sender
 {
-	int driveNo;
+    int driveNo;
 
     [diskFmtMatrix selectCellWithTag:0];
     [diskFmtCusBytesPulldown setEnabled:NO];
     [diskFmtCusSecField setEnabled:NO];
     [diskFmtDDBytesPulldown setEnabled:NO];
-	for (driveNo=0;driveNo<8;driveNo++) {
-		if (SIO_drive_status[driveNo] == SIO_NO_DISK ||
-			SIO_drive_status[driveNo] == SIO_OFF) 
-			break;
-		}
-	if (driveNo == 8)
-		driveNo = 0;
+    for (driveNo=0;driveNo<8;driveNo++) {
+        if (SIO_drive_status[driveNo] == SIO_NO_DISK ||
+            SIO_drive_status[driveNo] == SIO_OFF)
+            break;
+        }
+    if (driveNo == 8)
+        driveNo = 0;
     [diskFmtInsertDrivePulldown selectItemAtIndex:driveNo];
     [diskFmtInsertDrivePulldown setEnabled:NO];
     [diskFmtCusBytesPulldown selectItemAtIndex:0];
@@ -1632,6 +1808,19 @@ NSImage *disketteImage;
     [diskFmtInsertNewButton setState:NSOffState];
     [NSApp runModalForWindow:[diskFmtMatrix window]];
     [[KeyMapper sharedInstance] releaseCmdKeys:@"n"];
+}
+
+/*------------------------------------------------------------------------------
+*  showHardCreatePanel - This method displays a window which allows the creation of
+*     blank hard disk images.
+*-----------------------------------------------------------------------------*/
+- (IBAction)showHardCreatePanel:(id)sender
+{
+    [hardDiskFmtMatrix selectCellWithTag:1];
+    [hardDiskFmtCusSecField setIntValue:(64*2*1024)];
+    [hardDiskFmtCusMBField setIntValue:64];
+    [diskFmtInsertNewButton setState:NSOffState];
+    [NSApp runModalForWindow:[hardDiskFmtMatrix window]];
 }
 
 /*------------------------------------------------------------------------------
@@ -1836,12 +2025,22 @@ NSImage *disketteImage;
 *-----------------------------------------------------------------------------*/
 - (IBAction)cartStatusChange:(id)sender
 {
-    if (CARTRIDGE_main.type == CARTRIDGE_NONE) {
-		[self cartInsert:self];
-		}
-	else {
-		[self cartRemove:self];
-		}
+    if (ULTIMATE_enabled) {
+        if (CARTRIDGE_piggyback.type == CARTRIDGE_NONE) {
+            [self cartInsert:self];
+            }
+        else {
+            [self cartRemove:self];
+            }
+
+    } else {
+        if (CARTRIDGE_main.type == CARTRIDGE_NONE) {
+            [self cartInsert:self];
+            }
+        else {
+            [self cartRemove:self];
+            }
+    }
 }
 
 /*------------------------------------------------------------------------------
@@ -2182,63 +2381,159 @@ NSImage *disketteImage;
 			[d4DiskImageView setImage:closed810Image];
 			break;
 		}
-		
-    if (CARTRIDGE_main.type == CARTRIDGE_NONE) {
-			[cartImageNameField setStringValue:@"Empty"];
-			[cartImageInsertButton setTitle:@"Insert"];
-			[cartImageView setImage:offCartImage];
-			}
-		else {
-            if (strcmp(CARTRIDGE_main.filename,CARTRIDGE_SPECIAL_BASIC)==0) {
-                [cartImageNameField setStringValue:@"BASIC"];
-            } else {
-                ptr = CARTRIDGE_main.filename + strlen(CARTRIDGE_main.filename) - 1;
-                while (ptr > CARTRIDGE_main.filename) {
-                    if (*ptr == '/') {
-                        ptr++;
-                        break;
-                        }
-                    ptr--;
+
+       if ((CARTRIDGE_main.type == CARTRIDGE_SIDE2) ||
+           (ULTIMATE_enabled && (CARTRIDGE_piggyback.type == CARTRIDGE_SIDE2)))
+       {
+           [cartImageRomInsertButton setEnabled:YES];
+           [cartImageRomInsertButton setTransparent:NO];
+           [cartImageInsertButton setTitle:@"Eject"];
+           [cartImageSIDEButton setEnabled:YES];
+           [cartImageSIDEButton setTransparent:NO];
+           [cartImageSIDEButton setImage:[NSImage imageNamed:NSImageNameStatusNone]];
+           [cartImageSDXButton setEnabled:YES];
+           [cartImageSDXButton setTransparent:NO];
+           if (SIDE2_SDX_Mode_Switch)
+               [cartImageSDXButton setTitle:@"SDX"];
+           else
+               [cartImageSDXButton setTitle:@"Load"];
+           NSRect r = [cartImageInsertButton frame];
+           r.size.width = 48.0;
+           [cartImageInsertButton setFrame:r];
+           r = [cartImageSecondInsertButton frame];
+           r.size.width = 48.0;
+           [cartImageSecondInsertButton setFrame:r];
+           [cartImageSecondInsertButton setAction:@selector(side2AttachCF:)];
+           [cartImageNameField setStringValue:@"SIDE2"];
+       } else {
+           [cartImageRomInsertButton setEnabled:NO];
+           [cartImageRomInsertButton setTransparent:YES];
+           [cartImageSIDEButton setEnabled:NO];
+           [cartImageSIDEButton setTransparent:YES];
+           [cartImageSIDEButton setImage:nil];
+           [cartImageSDXButton setEnabled:NO];
+           [cartImageSDXButton setTransparent:YES];
+           NSRect r = [cartImageInsertButton frame];
+           r.size.width = 96.0;
+           [cartImageInsertButton setFrame:r];
+           r = [cartImageSecondInsertButton frame];
+           r.size.width = 96.0;
+           [cartImageSecondInsertButton setFrame:r];
+           [cartImageSecondInsertButton setAction:@selector(cartSecondStatusChange::)];
+       }
+           
+    if (ULTIMATE_enabled) {
+        if (CARTRIDGE_piggyback.type == CARTRIDGE_NONE) {
+                [cartImageNameField setStringValue:@"Empty"];
+                [cartImageInsertButton setTitle:@"Insert"];
+                [cartImageSecondNameField setStringValue:@""];
+                [cartImageSecondInsertButton setTransparent:YES];
+                [cartImageView setImage:offCartImage];
+                }
+        else if (CARTRIDGE_piggyback.type == CARTRIDGE_SIDE2){
+            [cartImageSecondNameField setStringValue:@""];
+            [cartImageSecondInsertButton setTitle:@"Disk"];
+            [cartImageSecondInsertButton setEnabled:YES];
+            [cartImageSecondInsertButton setTransparent:NO];
+            ptr = side2_compact_flash_filename + strlen(side2_compact_flash_filename) - 1;
+            while (ptr > side2_compact_flash_filename) {
+                if (*ptr == '/') {
+                    ptr++;
+                    break;
                     }
-                [cartImageNameField setStringValue:[NSString stringWithCString:ptr encoding:NSUTF8StringEncoding]];
+                ptr--;
+                }
+            [cartImageSecondNameField setStringValue:[NSString stringWithCString:ptr encoding:NSASCIIStringEncoding]];
+            [cartImageView setImage:onCartImage];
+        }
+        else {
+            ptr = CARTRIDGE_piggyback.filename + strlen(CARTRIDGE_piggyback.filename) - 1;
+            while (ptr > CARTRIDGE_piggyback.filename) {
+                if (*ptr == '/') {
+                    ptr++;
+                    break;
+                    }
+                ptr--;
+                }
+            [cartImageNameField setStringValue:[NSString stringWithCString:ptr encoding:NSUTF8StringEncoding]];
+            [cartImageInsertButton setTitle:@"Eject"];
+            [cartImageView setImage:onCartImage];
             }
-			[cartImageInsertButton setTitle:@"Eject"];
-			[cartImageView setImage:onCartImage];
-			}
+    } else {
+        if (CARTRIDGE_main.type == CARTRIDGE_NONE) {
+                [cartImageNameField setStringValue:@"Empty"];
+                [cartImageInsertButton setTitle:@"Insert"];
+                [cartImageView setImage:offCartImage];
+                }
+            else {
+                if (strcmp(CARTRIDGE_main.filename,CARTRIDGE_SPECIAL_BASIC)==0) {
+                    [cartImageNameField setStringValue:@"BASIC"];
+                } else {
+                    ptr = CARTRIDGE_main.filename + strlen(CARTRIDGE_main.filename) - 1;
+                    while (ptr > CARTRIDGE_main.filename) {
+                        if (*ptr == '/') {
+                            ptr++;
+                            break;
+                            }
+                        ptr--;
+                        }
+                    [cartImageNameField setStringValue:[NSString stringWithCString:ptr encoding:NSASCIIStringEncoding]];
+                }
+                [cartImageInsertButton setTitle:@"Eject"];
+                [cartImageView setImage:onCartImage];
+                }
+            if (CARTRIDGE_main.type == CARTRIDGE_SDX_64 || CARTRIDGE_main.type == CARTRIDGE_SDX_128 ||
+                CARTRIDGE_main.type == CARTRIDGE_ATRAX_SDX_64 || CARTRIDGE_main.type == CARTRIDGE_ATRAX_SDX_128 ||
+                CARTRIDGE_main.type == CARTRIDGE_ULTIMATE_1MB)
+                {
+                if (CARTRIDGE_piggyback.type == CARTRIDGE_NONE) {
+                    [cartImageSecondNameField setStringValue:@""];
+                    [cartImageSecondInsertButton setTitle:@"Insert 2"];
+                    [cartImageSecondInsertButton setEnabled:YES];
+                    [cartImageSecondInsertButton setTransparent:NO];
+                    }
+                else {
+                    ptr = CARTRIDGE_piggyback.filename + strlen(CARTRIDGE_piggyback.filename) - 1;
+                    while (ptr > CARTRIDGE_piggyback.filename) {
+                        if (*ptr == '/') {
+                            ptr++;
+                            break;
+                            }
+                        ptr--;
+                        }
+                    [cartImageSecondNameField setStringValue:[NSString stringWithCString:ptr encoding:NSASCIIStringEncoding]];
+                    [cartImageSecondInsertButton setTitle:@"Eject 2"];
+                    [cartImageSecondInsertButton setEnabled:YES];
+                    [cartImageSecondInsertButton setTransparent:NO];
+                    }
+                }
+            else
+                {
+                if ((CARTRIDGE_main.type == CARTRIDGE_SIDE2) ||
+                    (CARTRIDGE_piggyback.type == CARTRIDGE_SIDE2)){
+                    [cartImageSecondNameField setStringValue:@""];
+                    [cartImageSecondInsertButton setTitle:@"Disk"];
+                    [cartImageSecondInsertButton setEnabled:YES];
+                    [cartImageSecondInsertButton setTransparent:NO];
+                    ptr = side2_compact_flash_filename + strlen(side2_compact_flash_filename) - 1;
+                    while (ptr > side2_compact_flash_filename) {
+                        if (*ptr == '/') {
+                            ptr++;
+                            break;
+                            }
+                        ptr--;
+                        }
+                    [cartImageSecondNameField setStringValue:[NSString stringWithCString:ptr encoding:NSASCIIStringEncoding]];
+                } else {
+                    [cartImageSecondNameField setStringValue:@""];
+                    [cartImageSecondInsertButton setTitle:@"Insert 2"];
+                    [cartImageSecondInsertButton setEnabled:NO];
+                    [cartImageSecondInsertButton setTransparent:YES];
+                }
+            }
+    }
 
-        if (CARTRIDGE_main.type == CARTRIDGE_SDX_64 || CARTRIDGE_main.type == CARTRIDGE_SDX_128 ||
-            CARTRIDGE_main.type == CARTRIDGE_ATRAX_SDX_64 || CARTRIDGE_main.type == CARTRIDGE_ATRAX_SDX_128)
-			{
-            if (CARTRIDGE_piggyback.type == CARTRIDGE_NONE) {
-				[cartImageSecondNameField setStringValue:@""];
-				[cartImageSecondInsertButton setTitle:@"Insert 2"];
-				[cartImageSecondInsertButton setEnabled:YES];
-				[cartImageSecondInsertButton setTransparent:NO];
-				}
-			else {
-                ptr = CARTRIDGE_piggyback.filename + strlen(CARTRIDGE_piggyback.filename) - 1;
-				while (ptr > CARTRIDGE_piggyback.filename) {
-					if (*ptr == '/') {
-						ptr++;
-						break;
-						}
-					ptr--;
-					}
-				[cartImageSecondNameField setStringValue:[NSString stringWithCString:ptr encoding:NSUTF8StringEncoding]];
-				[cartImageSecondInsertButton setTitle:@"Eject 2"];
-				[cartImageSecondInsertButton setEnabled:YES];
-				[cartImageSecondInsertButton setTransparent:NO];
-				}
-			}
-		else
-			{
-			[cartImageSecondNameField setStringValue:@""];
-			[cartImageSecondInsertButton setTitle:@"Insert 2"];
-			[cartImageSecondInsertButton setEnabled:NO];
-			[cartImageSecondInsertButton setTransparent:YES];
-			}
-
-		if (CASSETTE_status == CASSETTE_STATUS_NONE) {
+    if (CASSETTE_status == CASSETTE_STATUS_NONE) {
 			[cassImageNameField setStringValue:@"Empty"];
 			[cassImageInsertButton setTitle:@"Insert"];
             [cassImageRecordButton setEnabled:NO];
@@ -2496,7 +2791,10 @@ NSImage *disketteImage;
             [self basicInsert:self];
             break;
         case Atari800_MACHINE_XLXE:
-            [[ControlManager sharedInstance] disableBasic:sender];
+            if (Atari800_builtin_basic)
+                [[ControlManager sharedInstance] disableBasic:sender];
+            else
+                [self basicInsert:self];
             break;
     }
 }
@@ -2535,19 +2833,43 @@ NSImage *disketteImage;
                 [disBasicButton setTitle:@"Load Basic"];
                 [disBasicButton setState:NSOffState];
             }
+            [insertSIDE2Item setTarget:nil];
             break;
         case Atari800_MACHINE_XLXE:
-            [insertBasicItem setTarget:self];
-            [disBasicButton setEnabled:YES];
-            if (onoff) {
-                [disBasicButton setTitle:@"Disable Basic"];
-                [disBasicButton setState:NSOnState];
+            if (ULTIMATE_enabled) {
+               [disBasicButton setEnabled:NO];
+               [disBasicButton setTitle:@""];
+               [disBasicButton setState:NSOffState];
+               [insertBasicItem setTarget:nil];
+            } else {
+                if (Atari800_builtin_basic) {
+                    [insertBasicItem setTarget:self];
+                    [disBasicButton setEnabled:YES];
+                    if (onoff) {
+                        [disBasicButton setTitle:@"Disable Basic"];
+                        [disBasicButton setState:NSOnState];
+                        }
+                    else {
+                        [disBasicButton setTitle:@"Disable Basic"];
+                        [disBasicButton setState:NSOffState];
+                        }
+                    [insertSIDE2Item setTarget:self];
+                } else {
+                    if (CARTRIDGE_main.type != CARTRIDGE_NONE &&
+                        (strcmp(CARTRIDGE_main.filename, "BASIC") == 0)) {
+                        [disBasicButton setEnabled:NO];
+                        [disBasicButton setTitle:@""];
+                        [disBasicButton setState:NSOffState];
+                        [insertBasicItem setTarget:nil];
+                    } else {
+                        [insertBasicItem setTarget:self];
+                        [disBasicButton setEnabled:YES];
+                        [disBasicButton setTitle:@"Load Basic"];
+                        [disBasicButton setState:NSOffState];
+                    }
+                    [insertSIDE2Item setTarget:nil];
                 }
-            else {
-                [disBasicButton setTitle:@"Disable Basic"];
-                [disBasicButton setState:NSOffState];
-                }
-            [insertBasicItem setTarget:nil];
+            }
             break;
         case Atari800_MACHINE_5200:
             [disBasicButton setEnabled:NO];
@@ -2568,7 +2890,11 @@ NSImage *disketteImage;
 
 - (IBAction)machineTypeChange:(id)sender
 {
-	requestMachineTypeChange = [sender indexOfSelectedItem] + 1;
+    int index = [sender indexOfSelectedItem];
+    if (index > 13)
+        requestMachineTypeChange = index + 6;
+    else
+        requestMachineTypeChange = index + 1;
 }
 
 - (IBAction)scaleModeChange:(id)sender
@@ -2720,6 +3046,134 @@ NSImage *disketteImage;
 {
     request80ColChange = 1;
 }
+
+- (IBAction)side2SaveRom:(id)sender
+{
+    NSString *filename;
+    char cfilename[FILENAME_MAX+1];
+    NSString *oldRom = [NSString stringWithCString:side2_rom_filename encoding:NSASCIIStringEncoding];
+    
+    filename = [self saveFileInDirectory:[oldRom stringByDeletingLastPathComponent]:@"rom"];
+            
+    if (filename == nil) {
+        return;
+        }
+                
+    [filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
+    
+    if (SIDE2_Save_Rom(cfilename) < 0) {
+        [self displayError:@"Unable to Save SIDE2 ROM Image!"];
+    }
+}
+
+- (IBAction)ultimateSaveRom:(id)sender
+{
+    NSString *filename;
+    char cfilename[FILENAME_MAX+1];
+    NSString *oldRom = [NSString stringWithCString:ultimate_rom_filename encoding:NSASCIIStringEncoding];
+    
+    filename = [self saveFileInDirectory:[oldRom stringByDeletingLastPathComponent]:@"rom"];
+
+    if (filename == nil) {
+        return;
+        }
+                
+    [filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
+    
+    if (ULTIMATE_Save_Rom(cfilename) < 0) {
+        [self displayError:@"Unable to Save ULTIMATE ROM Image!"];
+    }
+}
+
+- (IBAction)side2ChangeRom:(id)sender
+{
+    NSString *filename;
+    char cfilename[FILENAME_MAX];
+    int loaded;
+    
+    filename = [self browseFileInDirectory:[NSString stringWithCString:atari_rom_dir encoding:NSUTF8StringEncoding]];
+    if (filename != nil) {
+        [filename getCString:cfilename maxLength:FILENAME_MAX  encoding:NSUTF8StringEncoding];
+        loaded = SIDE2_Change_Rom(cfilename, TRUE);
+        if (loaded) {
+            memset(Screen_atari, 0, (Screen_HEIGHT * Screen_WIDTH));
+            Atari_DisplayScreen((UBYTE *) Screen_atari);
+            Atari800_Coldstart();
+        }
+    }
+    [self updateInfo];
+}
+
+- (IBAction)ultimateChangeRom:(id)sender
+{
+    NSString *filename;
+    char cfilename[FILENAME_MAX];
+    int loaded;
+    
+    filename = [self browseFileInDirectory:[NSString stringWithCString:atari_rom_dir encoding:NSUTF8StringEncoding]];
+    if (filename != nil) {
+        [filename getCString:cfilename maxLength:FILENAME_MAX  encoding:NSUTF8StringEncoding];
+        loaded = ULTIMATE_Change_Rom(cfilename, TRUE);
+        if (loaded) {
+            memset(Screen_atari, 0, (Screen_HEIGHT * Screen_WIDTH));
+            Atari_DisplayScreen((UBYTE *) Screen_atari);
+            Atari800_Coldstart();
+        }
+    }
+    [self updateInfo];
+}
+
+- (IBAction)side2AttachCF:(id)sender
+{
+    NSString *filename;
+    
+    filename = [self browseFileInDirectory:[NSString stringWithCString:atari_disk_dirs[0] encoding:NSUTF8StringEncoding]];
+    [self side2AttachCFFile:filename];
+}
+
+- (IBAction)side2AttachCFFile:(NSString *)filename
+{
+    int diskMounted;
+    char cfilename[FILENAME_MAX];
+    
+    if (filename != nil) {
+        [filename getCString:cfilename maxLength:FILENAME_MAX  encoding:NSUTF8StringEncoding];
+        strcpy(side2_compact_flash_filename, cfilename);
+        if (SIDE2_enabled) {
+            diskMounted = SIDE2_Add_Block_Device(cfilename);
+            if (!diskMounted)
+                [self displayError:@"Unable to Mount Disk Image!"];
+        }
+    }
+    [self updateInfo];
+}
+
+- (IBAction)side2RemoveCF:(id)sender
+{
+    SIDE2_Remove_Block_Device();
+    [self updateInfo];
+}
+
+- (IBAction)side2SlideSwitch:(id)sender
+{
+    int changeToValue;
+    if ([sender tag] == 2) {
+        changeToValue = !SIDE2_SDX_Mode_Switch;
+    } else {
+        changeToValue = [sender tag];
+    }
+    SIDE2_SDX_Switch_Change(changeToValue);
+    memset(Screen_atari, 0, (Screen_HEIGHT * Screen_WIDTH));
+    Atari_DisplayScreen((UBYTE *) Screen_atari);
+    Atari800_Coldstart();
+    [self updateInfo];
+}
+
+- (IBAction)side2Button:(id)sender
+{
+    SIDE2_Bank_Reset_Button_Change();
+}
+
 
 /*------------------------------------------------------------------------------
 *  convertXFDtoATR - This method converts an XFD disk image to an ATR disk

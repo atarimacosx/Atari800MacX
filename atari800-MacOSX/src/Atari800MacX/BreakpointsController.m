@@ -358,7 +358,7 @@ static BreakpointsController *sharedInstance = nil;
 				   &MONITOR_breakpoint_table[from], 
 				   sizeof(MONITOR_breakpoint_cond));
 		}
-		MONITOR_breakpoint_table_size += numToMove;
+		MONITOR_breakpoint_table_size += distToMove;
 	}
 	else if (newCount < oldCount) {
 		int from;

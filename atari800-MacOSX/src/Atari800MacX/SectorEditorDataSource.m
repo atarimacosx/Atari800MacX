@@ -33,11 +33,11 @@
       objectValueForTableColumn:(NSTableColumn *)aTableColumn
 	  row:(int) rowIndex
 	{
-	char cellNum[3];
+	char cellNum[4];
 	NSString *rowStr;
 
 	if ([[aTableColumn identifier] isEqual:@"RowHeader"]) {
-		sprintf(cellNum,"%02X",rowIndex*16);
+		sprintf(cellNum,"%03X",rowIndex*16);
 		rowStr = [NSString stringWithCString:cellNum encoding:NSASCIIStringEncoding];
 		return(rowStr);
 		}

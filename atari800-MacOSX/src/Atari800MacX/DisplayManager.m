@@ -408,7 +408,6 @@ static DisplayManager *sharedInstance = nil;
 *-----------------------------------------------------------------------------*/
 - (IBAction)displayFps:(id)sender
 {
-    [self setFpsMenu:(1-Screen_show_atari_speed)];
     requestFpsChange = 1;
 }
 

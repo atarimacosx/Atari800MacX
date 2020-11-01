@@ -153,6 +153,7 @@ int SYSROM_Initialise(int *argc, char *argv[]);
 
 #ifdef ATARI800MACX
 extern int SYSROM_FindType(int defaultType, char const *filename, char *romTypeName);
+extern int SYSROM_FindImageType(const unsigned char *image);
 #endif
 
 #endif /* SYSROM_H_ */

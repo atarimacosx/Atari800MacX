@@ -39,6 +39,9 @@
 #include "pbi.h"
 #include "pia.h"
 #include "pokey.h"
+#ifdef ULTIMATE_1MB
+#include "ultimate1mb.h"
+#endif
 #include "util.h"
 #ifndef BASIC
 #include "statesav.h"
@@ -102,6 +105,8 @@ static UBYTE antic_bank_under_selftest[0x800];
 
 int MEMORY_have_basic = FALSE; /* Atari BASIC image has been successfully read (Atari 800 only) */
 
+static int pbi_overlay = FALSE;
+
 /* Axlon and Mosaic RAM expansions for Atari 400/800 only */
 static void MosaicPutByte(UWORD addr, UBYTE byte);
 static UBYTE MosaicGetByte(UWORD addr, int no_side_effects);
@@ -156,7 +161,7 @@ static void alloc_mosaic_memory(void){
 	}
 }
 
-static void AllocXEMemory(void)
+void MEMORY_AllocXEMemory(void)
 {
 	if (MEMORY_ram_size > 64) {
 		/* don't count 64 KB of base memory */
@@ -333,13 +338,12 @@ void MEMORY_InitialiseMachine(void)
 		}
 		break;
 	}
-	AllocXEMemory();
+	MEMORY_AllocXEMemory();
 	alloc_axlon_memory();
 	alloc_mosaic_memory();
 	axlon_curbank = 0;
 	mosaic_curbank = 0x3f;
 	AllocMapRAM();
-	Atari800_Coldstart();
 }
 
 #ifndef BASIC
@@ -644,7 +648,7 @@ void MEMORY_StateRead(UBYTE SaveVerbose, UBYTE StateVersion)
 		}
 	}
 	ANTIC_xe_ptr = NULL;
-	AllocXEMemory();
+	MEMORY_AllocXEMemory();
 	if (MEMORY_ram_size > 64) {
 		StateSav_ReadUBYTE(&atarixe_memory[0], atarixe_memory_size);
 		/* a hack that makes state files compatible with previous versions:
@@ -721,13 +725,12 @@ static UBYTE const * builtin_cart(UBYTE portb)
 	   by setting bit 6 of PORTB, but it's disabled when using 320K and larger
 	   XE memory expansions, where bit 6 is used for selecting extended memory
 	   bank number. */
-#ifndef ATARI800MACX
 	if (Atari800_builtin_game
 	    && (portb & 0x40) == 0
 	    && ((portb & 0x10) != 0 || MEMORY_ram_size < 320))
 		return MEMORY_xegame;
-#endif
-	return NULL;
+
+    return NULL;
 }
 
 /* Note: this function is only for XL/XE! */
@@ -818,16 +821,28 @@ void MEMORY_HandlePORTB(UBYTE byte, UBYTE oldval)
 				MEMORY_SetROM(0xd800, 0xffff);
 			}
 			memcpy(MEMORY_mem + 0xc000, MEMORY_os, 0x1000);
-			memcpy(MEMORY_mem + 0xd800, MEMORY_os + 0x1800, 0x2800);
+            if (pbi_overlay) {
+                memcpy(MEMORY_mem + 0xe000, MEMORY_os + 0x1800, 0x2000);
+            } else {
+                memcpy(MEMORY_mem + 0xd800, MEMORY_os + 0x1800, 0x2800);
+            }
 			ESC_PatchOS();
 		}
 		else {
 			/* Disable OS ROM */
 			if (MEMORY_ram_size > 48) {
 				memcpy(MEMORY_mem + 0xc000, under_atarixl_os, 0x1000);
-				memcpy(MEMORY_mem + 0xd800, under_atarixl_os + 0x1800, 0x2800);
+                if (pbi_overlay) {
+                    memcpy(MEMORY_mem + 0xe000, under_atarixl_os + 0x2000, 0x2000);
+                } else {
+                    memcpy(MEMORY_mem + 0xd800, under_atarixl_os + 0x1800, 0x2800);
+                }
 				MEMORY_SetRAM(0xc000, 0xcfff);
-				MEMORY_SetRAM(0xd800, 0xffff);
+                if (pbi_overlay) {
+                    MEMORY_SetRAM(0xe000, 0xffff);
+                } else {
+                    MEMORY_SetRAM(0xd800, 0xffff);
+                }
 			} else {
 				MEMORY_dFillMem(0xc000, 0xff, 0x1000);
 				MEMORY_dFillMem(0xd800, 0xff, 0x2800);
@@ -915,7 +930,25 @@ void MEMORY_HandlePORTB(UBYTE byte, UBYTE oldval)
 	}
 }
 
-/* Mosaic banking scheme: writing to 0xffc0+<n> selects ram bank <n>, if 
+void MEMORY_StartPBIOverlay(void)
+{
+    if (!((PIA_PORTB | PIA_PORTB_mask) & 0x01)) {
+        memcpy(under_atarixl_os + 0x1800, MEMORY_mem + 0xd800, 0x800);
+        MEMORY_SetROM(0xd800, 0xdfff);
+    }
+    pbi_overlay = TRUE;
+}
+
+void MEMORY_StopPBIOverlay(void)
+{
+    if (!((PIA_PORTB | PIA_PORTB_mask) & 0x01)) {
+        MEMORY_SetRAM(0xd800, 0xdfff);
+        memcpy(MEMORY_mem + 0xd800, under_atarixl_os + 0x1800, 0x800);
+    }
+    pbi_overlay = FALSE;
+}
+
+/* Mosaic banking scheme: writing to 0xffc0+<n> selects ram bank <n>, if
  * that is past the last available bank, selects rom.  Banks are 4k, 
  * located at 0xc000-0xcfff.  Tested: Rambrandt (drawing program), Topdos1.5.
  * Reverse engineered from software that uses it.  May be incorrect in some
@@ -1115,7 +1148,10 @@ UBYTE MEMORY_HwGetByte(UWORD addr, int no_side_effects)
 		byte = POKEY_GetByte(addr, no_side_effects);
 		break;
 	case 0xd300:				/* PIA */
-		byte = PIA_GetByte(addr, no_side_effects);
+        if (ULTIMATE_enabled)
+            byte = ULTIMATE_D3GetByte(addr, no_side_effects);
+        else
+            byte = PIA_GetByte(addr, no_side_effects);
 		break;
 	case 0xd400:				/* ANTIC */
 		byte = ANTIC_GetByte(addr, no_side_effects);
@@ -1192,7 +1228,10 @@ void MEMORY_HwPutByte(UWORD addr, UBYTE byte)
 		POKEY_PutByte(addr, byte);
 		break;
 	case 0xd300:				/* PIA */
-		PIA_PutByte(addr, byte);
+        if (ULTIMATE_enabled)
+            ULTIMATE_D3PutByte(addr, byte);
+        else
+            PIA_PutByte(addr, byte);
 		break;
 	case 0xd400:				/* ANTIC */
 		ANTIC_PutByte(addr, byte);
@@ -1225,4 +1264,40 @@ void MEMORY_HwPutByte(UWORD addr, UBYTE byte)
 		break;
 	}
 }
+
+UBYTE DefaultFlashGetByte(UWORD addr)
+{
+    return MEMORY_mem[addr];
+}
+
+void DefaultFlashPutByte(UWORD addr, UBYTE byte)
+{
+}
+
+UBYTE (*FlashGetPtr)(UWORD) = &DefaultFlashGetByte;
+void (*FlashPutPtr)(UWORD, UBYTE) = &DefaultFlashPutByte;
+
+void MEMORY_SetDefaultFlashRoutines(void)
+{
+    FlashGetPtr = &DefaultFlashGetByte;
+    FlashPutPtr = &DefaultFlashPutByte;
+}
+
+void MEMORY_SetFlashRoutines(UBYTE (*get)(UWORD), void (*put)(UWORD, UBYTE))
+{
+    FlashGetPtr = get;
+    FlashPutPtr = put;
+}
+
+UBYTE MEMORY_FlashGetByte(UWORD addr)
+{
+    return (*FlashGetPtr)(addr);
+}
+
+/* Stores a byte at the specified programmable flash address  */
+void MEMORY_FlashPutByte(UWORD addr, UBYTE byte)
+{
+    (*FlashPutPtr)(addr, byte);
+}
+
 #endif /* PAGED_MEM */

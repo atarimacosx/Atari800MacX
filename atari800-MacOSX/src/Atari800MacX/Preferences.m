@@ -68,6 +68,8 @@ static char workingDirectory[FILENAME_MAX], osromsDir[FILENAME_MAX], paletteDir[
 static char imageDirStr[FILENAME_MAX],printDirStr[FILENAME_MAX];
 static char hardDiskDir1Str[FILENAME_MAX], hardDiskDir2Str[FILENAME_MAX], hardDiskDir3Str[FILENAME_MAX];
 static char hardDiskDir4Str[FILENAME_MAX], osBRomFileStr[FILENAME_MAX];
+static char xegsRomFileStr[FILENAME_MAX], xegsGameRomFileStr[FILENAME_MAX];
+static char a1200XLRomFileStr[FILENAME_MAX];
 static char xlRomFileStr[FILENAME_MAX], basicRomFileStr[FILENAME_MAX], a5200RomFileStr[FILENAME_MAX];
 static char diskImageDirStr[FILENAME_MAX],diskSetDirStr[FILENAME_MAX], cartImageDirStr[FILENAME_MAX], cassImageDirStr[FILENAME_MAX];
 static char exeFileDirStr[FILENAME_MAX], savedStateDirStr[FILENAME_MAX], configDirStr[FILENAME_MAX];
@@ -80,7 +82,9 @@ static char paletteStr[FILENAME_MAX];
  menu to the type variables and visa versa */
 #define NUM_ORIG_TYPES	14
 #define NUM_V4_TYPES	5
-#define NUM_TOTAL_TYPES NUM_ORIG_TYPES+NUM_V4_TYPES
+#define NUM_V5_4_TYPES  11
+#define NUM_TOTAL_TYPES (NUM_ORIG_TYPES+NUM_V4_TYPES)
+#define NUM_NEW_TOTAL_TYPES (NUM_ORIG_TYPES+NUM_V4_TYPES+NUM_V5_4_TYPES)
 
 static int types[NUM_TOTAL_TYPES] =
 { 3, 4, 5, 0, 0, 6, 7, 8, 0, 9,10,11,12,13};
@@ -186,8 +190,8 @@ void PreferencesSaveDefaults(void) {
     [[Preferences sharedInstance] saveDefaults];
 }
 
-int PreferencesTypeFromIndex(int index, int *ver4type) {
-	return [[Preferences sharedInstance] typeFromIndex:index :ver4type];
+int PreferencesTypeFromIndex(int index, int *ver4type, int *ver5type) {
+    return [[Preferences sharedInstance] typeFromIndex:index :ver4type: ver5type];
 }
 
 void PreferencesSaveConfiguration() {
@@ -233,6 +237,12 @@ static NSDictionary *defaultValues() {
     strcat(hardDiskDir4Str, "/HardDrive4");
     strcpy(osromsDir, workingDirectory);
     strcat(osromsDir, "/OSRoms");
+    strcpy(xegsRomFileStr, workingDirectory);
+    strcat(xegsRomFileStr, "/OSRoms/xegs.rom");
+    strcpy(xegsGameRomFileStr, workingDirectory);
+    strcat(xegsGameRomFileStr, "/OSRoms/xegsGame.rom");
+    strcpy(a1200XLRomFileStr, workingDirectory);
+    strcat(a1200XLRomFileStr, "/OSRoms/a1200xl.rom");
     strcpy(osBRomFileStr, workingDirectory);
     strcat(osBRomFileStr, "/OSRoms/atariosb.rom");
     strcpy(xlRomFileStr, workingDirectory);
@@ -281,6 +291,9 @@ static NSDictionary *defaultValues() {
                 [NSNumber numberWithBool:YES], LedSector,
                 [NSNumber numberWithBool:YES], LedStatusMedia,
                 [NSNumber numberWithBool:YES], LedSectorMedia,
+                [NSNumber numberWithBool:YES], LedHDSector,
+                [NSNumber numberWithBool:YES], LedFKeys,
+                [NSNumber numberWithBool:NO], LedCapsLock,
                 [NSNumber numberWithBool:NO], AF80Enabled,
                 [NSNumber numberWithBool:NO], Bit3Enabled,
                 [NSNumber numberWithBool:NO], XEP80Enabled,
@@ -289,10 +302,14 @@ static NSDictionary *defaultValues() {
                 [NSNumber numberWithBool:NO], XEP80,
                 [NSNumber numberWithInt:15], XEP80OnColor,
                 [NSNumber numberWithInt:0], XEP80OffColor,
-                [NSNumber numberWithInt:4], AtariType, 
-                [NSNumber numberWithInt:-1], AtariTypeVer4, 
-                [NSNumber numberWithInt:7], AtariSwitchType, 
-                [NSNumber numberWithInt:-1], AtariSwitchTypeVer4, 
+                [NSNumber numberWithBool:YES], XEGSKeyboard,
+                [NSNumber numberWithBool:NO], A1200XLJumper,
+                [NSNumber numberWithInt:4], AtariType,
+                [NSNumber numberWithInt:-1], AtariTypeVer4,
+                [NSNumber numberWithInt:-1], AtariTypeVer5,
+                [NSNumber numberWithInt:7], AtariSwitchType,
+                [NSNumber numberWithInt:-1], AtariSwitchTypeVer4,
+                [NSNumber numberWithInt:-1], AtariSwitchTypeVer5,
                 [NSNumber numberWithInt:7],AxlonBankMask,
                 [NSNumber numberWithInt:3],MosaicMaxBank,
                 [NSNumber numberWithBool:NO],MioEnabled,
@@ -302,9 +319,18 @@ static NSDictionary *defaultValues() {
                 @"",Bit3RomFile,
                 @"",Bit3CharsetFile,
                 @"",MioRomFile,
+                @"",Ultimate1MBRomFile,
+                @"",Side2RomFile,
+                @"",Side2CFFile,
+                [NSNumber numberWithBool:YES],
+                    Side2SDXMode,
+                [NSNumber numberWithInt:0],
+                    Side2UltimateFlashType,
                 @"",BlackBoxRomFile,
                 @"",BlackBoxScsiDiskFile,
                 @"",MioScsiDiskFile,
+                [NSNumber numberWithBool:NO], UseAltiraXEGSRom,
+                [NSNumber numberWithBool:NO], UseAltira1200XLRom,
                 [NSNumber numberWithBool:NO], UseAltiraOSBRom,
                 [NSNumber numberWithBool:NO], UseAltiraXLRom,
                 [NSNumber numberWithBool:NO], UseAltira5200Rom,
@@ -384,6 +410,9 @@ static NSDictionary *defaultValues() {
                 [NSString stringWithCString:hardDiskDir4Str encoding:NSUTF8StringEncoding], HardDiskDir4,
                 [NSNumber numberWithBool:YES], HardDrivesReadOnly, 
                 @"H1:>DOS;>DOS",HPath,
+                [NSString stringWithCString:xegsRomFileStr encoding:NSUTF8StringEncoding], XEGSRomFile,
+                [NSString stringWithCString:xegsGameRomFileStr encoding:NSUTF8StringEncoding], XEGSGameRomFile,
+                [NSString stringWithCString:a1200XLRomFileStr encoding:NSUTF8StringEncoding], A1200XLRomFile,
                 [NSString stringWithCString:osBRomFileStr encoding:NSUTF8StringEncoding], OsBRomFile,
                 [NSString stringWithCString:xlRomFileStr encoding:NSUTF8StringEncoding], XlRomFile,
                 [NSString stringWithCString:basicRomFileStr encoding:NSUTF8StringEncoding], BasicRomFile,
@@ -811,13 +840,18 @@ static Preferences *sharedInstance = nil;
     [fixAspectFullscreenButton setState:[[displayedValues objectForKey:FixAspectFullscreen] boolValue] ? NSOnState : NSOffState];
     [ledStatusButton setState:[[displayedValues objectForKey:LedStatus] boolValue] ? NSOnState : NSOffState];
     [ledSectorButton setState:[[displayedValues objectForKey:LedSector] boolValue] ? NSOnState : NSOffState];
+    [ledHDSectorButton setState:[[displayedValues objectForKey:LedHDSector] boolValue] ? NSOnState : NSOffState];
+    [ledFKeyButton setState:[[displayedValues objectForKey:LedFKeys] boolValue] ? NSOnState : NSOffState];
+    [ledCapsLockButton setState:[[displayedValues objectForKey:LedCapsLock] boolValue] ? NSOnState : NSOffState];
     [ledStatusMediaButton setState:[[displayedValues objectForKey:LedStatusMedia] boolValue] ? NSOnState : NSOffState];
     [ledSectorMediaButton setState:[[displayedValues objectForKey:LedSectorMedia] boolValue] ? NSOnState : NSOffState];
 
     [atariTypePulldown  selectItemAtIndex:[self indexFromType:[[displayedValues objectForKey:AtariType] intValue] :
-										   [[displayedValues objectForKey:AtariTypeVer4] intValue]]];
+                                           [[displayedValues objectForKey:AtariTypeVer4] intValue] : [[displayedValues objectForKey:AtariTypeVer5] intValue]]];
     [atariSwitchTypePulldown  selectItemAtIndex:[self indexFromType:[[displayedValues objectForKey:AtariSwitchType] intValue] :
-										   [[displayedValues objectForKey:AtariSwitchTypeVer4] intValue]]];
+                                                 [[displayedValues objectForKey:AtariSwitchTypeVer4] intValue] : [[displayedValues objectForKey:AtariSwitchTypeVer5] intValue]]];
+    [atariSwitchTypePulldown  selectItemAtIndex:[self indexFromType:[[displayedValues objectForKey:AtariSwitchType] intValue] :
+                                                 [[displayedValues objectForKey:AtariSwitchTypeVer4] intValue] : [[displayedValues objectForKey:AtariSwitchTypeVer5] intValue]]];
     [disableBasicButton setState:[[displayedValues objectForKey:DisableBasic] boolValue] ? NSOnState : NSOffState];
     [disableAllBasicButton setState:[[displayedValues objectForKey:DisableAllBasic] boolValue] ? NSOnState : NSOffState];
 	[emulationSpeedSlider setFloatValue:[[displayedValues objectForKey:EmulationSpeed] floatValue]];
@@ -891,6 +925,8 @@ static Preferences *sharedInstance = nil;
     [diskDriveSoundButton setState:[[displayedValues objectForKey:DiskDriveSound] boolValue] ? NSOnState : NSOffState];
     [enableMultijoyButton setState:[[displayedValues objectForKey:EnableMultijoy] boolValue] ? NSOnState : NSOffState];
     [ignoreHeaderWriteprotectButton setState:[[displayedValues objectForKey:IgnoreHeaderWriteprotect] boolValue] ? NSOnState : NSOffState];
+    [xegsKeyboadButton setState:[[displayedValues objectForKey:XEGSKeyboard] boolValue] ? NSOnState : NSOffState];
+    [a1200ForceSelfTestButton setState:[[displayedValues objectForKey:A1200XLJumper] boolValue] ? NSOnState : NSOffState];
 	foundMatch = FALSE;
 	for (i=0;axlonBankMasks[i] != 0;i++) {
 		if (axlonBankMasks[i] == [[displayedValues objectForKey:AxlonBankMask] intValue]) {
@@ -921,6 +957,22 @@ static Preferences *sharedInstance = nil;
     [bit3CharsetRomFileField setStringValue:[displayedValues objectForKey:Bit3CharsetFile]];
     [blackBoxRomFileField setStringValue:[displayedValues objectForKey:BlackBoxRomFile]];
     [mioRomFileField setStringValue:[displayedValues objectForKey:MioRomFile]];
+    [ultimate1MBFlashFileField setStringValue:[displayedValues objectForKey:Ultimate1MBRomFile]];
+    [side2FlashFileField setStringValue:[displayedValues objectForKey:Side2RomFile]];
+    [side2CFFileField setStringValue:[displayedValues objectForKey:Side2CFFile]];
+    switch ([[displayedValues objectForKey:Side2UltimateFlashType] intValue]) {
+            case 0:
+            default:
+                [side2UltimateFlashTypePulldown selectItemAtIndex:0];
+                break;
+            case 1:
+                [side2UltimateFlashTypePulldown selectItemAtIndex:2];
+            break;
+        }
+    if ([[displayedValues objectForKey:Side2SDXMode] boolValue])
+        [side2SDXModePulldown selectItemAtIndex:0];
+    else
+        [side2SDXModePulldown selectItemAtIndex:1];
     [blackBoxScsiDiskFileField setStringValue:[displayedValues objectForKey:BlackBoxScsiDiskFile]];
     [mioScsiDiskFileField setStringValue:[displayedValues objectForKey:MioScsiDiskFile]];
 	
@@ -933,10 +985,15 @@ static Preferences *sharedInstance = nil;
     [hardDrivesReadOnlyButton setState:[[displayedValues objectForKey:HardDrivesReadOnly] boolValue] ? NSOnState : NSOffState];
     [hPathField setStringValue:[displayedValues objectForKey:HPath]];
 
+    [xegsRomFileField setStringValue:[displayedValues objectForKey:XEGSRomFile]];
+    [xegsGameRomFileField setStringValue:[displayedValues objectForKey:XEGSGameRomFile]];
+    [a1200xlRomFileField setStringValue:[displayedValues objectForKey:A1200XLRomFile]];
     [osBRomFileField setStringValue:[displayedValues objectForKey:OsBRomFile]];
     [xlRomFileField setStringValue:[displayedValues objectForKey:XlRomFile]];
     [basicRomFileField setStringValue:[displayedValues objectForKey:BasicRomFile]];
     [a5200RomFileField setStringValue:[displayedValues objectForKey:A5200RomFile]];
+    [useAlitrraXEGSRomButton setState:[[displayedValues objectForKey:UseAltiraXEGSRom] boolValue] ? NSOnState : NSOffState];
+    [useAlitrra1200XLRomButton setState:[[displayedValues objectForKey:UseAltira1200XLRom] boolValue] ? NSOnState : NSOffState];
     [useAlitrraOSBRomButton setState:[[displayedValues objectForKey:UseAltiraOSBRom] boolValue] ? NSOnState : NSOffState];
     [useAlitrraXLRomButton setState:[[displayedValues objectForKey:UseAltiraXLRom] boolValue] ? NSOnState : NSOffState];
     [useAlitrra5200RomButton setState:[[displayedValues objectForKey:UseAltira5200Rom] boolValue] ? NSOnState : NSOffState];
@@ -1517,7 +1574,7 @@ static Preferences *sharedInstance = nil;
     int mouseCount = 0;
     int firstMouse = 0;
     float penRed, penBlue, penGreen;
-    int type, typever4;
+    int type, typever4, typever5;
     
     static NSNumber *yes = nil;
     static NSNumber *no = nil;
@@ -1683,6 +1740,18 @@ static Preferences *sharedInstance = nil;
         [displayedValues setObject:yes forKey:LedSector];
     else
         [displayedValues setObject:no forKey:LedSector];
+    if ([ledHDSectorButton state] == NSOnState)
+        [displayedValues setObject:yes forKey:LedHDSector];
+    else
+        [displayedValues setObject:no forKey:LedHDSector];
+    if ([ledFKeyButton state] == NSOnState)
+        [displayedValues setObject:yes forKey:LedFKeys];
+    else
+        [displayedValues setObject:no forKey:LedFKeys];
+    if ([ledCapsLockButton state] == NSOnState)
+        [displayedValues setObject:yes forKey:LedCapsLock];
+    else
+        [displayedValues setObject:no forKey:LedCapsLock];
     if ([ledStatusButton state] == NSOnState) {
         [displayedValues setObject:yes forKey:LedStatus];
 		[ledSectorButton setEnabled:YES];
@@ -1692,6 +1761,18 @@ static Preferences *sharedInstance = nil;
 		[ledSectorButton setState:NSOffState];
 		[ledSectorButton setEnabled:NO];
 		}
+    if ([ledHDSectorButton state] == NSOnState)
+        [displayedValues setObject:yes forKey:LedHDSector];
+    else
+        [displayedValues setObject:no forKey:LedHDSector];
+    if ([ledFKeyButton state] == NSOnState)
+        [displayedValues setObject:yes forKey:LedFKeys];
+    else
+        [displayedValues setObject:no forKey:LedFKeys];
+    if ([ledCapsLockButton state] == NSOnState)
+        [displayedValues setObject:yes forKey:LedCapsLock];
+    else
+        [displayedValues setObject:no forKey:LedCapsLock];
     if ([ledSectorMediaButton state] == NSOnState)
         [displayedValues setObject:yes forKey:LedSectorMedia];
     else
@@ -1706,12 +1787,17 @@ static Preferences *sharedInstance = nil;
 		[ledSectorMediaButton setEnabled:NO];
 		}
  
-	type = [self typeFromIndex:[atariTypePulldown indexOfSelectedItem] :&typever4];
+    int atariIndex = [atariTypePulldown indexOfSelectedItem];
+    if (atariIndex > 13)
+        atariIndex += 5;
+    type = [self typeFromIndex:atariIndex:&typever4:&typever5];
 	[displayedValues setObject:[NSNumber numberWithInt:type] forKey:AtariType];
-	[displayedValues setObject:[NSNumber numberWithInt:typever4] forKey:AtariTypeVer4];
-	type = [self typeFromIndex:[atariSwitchTypePulldown indexOfSelectedItem] :&typever4];
+    [displayedValues setObject:[NSNumber numberWithInt:typever4] forKey:AtariTypeVer4];
+    [displayedValues setObject:[NSNumber numberWithInt:typever5] forKey:AtariTypeVer5];
+    type = [self typeFromIndex:[atariSwitchTypePulldown indexOfSelectedItem] :&typever4: &typever5];
 	[displayedValues setObject:[NSNumber numberWithInt:type] forKey:AtariSwitchType];
-	[displayedValues setObject:[NSNumber numberWithInt:typever4] forKey:AtariSwitchTypeVer4];
+    [displayedValues setObject:[NSNumber numberWithInt:typever4] forKey:AtariSwitchTypeVer4];
+    [displayedValues setObject:[NSNumber numberWithInt:typever4] forKey:AtariSwitchTypeVer5];
 
     if ([disableBasicButton state] == NSOnState)
         [displayedValues setObject:yes forKey:DisableBasic];
@@ -2135,7 +2221,15 @@ static Preferences *sharedInstance = nil;
         [displayedValues setObject:yes forKey:IgnoreHeaderWriteprotect];
     else
         [displayedValues setObject:no forKey:IgnoreHeaderWriteprotect];
-	
+    if ([xegsKeyboadButton state] == NSOnState)
+        [displayedValues setObject:yes forKey:XEGSKeyboard];
+    else
+        [displayedValues setObject:no forKey:XEGSKeyboard];
+    if ([a1200ForceSelfTestButton state] == NSOnState)
+        [displayedValues setObject:yes forKey:A1200XLJumper];
+    else
+        [displayedValues setObject:no forKey:A1200XLJumper];
+
 	[displayedValues setObject:[NSNumber numberWithInt:axlonBankMasks[[axlonMemSizePulldown indexOfSelectedItem]]] forKey:AxlonBankMask];
 	[displayedValues setObject:[NSNumber numberWithInt:mosaicBankMaxs[[mosaicMemSizePulldown indexOfSelectedItem]]] forKey:MosaicMaxBank];
 	switch([[pbiExpansionMatrix selectedCell] tag]) {
@@ -2159,7 +2253,28 @@ static Preferences *sharedInstance = nil;
     [displayedValues setObject:[bit3CharsetRomFileField stringValue] forKey:Bit3CharsetFile];
     [displayedValues setObject:[blackBoxRomFileField stringValue] forKey:BlackBoxRomFile];
     [displayedValues setObject:[mioRomFileField stringValue] forKey:MioRomFile];
-	[displayedValues setObject:[blackBoxScsiDiskFileField stringValue] forKey:BlackBoxScsiDiskFile];
+    [displayedValues setObject:[ultimate1MBFlashFileField stringValue] forKey:Ultimate1MBRomFile];
+    [displayedValues setObject:[side2FlashFileField stringValue] forKey:Side2RomFile];
+    [displayedValues setObject:[side2CFFileField stringValue] forKey:Side2CFFile];
+    switch([side2UltimateFlashTypePulldown indexOfSelectedItem]) {
+        case 0:
+        default:
+            [displayedValues setObject:zero forKey:Side2UltimateFlashType];
+            break;
+        case 1:
+            [displayedValues setObject:one forKey:Side2UltimateFlashType];
+            break;
+    }
+    switch([side2SDXModePulldown indexOfSelectedItem]) {
+        case 1:
+        default:
+            [displayedValues setObject:no forKey:Side2SDXMode];
+            break;
+        case 0:
+            [displayedValues setObject:yes forKey:Side2SDXMode];
+            break;
+    }
+    [displayedValues setObject:[blackBoxScsiDiskFileField stringValue] forKey:BlackBoxScsiDiskFile];
 	[displayedValues setObject:[mioScsiDiskFileField stringValue] forKey:MioScsiDiskFile];
 	 
 	[displayedValues setObject:[imageDirField stringValue] forKey:ImageDir];
@@ -2174,10 +2289,21 @@ static Preferences *sharedInstance = nil;
         [displayedValues setObject:no forKey:HardDrivesReadOnly];
     [displayedValues setObject:[hPathField stringValue] forKey:HPath];
 
+    [displayedValues setObject:[xegsRomFileField stringValue] forKey:XEGSRomFile];
+    [displayedValues setObject:[xegsGameRomFileField stringValue] forKey:XEGSGameRomFile];
+    [displayedValues setObject:[a1200xlRomFileField stringValue] forKey:A1200XLRomFile];
     [displayedValues setObject:[osBRomFileField stringValue] forKey:OsBRomFile];
     [displayedValues setObject:[xlRomFileField stringValue] forKey:XlRomFile];
     [displayedValues setObject:[basicRomFileField stringValue] forKey:BasicRomFile];
     [displayedValues setObject:[a5200RomFileField stringValue] forKey:A5200RomFile];
+    if ([useAlitrraXEGSRomButton state] == NSOnState)
+        [displayedValues setObject:yes forKey:UseAltiraXEGSRom];
+    else
+        [displayedValues setObject:no forKey:UseAltiraXEGSRom];
+    if ([useAlitrra1200XLRomButton state] == NSOnState)
+        [displayedValues setObject:yes forKey:UseAltira1200XLRom];
+    else
+        [displayedValues setObject:no forKey:UseAltira1200XLRom];
     if ([useAlitrraOSBRomButton state] == NSOnState)
         [displayedValues setObject:yes forKey:UseAltiraOSBRom];
     else
@@ -2965,7 +3091,7 @@ static Preferences *sharedInstance = nil;
     char romTypeName[40];
     int rom;
     
-    for (rom = 1; rom < 5; rom ++) {
+    for (rom = 1; rom < 8; rom ++) {
     switch( rom ) {
         case 1:
             romFilename = [curValues objectForKey:OsBRomFile];
@@ -2986,6 +3112,21 @@ static Preferences *sharedInstance = nil;
             romFilename = [curValues objectForKey:A5200RomFile];
             label = identify5200Label;
             romDefault = SYSROM_5200_CUSTOM;
+            break;
+        case 5:
+            romFilename = [curValues objectForKey:XEGSRomFile];
+            label = identifyXEGSLabel;
+            romDefault = SYSROM_XEGAME_CUSTOM;
+            break;
+        case 6:
+            romFilename = [curValues objectForKey:A1200XLRomFile];
+            label = identify1200XLLabel;
+            romDefault = SYSROM_XL_CUSTOM;
+            break;
+        case 7:
+            romFilename = [curValues objectForKey:XEGSGameRomFile];
+            label = identifyXEGSGameLabel;
+            romDefault = SYSROM_XEGAME_CUSTOM;
             break;
     }
     
@@ -3030,6 +3171,42 @@ static Preferences *sharedInstance = nil;
     [dir release];
     }
     
+- (void)browse1200XLRom:(id)sender {
+    NSString *filename, *dir;
+
+    dir = [[NSString alloc] initWithCString:osromsDir encoding:NSUTF8StringEncoding];
+    filename = [self browseFileInDirectory:dir];
+    if (filename != nil) {
+        [a1200xlRomFileField setStringValue:filename];
+        [self miscChanged:self];
+        }
+    [dir release];
+    }
+
+- (void)browseXEGSRom:(id)sender {
+    NSString *filename, *dir;
+
+    dir = [[NSString alloc] initWithCString:osromsDir encoding:NSUTF8StringEncoding];
+    filename = [self browseFileInDirectory:dir];
+    if (filename != nil) {
+        [xegsRomFileField setStringValue:filename];
+        [self miscChanged:self];
+        }
+    [dir release];
+    }
+
+- (void)browseXEGSGameRom:(id)sender {
+    NSString *filename, *dir;
+
+    dir = [[NSString alloc] initWithCString:osromsDir encoding:NSUTF8StringEncoding];
+    filename = [self browseFileInDirectory:dir];
+    if (filename != nil) {
+        [xegsGameRomFileField setStringValue:filename];
+        [self miscChanged:self];
+        }
+    [dir release];
+    }
+
 - (void)browseBasicRom:(id)sender {
     NSString *filename, *dir;
     
@@ -3062,7 +3239,43 @@ static Preferences *sharedInstance = nil;
     if (filename != nil) {
         [mioRomFileField setStringValue:filename];
         [self miscChanged:self];
-	}
+    }
+    [dir release];
+}
+
+- (void)browseUltimate1MBFlash:(id)sender {
+    NSString *filename, *dir;
+    
+    dir = [[NSString alloc] initWithCString:osromsDir encoding:NSASCIIStringEncoding];
+    filename = [self browseFileInDirectory:dir];
+    if (filename != nil) {
+        [ultimate1MBFlashFileField setStringValue:filename];
+        [self miscChanged:self];
+    }
+    [dir release];
+}
+
+- (void)browseSide2Flash:(id)sender {
+    NSString *filename, *dir;
+    
+    dir = [[NSString alloc] initWithCString:osromsDir encoding:NSUTF8StringEncoding];
+    filename = [self browseFileInDirectory:dir];
+    if (filename != nil) {
+        [side2FlashFileField setStringValue:filename];
+        [self miscChanged:self];
+    }
+    [dir release];
+}
+
+- (void)browseSide2CF:(id)sender {
+    NSString *filename, *dir;
+    
+    dir = [[NSString alloc] initWithCString:osromsDir encoding:NSASCIIStringEncoding];
+    filename = [self browseFileInDirectory:dir];
+    if (filename != nil) {
+        [side2CFFileField setStringValue:filename];
+        [self miscChanged:self];
+    }
     [dir release];
 }
 
@@ -3375,6 +3588,9 @@ static Preferences *sharedInstance = nil;
     int i,j;
     NSString *configString = NULL;
     NSString *buttonKey, *button5200Key;
+    NSString *ultimateFile, *side2File;
+    NSString *ultimatePathNoExt, *side2PathNoExt;
+    NSString *ultimateNvram, *side2Nvram;
     
     prefs = getPrefStorage();
     prefs->spriteCollisions = [[curValues objectForKey:SpriteCollisions] intValue];
@@ -3398,17 +3614,29 @@ static Preferences *sharedInstance = nil;
     prefs->onlyIntegralScaling = [[curValues objectForKey:OnlyIntegralScaling] intValue];
     prefs->fixAspectFullscreen = [[curValues objectForKey:FixAspectFullscreen] intValue];
     prefs->ledStatus = [[curValues objectForKey:LedStatus] intValue];
-    prefs->ledSector = [[curValues objectForKey:LedSector] intValue]; 
-    prefs->ledStatusMedia = [[curValues objectForKey:LedStatusMedia] intValue]; 
+    prefs->ledSector = [[curValues objectForKey:LedSector] intValue];
+    prefs->ledHDSector = [[curValues objectForKey:LedHDSector] intValue];
+    prefs->ledFKeys = [[curValues objectForKey:LedFKeys] intValue];
+    prefs->ledCapsLock = [[curValues objectForKey:LedCapsLock] intValue];
+    prefs->ledStatusMedia = [[curValues objectForKey:LedStatusMedia] intValue];
     prefs->ledSectorMedia = [[curValues objectForKey:LedSectorMedia] intValue];
-	if ([[curValues objectForKey:AtariTypeVer4] intValue] == -1)
-		prefs->atariType = [[curValues objectForKey:AtariType] intValue]; 
-	else
-		prefs->atariType = [[curValues objectForKey:AtariTypeVer4] intValue] + NUM_ORIG_TYPES; 
-	if ([[curValues objectForKey:AtariSwitchTypeVer4] intValue] == -1)
-		prefs->atariSwitchType = [[curValues objectForKey:AtariSwitchType] intValue]; 
-	else
-		prefs->atariSwitchType = [[curValues objectForKey:AtariSwitchTypeVer4] intValue] + NUM_ORIG_TYPES; 
+    if ([[curValues objectForKey:AtariTypeVer5] intValue] != -1)
+        prefs->atariType = [[curValues objectForKey:AtariTypeVer5] intValue] + NUM_TOTAL_TYPES;
+    else {
+        if ([[curValues objectForKey:AtariTypeVer4] intValue] == -1)
+            prefs->atariType = [[curValues objectForKey:AtariType] intValue];
+        else
+            prefs->atariType = [[curValues objectForKey:AtariTypeVer4] intValue] + NUM_ORIG_TYPES;
+    }
+
+    if ([[curValues objectForKey:AtariSwitchTypeVer5] intValue] != -1)
+        prefs->atariSwitchType = [[curValues objectForKey:AtariSwitchTypeVer5] intValue] + NUM_TOTAL_TYPES;
+    else {
+        if ([[curValues objectForKey:AtariSwitchTypeVer4] intValue] == -1)
+            prefs->atariSwitchType = [[curValues objectForKey:AtariSwitchType] intValue];
+        else
+            prefs->atariSwitchType = [[curValues objectForKey:AtariSwitchTypeVer4] intValue] + NUM_ORIG_TYPES;
+    }
     prefs->disableBasic = [[curValues objectForKey:DisableBasic] intValue]; 
     prefs->disableAllBasic = [[curValues objectForKey:DisableAllBasic] intValue]; 
     prefs->enableSioPatch = [[curValues objectForKey:EnableSioPatch] intValue]; 
@@ -3433,6 +3661,8 @@ static Preferences *sharedInstance = nil;
     prefs->xep80 = [[curValues objectForKey:XEP80] intValue];
     prefs->xep80_oncolor = [[curValues objectForKey:XEP80OnColor] intValue];
     prefs->xep80_offcolor = [[curValues objectForKey:XEP80OffColor] intValue];
+    prefs->a1200xlJumper = [[curValues objectForKey:A1200XLJumper] intValue];
+    prefs->xegsKeyboard = [[curValues objectForKey:XEGSKeyboard] intValue];
     prefs->enableStereo = [[curValues objectForKey:EnableStereo] intValue]; 
 #if 0 /* enableHifiSound is deprecated from 4.2.2 on */    	
     prefs->enableHifiSound = [[curValues objectForKey:EnableHifiSound] intValue]; 
@@ -3452,6 +3682,8 @@ static Preferences *sharedInstance = nil;
 	prefs->mosaicMaxBank =  [[curValues objectForKey:MosaicMaxBank] intValue];
 	prefs->blackBoxEnabled = [[curValues objectForKey:BlackBoxEnabled] intValue];
 	prefs->mioEnabled = [[curValues objectForKey:MioEnabled] intValue];
+    prefs->useAltirraXEGSRom = [[curValues objectForKey:UseAltiraXEGSRom] intValue];
+    prefs->useAltirra1200XLRom = [[curValues objectForKey:UseAltira1200XLRom] intValue];
     prefs->useAltirraOSBRom = [[curValues objectForKey:UseAltiraOSBRom] intValue];
     prefs->useAltirraXLRom = [[curValues objectForKey:UseAltiraXLRom] intValue];
     prefs->useAltirra5200Rom = [[curValues objectForKey:UseAltira5200Rom] intValue];
@@ -3461,7 +3693,20 @@ static Preferences *sharedInstance = nil;
     [[curValues objectForKey:Bit3CharsetFile] getCString:prefs->bit3CharsetFile maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
     [[curValues objectForKey:Bit3RomFile] getCString:prefs->bit3RomFile maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
     [[curValues objectForKey:BlackBoxRomFile] getCString:prefs->blackBoxRomFile maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
-	[[curValues objectForKey:MioRomFile] getCString:prefs->mioRomFile maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
+    [[curValues objectForKey:MioRomFile] getCString:prefs->mioRomFile maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
+    ultimateFile = [curValues objectForKey:Ultimate1MBRomFile];
+    ultimatePathNoExt = ultimateFile.stringByDeletingPathExtension;
+    ultimateNvram = [ultimatePathNoExt stringByAppendingString:@".nvram"];
+    [ultimateFile getCString:prefs->ultimate1MBFlashFileName maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
+    [ultimateNvram getCString:prefs->ultimate1MBNVRAMFileName maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
+    side2File = [curValues objectForKey:Side2RomFile];
+    side2PathNoExt = side2File.stringByDeletingPathExtension;
+    side2Nvram = [side2PathNoExt stringByAppendingString:@".nvram"];
+    [side2File getCString:prefs->side2FlashFileName maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
+    [side2Nvram getCString:prefs->side2NVRAMFileName maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
+    [[curValues objectForKey:Side2CFFile] getCString:prefs->side2CFFileName maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
+    prefs->side2UltimateFlashType = [[curValues objectForKey:Side2UltimateFlashType] intValue];
+    prefs->side2SDXMode = [[curValues objectForKey:Side2SDXMode] intValue];
 	[[curValues objectForKey:BlackBoxScsiDiskFile] getCString:prefs->blackBoxScsiDiskFile maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
 	[[curValues objectForKey:MioScsiDiskFile] getCString:prefs->mioScsiDiskFile maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
   [[curValues objectForKey:ImageDir] getCString:prefs->imageDir maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
@@ -3472,6 +3717,9 @@ static Preferences *sharedInstance = nil;
   [[curValues objectForKey:HardDiskDir4] getCString:prefs->hardDiskDir[3] maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
   prefs->hardDrivesReadOnly = [[curValues objectForKey:HardDrivesReadOnly] intValue];
   [[curValues objectForKey:HPath] getCString:prefs->hPath maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
+  [[curValues objectForKey:XEGSRomFile] getCString:prefs->xegsRomFile maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
+  [[curValues objectForKey:XEGSGameRomFile] getCString:prefs->xegsGameRomFile maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
+  [[curValues objectForKey:A1200XLRomFile] getCString:prefs->a1200XLRomFile maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
   [[curValues objectForKey:OsBRomFile] getCString:prefs->osBRomFile maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
   [[curValues objectForKey:XlRomFile] getCString:prefs->xlRomFile maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
   [[curValues objectForKey:BasicRomFile] getCString:prefs->basicRomFile maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
@@ -3689,6 +3937,8 @@ static Preferences *sharedInstance = nil;
     [displayedValues setObject:prefssave->ledSector ? yes : no forKey:LedSector];
     [displayedValues setObject:prefssave->speedLimit ? yes : no forKey:SpeedLimit];
     [displayedValues setObject:prefssave->enableSound ? yes : no forKey:EnableSound];
+    [displayedValues setObject:prefssave->a1200xlJumper ? yes : no forKey:A1200XLJumper];
+    [displayedValues setObject:prefssave->xegsKeyboard ? yes : no forKey:XEGSKeyboard];
     [displayedValues setObject:prefssave->xep80 ? yes : no forKey:XEP80];
     [displayedValues setObject:prefssave->xep80_enabled ? yes : no forKey:XEP80Enabled];
     [displayedValues setObject:prefssave->af80_enabled ? yes : no forKey:AF80Enabled];
@@ -3727,12 +3977,20 @@ static Preferences *sharedInstance = nil;
             [displayedValues setObject:two forKey:UseAtariCursorKeys];
             break;
 	}
-	if (prefssave->atariType < 14) {
+    //TBDMDG
+    if (prefssave->atariType > 18) {
+        [displayedValues setObject:zero forKey:AtariType];
+        [displayedValues setObject:[NSNumber numberWithInt:-1] forKey:AtariTypeVer4];
+        [displayedValues setObject:[NSNumber numberWithInt:(prefssave->atariType-19)] forKey:AtariTypeVer5];
+    }
+	else if (prefssave->atariType < 14) {
 		[displayedValues setObject:[NSNumber numberWithInt:prefssave->atariType] forKey:AtariType];
-		[displayedValues setObject:[NSNumber numberWithInt:-1] forKey:AtariTypeVer4];
+        [displayedValues setObject:[NSNumber numberWithInt:-1] forKey:AtariTypeVer4];
+        [displayedValues setObject:[NSNumber numberWithInt:-1] forKey:AtariTypeVer5];
 	} else {
 		[displayedValues setObject:zero forKey:AtariType];
-		[displayedValues setObject:[NSNumber numberWithInt:(prefssave->atariType-14)] forKey:AtariTypeVer4];
+        [displayedValues setObject:[NSNumber numberWithInt:(prefssave->atariType-14)] forKey:AtariTypeVer4];
+        [displayedValues setObject:[NSNumber numberWithInt:-1] forKey:AtariTypeVer5];
 	}
     switch(prefssave->atariType) {
         case 0:
@@ -3816,6 +4074,10 @@ static Preferences *sharedInstance = nil;
 
 	[displayedValues setObject:prefssave->blackBoxEnabled ? yes : no forKey:BlackBoxEnabled];
 	[displayedValues setObject:prefssave->mioEnabled ? yes : no forKey:MioEnabled];
+    [displayedValues setObject:prefssave->side2SDXMode ? yes : no forKey:Side2SDXMode];
+    [displayedValues setObject:[NSString stringWithCString:prefssave->side2CFFileName encoding:NSUTF8StringEncoding] forKey:Side2CFFile];
+    [displayedValues setObject:[NSString stringWithCString:prefssave->side2FlashFileName encoding:NSUTF8StringEncoding] forKey:Side2RomFile];
+    [displayedValues setObject:[NSString stringWithCString:prefssave->ultimate1MBFlashFileName encoding:NSUTF8StringEncoding] forKey:Ultimate1MBRomFile];
 	}
 
 - (void) saveCurrentMediaAction:(id)sender
@@ -4666,28 +4928,42 @@ static Preferences *sharedInstance = nil;
    These functions map the position of a machine type in a pulldown
    menu to the type variables and visa versa */
 
-- (int)indexFromType:(int) type:(int) ver4type
+- (int)indexFromType:(int) type:(int) ver4type: (int) ver5type
 	{
 	int compositeType;
-		
-	if (ver4type == -1)
-		compositeType = type;
-	else
-		compositeType = NUM_ORIG_TYPES + ver4type;
-	
-	if (compositeType >= NUM_TOTAL_TYPES)
-		return(0);
-	else
-		return(indicies[compositeType]);
-	}
+        
+    if (ver5type == -1) {
+        if (ver4type == -1)
+            compositeType = type;
+        else
+            compositeType = NUM_ORIG_TYPES + ver4type;
+        
+        if (compositeType >= NUM_TOTAL_TYPES)
+            return(0);
+        else
+            return(indicies[compositeType]);
+        }
+    else {
+        return ver5type + 14;
+        }
+    }
 
-- (int)typeFromIndex:(int) index:(int *)ver4type
+- (int)typeFromIndex:(int) index:(int *)ver4type:(int *)ver5type
 	{
-	if (index >= NUM_TOTAL_TYPES)
-		{
-		*ver4type = -1;
-		return(0);
-		}
+    //index += 3;
+    if (index >= NUM_NEW_TOTAL_TYPES)
+        {
+        *ver5type = -1;
+        *ver4type = -1;
+        return(0);
+        }
+    if (index >= NUM_TOTAL_TYPES)
+        {
+        *ver5type = index - NUM_TOTAL_TYPES;
+        *ver4type = -1;
+        return(0);
+        }
+    *ver5type = -1;
 	*ver4type = v4types[index];
 	return(types[index]);
 	}
@@ -4759,6 +5035,9 @@ static Preferences *sharedInstance = nil;
     getBoolDefault(FixAspectFullscreen);
     getBoolDefault(LedStatus);
     getBoolDefault(LedSector);
+    getBoolDefault(LedHDSector);
+    getBoolDefault(LedFKeys);
+    getBoolDefault(LedCapsLock);
     getBoolDefault(LedStatusMedia);
     getBoolDefault(LedSectorMedia);
     getBoolDefault(AF80Enabled);
@@ -4769,15 +5048,24 @@ static Preferences *sharedInstance = nil;
 	getBoolDefault(XEP80);
 	getIntDefault(XEP80OnColor);
 	getIntDefault(XEP80OffColor);
+    getIntDefault(A1200XLJumper);
+    getIntDefault(XEGSKeyboard);
     getIntDefault(AtariType);
     getIntDefault(AtariSwitchType);
     getIntDefault(AtariTypeVer4);
+    getIntDefault(AtariTypeVer5);
     getIntDefault(AtariSwitchTypeVer4);
+    getIntDefault(AtariSwitchTypeVer5);
 	getIntDefault(AxlonBankMask);
 	getIntDefault(MosaicMaxBank);
 	getBoolDefault(MioEnabled);
 	getBoolDefault(BlackBoxEnabled);
-	getStringDefault(MioRomFile);
+    getStringDefault(MioRomFile);
+    getStringDefault(Ultimate1MBRomFile);
+    getIntDefault(Side2UltimateFlashType);
+    getBoolDefault(Side2SDXMode);
+    getStringDefault(Side2RomFile);
+    getStringDefault(Side2CFFile);
     getStringDefault(AF80CharsetFile);
     getStringDefault(AF80RomFile);
     getStringDefault(Bit3CharsetFile);
@@ -4860,10 +5148,15 @@ static Preferences *sharedInstance = nil;
     getStringDefault(HardDiskDir4);
     getBoolDefault(HardDrivesReadOnly);
     getStringDefault(HPath);
+    getStringDefault(XEGSRomFile);
+    getStringDefault(XEGSGameRomFile);
+    getStringDefault(A1200XLRomFile);
     getStringDefault(OsBRomFile);
     getStringDefault(XlRomFile);
     getStringDefault(BasicRomFile);
     getStringDefault(A5200RomFile);
+    getBoolDefault(UseAltiraXEGSRom);
+    getBoolDefault(UseAltira1200XLRom);
     getBoolDefault(UseAltiraOSBRom);
     getBoolDefault(UseAltiraXLRom);
     getBoolDefault(UseAltira5200Rom);
@@ -5028,6 +5321,9 @@ static Preferences *sharedInstance = nil;
     setBoolDefault(FixAspectFullscreen);
     setBoolDefault(LedStatus);
     setBoolDefault(LedSector);
+    setBoolDefault(LedHDSector);
+    setBoolDefault(LedFKeys);
+    setBoolDefault(LedCapsLock);
     setBoolDefault(LedStatusMedia);
     setBoolDefault(LedSectorMedia);
     setBoolDefault(AF80Enabled);
@@ -5038,15 +5334,24 @@ static Preferences *sharedInstance = nil;
 	setBoolDefault(XEP80);
 	setIntDefault(XEP80OnColor);
 	setIntDefault(XEP80OffColor);
+    setIntDefault(A1200XLJumper);
+    setIntDefault(XEGSKeyboard);
     setIntDefault(AtariType);
     setIntDefault(AtariSwitchType);
     setIntDefault(AtariTypeVer4);
+    setIntDefault(AtariTypeVer5);
     setIntDefault(AtariSwitchTypeVer4);
+    setIntDefault(AtariSwitchTypeVer5);
 	setIntDefault(AxlonBankMask);
 	setIntDefault(MosaicMaxBank);
 	setBoolDefault(MioEnabled);
 	setBoolDefault(BlackBoxEnabled);
-	setStringDefault(MioRomFile);
+    setStringDefault(MioRomFile);
+    setStringDefault(Ultimate1MBRomFile);
+    setIntDefault(Side2UltimateFlashType);
+    setBoolDefault(Side2SDXMode);
+    setStringDefault(Side2RomFile);
+    setStringDefault(Side2CFFile);
     setStringDefault(AF80CharsetFile);
     setStringDefault(AF80RomFile);
     setStringDefault(Bit3CharsetFile);
@@ -5125,10 +5430,15 @@ static Preferences *sharedInstance = nil;
     setStringDefault(HardDiskDir4);
     setBoolDefault(HardDrivesReadOnly);
     setStringDefault(HPath);
+    setStringDefault(XEGSRomFile);
+    setStringDefault(XEGSGameRomFile);
+    setStringDefault(A1200XLRomFile);
     setStringDefault(OsBRomFile);
     setStringDefault(XlRomFile);
     setStringDefault(BasicRomFile);
     setStringDefault(A5200RomFile);
+    setBoolDefault(UseAltiraXEGSRom);
+    setBoolDefault(UseAltira1200XLRom);
     setBoolDefault(UseAltiraOSBRom);
     setBoolDefault(UseAltiraXLRom);
     setBoolDefault(UseAltira5200Rom);
@@ -5278,6 +5588,9 @@ static Preferences *sharedInstance = nil;
     setConfig(FixAspectFullscreen);
     setConfig(LedStatus);
     setConfig(LedSector);
+    setConfig(LedHDSector);
+    setConfig(LedFKeys);
+    setConfig(LedCapsLock);
     setConfig(LedStatusMedia);
     setConfig(LedSectorMedia);
     setConfig(AF80Enabled);
@@ -5288,15 +5601,24 @@ static Preferences *sharedInstance = nil;
 	setConfig(XEP80);
 	setConfig(XEP80OnColor);
 	setConfig(XEP80OffColor);
+    setConfig(A1200XLJumper);
+    setConfig(XEGSKeyboard);
     setConfig(AtariType);
     setConfig(AtariSwitchType);
     setConfig(AtariTypeVer4);
+    setConfig(AtariTypeVer5);
     setConfig(AtariSwitchTypeVer4);
+    setConfig(AtariSwitchTypeVer5);
 	setConfig(AxlonBankMask);
 	setConfig(MosaicMaxBank);
 	setConfig(MioEnabled);
 	setConfig(BlackBoxEnabled);
-	setConfig(MioRomFile);
+    setConfig(MioRomFile);
+    setConfig(Ultimate1MBRomFile);
+    setConfig(Side2UltimateFlashType);
+    setConfig(Side2SDXMode);
+    setConfig(Side2RomFile);
+    setConfig(Side2CFFile);
     setConfig(AF80CharsetFile);
     setConfig(AF80RomFile);
     setConfig(Bit3CharsetFile);
@@ -5375,10 +5697,15 @@ static Preferences *sharedInstance = nil;
     setConfig(HardDiskDir4);
     setConfig(HardDrivesReadOnly);
     setConfig(HPath);
+    setConfig(XEGSRomFile);
+    setConfig(XEGSGameRomFile);
+    setConfig(A1200XLRomFile);
     setConfig(OsBRomFile);
     setConfig(XlRomFile);
     setConfig(BasicRomFile);
     setConfig(A5200RomFile);
+    setConfig(UseAltiraXEGSRom);
+    setConfig(UseAltira1200XLRom);
     setConfig(UseAltiraOSBRom);
     setConfig(UseAltiraXLRom);
     setConfig(UseAltira5200Rom);
@@ -5626,6 +5953,9 @@ static Preferences *sharedInstance = nil;
     getConfig(FixAspectFullscreen);
     getConfig(LedStatus);
     getConfig(LedSector);
+    getConfig(LedHDSector);
+    getConfig(LedFKeys);
+    getConfig(LedCapsLock);
     getConfig(LedStatusMedia);
     getConfig(LedSectorMedia);
     getConfig(AF80Enabled);
@@ -5636,15 +5966,24 @@ static Preferences *sharedInstance = nil;
 	getConfig(XEP80);
 	getConfig(XEP80OnColor);
 	getConfig(XEP80OffColor);
-    getConfig(AtariType);
+    setConfig(A1200XLJumper);
+    setConfig(XEGSKeyboard);
+    setConfig(AtariType);
     getConfig(AtariSwitchType);
     getConfig(AtariTypeVer4);
+    getConfig(AtariTypeVer5);
     getConfig(AtariSwitchTypeVer4);
+    getConfig(AtariSwitchTypeVer5);
 	getConfig(AxlonBankMask);
 	getConfig(MosaicMaxBank);
 	getConfig(MioEnabled);
 	getConfig(BlackBoxEnabled);
-	getConfig(MioRomFile);
+    getConfig(MioRomFile);
+    getConfig(Ultimate1MBRomFile);
+    getConfig(Side2UltimateFlashType);
+    getConfig(Side2SDXMode);
+    getConfig(Side2RomFile);
+    getConfig(Side2CFFile);
     getConfig(AF80CharsetFile);
     getConfig(AF80RomFile);
     getConfig(Bit3CharsetFile);
@@ -5723,10 +6062,15 @@ static Preferences *sharedInstance = nil;
     getConfig(HardDiskDir4);
     getConfig(HardDrivesReadOnly);
     getConfig(HPath);
+    getConfig(XEGSRomFile);
+    getConfig(XEGSGameRomFile);
+    getConfig(A1200XLRomFile);
     getConfig(OsBRomFile);
     getConfig(XlRomFile);
     getConfig(BasicRomFile);
     getConfig(A5200RomFile);
+    getConfig(UseAltiraXEGSRom);
+    getConfig(UseAltira1200XLRom);
     getConfig(UseAltiraOSBRom);
     getConfig(UseAltiraXLRom);
     getConfig(UseAltira5200Rom);

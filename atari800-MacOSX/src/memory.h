@@ -52,19 +52,23 @@ extern int MEMORY_ram_size;
 #define MEMORY_RAM       0
 #define MEMORY_ROM       1
 #define MEMORY_HARDWARE  2
+#define MEMORY_FLASH     3
 
 #ifndef PAGED_ATTRIB
 
 extern UBYTE MEMORY_attrib[65536];
 /* Reads a byte from ADDR. Can potentially have side effects, when reading
    from hardware area. */
-#define MEMORY_GetByte(addr)		(MEMORY_attrib[addr] == MEMORY_HARDWARE ? MEMORY_HwGetByte(addr, FALSE) : MEMORY_mem[addr])
+#define MEMORY_GetByte(addr)		(MEMORY_attrib[addr] == MEMORY_HARDWARE ? MEMORY_HwGetByte(addr, FALSE) : (MEMORY_attrib[addr] == MEMORY_FLASH ? MEMORY_FlashGetByte(addr) : MEMORY_mem[addr]))
+#define MEMORY_GetWord(x)                (MEMORY_GetByte(x) + (MEMORY_GetByte((x) + 1) << 8))
+#define MEMORY_PutWord(x, y)            MEMORY_PutByte(x, (UBYTE) (y)); MEMORY_PutByte((x) + 1, (UBYTE) ((y) >> 8));
 /* Reads a byte from ADDR, but without any side effects. */
-#define MEMORY_SafeGetByte(addr)		(MEMORY_attrib[addr] == MEMORY_HARDWARE ? MEMORY_HwGetByte(addr, TRUE) : MEMORY_mem[addr])
-#define MEMORY_PutByte(addr, byte)	 do { if (MEMORY_attrib[addr] == MEMORY_RAM) MEMORY_mem[addr] = byte; else if (MEMORY_attrib[addr] == MEMORY_HARDWARE) MEMORY_HwPutByte(addr, byte); } while (0)
+#define MEMORY_SafeGetByte(addr)        (MEMORY_attrib[addr] == MEMORY_HARDWARE ? MEMORY_HwGetByte(addr, TRUE) : (MEMORY_attrib[addr] == MEMORY_FLASH ? MEMORY_FlashGetByte(addr) : MEMORY_mem[addr]))
+#define MEMORY_PutByte(addr, byte)	 do { if (MEMORY_attrib[addr] == MEMORY_RAM) MEMORY_mem[addr] = byte; else if (MEMORY_attrib[addr] == MEMORY_HARDWARE) MEMORY_HwPutByte(addr, byte); else if (MEMORY_attrib[addr] == MEMORY_FLASH) MEMORY_FlashPutByte(addr, byte);} while (0)
 #define MEMORY_SetRAM(addr1, addr2) memset(MEMORY_attrib + (addr1), MEMORY_RAM, (addr2) - (addr1) + 1)
 #define MEMORY_SetROM(addr1, addr2) memset(MEMORY_attrib + (addr1), MEMORY_ROM, (addr2) - (addr1) + 1)
 #define MEMORY_SetHARDWARE(addr1, addr2) memset(MEMORY_attrib + (addr1), MEMORY_HARDWARE, (addr2) - (addr1) + 1)
+#define MEMORY_SetFlash(addr1, addr2) memset(MEMORY_attrib + (addr1), MEMORY_FLASH, (addr2) - (addr1) + 1)
 
 #else /* PAGED_ATTRIB */
 
@@ -119,8 +123,12 @@ void MEMORY_Cart809fDisable(void);
 void MEMORY_Cart809fEnable(void);
 void MEMORY_CartA0bfDisable(void);
 void MEMORY_CartA0bfEnable(void);
+void MEMORY_AllocXEMemory(void);
 #define MEMORY_CopyROM(addr1, addr2, src) memcpy(MEMORY_mem + (addr1), src, (addr2) - (addr1) + 1)
 void MEMORY_GetCharset(UBYTE *cs);
+
+void MEMORY_StartPBIOverlay(void);
+void MEMORY_StopPBIOverlay(void);
 
 /* Mosaic and Axlon 400/800 RAM extensions */
 extern int MEMORY_mosaic_num_banks;
@@ -136,6 +144,16 @@ UBYTE MEMORY_HwGetByte(UWORD addr, int safe);
 
 /* Stores a byte at the specified special address (not RAM or ROM). */
 void MEMORY_HwPutByte(UWORD addr, UBYTE byte);
+
+void MEMORY_SetDefaultFlashRoutines(void);
+
+void MEMORY_SetFlashRoutines(UBYTE (*get)(UWORD), void (*put)(UWORD, UBYTE));
+
+/* Reads a byte from the specified programmable flash address */
+UBYTE MEMORY_FlashGetByte(UWORD addr);
+
+/* Stores a byte at the specified programmable flash address  */
+void MEMORY_FlashPutByte(UWORD addr, UBYTE byte);
 #endif /* PAGED_MEM */
 
 #endif /* MEMORY_H_ */

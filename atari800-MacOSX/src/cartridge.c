@@ -46,6 +46,12 @@
 #ifdef BIT3
 #include "bit3.h"
 #endif
+#ifdef ULTIMATE_1MB
+#include "ultimate1mb.h"
+#endif
+#ifdef SIDE2
+#include "side2.h"
+#endif
 #include "log.h"
 
 /* #define DEBUG 1 */
@@ -648,15 +654,18 @@ static void MapActiveCart(void)
 		case CARTRIDGE_SIC_512:
 		case CARTRIDGE_MEGAMAX_2048:
 			break;
+        case CARTRIDGE_ULTIMATE_1MB:
+            MEMORY_Cart809fDisable();
+            MEMORY_CartA0bfEnable();
+            /* No need to call SwitchBank(), return. */
+            return;
+        case CARTRIDGE_SIDE2:
+            SIDE2_Set_Cart_Enables(TRUE, TRUE);
+            /* No need to call SwitchBank(), return. */
+            return;
 		default:
 			MEMORY_Cart809fDisable();
-			if (!Atari800_builtin_basic
-			&& (!Atari800_disable_basic || BINLOAD_loading_basic) && MEMORY_have_basic) {
-				MEMORY_CartA0bfEnable();
-				MEMORY_CopyROM(0xa000, 0xbfff, MEMORY_basic);
-			}
-			else
-				MEMORY_CartA0bfDisable();
+            MEMORY_CartA0bfDisable();
 			/* No need to call SwitchBank(), return. */
 			return;
 		}
@@ -1072,6 +1081,20 @@ UBYTE CARTRIDGE_GetByte(UWORD addr, int no_side_effects)
 	if (IDE_enabled && (addr <= 0xd50f))
 		return IDE_GetByte(addr, no_side_effects);
 #endif
+#ifdef SIDE2
+    if (SIDE2_enabled) {
+        int byte = SIDE2_D5GetByte(addr, no_side_effects);
+        if (byte != -1)
+            return byte;
+    }
+#endif
+#ifdef ULTIMATE_1MB
+    if (ULTIMATE_enabled) {
+        int byte = ULTIMATE_D5GetByte(addr, no_side_effects);
+        if (byte != -1)
+            return byte;
+    }
+#endif
 	/* In case 2 cartridges are inserted, reading a memory location would
 	   result in binary AND of both cartridges. */
 	return GetByte(&CARTRIDGE_main, addr, no_side_effects) & GetByte(&CARTRIDGE_piggyback, addr, no_side_effects);
@@ -1101,6 +1124,17 @@ void CARTRIDGE_PutByte(UWORD addr, UBYTE byte)
 	if (IDE_enabled && (addr <= 0xd50f)) {
 		IDE_PutByte(addr,byte);
 	}
+#endif
+#ifdef SIDE2
+    if (SIDE2_enabled) {
+        SIDE2_D5PutByte(addr, byte);
+        //return;
+    }
+#endif
+#ifdef ULTIMATE_1MB
+    if (ULTIMATE_enabled) {
+        ULTIMATE_D5PutByte(addr, byte);
+    } else 
 #endif
 	PutByte(&CARTRIDGE_main, addr, byte);
 	PutByte(&CARTRIDGE_piggyback, addr, byte);
@@ -1395,6 +1429,9 @@ static void RemoveCart(CARTRIDGE_image_t *cart)
 		free(cart->image);
 		cart->image = NULL;
 	}
+    if (cart->type == CARTRIDGE_SIDE2) {
+        SIDE2_enabled = FALSE;
+    }
 	if (cart->type != CARTRIDGE_NONE) {
 		cart->type = CARTRIDGE_NONE;
 		if (cart == active_cart)
@@ -1451,11 +1488,24 @@ static int InsertCartridge(const char *filename, CARTRIDGE_image_t *cart)
         len = 0x2000;
         cart->image = (UBYTE *) Util_malloc(len);
         memcpy(cart->image, MEMORY_basic, len);
-        strcpy(cart->filename, CARTRIDGE_SPECIAL_BASIC);
+        strcpy(cart->filename, "BASIC");
         len >>= 10;    /* number of kilobytes */
         cart->size = len;
         cart->type = CARTRIDGE_STD_8;
         InitCartridge(cart);
+        return(0);
+    } else if (strcmp(filename,CARTRIDGE_SPECIAL_ULTIMATE) == 0) {
+        strcpy(cart->filename, "ULTIMATE-SDX");
+        cart->type = CARTRIDGE_ULTIMATE_1MB;
+        InitCartridge(cart);
+        return(0);
+    } else if (strcmp(filename,CARTRIDGE_SPECIAL_SIDE2) == 0) {
+        SIDE2_enabled = TRUE;
+        strcpy(cart->filename, "SIDE2");
+        cart->type = CARTRIDGE_SIDE2;
+        InitCartridge(cart);
+        if (ULTIMATE_enabled)
+            SIDE2_Set_Cart_Enables(FALSE, FALSE);
         return(0);
     } else {
 #else
@@ -1558,6 +1608,51 @@ int CARTRIDGE_Insert_BASIC(void)
     CARTRIDGE_Remove();
     return InsertCartridge(CARTRIDGE_SPECIAL_BASIC, &CARTRIDGE_main);
 }
+
+int CARTRIDGE_Insert_Ultimate_1MB(void)
+{
+    /* remove currently inserted cart */
+    //CARTRIDGE_Remove();
+    return InsertCartridge(CARTRIDGE_SPECIAL_ULTIMATE, &CARTRIDGE_main);
+}
+    
+int CARTRIDGE_Insert_SIDE2(void)
+{
+    if (ULTIMATE_enabled) {
+        /* remove currently inserted cart */
+        CARTRIDGE_Remove_Second();
+        return InsertCartridge(CARTRIDGE_SPECIAL_SIDE2, &CARTRIDGE_piggyback);
+
+    } else {
+        /* remove currently inserted cart */
+        CARTRIDGE_Remove();
+        return InsertCartridge(CARTRIDGE_SPECIAL_SIDE2, &CARTRIDGE_main);
+    }
+}
+
+void CARTRDIGE_Switch_To_Piggyback(int pbi_button)
+{
+    if (CARTRIDGE_piggyback.type == CARTRIDGE_NONE) {
+        MEMORY_Cart809fDisable();
+        MEMORY_CartA0bfDisable();
+    } else {
+        active_cart = &CARTRIDGE_piggyback;
+        if (CARTRIDGE_piggyback.type == CARTRIDGE_SIDE2)
+            SIDE2_Set_Cart_Enables(!pbi_button, TRUE);
+        else
+            MapActiveCart();
+    }
+}
+
+void CARTRDIGE_Switch_To_Main(void)
+{
+    active_cart = &CARTRIDGE_main;
+    if (CARTRIDGE_piggyback.type == CARTRIDGE_SIDE2) {
+        SIDE2_Set_Cart_Enables(FALSE, FALSE);
+    }
+    MapActiveCart();
+}
+
 #endif
 
 int CARTRIDGE_InsertAutoReboot(const char *filename)
@@ -1569,9 +1664,19 @@ int CARTRIDGE_InsertAutoReboot(const char *filename)
 
 int CARTRIDGE_Insert_Second(const char *filename)
 {
-	/* remove currently inserted cart */
-	CARTRIDGE_Remove_Second();
-	return InsertCartridge(filename, &CARTRIDGE_piggyback);
+    /* remove currently inserted cart */
+    CARTRIDGE_Remove_Second();
+    return InsertCartridge(filename, &CARTRIDGE_piggyback);
+}
+
+int CARTRIDGE_Insert_SecondAutoReboot(const char *filename)
+{
+    int result;
+    /* remove currently inserted cart */
+    CARTRIDGE_Remove_Second();
+    result = InsertCartridge(filename, &CARTRIDGE_piggyback);
+    AutoReboot();
+    return result;
 }
 
 void CARTRIDGE_Remove(void)

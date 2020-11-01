@@ -91,7 +91,9 @@ biteme!
 #include "rtime.h"
 #include "pbi.h"
 #include "sio.h"
+#include "side2.h"
 #include "ui.h"
+#include "ultimate1mb.h"
 #include "util.h"
 #include "colours.h"
 #include "screen.h"
@@ -125,6 +127,8 @@ int machine_switch_type = 7;
 int Atari800_machine_type = Atari800_MACHINE_XLXE;
 int Atari800_tv_mode = Atari800_TV_PAL;
 int Atari800_disable_basic = TRUE;
+int Atari800_useAlitrraXEGSRom;
+int Atari800_useAlitrra1200XLRom;
 int Atari800_useAlitrraOSBRom;
 int Atari800_useAlitrraXLRom;
 int Atari800_useAlitrra5200Rom;
@@ -137,7 +141,8 @@ int verbose = FALSE;
 
 int Atari800_keyboard_leds = FALSE;
 int Atari800_f_keys = FALSE;
-int Atari800_jumper;
+int Atari800_jumper = FALSE;
+int Atari800_jumper_present = FALSE;
 int Atari800_builtin_game = FALSE;
 int Atari800_keyboard_detached = FALSE;
 
@@ -175,13 +180,17 @@ void Atari800_Warmstart(void)
 		CPU_NMI();
 	}
 	else {
+        if (ULTIMATE_enabled && (Atari800_machine_type == Atari800_MACHINE_XLXE)) {
+            ULTIMATE_WarmStart();
+        }
 		PBI_Reset();
-		PIA_Reset();
+        PIA_Reset();
 		ANTIC_Reset();
 		/* CPU_Reset() must be after PIA_Reset(),
 		   because Reset routine vector must be read from OS ROM */
 		CPU_Reset();
 		/* note: POKEY and GTIA have no Reset pin */
+
 	}
 	Devices_WarmCold_Start();
 }
@@ -193,6 +202,13 @@ void Atari800_Coldstart(void)
 	MacSoundReset();
 	MacCapsLockStateReset();
 #endif	
+    if (SIDE2_enabled && SIDE2_have_rom) {
+        SIDE2_ColdStart();
+        }
+    if (ULTIMATE_enabled && (Atari800_machine_type == Atari800_MACHINE_XLXE)) {
+        if (ULTIMATE_have_rom)
+            ULTIMATE_ColdStart();
+        }
 	PBI_Reset();
 	PIA_Reset();
 	ANTIC_Reset();
@@ -274,6 +290,10 @@ static int load_roms(void)
     char *altirraString;
     char *machineString;
 
+    if (ULTIMATE_enabled && (Atari800_machine_type == Atari800_MACHINE_XLXE)) {
+        ULTIMATE_LoadRoms();
+        return TRUE;
+    }
     switch (Atari800_machine_type) {
         case Atari800_MACHINE_800:
         default:
@@ -288,15 +308,25 @@ static int load_roms(void)
             machineString = "Loading ROMS for OSB Machine";
             break;
         case Atari800_MACHINE_XLXE:
-            osFilename = CFG_xlxe_filename;
+            if (Atari800_builtin_game) {
+                osFilename = CFG_xegs_filename;
+                useAltira = Atari800_useAlitrraXEGSRom;
+                machineString = "Loading ROMS for XEGS Machine";
+            } else if (Atari800_keyboard_leds) {
+                osFilename = CFG_1200xl_filename;
+                useAltira = Atari800_useAlitrra1200XLRom;
+                machineString = "Loading ROMS for 1200XL Machine";
+            } else {
+                osFilename = CFG_xlxe_filename;
+                useAltira = Atari800_useAlitrraXLRom;
+                machineString = "Loading ROMS for XL/XE Machine";
+            }
             defaultType = SYSROM_XL_CUSTOM;
             altirraType = SYSROM_ALTIRRA_XL;
             osSize = 0x4000;
             loadBasic = TRUE;
-            useAltira = Atari800_useAlitrraXLRom;
             altirraRom = ROM_altirraos_xl;
             altirraString = "Using Alitrra XL/XE OS";
-            machineString = "Loading ROMS for XL/XE Machine";
             break;
         case Atari800_MACHINE_5200:
             osFilename = CFG_5200_filename;
@@ -326,6 +356,16 @@ static int load_roms(void)
         Atari800_os_version = altirraType;
         Log_print(altirraString);
     }
+
+    if (Atari800_builtin_game) {
+        /* Try loading built-in XEGS game. */
+        if (Atari800_LoadImage(CFG_xegsGame_filename, MEMORY_xegame, 0x2000))
+            Log_print("Loaded XEGS Game ROM");
+        else {
+            memcpy(MEMORY_xegame, ROM_altirra_basic, 0x2000);
+            Log_print("Error Loading XEGS Game ROM - Substituting Altirra Basic");
+        }
+    }
     
     if (!loadBasic) {
         MEMORY_have_basic = FALSE;
@@ -339,7 +379,7 @@ static int load_roms(void)
         }
     else if (Atari800_LoadImage(CFG_basic_filename, MEMORY_basic, 0x2000)) {
         Atari800_basic_version = SYSROM_FindType(SYSROM_BASIC_CUSTOM, CFG_basic_filename, OSType);
-        Log_print("Loaded OS: %s",OSType);
+        Log_print("Loaded BASIC: %s",OSType);
         }
     else {
         memcpy(MEMORY_basic, ROM_altirra_basic, 0x2000);
@@ -360,11 +400,11 @@ int Atari800_InitialiseMachine(void)
 	ESC_ClearAll();
 	if (!load_roms())
 		return FALSE;
-#ifndef ATARI800MACX
     Atari800_UpdateKeyboardDetached();
-    Atari800_UpdateJumper();
-#endif
-	MEMORY_InitialiseMachine();
+    if (Atari800_jumper_present)
+        Atari800_UpdateJumper();
+    MEMORY_InitialiseMachine();
+    Atari800_Coldstart();
 	Devices_UpdatePatches();
 	return TRUE;
 }
@@ -618,6 +658,12 @@ int Atari800_Initialise(int *argc, char *argv[])
 #ifdef BIT3_EMULATION
     BIT3_Initialise(argc, argv);
 #endif
+#ifdef ULTIMATE_1MB
+    ULTIMATE_Initialise(argc, argv);
+#endif
+#ifdef SIDE2
+    SIDE2_Initialise(argc, argv);
+#endif
 	/* Platform Specific Initialisation */
 	PLATFORM_Initialise(argc, argv);
 	Screen_Initialise(argc, argv);
@@ -657,7 +703,13 @@ int Atari800_Initialise(int *argc, char *argv[])
 
 	/* Install requested ROM cartridge */
 	if (rom_filename) {
-		int r = CARTRIDGE_InsertAutoReboot(rom_filename);
+        int r = 0;
+        if (strcmp(rom_filename, "SIDE2") == 0)
+            r = CARTRIDGE_Insert_SIDE2();
+        else if (strcmp(rom_filename, "BASIC") == 0)
+            r = CARTRIDGE_Insert_BASIC();
+        else if (strcmp(rom_filename, "ULTIMATE-SDX") != 0)
+            r = CARTRIDGE_InsertAutoReboot(rom_filename);
 		if (r < 0) {
 			Log_print("Error inserting cartridge \"%s\": %s", rom_filename,
 			r == CARTRIDGE_CANT_OPEN ? "Can't open file" :
@@ -671,8 +723,14 @@ int Atari800_Initialise(int *argc, char *argv[])
 	}
 
 	/* Install requested second ROM cartridge, if first is SpartaX */
-    if (((CARTRIDGE_main.type == CARTRIDGE_SDX_64) || (CARTRIDGE_main.type == CARTRIDGE_SDX_128) || (CARTRIDGE_main.type == CARTRIDGE_ATRAX_SDX_64) || (CARTRIDGE_main.type == CARTRIDGE_ATRAX_SDX_128)) && rom2_filename) {
-		int r = CARTRIDGE_Insert_Second(rom2_filename);
+    if (((CARTRIDGE_main.type == CARTRIDGE_SDX_64) || (CARTRIDGE_main.type == CARTRIDGE_SDX_128) || (CARTRIDGE_main.type == CARTRIDGE_ATRAX_SDX_64) ||
+         (CARTRIDGE_main.type == CARTRIDGE_ATRAX_SDX_128) ||
+         (CARTRIDGE_main.type == CARTRIDGE_ULTIMATE_1MB)) && rom2_filename) {
+        int r = 0;
+        if (strcmp(rom2_filename, "SIDE2") == 0)
+            r = CARTRIDGE_Insert_SIDE2();
+        else
+            r = CARTRIDGE_Insert_Second(rom2_filename);
 		if (r < 0) {
 			Log_print("Error inserting cartridge \"%s\": %s", rom2_filename,
 			r == CARTRIDGE_CANT_OPEN ? "Can't open file" :
@@ -722,6 +780,10 @@ int Atari800_Exit(int run_monitor)
 #endif
         AF80_Exit();
         BIT3_Exit();
+        if (ULTIMATE_enabled)
+            ULTIMATE_Exit();
+        if (SIDE2_enabled)
+            SIDE2_Exit();
 	}
 	return restart;
 }
@@ -806,7 +868,8 @@ void Atari800_Frame(void)
 		ANTIC_Frame(TRUE);
 		INPUT_DrawMousePointer();
 		Screen_DrawAtariSpeed(Atari_time());
-		Screen_DrawDiskLED();
+        Screen_DrawDiskLED();
+        Screen_DrawHDDiskLED();
 		Atari800_display_screen = TRUE;
 	}
 	else {
@@ -872,7 +935,8 @@ void Atari800_StateRead(UBYTE version)
             Atari800_f_keys = temp != 0;
             StateSav_ReadUBYTE(&temp, 1);
             Atari800_jumper = temp != 0;
-            Atari800_UpdateJumper();
+            if (Atari800_jumper_present)
+                Atari800_UpdateJumper();
             StateSav_ReadUBYTE(&temp, 1);
             Atari800_builtin_game = temp != 0;
             StateSav_ReadUBYTE(&temp, 1);
@@ -976,6 +1040,6 @@ void Atari800_UpdateKeyboardDetached(void)
 void Atari800_UpdateJumper(void)
 {
     if (Atari800_machine_type == Atari800_MACHINE_XLXE)
-            POKEY_POT_input[4] = Atari800_jumper ? 0 : 228;
+        POKEY_POT_input[4] = Atari800_jumper ? 0 : 228;
 }
 

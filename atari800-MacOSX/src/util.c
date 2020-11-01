@@ -189,6 +189,19 @@ void Util_trim(char *s)
 	memmove(s, p, q + 1 - p);
 }
 
+void UTIL_strip_ext(char *fname)
+{
+    char *end = fname + strlen(fname);
+
+    while (end > fname && *end != '.' && *end != '\\' && *end != '/') {
+        --end;
+    }
+    if ((end > fname && *end == '.') &&
+        (*(end - 1) != '\\' && *(end - 1) != '/')) {
+        *end = '\0';
+    }
+}
+
 int Util_sscandec(const char *s)
 {
 	int result;

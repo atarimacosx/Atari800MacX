@@ -8,6 +8,7 @@
 #import "Atari800ImageView.h"
 #import "Preferences.h"
 #import "MediaManager.h"
+#import "cartridge.h"
 #import "sio.h"
 
 extern char SIO_filename[SIO_MAX_DRIVES][FILENAME_MAX];
@@ -154,10 +155,13 @@ sourceOperationMaskForDraggingContext:(NSDraggingContext)context
 			if ([self tag] == 9)
 				if (!([suffix isEqualToString:@"car"] ||
 					[suffix isEqualToString:@"CAR"] ||
-					[suffix isEqualToString:@"rom"] ||
-					[suffix isEqualToString:@"ROM"] ||
-					[suffix isEqualToString:@"bin"] ||
-					[suffix isEqualToString:@"BIN"] ))
+                    [suffix isEqualToString:@"rom"] ||
+                    [suffix isEqualToString:@"ROM"] ||
+                    [suffix isEqualToString:@"bin"] ||
+                    [suffix isEqualToString:@"BIN"] ||
+					(([suffix isEqualToString:@"vhd"] ||
+					[suffix isEqualToString:@"VHD"] ) &&
+                     (CARTRIDGE_main.type == CARTRIDGE_SIDE2))))
 					return NSDragOperationNone;
             }
 		if (sourceDragMask & NSDragOperationMove)
@@ -178,6 +182,7 @@ sourceOperationMaskForDraggingContext:(NSDraggingContext)context
     NSDragOperation sourceDragMask;
 	int driveNo;
     id source;
+    NSString *suffix;
 
     sourceDragMask = [sender draggingSourceOperationMask];
     pboard = [sender draggingPasteboard];
@@ -186,7 +191,8 @@ sourceOperationMaskForDraggingContext:(NSDraggingContext)context
     /* Check for filenames type drag */
     if ( [[pboard types] containsObject:NSFilenamesPboardType] ) {
        NSArray *files = [pboard propertyListForType:NSFilenamesPboardType];
-       
+       suffix = [[files objectAtIndex:0] pathExtension];
+
        /* Load the first file into the emulator */
 	   if ([self tag] < 4) {
 			if (showUpperDrives)
@@ -202,8 +208,15 @@ sourceOperationMaskForDraggingContext:(NSDraggingContext)context
 			} 
 	   else if ([self tag] == 8)
 			[[MediaManager sharedInstance] cassInsertFile:[files objectAtIndex:0]]; 
-	   else if ([self tag] == 9)
-			[[MediaManager sharedInstance] cartInsertFile:[files objectAtIndex:0]]; 
+       else if ([self tag] == 9) {
+           if ((CARTRIDGE_main.type == CARTRIDGE_SIDE2) &&
+               ([suffix isEqualToString:@"vhd"] ||
+                [suffix isEqualToString:@"VHD"])) {
+               [[MediaManager sharedInstance] side2AttachCFFile:[files objectAtIndex:0]];
+           } else {
+           [[MediaManager sharedInstance] cartInsertFile:[files objectAtIndex:0]];
+            }
+       }
     }
     return YES;
 }

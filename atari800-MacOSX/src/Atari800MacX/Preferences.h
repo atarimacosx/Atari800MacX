@@ -39,21 +39,33 @@
 #define LedSector @"LedSector"
 #define LedStatusMedia @"LedStatusMedia"
 #define LedSectorMedia @"LedSectorMedia"
+#define LedHDSector @"LedHDSector"
+#define LedFKeys @"LedFKeys"
+#define LedCapsLock @"LedCapsLock"
 #define XEP80Enabled @"XEP80Enabled"
 #define XEP80Autoswitch @"XEP80Autoswitch"
 #define XEP80Port @"XEP80Port"
 #define XEP80OnColor @"XEP80OnColor"
 #define XEP80OffColor @"XEP800OffColor"
 #define XEP80 @"XEP80"
+#define A1200XLJumper @"A1200XLJumper"
+#define XEGSKeyboard @"XEGSKeyboard"
 #define AtariType @"AtariType"
 #define AtariTypeVer4 @"AtariTypeVer4"
+#define AtariTypeVer5 @"AtariTypeVer5"
 #define AtariSwitchType @"AtariSwitchType"
 #define AtariSwitchTypeVer4 @"AtariSwitchTypeVer4"
+#define AtariSwitchTypeVer5 @"AtariSwitchTypeVer5"
 #define AxlonBankMask @"AxlonBankMask"
 #define MosaicMaxBank @"MosaicMaxBank"
 #define MioEnabled @"MioEnabled"
 #define BlackBoxEnabled @"BlackBoxEnabled"
 #define MioRomFile @"MioRomFile"
+#define Ultimate1MBRomFile @"Ultimate1MBRomFile"
+#define Side2RomFile @"Side2RomFile"
+#define Side2CFFile @"Side2CFFile"
+#define Side2SDXMode @"Side2SDXMode"
+#define Side2UltimateFlashType @"Side2UltimateFlashType"
 #define AF80Enabled @"AF80Enabled"
 #define AF80RomFile @"AF80RomFile"
 #define AF80CharsetFile @"AF80CharsetFile"
@@ -133,10 +145,15 @@
 #define HardDiskDir4 @"HardDiskDir4"
 #define HardDrivesReadOnly @"HardDrivesReadOnly"
 #define HPath @"HPath"
+#define UseAltiraXEGSRom @"UseAltiraXEGSRom"
+#define UseAltira1200XLRom @"UseAltira1200XLRom"
 #define UseAltiraOSBRom @"UseAltiraOSBRom"
 #define UseAltiraXLRom @"UseAltiraXLRom"
 #define UseAltira5200Rom @"UseAltira5200Rom"
 #define UseAltiraBasicRom @"UseAltiraBasicRom"
+#define XEGSRomFile @"XEGSRomFile"
+#define XEGSGameRomFile @"XEGSGameRomFile"
+#define A1200XLRomFile @"A1200XLRomFile"
 #define OsBRomFile @"OsBRomFile"
 #define XlRomFile @"XlRomFile"
 #define BasicRomFile @"BasicRomFile"
@@ -257,6 +274,9 @@
 @interface Preferences : NSObject {
     IBOutlet id prefTabView;
     IBOutlet id a5200RomFileField;
+    IBOutlet id a1200xlRomFileField;
+    IBOutlet id xegsRomFileField;
+    IBOutlet id xegsGameRomFileField;
     IBOutlet id adjustPaletteButton;
     IBOutlet id artifactingPulldown;
     IBOutlet id artifactNewButton;
@@ -274,6 +294,11 @@
 	IBOutlet id blackBoxRomFileField;
 	IBOutlet id blackBoxScsiDiskFileField;
 	IBOutlet id mioScsiDiskFileField;
+    IBOutlet id ultimate1MBFlashFileField;
+    IBOutlet id side2FlashFileField;
+    IBOutlet id side2CFFileField;
+    IBOutlet id side2SDXModePulldown;
+    IBOutlet id side2UltimateFlashTypePulldown;
     IBOutlet id disableBasicButton;
     IBOutlet id disableAllBasicButton;
     IBOutlet id diskImageDirField;
@@ -285,6 +310,9 @@
 	IBOutlet id ledSectorButton;
 	IBOutlet id ledStatusMediaButton;
 	IBOutlet id ledSectorMediaButton;
+    IBOutlet id ledHDSectorButton;
+    IBOutlet id ledFKeyButton;
+    IBOutlet id ledCapsLockButton;
     IBOutlet id xep80AutoswitchButton;
 	IBOutlet id xep80PortPulldown;
 	IBOutlet id xep80ForegroundField;
@@ -342,6 +370,8 @@
     IBOutlet id enableSioPatchButton;
     IBOutlet id bootFromCassetteButton;
     IBOutlet id ignoreHeaderWriteprotectButton;
+    IBOutlet id xegsKeyboadButton;
+    IBOutlet id a1200ForceSelfTestButton;
     IBOutlet id consoleSoundEnableButton;
     IBOutlet id serioSoundEnableButton;
 	IBOutlet id muteAudioButton;
@@ -357,6 +387,8 @@
     IBOutlet id hardDrivesReadOnlyButton;
     IBOutlet id hPathField;
     IBOutlet id intensityField;
+    IBOutlet id useAlitrraXEGSRomButton;
+    IBOutlet id useAlitrra1200XLRomButton;
     IBOutlet id useAlitrraOSBRomButton;
     IBOutlet id useAlitrraXLRomButton;
     IBOutlet id useAlitrra5200RomButton;
@@ -490,6 +522,9 @@
     IBOutlet id gamepadSelector;
     IBOutlet id errorOKButton;
     IBOutlet id identifyOKButton;
+    IBOutlet id identifyXEGSLabel;
+    IBOutlet id identifyXEGSGameLabel;
+    IBOutlet id identify1200XLLabel;
     IBOutlet id identifyOSBLabel;
     IBOutlet id identifyXLLabel;
     IBOutlet id identifyBasicLabel;
@@ -560,7 +595,7 @@
 - (void)ok:(id)sender;		/* Calls commitUI to commit the displayed values as current */
 - (void)revertToDefault:(id)sender;    
 
-- (void)miscChanged:(id)sender;	/* Action message for most of the misc items in the UI to get displayedValues  */
+- (IBAction)miscChanged:(id)sender;	/* Action message for most of the misc items in the UI to get displayedValues  */
 - (void)browsePalette:(id)sender; 
 - (void)browseImage:(id)sender; 
 - (void)browsePrint:(id)sender; 
@@ -574,15 +609,21 @@
 - (IBAction)browseBit3Rom:(id)sender;
 - (IBAction)identifyRom:(id)sender;
 - (IBAction)identifyRomOK:(id)sender;
+- (IBAction)browseXEGSRom:(id)sender;
+- (IBAction)browseXEGSGameRom:(id)sender;
+- (IBAction)browse1200XLRom:(id)sender;
 - (void)browseOsBRom:(id)sender;
-- (void)browseXlRom:(id)sender; 
+- (void)browseXlRom:(id)sender;
 - (void)browseBasicRom:(id)sender; 
 - (void)browse5200Rom:(id)sender; 
 - (void)browseMioRom:(id)sender; 
 - (void)browseBlackBoxRom:(id)sender; 
 - (void)browseBlackBoxScsiDiskFile:(id)sender; 
 - (void)browseMioScsiDiskFile:(id)sender; 
-- (void)browseDiskDir:(id)sender; 
+- (IBAction)browseUltimate1MBFlash:(id)sender;
+- (IBAction)browseSide2Flash:(id)sender;
+- (IBAction)browseSide2CF:(id)sender;
+- (void)browseDiskDir:(id)sender;
 - (void)browseDiskSetDir:(id)sender; 
 - (void)browseCartDir:(id)sender; 
 - (void)browseCassDir:(id)sender; 
@@ -636,8 +677,8 @@
 - (void)padJoyConfigure:(id)sender;
 - (void)padJoyOK:(id)sender;
 
-- (int)indexFromType:(int) type:(int) ver4type;
-- (int)typeFromIndex:(int) index:(int *)ver4type;
+- (int)indexFromType:(int) type:(int) ver4type:(int) ver5type;
+- (int)typeFromIndex:(int) index:(int *)ver4type:(int *)ver5type;
 
 - (void)generateModemList;
 - (int) getModemPaths:(io_iterator_t )serialPortIterator;

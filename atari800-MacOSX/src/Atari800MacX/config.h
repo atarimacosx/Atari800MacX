@@ -351,6 +351,10 @@
 
 #define PBI_BB
 
+#define ULTIMATE_1MB
+
+#define SIDE2
+
 #define EMUOS_ALTIRRA       1
 
 #define ATARI800MACX

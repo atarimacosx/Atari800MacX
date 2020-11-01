@@ -5,7 +5,9 @@
 #include "atari.h"
 
 enum {
-	CARTRIDGE_UNKNOWN        = -1,
+    CARTRIDGE_SIDE2          = -3,
+    CARTRIDGE_ULTIMATE_1MB   = -2,
+    CARTRIDGE_UNKNOWN        = -1,
 	CARTRIDGE_NONE           =  0,
 	CARTRIDGE_STD_8          =  1,
 	CARTRIDGE_STD_16         =  2,
@@ -183,6 +185,8 @@ void CARTRIDGE_Exit(void);
 
 #ifdef ATARI800MACX
 #define CARTRIDGE_SPECIAL_BASIC "!Builtin_BASIC_CART!"
+#define CARTRIDGE_SPECIAL_ULTIMATE "!Builtin_ULTIMATE_CART!"
+#define CARTRIDGE_SPECIAL_SIDE2 "!SIDE2_CART!"
 #endif
 
 /* Inserts the left cartrifge. */
@@ -190,18 +194,29 @@ int CARTRIDGE_Insert(const char *filename);
 #ifdef ATARI800MACX
 /* Inserts the BASIC cartridge and reboots the system if needed. */
 int CARTRIDGE_Insert_BASIC(void);
+/* Inserts the SIDE2 cartridge */
+int CARTRIDGE_Insert_SIDE2(void);
+/* Inserts the Ultimate 1MB cartridge */
+int CARTRIDGE_Insert_Ultimate_1MB(void);
 #endif
 /* Inserts the left cartridge and reboots the system if needed. */
 int CARTRIDGE_InsertAutoReboot(const char *filename);
 /* Inserts the piggyback cartridge. */
 int CARTRIDGE_Insert_Second(const char *filename);
+#ifdef ATARI800MACX
+int CARTRIDGE_Insert_SecondAutoReboot(const char *filename);
 /* When the cartridge type is CARTRIDGE_UNKNOWN after a call to
    CARTRIDGE_Insert(), this function should be called to set the
    cartridge's type manually to a value chosen by user. */
+#endif
 void CARTRIDGE_SetType(CARTRIDGE_image_t *cart, int type);
 /* Sets type of the cartridge and reboots the system if needed. */
 void CARTRIDGE_SetTypeAutoReboot(CARTRIDGE_image_t *cart, int type);
-
+#ifdef ATARI800MACX
+/* Switch to piggback cartridge from/to Ultimate. */
+void CARTRDIGE_Switch_To_Piggyback(int pbi_button);
+void CARTRDIGE_Switch_To_Main(void);
+#endif
 /* Removes the left cartridge. */
 void CARTRIDGE_Remove(void);
 /* Removes the left cartridge and reboots the system if needed. */

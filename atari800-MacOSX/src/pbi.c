@@ -50,6 +50,9 @@
 #ifdef BIT3
 #include "bit3.h"
 #endif
+#ifdef ULTIMATE_1MB
+#include "ultimate1mb.h"
+#endif
 
 /* stores the current state of the D1FF register, real hardware has 1
  * bit per device, the bits are on the devices themselves */
@@ -164,6 +167,9 @@ UBYTE PBI_D1GetByte(UWORD addr, int no_side_effects)
 #ifdef PBI_BB
 	if (PBI_BB_enabled) return PBI_BB_D1GetByte(addr, no_side_effects);
 #endif
+#ifdef ULTIMATE_1MB
+    if (ULTIMATE_enabled) return ULTIMATE_D1GetByte(addr, no_side_effects);
+#endif
 	/* Remaining PBI devices cooperate, following spec */
 #ifdef PBI_XLD
 	if (PBI_XLD_enabled && !no_side_effects) result = PBI_XLD_D1GetByte(addr);
@@ -212,6 +218,10 @@ void PBI_D1PutByte(UWORD addr, UBYTE byte)
 #ifdef PBI_PROTO_80
 		if (PBI_PROTO80_enabled) PBI_PROTO80_D1PutByte(addr, byte);
 #endif
+#ifdef ULTIMATE_1MB
+        if (ULTIMATE_enabled)
+            ULTIMATE_D1PutByte(addr, byte);
+#endif
 		/* add more devices here... */
 	}
 	else if (addr == 0xd1ff) {
@@ -233,15 +243,22 @@ void PBI_D1PutByte(UWORD addr, UBYTE byte)
 			}
 #endif
 #ifdef PBI_PROTO80
-			if (PBI_PROTO80_enabled && PBI_PROTO80_D1ffPutByte(byte) != PBI_NOT_HANDLED) {
-				/* handled */
-				fp_active = FALSE;
-				return;
-			}
+            if (PBI_PROTO80_enabled && PBI_PROTO80_D1ffPutByte(byte) != PBI_NOT_HANDLED) {
+                /* handled */
+                fp_active = FALSE;
+                return;
+            }
+#endif
+#ifdef ULTIMATE_1MB
+            if (ULTIMATE_enabled && ULTIMATE_D1ffPutByte(byte) != PBI_NOT_HANDLED) {
+                /* handled */
+                fp_active = FALSE;
+                return;
+            }
 #endif
 		    /* add more devices here... */
 			/* reactivate the floating point rom */
-			if (!fp_active) {
+            if (!fp_active) {
 				memcpy(MEMORY_mem + 0xd800, MEMORY_os + 0x1800, 0x800);
 				D(printf("Floating point rom activated\n"));
 				fp_active = TRUE;
@@ -264,6 +281,9 @@ UBYTE PBI_D6GetByte(UWORD addr, int no_side_effects)
 #endif
 #ifdef PBI_BB
 	if(PBI_BB_enabled) return PBI_BB_D6GetByte(addr, no_side_effects);
+#endif
+#ifdef ULTIMATE_1MB
+    if (ULTIMATE_enabled) return ULTIMATE_D6D7GetByte(addr, no_side_effects);
 #endif
 	/* XLD/1090 has ram here */
 	if (PBI_D6D7ram) return MEMORY_mem[addr];
@@ -292,10 +312,16 @@ void PBI_D6PutByte(UWORD addr, UBYTE byte)
 	}
 #endif
 #ifdef PBI_BB
-	if(PBI_BB_enabled) {
-		PBI_BB_D6PutByte(addr,byte);
-		return;
-	}
+    if(PBI_BB_enabled) {
+        PBI_BB_D6PutByte(addr,byte);
+        return;
+    }
+#endif
+#ifdef ULTIMATE_1MB
+    if(ULTIMATE_enabled) {
+        ULTIMATE_D6D7PutByte(addr,byte);
+        return;
+    }
 #endif
 	/* XLD/1090 has ram here */
 	if (PBI_D6D7ram) MEMORY_mem[addr]=byte;
@@ -305,7 +331,10 @@ void PBI_D6PutByte(UWORD addr, UBYTE byte)
 /* XLD/1090 has ram here */
 UBYTE PBI_D7GetByte(UWORD addr, int no_side_effects)
 {
-	D(printf("PBI_D7GetByte:%4x\n",addr));
+    #ifdef ULTIMATE_1MB
+        if (ULTIMATE_enabled) return ULTIMATE_D6D7GetByte(addr, no_side_effects);
+    #endif
+    D(printf("PBI_D7GetByte:%4x\n",addr));
 	if (PBI_D6D7ram) return MEMORY_mem[addr];
 	else return 0xff;
 }
@@ -314,6 +343,12 @@ UBYTE PBI_D7GetByte(UWORD addr, int no_side_effects)
 /* XLD/1090 has ram here */
 void PBI_D7PutByte(UWORD addr, UBYTE byte)
 {
+#ifdef ULTIMATE_1MB
+    if(ULTIMATE_enabled) {
+        ULTIMATE_D6D7PutByte(addr,byte);
+        return;
+    }
+#endif
 	D(printf("PBI_D7PutByte:%4x <- %2x\n",addr,byte));
 	if (PBI_D6D7ram) MEMORY_mem[addr]=byte;
 }

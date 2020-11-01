@@ -75,6 +75,8 @@
 #include "pbi_bb.h"
 #include "pbi_mio.h"
 #include "preferences_c.h"
+#include "ultimate1mb.h"
+#include "side2.h"
 #include "util.h"
 #include "capslock.h"
 
@@ -124,7 +126,7 @@ int fixAspectFullscreen = FALSE;
 #define FULL_WIDTH_MODE 2
 #define NORMAL_SCALE 0
 #define SCANLINE_SCALE 1
-#define FRAMES_TO_HOLD_KEY 3;
+#define FRAMES_TO_HOLD_KEY 1;
 
 #define SCREEN_WIDTH_SHORT    (Screen_WIDTH - 2 * 24 - 2 * 8)
 #define SCREEN_WIDTH_DEFAULT  (Screen_WIDTH - 2 * 24)
@@ -157,6 +159,7 @@ int requestArtifChange = 0;
 int requestDisableBasicChange = 0;
 int requestKeyjoyEnableChange = 0;
 int requestCX85EnableChange = 0;
+int requestXEGSKeyboardChange = 0;
 int requestMachineTypeChange = 0;
 int requestPBIExpansionChange = 0;
 int requestSoundEnabledChange = 0;
@@ -213,6 +216,10 @@ extern int xep80EnabledChanged;
 extern int xep80ColorsChanged;
 extern int configurationChanged;
 extern int fullscreenOptsChanged;
+extern int ultimateRomChanged;
+extern int side2RomChanged;
+extern int side2CFChanged;
+
 extern int fileToLoad;
 extern int CARTRIDGE_type;
 int disable_all_basic = 1;
@@ -272,6 +279,7 @@ extern void SetControlManagerLimit(int limit);
 extern void SetControlManagerDisableBasic(int mode, int disableBasic);
 extern void SetControlManagerKeyjoyEnable(int keyjoyEnable);
 extern void SetControlManagerCX85Enable(int cx85enabled);
+extern void SetControlManagerXEGSKeyboard(int attached);
 extern void SetControlManagerMachineType(int machineType, int ramSize);
 extern void SetControlManagerPBIExpansion(int type);
 extern void SetControlManagerArrowKeys(int keys);
@@ -298,7 +306,8 @@ extern int RtConfigLoad(char *rtconfig_filename);
 extern void CalculatePrefsChanged();
 extern void loadPrefsBinaries();
 extern void CalcMachineTypeRam(int type, int *machineType, int *ramSize,
-							   int *axlon, int *mosaic);
+int *axlon, int *mosaic, int *ultimate,
+int *basic, int *game, int *leds, int *jumper);
 extern void BasicUIInit(void);
 extern void ClearScreen();
 extern void CenterPrint(int fg, int bg, char *string, int y);
@@ -310,7 +319,7 @@ extern void Devices_H_Init(void);
 extern void PreferencesSaveDefaults(void);
 extern void loadMacPrefs(int firstTime);
 extern void reloadMacJoyPrefs();
-extern int PreferencesTypeFromIndex(int index, int *ver4type);
+extern int PreferencesTypeFromIndex(int index, int *ver4type, int *ver5type);
 extern void PreferencesSaveConfiguration();
 extern void PreferencesLoadConfiguration();
 	
@@ -1312,6 +1321,19 @@ static int Atari_International_Good_Key(int key) {
     return FALSE;
     }
 
+void Atari_Consol_Key_Input() {
+    UInt8 *kbhits;
+    
+    /* Handle the Atari Console Keys */
+    kbhits = (Uint8 *) SDL_GetKeyboardState(NULL);
+    if (kbhits[SDL_SCANCODE_F2] && !kbhits[SDL_SCANCODE_LGUI])
+        INPUT_key_consol &= (~INPUT_CONSOL_OPTION);
+    if (kbhits[SDL_SCANCODE_F3] && !kbhits[SDL_SCANCODE_LGUI])
+        INPUT_key_consol &= (~INPUT_CONSOL_SELECT);
+    if (kbhits[SDL_SCANCODE_F4] && !kbhits[SDL_SCANCODE_LGUI])
+        INPUT_key_consol &= (~INPUT_CONSOL_START);
+}
+
 /*------------------------------------------------------------------------------
  *  Atari_Keyboard_International - This function is called once per main loop to handle
  *    keyboard input.  It handles keys like the original SDL version,  with
@@ -1324,7 +1346,8 @@ int Atari_Keyboard_International(void)
     int key_option = 0;
     static int key_was_pressed = 0;
     char *text_input;
-    int text_key = AKEY_NONE;
+    static int text_key = AKEY_NONE;
+    int text_type;
 
     /* Check for presses in function keys window */
     INPUT_key_consol = INPUT_CONSOL_NONE;
@@ -1554,8 +1577,10 @@ int Atari_Keyboard_International(void)
         /* Poll for SDL events.  All we want here are Keydown and Keyup events,
          and the quit event. */
         checkForNewJoysticks();
-        int pollEvent;
-        if ((pollEvent = SDL_PollEvent(&event))) {
+        Atari_Consol_Key_Input();
+        int pollEvent = 0;
+        while ((pollEvent = SDL_PollEvent(&event))) {
+            pollEvent++;
             switch (event.type) {
                 case SDL_DROPFILE:
                     SDLMainLoadFile(event.drop.file);
@@ -1567,6 +1592,7 @@ int Atari_Keyboard_International(void)
                 case SDL_TEXTINPUT:
                     kbhits = (Uint8 *) SDL_GetKeyboardState(NULL);
                     text_input = event.text.text;
+                    text_type = TRUE;
                     switch(strlen(text_input)) {
                         case 0:
                         default:
@@ -1588,12 +1614,15 @@ int Atari_Keyboard_International(void)
                     break;
                 case SDL_KEYDOWN:
                     kbhits = (Uint8 *) SDL_GetKeyboardState(NULL);
-                    if (!SDLMainIsActive())
+                    if (!SDLMainIsActive()) {
                         return AKEY_NONE;
+                    }
+                    text_type = FALSE;
                     lastkey = event.key.keysym.sym;
                     if ((lookup(SDL_IsJoyKeyTable, event.key.keysym.scancode) == 1) && keyjoyEnable && !key_option &&
-                        (pasteState == PASTE_IDLE))
+                        (pasteState == PASTE_IDLE)) {
                         return AKEY_NONE;
+                    }
                     if (kbhits[SDL_SCANCODE_LGUI] ||
                         kbhits[SDL_SCANCODE_RCTRL] ||
                         kbhits[SDL_SCANCODE_LCTRL] ||
@@ -1601,7 +1630,7 @@ int Atari_Keyboard_International(void)
                         key_pressed = 1;
                     }
                     else if (event.key.repeat) {
-                        return text_key;
+                        continue;
                     }
                     else {
                         key_pressed = 0;
@@ -1623,10 +1652,11 @@ int Atari_Keyboard_International(void)
                     return AKEY_EXIT;
                     break;
                 default:
+                    if (key_pressed)
+                        break;
                     return AKEY_NONE;
             }
         }
-
         if (kbhits == NULL) {
             Log_print("oops, kbhits is NULL!");
             Log_flushlog();
@@ -1659,7 +1689,14 @@ int Atari_Keyboard_International(void)
         }
         
         if (!pollEvent) {
-            return AKEY_NONE;
+            if (key_pressed) {
+                if (text_type) {
+                    return text_key;
+                }
+            }
+            else {
+                return AKEY_NONE;
+            }
         }
     }
     
@@ -1739,9 +1776,6 @@ int Atari_Keyboard_International(void)
                     break;
                 case SDLK_COMMA:
                     RunPreferences();
-                    break;
-                case SDLK_k:
-                    SwitchShowFps();
                     break;
                 case SDLK_r:
                     MediaManagerLoadExe();
@@ -1859,15 +1893,6 @@ int Atari_Keyboard_International(void)
         key_pressed = 0;
         return AKEY_NONE;
     }
-    
-    
-    /* Handle the Atari Console Keys */
-    if (kbhits[SDL_SCANCODE_F2] && !kbhits[SDL_SCANCODE_LGUI])
-        INPUT_key_consol &= (~INPUT_CONSOL_OPTION);
-    if (kbhits[SDL_SCANCODE_F3] && !kbhits[SDL_SCANCODE_LGUI])
-        INPUT_key_consol &= (~INPUT_CONSOL_SELECT);
-    if (kbhits[SDL_SCANCODE_F4] && !kbhits[SDL_SCANCODE_LGUI])
-        INPUT_key_consol &= (~INPUT_CONSOL_START);
     
     if (key_pressed == 0) {
         return AKEY_NONE;
@@ -2310,7 +2335,6 @@ int Atari_Keyboard_International(void)
             else
                 return AKEY_RETURN;
         case SDLK_F9:
-            //printf("%d\n",FullscreenCrashGUIRun(renderer));
             return AKEY_EXIT;
         case SDLK_F1:
             return AKEY_UI;
@@ -2410,8 +2434,7 @@ int Atari_Keyboard_International(void)
 
 /*------------------------------------------------------------------------------
 *  Atari_Keyboard - This function is called once per main loop to handle 
-*    keyboard input.  Depening on if international translation is enabled,
-*    it will call one of two functions 
+*    keyboard input.
 *-----------------------------------------------------------------------------*/
 int Atari_Keyboard(void)
 {
@@ -2425,7 +2448,7 @@ int Atari_Keyboard(void)
     
     last_key = Atari_Keyboard_International();
     if (last_key != AKEY_NONE) {
-        key_pressed = FRAMES_TO_HOLD_KEY;
+        key_pressed = 0;
     }
     return(last_key);
 }
@@ -2827,6 +2850,10 @@ int PLATFORM_Exit(int run_monitor)
                 SIO_Dismount(1);
                 UpdateMediaManagerInfo();
                 Atari800_Coldstart();
+                restart = TRUE;
+                }
+            else if (action == 6) {
+                RunPreferences();
                 restart = TRUE;
                 }
             else {
@@ -4282,7 +4309,7 @@ void SDL_DrawMousePointer(void)
 void CountFPS()
 {
     static int ticks1 = 0, ticks2, shortframes, fps;
-	char title[40];
+	char title[80];
     char count[20];
         
     if (Screen_show_atari_speed) {    
@@ -4477,22 +4504,35 @@ void ProcessMacMenus()
          SetControlManagerKeyjoyEnable(keyjoyEnable);
          }
     if (requestCX85EnableChange) {
-		INPUT_cx85 = !INPUT_cx85;
-		requestCX85EnableChange = 0;
-		SetControlManagerCX85Enable(INPUT_cx85);
-		}
+        INPUT_cx85 = !INPUT_cx85;
+        requestCX85EnableChange = 0;
+        SetControlManagerCX85Enable(INPUT_cx85);
+        }
+    if (requestXEGSKeyboardChange) {
+        Atari800_keyboard_detached = !Atari800_keyboard_detached;
+        requestXEGSKeyboardChange = 0;
+        SetControlManagerXEGSKeyboard(!Atari800_keyboard_detached);
+        Atari800_UpdateKeyboardDetached();
+        }
 	if (requestMachineTypeChange) {
-		int compositeType, type, ver4type;
+		int compositeType, type, ver4type, ver5type;
         int axlon_enabled, mosaic_enabled;
-		
-		type = PreferencesTypeFromIndex((requestMachineTypeChange-1),&ver4type);
-		if (ver4type == -1)
-			compositeType = type;
-		else
-			compositeType = 14+ver4type;
-		CalcMachineTypeRam(compositeType, &Atari800_machine_type, 
+
+        type = PreferencesTypeFromIndex((requestMachineTypeChange-1),&ver4type,&ver5type);
+        if (ver5type == -1) {
+            if (ver4type == -1)
+                compositeType = type;
+            else
+                compositeType = 14+ver4type;
+        } else {
+            compositeType = 19+ver5type;
+        }
+		CalcMachineTypeRam(compositeType, &Atari800_machine_type,
 						   &MEMORY_ram_size, &axlon_enabled,
-						   &mosaic_enabled);
+                           &mosaic_enabled, &ULTIMATE_enabled,
+                           &Atari800_builtin_basic, &Atari800_builtin_game,
+                           &Atari800_keyboard_leds, &Atari800_jumper_present);
+        CARTRIDGE_Remove();
         if (!axlon_enabled)
             MEMORY_axlon_num_banks = 0;
         else
@@ -4768,7 +4808,27 @@ void ProcessMacPrefsChange()
         if (fullscreenOptsChanged && FULLSCREEN_MACOS) {
             HandleScreenChange(current_w, current_h);
         }
-
+        if (ultimateRomChanged) {
+            int loaded;
+            loaded = ULTIMATE_Change_Rom(ultimate_rom_filename, FALSE);
+            if (loaded) {
+                memset(Screen_atari, 0, (Screen_HEIGHT * Screen_WIDTH));
+                Atari_DisplayScreen((UBYTE *) Screen_atari);
+                Atari800_Coldstart();
+            }
+        }
+        if (side2RomChanged) {
+            int loaded;
+            loaded = SIDE2_Change_Rom(side2_rom_filename, FALSE);
+            if (loaded) {
+                memset(Screen_atari, 0, (Screen_HEIGHT * Screen_WIDTH));
+                Atari_DisplayScreen((UBYTE *) Screen_atari);
+                Atari800_Coldstart();
+            }
+        }
+        if (side2CFChanged) {
+            SIDE2_Add_Block_Device(side2_nvram_filename);
+        }
     if (Atari800_tv_mode == Atari800_TV_PAL)
             deltatime = (1.0 / 50.0) / emulationSpeed;
     else
@@ -4790,7 +4850,8 @@ void ProcessMacPrefsChange()
     real_deltatime = deltatime;
 	SetControlManagerDisableBasic(Atari800_machine_type, Atari800_disable_basic);
 	SetControlManagerKeyjoyEnable(keyjoyEnable);
-	SetControlManagerCX85Enable(INPUT_cx85);
+    SetControlManagerCX85Enable(INPUT_cx85);
+    SetControlManagerXEGSKeyboard(!Atari800_keyboard_detached);
     SetControlManagerLimit(speed_limit);
 	SetControlManagerMachineType(Atari800_machine_type, MEMORY_ram_size);
     if (!EnableDisplayManager80ColMode(Atari800_machine_type, XEP80_enabled, AF80_enabled, BIT3_enabled))
@@ -4825,6 +4886,9 @@ void ProcessMacPrefsChange()
 		screenSwitchEnabled = TRUE;
 		}
 
+    Atari800_UpdateKeyboardDetached();
+    if (Atari800_jumper_present)
+        Atari800_UpdateJumper();
     requestPrefsChange = 0;
 	}
                     
@@ -4857,7 +4921,12 @@ void CreateWindowCaption()
             machineType = "400/800";
             break;
         case Atari800_MACHINE_XLXE:
-            machineType = "XL/XE";
+            if (Atari800_builtin_game)
+                machineType = "XEGS";
+            else if (Atari800_keyboard_leds)
+                machineType = "1200XL";
+            else
+                machineType = "XL/XE";
             break;
         case Atari800_MACHINE_5200:
             machineType = "5200";
@@ -4867,7 +4936,25 @@ void CreateWindowCaption()
             break;
         }
     
-	if (MEMORY_axlon_num_banks > 0)
+    if (ULTIMATE_enabled) {
+        if (Atari800_builtin_game) {
+            if (SIDE2_enabled)
+                sprintf(windowCaption, "XEGS Ultimate 1MB + SIDE 2 %dK", MEMORY_ram_size);
+            else
+                sprintf(windowCaption, "XEGS Ultimate 1MB %dK", MEMORY_ram_size);
+        } else if (Atari800_keyboard_leds) {
+            if (SIDE2_enabled)
+                sprintf(windowCaption, "1200XL Ultimate 1MB + SIDE 2 %dK", MEMORY_ram_size);
+            else
+                sprintf(windowCaption, "1200XL Ultimate 1MB %dK", MEMORY_ram_size);
+        } else {
+            if (SIDE2_enabled)
+                sprintf(windowCaption, "XL Ultimate 1MB + SIDE 2 %dK", MEMORY_ram_size);
+            else
+                sprintf(windowCaption, "XL Ultimate 1MB %dK", MEMORY_ram_size);
+        }
+    }
+	else if (MEMORY_axlon_num_banks > 0)
         sprintf(windowCaption, "%s Axlon %dK%s", machineType,
 				((MEMORY_axlon_num_banks) * 16) + 32,xep80String);
 	else if (MEMORY_mosaic_num_banks > 0)
@@ -5228,6 +5315,7 @@ int SDL_main(int argc, char **argv)
 	SetControlManagerDisableBasic(Atari800_machine_type, Atari800_disable_basic);
 	SetControlManagerKeyjoyEnable(keyjoyEnable);
 	SetControlManagerCX85Enable(INPUT_cx85);
+    SetControlManagerXEGSKeyboard(!Atari800_keyboard_detached);
 	SetControlManagerMachineType(Atari800_machine_type, MEMORY_ram_size);
 	if (bbRequested)
 		SetControlManagerPBIExpansion(1);
@@ -5465,8 +5553,28 @@ int SDL_main(int argc, char **argv)
             XEP80_last_sent_count = XEP80_sent_count;
         }
 
+        /* If emulator is in Ultimate mode without a valid ROM */
+        if (ULTIMATE_enabled && !ULTIMATE_have_rom) {
+            /* Clear the screen if we are in 5200 mode, with no cartridge */
+            BasicUIInit();
+            memset(Screen_atari_b, 0, (Screen_HEIGHT * Screen_WIDTH));
+            ClearScreen();
+            CenterPrint(0x9e, 0x94, "Atari Ultimate1mb Emulator", 11);
+            CenterPrint(0x9e, 0x94, "Error Loading Ultimate1mb ROM File", 12);
+            Atari_DisplayScreen((UBYTE *) Screen_atari);
+        }
+        /* If emulator is in SIDE2 mode without a valid ROM */
+        else if (((CARTRIDGE_main.type == CARTRIDGE_SIDE2) || (CARTRIDGE_piggyback.type == CARTRIDGE_SIDE2)) && !SIDE2_have_rom) {
+            /* Clear the screen if we are in 5200 mode, with no cartridge */
+            BasicUIInit();
+            memset(Screen_atari_b, 0, (Screen_HEIGHT * Screen_WIDTH));
+            ClearScreen();
+            CenterPrint(0x9e, 0x94, "Atari SIDE2 Emulator", 11);
+            CenterPrint(0x9e, 0x94, "Error Loading SIDE2 ROM File", 12);
+            Atari_DisplayScreen((UBYTE *) Screen_atari);
+        }
         /* If emulator isn't paused, and 5200 has a cartridge */
-        if (!pauseEmulator && !((Atari800_machine_type == Atari800_MACHINE_5200) && (CARTRIDGE_main.type == CARTRIDGE_NONE))) {
+        else if (!pauseEmulator && !((Atari800_machine_type == Atari800_MACHINE_5200) && (CARTRIDGE_main.type == CARTRIDGE_NONE)) && ((ULTIMATE_enabled && ULTIMATE_have_rom) || !ULTIMATE_enabled)) {
 			PBI_BB_Frame(); /* just to make the menu key go up automatically */
             Devices_Frame();
             GTIA_Frame();
@@ -5484,9 +5592,11 @@ int SDL_main(int argc, char **argv)
 			if (speed_limit == 0 || (speed_limit == 1 && deltatime <= 1.0/Atari800_FPS_PAL)) {
 				if (Atari800Time() >= last_time + 1.0/60.0) {
                     Screen_DrawDiskLED();
+                    Screen_DrawHDDiskLED();
                     if (FULLSCREEN_MACOS)
                         Screen_DrawAtariSpeed(currentFps);
                     Screen_Draw1200LED();
+                    Screen_DrawCapslock(MEMORY_dGetByte(0x2BE));
 					Atari_DisplayScreen((UBYTE *) Screen_atari);
 					last_time = Atari800Time();
 					screenSwitchEnabled = TRUE;
@@ -5494,7 +5604,9 @@ int SDL_main(int argc, char **argv)
 				}
 			else {
                 Screen_DrawDiskLED();
+                Screen_DrawHDDiskLED();
                 Screen_Draw1200LED();
+                Screen_DrawCapslock(MEMORY_dGetByte(0x2BE));
 				Atari_DisplayScreen((UBYTE *) Screen_atari);
 				}
             }

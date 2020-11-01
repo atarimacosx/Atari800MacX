@@ -15,6 +15,7 @@
 #import "Preferences.h"
 #import "ControlManager.h"
 #import "MediaManager.h"
+#import "cartridge.h"
 #import <sys/param.h> /* for MAXPATHLEN */
 #import <unistd.h>
 
@@ -36,7 +37,7 @@ extern OSErr 	CPSEnableForegroundOperation( CPSProcessSerNum *psn, UInt32 _arg2,
 extern OSErr	CPSSetFrontProcess( CPSProcessSerNum *psn);
 
 #endif /* SDL_USE_CPS */
-extern int PLATFORM_Exit(int run_monitor);
+extern int Atari800_Exit(int run_monitor);
 
 static int    gArgc;
 static char  **gArgv;
@@ -134,7 +135,7 @@ int SDLMainIsActive() {
 
 - (void) applicationWillTerminate: (NSNotification *) note
 {
-    PLATFORM_Exit(FALSE);
+    Atari800_Exit(FALSE);
  }
 /*------------------------------------------------------------------------------
 *  application openFile - Open a file dragged to the application.
@@ -189,7 +190,10 @@ int SDLMainIsActive() {
         [[MediaManager sharedInstance] loadExeFileFile:filename];
     else if ([suffix isEqualToString:@"set"] || [suffix isEqualToString:@"SET"])
         [[MediaManager sharedInstance] diskSetLoadFile:filename];
-}
+    else if (([suffix isEqualToString:@"vhd"] ||
+              [suffix isEqualToString:@"VHD"] ) &&
+             (CARTRIDGE_main.type == CARTRIDGE_SIDE2))
+        [[MediaManager sharedInstance] side2AttachCFFile:filename];}
 
 /*------------------------------------------------------------------------------
 *  applicationDidBecomeActive - Called when we are no longer hidden.

@@ -65,6 +65,9 @@ void Util_chomp(char *s);
 /* Similar to Basic's trim(): removes leading and trailing whitespace. */
 void Util_trim(char *s);
 
+/* Removes the file extension from a file. */
+void UTIL_strip_ext(char *fname);
+
 /* Converts the string to a non-negative integer and returns it.
    The string must represent the number and nothing else.
    -1 indicates an error. */

@@ -242,6 +242,11 @@
                                     <action selector="showCreatePanel:" target="473" id="780"/>
                                 </connections>
                             </menuItem>
+                            <menuItem title="New Hard Disk Image..." keyEquivalent="s" id="z3a-n0-jgV">
+                                <connections>
+                                    <action selector="showHardCreatePanel:" target="473" id="DGm-qL-FBm"/>
+                                </connections>
+                            </menuItem>
                             <menuItem title="Edit an .atr Disk Image..." keyEquivalent="e" id="771">
                                 <connections>
                                     <action selector="showEditorPanel:" target="473" id="772"/>
@@ -296,15 +301,91 @@
                                     <action selector="cartInsert:" target="473" id="489"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Insert BASIC Cartridge" keyEquivalent="b" id="WLj-Uh-rnt">
-                                <connections>
-                                    <action selector="basicInsert:" target="473" id="qAc-E9-i4U"/>
-                                </connections>
-                            </menuItem>
                             <menuItem title="Remove Cartridge" keyEquivalent="O" id="414">
                                 <connections>
                                     <action selector="cartRemove:" target="473" id="490"/>
                                 </connections>
+                            </menuItem>
+                            <menuItem title="Handle Special Cartridge" id="he6-pG-YVh">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <menu key="submenu" title="Handle Special Cartridge" id="Wcm-vj-IoM">
+                                    <items>
+                                        <menuItem title="Insert BASIC Cartridge" keyEquivalent="b" id="9Wv-JY-H9Q">
+                                            <connections>
+                                                <action selector="basicInsert:" target="473" id="iVn-KV-m1M"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="ySb-r7-nca">
+                                            <modifierMask key="keyEquivalentModifierMask" command="YES"/>
+                                        </menuItem>
+                                        <menuItem title="Insert SIDE2 Cartridge" keyEquivalent="i" id="r8c-Qd-O8u">
+                                            <connections>
+                                                <action selector="side2Insert:" target="473" id="PGa-Ol-PtZ"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Change SIDE2 ROM Image..." id="mHm-CR-SdA">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="side2ChangeRom:" target="473" id="O3y-5m-KLR"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Save SIDE2 ROM Image..." id="QFy-6q-EPo">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="side2SaveRom:" target="473" id="ACQ-rD-elq"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Attach SIDE2 Hard Disk..." id="XiC-uU-bmv">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="side2AttachCF:" target="473" id="z6e-v6-Hy7"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Remove SIDE2 Hard Disk" id="ZkG-z7-B3L">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="side2RemoveCF:" target="473" id="oMG-3w-hV8"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="SIDE2 Switch - SDX" tag="1" id="wDl-Q2-THn">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="side2SlideSwitch:" target="473" id="x3e-mL-wPe"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="SIDE2 Switch - Loader" id="YW3-c1-TfY">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="side2SlideSwitch:" target="473" id="iE6-AD-mZr"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Press SIDE2 Button" id="VXx-ja-L1S">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="side2Button:" target="473" id="J6e-x1-wHg"/>
+                                            </connections>
+                                        </menuItem>
+                                    </items>
+                                </menu>
+                            </menuItem>
+                            <menuItem title="Handle Ultimate1mb ROM Images" id="FH3-Kn-Z89">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <menu key="submenu" title="Handle Ultimate1mb ROM Images" id="DXN-pH-Rsg">
+                                    <items>
+                                        <menuItem title="Change Ultimate ROM Image..." id="pbK-qu-x45">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="ultimateChangeRom:" target="473" id="9pR-Sr-8gv"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Save Ultimate ROM Image..." id="eyc-Pv-07K">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="ultimateSaveRom:" target="473" id="7ov-Qw-u1a"/>
+                                            </connections>
+                                        </menuItem>
+                                    </items>
+                                </menu>
                             </menuItem>
                             <menuItem title="Insert SDX Piggyback Cartridge..." id="845">
                                 <connections>
@@ -326,7 +407,7 @@
                                     <action selector="convertCartRom:" target="473" id="492"/>
                                 </connections>
                             </menuItem>
-                            <menuItem isSeparatorItem="YES" id="415">
+                            <menuItem isSeparatorItem="YES" id="ip7-e8-GSu">
                                 <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                             </menuItem>
                             <menuItem title="Insert Cassette..." id="416">
@@ -722,6 +803,61 @@ DQ
                                                 <action selector="changeMachineType:" target="524" id="1004"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem title="Atari 1200XL (64KB)" tag="14" id="GmC-LE-ik4">
+                                            <connections>
+                                                <action selector="changeMachineType:" target="524" id="20J-dy-2ob"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Atari 1200XL (320KB RAMBO)" tag="15" id="h8E-TM-TPk">
+                                            <connections>
+                                                <action selector="changeMachineType:" target="524" id="CaN-fz-mAJ"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Atari 1200XL (576KB)" tag="16" id="cK8-Kw-uK3">
+                                            <connections>
+                                                <action selector="changeMachineType:" target="524" id="Lb3-yl-gCg"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Atari 1200XL (1088KB)" tag="17" id="vzq-eT-3QY">
+                                            <connections>
+                                                <action selector="changeMachineType:" target="524" id="0cD-OT-akV"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Atari XEGS (64KB)" tag="18" id="fqw-J3-iaT">
+                                            <connections>
+                                                <action selector="changeMachineType:" target="524" id="o2l-Sj-H5N"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Atari XEGS (320KB RAMBO)" tag="19" id="U80-1c-jfD">
+                                            <connections>
+                                                <action selector="changeMachineType:" target="524" id="w0x-3V-JTz"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Atari XEGS (576KB)" tag="20" id="Yuo-TR-SzN">
+                                            <connections>
+                                                <action selector="changeMachineType:" target="524" id="Xcr-Cp-Mcv"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Atari XEGS (1088KB)" tag="21" id="62v-5z-jem">
+                                            <connections>
+                                                <action selector="changeMachineType:" target="524" id="UEm-z1-9Er"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Atari XL Ultimate 1MB" tag="22" id="Lqx-DL-0om">
+                                            <connections>
+                                                <action selector="changeMachineType:" target="524" id="3CD-mJ-xJc"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Atari 1200XL Ultimate 1MB" tag="23" id="JOa-gW-8Q9">
+                                            <connections>
+                                                <action selector="changeMachineType:" target="524" id="VS7-a6-eLL"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Atari XEGS Ultimate 1MB" tag="24" id="Grx-9F-6gu">
+                                            <connections>
+                                                <action selector="changeMachineType:" target="524" id="pgC-6c-Qlw"/>
+                                            </connections>
+                                        </menuItem>
                                     </items>
                                 </menu>
                             </menuItem>
@@ -753,6 +889,11 @@ DQ
                             <menuItem title="Disable Basic" id="722">
                                 <connections>
                                     <action selector="disableBasic:" target="524" id="724"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="XEGS Keyboard Attached" id="Sdp-iv-Asq">
+                                <connections>
+                                    <action selector="changeXEGSKeyboard:" target="524" id="eo6-VI-qi7"/>
                                 </connections>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="467">
@@ -878,8 +1019,13 @@ DQ
         <customObject id="315" userLabel="Preferences" customClass="Preferences"/>
         <customObject id="473" userLabel="MediaManager" customClass="MediaManager">
             <connections>
-                <outlet property="insertBasicItem" destination="WLj-Uh-rnt" id="FUW-ar-YqA"/>
+                <outlet property="attachSIDE2CFItem" destination="XiC-uU-bmv" id="yhb-TF-MA1"/>
+                <outlet property="changeSIDE2RomItem" destination="mHm-CR-SdA" id="LzM-A3-YER"/>
+                <outlet property="changeUltimateRomItem" destination="pbK-qu-x45" id="lu9-58-Y7J"/>
+                <outlet property="insertBasicItem" destination="9Wv-JY-H9Q" id="gSh-tN-gY3"/>
+                <outlet property="insertSIDE2Item" destination="r8c-Qd-O8u" id="xhJ-au-udl"/>
                 <outlet property="insertSecondCartItem" destination="845" id="851"/>
+                <outlet property="pressSIDE2ButtonItem" destination="VXx-ja-L1S" id="Mev-AV-366"/>
                 <outlet property="printerPreviewItem" destination="786" id="811"/>
                 <outlet property="protectCassItem" destination="GhL-1U-SCu" id="fKd-cD-kG5"/>
                 <outlet property="recordCassItem" destination="96g-1U-6SU" id="pLM-F1-oVp"/>
@@ -894,10 +1040,13 @@ DQ
                 <outlet property="removeD7Item" destination="401" id="511"/>
                 <outlet property="removeD8Item" destination="399" id="512"/>
                 <outlet property="removeMenu" destination="471" id="550"/>
+                <outlet property="removeSIDE2CFItem" destination="ZkG-z7-B3L" id="0Xk-cK-MG5"/>
                 <outlet property="removeSecondCartItem" destination="846" id="850"/>
                 <outlet property="resetPrinterItem" destination="798" id="808"/>
                 <outlet property="resetPrinterMenuItem" destination="798" id="809"/>
                 <outlet property="rewindCassItem" destination="472" id="555"/>
+                <outlet property="saveSIDE2RomItem" destination="QFy-6q-EPo" id="m38-pj-124"/>
+                <outlet property="saveUltimateRomItem" destination="eyc-Pv-07K" id="yxW-Sf-6yJ"/>
                 <outlet property="selectAtari1020Item" destination="794" id="806"/>
                 <outlet property="selectAtari1020MenuItem" destination="794" id="814"/>
                 <outlet property="selectAtari825Item" destination="793" id="805"/>
@@ -909,6 +1058,8 @@ DQ
                 <outlet property="selectPrinterMenu" destination="792" id="810"/>
                 <outlet property="selectTextItem" destination="791" id="804"/>
                 <outlet property="selectTextMenuItem" destination="791" id="812"/>
+                <outlet property="slideSIDE2ButtonLoaderItem" destination="YW3-c1-TfY" id="ZhK-gB-5za"/>
+                <outlet property="slideSIDE2ButtonSDXItem" destination="wDl-Q2-THn" id="gdV-r4-Bn4"/>
             </connections>
         </customObject>
         <customObject id="498" userLabel="DisplayManager" customClass="DisplayManager">
@@ -963,6 +1114,7 @@ DQ
                 <outlet property="pbiExpansionMenu" destination="888" id="982"/>
                 <outlet property="saveStateItem" destination="468" id="535"/>
                 <outlet property="warmResetItem" destination="451" id="533"/>
+                <outlet property="xegsKeyboardItem" destination="Sdp-iv-Asq" id="2xV-50-diG"/>
             </connections>
         </customObject>
         <customObject id="788" userLabel="PrintOutputController" customClass="PrintOutputController"/>

@@ -29,6 +29,8 @@
 #include "rdevice.h"
 #include "pbi_bb.h"
 #include "pbi_mio.h"
+#include "ultimate1mb.h"
+#include "side2.h"
 #include "binload.h"
 
 #define MAX_DIRECTORIES 8
@@ -56,7 +58,10 @@ extern double scaleFactorFloat;
 extern int WIDTH_MODE;
 extern int Screen_show_atari_speed;
 extern int Screen_show_disk_led;
+extern int Screen_show_hd_sector_counter;
 extern int Screen_show_sector_counter;
+extern int Screen_show_1200_leds;
+extern int Screen_show_capslock;
 extern int led_enabled_media;
 extern int led_counter_enabled_media;
 extern int JOYSTICK_MODE[4];
@@ -120,6 +125,8 @@ extern int machine_switch_type;
 extern double emulationSpeed;
 extern int cx85_port;
 extern int useAtariCursorKeys;
+extern int Atari800_useAlitrraXEGSRom;
+extern int Atari800_useAlitrra1200XLRom;
 extern int Atari800_useAlitrraOSBRom;
 extern int Atari800_useAlitrraXLRom;
 extern int Atari800_useAlitrra5200Rom;
@@ -191,6 +198,9 @@ int configurationChanged;
 int mioChanged;
 int bbChanged;
 int fullscreenOptsChanged;
+int ultimateRomChanged;
+int side2RomChanged;
+int side2CFChanged;
 int bbRequested = FALSE;
 int mioRequested = FALSE;
 int dontMuteAudio = 0;
@@ -199,7 +209,7 @@ int diskDriveSound = 1;
 int saveCurrentMedia = 1;
 int clearCurrentMedia = 0;
 
-int CalcAtariType(int machineType, int ramSize, int axlon, int mosaic);
+int CalcAtariType(int machineType, int ramSize, int axlon, int mosaic, int ultimate, int basic, int game, int leds, int jumper);
 
 /* Arrays to translate menu indicies for gamepad keys to key values */
 #define AKEY_BUTTON1  		0x100
@@ -304,8 +314,14 @@ void savePrefs() {
 	prefssave.enablePPatch = Devices_enable_p_patch;
 	prefssave.enableRPatch = Devices_enable_r_patch;
 		
-	prefssave.atariType = CalcAtariType(Atari800_machine_type, MEMORY_ram_size,
-										MEMORY_axlon_num_banks > 0, MEMORY_mosaic_num_banks > 0);
+
+    prefssave.atariType = CalcAtariType(Atari800_machine_type, MEMORY_ram_size,
+										MEMORY_axlon_num_banks > 0, MEMORY_mosaic_num_banks > 0,
+                                        ULTIMATE_enabled,
+                                        Atari800_builtin_basic,
+                                        Atari800_builtin_game,
+                                        Atari800_keyboard_leds,
+                                        Atari800_jumper_present);
 
 	prefssave.currPrinter = currPrinter;
 	prefssave.artifactingMode = ANTIC_artif_mode;
@@ -314,6 +330,14 @@ void savePrefs() {
 	prefssave.blackBoxEnabled = bbRequested;
 	prefssave.mioEnabled = mioRequested;
 	prefssave.useAtariCursorKeys = useAtariCursorKeys;
+    prefssave.a1200xlJumper = Atari800_jumper;
+    prefssave.xegsKeyboard = !Atari800_keyboard_detached;
+    prefssave.side2SDXMode = SIDE2_SDX_Mode_Switch;
+    strcpy(prefssave.side2FlashFileName, side2_rom_filename);
+    //strcpy(prefssave.side2NVRAMFileName, side2_nvram_filename);
+    strcpy(prefssave.side2CFFileName, side2_compact_flash_filename);
+    strcpy(prefssave.ultimate1MBFlashFileName, ultimate_rom_filename);
+
 	ReturnPreferences(&prefssave);
 	if (saveCurrentMedia)
         {
@@ -369,10 +393,18 @@ void loadPrefsBinaries() {
 	int i;
 	
     if (prefs.cartFileEnabled) {
-        CARTRIDGE_Insert(prefs.cartFile);
+        if (strcmp(prefs.cartFile, "SIDE2") == 0)
+            CARTRIDGE_Insert_SIDE2();
+        else if (strcmp(prefs.cartFile, "BASIC") == 0)
+            CARTRIDGE_Insert_BASIC();
+        else if (strcmp(prefs.cartFile, "ULTIMATE-SDX") != 0)
+            CARTRIDGE_Insert(prefs.cartFile);
 	}
     if (prefs.cart2FileEnabled) {
-        CARTRIDGE_Insert_Second(prefs.cart2File);
+        if (strcmp(prefs.cart2File, "SIDE2") == 0)
+            CARTRIDGE_Insert_SIDE2();
+        else
+            CARTRIDGE_Insert_Second(prefs.cart2File);
 	}
     if (prefs.exeFileEnabled) {
         BINLOAD_Loader(prefs.exeFile);
@@ -410,9 +442,14 @@ void loadPrefsBinaries() {
 *   16: Atari800_MACHINE_OSB, Axlon Ram Expansion
 *   17: Atari800_MACHINE_OSB, Mosaic Ram Expansion
 *   18: Atari800_MACHINE_XLXE, 192
+* Version 5.4+ adds the following types:
+*   19: Atari800_MACHINE_XLXE, 1200XL 64
+*   20: Atari800_MACHINE_XLXE, XEGS, 64
+*   21: Atari800_MACHINE_XLXE XL Ultimate 1MB
+*   22: Atari800_MACHINE_XLXE XEGS Ultimate 1MB
 **************************************************************/
 
-int CalcAtariType(int machineType, int ramSize, int axlon, int mosaic)
+int CalcAtariType(int machineType, int ramSize, int axlon, int mosaic, int ultimate, int basic, int game, int leds, int jumper)
 {
 	if (machineType == Atari800_MACHINE_800) {
 		if (axlon) {
@@ -437,6 +474,34 @@ int CalcAtariType(int machineType, int ramSize, int axlon, int mosaic)
 		}
 	}
 	else if (machineType == Atari800_MACHINE_XLXE) {
+        if (ultimate) {
+            if (game)
+                return 29;
+            else if (leds)
+                return 28;
+            else
+                return 27;
+        }
+        if (game) {
+            if (ramSize == 64)
+                return 23;
+            else if (ramSize == MEMORY_RAM_320_RAMBO)
+                return 24;
+            else if (ramSize == 576)
+                return 25;
+            else if (ramSize == 1088)
+                return 26;
+        }
+        if (leds) {
+            if (ramSize == 64)
+                return 19;
+            else if (ramSize == MEMORY_RAM_320_RAMBO)
+                return 20;
+            else if (ramSize == 576)
+                return 21;
+            else if (ramSize == 1088)
+                return 22;
+        }
 		if (ramSize == 16)
 			return 6;
 		else if (ramSize == 64)
@@ -467,7 +532,7 @@ int CalcAtariType(int machineType, int ramSize, int axlon, int mosaic)
 }
 
 void CalcMachineTypeRam(int type, int *machineType, int *ramSize,
-						int *axlon, int *mosaic)
+						int *axlon, int *mosaic, int *ultimate, int *basic, int *game, int *leds, int *jumper)
 {
     switch(type) {
         case 0:
@@ -475,114 +540,330 @@ void CalcMachineTypeRam(int type, int *machineType, int *ramSize,
             *ramSize = 16;
 			*axlon = FALSE;
 			*mosaic = FALSE;
+            *ultimate = FALSE;
+            *basic = FALSE;
+            *game = FALSE;
+            *leds = FALSE;
+            *jumper = FALSE;
             break;
         case 1:
             *machineType = Atari800_MACHINE_800;
             *ramSize = 48;
 			*axlon = FALSE;
 			*mosaic = FALSE;
+            *ultimate = FALSE;
+            *basic = FALSE;
+            *game = FALSE;
+            *leds = FALSE;
+            *jumper = FALSE;
             break;
         case 2:
             *machineType = Atari800_MACHINE_800;
             *ramSize = 52;
 			*axlon = FALSE;
 			*mosaic = FALSE;
+            *ultimate = FALSE;
+            *basic = FALSE;
+            *game = FALSE;
+            *leds = FALSE;
+            *jumper = FALSE;
             break;
         case 3:
             *machineType = Atari800_MACHINE_800;
             *ramSize = 16;
 			*axlon = FALSE;
 			*mosaic = FALSE;
+            *ultimate = FALSE;
+            *basic = FALSE;
+            *game = FALSE;
+            *leds = FALSE;
+            *jumper = FALSE;
             break;
         case 4:
             *machineType = Atari800_MACHINE_800;
             *ramSize = 48;
 			*axlon = FALSE;
 			*mosaic = FALSE;
+            *ultimate = FALSE;
+            *basic = FALSE;
+            *game = FALSE;
+            *leds = FALSE;
+            *jumper = FALSE;
             break;
         case 5:
             *machineType = Atari800_MACHINE_800;
             *ramSize = 52;
 			*axlon = FALSE;
 			*mosaic = FALSE;
+            *ultimate = FALSE;
+            *basic = FALSE;
+            *game = FALSE;
+            *leds = FALSE;
+            *jumper = FALSE;
             break;
         case 6:
             *machineType = Atari800_MACHINE_XLXE;
             *ramSize = 16;
 			*axlon = FALSE;
 			*mosaic = FALSE;
+            *ultimate = FALSE;
+            *basic = TRUE;
+            *game = FALSE;
+            *leds = FALSE;
+            *jumper = FALSE;
             break;
         case 7:
             *machineType = Atari800_MACHINE_XLXE;
             *ramSize = 64;
 			*axlon = FALSE;
 			*mosaic = FALSE;
+            *ultimate = FALSE;
+            *basic = TRUE;
+            *game = FALSE;
+            *leds = FALSE;
+            *jumper = FALSE;
             break;
         case 8:
             *machineType = Atari800_MACHINE_XLXE;
             *ramSize = 128;
 			*axlon = FALSE;
 			*mosaic = FALSE;
+            *ultimate = FALSE;
+            *basic = TRUE;
+            *game = FALSE;
+            *leds = FALSE;
+            *jumper = FALSE;
             break;
         case 9:
             *machineType = Atari800_MACHINE_XLXE;
             *ramSize = MEMORY_RAM_320_RAMBO;
 			*axlon = FALSE;
 			*mosaic = FALSE;
+            *ultimate = FALSE;
+            *basic = TRUE;
+            *game = FALSE;
+            *leds = FALSE;
+            *jumper = FALSE;
             break;
         case 10:
             *machineType = Atari800_MACHINE_XLXE;
             *ramSize = MEMORY_RAM_320_COMPY_SHOP;
 			*axlon = FALSE;
 			*mosaic = FALSE;
+            *ultimate = FALSE;
+            *basic = TRUE;
+            *game = FALSE;
+            *leds = FALSE;
+            *jumper = FALSE;
             break;
         case 11:
             *machineType = Atari800_MACHINE_XLXE;
             *ramSize = 576;
 			*axlon = FALSE;
 			*mosaic = FALSE;
+            *ultimate = FALSE;
+            *basic = TRUE;
+            *game = FALSE;
+            *leds = FALSE;
+            *jumper = FALSE;
             break;
         case 12:
             *machineType = Atari800_MACHINE_XLXE;
             *ramSize = 1088;
 			*axlon = FALSE;
 			*mosaic = FALSE;
+            *ultimate = FALSE;
+            *basic = TRUE;
+            *game = FALSE;
+            *leds = FALSE;
+            *jumper = FALSE;
             break;
         case 13:
             *machineType = Atari800_MACHINE_5200;
             *ramSize = 16;
 			*axlon = FALSE;
 			*mosaic = FALSE;
+            *ultimate = FALSE;
+            *basic = FALSE;
+            *game = FALSE;
+            *leds = FALSE;
+            *jumper = FALSE;
             break;
         case 14:
             *machineType = Atari800_MACHINE_800;
             *ramSize = 48;
 			*axlon = TRUE;
 			*mosaic = FALSE;
+            *ultimate = FALSE;
+            *basic = FALSE;
+            *game = FALSE;
+            *leds = FALSE;
+            *jumper = FALSE;
             break;
         case 15:
             *machineType = Atari800_MACHINE_800;
             *ramSize = 48;
 			*axlon = FALSE;
 			*mosaic = TRUE;
+            *ultimate = FALSE;
+            *basic = FALSE;
+            *game = FALSE;
+            *leds = FALSE;
+            *jumper = FALSE;
             break;
         case 16:
             *machineType = Atari800_MACHINE_800;
             *ramSize = 48;
 			*axlon = TRUE;
 			*mosaic = FALSE;
+            *ultimate = FALSE;
+            *basic = FALSE;
+            *game = FALSE;
+            *leds = FALSE;
+            *jumper = FALSE;
             break;
         case 17:
             *machineType = Atari800_MACHINE_800;
             *ramSize = 48;
 			*axlon = FALSE;
 			*mosaic = TRUE;
+            *ultimate = FALSE;
+            *basic = FALSE;
+            *game = FALSE;
+            *leds = FALSE;
+            *jumper = FALSE;
             break;
         case 18:
             *machineType = Atari800_MACHINE_XLXE;
             *ramSize = 192;
-			*axlon = FALSE;
-			*mosaic = FALSE;
+            *axlon = FALSE;
+            *mosaic = FALSE;
+            *ultimate = FALSE;
+            *basic = TRUE;
+            *game = FALSE;
+            *leds = FALSE;
+            *jumper = FALSE;
+            break;
+        case 19: // 1200XL
+            *machineType = Atari800_MACHINE_XLXE;
+            *ramSize = 64;
+            *axlon = FALSE;
+            *mosaic = FALSE;
+            *ultimate = FALSE;
+            *basic = FALSE;
+            *game = FALSE;
+            *leds = TRUE;
+            *jumper = TRUE;
+            break;
+        case 20: // 1200XL
+            *machineType = Atari800_MACHINE_XLXE;
+            *ramSize = MEMORY_RAM_320_RAMBO;
+            *axlon = FALSE;
+            *mosaic = FALSE;
+            *ultimate = FALSE;
+            *basic = FALSE;
+            *game = FALSE;
+            *leds = TRUE;
+            *jumper = TRUE;
+            break;
+        case 21: // 1200XL
+            *machineType = Atari800_MACHINE_XLXE;
+            *ramSize = 576;
+            *axlon = FALSE;
+            *mosaic = FALSE;
+            *ultimate = FALSE;
+            *basic = FALSE;
+            *game = FALSE;
+            *leds = TRUE;
+            *jumper = TRUE;
+            break;
+        case 22: // 1200XL
+            *machineType = Atari800_MACHINE_XLXE;
+            *ramSize = 1088;
+            *axlon = FALSE;
+            *mosaic = FALSE;
+            *ultimate = FALSE;
+            *basic = FALSE;
+            *game = FALSE;
+            *leds = TRUE;
+            *jumper = TRUE;
+            break;
+        case 23: // XEGS
+            *machineType = Atari800_MACHINE_XLXE;
+            *ramSize = 64;
+            *axlon = FALSE;
+            *mosaic = FALSE;
+            *ultimate = FALSE;
+            *basic = TRUE;
+            *game = TRUE;
+            *leds = FALSE;
+            *jumper = FALSE;
+            break;
+        case 24: // XEGS
+            *machineType = Atari800_MACHINE_XLXE;
+            *ramSize = MEMORY_RAM_320_RAMBO;
+            *axlon = FALSE;
+            *mosaic = FALSE;
+            *ultimate = FALSE;
+            *basic = TRUE;
+            *game = TRUE;
+            *leds = FALSE;
+            *jumper = FALSE;
+            break;
+        case 25: // XEGS
+            *machineType = Atari800_MACHINE_XLXE;
+            *ramSize = 576;
+            *axlon = FALSE;
+            *mosaic = FALSE;
+            *ultimate = FALSE;
+            *basic = TRUE;
+            *game = TRUE;
+            *leds = FALSE;
+            *jumper = FALSE;
+            break;
+        case 26: // XEGS
+            *machineType = Atari800_MACHINE_XLXE;
+            *ramSize = 1088;
+            *axlon = FALSE;
+            *mosaic = FALSE;
+            *ultimate = FALSE;
+            *basic = TRUE;
+            *game = TRUE;
+            *leds = FALSE;
+            *jumper = FALSE;
+            break;
+        case 27: // Ultimate XL
+            *machineType = Atari800_MACHINE_XLXE;
+            *ramSize = 1088;
+            *axlon = FALSE;
+            *mosaic = FALSE;
+            *ultimate = TRUE;
+            *basic = TRUE;
+            *game = FALSE;
+            *leds = FALSE;
+            *jumper = FALSE;
+            break;
+        case 28: // Ultimate 100XL
+            *machineType = Atari800_MACHINE_XLXE;
+            *ramSize = 1088;
+            *axlon = FALSE;
+            *mosaic = FALSE;
+            *ultimate = TRUE;
+            *basic = FALSE;
+            *game = FALSE;
+            *leds = TRUE;
+            *jumper = TRUE;
+            break;
+        case 29: // Ultimate XEGS
+            *machineType = Atari800_MACHINE_XLXE;
+            *ramSize = 1088;
+            *axlon = FALSE;
+            *mosaic = FALSE;
+            *ultimate = TRUE;
+            *basic = TRUE;
+            *game = TRUE;
+            *leds = FALSE;
+            *jumper = FALSE;
             break;
 	}
 
@@ -594,7 +875,12 @@ void CalculatePrefsChanged()
     int new_ram_size = 0;
 	int new_axlon = 0;
 	int new_mosaic = 0;
-
+    int new_ultimate = 0;
+    int new_basic = 0;
+    int new_game = 0;
+    int new_leds = 0;
+    int new_jumper = 0;
+ 
     if (WIDTH_MODE != prefs.widthMode)
         displaySizeChanged = TRUE;
     else
@@ -626,7 +912,21 @@ void CalculatePrefsChanged()
 		scaleModeChanged = TRUE;
 	else
 		scaleModeChanged = FALSE;
-	strcpy(bb_rom_filename, prefs.blackBoxRomFile);
+
+    if (strcmp(ultimate_rom_filename, prefs.ultimate1MBFlashFileName) != 0)
+        ultimateRomChanged = TRUE;
+    else
+        ultimateRomChanged = FALSE;
+    if (strcmp(side2_rom_filename, prefs.side2FlashFileName) != 0)
+        side2RomChanged = TRUE;
+    else
+        side2RomChanged = FALSE;
+    if (strcmp(side2_compact_flash_filename, prefs.side2CFFileName) != 0)
+        side2CFChanged = TRUE;
+    else
+        side2CFChanged = FALSE;
+
+    strcpy(bb_rom_filename, prefs.blackBoxRomFile);
 	strcpy(mio_rom_filename, prefs.mioRomFile);
 	strcpy(bb_scsi_disk_filename, prefs.blackBoxScsiDiskFile);
 	strcpy(mio_scsi_disk_filename, prefs.mioScsiDiskFile);
@@ -635,20 +935,41 @@ void CalculatePrefsChanged()
     strcpy(bit3_rom_filename, prefs.bit3RomFile);
     strcpy(bit3_charset_filename, prefs.bit3CharsetFile);
 
-    CalcMachineTypeRam(prefs.atariType, &new_machine_type, &new_ram_size,
-					   &new_axlon, &new_mosaic);
-    if ((Atari800_machine_type != new_machine_type) ||
-        (MEMORY_ram_size != new_ram_size) ||
-		((MEMORY_axlon_num_banks > 0) != new_axlon) ||
-		((MEMORY_mosaic_num_banks > 0) != new_mosaic) ||
-		((MEMORY_axlon_num_banks - 1) != prefs.axlonBankMask) ||
-		((MEMORY_mosaic_num_banks - 1) != prefs.mosaicMaxBank) ||
-		(bbRequested != prefs.blackBoxEnabled) ||
-		(mioRequested != prefs.mioEnabled))
-        machineTypeChanged = TRUE;
-    else
-        machineTypeChanged = FALSE;
-	
+    if (ULTIMATE_enabled) {
+        CalcMachineTypeRam(prefs.atariType, &new_machine_type,
+                           &new_ram_size, &new_axlon,
+                           &new_mosaic, &new_ultimate,
+                           &new_basic, &new_game,
+                           &new_leds, &new_jumper);
+        if (ULTIMATE_enabled != new_ultimate)
+            machineTypeChanged = TRUE;
+        else
+            machineTypeChanged = FALSE;
+        
+    } else {
+        CalcMachineTypeRam(prefs.atariType, &new_machine_type,
+                           &new_ram_size, &new_axlon,
+                           &new_mosaic, &new_ultimate,
+                           &new_basic, &new_game,
+                           &new_leds, &new_jumper);
+        if ((Atari800_machine_type != new_machine_type) ||
+            (MEMORY_ram_size != new_ram_size) ||
+            ((MEMORY_axlon_num_banks > 0) != new_axlon) ||
+            ((MEMORY_mosaic_num_banks > 0) != new_mosaic) ||
+            ((MEMORY_axlon_num_banks - 1) != prefs.axlonBankMask) ||
+            ((MEMORY_mosaic_num_banks - 1) != prefs.mosaicMaxBank) ||
+            (Atari800_builtin_basic != new_basic) ||
+            (Atari800_builtin_game != new_game) ||
+            (Atari800_keyboard_leds != new_leds) ||
+            (Atari800_jumper_present != new_jumper) ||
+            (bbRequested != prefs.blackBoxEnabled) ||
+            (mioRequested != prefs.mioEnabled) ||
+            (ULTIMATE_enabled != new_ultimate))
+            machineTypeChanged = TRUE;
+        else
+            machineTypeChanged = FALSE;
+    }
+    
     if ((Atari800_disable_basic != prefs.disableBasic) ||
         (disable_all_basic != prefs.disableAllBasic) ||
         (ESC_enable_sio_patch != prefs.enableSioPatch) ||
@@ -695,6 +1016,9 @@ void CalculatePrefsChanged()
         hardDiskChanged = FALSE;
 
     if ((strcmp(CFG_osb_filename, prefs.osBRomFile) !=0) ||
+        (strcmp(CFG_xegs_filename, prefs.xegsRomFile) !=0) ||
+        (strcmp(CFG_xegsGame_filename, prefs.xegsGameRomFile) !=0) ||
+        (strcmp(CFG_1200xl_filename, prefs.a1200XLRomFile) !=0) ||
 		(strcmp(CFG_xlxe_filename, prefs.xlRomFile) !=0) ||
 		(strcmp(CFG_basic_filename, prefs.basicRomFile) !=0) ||
 		(strcmp(CFG_5200_filename, prefs.a5200RomFile) !=0) ||
@@ -707,6 +1031,8 @@ void CalculatePrefsChanged()
 		(strcmp(mio_rom_filename, prefs.mioRomFile) != 0) ||
 		(strcmp(bb_scsi_disk_filename, prefs.blackBoxScsiDiskFile) != 0) ||
 		(strcmp(mio_scsi_disk_filename, prefs.mioScsiDiskFile) != 0) ||
+        (Atari800_useAlitrraXEGSRom != prefs.useAltirraXEGSRom) ||
+        (Atari800_useAlitrra1200XLRom != prefs.useAltirra1200XLRom) ||
         (Atari800_useAlitrraOSBRom != prefs.useAltirraOSBRom) ||
         (Atari800_useAlitrraXLRom != prefs.useAltirraXLRom) ||
         (Atari800_useAlitrraBasicRom != prefs.useAltirraBasicRom) ||
@@ -768,7 +1094,10 @@ int loadMacPrefs(int firstTime)
     onlyIntegralScaling = prefs.onlyIntegralScaling;
     fixAspectFullscreen = prefs.fixAspectFullscreen;
 	Screen_show_disk_led = prefs.ledStatus;
-	Screen_show_sector_counter = prefs.ledSector;
+    Screen_show_sector_counter = prefs.ledSector;
+    Screen_show_1200_leds = prefs.ledFKeys;
+    Screen_show_capslock = prefs.ledCapsLock;
+    Screen_show_hd_sector_counter = prefs.ledHDSector;
 	led_enabled_media = prefs.ledStatusMedia;
 	led_counter_enabled_media = prefs.ledSectorMedia;
 
@@ -789,8 +1118,11 @@ int loadMacPrefs(int firstTime)
     paletteIntensity = prefs.intensity;
     paletteColorShift = prefs.colorShift; 
     strcpy(paletteFilename, prefs.paletteFile);
-    CalcMachineTypeRam(prefs.atariType, &Atari800_machine_type, &MEMORY_ram_size,
-					   &axlon_enabled, &mosaic_enabled);
+    CalcMachineTypeRam(prefs.atariType, &Atari800_machine_type,
+                       &MEMORY_ram_size, &axlon_enabled,
+                       &mosaic_enabled, &ULTIMATE_enabled,
+                       &Atari800_builtin_basic, &Atari800_builtin_game,
+                       &Atari800_keyboard_leds, &Atari800_jumper_present);
     if (axlon_enabled) {
         MEMORY_axlon_num_banks = prefs.axlonBankMask + 1;
         PREFS_axlon_num_banks = MEMORY_axlon_num_banks;
@@ -807,7 +1139,15 @@ int loadMacPrefs(int firstTime)
     strcpy(af80_rom_filename, prefs.af80RomFile);
     strcpy(af80_charset_filename, prefs.af80CharsetFile);
     strcpy(bit3_rom_filename, prefs.bit3RomFile);
+    strcpy(ultimate_rom_filename, prefs.ultimate1MBFlashFileName);
+    strcpy(ultimate_nvram_filename, prefs.ultimate1MBNVRAMFileName);
+    strcpy(side2_rom_filename, prefs.side2FlashFileName);
+    strcpy(side2_nvram_filename, prefs.side2NVRAMFileName);
+    strcpy(side2_compact_flash_filename, prefs.side2CFFileName);
     strcpy(bit3_charset_filename, prefs.bit3CharsetFile);
+    SIDE2_SDX_Mode_Switch = prefs.side2SDXMode;
+    SIDE2_Flash_Type = prefs.side2UltimateFlashType;
+    ULTIMATE_Flash_Type = prefs.side2UltimateFlashType;
     strcpy(bb_rom_filename, prefs.blackBoxRomFile);
 	strcpy(mio_rom_filename, prefs.mioRomFile);
 	strcpy(bb_scsi_disk_filename, prefs.blackBoxScsiDiskFile);
@@ -878,6 +1218,8 @@ int loadMacPrefs(int firstTime)
 	XEP80_port = prefs.xep80_port;
 	XEP80_FONTS_oncolor = prefs.xep80_oncolor;
 	XEP80_FONTS_offcolor = prefs.xep80_offcolor;
+    Atari800_jumper = prefs.a1200xlJumper;
+    Atari800_keyboard_detached = !prefs.xegsKeyboard;
     sound_enabled = prefs.enableSound;
 	sound_volume = prefs.soundVolume;
     POKEYSND_stereo_enabled = prefs.enableStereo;
@@ -909,10 +1251,15 @@ int loadMacPrefs(int firstTime)
     strcpy(Devices_atari_h_dir[3], prefs.hardDiskDir[3]);
     Devices_h_read_only = prefs.hardDrivesReadOnly;
     strcpy(Devices_h_exe_path, prefs.hPath);
+    strcpy(CFG_xegs_filename, prefs.xegsRomFile);
+    strcpy(CFG_xegsGame_filename, prefs.xegsGameRomFile);
+    strcpy(CFG_1200xl_filename, prefs.a1200XLRomFile);
     strcpy(CFG_osb_filename, prefs.osBRomFile);
     strcpy(CFG_xlxe_filename, prefs.xlRomFile);
     strcpy(CFG_basic_filename, prefs.basicRomFile);
     strcpy(CFG_5200_filename, prefs.a5200RomFile);
+    Atari800_useAlitrraXEGSRom = prefs.useAltirraXEGSRom;
+    Atari800_useAlitrra1200XLRom = prefs.useAltirra1200XLRom;
     Atari800_useAlitrraOSBRom = prefs.useAltirraOSBRom;
     Atari800_useAlitrraXLRom = prefs.useAltirraXLRom;
     Atari800_useAlitrra5200Rom = prefs.useAltirra5200Rom;
