@@ -2439,11 +2439,13 @@ UWORD show_instruction_string(char*buff, UWORD pc, int wid)
 	if (mylabel == NULL)
 		mylabel = "        ";
 #endif
-	insn = MEMORY_SafeGetByte(pc++);
+	insn = MEMORY_SafeGetByte(pc);
+	pc++;
 	mnemonic = instr6502[insn];
 	for (p = mnemonic + 3; *p != '\0'; p++) {
 		if (*p == '1') {
-			value = MEMORY_SafeGetByte(pc++);
+			value = MEMORY_SafeGetByte(pc);
+			pc++;
 #ifdef MACOSX_MON_ENHANCEMENTS
 			nchars = sprintf(buff, "%04X:%02X %02X    %-8s " /*"%Xcyc  "*/ "%.*s$%02X%s",
 			                 addr, insn, value,  mylabel,/*cycles[insn],*/ (int) (p - mnemonic), mnemonic, value, p + 1);
@@ -2468,7 +2470,8 @@ UWORD show_instruction_string(char*buff, UWORD pc, int wid)
 			break;
 		}
 		if (*p == '0') {
-			UBYTE op = MEMORY_SafeGetByte(pc++);
+			UBYTE op = MEMORY_SafeGetByte(pc);
+			pc++;
 			value = (UWORD) (pc + (SBYTE) op);
 #ifdef MACOSX_MON_ENHANCEMENTS
 			nchars = sprintf(buff, "%04X:%02X %02X    %-8s " /*"3cyc  "*/ "%.4s$%04X", addr, insn, op, mylabel, mnemonic, value);
