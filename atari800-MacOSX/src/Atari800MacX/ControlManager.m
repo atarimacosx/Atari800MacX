@@ -1771,13 +1771,9 @@ static int monitorRunFirstTime = 1;
 - (void)updateMonitorGUIDisasm:(BOOL) usePc: (unsigned short) altAddress
 {
 	static unsigned short address = 0;
-	int addrDelta;
 
 	if (usePc) {
-	addrDelta = (int) CPU_regPC - (int) address;
-
-	if (addrDelta > 0x70 || addrDelta < 0)
-		address = MONITOR_get_disasm_start(CPU_regPC - 0x40, CPU_regPC);
+        address = MONITOR_get_disasm_start(CPU_regPC - 0x40, CPU_regPC);
 	} 
 	else {
 		address = MONITOR_get_disasm_start(altAddress - 0x40, altAddress);
