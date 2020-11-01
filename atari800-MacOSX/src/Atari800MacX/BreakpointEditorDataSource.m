@@ -489,7 +489,9 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 
 -(void) addCondition
 {
-	[myBreakpoint addCondition:[newCondition copy] atIndex:editableConditionCount];
+    BreakpointCondition *addedCondition = [newCondition copy];
+    [newCondition retain];
+	[myBreakpoint addCondition:addedCondition atIndex:editableConditionCount];
 	editableConditionCount++;
 	[(ControlManager *)owner reloadBreakpointEditor];	
 }
