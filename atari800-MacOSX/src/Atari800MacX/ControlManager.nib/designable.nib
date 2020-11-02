@@ -575,7 +575,7 @@
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                     <clipView key="contentView" id="Zvs-gB-C1Q">
                                                         <rect key="frame" x="1" y="0.0" width="276" height="178"/>
-                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                        <autoresizingMask key="autoresizingMask"/>
                                                         <subviews>
                                                             <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="15" headerView="5116" id="2154" customClass="WatchTableView">
                                                                 <rect key="frame" x="0.0" y="0.0" width="276" height="153"/>
@@ -654,7 +654,7 @@
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                     <clipView key="contentView" id="TAr-O1-Bqc">
                                                         <rect key="frame" x="1" y="1" width="186" height="180"/>
-                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                        <autoresizingMask key="autoresizingMask"/>
                                                         <subviews>
                                                             <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="13" id="2173">
                                                                 <rect key="frame" x="0.0" y="0.0" width="186" height="180"/>
@@ -1670,14 +1670,14 @@
         <window title="Keys" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="99" userLabel="FunctionKeys" customClass="Atari800FunctionKeysWindow">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" utility="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" topStrut="YES"/>
-            <rect key="contentRect" x="83" y="282" width="94" height="122"/>
+            <rect key="contentRect" x="83" y="282" width="94" height="162"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
             <view key="contentView" id="100">
-                <rect key="frame" x="0.0" y="0.0" width="94" height="122"/>
+                <rect key="frame" x="0.0" y="0.0" width="94" height="162"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <button fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="114">
-                        <rect key="frame" x="0.0" y="100" width="94" height="25"/>
+                        <rect key="frame" x="0.0" y="131" width="94" height="25"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="square" title="Select" bezelStyle="shadowlessSquare" alignment="center" borderStyle="border" inset="2" id="5005">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -1688,7 +1688,7 @@
                         </connections>
                     </button>
                     <button fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="115">
-                        <rect key="frame" x="0.0" y="75" width="94" height="25"/>
+                        <rect key="frame" x="0.0" y="106" width="94" height="25"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="square" title="Option" bezelStyle="shadowlessSquare" alignment="center" borderStyle="border" inset="2" id="5006">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -1699,7 +1699,7 @@
                         </connections>
                     </button>
                     <button fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="116">
-                        <rect key="frame" x="0.0" y="50" width="94" height="25"/>
+                        <rect key="frame" x="0.0" y="81" width="94" height="25"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="square" title="Start" bezelStyle="shadowlessSquare" alignment="center" borderStyle="border" inset="2" id="5007">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -1710,7 +1710,7 @@
                         </connections>
                     </button>
                     <button fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="121">
-                        <rect key="frame" x="0.0" y="25" width="94" height="25"/>
+                        <rect key="frame" x="0.0" y="27" width="94" height="25"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="square" title="Break" bezelStyle="shadowlessSquare" alignment="center" borderStyle="border" inset="2" id="5008">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -1721,7 +1721,7 @@
                         </connections>
                     </button>
                     <button fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="tJh-mN-Vqz">
-                        <rect key="frame" x="0.0" y="0.0" width="94" height="25"/>
+                        <rect key="frame" x="0.0" y="1" width="94" height="25"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="square" title="Inverse" bezelStyle="shadowlessSquare" alignment="center" borderStyle="border" inset="2" id="kbW-5A-Z8N">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -1731,9 +1731,20 @@
                             <action selector="inversePressed:" target="-2" id="KEr-4X-E9l"/>
                         </connections>
                     </button>
+                    <button fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="f71-ng-pNq">
+                        <rect key="frame" x="0.0" y="54" width="94" height="25"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <buttonCell key="cell" type="square" title="Help" bezelStyle="shadowlessSquare" alignment="center" borderStyle="border" inset="2" id="ab6-Ov-ZCx">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="helpPressed:" target="-2" id="GPe-Ce-8iU"/>
+                        </connections>
+                    </button>
                 </subviews>
             </view>
-            <point key="canvasLocation" x="84" y="398"/>
+            <point key="canvasLocation" x="84" y="418"/>
         </window>
         <menu autoenablesItems="NO" id="750" userLabel="Disasm Menu">
             <items>
