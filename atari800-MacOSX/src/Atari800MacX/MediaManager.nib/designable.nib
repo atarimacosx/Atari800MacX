@@ -1864,7 +1864,7 @@ DQ
                         <rect key="frame" x="152" y="44" width="26" height="13"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" id="1768">
-                            <font key="font" metaFont="menu" size="10"/>
+                            <font key="font" metaFont="system" size="10"/>
                             <string key="title">D1
 </string>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -1906,7 +1906,7 @@ DQ
                         <rect key="frame" x="233" y="44" width="26" height="13"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" id="1771">
-                            <font key="font" metaFont="menu" size="10"/>
+                            <font key="font" metaFont="system" size="10"/>
                             <string key="title">D2
 </string>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -2000,7 +2000,7 @@ DQ
                         <rect key="frame" x="314" y="44" width="26" height="13"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="D3" id="1781">
-                            <font key="font" metaFont="menu" size="10"/>
+                            <font key="font" metaFont="system" size="10"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -2067,7 +2067,7 @@ DQ
                         <rect key="frame" x="395" y="44" width="26" height="13"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="D4" id="1787">
-                            <font key="font" metaFont="menu" size="10"/>
+                            <font key="font" metaFont="system" size="10"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -2159,7 +2159,7 @@ DQ
                         <rect key="frame" x="151" y="82" width="83" height="13"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="center" id="1795">
-                            <font key="font" metaFont="menu" size="10"/>
+                            <font key="font" metaFont="system" size="10"/>
                             <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -2168,7 +2168,7 @@ DQ
                         <rect key="frame" x="232" y="83" width="83" height="13"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="center" tag="1" id="1796">
-                            <font key="font" metaFont="menu" size="10"/>
+                            <font key="font" metaFont="system" size="10"/>
                             <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -2177,7 +2177,7 @@ DQ
                         <rect key="frame" x="313" y="83" width="83" height="13"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="center" tag="2" id="1797">
-                            <font key="font" metaFont="menu" size="10"/>
+                            <font key="font" metaFont="system" size="10"/>
                             <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -2186,7 +2186,7 @@ DQ
                         <rect key="frame" x="394" y="83" width="83" height="13"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="center" tag="3" id="1798">
-                            <font key="font" metaFont="menu" size="10"/>
+                            <font key="font" metaFont="system" size="10"/>
                             <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -2550,17 +2550,6 @@ DQ
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <button fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1371">
-                        <rect key="frame" x="742" y="-3" width="53" height="24"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                        <buttonCell key="cell" type="square" title="80COL" bezelStyle="shadowlessSquare" alignment="center" borderStyle="border" inset="2" id="1827">
-                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                            <font key="font" metaFont="system"/>
-                        </buttonCell>
-                        <connections>
-                            <action selector="changeXEP80:" target="-2" id="1372"/>
-                        </connections>
-                    </button>
                     <popUpButton verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6Vc-ke-Kp8">
                         <rect key="frame" x="617" y="-4" width="124" height="26"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -2627,7 +2616,7 @@ DQ
                         </connections>
                     </button>
                     <box verticalHuggingPriority="750" fixedFrame="YES" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="1194">
-                        <rect key="frame" x="13" y="24" width="803" height="5"/>
+                        <rect key="frame" x="13" y="18" width="803" height="5"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </box>
                     <button verticalHuggingPriority="750" fixedFrame="YES" tag="2" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6GZ-pU-3Yw">
@@ -2639,6 +2628,17 @@ DQ
                         </buttonCell>
                         <connections>
                             <action selector="side2Button:" target="-2" id="qZ3-PR-HyU"/>
+                        </connections>
+                    </button>
+                    <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1371">
+                        <rect key="frame" x="743" y="-1" width="84" height="23"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <buttonCell key="cell" type="roundTextured" title="80COL" bezelStyle="texturedRounded" alignment="center" controlSize="small" borderStyle="border" inset="2" id="1827">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="message" size="11"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="changeXEP80:" target="-2" id="1372"/>
                         </connections>
                     </button>
                 </subviews>

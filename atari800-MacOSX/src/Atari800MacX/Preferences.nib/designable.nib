@@ -862,7 +862,7 @@ DQ
                                                         </connections>
                                                     </button>
                                                     <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="iCL-Aa-vuI">
-                                                        <rect key="frame" x="14" y="5" width="272" height="18"/>
+                                                        <rect key="frame" x="14" y="8" width="272" height="18"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <buttonCell key="cell" type="check" title="Show CapsLock indicator on Atari Screen" bezelStyle="regularSquare" imagePosition="left" inset="2" id="IgS-f8-yN2">
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -1046,7 +1046,7 @@ DQ
                                                     <button fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cLz-OT-mui">
                                                         <rect key="frame" x="18" y="49" width="176" height="18"/>
                                                         <autoresizingMask key="autoresizingMask"/>
-                                                        <buttonCell key="cell" type="check" title="XEGS Keybaord Attached" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="BEJ-ZV-02B">
+                                                        <buttonCell key="cell" type="check" title="XEGS Keyboard Attached" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="BEJ-ZV-02B">
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                             <font key="font" metaFont="system"/>
                                                         </buttonCell>
@@ -5489,7 +5489,7 @@ Assignment
             <connections>
                 <outlet property="initialFirstResponder" destination="261" id="469"/>
             </connections>
-            <point key="canvasLocation" x="164.5" y="-577.5"/>
+            <point key="canvasLocation" x="-1" y="-592"/>
         </window>
         <window title="Identify Gamepad Buttons" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="1061" userLabel="Identify" customClass="Atari800GamepadWindow">
             <windowStyleMask key="styleMask" titled="YES"/>
