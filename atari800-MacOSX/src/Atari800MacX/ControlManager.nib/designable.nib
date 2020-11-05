@@ -115,7 +115,7 @@
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="44">
-                        <rect key="frame" x="95" y="92" width="320" height="70"/>
+                        <rect key="frame" x="95" y="81" width="320" height="70"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" selectable="YES" alignment="left" id="4999">
                             <font key="font" metaFont="message" size="11"/>
