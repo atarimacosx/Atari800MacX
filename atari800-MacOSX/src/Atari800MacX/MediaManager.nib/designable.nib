@@ -2142,7 +2142,7 @@ DQ
                         </connections>
                     </button>
                     <imageView fixedFrame="YES" tag="9" translatesAutoresizingMaskIntoConstraints="NO" id="925" customClass="Atari800ImageView">
-                        <rect key="frame" x="590" y="66" width="45" height="46"/>
+                        <rect key="frame" x="592" y="70" width="41" height="42"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="1793"/>
                     </imageView>
@@ -2213,7 +2213,7 @@ DQ
                         <autoresizingMask key="autoresizingMask"/>
                     </box>
                     <box horizontalHuggingPriority="750" fixedFrame="YES" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="969">
-                        <rect key="frame" x="560" y="20" width="5" height="102"/>
+                        <rect key="frame" x="563" y="20" width="5" height="102"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </box>
                     <imageView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="971">
@@ -2304,7 +2304,7 @@ DQ
                         </textFieldCell>
                     </textField>
                     <box horizontalHuggingPriority="750" fixedFrame="YES" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="1071">
-                        <rect key="frame" x="654" y="20" width="5" height="101"/>
+                        <rect key="frame" x="655" y="20" width="5" height="101"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </box>
                     <button fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1073">
@@ -2620,11 +2620,11 @@ DQ
                         <autoresizingMask key="autoresizingMask"/>
                     </box>
                     <button verticalHuggingPriority="750" fixedFrame="YES" tag="2" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6GZ-pU-3Yw">
-                        <rect key="frame" x="633" y="92" width="22" height="16"/>
+                        <rect key="frame" x="630" y="94" width="28" height="16"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <buttonCell key="cell" type="push" bezelStyle="rounded" image="NSStatusNone" imagePosition="only" alignment="center" controlSize="mini" borderStyle="border" inset="2" id="XnH-ZY-HPa">
+                        <buttonCell key="cell" type="push" title="S" bezelStyle="rounded" imagePosition="overlaps" alignment="center" controlSize="mini" borderStyle="border" inset="2" id="XnH-ZY-HPa">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="label" size="9"/>
+                            <font key="font" size="9" name="HelveticaNeue-Medium"/>
                         </buttonCell>
                         <connections>
                             <action selector="side2Button:" target="-2" id="qZ3-PR-HyU"/>
@@ -3267,7 +3267,6 @@ Gw
     </objects>
     <resources>
         <image name="Fuji" width="128" height="128"/>
-        <image name="NSStatusNone" width="16" height="16"/>
         <image name="NSStatusUnavailable" width="16" height="16"/>
     </resources>
 </document>
