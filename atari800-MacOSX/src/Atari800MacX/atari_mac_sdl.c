@@ -1334,6 +1334,15 @@ void Atari_Consol_Key_Input() {
         INPUT_key_consol &= (~INPUT_CONSOL_START);
 }
 
+int Atari_Help_Key_Pressed() {
+    UInt8 *kbhits;
+    
+    /* Handle the Atari Console Keys */
+    kbhits = (Uint8 *) SDL_GetKeyboardState(NULL);
+    return (kbhits[SDL_SCANCODE_F10] ||
+            kbhits[SDL_SCANCODE_PAGEDOWN]);
+}
+
 /*------------------------------------------------------------------------------
  *  Atari_Keyboard_International - This function is called once per main loop to handle
  *    keyboard input.  It handles keys like the original SDL version,  with
@@ -2161,6 +2170,8 @@ int Atari_Keyboard_International(void)
                 return AKEY_SEMICOLON;
             case SDLK_F5:
                 return AKEY_WARMSTART;
+            case SDLK_F10:
+                return AKEY_HELP;
             case SDLK_0:
                 return AKEY_0;
             case SDLK_1:
@@ -2207,6 +2218,7 @@ int Atari_Keyboard_International(void)
                 key_pressed = 0;
                 requestMonitor = TRUE;
                 return AKEY_NONE;
+            case SDLK_F12:
             case SDLK_F13:
                 key_pressed = 0;
                 return AKEY_SCREENSHOT;

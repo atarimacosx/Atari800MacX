@@ -101,10 +101,12 @@ biteme!
 #include "sysrom.h"
 
 extern double emulationSpeed;
+extern int helpFunctionPressed;
 void loadMacPrefs(int firstTime);
 void MacSoundReset(void);
 void MacCapsLockStateReset(void);
 int MediaManagerCartSelect(int nbytes);
+int Atari_Help_Key_Pressed();
 #if defined(SOUND) && !defined(__PLUS)
 #include "pokeysnd.h"
 #include "sndsave.h"
@@ -169,6 +171,10 @@ void Atari800_Warmstart(void)
         if (PLATFORM_80col)
             PLATFORM_Switch80Col();
     }
+    if (Atari_Help_Key_Pressed()) {
+        helpFunctionPressed = 10;
+    }
+
 #endif
 	if (Atari800_machine_type == Atari800_MACHINE_800) {
 		/* A real Axlon homebanks on reset */
