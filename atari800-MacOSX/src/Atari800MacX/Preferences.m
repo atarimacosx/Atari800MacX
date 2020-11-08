@@ -2340,6 +2340,12 @@ static Preferences *sharedInstance = nil;
     [displayedValues setObject:[d7FileField stringValue] forKey:D7File];
     [displayedValues setObject:[d8FileField stringValue] forKey:D8File];
     [displayedValues setObject:[cartFileField stringValue] forKey:CartFile];
+    if ([[cartFileField stringValue] isEqual:@"BASIC"])
+        [cartFileSelectButton selectItemAtIndex:1];
+    else if ([[cartFileField stringValue] isEqual:@"SIDE2"])
+        [cartFileSelectButton selectItemAtIndex:2];
+    else
+        [cartFileSelectButton selectItemAtIndex:0];
     [displayedValues setObject:[cart2FileField stringValue] forKey:Cart2File];
     [displayedValues setObject:[exeFileField stringValue] forKey:ExeFile];
     [displayedValues setObject:[cassFileField stringValue] forKey:CassFile];
@@ -3469,7 +3475,20 @@ static Preferences *sharedInstance = nil;
         [self miscChanged:self];
         }
     }
+ 
+- (IBAction)selectCartImage:(id)sender {
+    int index;
     
+    index = [cartFileSelectButton indexOfSelectedItem];
+    if (index == 0)
+        [self browseCartFile:sender];
+    else if (index == 1)
+        [cartFileField setStringValue:@"BASIC"];
+    else
+        [cartFileField setStringValue:@"SIDE2"];
+    [self miscChanged:self];
+}
+
 - (void)browseCartFile:(id)sender {
     NSString *filename;
     

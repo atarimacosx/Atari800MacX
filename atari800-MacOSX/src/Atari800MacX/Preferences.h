@@ -637,8 +637,9 @@
 - (void)browseD5File:(id)sender; 
 - (void)browseD6File:(id)sender; 
 - (void)browseD7File:(id)sender; 
-- (void)browseD8File:(id)sender; 
-- (void)browseCartFile:(id)sender; 
+- (void)browseD8File:(id)sender;
+- (IBAction)selectCartImage:(id)sender;
+- (void)browseCartFile:(id)sender;
 - (void)browseExeFile:(id)sender; 
 - (void)browseCassFile:(id)sender; 
 - (void)transferValuesToEmulator;

@@ -59,7 +59,7 @@
                 <outlet property="cart2FileSelectButton" destination="4309" id="4314"/>
                 <outlet property="cartFileEnabledButton" destination="526" id="546"/>
                 <outlet property="cartFileField" destination="525" id="540"/>
-                <outlet property="cartFileSelectButton" destination="527" id="4282"/>
+                <outlet property="cartFileSelectButton" destination="zHD-ph-psV" id="lrY-9v-flT"/>
                 <outlet property="cartImageDirField" destination="391" id="409"/>
                 <outlet property="cassFileEnabledButton" destination="660" id="666"/>
                 <outlet property="cassFileField" destination="661" id="665"/>
@@ -3407,17 +3407,6 @@ Command Path for Hx: Devices
                                                 <action selector="miscChanged:" target="-2" id="583"/>
                                             </connections>
                                         </button>
-                                        <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="527">
-                                            <rect key="frame" x="187" y="108" width="99" height="32"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <buttonCell key="cell" type="push" title="Cartridge" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="13057">
-                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                                <font key="font" metaFont="system"/>
-                                            </buttonCell>
-                                            <connections>
-                                                <action selector="browseCartFile:" target="-2" id="562"/>
-                                            </connections>
-                                        </button>
                                         <button fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="529">
                                             <rect key="frame" x="677" y="55" width="72" height="18"/>
                                             <autoresizingMask key="autoresizingMask"/>
@@ -3430,7 +3419,7 @@ Command Path for Hx: Devices
                                             </connections>
                                         </button>
                                         <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="530">
-                                            <rect key="frame" x="187" y="46" width="99" height="32"/>
+                                            <rect key="frame" x="185" y="46" width="99" height="32"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <buttonCell key="cell" type="push" title="Exe File" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="13059">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -3453,7 +3442,7 @@ Command Path for Hx: Devices
                                             </connections>
                                         </textField>
                                         <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="659">
-                                            <rect key="frame" x="187" y="15" width="99" height="32"/>
+                                            <rect key="frame" x="185" y="15" width="99" height="32"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <buttonCell key="cell" type="push" title="Cassette" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="13061">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -3530,7 +3519,7 @@ Command Path for Hx: Devices
                                             </connections>
                                         </button>
                                         <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4309">
-                                            <rect key="frame" x="187" y="77" width="99" height="32"/>
+                                            <rect key="frame" x="185" y="77" width="99" height="32"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <buttonCell key="cell" type="push" title="Cartridge2" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="13067">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -3562,6 +3551,24 @@ Command Path for Hx: Devices
                                                 <action selector="saveCurrentMediaAction:" target="-2" id="12046"/>
                                             </connections>
                                         </button>
+                                        <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="zHD-ph-psV">
+                                            <rect key="frame" x="145" y="113" width="136" height="25"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <popUpButtonCell key="cell" type="push" title="Cartridge File..." bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="1UF-AX-snN" id="NkG-jc-bVo">
+                                                <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                                <menu key="menu" id="y2e-1y-Iie">
+                                                    <items>
+                                                        <menuItem title="Cartridge File..." state="on" id="1UF-AX-snN"/>
+                                                        <menuItem title="Builtin BASIC" id="dn8-bc-8eI"/>
+                                                        <menuItem title="SIDE2 Cartridge" id="88D-gQ-kJO"/>
+                                                    </items>
+                                                </menu>
+                                            </popUpButtonCell>
+                                            <connections>
+                                                <action selector="selectCartImage:" target="-2" id="D96-fi-lIx"/>
+                                            </connections>
+                                        </popUpButton>
                                     </subviews>
                                 </view>
                             </tabViewItem>
@@ -5489,7 +5496,7 @@ Assignment
             <connections>
                 <outlet property="initialFirstResponder" destination="261" id="469"/>
             </connections>
-            <point key="canvasLocation" x="-1" y="-592"/>
+            <point key="canvasLocation" x="-1.5" y="-592.5"/>
         </window>
         <window title="Identify Gamepad Buttons" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="1061" userLabel="Identify" customClass="Atari800GamepadWindow">
             <windowStyleMask key="styleMask" titled="YES"/>
