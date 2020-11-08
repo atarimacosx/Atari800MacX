@@ -2218,7 +2218,6 @@ int Atari_Keyboard_International(void)
                 key_pressed = 0;
                 requestMonitor = TRUE;
                 return AKEY_NONE;
-            case SDLK_F12:
             case SDLK_F13:
                 key_pressed = 0;
                 return AKEY_SCREENSHOT;
