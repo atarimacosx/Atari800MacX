@@ -1239,7 +1239,7 @@ NSImage *disketteImage;
     if (type == 0)
         fileType = @"raw";
     else
-        fileType = @"vhd";
+        fileType = @"img";
     
     filename = [self saveFileInDirectory:[NSString stringWithCString:atari_disk_dirs[0] encoding:NSUTF8StringEncoding]:fileType];
     if (filename != nil) {

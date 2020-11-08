@@ -159,9 +159,11 @@ sourceOperationMaskForDraggingContext:(NSDraggingContext)context
                     [suffix isEqualToString:@"ROM"] ||
                     [suffix isEqualToString:@"bin"] ||
                     [suffix isEqualToString:@"BIN"] ||
-					(([suffix isEqualToString:@"vhd"] ||
+                    [suffix isEqualToString:@"img"] ||
+                    [suffix isEqualToString:@"IMG"] ||
+                    [suffix isEqualToString:@"vhd"] ||
 					[suffix isEqualToString:@"VHD"] ) &&
-                     (CARTRIDGE_main.type == CARTRIDGE_SIDE2))))
+                     (CARTRIDGE_main.type == CARTRIDGE_SIDE2))
 					return NSDragOperationNone;
             }
 		if (sourceDragMask & NSDragOperationMove)
@@ -210,7 +212,9 @@ sourceOperationMaskForDraggingContext:(NSDraggingContext)context
 			[[MediaManager sharedInstance] cassInsertFile:[files objectAtIndex:0]]; 
        else if ([self tag] == 9) {
            if ((CARTRIDGE_main.type == CARTRIDGE_SIDE2) &&
-               ([suffix isEqualToString:@"vhd"] ||
+               ([suffix isEqualToString:@"img"] ||
+                [suffix isEqualToString:@"IMG"] ||
+                [suffix isEqualToString:@"vhd"] ||
                 [suffix isEqualToString:@"VHD"])) {
                [[MediaManager sharedInstance] side2AttachCFFile:[files objectAtIndex:0]];
            } else {

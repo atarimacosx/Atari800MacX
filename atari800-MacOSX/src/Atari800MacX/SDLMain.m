@@ -190,7 +190,9 @@ int SDLMainIsActive() {
         [[MediaManager sharedInstance] loadExeFileFile:filename];
     else if ([suffix isEqualToString:@"set"] || [suffix isEqualToString:@"SET"])
         [[MediaManager sharedInstance] diskSetLoadFile:filename];
-    else if (([suffix isEqualToString:@"vhd"] ||
+    else if (([suffix isEqualToString:@"img"] ||
+              [suffix isEqualToString:@"IMG"] ||
+              [suffix isEqualToString:@"vhd"] ||
               [suffix isEqualToString:@"VHD"] ) &&
              (CARTRIDGE_main.type == CARTRIDGE_SIDE2))
         [[MediaManager sharedInstance] side2AttachCFFile:filename];}
