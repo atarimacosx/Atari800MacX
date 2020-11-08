@@ -710,10 +710,14 @@ int Atari800_Initialise(int *argc, char *argv[])
 	/* Install requested ROM cartridge */
 	if (rom_filename) {
         int r = 0;
-        if (strcmp(rom_filename, "SIDE2") == 0)
+        if (strcmp(rom_filename, "SIDE2") == 0) {
             r = CARTRIDGE_Insert_SIDE2();
-        else if (strcmp(rom_filename, "BASIC") == 0)
+            Atari800_Coldstart();
+        }
+        else if (strcmp(rom_filename, "BASIC") == 0) {
             r = CARTRIDGE_Insert_BASIC();
+            Atari800_Coldstart();
+        }
         else if (strcmp(rom_filename, "ULTIMATE-SDX") != 0)
             r = CARTRIDGE_InsertAutoReboot(rom_filename);
 		if (r < 0) {
