@@ -2,177 +2,53 @@
 <html>
 <head>
 
-
-
-
-
-
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
   <title>Media Menu</title>
   <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 </head>
 
-
 <body>
-
-
-
-
-
 
 <table border="0" cellpadding="2" cellspacing="2" width="100%">
 
-
-
-
-
-
   <tbody>
-
-
-
-
-
 
     <tr>
 
-
-
-
-
-
       <td valign="top" width="20%"><img src="fuji.gif" alt="" height="90" width="123"> <br>
 
-
-
-
-
-
       </td>
-
-
-
-
-
 
       <td valign="top"><b><font size="+3">Atari800MacX Help<br>
 
-
-
-
-
-
 Menus<br>
-
-
-
-
-
 
 Media Menu<br>
 
-
-
-
-
-
       </font></b><br>
-
-
-
-
-
 
       </td>
 
-
-
-
-
-
     </tr>
 
-
-
-
-
-
-  
-  
-  
-  
-  
-  
   </tbody>
 </table>
 
-
-
-
-
-
 <br>
-
-
-
-
-
 
 <img src="MediaMenu.jpg" title="" alt="" style="width: 255px; height: 380px;"><br>
 
-
-
-
-
-
 <br>
 
-
-
-
-
-
 <br>
-
-
-
-
-
 
 The Media menu on the Atari800MacX emulator allows you to insert and
 remove digital media into the emulator, the same way you would on a
 real Atari. &nbsp;It
 has the following menu selections:<br>
 
-
-
-
-
-
 <br>
 
-
-
-
-
-
 <b><u>Drive Management (cmd-D)</u><br>
-
-
-
-
-
 
 </b>
 <blockquote>This menu item supplies access to a full Disk Drive
@@ -182,223 +58,140 @@ well as manage the status of the emulated drives. &nbsp;Details on it's
 operation
 can be found <a href="DriveManagement.html">here</a>. <br>
 
-
-
-
-
-
 </blockquote>
-
-
-
-
-
 
 <b><u>Insert Floppy (cmd-1 through cmd-8)</u><br>
 
-
-
-
-
-
 </b>
-<blockquote>This sub-menu allows you to insert an image file into any
-of the
-8 emulated disk drives. &nbsp;A .atr, .dcm, or .xfd file may also be
-loaded
-into the emulator by double-clicking it in the finder, or dragging it
-to
-the Atari800MacX Icon.<br>
-
-
-
-
-
+<blockquote>
+This sub-menu allows you to insert an image file into
+any of the 8 emulated disk drives. &nbsp;
+A .atr, .dcm, or .xfd file may also be loaded
+into the emulator by double-clicking it in the
+finder, or dragging it to the Atari800MacX Icon.<br>
 
 </blockquote>
-
-
-
-
-
 
 <b><u>Remove Floppy (ctrl-cmd-1 through ctrl-cmd-8, and ctrl-cmd-0)</u><br>
 
-
-
-
-
-
 </b>
-<blockquote>This sub-menu allows you to remove a image file from one of
-the emulated disk drives, or you may empty all of the drives at once.<br>
-
-
-
-
-
+<blockquote>
+This sub-menu allows you to remove a image file from
+one of the emulated disk drives, or you may empty all
+of the drives at once.<br>
 
 </blockquote>
 
 
-
-
-
-
 <b><u>Rotate Floppies<br>
-
-
-
-
-
 
 </u></b>
 <blockquote>This menu item rotates the current inserted floppies among
 the drives.&nbsp; This may be useful for playing multiple disk games.<br>
 
-
-
 </blockquote>
-
-
 
 <u><b>New Floppy Image<br>
 
-
-
-
-
 </b></u>
-<blockquote>This item will display a new window which you may use to
-create a new disk image. &nbsp;This new image will be saved in .atr
-format.<br>
+<blockquote>This item will display a new window which
+you may use to create a new disk image. &nbsp;
+This new image will be saved in .atr format.<br>
 
+<br>
 
-
-
-
-  <br>
-
-
-
-
-
-In the Create Disk Image window,&nbsp; you may choose a format of a
-disk. Note that not all formats are supported by all Atari DOSes. There
-are three standard formats:<br>
-
-
-
-
-
-  
-  
-  
-  
-  
+In the Create Disk Image window,&nbsp; you may choose
+a format of a disk. Note that not all formats are
+supported by all Atari DOSes. There are three
+standard formats:<br>
   <ul>
-
-
-
     <li>Single density (40 tracks * 18 sectors/track * 128 bytes/sector
 = 90 KB)</li>
-
-
 
     <li>Medium density (40 tracks * 26 sectors/track * 128 bytes/sector
 = 130 KB)</li>
 
-
-
     <li>Double density (40 tracks * 18 sectors/track * 256 bytes/sector
 = 180 KB)</li>
 
-
-
-  
-  
-  
   </ul>
 
+You can also select any other format, by clicking
+Custom and setting Number of sectors and Bytes per
+sector. Please make sure your Atari DOS supports this
+format, otherwise the image will be unusable.<br>
+<br>
 
+If 256 bytes per sector are selected, you can choose
+between 128 and 256 Bytes in boot sectors.
+Physically, boot sectors (first three sectors on a
+disk) are also 256 bytes long, but only 128 are
+transmitted between the Atari and a disk drive (upper
+halves of sectors are not used). There are disk
+images with 128 bytes in boot sectors and disk images
+with 256 bytes in boot sectors. The Atari800 emulator
+supports both, but other emulators don't. Except some
+special cases, we recommend 128 for ATR images.<br>
 
-
-
-You can also select any other format, by clicking Custom and setting
-Number of sectors and Bytes per sector. Please make sure your Atari DOS
-supports this format, otherwise the image will be unusable.<br>
-
-
-
-
-
-  <br>
-
-
-
-
-
-If 256 bytes per sector are selected, you can choose between 128 and
-256 Bytes in boot sectors. Physically, boot sectors (first three
-sectors on
-a disk) are also 256 bytes long, but only 128 are transmitted between
-the
-Atari and a disk drive (upper halves of sectors are not used). There
-are
-disk images with 128 bytes in boot sectors and disk images with 256
-bytes
-in boot sectors. The Atari800 emulator supports both, but other
-emulators
-don't. Except some special cases, we recommend 128 for ATR images.<br>
-
-
-
-
-
-  <br>
-
-
-
-
-
-If the "Insert New Disk image into drive" checkbox is checked, the
-created image will be mounted on the specified drive.<br>
-
-
-
-
+<br>
+If the "Insert New Disk image into drive" checkbox is
+checked, the created image will be mounted on the
+specified drive.<br>
 
 </blockquote>
 
-
-
-
-
-
-
-<u><b>New Cassette&nbsp;Image<br>
-
-
-
-
+<u><b>New Hard Disk Image<br>
 
 </b></u>
-<blockquote>This item will create a new cassette file in the .cas
-format. &nbsp;You will be prompted for the name of the new file, and
-then it will be created and inserted into the cassette player.<br>
+<blockquote>This item will display a new window which
+you may use to create a new hard disk image. &nbsp;
+This new image will be saved in a VHD format.<br>
 
+<br>
 
+In the Create Hard Disk Image window,&nbsp; you may
+choose the type of the image. There are three
+standard types:<br>
+  <ul>
+      <li>RAW Image - There are no headers in this image type, and all 512 byte sectors of the hard disk are stored in order in the image file.</li>
+
+      <li>Fixed VHD Image - This is a Virtual Box/Windows 10 compatible image where all of the sectors of the disk image are written at creation, and the disk image will be the same size during it's entire life.</li>
+
+      <li>Dynamic VHD Image - This is a Virtual Box/Windows 10 compatible image where all of the sectors of the disk image are written as neede, and the disk image will grow as more data is added.</li>
+
+  </ul>
+
+You can specify the size of the image either in
+size in megabytes or the number of 512 byte sectors.
+<br><br>
+The image is created with either a .raw or .img
+filename depending on type.  VHD types are created
+with the .img file on the Mac.  If you want to use
+it with a Windows machine, you should change the name
+to .vhd.  If you create a FAT16 or FAT32 partition on
+the hard drive image using the FDISK tool on the
+Atari, you can format and mount that partition on the
+Mac.  For instructions on how to do this, see the
+Handle Hard Disk Images page.
+<br>
+<br>
+If the "Insert New Disk image into drive" checkbox is
+checked, the created image will be mounted on the
+SIDE2 cartridge.<br>
+
+</blockquote>
+<u><b>New Cassette&nbsp;Image<br>
+
+</b></u>
+<blockquote>
+This item will create a new cassette file in the .cas
+format. &nbsp;You will be prompted for the name of
+the new file, and then it will be created and
+inserted into the cassette player.<br>
 
 </blockquote>
 
-
-
 <b><u>Edit an .atr Disk Image<br>
-
-
-
-
-
 
 </u></b>
 <blockquote>This menu item allows you to edit a Atari floppy disk image
@@ -510,6 +303,69 @@ from the emulator.<br>
 
 
 
+<b><u>Handle Specal Cartridge submenu</u><br>
+</b>
+<br>
+
+<img src="MediaMenuSpecial.jpg" title="" alt="" ><br>
+
+<blockquote>This submenu allows you to insert
+special cartridges and handle operations related
+to them.<br><br>
+
+<b><u>Insert BASIC Cartridge</u><br></b>
+<br>
+This allows you to use the built-in BASIC that is
+configured for the emulator to be inserted as a
+cartridge for those Atari's that do not have built
+in BASIC, such as 400/800/1200XL.<br><br>
+
+<b><u>Insert SIDE2 Cartridge</u><br></b>
+<br>
+This allows you to insert a SIDE2 Cartridge into the
+emulator.<br><br>
+
+<b><u>Handle SIDE2 Flash</u><br></b>
+<br>
+These menu items allow you to change
+the flash image file that is used by the SIDE2
+cartridge, and to save the SIDE2 flash image
+if it has been modified by using UFLASH on the
+Atari.<br><br>
+
+<b><u>Handle SIDE2 Hard Disk Images</u><br></b>
+<br>
+These menu items allow you to attach and remove
+hard disk flash image files to/from the SIDE2
+cartridge.
+<br><br>
+
+<b><u>Handle SIDE2 Switches</u><br></b>
+<br>
+These menu items allow you to slide the switch
+on the cartridge to select SDX or Loader mode, and
+to press the push button on the SIDE2 cartrdige.
+<br><br>
+
+</blockquote>
+
+<b><u>Handle Ultimate1mb submenu</u><br>
+</b>
+
+<br>
+
+<img src="MediaMenuUltimate.jpg" title="" alt="" ><br>
+
+<br>
+
+<blockquote>This submenu allows you to change
+the flash image file that is used by the Ultimate1mb
+extension, and to save the Ultimate1mb flash image
+if it has been modified by using UFLASH on the Atari.
+<br>
+
+</blockquote>
+
 <b><u>Insert SDX Piggyback Cartridge </u><br>
 
 
@@ -529,10 +385,6 @@ is a .car file, then this step will not be necessary.&nbsp;<br>
 
 
 </blockquote>
-
-
-
-
 
 
 <b><u>Remove SDX Piggyback Cartridge </u><br>
