@@ -655,7 +655,7 @@ DQ
                             <menuItem isSeparatorItem="YES" id="463">
                                 <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                             </menuItem>
-                            <menuItem title="Screenshot" keyEquivalent="" id="464">
+                            <menuItem title="Screenshot" keyEquivalent="" id="464">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="screenshot:" target="498" id="502"/>
