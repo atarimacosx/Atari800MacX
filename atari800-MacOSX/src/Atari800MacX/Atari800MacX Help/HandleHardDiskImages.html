@@ -1,0 +1,71 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+
+  <title>Handle Hard Disk Images</title>
+  <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+</head>
+
+<body>
+
+<table border="0" cellpadding="2" cellspacing="2" width="100%">
+
+  <tbody>
+
+    <tr>
+
+      <td valign="top" width="20%"><img src="fuji.gif" alt="" height="90" width="123"> <br>
+
+      </td>
+
+      <td valign="top"><b><font size="+3">Atari800MacX Help<br>
+
+Menus<br>
+
+Handle Hard Disk Images<br>
+
+      </font></b><br>
+
+      </td>
+
+    </tr>
+
+  </tbody>
+</table>
+
+
+Although the emulator has the ability to create
+VHD hard disk images, there are some tips needed
+to use them with the Mac OS.
+<br><br>
+For the Mac to be able to mount the disk images
+to access FAT16 or FAT32 partitions, the file must
+be names .img (instead of .vhd).
+<br><br>
+Even then the Mac is not able to mount the image if
+the FAT partitions are not formated.  So the image
+needs to be mounted with a special command and
+formated first.  For this example, we will consider
+a hard disk image, named test.img, that has a
+FAT16 partition as the first partition.<br><br>
+Entering the following into the Mac terminal<br><br>
+<code>
+sudo hdik test.img<br>
+sudo newfs_msdos -F 16 /dev/disk3s1<br>
+sudo hide -e /dev/disk3<br>
+</code><br>
+Note, the disk number may vary in your case.
+In this case it is "3", so you use disk3 and disk3s1
+in the commands.  The output of the hdik command will
+let you determine the disk number.<br><br>
+Once you have done this, from then on you can mount
+the disk normally with:<br><br>
+<code>
+hdiutil attach test.img
+</code>
+
+
+
+</body>
+</html>
+
