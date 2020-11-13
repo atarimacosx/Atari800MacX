@@ -147,6 +147,7 @@ static ULONG *grafp_ptr[4];
 static int global_sizem[4];
 
 static const int PM_Width[4] = {1, 2, 1, 4};
+static int patch_ram[0x100];
 
 /* Meaning of bits in GTIA_pm_scanline:
 bit 0 - Player 0
@@ -433,6 +434,9 @@ void GTIA_Frame(void)
 
 UBYTE GTIA_GetByte(UWORD addr, int no_side_effects)
 {
+    if (addr >= 0xd040) {
+        return patch_ram[addr & 0xFF];
+    }
 	switch (addr & 0x1f) {
 	case GTIA_OFFSET_M0PF:
 #ifdef NEW_CYCLE_EXACT
@@ -593,6 +597,9 @@ UBYTE GTIA_GetByte(UWORD addr, int no_side_effects)
 
 void GTIA_PutByte(UWORD addr, UBYTE byte)
 {
+    if (addr >= 0xd040) {
+        patch_ram[addr & 0xFF] = byte;
+    }
 #if !defined(BASIC) && !defined(CURSES_BASIC)
 	UWORD cword;
 	UWORD cword2;
