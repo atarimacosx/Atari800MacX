@@ -1,10 +1,11 @@
-//
-//  side2.h
-//  Atari800MacX
-//
-//  Created by markg on 9/12/20.
-//
-
+/*
+ * side2.h - Emulation of the SIDE2 cartridge
+ *
+ * Adapted from Altirra
+ * Copyright (C) 2008-2012 Avery Lee
+ * Copyright (C) 2020 Mark Grebe
+ *
+*/
 extern int SIDE2_enabled;
 extern int SIDE2_have_rom;
 extern int SIDE2_SDX_Mode_Switch;

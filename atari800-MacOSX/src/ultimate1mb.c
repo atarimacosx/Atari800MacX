@@ -1,6 +1,7 @@
 /*
  * ultimate1mb.c - Emulation of the Ultimate 1MB Expansion
  *
+ * Adapted from Altirra
  * Copyright (C) 2008-2012 Avery Lee
  * Copyright (C) 2020 Mark Grebe
  *

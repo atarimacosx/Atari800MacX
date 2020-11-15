@@ -1,9 +1,12 @@
-//
-//  eeprom.c
-//  Atari800MacX
-//
-//  Created by markg on 11/14/20.
-//
+/* eeprom.c -
+   Emulation of SPI EEPROM for the Atari
+   Macintosh OS X SDL port of Atari800
+   Mark Grebe <atarimacosx@gmail.com>
+   Copyright (C) 2020 Mark Grebe
+
+   Ported and Adapted from Altirra
+   Copyright (C) 2009-2014 Avery Lee
+*/
 
 #include "atari.h"
 #include <stdlib.h>

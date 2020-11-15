@@ -1,6 +1,7 @@
 /*
  * side2.c - Emulation of the SIDE2 cartridge
  *
+ * Adapted from Altirra
  * Copyright (C) 2008-2012 Avery Lee
  * Copyright (C) 2020 Mark Grebe
  *

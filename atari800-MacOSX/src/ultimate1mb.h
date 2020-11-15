@@ -1,9 +1,11 @@
-//
-//  ultimate1mb.h
-//  Atari800MacX
-//
-//  Created by markg on 8/28/20.
-//
+/*
+ * ultimate1mb.c - Emulation of the Ultimate 1MB Expansion
+ *
+ * Adapted from Altirra
+ * Copyright (C) 2008-2012 Avery Lee
+ * Copyright (C) 2020 Mark Grebe
+ *
+*/
 
 #ifndef ultimate1mb_h
 #define ultimate1mb_h
