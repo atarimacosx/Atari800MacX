@@ -575,21 +575,23 @@ static void Update_Cart_Banks() {
             base = 0xB000;
             size = 0x1000;
         }
+        
+        UWORD end = (base + size) - 1;
 
         MEMORY_CartA0bfEnable();
         if (!(CartBank & 0x10000)) {
-            MEMORY_CopyROM(base, (base + size) - 1, CartImage + ((CartBank << 13) & CartSizeMask));
+            MEMORY_CopyROM(base, end, CartImage + ((CartBank << 13) & CartSizeMask));
         } else {
             MEMORY_SetFlashRoutines(THECART_Ram_Read, THECART_Ram_Write);
-            MEMORY_SetFlash(base, (base + size) - 1);
+            MEMORY_SetFlash(base, end);
         }
     }
 
     if (CartBank2 < 0) {
         MEMORY_Cart809fDisable();
     } else {
-        UBYTE base = 0x80;
-        UBYTE size = 0x20;
+        UBYTE base = 0x8000;
+        UBYTE size = 0x2000;
         UWORD extraOffset = 0;
         ULONG bank2 = CartBank2;
 
@@ -597,8 +599,8 @@ static void Update_Cart_Banks() {
         if (bank2 & 0x20000) {
             bank2 -= 0x20000;
 
-            base = 0xA0;
-            size = 0x10;
+            base = 0xA000;
+            size = 0x1000;
 
             if (bank2 & 1)
                 extraOffset = 0x1000;
@@ -609,12 +611,13 @@ static void Update_Cart_Banks() {
         } else {
             MEMORY_Cart809fEnable();
         }
+        UWORD end = (base + size) - 1;
 
         if (!(CartBank & 0x10000)) {
-            MEMORY_CopyROM(base << 8, ((base + size) << 8) - 1, CartImage + (((bank2 << 13) + extraOffset) & CartSizeMask));
+            MEMORY_CopyROM(base, end, CartImage + (((bank2 << 13) + extraOffset) & CartSizeMask));
         } else {
             MEMORY_SetFlashRoutines(THECART_Ram_Read, THECART_Ram_Write);
-            MEMORY_SetFlash(base, (base + size) - 1);
+            MEMORY_SetFlash(base, end);
         }
     }
 }
