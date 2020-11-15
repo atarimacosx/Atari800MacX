@@ -1478,6 +1478,7 @@ int Atari_Keyboard_International(void)
                 }
                 else {
                     pasteState = PASTE_IDLE;
+                    printf("Damn\n");
                     return(AKEY_NONE);
                 }
             }
@@ -1588,7 +1589,7 @@ int Atari_Keyboard_International(void)
         checkForNewJoysticks();
         Atari_Consol_Key_Input();
         int pollEvent = 0;
-        while ((pollEvent = SDL_PollEvent(&event))) {
+        while (SDL_PollEvent(&event)) {
             pollEvent++;
             switch (event.type) {
                 case SDL_DROPFILE:
@@ -1601,10 +1602,13 @@ int Atari_Keyboard_International(void)
                 case SDL_TEXTINPUT:
                     kbhits = (Uint8 *) SDL_GetKeyboardState(NULL);
                     text_input = event.text.text;
+                    printf("TI\n");
+                    lastkey = 0;
                     text_type = TRUE;
                     switch(strlen(text_input)) {
                         case 0:
                         default:
+                            printf("Here1\n");
                             return AKEY_NONE;
                         case 1:
                             text_key = Atari_International_Char_To_Key(text_input[0]);
@@ -1613,23 +1617,30 @@ int Atari_Keyboard_International(void)
                                   kbhits[SDL_SCANCODE_RSHIFT]))
                                 text_key &= ~AKEY_SHFT;
                             if ((lookup(SDL_IsJoyKeyTable, SDL_GetKeyFromName(text_input)) == 1) && keyjoyEnable && !key_option &&
-                                (pasteState == PASTE_IDLE))
+                                (pasteState == PASTE_IDLE)) {
+                                printf("Here2\n");
                                 text_key =  AKEY_NONE;
+                            }
                             if (text_key != AKEY_NONE) {
                                  key_pressed = 1;
                             }
+                            if (text_key == AKEY_NONE)
+                                printf("SHIT!!!!\n");
                             return text_key;
                     }
                     break;
                 case SDL_KEYDOWN:
                     kbhits = (Uint8 *) SDL_GetKeyboardState(NULL);
                     if (!SDLMainIsActive()) {
+                        printf("Here3\n");
                         return AKEY_NONE;
                     }
                     text_type = FALSE;
+                    text_key = AKEY_NONE;
                     lastkey = event.key.keysym.sym;
                     if ((lookup(SDL_IsJoyKeyTable, event.key.keysym.scancode) == 1) && keyjoyEnable && !key_option &&
                         (pasteState == PASTE_IDLE)) {
+                        printf("Here4\n");
                         return AKEY_NONE;
                     }
                     if (kbhits[SDL_SCANCODE_LGUI] ||
@@ -1643,17 +1654,22 @@ int Atari_Keyboard_International(void)
                     }
                     else {
                         key_pressed = 0;
+                        printf("Here5\n");
                         return AKEY_NONE;
                     }
                     break;
                 case SDL_KEYUP:
                     kbhits = (Uint8 *) SDL_GetKeyboardState(NULL);
-                    if (!SDLMainIsActive())
+                    if (!SDLMainIsActive()) {
+                        printf("here6\n");
                         return AKEY_NONE;
+                    }
                     lastkey = event.key.keysym.sym;
                     key_pressed = 0;
-                    if (!Atari_International_Good_Key(lastkey))
+                    if (!Atari_International_Good_Key(lastkey)) {
+                        printf("here7\n");
                         return AKEY_NONE;
+                    }
                     if (lastkey == SDLK_CAPSLOCK)
                         key_pressed = 1;
                     break;
@@ -1663,6 +1679,7 @@ int Atari_Keyboard_International(void)
                 default:
                     if (key_pressed)
                         break;
+                    printf("Here8\n");
                     return AKEY_NONE;
             }
         }
@@ -1699,11 +1716,12 @@ int Atari_Keyboard_International(void)
         
         if (!pollEvent) {
             if (key_pressed) {
-                if (text_type) {
+                if (text_type && text_key != AKEY_NONE) {
                     return text_key;
                 }
             }
             else {
+                printf("Here9\n");
                 return AKEY_NONE;
             }
         }
@@ -1900,10 +1918,14 @@ int Atari_Keyboard_International(void)
         }
         
         key_pressed = 0;
+        printf("Here10\n");
+
         return AKEY_NONE;
     }
     
     if (key_pressed == 0) {
+        printf("Here11\n");
+
         return AKEY_NONE;
     }
     /* Handle the key translations for ctrl&shft numerics */
@@ -2047,8 +2069,10 @@ int Atari_Keyboard_International(void)
      since if it is, it should be ignored.  */
     else {
         if ((lookup(SDL_IsJoyKeyTable, lastkey) == 1) && keyjoyEnable && !key_option &&
-            (pasteState == PASTE_IDLE))
+            (pasteState == PASTE_IDLE)) {
+            printf("Here12\n");
             return AKEY_NONE;
+        }
         if (Atari800_machine_type == Atari800_MACHINE_5200)
         {
             if ((INPUT_key_consol & INPUT_CONSOL_START) == 0)
@@ -2110,6 +2134,7 @@ int Atari_Keyboard_International(void)
                 case SDLK_RETURN:
                     break;
                 default:
+                    printf("Here13\n");
                     return AKEY_NONE;
             }
         }
@@ -2284,8 +2309,10 @@ int Atari_Keyboard_International(void)
      First check to make sure it isn't an emulated joystick key,
      since if it is, it should be ignored.  */
     if ((lookup(SDL_IsJoyKeyTable, lastkey) == 1) && keyjoyEnable && !key_option &&
-        (pasteState == PASTE_IDLE))
+        (pasteState == PASTE_IDLE)) {
+        printf("Here14\n");
         return AKEY_NONE;
+    }
     switch (lastkey) {
         case SDLK_END:
             if (INPUT_key_shift)
@@ -2440,6 +2467,7 @@ int Atari_Keyboard_International(void)
             else
                 return AKEY_INSERT_CHAR;
     }
+    printf("Here15\n");
     return AKEY_NONE;
 }
 
@@ -2449,6 +2477,7 @@ int Atari_Keyboard_International(void)
 *-----------------------------------------------------------------------------*/
 int Atari_Keyboard(void)
 {
+#if 0
     static int key_pressed = 0;
     static int last_key = AKEY_NONE;
     
@@ -2462,6 +2491,9 @@ int Atari_Keyboard(void)
         key_pressed = 0;
     }
     return(last_key);
+#else
+    return(Atari_Keyboard_International());
+#endif
 }
 
 int PLATFORM_Keyboard(void)
@@ -5507,11 +5539,13 @@ int SDL_main(int argc, char **argv)
             POKEY_SKSTAT &= ~4;
             if ((INPUT_key_code ^ last_key_code) & ~AKEY_SHFTCTRL) {
             /* ignore if only shift or control has changed its state */
+                static int num = 0;
                 last_key_code = INPUT_key_code;
                 POKEY_KBCODE = (UBYTE) INPUT_key_code;
                 if (POKEY_IRQEN & 0x40) {
                     if (POKEY_IRQST & 0x40) {
                         POKEY_IRQST &= ~0x40;
+                        printf("IRQ %d\n",num++);
                         CPU_GenerateIRQ();
                     }
                     else {
