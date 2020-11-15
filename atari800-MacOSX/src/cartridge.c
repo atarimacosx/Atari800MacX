@@ -52,6 +52,7 @@
 #ifdef SIDE2
 #include "side2.h"
 #endif
+#include "thecart.h"
 #include "log.h"
 
 /* #define DEBUG 1 */
@@ -525,9 +526,6 @@ static void MapActiveCart(void)
 		case CARTRIDGE_TURBOSOFT_128:
 		case CARTRIDGE_ULTRACART_32:
 		case CARTRIDGE_BLIZZARD_32:
-		case CARTRIDGE_THECART_128M:
-		case CARTRIDGE_THECART_32M:
-		case CARTRIDGE_THECART_64M:
 		case CARTRIDGE_ATRAX_128:
 		case CARTRIDGE_ADAWLIAH_32:
 		case CARTRIDGE_ADAWLIAH_64:
@@ -943,15 +941,7 @@ static UBYTE GetByte(CARTRIDGE_image_t *cart, UWORD addr, int no_side_effects)
 	case CARTRIDGE_THECART_128M:
 	case CARTRIDGE_THECART_32M:
 	case CARTRIDGE_THECART_64M:
-		switch (addr) {
-		case 0xd5a0:
-			return cart->state & 0x00ff;
-		case 0xd5a1:
-			return (cart->state & 0x3f00) >> 8;
-		case 0xd5a2:
-			return (~cart->state & 0x4000) >> 14;
-		}
-		break;
+        return THECART_Read_Byte(addr);
 	}
 	return 0xff;
 }
@@ -1034,18 +1024,8 @@ static void PutByte(CARTRIDGE_image_t *cart, UWORD addr, UBYTE byte)
 	case CARTRIDGE_THECART_128M:
 	case CARTRIDGE_THECART_32M:
 	case CARTRIDGE_THECART_64M:
-		switch (addr) {
-		case 0xd5a0:
-			new_state = (old_state & 0x3f00) | byte;
-			break;
-		case 0xd5a1:
-			new_state = (old_state & 0x00ff) | ((byte & 0x3f) << 8);
-			break;
-		case 0xd5a2:
-			new_state = (old_state & 0x3fff) | ((~byte & 0x01) << 14);
-			break;
-		}
-		break;
+        THECART_Write_Byte(addr, byte);
+		return;
 	default:
 		/* Check types switchable by access to page D5. */
 		if (!access_D5(cart, addr, &new_state))
@@ -1267,6 +1247,11 @@ static void ResetCartState(CARTRIDGE_image_t *cart)
 	case CARTRIDGE_MEGA_4096:
 		cart->state = 254;
 		break;
+    case CARTRIDGE_THECART_32M:
+    case CARTRIDGE_THECART_64M:
+    case CARTRIDGE_THECART_128M:
+        THECART_Cold_Reset();
+        break;
 	default:
 		cart->state = 0;
 	}
@@ -1403,6 +1388,10 @@ static void PreprocessCart(CARTRIDGE_image_t *cart)
    or CARTRIDGE_Insert_Second and CARTRIDGE_SetType. */
 static void InitCartridge(CARTRIDGE_image_t *cart)
 {
+    if ((cart->type == CARTRIDGE_THECART_32M) ||
+        (cart->type == CARTRIDGE_THECART_64M) ||
+        (cart->type == CARTRIDGE_THECART_128M))
+            THECART_Init(cart->image, cart->size);
 	PreprocessCart(cart);
 	ResetCartState(cart);
 	if (cart == &CARTRIDGE_main) {

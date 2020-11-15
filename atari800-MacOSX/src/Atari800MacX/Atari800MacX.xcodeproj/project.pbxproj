@@ -83,6 +83,10 @@
 		2D587363106A8415002428EF /* ByteTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D587361106A8415002428EF /* ByteTextField.m */; };
 		2D587368106A85EA002428EF /* WordTextField.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D587366106A85EA002428EF /* WordTextField.h */; };
 		2D587369106A85EA002428EF /* WordTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D587367106A85EA002428EF /* WordTextField.m */; };
+		2D5F5943255F89BC00903877 /* thecart.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D5F5941255F89BC00903877 /* thecart.h */; };
+		2D5F5944255F89BC00903877 /* thecart.c in Sources */ = {isa = PBXBuildFile; fileRef = 2D5F5942255F89BC00903877 /* thecart.c */; };
+		2D5F5947256070D600903877 /* eeprom.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D5F5945256070D600903877 /* eeprom.h */; };
+		2D5F5948256070D600903877 /* eeprom.c in Sources */ = {isa = PBXBuildFile; fileRef = 2D5F5946256070D600903877 /* eeprom.c */; };
 		2D63725824F73FB700905B2E /* rtcds1305.c in Sources */ = {isa = PBXBuildFile; fileRef = 2D63725724F73FB600905B2E /* rtcds1305.c */; };
 		2D63725A24F741DA00905B2E /* rtcds1305.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D63725924F741D900905B2E /* rtcds1305.h */; };
 		2D66DBF70F538D0200F882D6 /* cfg.c in Sources */ = {isa = PBXBuildFile; fileRef = 2D66DBF60F538D0200F882D6 /* cfg.c */; };
@@ -483,6 +487,10 @@
 		2D587361106A8415002428EF /* ByteTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ByteTextField.m; sourceTree = SOURCE_ROOT; };
 		2D587366106A85EA002428EF /* WordTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WordTextField.h; sourceTree = SOURCE_ROOT; };
 		2D587367106A85EA002428EF /* WordTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WordTextField.m; sourceTree = SOURCE_ROOT; };
+		2D5F5941255F89BC00903877 /* thecart.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = thecart.h; path = ../thecart.h; sourceTree = "<group>"; };
+		2D5F5942255F89BC00903877 /* thecart.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = thecart.c; path = ../thecart.c; sourceTree = "<group>"; };
+		2D5F5945256070D600903877 /* eeprom.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = eeprom.h; path = ../eeprom.h; sourceTree = "<group>"; };
+		2D5F5946256070D600903877 /* eeprom.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = eeprom.c; path = ../eeprom.c; sourceTree = "<group>"; };
 		2D60C39503BFE68F00A8C8B4 /* Updater.esud */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Updater.esud; sourceTree = "<group>"; };
 		2D6155D8061FBD3A0030CDE5 /* AboutBoxTextView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = AboutBoxTextView.h; sourceTree = "<group>"; };
 		2D6155D9061FBD3A0030CDE5 /* AboutBoxTextView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = AboutBoxTextView.m; sourceTree = "<group>"; };
@@ -935,6 +943,8 @@
 				2DFF9C7604008D8200A8C8B4 /* cycle_map.h */,
 				2DA5816209C5F38700331696 /* devices.c */,
 				F5558349030EF4CD01A8C8B4 /* devices.h */,
+				2D5F5945256070D600903877 /* eeprom.h */,
+				2D5F5946256070D600903877 /* eeprom.c */,
 				2D1668150F51F07000A78B94 /* esc.c */,
 				2D1668160F51F07000A78B94 /* esc.h */,
 				2DEDFBF211FE4C18008B815C /* emuio.c */,
@@ -1010,6 +1020,8 @@
 				2D3D18AC052BD6E600A8C8B4 /* remez.h */,
 				F555835B030EF4CD01A8C8B4 /* rtime.h */,
 				F555835C030EF4CD01A8C8B4 /* rtime.c */,
+				2D5F5941255F89BC00903877 /* thecart.h */,
+				2D5F5942255F89BC00903877 /* thecart.c */,
 				2DB0A0550F524110007879C7 /* ui_basic.c */,
 				2DB0A0580F52413B007879C7 /* ui_basic.h */,
 				2D829B3A24F9B21500AB9584 /* ultimate1mb.c */,
@@ -1250,6 +1262,7 @@
 				2D1668280F51F19900A78B94 /* afile.h in Headers */,
 				2DB0A0590F52413B007879C7 /* ui_basic.h in Headers */,
 				2DE6EB8024CE197000A55386 /* altirraos_800.h in Headers */,
+				2D5F5947256070D600903877 /* eeprom.h in Headers */,
 				2D17D9760F537D860027F526 /* pbi_bb.h in Headers */,
 				2D17D9780F537D860027F526 /* pbi_mio.h in Headers */,
 				2D17D97A0F537D860027F526 /* pbi_scsi.h in Headers */,
@@ -1266,6 +1279,7 @@
 				2D587362106A8415002428EF /* ByteTextField.h in Headers */,
 				2D587368106A85EA002428EF /* WordTextField.h in Headers */,
 				2DC223D3106B04A20096626C /* DisasmDataSource.h in Headers */,
+				2D5F5943255F89BC00903877 /* thecart.h in Headers */,
 				2D27A624106BE2BF002AAAE7 /* DisasmTableView.h in Headers */,
 				2DE2D3AB106F04A90049A8A1 /* BreakpointsController.h in Headers */,
 				2DC936CC10701D5B0075BCBD /* Breakpoint.h in Headers */,
@@ -1451,6 +1465,7 @@
 				2DAEDB9709B69AED005FF181 /* atrDos2.c in Sources */,
 				2DAEDB9809B69AED005FF181 /* atrMount.c in Sources */,
 				2DAEDB9909B69AED005FF181 /* atrMyDos.c in Sources */,
+				2D5F5944255F89BC00903877 /* thecart.c in Sources */,
 				2DAEDB9A09B69AED005FF181 /* atrSparta.c in Sources */,
 				2DAEDB9B09B69AED005FF181 /* atrUtil.c in Sources */,
 				2DAEDB9C09B69AED005FF181 /* Atari800TableView.m in Sources */,
@@ -1484,6 +1499,7 @@
 				2DAEDBC409B69AED005FF181 /* util.c in Sources */,
 				2D6A0BEF251C225F0062B581 /* img_disk.c in Sources */,
 				2DAEDBC509B69AED005FF181 /* rdevice.c in Sources */,
+				2D5F5948256070D600903877 /* eeprom.c in Sources */,
 				2DA5816309C5F38700331696 /* devices.c in Sources */,
 				2DF39C950A07024E00206A1B /* statesav.c in Sources */,
 				2DA5F7C124D09122002EBBFA /* crc32.c in Sources */,
@@ -1512,7 +1528,6 @@
 				2DEF29240FDCBE6E00660E07 /* PasteWindow.m in Sources */,
 				2D14CDFF0FFEEEDF00E60EAA /* copydata.c in Sources */,
 				2D037E361001124F0045DB8E /* PastePanel.m in Sources */,
-				2DE7FC56250DC5ED000C2DAD /* capslock.c in Sources */,
 				2DC051B4106962C600B9657B /* MemoryEditorAsciiFieldCell.m in Sources */,
 				2DC051B6106962C600B9657B /* MemoryEditorByteFieldCell.m in Sources */,
 				2DC051B8106962C600B9657B /* MemoryEditorDataSource.m in Sources */,
