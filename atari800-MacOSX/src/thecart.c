@@ -42,8 +42,8 @@ void  Write_Unaligned_LEU16(void *p, UWORD v) { *(UWORD *)p = v; }
 
 void THECART_Init(unsigned char *image, int size) {
     CartImage = image;
-    CartSize = size;
-    CartSizeMask = CartSize -1;
+    CartSize = size << 10;
+    CartSizeMask = CartSize - 1;
     EEPROM_Init();
 }
 
@@ -132,7 +132,7 @@ void THECART_Write_Byte(UWORD address, UBYTE value) {
             };
 
             const int index = address - 0xA0;
-            UBYTE *reg = TheCartRegs[index];
+            UBYTE *reg = &TheCartRegs[index];
 
             value &= RegWriteMasks[index];
 
@@ -577,10 +577,12 @@ static void Update_Cart_Banks() {
         }
         
         UWORD end = (base + size) - 1;
+        ULONG offset = (((ULONG) CartBank << 13) & CartSizeMask);
+        unsigned char *bankData = CartImage + offset;
 
         MEMORY_CartA0bfEnable();
         if (!(CartBank & 0x10000)) {
-            MEMORY_CopyROM(base, end, CartImage + ((CartBank << 13) & CartSizeMask));
+            MEMORY_CopyROM(base, end, bankData);
         } else {
             MEMORY_SetFlashRoutines(THECART_Ram_Read, THECART_Ram_Write);
             MEMORY_SetFlash(base, end);
@@ -612,9 +614,11 @@ static void Update_Cart_Banks() {
             MEMORY_Cart809fEnable();
         }
         UWORD end = (base + size) - 1;
+        ULONG offset = (((bank2 << 13) + extraOffset) & CartSizeMask);
+        unsigned char *bankData = CartImage + offset;
 
         if (!(CartBank & 0x10000)) {
-            MEMORY_CopyROM(base, end, CartImage + (((bank2 << 13) + extraOffset) & CartSizeMask));
+            MEMORY_CopyROM(base, end, bankData);
         } else {
             MEMORY_SetFlashRoutines(THECART_Ram_Read, THECART_Ram_Write);
             MEMORY_SetFlash(base, end);

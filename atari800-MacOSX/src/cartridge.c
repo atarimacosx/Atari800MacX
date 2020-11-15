@@ -652,6 +652,10 @@ static void MapActiveCart(void)
 		case CARTRIDGE_SIC_512:
 		case CARTRIDGE_MEGAMAX_2048:
 			break;
+        case CARTRIDGE_THECART_32M:
+        case CARTRIDGE_THECART_64M:
+        case CARTRIDGE_THECART_128M:
+            return;
         case CARTRIDGE_ULTIMATE_1MB:
             MEMORY_Cart809fDisable();
             MEMORY_CartA0bfEnable();
