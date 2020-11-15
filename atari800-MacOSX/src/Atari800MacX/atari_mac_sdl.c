@@ -2457,23 +2457,7 @@ int Atari_Keyboard_International(void)
 *-----------------------------------------------------------------------------*/
 int Atari_Keyboard(void)
 {
-#if 0
-    static int key_pressed = 0;
-    static int last_key = AKEY_NONE;
-    
-    if (key_pressed > 0) {
-        if (key_pressed--)
-            return last_key;
-    }
-    
-    last_key = Atari_Keyboard_International();
-    if (last_key != AKEY_NONE) {
-        key_pressed = 0;
-    }
-    return(last_key);
-#else
     return(Atari_Keyboard_International());
-#endif
 }
 
 int PLATFORM_Keyboard(void)
