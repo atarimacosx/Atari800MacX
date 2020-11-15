@@ -1,9 +1,12 @@
-//
-//  thecart.h
-//  Atari800MacX
-//
-//  Created by markg on 11/13/20.
-//
+/* thecart.h -
+   Emulation of The!Cart cartridges for the Atari
+   Macintosh OS X SDL port of Atari800
+   Mark Grebe <atarimacosx@gmail.com>
+   Copyright (C) 2020 Mark Grebe
+
+   Ported and Adapted from Altirra
+   Copyright (C) 2008-2009 Avery Lee
+*/
 
 #ifndef thecart_h
 #define thecart_h
