@@ -98,7 +98,7 @@ void THECART_Cold_Reset() {
 UBYTE THECART_Read_Byte(UWORD address) {
     address &= 0xff;
 
-    if (address >= 0xA0 && address <= 0xAF && TheCartConfigLock) {
+    if (address >= 0xA0 && address <= 0xAF && !TheCartConfigLock) {
         if (address <= 0xA7)
             return TheCartRegs[address - 0xA0];
         else if (address == 0xA8)
@@ -592,8 +592,8 @@ static void Update_Cart_Banks() {
     if (CartBank2 < 0) {
         MEMORY_Cart809fDisable();
     } else {
-        UBYTE base = 0x8000;
-        UBYTE size = 0x2000;
+        UWORD base = 0x8000;
+        UWORD size = 0x2000;
         UWORD extraOffset = 0;
         ULONG bank2 = CartBank2;
 
