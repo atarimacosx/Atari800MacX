@@ -4187,7 +4187,7 @@ static Preferences *sharedInstance = nil;
 		[displayedValues setObject:no forKey:CassFileEnabled];
 		[displayedValues setObject:@"" forKey:CassFile];
 		}
-    if (strlen(CARTRIDGE_main.filename) != 0) {
+    if (strlen(cart_filename) != 0) {
 		[displayedValues setObject:yes forKey:CartFileEnabled];
 		[displayedValues setObject:[NSString stringWithCString:CARTRIDGE_main.filename encoding:NSUTF8StringEncoding] forKey:CartFile];
 		}
