@@ -1100,21 +1100,9 @@ typeshave   been added.<br>
       | Type 62: The!Cart 128 MB cartridge                                        |
       +---------------------------------------------------------------------------+
 
-       Only a small subset, as described below, of this cartridge's features is
-       currently emulated.
-
-       The cartridge occupies 8 KB of address space between $A000 and $BFFF, and
-       consists of 16384 banks. Byte written to $D5A2 turns the cartridge on/off:
-       bit 0 = 1 enables the cartridge, 0 disables it and enables RAM. The enabled
-       bank is controlled by bytes written to $D5A0 (LSB) and $D5A1 (MSB, only 6
-       lowest bytes matter). Any write do $D5A0-$D5A1 also automatically enables the
-       cartridge.
-
-       The cartridge starts with bank 0 enabled.
-
-       The $D5A0-$D5A2 registers are read/write; one can read the cartridge's current
-       state from them. Unused bits are always read as 0.
-
+      Most features of the cartridge are emulated, see the refernce page.
+      The only feature not currently emulated is local flashing.
+      
        Reference:
        http://www.mega-hz.de/Angebote/THE!CART/THE!CART_EN.htm
 
@@ -1148,41 +1136,22 @@ typeshave   been added.<br>
       | Type 65: The!Cart 32 MB cartridge                                         |
       +---------------------------------------------------------------------------+
 
-       Only a small subset, as described below, of this cartridge's features is
-       currently emulated.
+       Most features of the cartridge are emulated, see the refernce page.
+       The only feature not currently emulated is local flashing.
+       
+        Reference:
+        http://www.mega-hz.de/Angebote/THE!CART/THE!CART_EN.htm
 
-       The cartridge occupies 8 KB of address space between $A000 and $BFFF, and
-       consists of 4096 banks. Byte written to $D5A2 turns the cartridge on/off:
-       bit 0 = 1 enables the cartridge, 0 disables it and enables RAM. The enabled
-       bank is controlled by bytes written to $D5A0 (LSB) and $D5A1 (MSB, only 6
-       lowest bytes are stored in the internal register, and only 4 lowest bytes
-       matter in choosing the enabled bank). Any write do $D5A0-$D5A1 also
-       automatically enables the cartridge.
-
-       The cartridge starts with bank 0 enabled.
-
-       The $D5A0-$D5A2 registers are read/write; one can read the cartridge's current
-       state from them. Unused bits are always read as 0.
 
       +---------------------------------------------------------------------------+
       | Type 66: The!Cart 64 MB cartridge                                         |
       +---------------------------------------------------------------------------+
 
-       Only a small subset, as described below, of this cartridge's features is
-       currently emulated.
-
-       The cartridge occupies 8 KB of address space between $A000 and $BFFF, and
-       consists of 8192 banks. Byte written to $D5A2 turns the cartridge on/off:
-       bit 0 = 1 enables the cartridge, 0 disables it and enables RAM. The enabled
-       bank is controlled by bytes written to $D5A0 (LSB) and $D5A1 (MSB, only 6
-       lowest bytes are stored in the internal register, and only 5 lowest bytes
-       matter in choosing the enabled bank). Any write do $D5A0-$D5A1 also
-       automatically enables the cartridge.
-
-       The cartridge starts with bank 0 enabled.
-
-       The $D5A0-$D5A2 registers are read/write; one can read the cartridge's current
-       state from them. Unused bits are always read as 0.
+       Most features of the cartridge are emulated, see the refernce page.
+       The only feature not currently emulated is local flashing.
+       
+        Reference:
+        http://www.mega-hz.de/Angebote/THE!CART/THE!CART_EN.htm
 
       +---------------------------------------------------------------------------+
       | Type 67: XEGS 64 KB cartridge (banks 8-15)                                |
