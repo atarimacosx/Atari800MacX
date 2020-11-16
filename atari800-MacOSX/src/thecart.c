@@ -145,7 +145,7 @@ void THECART_Write_Byte(UWORD address, UBYTE value) {
             UBYTE *reg = &TheCartRegs[index];
 
             value &= RegWriteMasks[index];
-
+ 
             int forceUpdate = FALSE;
 
             switch(index) {
@@ -211,7 +211,7 @@ void THECART_Write_Byte(UWORD address, UBYTE value) {
             // modify primary bank register
             const UWORD oldBank = Read_Unaligned_LEU16(TheCartRegs);
             const UWORD newBank = oldBank ^ ((oldBank ^ (UWORD)bankInfo) & (TheCartBankMask | 0x4000));
-            const UWORD newEnable = bankInfo & 0x4000 ? 1 : 0;
+            const UBYTE newEnable = bankInfo & 0x4000 ? 1 : 0;
 
             // argh... we could almost get away with a generic routine here, if it weren't
             // for SIC! and OSS. :(
@@ -255,7 +255,8 @@ void THECART_Write_Byte(UWORD address, UBYTE value) {
 }
 
 static void UpdateTheCartBanking() {
-    memset(TheCartBankInfo, 0, sizeof(TheCartBankInfo));
+    for (int i=0;i<256;i++)
+        TheCartBankInfo[i] = -1;
 
     // Supported modes:
     //
