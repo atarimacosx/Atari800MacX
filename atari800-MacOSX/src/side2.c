@@ -113,6 +113,9 @@ void SIDE2_Remove_Block_Device(void)
 }
 
 int SIDE2_Add_Block_Device(char *filename) {
+    if (ide == NULL ) {
+        ide = IDE_Init();
+    }
     if (SIDE2_Block_Device)
         SIDE2_Remove_Block_Device();
     IDE_Open_Image(ide, filename);
@@ -146,6 +149,12 @@ int SIDE2_Change_Rom(char *filename, int new) {
         UTIL_strip_ext(side2_nvram_filename);
         strcat(side2_nvram_filename,".nvram");
         LoadNVRAM();
+        if (flash == NULL) {
+            if (SIDE2_Flash_Type == 0)
+                flash = Flash_Init(side2_rom, Flash_TypeAm29F040B);
+            else
+                flash = Flash_Init(side2_rom, Flash_TypeSST39SF040);
+        }
     }
     
     return romLoaded;

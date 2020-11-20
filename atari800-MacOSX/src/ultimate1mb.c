@@ -368,6 +368,12 @@ int ULTIMATE_Change_Rom(char *filename, int new) {
         UTIL_strip_ext(ultimate_nvram_filename);
         strcat(ultimate_nvram_filename,".nvram");
         LoadNVRAM();
+        if (flash == NULL) {
+            if (ULTIMATE_Flash_Type == 0)
+                flash = Flash_Init(ultimate_rom, Flash_TypeAm29F040B);
+            else
+                flash = Flash_Init(ultimate_rom, Flash_TypeSST39SF040);
+        }
     }
 
     return romLoaded;
