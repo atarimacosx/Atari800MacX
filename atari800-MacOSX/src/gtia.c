@@ -36,6 +36,7 @@
 #endif
 #include "pokeysnd.h"
 #include "screen.h"
+#include "devices.h"
 
 /* GTIA Registers ---------------------------------------------------------- */
 
@@ -434,7 +435,7 @@ void GTIA_Frame(void)
 
 UBYTE GTIA_GetByte(UWORD addr, int no_side_effects)
 {
-    if (addr >= 0xd040) {
+    if ((Devices_enable_d_patch || Devices_enable_h_patch || Devices_enable_r_patch) && addr >= 0xd040) {
         return patch_ram[addr & 0xFF];
     }
 	switch (addr & 0x1f) {
@@ -597,7 +598,7 @@ UBYTE GTIA_GetByte(UWORD addr, int no_side_effects)
 
 void GTIA_PutByte(UWORD addr, UBYTE byte)
 {
-    if (addr >= 0xd040) {
+    if ((Devices_enable_d_patch || Devices_enable_h_patch || Devices_enable_r_patch) && addr >= 0xd040) {
         patch_ram[addr & 0xFF] = byte;
     }
 #if !defined(BASIC) && !defined(CURSES_BASIC)
