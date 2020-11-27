@@ -15,55 +15,54 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
+#include "atari.h"
+#include <errno.h>
 #include <stdlib.h>
-#include "pclink.h"
-#include "console.h"
-#include "cio.h"
-#include "cpu.h"
-#include "kerneldb.h"
-#include "uirender.h"
-#include "debuggerlog.h"
+#include <string.h>
+#include <sys/stat.h>
+#include <time.h>
+#include <unistd.h>
+#include "vec.h"
+//#include "pclink.h"
 
-ATDebuggerLogChannel g_ATLCPCLink(false, false, "PCLINK", "PCLink activity");
-
-uint8 ATTranslateWin32ErrorToSIOError(uint32 err);
+UBYTE ATTranslateWin32ErrorToSIOError(ULONG err);
 
 ///////////////////////////////////////////////////////////////////////////
 
 typedef struct diskInfo {
-    uint8   InfoVersion;
-    uint8   RootDirLo;
-    uint8   RootDirHi;
-    uint8   SectorCountLo;
-    uint8   SectorCountHi;
-    uint8   SectorsFreeLo;
-    uint8   SectorsFreeHi;
-    uint8   VTOCSectorCount;
-    uint8   VTOCSectorStartLo;
-    uint8   VTOCSectorStartHi;
-    uint8   NextFileSectorLo;
-    uint8   NextFileSectorHi;
-    uint8   NextDirSectorLo;
-    uint8   NextDirSectorHi;
-    uint8   VolumeLabel[8];
-    uint8   TrackCount;
-    uint8   BytesPerSectorCode;
-    uint8   Version;
-    uint8   BytesPerSectorLo;
-    uint8   BytesPerSectorHi;
-    uint8   MapSectorCountLo;
-    uint8   MapSectorCountHi;
-    uint8   SectorsPerCluster;
-    uint8   NoSeq;
-    uint8   NoRnd;
-    uint8   BootLo;
-    uint8   BootHi;
-    uint8   WriteProtectFlag;
-    uint8   Pad[29];
+    UBYTE   InfoVersion;
+    UBYTE   RootDirLo;
+    UBYTE   RootDirHi;
+    UBYTE   SectorCountLo;
+    UBYTE   SectorCountHi;
+    UBYTE   SectorsFreeLo;
+    UBYTE   SectorsFreeHi;
+    UBYTE   VTOCSectorCount;
+    UBYTE   VTOCSectorStartLo;
+    UBYTE   VTOCSectorStartHi;
+    UBYTE   NextFileSectorLo;
+    UBYTE   NextFileSectorHi;
+    UBYTE   NextDirSectorLo;
+    UBYTE   NextDirSectorHi;
+    UBYTE   VolumeLabel[8];
+    UBYTE   TrackCount;
+    UBYTE   BytesPerSectorCode;
+    UBYTE   Version;
+    UBYTE   BytesPerSectorLo;
+    UBYTE   BytesPerSectorHi;
+    UBYTE   MapSectorCountLo;
+    UBYTE   MapSectorCountHi;
+    UBYTE   SectorsPerCluster;
+    UBYTE   NoSeq;
+    UBYTE   NoRnd;
+    UBYTE   BootLo;
+    UBYTE   BootHi;
+    UBYTE   WriteProtectFlag;
+    UBYTE   Pad[29];
 } DiskInfo;
 
-typdef struct dirEntry {
-    enum : uint8 {
+typedef struct dirEntry {
+    enum : UBYTE {
         Flag_OpenForWrite  = 0x80,
         Flag_Directory     = 0x20,
         Flag_Deleted       = 0x10,
@@ -73,7 +72,7 @@ typdef struct dirEntry {
         Flag_Locked        = 0x01
     };
 
-    enum : uint8 {
+    enum : UBYTE {
         AttrMask_NoSubDir      = 0x80,
         AttrMask_NoArchived    = 0x40,
         AttrMask_NoHidden      = 0x20,
@@ -84,22 +83,22 @@ typdef struct dirEntry {
         AttrMask_OnlyLocked    = 0x01,
     };
 
-    uint8   Flags;
-    uint8   SectorMapLo;
-    uint8   SectorMapHi;
-    uint8   LengthLo;
-    uint8   LengthMid;
-    uint8   LengthHi;
-    uint8   Name[11];
-    uint8   Day;
-    uint8   Month;
-    uint8   Year;
-    uint8   Hour;
-    uint8   Min;
-    uint8   Sec;
+    UBYTE   Flags;
+    UBYTE   SectorMapLo;
+    UBYTE   SectorMapHi;
+    UBYTE   LengthLo;
+    UBYTE   LengthMid;
+    UBYTE   LengthHi;
+    UBYTE   Name[11];
+    UBYTE   Day;
+    UBYTE   Month;
+    UBYTE   Year;
+    UBYTE   Hour;
+    UBYTE   Min;
+    UBYTE   Sec;
 } DirEntry;
 
-enum {
+typedef enum {
     FILE_READ,
     FILE_WRITE,
     FILE_APPEND,
@@ -123,7 +122,7 @@ void Dir_Entry_Set_Flags_From_Attributes(DirEntry *entry, mode_t attr) {
         entry->Flags |= Flag_Directory;
 }
 
-int Dir_Entry_Test_Attr_Filter(DirEntry *entry, uint8 attrFilter) const {
+int Dir_Entry_Test_Attr_Filter(DirEntry *entry, UBYTE attrFilter) {
     if (!attrFilter)
         return TRUE;
 
@@ -194,7 +193,7 @@ void Dir_Entry_Set_Date(DirEntry *entry, time_t date) {
     entry->Sec = localTime->tm_sec;
 }
 
-void Dir_Entry_Decode_Date(const uint8 tsdata[6], struct tm* fileExpTime) {
+void Dir_Entry_Decode_Date(const UBYTE tsdata[6], struct tm* fileExpTime) {
     fileExpTime->tm_mday = tsdata[0];
     fileExpTime->tm_mon = tsdata[1];
     fileExpTime->tm_year = tsdata[2] < 50 ? 2000 + tsdata[2] : 1900 + tsdata[2];
@@ -204,7 +203,7 @@ void Dir_Entry_Decode_Date(const uint8 tsdata[6], struct tm* fileExpTime) {
  }
 
 typedef struct fileName {
-    uint8   Name[11];
+    UBYTE   Name[11];
 } FileName;
 
 FileName *File_Name_Alloc()
@@ -221,11 +220,11 @@ void File_Name_Free(FileName *name)
 
 int File_Name_Is_Equal(FileName *name, FileName *second)
 {
-    return (memcmp(name->Name, second->Name, 11) == 0)
+    return (memcmp(name->Name, second->Name, 11) == 0);
 }
 
-int File_Name_Parse_From_Net(FileName *name, const uint8 *fn) {
-    uint8 fill = 0;
+int File_Name_Parse_From_Net(FileName *name, const UBYTE *fn) {
+    UBYTE fill = 0;
 
     for(int i=0; i<11; ++i) {
         if (i == 8)
@@ -234,7 +233,7 @@ int File_Name_Parse_From_Net(FileName *name, const uint8 *fn) {
         if (fill)
             name->Name[i] = fill;
         else {
-            uint8 c = fn[i];
+            UBYTE c = fn[i];
 
             if (c == '*') {
                 c = '?';
@@ -255,7 +254,7 @@ int File_Name_Parse_From_Net(FileName *name, const uint8 *fn) {
     return TRUE;
 }
 
-bool File_Name_Parse_From_Native(FileName *name, const char *fn) {
+int File_Name_Parse_From_Native(FileName *name, const char *fn) {
     int i = 0;
     int inext = FALSE;
     int isescaped = FALSE;
@@ -286,9 +285,9 @@ bool File_Name_Parse_From_Native(FileName *name, const char *fn) {
         }
 
         if (c >= L'a' && c <= L'z')
-            name->Name[i++] = (uint8)(c - 0x20);
+            name->Name[i++] = (UBYTE)(c - 0x20);
         else if ((c >= L'A' && c <= L'Z') || (c >= L'0' && c <= L'9') || c == L'_')
-            mName[i++] = (uint8)c;
+            name->Name[i++] = (UBYTE)c;
         else
             return FALSE;
         c = *fn++;
@@ -327,11 +326,11 @@ int File_Name_Is_Wild(FileName *name) {
     return FALSE;
 }
 
-int File_Name_Wild_Match(FileName *name, File_Name *fn)  
+int File_Name_Wild_Match(FileName *name, FileName *fn)
 {
     for(int i=0; i<11; ++i) {
-        const uint8 c = name->Name[i];
-        const uint8 d = fn->mName[i];
+        const UBYTE c = name->Name[i];
+        const UBYTE d = fn->Name[i];
 
         if (c != d && c != '?')
             return FALSE;
@@ -340,10 +339,10 @@ int File_Name_Wild_Match(FileName *name, File_Name *fn)
     return TRUE;
 }
 
-void File_Name_Wild_Merge(FileName *name, const File_Name *fn)
+void File_Name_Wild_Merge(FileName *name, const FileName *fn)
 {
     for(int i=0; i<11; ++i) {
-        const uint8 d = fn->Name[i];
+        const UBYTE d = fn->Name[i];
 
         if (d != '?')
             name->Name[i] = d;
@@ -407,7 +406,7 @@ enum {
     CIOStatSystemError  = 0xFF, // {SDX] system error
 };
 
-uint8 TranslateErrnoToSIOError(uint32 err) {
+UBYTE TranslateErrnoToSIOError(ULONG err) {
     switch(err) {
         case EACCES:
             return CIOStatAccessDenied;
@@ -424,11 +423,9 @@ uint8 TranslateErrnoToSIOError(uint32 err) {
         case EINVAL:
             return CIOStatInvalidCmd;
         case EISDIR:
-        case ELOOP:
         case EMFILE:
         case ENAMETOOLONG:
         case ENFILE:
-        case ELOOP:
         case ENOENT:
         case ENOSPC:
         case ENOTDIR:
@@ -439,28 +436,6 @@ uint8 TranslateErrnoToSIOError(uint32 err) {
         case ETXTBSY:
         case EBADF:
         case EILSEQ:
-        case ERROR_FILE_NOT_FOUND:
-            return CIOStatFileNotFound;
-
-        case ERROR_PATH_NOT_FOUND:
-            return CIOStatPathNotFound;
-
-        case ERROR_FILE_EXISTS:
-        case ERROR_ALREADY_EXISTS:
-            return CIOStatFileExists;
-
-        case ERROR_DISK_FULL:
-            return CIOStatDiskFull;
-
-        case ERROR_DIR_NOT_EMPTY:
-            return CIOStatDirNotEmpty;
-
-        case ERROR_ACCESS_DENIED:
-            return CIOStatAccessDenied;
-
-        case ERROR_SHARING_VIOLATION:
-            return CIOStatFileLocked;
-
         default:
             return CIOStatSystemError;
     }
@@ -474,29 +449,29 @@ typedef struct fileHandle {
     int      AllowWrite;
     int      IsDirectory;
     int      WasCreated;
-    uint32   Pos;
-    uint32   Length;
+    ULONG    Pos;
+    ULONG    Length;
 
-    DirEntry *dirEnts;
+    DirEntry *DirEnts;
 
-    DirEntry *dirEnt;
+    DirEntry *DirEnt;
     FileName *FnextPattern;
-    uint8    FnextAttrFilter;
+    UBYTE    FnextAttrFilter;
 
-    File     *File;
+    FILE     *File;
 } FileHandle;
 
 FileHandle *File_Handle_Alloc()
 {
-    FileHandle *hndl = (FileHandle *) malloc(sizoef(FileHandle));
+    FileHandle *hndl = (FileHandle *) malloc(sizeof(FileHandle));
     memset(hndl, 0, sizeof(FileHandle));
-    hndl->dirEnts = vector_create();
+    hndl->DirEnts = vector_create();
     return hndl;
 }
 
 void File_Handle_Free(FileHandle *hndl)
 {
-    vector_free(hndl->dirEnts);
+    vector_free(hndl->DirEnts);
     free(hndl);
 }
 
@@ -535,16 +510,16 @@ DirEntry *File_Handle_Get_Dir_Ent(FileHandle *hndl)
     return hndl->DirEnt;
 }
 
-void File_Handle_Set_Dir_Ent(FileHandle *hndl, const DirEnt* dirEnt)
+void File_Handle_Set_Dir_Ent(FileHandle *hndl, DirEntry *dirEnt)
 {
     hndl->DirEnt = dirEnt;
 }
 
-void File_Handle_Add_Dir_Ent(FileHandle *hndl, DirEnt* dirEnt) {
-    vector_add(&hndl->DirEnts, dirEnt);
+void File_Handle_Add_Dir_Ent(FileHandle *hndl, DirEntry *dirEnt) {
+    vector_add(&hndl->DirEnts, *dirEnt);
 }
 
-uint8 File_Handle_Open_File(FileHandle *hndl, const char *nativePath, 
+UBYTE File_Handle_Open_File(FileHandle *hndl, const char *nativePath,
                             FileOpenType openType, int allowRead, 
                             int allowWrite, int append) 
 {
@@ -557,16 +532,16 @@ uint8 File_Handle_Open_File(FileHandle *hndl, const char *nativePath,
     switch (openType) {
         case FILE_READ:
             file = fopen(nativePath, "r");
-            break
+            break;
         case FILE_WRITE:
-            break
+            break;
             file = fopen(nativePath, "w");
         case FILE_APPEND:
             file = fopen(nativePath, "a");
-            break
+            break;
         case FILE_UPDATE:
             file = fopen(nativePath, "r+");
-            break
+            break;
     }
 
     if (file) {
@@ -576,11 +551,11 @@ uint8 File_Handle_Open_File(FileHandle *hndl, const char *nativePath,
         hndl->AllowWrite = allowWrite;
         hndl->WasCreated = !exists;
 
-        sint64 len = hndl->File.size();
+        SLONG len = hndl->File.size();
         if (len > 0xffffff)
             hndl->Length = 0xffffff;
         else
-            hndl->Length = (uint32)len;
+            hndl->Length = (ULONG)len;
 
         hndl->Pos = 0;
 
@@ -594,25 +569,25 @@ uint8 File_Handle_Open_File(FileHandle *hndl, const char *nativePath,
 void File_Handle_Open_As_Directory(FileHandle *hndl, 
                                    FileName* dirName,
                                    FileName* pattern, 
-                                   uint8 attrFilter)
+                                   UBYTE attrFilter)
 {
     qsort(hndl->DirEnts,
-          vector_size(hdnl->DirEnts),
+          vector_size(hndl->DirEnts),
           sizeof(DirEntry),
-          Dir_Ent_Compare 
+          Dir_Entry_Compare
          );
     hndl->Open = TRUE;
     hndl->IsDirectory = TRUE;
-    hndl->Length = 23 * ((uint32)cvector_size(hndl->DirEnts) + 1);
+    hndl->Length = 23 * ((ULONG)cvector_size(hndl->DirEnts) + 1);
     hndl->Pos = 23;
     hndl->AllowRead = TRUE;
     hndl->AllowWrite = FALSE;
 
-    memset(hndl->DirEnt, 0, sizeof(DirEnt));
+    memset(hndl->DirEnt, 0, sizeof(DirEntry));
     hndl->DirEnt->Flags = Flag_InUse | Flag_Directory;
-    hndl->DirEnt->LengthLo = (uint8)hndl->Length;
-    hndl->DirEnt->LengthMid = (uint8)(hndl->Length >> 8);
-    hndl->DirEnt->LengthHi = (uint8)(hndl->Length >> 16);
+    hndl->DirEnt->LengthLo = (UBYTE)hndl->Length;
+    hndl->DirEnt->LengthMid = (UBYTE)(hndl->Length >> 8);
+    hndl->DirEnt->LengthHi = (UBYTE)(hndl->Length >> 16);
     memcpy(hndl->DirEnt->Name, dirName->Name, 11);
 
     vector_insert(&hndl->DirEnts, 0, hndl->DirEnt);
@@ -631,7 +606,7 @@ void File_Handle_Close(FileHandle *hndl)
     hndl->DirEnts = NULL;
 }
 
-uint8 File_Handle_Seek(FileHandle *hndl, uint32 pos) {
+UBYTE File_Handle_Seek(FileHandle *hndl, ULONG pos) {
     if (pos > hndl->Length && !hndl->AllowRead)
         return CIOStatPointDLen;
 
@@ -644,9 +619,10 @@ uint8 File_Handle_Seek(FileHandle *hndl, uint32 pos) {
         } else {
             return TranslateErrnoToSIOError(errno);
         }
+    }
 }
 
-uint8 File_Handle_Read(FileHandle *hndl, void *dst, uint32 len, uint32 *actual) {
+UBYTE File_Handle_Read(FileHandle *hndl, void *dst, ULONG len, ULONG *actual) {
     *actual = 0;
 
     if (!hndl->Open)
@@ -659,16 +635,16 @@ uint8 File_Handle_Read(FileHandle *hndl, void *dst, uint32 len, uint32 *actual) 
 
     if (hndl->Pos < hndl->Length) {
         if (hndl->IsDirectory) {
-            uint32 dirIndex = hndl->Pos / 23;
-            uint32 offset = hndl->Pos % 23;
-            uint32 left = hndl->Length - hndl->Pos;
+            ULONG dirIndex = hndl->Pos / 23;
+            ULONG offset = hndl->Pos % 23;
+            ULONG left = hndl->Length - hndl->Pos;
 
             if (left > len)
                 left = len;
         
             while(left > 0) {
-                const uint8 *src = (const uint8 *)&mDirEnts[dirIndex];
-                uint32 tc = 23 - offset;
+                const UBYTE *src = (const UBYTE *)&hndl->DirEnts[dirIndex];
+                ULONG tc = 23 - offset;
                 if (tc > left)
                     tc = left;
 
@@ -679,7 +655,7 @@ uint8 File_Handle_Read(FileHandle *hndl, void *dst, uint32 len, uint32 *actual) 
                 ++dirIndex;
             }
         } else {
-            uint32 tc = len;
+            ULONG tc = len;
 
             if (hndl->Length - hndl->Pos < tc)
                 tc = hndl->Length - hndl->Pos;
@@ -690,13 +666,13 @@ uint8 File_Handle_Read(FileHandle *hndl, void *dst, uint32 len, uint32 *actual) 
         }
     }
 
-    *actual = (uint32)act;
+    *actual = (ULONG)act;
 
-    printf("Read at pos %d/%d, len %d, actual %d\n", mPos, mLength, len, *actual);
+    printf("Read at pos %d/%d, len %d, actual %d\n", hndl->Pos, hndl->Length, len, *actual);
 
     hndl->Pos += *actual;
 
-    if (actual < len) {
+    if (*actual < len) {
         memset((char *)dst + *actual, 0, len - *actual);
         return CIOStatTruncRecord;
     }
@@ -704,24 +680,24 @@ uint8 File_Handle_Read(FileHandle *hndl, void *dst, uint32 len, uint32 *actual) 
     return CIOStatSuccess;
 }
 
-uint8 File_Handle_Write(FileHandle *hndl, const void *dst, uint32 len) {
+UBYTE File_Handle_Write(FileHandle *hndl, const void *dst, ULONG len) {
     if (!hndl->Open)
         return CIOStatNotOpen;
 
     if (!hndl->AllowWrite)
         return CIOStatReadOnly;
 
-    uint32 tc = len;
-    uint32 actual = 0;
+    ULONG tc = len;
+    ULONG actual = 0;
 
     if (hndl->Pos < 0xffffff) {
         if (0xffffff - hndl->Pos < tc)
-            tc = 0xffffff - mPos;
+            tc = 0xffffff - hndl->Pos;
 
         actual = fwrite(dst, 1, tc, hndl->File);
 
         if (actual != tc) {
-            fseek(hdnl->File, hndl->Pos, SEEK_SET);
+            fseek(hndl->File, hndl->Pos, SEEK_SET);
             return CIOStatFatalDiskIO;
         }
     }
@@ -735,7 +711,7 @@ uint8 File_Handle_Write(FileHandle *hndl, const void *dst, uint32 len) {
     return actual != len ? CIOStatDiskFull : CIOStatSuccess;
 }
 
-void File_Handle_Set_Timestamp(FileHandle *hndl, const uint8 *tsdata) {
+void File_Handle_Set_Timestamp(FileHandle *hndl, const UBYTE *tsdata) {
     struct timeval fileTime[2];
     struct tm fileExpTime;
 
@@ -745,17 +721,17 @@ void File_Handle_Set_Timestamp(FileHandle *hndl, const uint8 *tsdata) {
     fileTime[0].tv_usec = 0;
     fileTime[1].tv_sec = fileTime[0].tv_sec;
     fileTime[1].tv_usec = fileTime[0].tv_usec;
-    utimes (hndl->nativePath, fileTime);
+    utimes (hndl->NativePath, fileTime);
 }
 
 bool File_Handle_Get_Next_Dir_Ent(FileHandle *hndl, DirEntry *dirEnt) {
-    uint32 actual;
+    ULONG actual;
 
     while(File_Handle_Read(hndl, dirEnt, 23, &actual) == CIOStatSuccess && actual >= 23) {
-        File_Name *name = File_Name_Alloc();
+        FileName *name = File_Name_Alloc();
         File_Name_Parse_From_Net(name, dirEnt->Name);
 
-        if (File_Name_Wild_Match(name, hndl->FnextPattern) && Dir_Entry_Test_Attr_Filter(hndl->dirEnt, hndl->FnextAttrFilter))
+        if (File_Name_Wild_Match(name, hndl->FnextPattern) && Dir_Entry_Test_Attr_Filter(hndl->DirEnt, hndl->FnextAttrFilter))
             return TRUE;
     }
 
@@ -763,45 +739,39 @@ bool File_Handle_Get_Next_Dir_Ent(FileHandle *hndl, DirEntry *dirEnt) {
 }
 
 typedef struct parameterBuffer {
-        uint8   Function;  // function number
-        uint8   Handle;    // file handle
-        uint8   F[6];
-        uint8   Mode;      // file open mode
-        uint8   Attr1;
-        uint8   Attr2;
-        uint8   Name1[12];
-        uint8   Name2[12];
-        uint8   Path[65];
+        UBYTE   Function;  // function number
+        UBYTE   Handle;    // file handle
+        UBYTE   F[6];
+        UBYTE   Mode;      // file open mode
+        UBYTE   Attr1;
+        UBYTE   Attr2;
+        UBYTE   Name1[12];
+        UBYTE   Name2[12];
+        UBYTE   Path[65];
     } ParameterBuffer;
 
-enum Command {
+typedef enum {
     CommandNone,
     CommandGetHiSpeedIndex,
     CommandStatus,
     CommandPut,
     CommandRead
-};
+} Command;
 
 typedef struct linkDevice {
-    SIOManager *SIOMgr;
-    DeviceIndicatorManager *UIRenderer;
-
     char    *BasePathNative;
-    bool    ReadOnly = FALSE;
-    bool    SetTimestamps = FALSE;
+    int     ReadOnly;
+    int     SetTimestamps;
 
-    vdfunction<void(const void *, uint32)> mpReceiveFn;
-    vdfunction<void()> mpFenceFn;
+    UBYTE   StatusFlags;
+    UBYTE   StatusError;
+    UBYTE   StatusLengthLo;
+    UBYTE   StatusLengthHi;
 
-    uint8   StatusFlags = 0;
-    uint8   StatusError = 0;
-    uint8   StatusLengthLo = 0;
-    uint8   StatusLengthHi = 0;
-
-    Command Command = CommandNone;
-    uint32  CommandPhase = 0;
-    uint8   CommandAux1 = 0;
-    uint8   CommandAux2 = 0;
+    Command Command;
+    ULONG   CommandPhase;
+    UBYTE   CommandAux1;
+    UBYTE   CommandAux2;
 
     char    *CurDir;
 
@@ -809,7 +779,7 @@ typedef struct linkDevice {
 
     FileHandle FileHandles[15];
 
-    uint8   TransferBuffer[65536];
+    UBYTE   TransferBuffer[65536];
 } LinkDevice;
 
 ///////////////////////////////////////////////////////////////////////////
@@ -896,22 +866,18 @@ void Link_Device_Set_Base_Path(LinkDevice *dev, const char *basePath) {
 }
 
 void Link_Device_Set_Settings(LinkDevice *dev, int setTimestamps, int readOnly, char *basePath) {
-    dev->SetTimestamps = SetTimestamps;
+    dev->SetTimestamps = setTimestamps;
     Link_Device_Set_Read_Only(dev, readOnly);
-    Link_Device_Set_Base_Path(basePath);
+    Link_Device_Set_Base_Path(dev, basePath);
 }
 
 void Link_Device_Shutdown(LinkDevice *dev) {
     Link_Device_Abort_Command(dev);
-
-    UIRenderer = NULL;
-
-    SIOMgr = NULL;
 }
 
 void Link_Device_Cold_Reset(LinkDevice *dev) {
-    for (i = 0; i < 15; i++)
-        File_Handle_Close(dev->FileHandles[i]);
+    for (int i = 0; i < 15; i++)
+        File_Handle_Close(&dev->FileHandles[i]);
 }
 
 IATDeviceSIO::CmdResponse ATPCLinkDevice::OnSerialBeginCommand(const ATDeviceSIOCommand& cmd) {
@@ -926,7 +892,7 @@ IATDeviceSIO::CmdResponse ATPCLinkDevice::OnSerialBeginCommand(const ATDeviceSIO
             return kCmdResponse_NotHandled;
     }
 
-    const uint8 commandId = cmd.mCommand & 0x7f;
+    const UBYTE commandId = cmd.mCommand & 0x7f;
 
     mCommandAux1 = cmd.mAUX[0];
     mCommandAux2 = cmd.mAUX[1];
@@ -993,21 +959,21 @@ void ATPCLinkDevice::AbortCommand(LinkDevice *dev) {
 
 void ATPCLinkDevice::AdvanceCommand() {
     switch(mCommand) {
-        case kCommandGetHiSpeedIndex:
+        case CommandGetHiSpeedIndex:
             g_ATLCPCLink("Sending high-speed index\n");
             mpSIOMgr->SendComplete();
             {
-                uint8 hsindex = 9;
+                UBYTE hsindex = 9;
                 mpSIOMgr->SendData(&hsindex, 1, true);
             }
             mpSIOMgr->EndCommand();
             break;
 
-        case kCommandStatus:
+        case CommandStatus:
             g_ATLCPCLink("Sending status: Flags=$%02x, Error=%3d, Length=%02x%02x\n", mStatusFlags, mStatusError, mStatusLengthHi, mStatusLengthLo);
             mpSIOMgr->SendComplete();
             {
-                const uint8 data[4] = {
+                const UBYTE data[4] = {
                     mStatusFlags,
                     mStatusError,
                     mStatusLengthLo,
@@ -1019,7 +985,7 @@ void ATPCLinkDevice::AdvanceCommand() {
             mpSIOMgr->EndCommand();
             break;
 
-        case kCommandPut:
+        case CommandPut:
             mpReceiveFn = [this](const void *src, uint32 len) {
                 memcpy(&mParBuf, src, std::min<uint32>(len, sizeof(mParBuf)));
             };
@@ -1034,7 +1000,7 @@ void ATPCLinkDevice::AdvanceCommand() {
             mpSIOMgr->InsertFence(0);
             break;
 
-        case kCommandRead:
+        case CommandRead:
             // fwrite ($01) is special
             if (mParBuf.mFunction == 0x01) {
                 mpReceiveFn = [this](const void *src, uint32 len) {
@@ -1128,8 +1094,8 @@ int Link_Device_On_Put(LinkDevice *dev) {
                 else if (len - pos < bufLen)
                     bufLen = len - pos;
 
-                dev->StatusLengthLo = (uint8)bufLen;
-                dev->StatusLengthHi = (uint8)(bufLen >> 8);
+                dev->StatusLengthLo = (UBYTE)bufLen;
+                dev->StatusLengthHi = (UBYTE)(bufLen >> 8);
                 dev->StatusError = bufLen ? CIOStatSuccess : CIOStatEndOfFile;
                 }
             return TRUE;
@@ -1163,8 +1129,8 @@ int Link_Device_On_Put(LinkDevice *dev) {
                 else if (0xffffff - pos < bufLen)
                     bufLen = 0xffffff - pos;
 
-                dev->StatusLengthLo = (uint8)bufLen;
-                dev->StatusLengthHi = (uint8)(bufLen >> 8);
+                dev->StatusLengthLo = (UBYTE)bufLen;
+                dev->StatusLengthHi = (UBYTE)(bufLen >> 8);
                 dev->StatusError = bufLen ? CIOStatSuccess : CIOStatDiskFull;
                 }
             return TRUE;
@@ -1311,9 +1277,9 @@ int Link_Device_On_Put(LinkDevice *dev) {
 
                 dirEnt.SectorMapLo = 0;
                 dirEnt.SectorMapHi = 0;
-                dirEnt.LengthLo = (uint8)slen;
-                dirEnt.LengthMid = (uint8)((uint32)slen >> 8);
-                dirEnt.LengthHi = (uint8)((uint32)slen >> 16);
+                dirEnt.LengthLo = (UBYTE)slen;
+                dirEnt.LengthMid = (UBYTE)((uint32)slen >> 8);
+                dirEnt.LengthHi = (UBYTE)((uint32)slen >> 16);
                 memcpy(dirEnt.Name, fn.Name, sizeof(dirEnt.Name));
                 Dir_Entry_Set_Date(&dirEnt, ep->st_mtime);
 
@@ -1497,7 +1463,7 @@ int Link_Device_On_Put(LinkDevice *dev) {
                 return TRUE;
             }
 
-            if (!Link_Device_Resolve_Native_Path(dev, FALSE, resultPath))
+            if (!Link_Device_Resolve_Native_Path_Dir(dev, FALSE, resultPath))
                 return TRUE;
 
             if (!File_Name_Parse_From_Net(&fname, dev->ParBuf.Name1)) {
@@ -1646,7 +1612,7 @@ int Link_Device_On_Put(LinkDevice *dev) {
                 return TRUE;
             }
 
-            if (!Link_Device_Resolve_Native_Path(dev, FALSE, resultPath))
+            if (!Link_Device_Resolve_Native_Path_Dir(dev, FALSE, resultPath))
                 return TRUE;
 
             if (!File_Name_Parse_From_Net(&fname, dev->ParBuf.Name1)) {
@@ -1754,136 +1720,130 @@ int Link_Device_On_Put(LinkDevice *dev) {
         case 19:    // getdfree
             devv->StatusError = CIOStatSuccess;
             return TRUE;
-    }
 
-    printf("Unsupported put for function $%02x\n", dev->ParBuf.Function);
-    dev->StatusError = CIOStatNotSupported;
-    return TRUE;
+        default:
+            printf("Unsupported put for function $%02x\n", dev->ParBuf.Function);
+            dev->StatusError = CIOStatNotSupported;
+            return TRUE;
+    }
 }
 
-bool ATPCLinkDevice::OnRead() {
-    switch(mParBuf.mFunction) {
+int Link_Device_On_Read(LinkDevice *dev) {
+    switch(dev->ParBuf.Function) {
         case 0:     // fread
-            OnReadActivity();
-            {
-                uint32 blocklen = mStatusLengthLo + ((uint32)mStatusLengthHi << 8);
-                if (CheckValidFileHandle(true)) {
-                    ATPCLinkFileHandle& fh = mFileHandles[mParBuf.mHandle - 1];
-                    uint32 actual = 0;
+            uint32 blocklen = dev->StatusLengthLo + ((uint32)dev->StatusLengthHi << 8);
+            if (Link_Device_Check_Valid_File_Handle(dev, TRUE)) {
+                FileHandle *fh = dev->FileHandles[dev->ParBuf.Handle - 1];
+                uint32 actual = 0;
 
-                    mStatusError = fh.Read(mTransferBuffer, blocklen, actual);
+                dev->StatusError = File_Handle_Read(&fh, dev->TransferBuffer, blocklen, actual);
 
-                    mStatusLengthLo = (uint8)actual;
-                    mStatusLengthHi = (uint8)(actual >> 8);
-                }
-
-                mpSIOMgr->SendData(mTransferBuffer, blocklen, true);
+                dev->StatusLengthLo = (UBYTE)actual;
+                dev->StatusLengthHi = (UBYTE)(actual >> 8);
             }
-            return true;
+
+            mpSIOMgr->SendData(mTransferBuffer, blocklen, TRUE);
+            return TRUE;
 
         case 1:     // fwrite
-            if (mbReadOnly) {
-                mStatusError = ATCIOSymbols::CIOStatReadOnly;
-                return true;
+            if (dev->ReadOnly) {
+                dev->StatusError = CIOStatReadOnly;
+                return TRUE;
             }
 
-            OnWriteActivity();
-            {
-                uint32 blocklen = mStatusLengthLo + ((uint32)mStatusLengthHi << 8);
-                if (CheckValidFileHandle(true)) {
-                    ATPCLinkFileHandle& fh = mFileHandles[mParBuf.mHandle - 1];
+            uint32 blocklen = dev->StatusLengthLo + ((uint32)dev->StatusLengthHi << 8);
+            if (Link_Device_Check_Valid_File_Handle(dev, TRUE)) {
+                FileHandle *fh = dev->FileHandles[dev->ParBuf.Handle - 1];
 
-                    mStatusError = fh.Write(mTransferBuffer, blocklen);
-                }
+                dev->StatusError = File_Handle_Write(&fh, dev->TransferBuffer, blocklen);
             }
-            return true;
+            return TRUE;
 
         case 3:     // ftell
-            if (CheckValidFileHandle(true)) {
-                ATPCLinkFileHandle& fh = mFileHandles[mParBuf.mHandle - 1];
+            if (Link_Device_Check_Valid_File_Handle(dev, TRUE)) {
+                FileHandle *fh = dev->FileHandles[dev->ParBuf.Handle - 1];
 
-                if (!fh.IsOpen()) {
-                    mStatusError = ATCIOSymbols::CIOStatNotOpen;
+                if (!File_Handle_Is_Open(&fh)) {
+                    dev->StatusError = CIOStatNotOpen;
                     return true;
                 }
 
-                const uint32 len = fh.GetPosition();
-                mTransferBuffer[0] = (uint8)len;
-                mTransferBuffer[1] = (uint8)(len >> 8);
-                mTransferBuffer[2] = (uint8)(len >> 16);
-                mStatusError = ATCIOSymbols::CIOStatSuccess;
+                const uint32 len = fFile_Handle_Get_Position(&fh);
+                dev->TransferBuffer[0] = (UBYTE)len;
+                dev->TransferBuffer[1] = (UBYTE)(len >> 8);
+                dev->TransferBuffer[2] = (UBYTE)(len >> 16);
+                dev->StatusError = CIOStatSuccess;
             }
-            mpSIOMgr->SendData(mTransferBuffer, 3, true);
-            return true;
+            mpSIOMgr->SendData(dev->TransferBuffer, 3, TRUE);
+            return TRUE;
 
         case 4:     // flen
-            memset(mTransferBuffer, 0, 3);
-            if (CheckValidFileHandle(true)) {
-                ATPCLinkFileHandle& fh = mFileHandles[mParBuf.mHandle - 1];
+            memset(dev->TransferBuffer, 0, 3);
+            if (Link_Device_Check_Valid_File_Handle(dev, TRUE)) {
+                FileHandle *fh = dev->FileHandles[dev->ParBuf.Handle - 1];
 
-                if (!fh.IsOpen())
-                    mStatusError = ATCIOSymbols::CIOStatNotOpen;
+                if (!File_Handle_Is_Open(&fh))
+                    dev->StatusError = CIOStatNotOpen;
                 else {
-                    uint32 len = fh.GetLength();
+                    uint32 len = fh.File_Handle_Get_Length(&fh);
 
-                    mTransferBuffer[0] = (uint8)len;
-                    mTransferBuffer[1] = (uint8)(len >> 8);
-                    mTransferBuffer[2] = (uint8)(len >> 16);
+                    dev->TransferBuffer[0] = (UBYTE)len;
+                    dev->TransferBuffer[1] = (UBYTE)(len >> 8);
+                    dev->TransferBuffer[2] = (UBYTE)(len >> 16);
                 }
             }
-            mpSIOMgr->SendData(mTransferBuffer, 3, true);
-            return true;
+            mpSIOMgr->SendData(dev->TransferBuffer, 3, TRUE);
+            return TRUE;
 
         case 5:     // reserved
-            mStatusError = ATCIOSymbols::CIOStatNotSupported;
-            return true;
+            dev->StatusError = CIOStatNotSupported;
+            return TRUE;
 
         case 6:     // fnext
-            OnReadActivity();
-            memset(mTransferBuffer, 0, sizeof(ATPCLinkDirEnt) + 1);
+            memset(dev->TransferBuffer, 0, sizeof(DirEntry) + 1);
 
-            if (CheckValidFileHandle(true)) {
-                ATPCLinkFileHandle& fh = mFileHandles[mParBuf.mHandle - 1];
+            if (Link_Device_Check_Valid_File_Handle(dev, TRUE)) {
+                FileHandle *fh = dev->FileHandles[dev->ParBuf.Handle - 1];
 
-                if (!fh.IsDir()) {
-                    mStatusError = ATCIOSymbols::CIOStatBadParameter;
+                if (!File_Handle_Is_Dir(&fh)) {
+                    dev->StatusError = CIOStatBadParameter;
                 } else {
-                    ATPCLinkDirEnt dirEnt = {0};
+                    DirEntry dirEnt = {0};
 
-                    if (!fh.GetNextDirEnt(dirEnt))
-                        mStatusError = ATCIOSymbols::CIOStatEndOfFile;
+                    if (!File_Handle_Get_Next_Dir_Ent(&fh, dirEnt))
+                        dev->StatusError = CIOStatEndOfFile;
                     else
-                        mStatusError = ATCIOSymbols::CIOStatSuccess;
+                        dev->StatusError = CIOStatSuccess;
 
-                    memcpy(mTransferBuffer + 1, &dirEnt, sizeof(ATPCLinkDirEnt));
+                    memcpy(dev->TransferBuffer + 1, &dirEnt, sizeof(DirEntry));
                 }
             }
 
-            mTransferBuffer[0] = mStatusError;
+            dev->TransferBuffer[0] = dev->StatusError;
             mpSIOMgr->SendData(mTransferBuffer, sizeof(ATPCLinkDirEnt) + 1, true);
-            return true;
+            return TRUE;
 
         case 7:     // fclose
         case 8:     // init
-            mStatusError = ATCIOSymbols::CIOStatNotSupported;
-            return true;
+            dev->StatusError = CIOStatNotSupported;
+            return TRUE;
 
         case 9:     // open
         case 10:    // ffirst
-            mTransferBuffer[0] = mParBuf.mHandle;
-            memset(mTransferBuffer + 1, 0, sizeof(ATPCLinkDirEnt));
+            dev->TransferBuffer[0] = dev->ParBuf.mHandle;
+            memset(dev->TransferBuffer + 1, 0, sizeof(DirEnctyr));
 
             if (CheckValidFileHandle(true)) {
-                ATPCLinkFileHandle& fh = mFileHandles[mParBuf.mHandle - 1];
+                FileHandle *fh = dev->FileHandles[dev->ParBuf.Handle - 1];
 
-                const ATPCLinkDirEnt dirEnt = fh.GetDirEnt();
+                const DirEntry dirEnt = fFile_Handle_Get_Dir_Ent(&fh);
 
-                mStatusError = ATCIOSymbols::CIOStatSuccess;
+                dev->StatusError = CIOStatSuccess;
 
-                memcpy(mTransferBuffer + 1, &dirEnt, sizeof(ATPCLinkDirEnt));
+                memcpy(dev->TransferBuffer + 1, &dirEnt, sizeof(DirEntry));
             }
-            mpSIOMgr->SendData(mTransferBuffer, sizeof(ATPCLinkDirEnt) + 1, true);
-            return true;
+            mpSIOMgr->SendData(dev->TransferBuffer, sizeof(DirEntry) + 1, true);
+            return TRUE;
 
         case 11:    // rename
         case 12:    // remove
@@ -1891,49 +1851,43 @@ bool ATPCLinkDevice::OnRead() {
         case 14:    // mkdir
         case 15:    // rmdir
         case 16:    // chdir
-            mStatusError = ATCIOSymbols::CIOStatNotSupported;
+            dev->StatusError = CIOStatNotSupported;
             return true;
 
         case 17:    // getcwd
-            {
-                memset(mTransferBuffer, 0, 65);
-                strncpy((char *)mTransferBuffer, mCurDir.c_str(), 64);
-                mpSIOMgr->SendData(mTransferBuffer, 64, true);
-            }
-            return true;
+            memset(dev->TransferBuffer, 0, 65);
+            strncpy((char *)dev->TransferBuffer, dev->CurDir, 64);
+            mpSIOMgr->SendData(dev->TransferBuffer, 64, TRUE);
+        return TRUE;
 
         case 18:    // setboot
-            mStatusError = ATCIOSymbols::CIOStatNotSupported;
-            return true;
+            dev->StatusError = CIOStatNotSupported;
+            return TRUE;
 
         case 19:    // getdfree
-            {
-                ATPCLinkDiskInfo diskInfo = {};
+            DiskInfo diskInfo = {};
 
-                VDASSERTCT(sizeof(diskInfo) == 64);
+            diskInfo.InfoVersion = 0x21;
+            diskInfo.SectorCountLo = 0xff;
+            diskInfo.SectorCountHi = 0xff;
+            diskInfo.SectorsFreeLo = 0xff;
+            diskInfo.SectorsFreeHi = 0xff;
+            diskInfo.BytesPerSectorCode = 1;
+            diskInfo.Version = 0x80;
+            diskInfo.BytesPerSectorHi = 2;
+            diskInfo.SectorsPerCluster = 1;
+            memcpy(diskInfo.VolumeLabel, "PCLink  ", 8);
 
-                diskInfo.mInfoVersion = 0x21;
-                diskInfo.mSectorCountLo = 0xff;
-                diskInfo.mSectorCountHi = 0xff;
-                diskInfo.mSectorsFreeLo = 0xff;
-                diskInfo.mSectorsFreeHi = 0xff;
-                diskInfo.mBytesPerSectorCode = 1;
-                diskInfo.mVersion = 0x80;
-                diskInfo.mBytesPerSectorHi = 2;
-                diskInfo.mSectorsPerCluster = 1;
-                memcpy(diskInfo.mVolumeLabel, "PCLink  ", 8);
-
-                memcpy(mTransferBuffer, &diskInfo, 64);
-                mpSIOMgr->SendData(mTransferBuffer, 64, true);
-            }
-            return true;
+            memcpy(dev->TransferBuffer, &diskInfo, 64);
+            mpSIOMgr->SendData(dev->TransferBuffer, 64, TRUE);
+            return TRUE;
 
         case 20:    // chvol
-            mStatusError = ATCIOSymbols::CIOStatNotSupported;
-            return true;
+            dev->StatusError = CIOStatNotSupported;
+            return TRUE;
     }
 
-    return false;
+    return FALSE;
 }
 
 bool Link_Device_Check_Valid_File_Handle(LinkDevice *dev, bool setError) {
@@ -1951,8 +1905,8 @@ int Link_Device_Is_Dir_Ent_Included(LinkDevice *dev, DirEntry *dirEnt) {
     return Dir_Entry_Test_Attr_Filter(dirEnt, dev->ParBuf.Attr1);
 }
 
-int Link_Device_Resolve_Path(int allowDir, char *resultPath) {
-    const uint8 *s = dev->ParBuf.Path;
+int Link_Device_Resolve_Path(LinkDevice *dev, int allowDir, char *resultPath) {
+    const UBYTE *s = dev->ParBuf.Path;
 
     // check for absolute path
     if (*s == '>' || *s == '\\') {
@@ -1967,7 +1921,7 @@ int Link_Device_Resolve_Path(int allowDir, char *resultPath) {
 
         while(strlen(resultPath) != 0) {
             int len = strlen(resultPath);
-            uint8 c = resultPath[len-1];
+            UBYTE c = resultPath[len-1];
 
             resultPath[len-1] = 0;
 
@@ -1982,7 +1936,7 @@ int Link_Device_Resolve_Path(int allowDir, char *resultPath) {
     int fnchars = 0;
     int extchars = 0;
 
-    while(uint8 c = *s++) {
+    while(UBYTE c = *s++) {
         if (c == '>' || c == '\\') {
             if (inext && !extchars) {
                 dev->StatusError = CIOStatFileNameErr;
@@ -2008,7 +1962,7 @@ int Link_Device_Resolve_Path(int allowDir, char *resultPath) {
 
                     while(!resultPath.empty()) {
                         int len = strlen(resultPath);
-                        uint8 c = resultPath[len-1];
+                        UBYTE c = resultPath[len-1];
 
                         resultPath[len-1] = 0;
 
@@ -2039,10 +1993,10 @@ int Link_Device_Resolve_Path(int allowDir, char *resultPath) {
         if (!fnchars)
             strcat(resultPath, "\\");
 
-        if ((uint8)(c - 'a') < 26)
+        if ((UBYTE)(c - 'a') < 26)
             c &= ~0x20;
 
-        if (c != '_' && (uint8)(c - '0') >= 10 && (uint8)(c - 'A') >= 26) {
+        if (c != '_' && (UBYTE)(c - '0') >= 10 && (UBYTE)(c - 'A') >= 26) {
             dev->StatusError = CIOStatFileNameErr;
             return FALSE;
         }
@@ -2074,19 +2028,19 @@ int Link_Device_Resolve_Path(int allowDir, char *resultPath) {
     return TRUE;
 }
 
-int Link_Device_Resolve_Native_Path(int allowDir, char *resultPath) {
-    VDStringA netPath;
+int Link_Device_Resolve_Native_Path_Dir(LinkDevice *dev, int allowDir, char *resultPath) {
+    char netPath[FILENAME_MAX];
 
-    if (!ResolvePath(allowDir, netPath))
-        return false;
+    if (!Link_Device_Resolve_Path(dev, allowDir, netPath))
+        return FALSE;
 
-    return ResolveNativePath(resultPath, netPath);
+    return Link_Device_Resolve_Native_Path(dev, resultPath, netPath);
 }
 
-bool ATPCLinkDevice::ResolveNativePath(VDStringW& resultPath, const VDStringA& netPath) {
+int Link_Device_Resolve_Native_Path(LinkDevice *dev, char *resultPath, const char *netPath) {
 
     // translate path
-    resultPath = mBasePathNative;
+    resultPath = dev->BasePathNative;
 
     for(VDStringA::const_iterator it(netPath.begin()), itEnd(netPath.end());
         it != itEnd;
@@ -2104,5 +2058,5 @@ bool ATPCLinkDevice::ResolveNativePath(VDStringW& resultPath, const VDStringA& n
     if (!resultPath.empty() && resultPath.back() != L'\\')
         resultPath += L'\\';
 
-    return true;
+    return TRUE;
 }
