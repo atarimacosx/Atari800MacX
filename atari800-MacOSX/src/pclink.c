@@ -20,6 +20,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
+#include <sys/time.h>
 #include <time.h>
 #include <unistd.h>
 #include "vec.h"
@@ -783,72 +784,22 @@ typedef struct linkDevice {
 } LinkDevice;
 
 ///////////////////////////////////////////////////////////////////////////
-
-class ATPCLinkDevice final : public IATPCLinkDevice
-            , public ATDevice
-            , public IATDeviceSIO
-            , public IATDeviceIndicators
-            , public IATDeviceDiagnostics
-{
-    ATPCLinkDevice(const ATPCLinkDevice&) = delete;
-    ATPCLinkDevice& operator=(const ATPCLinkDevice&) = delete;
-public:
-    ATPCLinkDevice();
-    ~ATPCLinkDevice();
-
-    void *AsInterface(uint32 id) override;
-
-    bool IsReadOnly() { return mbReadOnly; }
-    void SetReadOnly(bool readOnly);
-
-    const wchar_t *GetBasePath() { return mBasePathNative.c_str(); }
-    void SetBasePath(const wchar_t *basePath);
-
-public:
-    void GetDeviceInfo(ATDeviceInfo& info) override;
-    void GetSettings(ATPropertySet& settings) override;
-    bool SetSettings(const ATPropertySet& settings) override;
-    void Shutdown() override;
-    void ColdReset() override;
-
-public:
-    void InitIndicators(IATDeviceIndicatorManager *uir) override;
-
-public:
-    void InitSIO(IATDeviceSIOManager *mgr) override;
-    CmdResponse OnSerialBeginCommand(const ATDeviceSIOCommand& cmd) override;
-    void OnSerialAbortCommand() override;
-    void OnSerialReceiveComplete(uint32 id, const void *data, uint32 len, bool checksumOK) override;
-    void OnSerialFence(uint32 id) override;
-    CmdResponse OnSerialAccelCommand(const ATDeviceSIORequest& request) override;
-
-public:
-    void DumpStatus(ATConsoleOutput& output) override;
-
-protected:
-
-    void AbortCommand();
-    void BeginCommand(Command cmd);
-    void AdvanceCommand();
-    void FinishCommand();
-
-    bool OnPut();
-    bool OnRead();
-
-    bool CheckValidFileHandle(bool setError);
-    bool IsDirEntIncluded(const ATPCLinkDirEnt& dirEnt) const;
-    bool ResolvePath(bool allowDir, VDStringA& resultPath);
-    bool ResolveNativePath(bool allowDir, VDStringW& resultPath);
-    bool ResolveNativePath(VDStringW& resultPath, const VDStringA& netPath);
-    void OnReadActivity();
-    void OnWriteActivity();
-
-};
+LinkDevice *Link_Device_Alloc();
+void Link_Device_Free(LinkDevice *dev);
+void Link_Device_Set_Read_Only(LinkDevice *dev, int readOnly);
+void Link_Device_Set_Base_Path(LinkDevice *dev, const char *basePath);
+void Link_Device_Set_Settings(LinkDevice *dev, int setTimestamps, int readOnly, char *basePath);
+void Link_Device_Shutdown(LinkDevice *dev);
+void Link_Device_Cold_Reset(LinkDevice *dev);
+void Link_Device_Begin_Command(LinkDevice *dev, Command cmd);
+void Link_Device_Abort_Command(LinkDevice *dev);
+void Link_Device_Advance_Command(LinkDevice *dev);
+    
 
 LinkDevice *Link_Device_Alloc() {
     LinkDevice *dev;
 
-    dev = malloc(sizof(LinkDevice));
+    dev = malloc(sizeof(LinkDevice));
     memset(dev, 0, sizeof(LinkDevice));
     return dev;
 }
@@ -943,46 +894,50 @@ IATDeviceSIO::CmdResponse ATPCLinkDevice::OnSerialAccelCommand(const ATDeviceSIO
     return OnSerialBeginCommand(request);
 }
 
-void ATPCLinkDevice::BeginCommand(Command cmd) {
-    mCommand = cmd;
-    mCommandPhase = 0;
+void Link_Device_Begin_Command(LinkDevice *dev, Command cmd);
+void Link_Device_Abort_Command(LinkDevice *dev);
+void Link_Device_Advance_Command(LinkDevice *dev);
+    
+void Link_Device_Begin_Command(LinkDevice *dev, Command cmd) {
+    dev->Command = cmd;
+    dev->CommandPhase = 0;
 
-    AdvanceCommand();
+    Link_Device_Advance_Command(dev);
 }
 
-void ATPCLinkDevice::AbortCommand(LinkDevice *dev) {
+void Link_Device_Abort_Command(LinkDevice *dev) {
     if (dev->Command) {
         dev->Command = CommandNone;
         dev->CommandPhase = 0;
     }
 }
 
-void ATPCLinkDevice::AdvanceCommand() {
-    switch(mCommand) {
+void Link_Device_Advance_Command(LinkDevice *dev) {
+    switch(dev->Command) {
         case CommandGetHiSpeedIndex:
-            g_ATLCPCLink("Sending high-speed index\n");
-            mpSIOMgr->SendComplete();
+            printf("Sending high-speed index\n");
+            SIOMgr_Send_Complete();
             {
                 UBYTE hsindex = 9;
-                mpSIOMgr->SendData(&hsindex, 1, true);
+                SIOMgr_Send_Data(&hsindex, 1, TRUE);
             }
-            mpSIOMgr->EndCommand();
+            SIOMgr_End_Command();
             break;
 
         case CommandStatus:
-            g_ATLCPCLink("Sending status: Flags=$%02x, Error=%3d, Length=%02x%02x\n", mStatusFlags, mStatusError, mStatusLengthHi, mStatusLengthLo);
-            mpSIOMgr->SendComplete();
+            printf("Sending status: Flags=$%02x, Error=%3d, Length=%02x%02x\n", dev->StatusFlags, dev->StatusError, dev->StatusLengthHi, dev->StatusLengthLo);
+            SIOMgr_Send_Complete();
             {
                 const UBYTE data[4] = {
-                    mStatusFlags,
-                    mStatusError,
-                    mStatusLengthLo,
-                    mStatusLengthHi
+                    dev->StatusFlags,
+                    dev->StatusError,
+                    dev->StatusLengthLo,
+                    dev->StatusLengthHi
                 };
 
-                mpSIOMgr->SendData(data, 4, true);
+                SIOMgr_Send_Data(data, 4, TRUE);
             }
-            mpSIOMgr->EndCommand();
+            SIOMgr_End_Command();
             break;
 
         case CommandPut:
@@ -1002,19 +957,19 @@ void ATPCLinkDevice::AdvanceCommand() {
 
         case CommandRead:
             // fwrite ($01) is special
-            if (mParBuf.mFunction == 0x01) {
+            if (dev->ParBuf.Function == 0x01) {
                 mpReceiveFn = [this](const void *src, uint32 len) {
                     memcpy(mTransferBuffer, src, len);
                 };
-                mpSIOMgr->ReceiveData(0, mParBuf.mF[0] + ((uint32)mParBuf.mF[1] << 8), true);
+                mpSIOMgr->ReceiveData(0, dev->ParBuf.F[0] + ((ULONG)dev->ParBuf.F[1] << 8), TRUE);
                 mpSIOMgr->InsertFence(0);
                 mpFenceFn = [this]() {
                     OnRead();
                     mpSIOMgr->EndCommand();
                 };
-                mpSIOMgr->SendComplete();
+                SIOMgr_Send_Complete();
             } else {
-                mpSIOMgr->SendComplete();
+                SIOMgr_Send_Complete();
                 mpFenceFn = [this]() {
                     OnRead();
                     mpSIOMgr->EndCommand();
@@ -1026,8 +981,8 @@ void ATPCLinkDevice::AdvanceCommand() {
     }
 }
 
-void Link_Device_Finish_Command() {
-    Link_Device_Abort_Command();
+void Link_Device_Finish_Command(LinkDevice *dev) {
+    Link_Device_Abort_Command(dev);
 }
 
 int Link_Device_On_Put(LinkDevice *dev) {
