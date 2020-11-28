@@ -476,6 +476,7 @@ int INPUT_mouse_pen_ofs_v = 2;
 int INPUT_mouse_joy_inertia = 10;
 int INPUT_cx85 = 0;
 int cx85_port = 1;
+int INPUT_Invert_Axis = 0;
 
 static UBYTE STICK[4];
 static UBYTE TRIG_input[4];
@@ -3970,7 +3971,7 @@ static UBYTE mouse_step(void)
 			e += dx;
 			if (mouse_move_y < 0) {
 				r &= INPUT_STICK_FORWARD;
-				mouse_last_down = 0;
+				mouse_last_down = INPUT_Invert_Axis;
 				mouse_y--;
 				mouse_move_y += 1 << MOUSE_SHIFT;
 				if (mouse_move_y > 0)
@@ -3978,7 +3979,7 @@ static UBYTE mouse_step(void)
 			}
 			else {
 				r &= INPUT_STICK_BACK;
-				mouse_last_down = 1;
+				mouse_last_down = 1 - INPUT_Invert_Axis;
 				mouse_y++;
 				mouse_move_y -= 1 << MOUSE_SHIFT;
 				if (mouse_move_y < 0)
@@ -3989,7 +3990,7 @@ static UBYTE mouse_step(void)
 	else {
 		if (mouse_move_y < 0) {
 			r &= INPUT_STICK_FORWARD;
-			mouse_last_down = 1;
+			mouse_last_down = 1 - INPUT_Invert_Axis;
 			mouse_y--;
 			mouse_move_y += 1 << MOUSE_SHIFT;
 			if (mouse_move_y > 0)
@@ -3997,7 +3998,7 @@ static UBYTE mouse_step(void)
 		}
 		else {
 			r &= INPUT_STICK_BACK;
-			mouse_last_down = 0;
+			mouse_last_down = INPUT_Invert_Axis;
 			mouse_y++;
 			mouse_move_y -= 1 << MOUSE_SHIFT;
 			if (mouse_move_y < 0)
