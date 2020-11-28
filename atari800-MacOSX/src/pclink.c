@@ -739,6 +739,10 @@ bool File_Handle_Get_Next_Dir_Ent(FileHandle *hndl, DirEntry *dirEnt) {
     return FALSE;
 }
 
+UBYTE PCLINK_Command(UBYTE *dataBuffer, int read, int *ExpectedBytes) {
+    
+}
+
 typedef struct parameterBuffer {
         UBYTE   Function;  // function number
         UBYTE   Handle;    // file handle

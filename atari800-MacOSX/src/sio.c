@@ -177,6 +177,7 @@ static int CommandIndex = 0;
 static UBYTE DataBuffer[512 + 3];
 static int DataIndex = 0;
 static int TransferStatus = SIO_NoFrame;
+static int TransferDest = 0;
 static int ExpectedBytes = 0;
 
 int ignore_header_writeprotect = FALSE;
@@ -1598,8 +1599,13 @@ void SIO_PutByte(int byte)
 				if (CommandFrame[0] >= 0x31 && CommandFrame[0] <= 0x38 && (SIO_drive_status[CommandFrame[0]-0x31] != SIO_OFF || BINLOAD_start_binloading)) {
 					TransferStatus = SIO_StatusRead;
 					POKEY_DELAYED_SERIN_IRQ = SIO_SERIN_INTERVAL + SIO_ACK_INTERVAL;
+                    TransferDest = 0;
 				}
-				else
+                else if (CommandFrame[0] == 0x6f) {
+                    TransferStatus = SIO_StatusRead;
+                    TransferDest = 0x6f;
+                }
+                else
 					TransferStatus = SIO_NoFrame;
 			}
 		}
@@ -1614,7 +1620,11 @@ void SIO_PutByte(int byte)
 			if (DataIndex >= ExpectedBytes) {
 				UBYTE sum = SIO_ChkSum(DataBuffer, ExpectedBytes - 1);
 				if (sum == DataBuffer[ExpectedBytes - 1]) {
-					UBYTE result = WriteSectorBack();
+                    UBYTE result;
+                    if (TransferDest)
+                        result = PCLINK_WriteFrame(DataBuffer);
+                    else
+                        result = WriteSectorBack();
 					if (result != 0) {
 						DataBuffer[0] = 'A';
 						DataBuffer[1] = result;
@@ -1651,7 +1661,19 @@ int SIO_GetByte(void)
 
 	switch (TransferStatus) {
 	case SIO_StatusRead:
-		byte = Command_Frame();		/* Handle now the command */
+        if (TransferDest == 0x6f) {
+            byte = PCLINK_Command(DataBuffer, &read, &ExpectedBytes);
+            if (byte == 'N')
+                TransferStatus = SIO_NoFrame;
+            else {
+                if (read)
+                    TransferStatus = SIO_ReadFrame;
+                else
+                    TransferStatus = SIO_WriteFrame;
+                }
+            }
+        else
+            byte = Command_Frame();		/* Handle now the command */
 		break;
 	case SIO_FormatFrame:
 		TransferStatus = SIO_ReadFrame;
