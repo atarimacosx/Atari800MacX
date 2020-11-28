@@ -73,6 +73,7 @@ extern int INPUT_mouse_pot_max;
 extern int INPUT_mouse_pen_ofs_h;
 extern int INPUT_mouse_pen_ofs_v;
 extern int INPUT_mouse_joy_inertia;
+extern int INPUT_Invert_Axis;
 extern int ANTIC_artif_mode;
 extern int ANTIC_artif_new;
 extern int sound_enabled;
@@ -1284,6 +1285,7 @@ int loadMacPrefs(int firstTime)
     INPUT_mouse_pot_max = prefs.mouseMaxVal;
     INPUT_mouse_pen_ofs_h = prefs.mouseHOffset;
     INPUT_mouse_pen_ofs_v = prefs.mouseVOffset;
+    INPUT_Invert_Axis = prefs.mouseYInvert;
     INPUT_mouse_joy_inertia = prefs.mouseInertia;
 
     for (i=0;i<4;i++) {

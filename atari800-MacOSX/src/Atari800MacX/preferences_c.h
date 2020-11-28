@@ -127,6 +127,7 @@ typedef struct ATARI800MACX_PREF {
                 int mouseMaxVal;
                 int mouseHOffset;
                 int mouseVOffset;
+                int mouseYInvert;
                 int mouseInertia;
                 int joystick1Type;
                 int joystick2Type;

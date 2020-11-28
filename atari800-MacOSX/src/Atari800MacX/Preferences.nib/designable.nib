@@ -227,6 +227,7 @@
                 <outlet property="mouseMinValField" destination="724" id="750"/>
                 <outlet property="mouseSpeedField" destination="722" id="755"/>
                 <outlet property="mouseVOffsetField" destination="729" id="753"/>
+                <outlet property="mouseYInvertButton" destination="qav-7L-VF7" id="Jvf-sV-9Kz"/>
                 <outlet property="muteAudioButton" destination="4355" id="4356"/>
                 <outlet property="onlyIntegralScalingButton" destination="whR-aJ-xh2" id="p5c-lK-6gb"/>
                 <outlet property="osBRomFileField" destination="357" id="404"/>
@@ -4863,6 +4864,17 @@ Command Path for Hx: Devices
                                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                         </textFieldCell>
                                                     </textField>
+                                                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="qav-7L-VF7">
+                                                        <rect key="frame" x="268" y="2" width="98" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <buttonCell key="cell" type="check" title="Invert Y Axis" bezelStyle="regularSquare" imagePosition="left" inset="2" id="k87-Nx-F7s">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                        <connections>
+                                                            <action selector="miscChanged:" target="-2" id="tMt-qW-3Lk"/>
+                                                        </connections>
+                                                    </button>
                                                 </subviews>
                                             </view>
                                             <font key="titleFont" metaFont="system"/>

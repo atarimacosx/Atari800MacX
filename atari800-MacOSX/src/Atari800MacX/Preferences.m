@@ -465,8 +465,9 @@ static NSDictionary *defaultValues() {
                 [NSNumber numberWithInt:0], MouseMinVal, 
                 [NSNumber numberWithInt:228], MouseMaxVal, 
                 [NSNumber numberWithInt:0], MouseHOffset, 
-                [NSNumber numberWithInt:0], MouseVOffset, 
-                [NSNumber numberWithInt:10], MouseInertia, 
+                [NSNumber numberWithInt:0], MouseVOffset,
+                [NSNumber numberWithInt:0], MouseYInvert,
+                [NSNumber numberWithInt:10], MouseInertia,
                 StandardConfigString, GamepadConfigCurrent,
                 StandardConfigString, Gamepad1ConfigCurrent,
                 StandardConfigString, Gamepad2ConfigCurrent,
@@ -1050,6 +1051,7 @@ static Preferences *sharedInstance = nil;
     [mouseHOffsetField setIntValue:[[displayedValues objectForKey:MouseHOffset] intValue]];
     [mouseVOffsetField setIntValue:[[displayedValues objectForKey:MouseVOffset] intValue]];
     [mouseInertiaField setIntValue:[[displayedValues objectForKey:MouseInertia] intValue]];
+    [mouseYInvertButton setState:[[displayedValues objectForKey:MouseYInvert] boolValue] ? NSOnState : NSOffState];
 
     [joystick1TypePulldown  selectItemAtIndex:[[displayedValues objectForKey:Joystick1Type] intValue]];
     [joystick2TypePulldown  selectItemAtIndex:[[displayedValues objectForKey:Joystick2Type] intValue]];
@@ -2612,6 +2614,7 @@ static Preferences *sharedInstance = nil;
         [mouseMaxValField setEnabled:NO];
         [mouseHOffsetField setEnabled:NO];
         [mouseVOffsetField setEnabled:NO];
+        [mouseYInvertButton setEnabled:NO];
         [mouseInertiaField setEnabled:NO];
         [displayedValues setObject:zero forKey:MouseDevice];
         }
@@ -2625,6 +2628,7 @@ static Preferences *sharedInstance = nil;
                 [mouseMaxValField setEnabled:NO];
                 [mouseHOffsetField setEnabled:NO];
                 [mouseVOffsetField setEnabled:NO];
+                [mouseYInvertButton setEnabled:NO];
                 [mouseInertiaField setEnabled:NO];
                 break;
             case 1:
@@ -2634,6 +2638,7 @@ static Preferences *sharedInstance = nil;
                 [mouseMaxValField setEnabled:YES];
                 [mouseHOffsetField setEnabled:NO];
                 [mouseVOffsetField setEnabled:NO];
+                [mouseYInvertButton setEnabled:NO];
                 [mouseInertiaField setEnabled:NO];
                 break;
             case 2:
@@ -2643,6 +2648,7 @@ static Preferences *sharedInstance = nil;
             [mouseMaxValField setEnabled:YES];
             [mouseHOffsetField setEnabled:NO];
             [mouseVOffsetField setEnabled:NO];
+            [mouseYInvertButton setEnabled:NO];
             [mouseInertiaField setEnabled:NO];
             break;
         case 3:
@@ -2652,6 +2658,7 @@ static Preferences *sharedInstance = nil;
             [mouseMaxValField setEnabled:YES];
             [mouseHOffsetField setEnabled:NO];
             [mouseVOffsetField setEnabled:NO];
+            [mouseYInvertButton setEnabled:NO];
             [mouseInertiaField setEnabled:NO];
             break;
         case 4:
@@ -2661,6 +2668,7 @@ static Preferences *sharedInstance = nil;
             [mouseMaxValField setEnabled:NO];
             [mouseHOffsetField setEnabled:YES];
             [mouseVOffsetField setEnabled:YES];
+            [mouseYInvertButton setEnabled:YES];
             [mouseInertiaField setEnabled:NO];
             break;
         case 5:
@@ -2670,6 +2678,7 @@ static Preferences *sharedInstance = nil;
             [mouseMaxValField setEnabled:NO];
             [mouseHOffsetField setEnabled:YES];
             [mouseVOffsetField setEnabled:YES];
+            [mouseYInvertButton setEnabled:YES];
             [mouseInertiaField setEnabled:NO];
             break;
         case 6:
@@ -2679,6 +2688,7 @@ static Preferences *sharedInstance = nil;
             [mouseMaxValField setEnabled:NO];
             [mouseHOffsetField setEnabled:NO];
             [mouseVOffsetField setEnabled:NO];
+            [mouseYInvertButton setEnabled:YES];
             [mouseInertiaField setEnabled:NO];
             break;
         case 7:
@@ -2688,6 +2698,7 @@ static Preferences *sharedInstance = nil;
             [mouseMaxValField setEnabled:NO];
             [mouseHOffsetField setEnabled:NO];
             [mouseVOffsetField setEnabled:NO];
+            [mouseYInvertButton setEnabled:YES];
             [mouseInertiaField setEnabled:NO];
             break;
         case 8:
@@ -2697,6 +2708,7 @@ static Preferences *sharedInstance = nil;
             [mouseMaxValField setEnabled:NO];
             [mouseHOffsetField setEnabled:NO];
             [mouseVOffsetField setEnabled:NO];
+            [mouseYInvertButton setEnabled:YES];
             [mouseInertiaField setEnabled:NO];
             break;
         case 9:
@@ -2706,6 +2718,7 @@ static Preferences *sharedInstance = nil;
             [mouseMaxValField setEnabled:NO];
             [mouseHOffsetField setEnabled:NO];
             [mouseVOffsetField setEnabled:NO];
+            [mouseYInvertButton setEnabled:YES];
             [mouseInertiaField setEnabled:YES];
             break;
         }
@@ -2720,6 +2733,8 @@ static Preferences *sharedInstance = nil;
     [displayedValues setObject:[NSNumber numberWithInt:anInt] forKey:MouseHOffset];
     anInt = [mouseVOffsetField intValue];
     [displayedValues setObject:[NSNumber numberWithInt:anInt] forKey:MouseVOffset];
+    anInt = [mouseYInvertButton intValue];
+    [displayedValues setObject:[NSNumber numberWithInt:anInt] forKey:MouseYInvert];
     anInt = [mouseInertiaField intValue];
     [displayedValues setObject:[NSNumber numberWithInt:anInt] forKey:MouseInertia];
 
@@ -3790,6 +3805,7 @@ static Preferences *sharedInstance = nil;
   prefs->mouseMaxVal = [[curValues objectForKey:MouseMaxVal] intValue];
   prefs->mouseHOffset = [[curValues objectForKey:MouseHOffset] intValue];
   prefs->mouseVOffset = [[curValues objectForKey:MouseVOffset] intValue];
+  prefs->mouseYInvert = [[curValues objectForKey:MouseYInvert] intValue];
   prefs->mouseInertia = [[curValues objectForKey:MouseInertia] intValue];
   prefs->joystick1Type = [[curValues objectForKey:Joystick1Type] intValue];
   prefs->joystick2Type = [[curValues objectForKey:Joystick2Type] intValue];
@@ -5231,6 +5247,7 @@ static Preferences *sharedInstance = nil;
     getIntDefault(MouseMaxVal);
     getIntDefault(MouseHOffset);
     getIntDefault(MouseVOffset);
+    getIntDefault(MouseYInvert);
     getIntDefault(MouseInertia);
     getIntDefault(Joystick1Type);
     getIntDefault(Joystick2Type);
@@ -5513,6 +5530,7 @@ static Preferences *sharedInstance = nil;
     setIntDefault(MouseMaxVal);
     setIntDefault(MouseHOffset);
     setIntDefault(MouseVOffset);
+    setIntDefault(MouseYInvert);
     setIntDefault(MouseInertia);
     setIntDefault(Joystick1Type);
     setIntDefault(Joystick2Type);
@@ -5776,6 +5794,7 @@ static Preferences *sharedInstance = nil;
     setConfig(MouseMaxVal);
     setConfig(MouseHOffset);
     setConfig(MouseVOffset);
+    setConfig(MouseYInvert);
     setConfig(MouseInertia);
     setConfig(Joystick1Type);
     setConfig(Joystick2Type);
@@ -6141,6 +6160,7 @@ static Preferences *sharedInstance = nil;
     getConfig(MouseMaxVal);
     getConfig(MouseHOffset);
     getConfig(MouseVOffset);
+    getConfig(MouseYInvert);
     getConfig(MouseInertia);
     getConfig(Joystick1Type);
     getConfig(Joystick2Type);

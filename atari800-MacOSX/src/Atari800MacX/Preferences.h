@@ -207,6 +207,7 @@
 #define MouseMaxVal @"MouseMaxVal"
 #define MouseHOffset @"MouseHOffset"
 #define MouseVOffset @"MouseVOffset"
+#define MouseYInvert @"MouseYInvert"
 #define MouseInertia @"MouseInertia"
 #define ButtonAssignment @"ButtonAssignment"
 #define Button5200Assignment @"Button5200Assignment"
@@ -464,6 +465,7 @@
     IBOutlet id mouseMaxValField;
     IBOutlet id mouseHOffsetField;
     IBOutlet id mouseVOffsetField;
+    IBOutlet id mouseYInvertButton;
     IBOutlet id mouseInertiaField;
     IBOutlet id paletteChooseButton;
     IBOutlet id paletteField;
