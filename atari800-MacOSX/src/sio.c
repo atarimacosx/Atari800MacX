@@ -1662,7 +1662,7 @@ int SIO_GetByte(void)
 	switch (TransferStatus) {
 	case SIO_StatusRead:
         if (TransferDest == 0x6f) {
-            byte = PCLINK_Command(DataBuffer, &read, &ExpectedBytes);
+            byte = Link_Device_On_Serial_Begin_Command(CommandFrame, &read, &ExpectedBytes);
             if (byte == 'N')
                 TransferStatus = SIO_NoFrame;
             else {

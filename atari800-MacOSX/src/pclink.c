@@ -739,10 +739,6 @@ bool File_Handle_Get_Next_Dir_Ent(FileHandle *hndl, DirEntry *dirEnt) {
     return FALSE;
 }
 
-UBYTE PCLINK_Command(UBYTE *dataBuffer, int read, int *ExpectedBytes) {
-    
-}
-
 typedef struct parameterBuffer {
         UBYTE   Function;  // function number
         UBYTE   Handle;    // file handle
@@ -783,6 +779,10 @@ typedef struct linkDevice {
     ParameterBuffer ParBuf;
 
     FileHandle FileHandles[15];
+    
+    int     ExpectedBytes;
+    int     ReadCommand;
+    int     ParSize;
 
     UBYTE   TransferBuffer[65536];
 } LinkDevice;
@@ -816,11 +816,12 @@ void Link_Device_Set_Read_Only(LinkDevice *dev, int readOnly) {
     dev->ReadOnly = readOnly;
 }
 
-void Link_Device_Set_Base_Path(LinkDevice *dev, const char *basePath) {
+void Link_Device_Set_Base_Path(LinkDevice *dev, char *basePath) {
     dev->BasePathNative = basePath;
 }
 
-void Link_Device_Set_Settings(LinkDevice *dev, int setTimestamps, int readOnly, char *basePath) {
+void Link_Device_Set_Settings(LinkDevice *dev, int setTimestamps,
+                              int readOnly, char *basePath) {
     dev->SetTimestamps = setTimestamps;
     Link_Device_Set_Read_Only(dev, readOnly);
     Link_Device_Set_Base_Path(dev, basePath);
@@ -835,80 +836,55 @@ void Link_Device_Cold_Reset(LinkDevice *dev) {
         File_Handle_Close(&dev->FileHandles[i]);
 }
 
-IATDeviceSIO::CmdResponse ATPCLinkDevice::OnSerialBeginCommand(const ATDeviceSIOCommand& cmd) {
-    if (cmd.mDevice != 0x6F)
-        return kCmdResponse_NotHandled;
+UBYTE Link_Device_On_Serial_Begin_Command( LinkDevice *dev,
+                                           UBYTE *commandFrame,
+                                           int *read, int *ExpectedBytes) {
+    if (commandFrame[0] != 0x6F)
+        return 'N';
 
-    if (mBasePathNative.empty())
-        return kCmdResponse_NotHandled;
+    if (strlen(dev->BasePathNative) == 0)
+        return 'N';
 
-    if (!cmd.mbStandardRate) {
-        if (cmd.mCyclesPerBit < 30 || cmd.mCyclesPerBit > 34)
-            return kCmdResponse_NotHandled;
-    }
-
-    const UBYTE commandId = cmd.mCommand & 0x7f;
-
-    mCommandAux1 = cmd.mAUX[0];
-    mCommandAux2 = cmd.mAUX[1];
-
-    Command command = kCommandNone;
-
-    if (commandId == 0x53)          // status
-        command = kCommandStatus;
-    else if (commandId == 0x50)     // put
-        command = kCommandPut;
-    else if (commandId == 0x52)     // read
-        command = kCommandRead;
-    else if (commandId == 0x3F)
-        command = kCommandGetHiSpeedIndex;
-    else {
-        g_ATLCPCLink("Unsupported command $%02x\n", cmd);
-        return kCmdResponse_Fail_NAK;
-    }
-
-    mpSIOMgr->BeginCommand();
-
-    // High-speed via bit 7 uses 38400 baud.
-    // High-speed via HS command frame uses 52Kbaud. Currently we use US Doubler timings.
-    if (cmd.mCommand & 0x80)
-        mpSIOMgr->SetTransferRate(45, 450);
-    else if (!cmd.mbStandardRate)
-        mpSIOMgr->SetTransferRate(34, 394);
-
-    mpSIOMgr->SendACK();
-
-    BeginCommand(command);
-    return kCmdResponse_Start;
-}
-
-void ATPCLinkDevice::OnSerialAbortCommand() {
-    AbortCommand();
-}
-
-void ATPCLinkDevice::OnSerialReceiveComplete(uint32 id, const void *data, uint32 len, bool checksumOK) {
-    mpReceiveFn(data, len);
-}
-
-void ATPCLinkDevice::OnSerialFence(uint32 id) {
-    mpFenceFn();
-}
-
-IATDeviceSIO::CmdResponse ATPCLinkDevice::OnSerialAccelCommand(const ATDeviceSIORequest& request) {
-    return OnSerialBeginCommand(request);
-}
-
-void Link_Device_Begin_Command(LinkDevice *dev, Command cmd);
-void Link_Device_Abort_Command(LinkDevice *dev);
-void Link_Device_Advance_Command(LinkDevice *dev);
+    // Protocol version must be zero
+    if (commandFrame[3] & 0xf0)
+        return 'N';
     
-void Link_Device_Begin_Command(LinkDevice *dev, Command cmd) {
-    dev->Command = cmd;
+    // Parameter buffer must be within parameter sizel
+    dev->ParSize = commandFrame[2] ? commandFrame[2] : 256;
+    if (dev->ParSize  > sizeof(ParameterBuffer))
+        return 'N';
+    
+    dev->CommandAux1 = commandFrame[2];
+    dev->CommandAux2 = commandFrame[3];
+
+    Command command = CommandNone;
+
+    if (commandFrame[1] == 0x53)          // status
+        command = CommandStatus;
+    else if (commandFrame[1] == 0x50)     // put
+        command = CommandPut;
+    else if (commandFrame[1] == 0x52)     // read
+        command = CommandRead;
+    else if (commandFrame[1] == 0x3F)
+        command = CommandGetHiSpeedIndex;
+    else {
+        printf("Unsupported command $%02x\n", commandFrame[1]);
+        return 'N';
+    }
+
+    //mpSIOMgr->SendACK();
     dev->CommandPhase = 0;
 
     Link_Device_Advance_Command(dev);
+
+    *ExpectedBytes = dev->ExpectedBytes;
+    *read = dev->ReadCommand;
+    return 'A';
 }
 
+void Link_Device_Abort_Command(LinkDevice *dev);
+void Link_Device_Advance_Command(LinkDevice *dev);
+    
 void Link_Device_Abort_Command(LinkDevice *dev) {
     if (dev->Command) {
         dev->Command = CommandNone;
@@ -920,67 +896,28 @@ void Link_Device_Advance_Command(LinkDevice *dev) {
     switch(dev->Command) {
         case CommandGetHiSpeedIndex:
             printf("Sending high-speed index\n");
-            SIOMgr_Send_Complete();
-            {
-                UBYTE hsindex = 9;
-                SIOMgr_Send_Data(&hsindex, 1, TRUE);
-            }
-            SIOMgr_End_Command();
+            dev->ExpectedBytes = 1;
+            dev->ReadCommand = TRUE;
+            dev->TransferBuffer[0] = 9;
             break;
 
         case CommandStatus:
             printf("Sending status: Flags=$%02x, Error=%3d, Length=%02x%02x\n", dev->StatusFlags, dev->StatusError, dev->StatusLengthHi, dev->StatusLengthLo);
-            SIOMgr_Send_Complete();
-            {
-                const UBYTE data[4] = {
-                    dev->StatusFlags,
-                    dev->StatusError,
-                    dev->StatusLengthLo,
-                    dev->StatusLengthHi
-                };
-
-                SIOMgr_Send_Data(data, 4, TRUE);
-            }
-            SIOMgr_End_Command();
+            dev->ExpectedBytes = 4;
+            dev->ReadCommand = TRUE;
+            dev->TransferBuffer[0] = dev->StatusFlags;
+            dev->TransferBuffer[1] = dev->StatusError;
+            dev->TransferBuffer[2] = dev->StatusLengthLo;
+            dev->TransferBuffer[3] = dev->StatusLengthHi;
             break;
 
         case CommandPut:
-            mpReceiveFn = [this](const void *src, uint32 len) {
-                memcpy(&mParBuf, src, std::min<uint32>(len, sizeof(mParBuf)));
-            };
-            mpSIOMgr->ReceiveData(0, mCommandAux1 ? mCommandAux1 : 256, true);
-            mpFenceFn = [this]() {
-                if (OnPut())
-                    mpSIOMgr->SendComplete();
-                else
-                    mpSIOMgr->SendError();
-                mpSIOMgr->EndCommand();
-            };
-            mpSIOMgr->InsertFence(0);
+            dev->ReadCommand = FALSE;
+            dev->ExpectedBytes = dev->ParSize;
             break;
 
         case CommandRead:
-            // fwrite ($01) is special
-            if (dev->ParBuf.Function == 0x01) {
-                mpReceiveFn = [this](const void *src, uint32 len) {
-                    memcpy(mTransferBuffer, src, len);
-                };
-                mpSIOMgr->ReceiveData(0, dev->ParBuf.F[0] + ((ULONG)dev->ParBuf.F[1] << 8), TRUE);
-                mpSIOMgr->InsertFence(0);
-                mpFenceFn = [this]() {
-                    OnRead();
-                    mpSIOMgr->EndCommand();
-                };
-                SIOMgr_Send_Complete();
-            } else {
-                SIOMgr_Send_Complete();
-                mpFenceFn = [this]() {
-                    OnRead();
-                    mpSIOMgr->EndCommand();
-                };
-                mpSIOMgr->InsertFence(0);
-            }
-
+            dev->ReadCommand = TRUE;
             break;
     }
 }
@@ -1701,7 +1638,7 @@ int Link_Device_On_Read(LinkDevice *dev) {
                 dev->StatusLengthHi = (UBYTE)(actual >> 8);
             }
 
-            mpSIOMgr->SendData(mTransferBuffer, blocklen, TRUE);
+            dev->ExpectedBytes = blocklen;
             return TRUE;
 
         case 1:     // fwrite
@@ -1716,6 +1653,7 @@ int Link_Device_On_Read(LinkDevice *dev) {
 
                 dev->StatusError = File_Handle_Write(&fh, dev->TransferBuffer, blocklen);
             }
+            dev->ExpectedBytes = 0;
             return TRUE;
 
         case 3:     // ftell
@@ -1733,7 +1671,10 @@ int Link_Device_On_Read(LinkDevice *dev) {
                 dev->TransferBuffer[2] = (UBYTE)(len >> 16);
                 dev->StatusError = CIOStatSuccess;
             }
-            mpSIOMgr->SendData(dev->TransferBuffer, 3, TRUE);
+            dev->ExpectedBytes = 3            dev->ExpectedBytes = 0;
+dev->ExpectedBytes = 0;
+dev->ExpectedBytes = 0;
+;
             return TRUE;
 
         case 4:     // flen
@@ -1751,10 +1692,11 @@ int Link_Device_On_Read(LinkDevice *dev) {
                     dev->TransferBuffer[2] = (UBYTE)(len >> 16);
                 }
             }
-            mpSIOMgr->SendData(dev->TransferBuffer, 3, TRUE);
+            dev->ExpectedBytes = 3;
             return TRUE;
 
         case 5:     // reserved
+            dev->ExpectedBytes = 0;
             dev->StatusError = CIOStatNotSupported;
             return TRUE;
 
@@ -1779,11 +1721,12 @@ int Link_Device_On_Read(LinkDevice *dev) {
             }
 
             dev->TransferBuffer[0] = dev->StatusError;
-            mpSIOMgr->SendData(mTransferBuffer, sizeof(ATPCLinkDirEnt) + 1, true);
+            dev->ExpectedBytes = sizeof(DirEntry) + 1;
             return TRUE;
 
         case 7:     // fclose
         case 8:     // init
+            dev->ExpectedBytes = 0;
             dev->StatusError = CIOStatNotSupported;
             return TRUE;
 
@@ -1801,7 +1744,7 @@ int Link_Device_On_Read(LinkDevice *dev) {
 
                 memcpy(dev->TransferBuffer + 1, &dirEnt, sizeof(DirEntry));
             }
-            mpSIOMgr->SendData(dev->TransferBuffer, sizeof(DirEntry) + 1, true);
+            dev->ExpectedBytes = sizeof(DirEntry) + 1;
             return TRUE;
 
         case 11:    // rename
@@ -1810,17 +1753,19 @@ int Link_Device_On_Read(LinkDevice *dev) {
         case 14:    // mkdir
         case 15:    // rmdir
         case 16:    // chdir
+            dev->ExpectedBytes = 0;
             dev->StatusError = CIOStatNotSupported;
             return true;
 
         case 17:    // getcwd
             memset(dev->TransferBuffer, 0, 65);
             strncpy((char *)dev->TransferBuffer, dev->CurDir, 64);
-            mpSIOMgr->SendData(dev->TransferBuffer, 64, TRUE);
+            dev->ExpectedBytes = 64;
         return TRUE;
 
         case 18:    // setboot
             dev->StatusError = CIOStatNotSupported;
+            dev->ExpectedBytes = 0;
             return TRUE;
 
         case 19:    // getdfree
@@ -1838,11 +1783,12 @@ int Link_Device_On_Read(LinkDevice *dev) {
             memcpy(diskInfo.VolumeLabel, "PCLink  ", 8);
 
             memcpy(dev->TransferBuffer, &diskInfo, 64);
-            mpSIOMgr->SendData(dev->TransferBuffer, 64, TRUE);
+            dev->ExpectedBytes = 64;
             return TRUE;
 
         case 20:    // chvol
             dev->StatusError = CIOStatNotSupported;
+            dev->ExpectedBytes = 0;
             return TRUE;
     }
 
