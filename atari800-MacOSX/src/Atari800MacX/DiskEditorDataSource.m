@@ -93,7 +93,6 @@ static int idCounter = 0;
                   XEPrintPtr += sprintf(XEPrintPtr,"  %6ld\n",(long int) fileList[rowIndex].bytes);
               }
      else {
-		printf("Row Index = %d\n",rowIndex);
               if ((fileList[rowIndex].flags & 0x30) == 0x30)
                   sprintf(dirEntry,"*:%11s %04d\n",fileList[rowIndex].aname,
                          fileList[rowIndex].sectors);

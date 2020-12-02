@@ -116,7 +116,10 @@ static SectorEditorWindow *sharedInstance = nil;
 
 	// Call the Atr library with the filename that is passed in to mount the disk
 	[filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
-	if ((status = AtrMount(cfilename ,&dosType, &readWrite, &writeProtect,&diskinfo)))
+    status = AtrMount(cfilename ,&dosType, &readWrite, &writeProtect,&diskinfo);
+    if (( status == ADOS_NOT_A_ATR_IMAGE ) ||
+        ( status == ADOS_DISK_READ_ERR )   ||
+        ( status == ADOS_MEM_ERR ))
         {
 		// If it fails, unmount the disk
 		AtrUnmount(diskinfo);
