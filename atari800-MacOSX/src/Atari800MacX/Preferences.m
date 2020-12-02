@@ -466,7 +466,7 @@ static NSDictionary *defaultValues() {
                 [NSNumber numberWithInt:228], MouseMaxVal, 
                 [NSNumber numberWithInt:0], MouseHOffset, 
                 [NSNumber numberWithInt:0], MouseVOffset,
-                [NSNumber numberWithInt:0], MouseYInvert,
+                [NSNumber numberWithInt:1], MouseYInvert,
                 [NSNumber numberWithInt:10], MouseInertia,
                 StandardConfigString, GamepadConfigCurrent,
                 StandardConfigString, Gamepad1ConfigCurrent,
