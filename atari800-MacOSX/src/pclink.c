@@ -16,11 +16,14 @@
 //  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "atari.h"
+#include <dirent.h>
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
 #include <sys/time.h>
+#include <sys/types.h>
+#include <sys/dir.h>
 #include <time.h>
 #include <unistd.h>
 #include "vec.h"
@@ -170,7 +173,10 @@ int Dir_Entry_Test_Attr_Filter(DirEntry *entry, UBYTE attrFilter) {
     return TRUE;
 }
 
-int Dir_Entry_Compare(DirEntry *x, DirEntry *y) {
+int Dir_Entry_Compare(const void *vx, const void *vy) {
+    DirEntry * x = (DirEntry *) vx;
+    DirEntry * y = (DirEntry *) vy;
+    
     if ((x->Flags ^ y->Flags) & Flag_Directory) {
         if ((x->Flags & Flag_Directory) == 0)
             return -1;
@@ -524,7 +530,8 @@ UBYTE File_Handle_Open_File(FileHandle *hndl, const char *nativePath,
                             FileOpenType openType, int allowRead, 
                             int allowWrite, int append) 
 {
-    FILE *file;
+    struct stat file_stats;
+    FILE *file = NULL;
 
     int exists = access(nativePath, F_OK);
 
@@ -552,7 +559,11 @@ UBYTE File_Handle_Open_File(FileHandle *hndl, const char *nativePath,
         hndl->AllowWrite = allowWrite;
         hndl->WasCreated = !exists;
 
-        SLONG len = hndl->File.size();
+        if ((stat(nativePath, &file_stats)) == -1) {
+            //TBD handle error;
+        }
+
+        SLONG len = file_stats.st_size;
         if (len > 0xffffff)
             hndl->Length = 0xffffff;
         else
@@ -591,7 +602,7 @@ void File_Handle_Open_As_Directory(FileHandle *hndl,
     hndl->DirEnt->LengthHi = (UBYTE)(hndl->Length >> 16);
     memcpy(hndl->DirEnt->Name, dirName->Name, 11);
 
-    vector_insert(&hndl->DirEnts, 0, hndl->DirEnt);
+    vector_insert(&hndl->DirEnts, 0, *hndl->DirEnt);
 
     hndl->FnextPattern = pattern;
     hndl->FnextAttrFilter = attrFilter;
@@ -621,6 +632,7 @@ UBYTE File_Handle_Seek(FileHandle *hndl, ULONG pos) {
             return TranslateErrnoToSIOError(errno);
         }
     }
+    return 0;
 }
 
 UBYTE File_Handle_Read(FileHandle *hndl, void *dst, ULONG len, ULONG *actual) {
@@ -722,10 +734,10 @@ void File_Handle_Set_Timestamp(FileHandle *hndl, const UBYTE *tsdata) {
     fileTime[0].tv_usec = 0;
     fileTime[1].tv_sec = fileTime[0].tv_sec;
     fileTime[1].tv_usec = fileTime[0].tv_usec;
-    utimes (hndl->NativePath, fileTime);
+    futimes (hndl->File, fileTime);
 }
 
-bool File_Handle_Get_Next_Dir_Ent(FileHandle *hndl, DirEntry *dirEnt) {
+int File_Handle_Get_Next_Dir_Ent(FileHandle *hndl, DirEntry *dirEnt) {
     ULONG actual;
 
     while(File_Handle_Read(hndl, dirEnt, 23, &actual) == CIOStatSuccess && actual >= 23) {
@@ -791,14 +803,18 @@ typedef struct linkDevice {
 LinkDevice *Link_Device_Alloc();
 void Link_Device_Free(LinkDevice *dev);
 void Link_Device_Set_Read_Only(LinkDevice *dev, int readOnly);
-void Link_Device_Set_Base_Path(LinkDevice *dev, const char *basePath);
+void Link_Device_Set_Base_Path(LinkDevice *dev, char *basePath);
 void Link_Device_Set_Settings(LinkDevice *dev, int setTimestamps, int readOnly, char *basePath);
 void Link_Device_Shutdown(LinkDevice *dev);
 void Link_Device_Cold_Reset(LinkDevice *dev);
 void Link_Device_Begin_Command(LinkDevice *dev, Command cmd);
 void Link_Device_Abort_Command(LinkDevice *dev);
 void Link_Device_Advance_Command(LinkDevice *dev);
-    
+int  Link_Device_Check_Valid_File_Handle(LinkDevice *dev, int setError);
+int  Link_Device_Is_Dir_Ent_Included(LinkDevice *dev, DirEntry *dirEnt);
+int  Link_Device_Resolve_Path(LinkDevice *dev, int allowDir, char *resultPath);
+int  Link_Device_Resolve_Native_Path(LinkDevice *dev, char *resultPath, const char *netPath);
+int Link_Device_Resolve_Native_Path_Dir(LinkDevice *dev, int allowDir, char *resultPath);
 
 LinkDevice *Link_Device_Alloc() {
     LinkDevice *dev;
@@ -919,6 +935,9 @@ void Link_Device_Advance_Command(LinkDevice *dev) {
         case CommandRead:
             dev->ReadCommand = TRUE;
             break;
+        
+        case CommandNone:
+            break;
     }
 }
 
@@ -938,6 +957,7 @@ int Link_Device_On_Put(LinkDevice *dev) {
     char netPath[FILENAME_MAX];
     char path[FILENAME_MAX];
     char resultPath[FILENAME_MAX];
+    char dstNativePath[FILENAME_MAX];
     char srcNativePath[FILENAME_MAX];
     DIR * dirStream;
     DirEntry dirEnt;
@@ -947,30 +967,31 @@ int Link_Device_On_Put(LinkDevice *dev) {
     FileName entryName;
     FileName fn;
     FileName fn2;
+    FileName fname;
     FileName pattern;
     FileName srcpat;
     int openDir;
     int setTimestamp;
     int matched;
     mode_t newmode;
-    sint64 slen;
+    long long slen;
     size_t fnlen;
     size_t extlen;
     struct dirent *ep;
     struct stat file_stats;
     struct timeval fileTime[2];
     struct tm fileExpTime;
-    uint32 bufLen;
-    uint32 len;
-    uint32 pos;
+    ULONG bufLen;
+    ULONG len;
+    ULONG pos;
 
     switch(dev->ParBuf.Function) {
         case 0:     // fread
             bufLen = dev->ParBuf.F[0] + 256*dev->ParBuf.F[1];
             printf("Received fread($%02x,%d) command.\n", dev->ParBuf.Handle, bufLen);
 
-            if (Link_Device_Check_Valid_File_Handle(TRUE)) {
-                fh = &FileHandles[dev->ParBuf.Handle - 1];
+            if (Link_Device_Check_Valid_File_Handle(dev, TRUE)) {
+                fh = &dev->FileHandles[dev->ParBuf.Handle - 1];
 
                 if (!File_Handle_Is_Open(fh)) {
                     dev->StatusError = CIOStatNotOpen;
@@ -1002,11 +1023,11 @@ int Link_Device_On_Put(LinkDevice *dev) {
                 return TRUE;
             }
 
-            bufLen = dev->ParBuf.F[0] + 256*dev->ParBuf.m1];
+            bufLen = dev->ParBuf.F[0] + 256*dev->ParBuf.F[1];
             printf("Received fwrite($%02x,%d) command.\n", dev->ParBuf.Handle, bufLen);
 
-            if (Link_Device_Check_Valid_File_Handle(TRUE)) {
-                fh = &FileHandles[dev->ParBuf.Handle - 1];
+            if (Link_Device_Check_Valid_File_Handle(dev, TRUE)) {
+                fh = &dev->FileHandles[dev->ParBuf.Handle - 1];
 
                 if (!File_Handle_Is_Open(fh)) {
                     dev->StatusError = CIOStatNotOpen;
@@ -1032,28 +1053,28 @@ int Link_Device_On_Put(LinkDevice *dev) {
             return TRUE;
 
         case 2:     // fseek
-            uint32 pos = dev->ParBuf.F[0] + ((uint32)dev->ParBuf.F[1] << 8) + ((uint32)dev->ParBuf.F[2] << 16);
-            printf("Received fseek($%02x,%d) command.\n", mParBuf.mHandle, pos);
+            pos = dev->ParBuf.F[0] + ((ULONG)dev->ParBuf.F[1] << 8) + ((ULONG)dev->ParBuf.F[2] << 16);
+            printf("Received fseek($%02x,%d) command.\n", dev->ParBuf.Handle, pos);
 
-            if (Link_Device_Check_Valid_File_Handle(TRUE)) {
-                fh = &FileHandles[dev->ParBuf.Handle - 1];
+            if (Link_Device_Check_Valid_File_Handle(dev, TRUE)) {
+                fh = &dev->FileHandles[dev->ParBuf.Handle - 1];
 
                 if (!File_Handle_Is_Open(fh)) {
                     dev->StatusError = CIOStatNotOpen;
                     return TRUE;
                 }
 
-                dev->StatusError = fFile_Handle_Seek(fh, pos);
+                dev->StatusError = File_Handle_Seek(fh, pos);
                 }
             return TRUE;
 
         case 3:     // ftell
             printf("Received ftell($%02x) command.\n", dev->ParBuf.Handle);
 
-            if (!Link_Device_Check_Valid_File_Handle(TRUE))
+            if (!Link_Device_Check_Valid_File_Handle(dev, TRUE))
                 return TRUE;
 
-            fh = &FileHandles[dev->ParBuf.Handle - 1];
+            fh = &dev->FileHandles[dev->ParBuf.Handle - 1];
 
             if (!File_Handle_Is_Open(fh)) {
                 dev->StatusError = CIOStatNotOpen;
@@ -1064,7 +1085,7 @@ int Link_Device_On_Put(LinkDevice *dev) {
             return TRUE;
 
         case 4:     // flen
-            if (!Link_Device_Check_Valid_File_Handle(TRUE))
+            if (!Link_Device_Check_Valid_File_Handle(dev, TRUE))
                 return TRUE;
 
             dev->StatusError = CIOStatSuccess;
@@ -1076,7 +1097,7 @@ int Link_Device_On_Put(LinkDevice *dev) {
 
         case 6:     // fnext
             printf("Received fnext($%02x) command.\n", dev->ParBuf.Handle);
-            if (!Link_Device_Check_Valid_File_Handle(TRUE))
+            if (!Link_Device_Check_Valid_File_Handle(dev, TRUE))
                 return TRUE;
 
             dev->StatusError = CIOStatSuccess;
@@ -1084,8 +1105,8 @@ int Link_Device_On_Put(LinkDevice *dev) {
 
         case 7:     // fclose
             printf("Received close($%02x) command.\n", dev->ParBuf.Handle);
-            if (Link_Device_Check_Valid_File_Handle(FALSE))
-                File_Handle_Close(&FileHandles[dev->ParBuf.Handle - 1]);
+            if (Link_Device_Check_Valid_File_Handle(dev, FALSE))
+                File_Handle_Close(&dev->FileHandles[dev->ParBuf.Handle - 1]);
 
             dev->StatusError = CIOStatSuccess;
             return TRUE;
@@ -1093,7 +1114,7 @@ int Link_Device_On_Put(LinkDevice *dev) {
         case 8:     // init
             printf("Received init command.\n");
             for(size_t i = 0; i < sizeof(dev->FileHandles)/sizeof(dev->FileHandles[0]); ++i)
-                File_Handle_Close(&FileHandles[i]);
+                File_Handle_Close(&dev->FileHandles[i]);
 
             dev->StatusFlags = 0;
             dev->StatusError = CIOStatSuccess;
@@ -1118,13 +1139,13 @@ int Link_Device_On_Put(LinkDevice *dev) {
                     return TRUE;
                 }
 
-                if (!File_Handle_Is_Open(dev->FileHandles[dev->ParBuf.Handle - 1]))
+                if (!File_Handle_Is_Open(&dev->FileHandles[dev->ParBuf.Handle - 1]))
                     break;
 
                 ++dev->ParBuf.Handle;
             }
 
-            fh = dev->FileHandles[dev->ParBuf.Handle - 1];
+            fh = &dev->FileHandles[dev->ParBuf.Handle - 1];
 
             if (!Link_Device_Resolve_Path(dev, dev->ParBuf.Function == 10, netPath) || 
                 !Link_Device_Resolve_Native_Path(dev, nativePath, netPath))
@@ -1140,20 +1161,20 @@ int Link_Device_On_Put(LinkDevice *dev) {
             }
 
             matched = FALSE;
-            while(ep = readdir(dirStream)) {
-                if (!File_Name_Parse_From_Native(fn, ep->d_name));
+            while((ep = readdir(dirStream))) {
+                if (!File_Name_Parse_From_Native(&fn, ep->d_name));
                     continue;
 
                 // We can't filter at this point for a directory, because the byte stream
                 // needs to reflect all files while the FNEXT output shouldn't. Therefore,
                 // we need to cache the pattern with the file handle instead.
-                if (!openDir && !File_Name_Wild_Match(pattern, fn))
+                if (!openDir && !File_Name_Wild_Match(&pattern, &fn))
                     continue;
 
                 if ((stat(ep->d_name, &file_stats)) == -1) {
                     //TBD handle error;
                 }
-                slen = file_stats->st_size;
+                slen = file_stats.st_size;
 
                 if (slen > 0xFFFFFF)
                     slen = 0xFFFFFF;
@@ -1161,7 +1182,7 @@ int Link_Device_On_Put(LinkDevice *dev) {
                 Dir_Entry_Set_Flags_From_Attributes(&dirEnt,
                     file_stats.st_mode);
 
-                if (ep->d_type == D_DIR) {
+                if (ep->d_type == DT_DIR) {
                     // skip blasted . and .. dirs
                     if ((strcmp(ep->d_name,".") == 0) ||
                         (strcmp(ep->d_name,"..") == 0))
@@ -1174,8 +1195,8 @@ int Link_Device_On_Put(LinkDevice *dev) {
                 dirEnt.SectorMapLo = 0;
                 dirEnt.SectorMapHi = 0;
                 dirEnt.LengthLo = (UBYTE)slen;
-                dirEnt.LengthMid = (UBYTE)((uint32)slen >> 8);
-                dirEnt.LengthHi = (UBYTE)((uint32)slen >> 16);
+                dirEnt.LengthMid = (UBYTE)((ULONG)slen >> 8);
+                dirEnt.LengthHi = (UBYTE)((ULONG)slen >> 16);
                 memcpy(dirEnt.Name, fn.Name, sizeof(dirEnt.Name));
                 Dir_Entry_Set_Date(&dirEnt, ep->st_mtime);
 
@@ -1185,7 +1206,7 @@ int Link_Device_On_Put(LinkDevice *dev) {
                     break;
                 }
 
-                File_Handle_Add_Dir_Ent(&fh, &dirEnt);
+                File_Handle_Add_Dir_Ent(fh, &dirEnt);
             }
 
             if (openDir) {
@@ -1218,9 +1239,9 @@ int Link_Device_On_Put(LinkDevice *dev) {
                 if (ext)
                     memcpy(dirName.Name + 8, ext, extlen);
 
-                File_Handle_Open_As_Directory(&fh, &dirName, pattern, dev->ParBuf.Attr1);
+                File_Handle_Open_As_Directory(fh, &dirName, &pattern, dev->ParBuf.Attr1);
 
-                StatusError = CIOStatSuccess;
+                dev->StatusError = CIOStatSuccess;
             } else {
                 if (!matched) {
                     // cannot create file with a wildcard
@@ -1229,7 +1250,7 @@ int Link_Device_On_Put(LinkDevice *dev) {
                         return TRUE;
                     }
 
-                    dev->nativeFilePath = nativePath;
+                    dev->NativeFilePath = nativePath;
                     File_Name_Append_Native(&pattern, nativeFilePath);
                 }
 
@@ -1243,30 +1264,30 @@ int Link_Device_On_Put(LinkDevice *dev) {
                             if (!matched)
                                 dev->StatusError = CIOStatFileNotFound;
                             else {
-                                dev->StatusError = File_Handle_Open_File(&fh, nativeFilePath,
+                                dev->StatusError = File_Handle_Open_File(fh, nativeFilePath,
                                     FILE_READ, TRUE, FALSE, FALSE);
                             }
                             break;
 
                         case 8:     // write
-                            dev->StatusError = File_Handle_Open_File(&fh, nativeFilePath,
+                            dev->StatusError = File_Handle_Open_File(fh, nativeFilePath,
                                 FILE_WRITE, FALSE, TRUE, FALSE);
-                            dev->setTimestamp = TRUE;
+                            dev->SetTimestamps = TRUE;
                             break;
 
                         case 9:     // append
-                            dev->StatusError = File_Handle_Open_File(&fh, nativeFilePath,
+                            dev->StatusError = File_Handle_Open_File(fh, nativeFilePath,
                                 FILE_APPEND, FALSE, TRUE, TRUE);
 
-                            if (File_Handle_Was_Created(&fh))
-                                dev->setTimestamp = true;
+                            if (fh->WasCreated)
+                                dev->SetTimestamps = true;
                             break;
 
                         case 12:    // update
                             if (!matched)
                                 dev->StatusError = CIOStatFileNotFound;
                             else {
-                                dev->StatusError = File_Handle_Open_File(&fh, nativeFilePath,
+                                dev->StatusError = File_Handle_Open_File(fh, nativeFilePath,
                                     FILE_UPDATE, TRUE, TRUE, FALSE);
                             }
                             break;
@@ -1276,12 +1297,12 @@ int Link_Device_On_Put(LinkDevice *dev) {
                             break;
                     }
 
-                    if (dev->SetTimestamps && dev->setTimestamp && File_Handle_Is_Open(&fh)) {
-                        File_Handle_Set_Timestamp(&fh, dev->ParBuf.F);
+                    if (dev->SetTimestamps && dev->SetTimestamps && File_Handle_Is_Open(fh)) {
+                        File_Handle_Set_Timestamp(fh, dev->ParBuf.F);
                     }
                 }
 
-                File_Handle_Set_Dir_Ent(&fh, &dirEnt);
+                File_Handle_Set_Dir_Ent(fh, &dirEnt);
             }
             return TRUE;
 
@@ -1294,7 +1315,7 @@ int Link_Device_On_Put(LinkDevice *dev) {
             }
 
             if (!File_Name_Parse_From_Net(&srcpat, dev->ParBuf.Name1)
-                || !File_Name_Parse_From_Net(&dstpat, dev->ParBuf.mName2))
+                || !File_Name_Parse_From_Net(&dstpat, dev->ParBuf.Name2))
             {
                 dev->StatusError = CIOStatFileNameErr;
                 return TRUE;
@@ -1305,7 +1326,7 @@ int Link_Device_On_Put(LinkDevice *dev) {
             }
 
             matched = FALSE;
-            while(ep = readdir(dirStream)) {
+            while((ep = readdir(dirStream))) {
                 if ((strcmp(ep->d_name,".") == 0) ||
                     (strcmp(ep->d_name,"..") == 0))
                     continue;
@@ -1332,14 +1353,14 @@ int Link_Device_On_Put(LinkDevice *dev) {
                     continue;
 
                 strcpy(srcNativePath, path);
-                File_Name_Append_Native(&fn, &srcNativePath);
+                File_Name_Append_Native(&fn, srcNativePath);
 
                 strcpy(dstNativePath, path);
-                File_Name_Append_Native(&fn2, &dstNativePath);
+                File_Name_Append_Native(&fn2, dstNativePath);
 
                 if (rename(srcNativePath, dstNativePath))
                     {
-                    dev->statusError = TranslateErrnoToSIOError(errno);
+                        dev->StatusError = TranslateErrnoToSIOError(errno);
                     }
 
                 matched = TRUE;
@@ -1373,7 +1394,7 @@ int Link_Device_On_Put(LinkDevice *dev) {
                 }
 
             matched = FALSE;
-            while(ep = readdir(dirStream)) {
+                while((ep = readdir(dirStream))) {
                 if ((stat(ep->d_name, &file_stats)) == -1) {
                     //TBD handle error;
                 }
@@ -1398,7 +1419,7 @@ int Link_Device_On_Put(LinkDevice *dev) {
                 strcat(fullPath, ep->d_name);
                 if (remove(fullPath))
                     {
-                    dev->statusError = TranslateErrnoToSIOError(errno);
+                    dev->StatusError = TranslateErrnoToSIOError(errno);
                     return TRUE;
                     }
                 matched = TRUE;
@@ -1409,20 +1430,21 @@ int Link_Device_On_Put(LinkDevice *dev) {
                 return TRUE;
                 }
             } else {
-                File_Name_Append_Native(&fname, &resultPath);
+                File_Name_Append_Native(&fname, resultPath);
 
                 if ((stat(resultPath, &file_stats)) == -1) {
                     dev->StatusError = CIOStatFileNotFound;
                     return TRUE;
                 }
 
-                Dir_Ent_Set_Flags_From_Attributes(&dirEnt, file_stats.st_mode);
+                Dir_Entry_Set_Flags_From_Attributes(&dirEnt, file_stats.st_mode);
 
-                if (Link_Device_Is_Dir_Ent_Included(dev, &dirEnt))
+                if (Link_Device_Is_Dir_Ent_Included(dev, &dirEnt)) {
                     if (remove(resultPath)) {
-                        dev->statusError = TranslateErrnoToSIOError(errno);
+                        dev->StatusError = TranslateErrnoToSIOError(errno);
                         return TRUE;
                     }
+                }
                 else {
                     dev->StatusError = CIOStatFileNotFound;
                     return TRUE;
@@ -1433,7 +1455,7 @@ int Link_Device_On_Put(LinkDevice *dev) {
             return TRUE;
 
         case 13:    // chmod
-            print("Received chmod() command.\n");
+            printf("Received chmod() command.\n");
 
             if (dev->ReadOnly) {
                 dev->StatusError = CIOStatReadOnly;
@@ -1453,7 +1475,7 @@ int Link_Device_On_Put(LinkDevice *dev) {
             }
 
             matched = FALSE;
-            while(ep = readdir(dirStream)) {
+            while((ep = readdir(dirStream))) {
                 if ((strcmp(ep->d_name,".") == 0) ||
                     (strcmp(ep->d_name,"..") == 0))
                     continue;
@@ -1486,7 +1508,7 @@ int Link_Device_On_Put(LinkDevice *dev) {
                     newmode &= ~S_IWUSR;
 
                 if (chmod(srcNativePath, newmode)) {
-                    dev->statusError = TranslateErrnoToSIOError(errno);
+                    dev->StatusError = TranslateErrnoToSIOError(errno);
                     return TRUE;
                     }
 
@@ -1524,7 +1546,7 @@ int Link_Device_On_Put(LinkDevice *dev) {
             File_Name_Append_Native(&fname, resultPath);
 
             if (mkdir(resultPath, S_IRWXU)) {
-                dev->statusError = TranslateErrnoToSIOError(errno);
+                dev->StatusError = TranslateErrnoToSIOError(errno);
                 return TRUE;
             }
 
@@ -1536,7 +1558,7 @@ int Link_Device_On_Put(LinkDevice *dev) {
                 fileTime[1].tv_sec = fileTime[0].tv_sec;
                 fileTime[1].tv_usec = fileTime[0].tv_usec;
                 if (utimes (resultPath, fileTime)) {
-                    dev->statusError = TranslateErrnoToSIOError(errno);
+                    dev->StatusError = TranslateErrnoToSIOError(errno);
                     return TRUE;
                 }   
             }
@@ -1568,7 +1590,7 @@ int Link_Device_On_Put(LinkDevice *dev) {
             File_Name_Append_Native(&fname, resultPath);
 
             if (rmdir(resultPath)) {
-                dev->statusError = TranslateErrnoToSIOError(errno);
+                dev->StatusError = TranslateErrnoToSIOError(errno);
                 return TRUE;
             }
             dev->StatusError = CIOStatSuccess;
@@ -1589,8 +1611,8 @@ int Link_Device_On_Put(LinkDevice *dev) {
             if (!Link_Device_Resolve_Native_Path(dev, nativePath, resultPath))
                 return TRUE;
 
-            if (((stat(nativePath, &file_stats)) == -1) {
-                dev->statusError = TranslateErrnoToSIOError(errno);
+            if (((stat(nativePath, &file_stats)) == -1)) {
+                dev->StatusError = TranslateErrnoToSIOError(errno);
                 return TRUE;
             }
 
@@ -1614,7 +1636,7 @@ int Link_Device_On_Put(LinkDevice *dev) {
             return TRUE;
 
         case 19:    // getdfree
-            devv->StatusError = CIOStatSuccess;
+                dev->StatusError = CIOStatSuccess;
             return TRUE;
 
         default:
@@ -1625,14 +1647,18 @@ int Link_Device_On_Put(LinkDevice *dev) {
 }
 
 int Link_Device_On_Read(LinkDevice *dev) {
+    ULONG blocklen;
+    DiskInfo diskInfo;
+    FileHandle *fh;
+
     switch(dev->ParBuf.Function) {
         case 0:     // fread
-            uint32 blocklen = dev->StatusLengthLo + ((uint32)dev->StatusLengthHi << 8);
+            blocklen = dev->StatusLengthLo + ((ULONG)dev->StatusLengthHi << 8);
             if (Link_Device_Check_Valid_File_Handle(dev, TRUE)) {
-                FileHandle *fh = dev->FileHandles[dev->ParBuf.Handle - 1];
-                uint32 actual = 0;
+                fh = &dev->FileHandles[dev->ParBuf.Handle - 1];
+                ULONG actual = 0;
 
-                dev->StatusError = File_Handle_Read(&fh, dev->TransferBuffer, blocklen, actual);
+                dev->StatusError = File_Handle_Read(fh, dev->TransferBuffer, blocklen, actual);
 
                 dev->StatusLengthLo = (UBYTE)actual;
                 dev->StatusLengthHi = (UBYTE)(actual >> 8);
@@ -1647,45 +1673,42 @@ int Link_Device_On_Read(LinkDevice *dev) {
                 return TRUE;
             }
 
-            uint32 blocklen = dev->StatusLengthLo + ((uint32)dev->StatusLengthHi << 8);
+            blocklen = dev->StatusLengthLo + ((ULONG)dev->StatusLengthHi << 8);
             if (Link_Device_Check_Valid_File_Handle(dev, TRUE)) {
-                FileHandle *fh = dev->FileHandles[dev->ParBuf.Handle - 1];
+                fh = &dev->FileHandles[dev->ParBuf.Handle - 1];
 
-                dev->StatusError = File_Handle_Write(&fh, dev->TransferBuffer, blocklen);
+                dev->StatusError = File_Handle_Write(fh, dev->TransferBuffer, blocklen);
             }
             dev->ExpectedBytes = 0;
             return TRUE;
 
         case 3:     // ftell
             if (Link_Device_Check_Valid_File_Handle(dev, TRUE)) {
-                FileHandle *fh = dev->FileHandles[dev->ParBuf.Handle - 1];
+                fh = &dev->FileHandles[dev->ParBuf.Handle - 1];
 
-                if (!File_Handle_Is_Open(&fh)) {
+                if (!File_Handle_Is_Open(fh)) {
                     dev->StatusError = CIOStatNotOpen;
                     return true;
                 }
 
-                const uint32 len = fFile_Handle_Get_Position(&fh);
+                const ULONG len = File_Handle_Get_Position(fh);
                 dev->TransferBuffer[0] = (UBYTE)len;
                 dev->TransferBuffer[1] = (UBYTE)(len >> 8);
                 dev->TransferBuffer[2] = (UBYTE)(len >> 16);
                 dev->StatusError = CIOStatSuccess;
             }
-            dev->ExpectedBytes = 3            dev->ExpectedBytes = 0;
-dev->ExpectedBytes = 0;
-dev->ExpectedBytes = 0;
-;
+            dev->ExpectedBytes = 3;
             return TRUE;
 
         case 4:     // flen
             memset(dev->TransferBuffer, 0, 3);
             if (Link_Device_Check_Valid_File_Handle(dev, TRUE)) {
-                FileHandle *fh = dev->FileHandles[dev->ParBuf.Handle - 1];
+                fh = &dev->FileHandles[dev->ParBuf.Handle - 1];
 
-                if (!File_Handle_Is_Open(&fh))
+                if (!File_Handle_Is_Open(fh))
                     dev->StatusError = CIOStatNotOpen;
                 else {
-                    uint32 len = fh.File_Handle_Get_Length(&fh);
+                    ULONG len = File_Handle_Get_Length(fh);
 
                     dev->TransferBuffer[0] = (UBYTE)len;
                     dev->TransferBuffer[1] = (UBYTE)(len >> 8);
@@ -1704,14 +1727,14 @@ dev->ExpectedBytes = 0;
             memset(dev->TransferBuffer, 0, sizeof(DirEntry) + 1);
 
             if (Link_Device_Check_Valid_File_Handle(dev, TRUE)) {
-                FileHandle *fh = dev->FileHandles[dev->ParBuf.Handle - 1];
+                fh = &dev->FileHandles[dev->ParBuf.Handle - 1];
 
-                if (!File_Handle_Is_Dir(&fh)) {
+                if (!File_Handle_Is_Dir(fh)) {
                     dev->StatusError = CIOStatBadParameter;
                 } else {
                     DirEntry dirEnt = {0};
 
-                    if (!File_Handle_Get_Next_Dir_Ent(&fh, dirEnt))
+                    if (!File_Handle_Get_Next_Dir_Ent(fh, &dirEnt))
                         dev->StatusError = CIOStatEndOfFile;
                     else
                         dev->StatusError = CIOStatSuccess;
@@ -1732,17 +1755,17 @@ dev->ExpectedBytes = 0;
 
         case 9:     // open
         case 10:    // ffirst
-            dev->TransferBuffer[0] = dev->ParBuf.mHandle;
-            memset(dev->TransferBuffer + 1, 0, sizeof(DirEnctyr));
+            dev->TransferBuffer[0] = dev->ParBuf.Handle;
+            memset(dev->TransferBuffer + 1, 0, sizeof(DirEntry));
 
-            if (CheckValidFileHandle(true)) {
-                FileHandle *fh = dev->FileHandles[dev->ParBuf.Handle - 1];
+            if (Link_Device_Check_Valid_File_Handle(dev, TRUE)) {
+                fh = &dev->FileHandles[dev->ParBuf.Handle - 1];
 
-                const DirEntry dirEnt = fFile_Handle_Get_Dir_Ent(&fh);
+                const DirEntry *dirEnt = File_Handle_Get_Dir_Ent(fh);
 
                 dev->StatusError = CIOStatSuccess;
 
-                memcpy(dev->TransferBuffer + 1, &dirEnt, sizeof(DirEntry));
+                memcpy(dev->TransferBuffer + 1, dirEnt, sizeof(DirEntry));
             }
             dev->ExpectedBytes = sizeof(DirEntry) + 1;
             return TRUE;
@@ -1769,7 +1792,7 @@ dev->ExpectedBytes = 0;
             return TRUE;
 
         case 19:    // getdfree
-            DiskInfo diskInfo = {};
+            memset(&diskInfo, 0, sizeof(DiskInfo));
 
             diskInfo.InfoVersion = 0x21;
             diskInfo.SectorCountLo = 0xff;
@@ -1795,7 +1818,7 @@ dev->ExpectedBytes = 0;
     return FALSE;
 }
 
-bool Link_Device_Check_Valid_File_Handle(LinkDevice *dev, bool setError) {
+int Link_Device_Check_Valid_File_Handle(LinkDevice *dev, int setError) {
     if (dev->ParBuf.Handle == 0 || dev->ParBuf.Handle >= 16) {
         if (setError)
             dev->StatusError = CIOStatInvalidIOCB;
@@ -1840,8 +1863,9 @@ int Link_Device_Resolve_Path(LinkDevice *dev, int allowDir, char *resultPath) {
     int inext = false;
     int fnchars = 0;
     int extchars = 0;
+    UBYTE c;
 
-    while(UBYTE c = *s++) {
+    while((c = *s++)) {
         if (c == '>' || c == '\\') {
             if (inext && !extchars) {
                 dev->StatusError = CIOStatFileNameErr;
@@ -1865,7 +1889,7 @@ int Link_Device_Resolve_Path(LinkDevice *dev, int allowDir, char *resultPath) {
                     if ((len != 0) && resultPath[len-1] == '\\')
                         resultPath[len-1] = 0;
 
-                    while(!resultPath.empty()) {
+                    while(!strlen(resultPath)) {
                         int len = strlen(resultPath);
                         UBYTE c = resultPath[len-1];
 
@@ -1890,7 +1914,7 @@ int Link_Device_Resolve_Path(LinkDevice *dev, int allowDir, char *resultPath) {
                 return FALSE;
             }
 
-            strcat(resultPath, ".";
+            strcat(resultPath, ".");
             inext = TRUE;
             continue;
         }
@@ -1918,7 +1942,7 @@ int Link_Device_Resolve_Path(LinkDevice *dev, int allowDir, char *resultPath) {
             }
         }
 
-        strncat(resultPath, &c, 1);
+        strncat(resultPath, (const char *) &c, 1);
     }
 
     if (inext && !extchars && !allowDir) {
