@@ -68,6 +68,8 @@
 		2D2EAFF90DEE1E8100271295 /* pbi.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D2EAFEF0DEE1E8100271295 /* pbi.h */; };
 		2D2EB0070DEE1F9D00271295 /* votrax.c in Sources */ = {isa = PBXBuildFile; fileRef = 2D2EB0050DEE1F9D00271295 /* votrax.c */; };
 		2D2EB0080DEE1F9D00271295 /* votrax.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D2EB0060DEE1F9D00271295 /* votrax.h */; };
+		2D32203B25885D4500CF099D /* vec.c in Sources */ = {isa = PBXBuildFile; fileRef = 2D32203925885D4500CF099D /* vec.c */; };
+		2D32203C25885D4500CF099D /* vec.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D32203A25885D4500CF099D /* vec.h */; };
 		2D3A8F7C0CB3087200A18A29 /* xep80.c in Sources */ = {isa = PBXBuildFile; fileRef = 2D3A8F7A0CB3087200A18A29 /* xep80.c */; };
 		2D3A8F7D0CB3087200A18A29 /* xep80.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D3A8F7B0CB3087200A18A29 /* xep80.h */; };
 		2D3CDF6B25196803002CF9DB /* img_vhd.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D3CDF6925196803002CF9DB /* img_vhd.h */; };
@@ -456,6 +458,8 @@
 		2D2EAFEF0DEE1E8100271295 /* pbi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pbi.h; path = ../pbi.h; sourceTree = SOURCE_ROOT; };
 		2D2EB0050DEE1F9D00271295 /* votrax.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = votrax.c; path = ../votrax.c; sourceTree = SOURCE_ROOT; };
 		2D2EB0060DEE1F9D00271295 /* votrax.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = votrax.h; path = ../votrax.h; sourceTree = SOURCE_ROOT; };
+		2D32203925885D4500CF099D /* vec.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = vec.c; path = ../vec.c; sourceTree = "<group>"; };
+		2D32203A25885D4500CF099D /* vec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = vec.h; path = ../vec.h; sourceTree = "<group>"; };
 		2D35913B08DDE9F10041824D /* SectorEditorWindow.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = SectorEditorWindow.nib; sourceTree = "<group>"; };
 		2D35920108DE2E760041824D /* SectorEditorAsciiFieldCell.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SectorEditorAsciiFieldCell.h; sourceTree = SOURCE_ROOT; };
 		2D35920208DE2E760041824D /* SectorEditorAsciiFieldCell.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SectorEditorAsciiFieldCell.m; sourceTree = SOURCE_ROOT; };
@@ -1031,6 +1035,8 @@
 				2D829B3C24F9D47200AB9584 /* ultimate1mb.h */,
 				2DF405F409A811AE009B7D4C /* util.c */,
 				2DF405F509A811AE009B7D4C /* util.h */,
+				2D32203925885D4500CF099D /* vec.c */,
+				2D32203A25885D4500CF099D /* vec.h */,
 				2D2EB0050DEE1F9D00271295 /* votrax.c */,
 				2D2EB0060DEE1F9D00271295 /* votrax.h */,
 				2D3A8F7A0CB3087200A18A29 /* xep80.c */,
@@ -1194,6 +1200,7 @@
 				2D0CA96D24B176360089AC88 /* AtasciiPrinter.h in Headers */,
 				2DAEDB0509B69AED005FF181 /* prompts.h in Headers */,
 				2DAEDB0609B69AED005FF181 /* Preferences.h in Headers */,
+				2D32203C25885D4500CF099D /* vec.h in Headers */,
 				2DA5F7C224D09122002EBBFA /* crc32.h in Headers */,
 				2DAEDB0709B69AED005FF181 /* preferences_c.h in Headers */,
 				2DA5F7BE24D090E3002EBBFA /* sysrom.h in Headers */,
@@ -1549,6 +1556,7 @@
 				2D176BB010729BD4009D5644 /* BreakpointEditorDataSource.m in Sources */,
 				2D43886F1076CDD900FE40D9 /* StackDataSource.m in Sources */,
 				2D4389341076D9D000FE40D9 /* WatchDataSource.m in Sources */,
+				2D32203B25885D4500CF099D /* vec.c in Sources */,
 				2DA74FB210782987008F0171 /* WatchTableView.m in Sources */,
 				2D1A748B107A66C0000049E3 /* MemoryEditorTableView.m in Sources */,
 				2D0BA11B107D6EF000DEF450 /* LabelDataSource.m in Sources */,

@@ -590,7 +590,7 @@ void File_Handle_Open_As_Directory(FileHandle *hndl,
          );
     hndl->Open = TRUE;
     hndl->IsDirectory = TRUE;
-    hndl->Length = 23 * ((ULONG)cvector_size(hndl->DirEnts) + 1);
+    hndl->Length = 23 * ((ULONG)vector_size(hndl->DirEnts) + 1);
     hndl->Pos = 23;
     hndl->AllowRead = TRUE;
     hndl->AllowWrite = FALSE;
@@ -1198,11 +1198,11 @@ int Link_Device_On_Put(LinkDevice *dev) {
                 dirEnt.LengthMid = (UBYTE)((ULONG)slen >> 8);
                 dirEnt.LengthHi = (UBYTE)((ULONG)slen >> 16);
                 memcpy(dirEnt.Name, fn.Name, sizeof(dirEnt.Name));
-                Dir_Entry_Set_Date(&dirEnt, ep->st_mtime);
+                Dir_Entry_Set_Date(&dirEnt, file_stats.st_mtime);
 
                 if (!openDir) {
                     matched = TRUE;
-                    nativeFilePath = it.GetFullPath();
+                    // TBDFirst nativeFilePath = it.GetFullPath();
                     break;
                 }
 
@@ -1498,7 +1498,7 @@ int Link_Device_On_Put(LinkDevice *dev) {
                 strcpy(srcNativePath, path);
                 File_Name_Append_Native(&fn, srcNativePath);
 
-                newmode = sb.st_mode;
+                // TBDFirst newmode = sb.st_mode;
 
                 if (dev->ParBuf.Attr2 & 0x10)
                     newmode |= S_IWUSR;
