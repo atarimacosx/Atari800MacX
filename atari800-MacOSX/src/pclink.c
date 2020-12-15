@@ -1121,7 +1121,7 @@ int Link_Device_On_Put(LinkDevice *dev) {
             dev->StatusLengthLo = 0;
             dev->StatusLengthHi = 0x6F;
 
-            dev->CurDir.clear();
+            dev->CurDir[0] = 0;
             return TRUE;
 
         case 9:     // fopen
@@ -1250,7 +1250,6 @@ int Link_Device_On_Put(LinkDevice *dev) {
                         return TRUE;
                     }
 
-                    dev->NativeFilePath = nativePath;
                     File_Name_Append_Native(&pattern, nativeFilePath);
                 }
 
@@ -1462,7 +1461,7 @@ int Link_Device_On_Put(LinkDevice *dev) {
                 return TRUE;
             }
 
-            if (!Link_Device_ResolveNativePath(dev, FALSE, path))
+            if (!Link_Device_Resolve_Native_Path(dev, FALSE, path))
                 return TRUE;
 
             if (!File_Name_Parse_From_Net(&srcpat, dev->ParBuf.Name1)) {
@@ -1574,7 +1573,7 @@ int Link_Device_On_Put(LinkDevice *dev) {
                 return TRUE;
             }
 
-            if (!Link_Device_ResolveNativePath(dev, FALSE, resultPath))
+            if (!Link_Device_Resolve_Native_Path(dev, FALSE, resultPath))
                 return true;
 
             if (!File_Name_Parse_From_Net(&fname, dev->ParBuf.Name1)) {
@@ -1951,8 +1950,9 @@ int Link_Device_Resolve_Path(LinkDevice *dev, int allowDir, char *resultPath) {
     }
 
     // strip off trailing separator if present
-    if (!resultPath.empty() && resultPath.back() == '\\')
-        resultPath.pop_back();
+    if ((strlen(resultPath) != 0) && (resultPath[strlen(resultPath) - 1] != '/')) {
+        resultPath[strlen(resultPath) - 1] = 0;
+    }
 
     return TRUE;
 }
@@ -1971,11 +1971,9 @@ int Link_Device_Resolve_Native_Path(LinkDevice *dev, char *resultPath, const cha
     // translate path
     resultPath = dev->BasePathNative;
 
-    for(VDStringA::const_iterator it(netPath.begin()), itEnd(netPath.end());
-        it != itEnd;
-        ++it)
+    for (int i=0; i<strlen(netPath); i++)
     {
-        char c = *it;
+        char c = netPath[i];
 
         if (c >= 'A' && c <= 'Z')
             c &= ~0x20;
@@ -1984,8 +1982,10 @@ int Link_Device_Resolve_Native_Path(LinkDevice *dev, char *resultPath, const cha
     }
 
     // ensure trailing separator
-    if (!resultPath.empty() && resultPath.back() != L'\\')
-        resultPath += L'\\';
+    if ((strlen(resultPath) != 0) && (resultPath[strlen(resultPath) - 1] != '/')) {
+        const UBYTE c = '/';
+        strncat(resultPath, (const char *) &c, 1);
+    }
 
     return TRUE;
 }
