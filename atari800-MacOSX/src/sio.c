@@ -1624,7 +1624,7 @@ void SIO_PutByte(int byte)
 				if (sum == DataBuffer[ExpectedBytes - 1]) {
                     UBYTE result;
                     if (TransferDest)
-                        result = Link_Device_WriteFrame(DataBuffer);
+                        result = Link_Device_WriteFrame((char *) DataBuffer);
                     else
                         result = WriteSectorBack();
 					if (result != 0) {
@@ -1678,9 +1678,9 @@ int SIO_GetByte(void)
                     POKEY_DELAYED_SERIN_IRQ = SIO_SERIN_INTERVAL;
                 }
                 else {
-                    TransferStatus = SIO_WriteFrame;
                     ExpectedBytes++;
                     DataIndex = 0;
+                    TransferStatus = SIO_WriteFrame;
                 }
             }
         }

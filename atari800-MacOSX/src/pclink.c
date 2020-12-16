@@ -782,7 +782,6 @@ typedef struct linkDevice {
     UBYTE   StatusLengthHi;
 
     Command Command;
-    ULONG   CommandPhase;
     UBYTE   CommandAux1;
     UBYTE   CommandAux2;
 
@@ -899,8 +898,6 @@ UBYTE Link_Device_On_Serial_Begin_Command( UBYTE *commandFrame,
         return 'N';
     }
 
-    dev->CommandPhase = 0;
-
     Link_Device_Advance_Command(dev);
 
     *ExpectedBytes = dev->ExpectedBytes;
@@ -912,18 +909,19 @@ UBYTE Link_Device_On_Serial_Begin_Command( UBYTE *commandFrame,
     return 'A';
 }
 
-void Link_Device_WriteFrame(char *data)
+int Link_Device_WriteFrame(char *data)
 {
     LinkDevice *dev;
     
     if (!Link_Device_Next_Write)
-        return;
+        return 'E';
     
     dev = Link_Device_Next_Write;
     
     memset(&dev->ParBuf, 0, sizeof(ParameterBuffer));
     memcpy(&dev->ParBuf, data, dev->ExpectedBytes);
     Link_Device_On_Put(dev);
+    return 'C';
 }
 
 void Link_Device_Abort_Command(LinkDevice *dev);
@@ -932,7 +930,6 @@ void Link_Device_Advance_Command(LinkDevice *dev);
 void Link_Device_Abort_Command(LinkDevice *dev) {
     if (dev->Command) {
         dev->Command = CommandNone;
-        dev->CommandPhase = 0;
     }
 }
 
@@ -956,6 +953,7 @@ void Link_Device_Advance_Command(LinkDevice *dev) {
             break;
 
         case CommandPut:
+            printf("Put Command with ParSize=%d\n", dev->ParSize);
             dev->ReadCommand = FALSE;
             dev->ExpectedBytes = dev->ParSize;
             break;
@@ -1663,7 +1661,7 @@ int Link_Device_On_Put(LinkDevice *dev) {
             return TRUE;
 
         case 19:    // getdfree
-                dev->StatusError = CIOStatSuccess;
+            dev->StatusError = CIOStatSuccess;
             return TRUE;
 
         default:
