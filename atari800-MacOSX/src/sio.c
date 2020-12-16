@@ -49,6 +49,7 @@
 #ifdef MACOSX
 #include "mac_diskled.h"
 extern void UpdateMediaManagerInfo(void);
+#include "pclink.h"
 #endif
 
 #undef DEBUG_PRO
@@ -1603,6 +1604,7 @@ void SIO_PutByte(int byte)
 				}
                 else if (CommandFrame[0] == 0x6f) {
                     TransferStatus = SIO_StatusRead;
+                    POKEY_DELAYED_SERIN_IRQ = 1;//SIO_SERIN_INTERVAL + SIO_ACK_INTERVAL;
                     TransferDest = 0x6f;
                 }
                 else
@@ -1622,7 +1624,7 @@ void SIO_PutByte(int byte)
 				if (sum == DataBuffer[ExpectedBytes - 1]) {
                     UBYTE result;
                     if (TransferDest)
-                        result = PCLINK_WriteFrame(DataBuffer);
+                        result = Link_Device_WriteFrame(DataBuffer);
                     else
                         result = WriteSectorBack();
 					if (result != 0) {
@@ -1658,20 +1660,30 @@ void SIO_PutByte(int byte)
 int SIO_GetByte(void)
 {
 	int byte = 0;
+    int read;
 
 	switch (TransferStatus) {
 	case SIO_StatusRead:
         if (TransferDest == 0x6f) {
-            byte = Link_Device_On_Serial_Begin_Command(CommandFrame, &read, &ExpectedBytes);
+            byte = Link_Device_On_Serial_Begin_Command(CommandFrame, &read, &ExpectedBytes, DataBuffer);
+
             if (byte == 'N')
                 TransferStatus = SIO_NoFrame;
             else {
-                if (read)
+                if (read) {
+                    ExpectedBytes++;
+                    DataBuffer[ ExpectedBytes ] = SIO_ChkSum(DataBuffer + 1, 1);
+                    ExpectedBytes++;
                     TransferStatus = SIO_ReadFrame;
-                else
+                    POKEY_DELAYED_SERIN_IRQ = SIO_SERIN_INTERVAL;
+                }
+                else {
                     TransferStatus = SIO_WriteFrame;
+                    ExpectedBytes++;
+                    DataIndex = 0;
                 }
             }
+        }
         else
             byte = Command_Frame();		/* Handle now the command */
 		break;
@@ -1686,9 +1698,12 @@ int SIO_GetByte(void)
 				TransferStatus = SIO_NoFrame;
 			}
 			else {
-				/* set delay using the expected transfer speed */
-				POKEY_DELAYED_SERIN_IRQ = (DataIndex == 1) ? SIO_SERIN_INTERVAL
-					: ((SIO_SERIN_INTERVAL * POKEY_AUDF[POKEY_CHAN3] - 1) / 0x28 + 1);
+                if (TransferDest)
+                    POKEY_DELAYED_SERIN_IRQ = (DataIndex == 1) ? SIO_SERIN_INTERVAL : 1;
+                else
+                    /* set delay using the expected transfer speed */
+                    POKEY_DELAYED_SERIN_IRQ = (DataIndex == 1) ? SIO_SERIN_INTERVAL
+                        : ((SIO_SERIN_INTERVAL * POKEY_AUDF[POKEY_CHAN3] - 1) / 0x28 + 1);
 			}
 		}
 		else {

@@ -670,6 +670,7 @@ int Atari800_Initialise(int *argc, char *argv[])
 #ifdef SIDE2
     SIDE2_Initialise(argc, argv);
 #endif
+    Link_Device_Init();
 	/* Platform Specific Initialisation */
 	PLATFORM_Initialise(argc, argv);
 	Screen_Initialise(argc, argv);

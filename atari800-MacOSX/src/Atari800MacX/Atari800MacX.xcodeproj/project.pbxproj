@@ -460,6 +460,7 @@
 		2D2EB0060DEE1F9D00271295 /* votrax.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = votrax.h; path = ../votrax.h; sourceTree = SOURCE_ROOT; };
 		2D32203925885D4500CF099D /* vec.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = vec.c; path = ../vec.c; sourceTree = "<group>"; };
 		2D32203A25885D4500CF099D /* vec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = vec.h; path = ../vec.h; sourceTree = "<group>"; };
+		2D32203D25892E8000CF099D /* pclink.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = pclink.h; path = ../pclink.h; sourceTree = "<group>"; };
 		2D35913B08DDE9F10041824D /* SectorEditorWindow.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = SectorEditorWindow.nib; sourceTree = "<group>"; };
 		2D35920108DE2E760041824D /* SectorEditorAsciiFieldCell.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SectorEditorAsciiFieldCell.h; sourceTree = SOURCE_ROOT; };
 		2D35920208DE2E760041824D /* SectorEditorAsciiFieldCell.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SectorEditorAsciiFieldCell.m; sourceTree = SOURCE_ROOT; };
@@ -996,6 +997,7 @@
 				2D17D9720F537D860027F526 /* pbi_scsi.h */,
 				F5558366030EF4CD01A8C8B4 /* pia.h */,
 				2DD12DD72570A19900E07898 /* pclink.c */,
+				2D32203D25892E8000CF099D /* pclink.h */,
 				F555834D030EF4CD01A8C8B4 /* pia.c */,
 				F5558365030EF4CD01A8C8B4 /* platform.h */,
 				F5558363030EF4CD01A8C8B4 /* pokey.h */,

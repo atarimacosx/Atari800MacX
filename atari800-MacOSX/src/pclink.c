@@ -27,7 +27,7 @@
 #include <time.h>
 #include <unistd.h>
 #include "vec.h"
-//#include "pclink.h"
+#include "pclink.h"
 
 UBYTE ATTranslateWin32ErrorToSIOError(ULONG err);
 
@@ -772,7 +772,7 @@ typedef enum {
 } Command;
 
 typedef struct linkDevice {
-    char    *BasePathNative;
+    char    BasePathNative[FILENAME_MAX];
     int     ReadOnly;
     int     SetTimestamps;
 
@@ -799,9 +799,11 @@ typedef struct linkDevice {
     UBYTE   TransferBuffer[65536];
 } LinkDevice;
 
+int Link_Device_Enabled[LINK_DEVICE_NUM_DEVS] = {1,0,0,0,0,0,0,0};
+LinkDevice Link_Devices[LINK_DEVICE_NUM_DEVS];
+LinkDevice *Link_Device_Next_Write = NULL;
+
 ///////////////////////////////////////////////////////////////////////////
-LinkDevice *Link_Device_Alloc();
-void Link_Device_Free(LinkDevice *dev);
 void Link_Device_Set_Read_Only(LinkDevice *dev, int readOnly);
 void Link_Device_Set_Base_Path(LinkDevice *dev, char *basePath);
 void Link_Device_Set_Settings(LinkDevice *dev, int setTimestamps, int readOnly, char *basePath);
@@ -815,17 +817,11 @@ int  Link_Device_Is_Dir_Ent_Included(LinkDevice *dev, DirEntry *dirEnt);
 int  Link_Device_Resolve_Path(LinkDevice *dev, int allowDir, char *resultPath);
 int  Link_Device_Resolve_Native_Path(LinkDevice *dev, char *resultPath, const char *netPath);
 int Link_Device_Resolve_Native_Path_Dir(LinkDevice *dev, int allowDir, char *resultPath);
+int Link_Device_On_Put(LinkDevice *dev);
+int Link_Device_On_Read(LinkDevice *dev);
 
-LinkDevice *Link_Device_Alloc() {
-    LinkDevice *dev;
-
-    dev = malloc(sizeof(LinkDevice));
-    memset(dev, 0, sizeof(LinkDevice));
-    return dev;
-}
-
-void Link_Device_Free(LinkDevice *dev) {
-    free(dev);
+void Link_Device_Init(void) {
+    strcpy(Link_Devices[0].BasePathNative, "/Users/markg/Atari800MacX");
 }
 
 void Link_Device_Set_Read_Only(LinkDevice *dev, int readOnly) {
@@ -833,7 +829,7 @@ void Link_Device_Set_Read_Only(LinkDevice *dev, int readOnly) {
 }
 
 void Link_Device_Set_Base_Path(LinkDevice *dev, char *basePath) {
-    dev->BasePathNative = basePath;
+    strncpy(dev->BasePathNative, basePath, FILENAME_MAX);
 }
 
 void Link_Device_Set_Settings(LinkDevice *dev, int setTimestamps,
@@ -852,19 +848,32 @@ void Link_Device_Cold_Reset(LinkDevice *dev) {
         File_Handle_Close(&dev->FileHandles[i]);
 }
 
-UBYTE Link_Device_On_Serial_Begin_Command( LinkDevice *dev,
-                                           UBYTE *commandFrame,
-                                           int *read, int *ExpectedBytes) {
+UBYTE Link_Device_On_Serial_Begin_Command( UBYTE *commandFrame,
+                                           int *read, int *ExpectedBytes,
+                                           char *buffer) {
+    int devNo;
+    LinkDevice *dev;
+    
     if (commandFrame[0] != 0x6F)
-        return 'N';
-
-    if (strlen(dev->BasePathNative) == 0)
         return 'N';
 
     // Protocol version must be zero
     if (commandFrame[3] & 0xf0)
         return 'N';
     
+    devNo = commandFrame[3] & 0x0f;
+    
+    if (devNo >= LINK_DEVICE_NUM_DEVS)
+        return 'N';
+
+    if (!Link_Device_Enabled[devNo])
+        return 'N';
+    
+    dev = &Link_Devices[devNo];
+    
+    if (strlen(dev->BasePathNative) == 0)
+        return 'N';
+
     // Parameter buffer must be within parameter sizel
     dev->ParSize = commandFrame[2] ? commandFrame[2] : 256;
     if (dev->ParSize  > sizeof(ParameterBuffer))
@@ -873,29 +882,48 @@ UBYTE Link_Device_On_Serial_Begin_Command( LinkDevice *dev,
     dev->CommandAux1 = commandFrame[2];
     dev->CommandAux2 = commandFrame[3];
 
-    Command command = CommandNone;
+    dev->Command = CommandNone;
 
+    commandFrame[1] = commandFrame[1] & 0x7F;
+    
     if (commandFrame[1] == 0x53)          // status
-        command = CommandStatus;
+        dev->Command = CommandStatus;
     else if (commandFrame[1] == 0x50)     // put
-        command = CommandPut;
+        dev->Command = CommandPut;
     else if (commandFrame[1] == 0x52)     // read
-        command = CommandRead;
+        dev->Command = CommandRead;
     else if (commandFrame[1] == 0x3F)
-        command = CommandGetHiSpeedIndex;
+        dev->Command = CommandGetHiSpeedIndex;
     else {
         printf("Unsupported command $%02x\n", commandFrame[1]);
         return 'N';
     }
 
-    //mpSIOMgr->SendACK();
     dev->CommandPhase = 0;
 
     Link_Device_Advance_Command(dev);
 
     *ExpectedBytes = dev->ExpectedBytes;
     *read = dev->ReadCommand;
+    if (dev->ReadCommand) {
+        memcpy(buffer + 1, dev->TransferBuffer, dev->ExpectedBytes);
+        buffer[0] = 'C';
+    }
     return 'A';
+}
+
+void Link_Device_WriteFrame(char *data)
+{
+    LinkDevice *dev;
+    
+    if (!Link_Device_Next_Write)
+        return;
+    
+    dev = Link_Device_Next_Write;
+    
+    memset(&dev->ParBuf, 0, sizeof(ParameterBuffer));
+    memcpy(&dev->ParBuf, data, dev->ExpectedBytes);
+    Link_Device_On_Put(dev);
 }
 
 void Link_Device_Abort_Command(LinkDevice *dev);
