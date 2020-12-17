@@ -610,11 +610,14 @@ void File_Handle_Open_As_Directory(FileHandle *hndl,
 
 void File_Handle_Close(FileHandle *hndl)
 {
-    fclose(hndl->File);
+    if (hndl->File)
+        fclose(hndl->File);
+    hndl->File = NULL;
     hndl->Open = FALSE;
     hndl->AllowRead = FALSE;
     hndl->AllowWrite = FALSE;
-    vector_free(&hndl->DirEnts);
+    if (hndl->DirEnts)
+        vector_free(&hndl->DirEnts);
     hndl->DirEnts = NULL;
 }
 
@@ -785,7 +788,7 @@ typedef struct linkDevice {
     UBYTE   CommandAux1;
     UBYTE   CommandAux2;
 
-    char    *CurDir;
+    char    CurDir[FILENAME_MAX];
 
     ParameterBuffer ParBuf;
 
@@ -887,8 +890,10 @@ UBYTE Link_Device_On_Serial_Begin_Command( UBYTE *commandFrame,
     
     if (commandFrame[1] == 0x53)          // status
         dev->Command = CommandStatus;
-    else if (commandFrame[1] == 0x50)     // put
+    else if (commandFrame[1] == 0x50) {     // put
         dev->Command = CommandPut;
+        Link_Device_Next_Write = dev;
+    }
     else if (commandFrame[1] == 0x52)     // read
         dev->Command = CommandRead;
     else if (commandFrame[1] == 0x3F)
@@ -1646,7 +1651,7 @@ int Link_Device_On_Put(LinkDevice *dev) {
                 return TRUE;
             }
 
-            dev->CurDir = resultPath;
+            strcpy(dev->CurDir, resultPath);
 
             dev->StatusError = CIOStatSuccess;
 
