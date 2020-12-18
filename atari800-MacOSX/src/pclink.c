@@ -469,18 +469,10 @@ typedef struct fileHandle {
     FILE     *File;
 } FileHandle;
 
-FileHandle *File_Handle_Alloc()
+void File_Handle_Init(FileHandle *hndl)
 {
-    FileHandle *hndl = (FileHandle *) malloc(sizeof(FileHandle));
     memset(hndl, 0, sizeof(FileHandle));
     hndl->DirEnts = vector_create();
-    return hndl;
-}
-
-void File_Handle_Free(FileHandle *hndl)
-{
-    vector_free(hndl->DirEnts);
-    free(hndl);
 }
 
 int File_Handle_Is_Open(FileHandle *hndl)
@@ -623,8 +615,8 @@ void File_Handle_Close(FileHandle *hndl)
     hndl->Open = FALSE;
     hndl->AllowRead = FALSE;
     hndl->AllowWrite = FALSE;
-    if (hndl->DirEnts)
-        vector_free(&hndl->DirEnts);
+    vector_free(hndl->DirEnts);
+    hndl->DirEnts = vector_create();
     hndl->DirEnts = NULL;
 }
 
@@ -832,6 +824,14 @@ int Link_Device_On_Read(LinkDevice *dev);
 void Link_Device_Init(void) {
     strcpy(Link_Devices[0].BasePathNative, "/Users/markg/Atari800MacX/pclink");
     strcpy(Link_Devices[1].BasePathNative, "/Users/markg/Atari800MacX/pclink");
+    
+    int devNo;
+    int fhNo;
+    
+    for (devNo=0; devNo < LINK_DEVICE_NUM_DEVS; devNo++) {
+        for (fhNo=0; fhNo<15; fhNo++)
+            File_Handle_Init(&Link_Devices[devNo].FileHandles[fhNo]);
+    }
 }
 
 void Link_Device_Set_Read_Only(LinkDevice *dev, int readOnly) {
@@ -972,6 +972,7 @@ void Link_Device_Advance_Command(LinkDevice *dev) {
             break;
 
         case CommandRead:
+            Link_Device_On_Read(dev);
             dev->ReadCommand = TRUE;
             break;
         
@@ -1251,7 +1252,7 @@ int Link_Device_On_Put(LinkDevice *dev) {
             if (openDir) {
                 // extract name from net path
                 s = netPath;
-                t = strrchr(s, '\\');
+                t = strrchr(s, '/');
                 if (t)
                     s = t + 1;
 
@@ -1958,7 +1959,7 @@ int Link_Device_Resolve_Path(LinkDevice *dev, int allowDir, char *resultPath) {
         }
 
         if (!fnchars)
-            strcat(resultPath, "\\");
+            strcat(resultPath, "/");
 
         if ((UBYTE)(c - 'a') < 26)
             c &= ~0x20;
@@ -2017,7 +2018,7 @@ int Link_Device_Resolve_Native_Path(LinkDevice *dev, char *resultPath, const cha
         if (c >= 'A' && c <= 'Z')
             c &= ~0x20;
 
-        resultPath += (wchar_t)c;   
+        strncat(resultPath, &c, 1);
     }
 
     // ensure trailing separator
