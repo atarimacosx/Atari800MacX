@@ -1701,11 +1701,8 @@ int SIO_GetByte(void)
 				TransferStatus = SIO_NoFrame;
 			}
 			else {
-                if (TransferDest)
-                    POKEY_DELAYED_SERIN_IRQ = (DataIndex == 1) ? SIO_SERIN_INTERVAL : 1;
-                else
-                    /* set delay using the expected transfer speed */
-                    POKEY_DELAYED_SERIN_IRQ = (DataIndex == 1) ? SIO_SERIN_INTERVAL
+                /* set delay using the expected transfer speed */
+                POKEY_DELAYED_SERIN_IRQ = (DataIndex == 1) ? SIO_SERIN_INTERVAL
                         : ((SIO_SERIN_INTERVAL * POKEY_AUDF[POKEY_CHAN3] - 1) / 0x28 + 1);
 			}
 		}

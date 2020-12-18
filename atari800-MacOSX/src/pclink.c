@@ -430,11 +430,12 @@ UBYTE TranslateErrnoToSIOError(ULONG err) {
             return CIOStatFileExists;
         case EINVAL:
             return CIOStatInvalidCmd;
+        case ENOENT:
+            return CIOStatPathNotFound;
         case EISDIR:
         case EMFILE:
         case ENAMETOOLONG:
         case ENFILE:
-        case ENOENT:
         case ENOSPC:
         case ENOTDIR:
         case ENXIO:
@@ -599,8 +600,6 @@ void File_Handle_Open_As_Directory(FileHandle *hndl,
     hndl->DirEnt.LengthHi = (UBYTE)(hndl->Length >> 16);
     memcpy(hndl->DirEnt.Name, dirName->Name, 11);
 
-    if (!hndl->DirEnts)
-        hndl->DirEnts = vector_create();
     vector_insert(&hndl->DirEnts, 0, hndl->DirEnt);
 
     hndl->FnextPattern = *pattern;
