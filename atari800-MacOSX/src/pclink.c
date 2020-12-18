@@ -544,7 +544,7 @@ UBYTE File_Handle_Open_File(FileHandle *hndl, const char *nativePath,
     struct stat file_stats;
     FILE *file = NULL;
 
-    int exists = access(nativePath, F_OK);
+    int exists = (access(nativePath, F_OK) == 0);
 
     hndl->WasCreated = FALSE;
 
@@ -569,6 +569,7 @@ UBYTE File_Handle_Open_File(FileHandle *hndl, const char *nativePath,
         hndl->AllowRead = allowRead;
         hndl->AllowWrite = allowWrite;
         hndl->WasCreated = !exists;
+        hndl->File = file;
 
         if ((stat(nativePath, &file_stats)) == -1) {
             //TBD handle error;
@@ -585,6 +586,7 @@ UBYTE File_Handle_Open_File(FileHandle *hndl, const char *nativePath,
         return CIOStatSuccess;
     } else {
         hndl->Open = FALSE;
+        hndl->File = NULL;
         return TranslateErrnoToSIOError(errno);
     }
 }
@@ -1216,7 +1218,7 @@ int Link_Device_On_Put(LinkDevice *dev) {
                 // we need to cache the pattern with the file handle instead.
                 if (!openDir && !File_Name_Wild_Match(&pattern, &fn))
                     continue;
-
+                // TBDFirst fix needs full path
                 if ((stat(ep->d_name, &file_stats)) == -1) {
                     //TBD handle error;
                 }
@@ -1248,7 +1250,8 @@ int Link_Device_On_Put(LinkDevice *dev) {
 
                 if (!openDir) {
                     matched = TRUE;
-                    // TBDFirst nativeFilePath = it.GetFullPath();
+                    strcpy(nativeFilePath, nativePath);
+                    strcat(nativeFilePath, ep->d_name);
                     break;
                 }
 
@@ -1703,7 +1706,7 @@ int Link_Device_On_Read(LinkDevice *dev) {
                 fh = &dev->FileHandles[dev->ParBuf.Handle - 1];
                 ULONG actual = 0;
 
-                dev->StatusError = File_Handle_Read(fh, dev->TransferBuffer, blocklen, actual);
+                dev->StatusError = File_Handle_Read(fh, dev->TransferBuffer, blocklen, &actual);
 
                 dev->StatusLengthLo = (UBYTE)actual;
                 dev->StatusLengthHi = (UBYTE)(actual >> 8);
