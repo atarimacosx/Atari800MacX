@@ -280,6 +280,7 @@ int File_Name_Parse_From_Native(FileName *name, const char *fn) {
                 name->Name[i++] = ' ';
 
             inext = TRUE;
+            c = *fn++;
             continue;
         }
 
@@ -461,8 +462,8 @@ typedef struct fileHandle {
 
     DirEntry *DirEnts;
 
-    DirEntry *DirEnt;
-    FileName *FnextPattern;
+    DirEntry DirEnt;
+    FileName FnextPattern;
     UBYTE    FnextAttrFilter;
 
     FILE     *File;
@@ -514,12 +515,12 @@ int File_Handle_Get_Length(FileHandle *hndl)
 
 DirEntry *File_Handle_Get_Dir_Ent(FileHandle *hndl)
 {
-    return hndl->DirEnt;
+    return &hndl->DirEnt;
 }
 
 void File_Handle_Set_Dir_Ent(FileHandle *hndl, DirEntry *dirEnt)
 {
-    hndl->DirEnt = dirEnt;
+    hndl->DirEnt = *dirEnt;
 }
 
 void File_Handle_Add_Dir_Ent(FileHandle *hndl, DirEntry *dirEnt) {
@@ -583,28 +584,34 @@ void File_Handle_Open_As_Directory(FileHandle *hndl,
                                    FileName* pattern, 
                                    UBYTE attrFilter)
 {
-    qsort(hndl->DirEnts,
-          vector_size(hndl->DirEnts),
-          sizeof(DirEntry),
-          Dir_Entry_Compare
-         );
+    if (hndl->DirEnts)
+        qsort(hndl->DirEnts,
+              vector_size(hndl->DirEnts),
+              sizeof(DirEntry),
+              Dir_Entry_Compare
+             );
     hndl->Open = TRUE;
     hndl->IsDirectory = TRUE;
-    hndl->Length = 23 * ((ULONG)vector_size(hndl->DirEnts) + 1);
+    if (hndl->DirEnts)
+        hndl->Length = 23 * ((ULONG)vector_size(hndl->DirEnts) + 1);
+    else
+        hndl->Length = 23;
     hndl->Pos = 23;
     hndl->AllowRead = TRUE;
     hndl->AllowWrite = FALSE;
 
-    memset(hndl->DirEnt, 0, sizeof(DirEntry));
-    hndl->DirEnt->Flags = Flag_InUse | Flag_Directory;
-    hndl->DirEnt->LengthLo = (UBYTE)hndl->Length;
-    hndl->DirEnt->LengthMid = (UBYTE)(hndl->Length >> 8);
-    hndl->DirEnt->LengthHi = (UBYTE)(hndl->Length >> 16);
-    memcpy(hndl->DirEnt->Name, dirName->Name, 11);
+    memset(&hndl->DirEnt, 0, sizeof(DirEntry));
+    hndl->DirEnt.Flags = Flag_InUse | Flag_Directory;
+    hndl->DirEnt.LengthLo = (UBYTE)hndl->Length;
+    hndl->DirEnt.LengthMid = (UBYTE)(hndl->Length >> 8);
+    hndl->DirEnt.LengthHi = (UBYTE)(hndl->Length >> 16);
+    memcpy(hndl->DirEnt.Name, dirName->Name, 11);
 
-    vector_insert(&hndl->DirEnts, 0, *hndl->DirEnt);
+    if (!hndl->DirEnts)
+        hndl->DirEnts = vector_create();
+    vector_insert(&hndl->DirEnts, 0, hndl->DirEnt);
 
-    hndl->FnextPattern = pattern;
+    hndl->FnextPattern = *pattern;
     hndl->FnextAttrFilter = attrFilter;
 }
 
@@ -747,7 +754,7 @@ int File_Handle_Get_Next_Dir_Ent(FileHandle *hndl, DirEntry *dirEnt) {
         FileName *name = File_Name_Alloc();
         File_Name_Parse_From_Net(name, dirEnt->Name);
 
-        if (File_Name_Wild_Match(name, hndl->FnextPattern) && Dir_Entry_Test_Attr_Filter(hndl->DirEnt, hndl->FnextAttrFilter))
+        if (File_Name_Wild_Match(name, &hndl->FnextPattern) && Dir_Entry_Test_Attr_Filter(&hndl->DirEnt, hndl->FnextAttrFilter))
             return TRUE;
     }
 
@@ -801,7 +808,7 @@ typedef struct linkDevice {
     UBYTE   TransferBuffer[65536];
 } LinkDevice;
 
-int Link_Device_Enabled[LINK_DEVICE_NUM_DEVS] = {1,0,0,0,0,0,0,0};
+int Link_Device_Enabled[LINK_DEVICE_NUM_DEVS] = {1,1,0,0,0,0,0,0};
 LinkDevice Link_Devices[LINK_DEVICE_NUM_DEVS];
 LinkDevice *Link_Device_Next_Write = NULL;
 
@@ -823,7 +830,8 @@ int Link_Device_On_Put(LinkDevice *dev);
 int Link_Device_On_Read(LinkDevice *dev);
 
 void Link_Device_Init(void) {
-    strcpy(Link_Devices[0].BasePathNative, "/Users/markg/Atari800MacX");
+    strcpy(Link_Devices[0].BasePathNative, "/Users/markg/Atari800MacX/pclink");
+    strcpy(Link_Devices[1].BasePathNative, "/Users/markg/Atari800MacX/pclink");
 }
 
 void Link_Device_Set_Read_Only(LinkDevice *dev, int readOnly) {
@@ -1871,7 +1879,7 @@ int Link_Device_Resolve_Path(LinkDevice *dev, int allowDir, char *resultPath) {
         *resultPath = 0;
         ++s;
     } else
-        resultPath = dev->CurDir;
+        strcpy(resultPath, dev->CurDir);
 
     // check for back-up specifiers
     while(*s == '<') {
@@ -2000,7 +2008,7 @@ int Link_Device_Resolve_Native_Path_Dir(LinkDevice *dev, int allowDir, char *res
 int Link_Device_Resolve_Native_Path(LinkDevice *dev, char *resultPath, const char *netPath) {
 
     // translate path
-    resultPath = dev->BasePathNative;
+    strcpy(resultPath, dev->BasePathNative);
 
     for (int i=0; i<strlen(netPath); i++)
     {

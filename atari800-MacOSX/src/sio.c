@@ -1548,7 +1548,7 @@ static UBYTE Command_Frame(void)
 /* Enable/disable the command frame */
 void SIO_SwitchCommandFrame(int onoff)
 {
-    // printf("(%016llx) Switch Command %d\n",CPU_cycle_count,onoff);
+    printf("(%016llx) Switch Command %d\n",CPU_cycle_count,onoff);
 	if (onoff) {				/* Enabled */
 		if (TransferStatus != SIO_NoFrame)
 			Log_print("Unexpected command frame at state %x.", TransferStatus);
@@ -1593,7 +1593,7 @@ static UBYTE WriteSectorBack(void)
 /* Put a byte that comes out of POKEY. So get it here... */
 void SIO_PutByte(int byte)
 {
-    // printf("(%016llx) Put Byte %02x %d\n",CPU_cycle_count,byte,TransferStatus);
+    printf("(%016llx) Put Byte %02x %d\n",CPU_cycle_count,byte,TransferStatus);
 	switch (TransferStatus) {
 	case SIO_CommandFrame:
 		if (CommandIndex < ExpectedBytes) {
@@ -1736,7 +1736,7 @@ int SIO_GetByte(void)
 		byte = CASSETTE_GetByte();
 		break;
 	}
-    // printf("(%016llx) Get Byte %02x %d\n",CPU_cycle_count, byte,TransferStatus);
+    printf("(%016llx) Get Byte %02x %d\n",CPU_cycle_count, byte,TransferStatus);
 	return byte;
 }
 

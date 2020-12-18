@@ -8,7 +8,7 @@
 #ifndef pclink_h
 #define pclink_h
 
-#define LINK_DEVICE_NUM_DEVS 8
+#define LINK_DEVICE_NUM_DEVS 9
 
 UBYTE Link_Device_On_Serial_Begin_Command(UBYTE *commandFrame,
                                           int *read, int *ExpectedBytes,
