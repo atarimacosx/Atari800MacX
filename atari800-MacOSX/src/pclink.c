@@ -472,8 +472,25 @@ typedef struct fileHandle {
 
 void File_Handle_Init(FileHandle *hndl)
 {
-    memset(hndl, 0, sizeof(FileHandle));
+    hndl->Open = 0;
+    hndl->AllowRead = 0;
+    hndl->AllowWrite = 0;
+    hndl->IsDirectory = 0;
+    hndl->WasCreated = 0;
+    hndl->Pos = 0;
+    hndl->Length = 0;
+    memset(&hndl->DirEnt, 0, sizeof(DirEntry));
+    memset(&hndl->FnextPattern, 0, sizeof(FileName));
+    int vec_size = vector_size(&hndl->DirEnts);
+    if (vec_size)
+        vector_erase(&hndl->DirEnts, 0, vec_size);
+    hndl->File = NULL;
+}
+
+void File_Handle_Alloc_Init(FileHandle *hndl)
+{
     hndl->DirEnts = vector_create();
+    File_Handle_Init(hndl);
 }
 
 int File_Handle_Is_Open(FileHandle *hndl)
@@ -577,18 +594,14 @@ void File_Handle_Open_As_Directory(FileHandle *hndl,
                                    FileName* pattern, 
                                    UBYTE attrFilter)
 {
-    if (hndl->DirEnts)
-        qsort(hndl->DirEnts,
-              vector_size(hndl->DirEnts),
-              sizeof(DirEntry),
-              Dir_Entry_Compare
-             );
+    qsort(hndl->DirEnts,
+          vector_size(&hndl->DirEnts),
+          sizeof(DirEntry),
+          Dir_Entry_Compare
+         );
     hndl->Open = TRUE;
     hndl->IsDirectory = TRUE;
-    if (hndl->DirEnts)
-        hndl->Length = 23 * ((ULONG)vector_size(hndl->DirEnts) + 1);
-    else
-        hndl->Length = 23;
+    hndl->Length = 23 * ((ULONG)vector_size(&hndl->DirEnts) + 1);
     hndl->Pos = 23;
     hndl->AllowRead = TRUE;
     hndl->AllowWrite = FALSE;
@@ -610,13 +623,7 @@ void File_Handle_Close(FileHandle *hndl)
 {
     if (hndl->File)
         fclose(hndl->File);
-    hndl->File = NULL;
-    hndl->Open = FALSE;
-    hndl->AllowRead = FALSE;
-    hndl->AllowWrite = FALSE;
-    vector_free(hndl->DirEnts);
-    hndl->DirEnts = vector_create();
-    hndl->DirEnts = NULL;
+    File_Handle_Init(hndl);
 }
 
 UBYTE File_Handle_Seek(FileHandle *hndl, ULONG pos) {
@@ -829,7 +836,7 @@ void Link_Device_Init(void) {
     
     for (devNo=0; devNo < LINK_DEVICE_NUM_DEVS; devNo++) {
         for (fhNo=0; fhNo<15; fhNo++)
-            File_Handle_Init(&Link_Devices[devNo].FileHandles[fhNo]);
+            File_Handle_Alloc_Init(&Link_Devices[devNo].FileHandles[fhNo]);
     }
 }
 
@@ -1201,7 +1208,7 @@ int Link_Device_On_Put(LinkDevice *dev) {
 
             matched = FALSE;
             while((ep = readdir(dirStream))) {
-                if (!File_Name_Parse_From_Native(&fn, ep->d_name));
+                if (!File_Name_Parse_From_Native(&fn, ep->d_name))
                     continue;
 
                 // We can't filter at this point for a directory, because the byte stream
