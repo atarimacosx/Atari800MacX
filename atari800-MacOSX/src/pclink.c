@@ -1989,7 +1989,7 @@ int Link_Device_Resolve_Path(LinkDevice *dev, int allowDir, char *resultPath) {
     }
 
     // strip off trailing separator if present
-    if ((strlen(resultPath) != 0) && (resultPath[strlen(resultPath) - 1] != '/')) {
+    if ((strlen(resultPath) != 0) && (resultPath[strlen(resultPath) - 1] == '/')) {
         resultPath[strlen(resultPath) - 1] = 0;
     }
 
