@@ -481,9 +481,9 @@ void File_Handle_Init(FileHandle *hndl)
     hndl->Length = 0;
     memset(&hndl->DirEnt, 0, sizeof(DirEntry));
     memset(&hndl->FnextPattern, 0, sizeof(FileName));
-    int vec_size = vector_size(&hndl->DirEnts);
+    int vec_size = vector_size(hndl->DirEnts);
     if (vec_size)
-        vector_erase(&hndl->DirEnts, 0, vec_size);
+        vector_erase(hndl->DirEnts, 0, vec_size);
     hndl->File = NULL;
 }
 
@@ -534,6 +534,9 @@ void File_Handle_Set_Dir_Ent(FileHandle *hndl, DirEntry *dirEnt)
 }
 
 void File_Handle_Add_Dir_Ent(FileHandle *hndl, DirEntry *dirEnt) {
+    //DirEntry toAdd;
+    //memcpy(&toAdd, dirEnt, sizeof(DirEntry));
+    //vector_add(&hndl->DirEnts, toAdd);
     vector_add(&hndl->DirEnts, *dirEnt);
 }
 
@@ -597,13 +600,13 @@ void File_Handle_Open_As_Directory(FileHandle *hndl,
                                    UBYTE attrFilter)
 {
     qsort(hndl->DirEnts,
-          vector_size(&hndl->DirEnts),
+          vector_size(hndl->DirEnts),
           sizeof(DirEntry),
           Dir_Entry_Compare
          );
     hndl->Open = TRUE;
     hndl->IsDirectory = TRUE;
-    hndl->Length = 23 * ((ULONG)vector_size(&hndl->DirEnts) + 1);
+    hndl->Length = 23 * ((ULONG)vector_size(hndl->DirEnts) + 1);
     hndl->Pos = 23;
     hndl->AllowRead = TRUE;
     hndl->AllowWrite = FALSE;
@@ -754,7 +757,7 @@ int File_Handle_Get_Next_Dir_Ent(FileHandle *hndl, DirEntry *dirEnt) {
         FileName *name = File_Name_Alloc();
         File_Name_Parse_From_Net(name, dirEnt->Name);
 
-        if (File_Name_Wild_Match(name, &hndl->FnextPattern) && Dir_Entry_Test_Attr_Filter(&hndl->DirEnt, hndl->FnextAttrFilter))
+        if (File_Name_Wild_Match(&hndl->FnextPattern, name) && Dir_Entry_Test_Attr_Filter(&hndl->DirEnt, hndl->FnextAttrFilter))
             return TRUE;
     }
 
@@ -1218,8 +1221,10 @@ int Link_Device_On_Put(LinkDevice *dev) {
                 // we need to cache the pattern with the file handle instead.
                 if (!openDir && !File_Name_Wild_Match(&pattern, &fn))
                     continue;
-                // TBDFirst fix needs full path
-                if ((stat(ep->d_name, &file_stats)) == -1) {
+
+                strcpy(nativeFilePath, nativePath);
+                strcat(nativeFilePath, ep->d_name);
+                if ((stat(nativeFilePath, &file_stats)) == -1) {
                     //TBD handle error;
                 }
                 slen = file_stats.st_size;
@@ -1256,6 +1261,7 @@ int Link_Device_On_Put(LinkDevice *dev) {
                 }
 
                 File_Handle_Add_Dir_Ent(fh, &dirEnt);
+                printf("**** vec size = %zd\n",vector_size(fh->DirEnts));
             }
 
             if (openDir) {
