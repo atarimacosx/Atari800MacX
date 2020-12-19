@@ -1479,7 +1479,7 @@ int Link_Device_On_Put(LinkDevice *dev) {
                 }
 
             matched = FALSE;
-                while((ep = readdir(dirStream))) {
+            while((ep = readdir(dirStream))) {
                 if ((stat(ep->d_name, &file_stats)) == -1) {
                     //TBD handle error;
                 }
@@ -1547,7 +1547,7 @@ int Link_Device_On_Put(LinkDevice *dev) {
                 return TRUE;
             }
 
-            if (!Link_Device_Resolve_Native_Path(dev, FALSE, path))
+            if (!Link_Device_Resolve_Native_Path_Dir(dev, FALSE, path))
                 return TRUE;
 
             if (!File_Name_Parse_From_Net(&srcpat, dev->ParBuf.Name1)) {
@@ -1555,7 +1555,7 @@ int Link_Device_On_Put(LinkDevice *dev) {
                 return TRUE;
             }
 
-            if ((dirStream = opendir(resultPath)) == NULL) {
+            if ((dirStream = opendir(path)) == NULL) {
                 // TBD Handle Error
             }
 
@@ -1587,7 +1587,7 @@ int Link_Device_On_Put(LinkDevice *dev) {
                 strcpy(srcNativePath, path);
                 File_Name_Append_Native(&fn, srcNativePath);
 
-                // TBDFirst newmode = sb.st_mode;
+                newmode = file_stats.st_mode;
 
                 if (dev->ParBuf.Attr2 & 0x10)
                     newmode |= S_IWUSR;
