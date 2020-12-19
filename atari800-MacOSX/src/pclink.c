@@ -309,6 +309,8 @@ int File_Name_Parse_From_Native(FileName *name, const char *fn) {
 
 void File_Name_Append_Native(FileName *name, char *s) 
 {
+    char *period = ".";
+    
     for(int i=0; i<11; ++i) {
         const char c = (char)name->Name[i];
 
@@ -319,9 +321,9 @@ void File_Name_Append_Native(FileName *name, char *s)
         }
 
         if (i == 8)
-            s += '.';
+            strncat(s, period, 1);
 
-        s += c;
+        strncat(s, &c, 1);
     }
 }
 
@@ -1374,6 +1376,10 @@ int Link_Device_On_Put(LinkDevice *dev) {
                 dev->StatusError = CIOStatFileNameErr;
                 return TRUE;
             }
+            
+            strcpy(path, dev->BasePathNative);
+            strcat(path, "/");
+            strcat(path, dev->CurDir);
 
             if ((dirStream = opendir(path)) == NULL) {
                 // TBD Handle Error
@@ -1385,7 +1391,10 @@ int Link_Device_On_Put(LinkDevice *dev) {
                     (strcmp(ep->d_name,"..") == 0))
                     continue;
 
-                if ((stat(ep->d_name, &file_stats)) == -1) {
+                strcpy(fullPath, path);
+                strcat(fullPath, ep->d_name);
+                
+                if ((stat(fullPath, &file_stats)) == -1) {
                     //TBD handle error;
                 }
                 Dir_Entry_Set_Flags_From_Attributes(&dirEnt,
