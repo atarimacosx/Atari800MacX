@@ -558,8 +558,8 @@ UBYTE File_Handle_Open_File(FileHandle *hndl, const char *nativePath,
             file = fopen(nativePath, "r");
             break;
         case FILE_WRITE:
-            break;
             file = fopen(nativePath, "w");
+            break;
         case FILE_APPEND:
             file = fopen(nativePath, "a");
             break;
@@ -790,6 +790,7 @@ typedef struct linkDevice {
     char    BasePathNative[FILENAME_MAX];
     int     ReadOnly;
     int     SetTimestamps;
+    int     TranslateLFsAndTabs;
 
     UBYTE   StatusFlags;
     UBYTE   StatusError;
@@ -838,12 +839,23 @@ void Link_Device_Init(void) {
     strcpy(Link_Devices[0].BasePathNative, "/Users/markg/Atari800MacX/pclink");
     strcpy(Link_Devices[1].BasePathNative, "/Users/markg/Atari800MacX/pclink");
     
+    // Initialize all of the file handles for the devices.
     int devNo;
     int fhNo;
     
     for (devNo=0; devNo < LINK_DEVICE_NUM_DEVS; devNo++) {
         for (fhNo=0; fhNo<15; fhNo++)
             File_Handle_Alloc_Init(&Link_Devices[devNo].FileHandles[fhNo]);
+    }
+}
+
+void Link_Device_Cold_Reset() {
+    int devNo;
+    int fhNo;
+    
+    for (devNo=0; devNo < LINK_DEVICE_NUM_DEVS; devNo++) {
+        for (fhNo=0; fhNo<15; fhNo++)
+            File_Handle_Close(&Link_Devices[devNo].FileHandles[fhNo]);
     }
 }
 
@@ -864,11 +876,6 @@ void Link_Device_Set_Settings(LinkDevice *dev, int setTimestamps,
 
 void Link_Device_Shutdown(LinkDevice *dev) {
     Link_Device_Abort_Command(dev);
-}
-
-void Link_Device_Cold_Reset(LinkDevice *dev) {
-    for (int i = 0; i < 15; i++)
-        File_Handle_Close(&dev->FileHandles[i]);
 }
 
 UBYTE Link_Device_On_Serial_Begin_Command( UBYTE *commandFrame,
@@ -915,8 +922,11 @@ UBYTE Link_Device_On_Serial_Begin_Command( UBYTE *commandFrame,
         dev->Command = CommandPut;
         Link_Device_Next_Write = dev;
     }
-    else if (commandFrame[1] == 0x52)     // read
+    else if (commandFrame[1] == 0x52) {    // read
         dev->Command = CommandRead;
+        if (dev->ParBuf.Function == 1)
+            Link_Device_Next_Write = dev;
+    }
     else if (commandFrame[1] == 0x3F)
         dev->Command = CommandGetHiSpeedIndex;
     else {
@@ -944,9 +954,14 @@ int Link_Device_WriteFrame(char *data)
     
     dev = Link_Device_Next_Write;
     
-    memset(&dev->ParBuf, 0, sizeof(ParameterBuffer));
-    memcpy(&dev->ParBuf, data, dev->ExpectedBytes);
-    Link_Device_On_Put(dev);
+    if (dev->Command == CommandRead && dev->ParBuf.Function == 1) {
+        memcpy(&dev->TransferBuffer, data, dev->ExpectedBytes);
+        Link_Device_On_Read(dev);
+    } else {
+        memset(&dev->ParBuf, 0, sizeof(ParameterBuffer));
+        memcpy(&dev->ParBuf, data, dev->ExpectedBytes);
+        Link_Device_On_Put(dev);
+    }
     return 'C';
 }
 
@@ -985,8 +1000,15 @@ void Link_Device_Advance_Command(LinkDevice *dev) {
             break;
 
         case CommandRead:
-            Link_Device_On_Read(dev);
-            dev->ReadCommand = TRUE;
+            if (dev->ParBuf.Function == 1) {
+                // fwrite is special
+                dev->ReadCommand = FALSE;
+                dev->ExpectedBytes = dev->ParBuf.F[0] + 256*dev->ParBuf.F[1];
+            }
+            else {
+                dev->ReadCommand = TRUE;
+                Link_Device_On_Read(dev);
+            }
             break;
         
         case CommandNone:
@@ -1263,7 +1285,6 @@ int Link_Device_On_Put(LinkDevice *dev) {
                 }
 
                 File_Handle_Add_Dir_Ent(fh, &dirEnt);
-                printf("**** vec size = %zd\n",vector_size(fh->DirEnts));
             }
 
             if (openDir) {
@@ -1307,6 +1328,7 @@ int Link_Device_On_Put(LinkDevice *dev) {
                         return TRUE;
                     }
 
+                    strcpy(nativeFilePath, nativePath);
                     File_Name_Append_Native(&pattern, nativeFilePath);
                 }
 
@@ -1719,6 +1741,7 @@ int Link_Device_On_Read(LinkDevice *dev) {
 
     switch(dev->ParBuf.Function) {
         case 0:     // fread
+            printf("Received fread($%02x) results.\n", dev->ParBuf.Handle);
             blocklen = dev->StatusLengthLo + ((ULONG)dev->StatusLengthHi << 8);
             if (Link_Device_Check_Valid_File_Handle(dev, TRUE)) {
                 fh = &dev->FileHandles[dev->ParBuf.Handle - 1];
@@ -1734,6 +1757,7 @@ int Link_Device_On_Read(LinkDevice *dev) {
             return TRUE;
 
         case 1:     // fwrite
+            printf("Received fwrite($%02x) results.\n", dev->ParBuf.Handle);
             if (dev->ReadOnly) {
                 dev->StatusError = CIOStatReadOnly;
                 return TRUE;
@@ -1749,6 +1773,7 @@ int Link_Device_On_Read(LinkDevice *dev) {
             return TRUE;
 
         case 3:     // ftell
+            printf("Received ftell($%02x) results.\n", dev->ParBuf.Handle);
             if (Link_Device_Check_Valid_File_Handle(dev, TRUE)) {
                 fh = &dev->FileHandles[dev->ParBuf.Handle - 1];
 
@@ -1767,6 +1792,7 @@ int Link_Device_On_Read(LinkDevice *dev) {
             return TRUE;
 
         case 4:     // flen
+            printf("Received flen($%02x) results.\n", dev->ParBuf.Handle);
             memset(dev->TransferBuffer, 0, 3);
             if (Link_Device_Check_Valid_File_Handle(dev, TRUE)) {
                 fh = &dev->FileHandles[dev->ParBuf.Handle - 1];
@@ -1790,6 +1816,7 @@ int Link_Device_On_Read(LinkDevice *dev) {
             return TRUE;
 
         case 6:     // fnext
+            printf("Received fnext($%02x) results.\n", dev->ParBuf.Handle);
             memset(dev->TransferBuffer, 0, sizeof(DirEntry) + 1);
 
             if (Link_Device_Check_Valid_File_Handle(dev, TRUE)) {
@@ -1821,6 +1848,7 @@ int Link_Device_On_Read(LinkDevice *dev) {
 
         case 9:     // open
         case 10:    // ffirst
+            printf("Received fopen/ffirst($%02x) results.\n", dev->ParBuf.Handle);
             dev->TransferBuffer[0] = dev->ParBuf.Handle;
             memset(dev->TransferBuffer + 1, 0, sizeof(DirEntry));
 
@@ -1847,6 +1875,7 @@ int Link_Device_On_Read(LinkDevice *dev) {
             return true;
 
         case 17:    // getcwd
+            printf("Received getced($%02x) results.\n", dev->ParBuf.Handle);
             memset(dev->TransferBuffer, 0, 65);
             strncpy((char *)dev->TransferBuffer, dev->CurDir, 64);
             dev->ExpectedBytes = 64;
@@ -1858,6 +1887,7 @@ int Link_Device_On_Read(LinkDevice *dev) {
             return TRUE;
 
         case 19:    // getdfree
+            printf("Received getdfree($%02x) results.\n", dev->ParBuf.Handle);
             memset(&diskInfo, 0, sizeof(DiskInfo));
 
             diskInfo.InfoVersion = 0x21;

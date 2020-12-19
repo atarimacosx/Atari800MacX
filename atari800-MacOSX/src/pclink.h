@@ -10,6 +10,8 @@
 
 #define LINK_DEVICE_NUM_DEVS 9
 
+void Link_Device_Cold_Reset();
+void Link_Device_Init(void);
 UBYTE Link_Device_On_Serial_Begin_Command(UBYTE *commandFrame,
                                           int *read, int *ExpectedBytes,
                                           char *buffer);
