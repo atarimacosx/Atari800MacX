@@ -1543,7 +1543,10 @@ int Link_Device_On_Put(LinkDevice *dev) {
                     (strcmp(ep->d_name,"..") == 0))
                     continue;
 
-                if ((stat(ep->d_name, &file_stats)) == -1) {
+                strcpy(fullPath, path);
+                strcat(fullPath, ep->d_name);
+                
+                if ((stat(fullPath, &file_stats)) == -1) {
                     //TBD handle error;
                 }
 
@@ -1637,7 +1640,7 @@ int Link_Device_On_Put(LinkDevice *dev) {
                 return TRUE;
             }
 
-            if (!Link_Device_Resolve_Native_Path(dev, FALSE, resultPath))
+            if (!Link_Device_Resolve_Native_Path_Dir(dev, FALSE, resultPath))
                 return true;
 
             if (!File_Name_Parse_From_Net(&fname, dev->ParBuf.Name1)) {
