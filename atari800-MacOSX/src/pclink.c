@@ -193,7 +193,7 @@ void Dir_Entry_Set_Date(DirEntry *entry, time_t date) {
     localTime = localtime(&date);
 
     entry->Day = localTime->tm_mday;
-    entry->Month = localTime->tm_mon;
+    entry->Month = localTime->tm_mon + 1;
     entry->Year = localTime->tm_year > 99 ? localTime->tm_year - 100 : localTime->tm_year;
     entry->Hour = localTime->tm_hour;
     entry->Min = localTime->tm_min;
@@ -202,7 +202,7 @@ void Dir_Entry_Set_Date(DirEntry *entry, time_t date) {
 
 void Dir_Entry_Decode_Date(const UBYTE tsdata[6], struct tm* fileExpTime) {
     fileExpTime->tm_mday = tsdata[0];
-    fileExpTime->tm_mon = tsdata[1];
+    fileExpTime->tm_mon = tsdata[1] - 1;
     fileExpTime->tm_year = tsdata[2] < 50 ? 2000 + tsdata[2] : 1900 + tsdata[2];
     fileExpTime->tm_hour = tsdata[3];
     fileExpTime->tm_min = tsdata[4];
