@@ -759,7 +759,7 @@ int File_Handle_Get_Next_Dir_Ent(FileHandle *hndl, DirEntry *dirEnt) {
         FileName *name = File_Name_Alloc();
         File_Name_Parse_From_Net(name, dirEnt->Name);
 
-        if (File_Name_Wild_Match(&hndl->FnextPattern, name) && Dir_Entry_Test_Attr_Filter(&hndl->DirEnt, hndl->FnextAttrFilter))
+        if (File_Name_Wild_Match(&hndl->FnextPattern, name) && Dir_Entry_Test_Attr_Filter(dirEnt, hndl->FnextAttrFilter))
             return TRUE;
     }
 
