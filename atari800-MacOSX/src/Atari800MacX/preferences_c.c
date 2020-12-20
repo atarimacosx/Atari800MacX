@@ -29,6 +29,7 @@
 #include "rdevice.h"
 #include "pbi_bb.h"
 #include "pbi_mio.h"
+#include "pclink.h"
 #include "ultimate1mb.h"
 #include "side2.h"
 #include "binload.h"
@@ -1251,6 +1252,13 @@ int loadMacPrefs(int firstTime)
     strcpy(Devices_atari_h_dir[3], prefs.hardDiskDir[3]);
     Devices_h_read_only = prefs.hardDrivesReadOnly;
     strcpy(Devices_h_exe_path, prefs.hPath);
+    for (i=0; i<4; i++) {
+        strcpy(PCLink_base_dir[i], prefs.pcLinkDir[i]);
+        PCLinkEnable[i] = prefs.pcLinkEnable[i];
+        PCLinkReadOnly[i] = prefs.pcLinkReadOnly[i];
+        PCLinkTimestamps[i] = prefs.pcLinkTimestamps[i];
+        PCLinkTranslate[i] = prefs.pcLinkTranslate[i];
+    }
     strcpy(CFG_xegs_filename, prefs.xegsRomFile);
     strcpy(CFG_xegsGame_filename, prefs.xegsGameRomFile);
     strcpy(CFG_1200xl_filename, prefs.a1200XLRomFile);

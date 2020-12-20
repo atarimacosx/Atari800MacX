@@ -29,6 +29,12 @@
 #include "vec.h"
 #include "pclink.h"
 
+char PCLink_base_dir[4][FILENAME_MAX];
+int  PCLinkEnable[4];
+int  PCLinkReadOnly[4];
+int  PCLinkTimestamps[4];
+int  PCLinkTranslate[4];
+
 UBYTE ATTranslateWin32ErrorToSIOError(ULONG err);
 void AtariLFTabToHost(unsigned char *buffer, int len);
 void HostLFTabToAtari(unsigned char *buffer, int len);
@@ -840,10 +846,23 @@ int Link_Device_Resolve_Native_Path_Dir(LinkDevice *dev, int allowDir, char *res
 int Link_Device_On_Put(LinkDevice *dev);
 int Link_Device_On_Read(LinkDevice *dev);
 
+void Link_Device_Init_Devices(void) {
+    strcpy(Link_Devices[0].BasePathNative, "~/");
+    for (int i=0; i<4; i++) {
+        strcpy(Link_Devices[i+1].BasePathNative, PCLink_base_dir[i]);
+        if (strlen(PCLink_base_dir[i]))
+            Link_Device_Enabled[i+1] = PCLinkEnable[i];
+        else
+            Link_Device_Enabled[i+1] = FALSE;
+        Link_Devices[i+1].ReadOnly = PCLinkReadOnly[i];
+        Link_Devices[i+1].SetTimestamps = PCLinkTimestamps[i];
+        Link_Devices[i+1].TranslateLFsAndTabs = PCLinkTranslate[i];
+    }
+}
+
 void Link_Device_Init(void) {
-    strcpy(Link_Devices[0].BasePathNative, "/Users/markg/Atari800MacX/pclink");
-    strcpy(Link_Devices[1].BasePathNative, "/Users/markg/Atari800MacX/pclink");
-    //Link_Devices[1].TranslateLFsAndTabs = TRUE;
+    Link_Device_Init_Devices();
+
     // Initialize all of the file handles for the devices.
     int devNo;
     int fhNo;

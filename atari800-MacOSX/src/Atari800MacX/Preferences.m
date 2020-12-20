@@ -68,6 +68,8 @@ static char workingDirectory[FILENAME_MAX], osromsDir[FILENAME_MAX], paletteDir[
 static char imageDirStr[FILENAME_MAX],printDirStr[FILENAME_MAX];
 static char hardDiskDir1Str[FILENAME_MAX], hardDiskDir2Str[FILENAME_MAX], hardDiskDir3Str[FILENAME_MAX];
 static char hardDiskDir4Str[FILENAME_MAX], osBRomFileStr[FILENAME_MAX];
+static char pcLinkDir1Str[FILENAME_MAX], pcLinkDir2Str[FILENAME_MAX], pcLinkDir3Str[FILENAME_MAX];
+static char pcLinkDir4Str[FILENAME_MAX];
 static char xegsRomFileStr[FILENAME_MAX], xegsGameRomFileStr[FILENAME_MAX];
 static char a1200XLRomFileStr[FILENAME_MAX];
 static char xlRomFileStr[FILENAME_MAX], basicRomFileStr[FILENAME_MAX], a5200RomFileStr[FILENAME_MAX];
@@ -235,6 +237,14 @@ static NSDictionary *defaultValues() {
     strcat(hardDiskDir3Str, "/HardDrive3");
     strcpy(hardDiskDir4Str, workingDirectory);
     strcat(hardDiskDir4Str, "/HardDrive4");
+    strcpy(pcLinkDir1Str, workingDirectory);
+    strcat(pcLinkDir1Str, "/HardDrive1");
+    strcpy(pcLinkDir2Str, workingDirectory);
+    strcat(pcLinkDir2Str, "/HardDrive2");
+    strcpy(pcLinkDir3Str, workingDirectory);
+    strcat(pcLinkDir3Str, "/HardDrive3");
+    strcpy(pcLinkDir4Str, workingDirectory);
+    strcat(pcLinkDir4Str, "/HardDrive4");
     strcpy(osromsDir, workingDirectory);
     strcat(osromsDir, "/OSRoms");
     strcpy(xegsRomFileStr, workingDirectory);
@@ -410,6 +420,26 @@ static NSDictionary *defaultValues() {
                 [NSString stringWithCString:hardDiskDir4Str encoding:NSUTF8StringEncoding], HardDiskDir4,
                 [NSNumber numberWithBool:YES], HardDrivesReadOnly, 
                 @"H1:>DOS;>DOS",HPath,
+                [NSString stringWithCString:pcLinkDir1Str encoding:NSUTF8StringEncoding], PCLinkDir1,
+                [NSString stringWithCString:pcLinkDir2Str encoding:NSUTF8StringEncoding], PCLinkDir2,
+                [NSString stringWithCString:pcLinkDir3Str encoding:NSUTF8StringEncoding], PCLinkDir3,
+                [NSString stringWithCString:pcLinkDir4Str encoding:NSUTF8StringEncoding], PCLinkDir4,
+                [NSNumber numberWithBool:YES], PCLinkEnable1,
+                [NSNumber numberWithBool:YES], PCLinkEnable2,
+                [NSNumber numberWithBool:YES], PCLinkEnable3,
+                [NSNumber numberWithBool:YES], PCLinkEnable4,
+                [NSNumber numberWithBool:NO], PCLinkReadOnly1,
+                [NSNumber numberWithBool:NO], PCLinkReadOnly2,
+                [NSNumber numberWithBool:NO], PCLinkReadOnly3,
+                [NSNumber numberWithBool:NO], PCLinkReadOnly4,
+                [NSNumber numberWithBool:NO], PCLinkTimestamps1,
+                [NSNumber numberWithBool:NO], PCLinkTimestamps2,
+                [NSNumber numberWithBool:NO], PCLinkTimestamps3,
+                [NSNumber numberWithBool:NO], PCLinkTimestamps4,
+                [NSNumber numberWithBool:NO], PCLinkTranslate1,
+                [NSNumber numberWithBool:NO], PCLinkTranslate2,
+                [NSNumber numberWithBool:NO], PCLinkTranslate3,
+                [NSNumber numberWithBool:NO], PCLinkTranslate4,
                 [NSString stringWithCString:xegsRomFileStr encoding:NSUTF8StringEncoding], XEGSRomFile,
                 [NSString stringWithCString:xegsGameRomFileStr encoding:NSUTF8StringEncoding], XEGSGameRomFile,
                 [NSString stringWithCString:a1200XLRomFileStr encoding:NSUTF8StringEncoding], A1200XLRomFile,
@@ -981,6 +1011,26 @@ static Preferences *sharedInstance = nil;
     [hardDiskDir2Field setStringValue:[displayedValues objectForKey:HardDiskDir2]];
     [hardDiskDir3Field setStringValue:[displayedValues objectForKey:HardDiskDir3]];
     [hardDiskDir4Field setStringValue:[displayedValues objectForKey:HardDiskDir4]];
+    [pcLinkDir1Field setStringValue:[displayedValues objectForKey:PCLinkDir1]];
+    [pcLinkDir2Field setStringValue:[displayedValues objectForKey:PCLinkDir2]];
+    [pcLinkDir3Field setStringValue:[displayedValues objectForKey:PCLinkDir3]];
+    [pcLinkDir4Field setStringValue:[displayedValues objectForKey:PCLinkDir4]];
+    [pcLinkEnable1Button setState:[[displayedValues objectForKey:PCLinkEnable1] boolValue] ? NSOnState : NSOffState];
+    [pcLinkEnable2Button setState:[[displayedValues objectForKey:PCLinkEnable2] boolValue] ? NSOnState : NSOffState];
+    [pcLinkEnable3Button setState:[[displayedValues objectForKey:PCLinkEnable3] boolValue] ? NSOnState : NSOffState];
+    [pcLinkEnable4Button setState:[[displayedValues objectForKey:PCLinkEnable4] boolValue] ? NSOnState : NSOffState];
+    [pcLinkReadOnly1Button setState:[[displayedValues objectForKey:PCLinkReadOnly1] boolValue] ? NSOnState : NSOffState];
+    [pcLinkReadOnly2Button setState:[[displayedValues objectForKey:PCLinkReadOnly2] boolValue] ? NSOnState : NSOffState];
+    [pcLinkReadOnly3Button setState:[[displayedValues objectForKey:PCLinkReadOnly3] boolValue] ? NSOnState : NSOffState];
+    [pcLinkReadOnly4Button setState:[[displayedValues objectForKey:PCLinkReadOnly4] boolValue] ? NSOnState : NSOffState];
+    [pcLinkTranslate1Button setState:[[displayedValues objectForKey:PCLinkTranslate1] boolValue] ? NSOnState : NSOffState];
+    [pcLinkTranslate2Button setState:[[displayedValues objectForKey:PCLinkTranslate2] boolValue] ? NSOnState : NSOffState];
+    [pcLinkTranslate3Button setState:[[displayedValues objectForKey:PCLinkTranslate3] boolValue] ? NSOnState : NSOffState];
+    [pcLinkTranslate4Button setState:[[displayedValues objectForKey:PCLinkTranslate4] boolValue] ? NSOnState : NSOffState];
+    [pcLinkTimestamps1Button setState:[[displayedValues objectForKey:PCLinkTimestamps1] boolValue] ? NSOnState : NSOffState];
+    [pcLinkTimestamps2Button setState:[[displayedValues objectForKey:PCLinkTimestamps2] boolValue] ? NSOnState : NSOffState];
+    [pcLinkTimestamps3Button setState:[[displayedValues objectForKey:PCLinkTimestamps3] boolValue] ? NSOnState : NSOffState];
+    [pcLinkTimestamps4Button setState:[[displayedValues objectForKey:PCLinkTimestamps4] boolValue] ? NSOnState : NSOffState];
     [hardDrivesReadOnlyButton setState:[[displayedValues objectForKey:HardDrivesReadOnly] boolValue] ? NSOnState : NSOffState];
     [hPathField setStringValue:[displayedValues objectForKey:HPath]];
 
@@ -2288,6 +2338,75 @@ static Preferences *sharedInstance = nil;
         [displayedValues setObject:no forKey:HardDrivesReadOnly];
     [displayedValues setObject:[hPathField stringValue] forKey:HPath];
 
+    [displayedValues setObject:[pcLinkDir1Field stringValue] forKey:PCLinkDir1];
+    [displayedValues setObject:[pcLinkDir2Field stringValue] forKey:PCLinkDir2];
+    [displayedValues setObject:[pcLinkDir3Field stringValue] forKey:PCLinkDir3];
+    [displayedValues setObject:[pcLinkDir4Field stringValue] forKey:PCLinkDir4];
+    if ([pcLinkEnable1Button state] == NSOnState)
+        [displayedValues setObject:yes forKey:PCLinkEnable1];
+    else
+        [displayedValues setObject:no forKey:PCLinkEnable1];
+    if ([pcLinkEnable2Button state] == NSOnState)
+        [displayedValues setObject:yes forKey:PCLinkEnable2];
+    else
+        [displayedValues setObject:no forKey:PCLinkEnable2];
+    if ([pcLinkEnable3Button state] == NSOnState)
+        [displayedValues setObject:yes forKey:PCLinkEnable3];
+    else
+        [displayedValues setObject:no forKey:PCLinkEnable3];
+    if ([pcLinkEnable4Button state] == NSOnState)
+        [displayedValues setObject:yes forKey:PCLinkEnable4];
+    else
+        [displayedValues setObject:no forKey:PCLinkEnable4];
+    if ([pcLinkReadOnly1Button state] == NSOnState)
+        [displayedValues setObject:yes forKey:PCLinkReadOnly1];
+    else
+        [displayedValues setObject:no forKey:PCLinkReadOnly1];
+    if ([pcLinkReadOnly2Button state] == NSOnState)
+        [displayedValues setObject:yes forKey:PCLinkReadOnly2];
+    else
+        [displayedValues setObject:no forKey:PCLinkReadOnly2];
+    if ([pcLinkReadOnly3Button state] == NSOnState)
+        [displayedValues setObject:yes forKey:PCLinkReadOnly3];
+    else
+        [displayedValues setObject:no forKey:PCLinkReadOnly3];
+    if ([pcLinkReadOnly4Button state] == NSOnState)
+        [displayedValues setObject:yes forKey:PCLinkReadOnly4];
+    else
+        [displayedValues setObject:no forKey:PCLinkReadOnly4];
+    if ([pcLinkTimestamps1Button state] == NSOnState)
+        [displayedValues setObject:yes forKey:PCLinkTimestamps1];
+    else
+        [displayedValues setObject:no forKey:PCLinkTimestamps1];
+    if ([pcLinkTimestamps2Button state] == NSOnState)
+        [displayedValues setObject:yes forKey:PCLinkTimestamps2];
+    else
+        [displayedValues setObject:no forKey:PCLinkTimestamps2];
+    if ([pcLinkTimestamps3Button state] == NSOnState)
+        [displayedValues setObject:yes forKey:PCLinkTimestamps3];
+    else
+        [displayedValues setObject:no forKey:PCLinkTimestamps3];
+    if ([pcLinkTimestamps4Button state] == NSOnState)
+        [displayedValues setObject:yes forKey:PCLinkTimestamps4];
+    else
+        [displayedValues setObject:no forKey:PCLinkTimestamps4];
+    if ([pcLinkTranslate1Button state] == NSOnState)
+        [displayedValues setObject:yes forKey:PCLinkTranslate1];
+    else
+        [displayedValues setObject:no forKey:PCLinkTranslate1];
+    if ([pcLinkTranslate2Button state] == NSOnState)
+        [displayedValues setObject:yes forKey:PCLinkTranslate2];
+    else
+        [displayedValues setObject:no forKey:PCLinkTranslate2];
+    if ([pcLinkTranslate3Button state] == NSOnState)
+        [displayedValues setObject:yes forKey:PCLinkTranslate3];
+    else
+        [displayedValues setObject:no forKey:PCLinkTranslate3];
+    if ([pcLinkTranslate4Button state] == NSOnState)
+        [displayedValues setObject:yes forKey:PCLinkTranslate4];
+    else
+        [displayedValues setObject:no forKey:PCLinkTranslate4];
+    
     [displayedValues setObject:[xegsRomFileField stringValue] forKey:XEGSRomFile];
     [displayedValues setObject:[xegsGameRomFileField stringValue] forKey:XEGSGameRomFile];
     [displayedValues setObject:[a1200xlRomFileField stringValue] forKey:A1200XLRomFile];
@@ -3037,6 +3156,47 @@ static Preferences *sharedInstance = nil;
         }
     }
 
+- (void)browsePCLink1:(id)sender {
+    NSString *dirname;
+
+    dirname = [self browseDir];
+    if (dirname != nil) {
+        [pcLinkDir1Field setStringValue:dirname];
+        [self miscChanged:self];
+        }
+}
+
+- (void)browsePCLink2:(id)sender {
+    NSString *dirname;
+
+    dirname = [self browseDir];
+    if (dirname != nil) {
+        [pcLinkDir2Field setStringValue:dirname];
+        [self miscChanged:self];
+        }
+}
+
+- (void)browsePCLink3:(id)sender {
+    NSString *dirname;
+
+    dirname = [self browseDir];
+    if (dirname != nil) {
+        [pcLinkDir3Field setStringValue:dirname];
+        [self miscChanged:self];
+        }
+}
+
+- (void)browsePCLink4:(id)sender {
+    NSString *dirname;
+
+    dirname = [self browseDir];
+    if (dirname != nil) {
+        [pcLinkDir4Field setStringValue:dirname];
+        [self miscChanged:self];
+        }
+}
+
+
 /* The following methods allow the user to choose the ROM files */
    
 - (IBAction)browseAF80Rom:(id)sender {
@@ -3735,6 +3895,26 @@ static Preferences *sharedInstance = nil;
   [[curValues objectForKey:HardDiskDir4] getCString:prefs->hardDiskDir[3] maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
   prefs->hardDrivesReadOnly = [[curValues objectForKey:HardDrivesReadOnly] intValue];
   [[curValues objectForKey:HPath] getCString:prefs->hPath maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
+  [[curValues objectForKey:PCLinkDir1] getCString:prefs->pcLinkDir[0] maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
+  [[curValues objectForKey:PCLinkDir2] getCString:prefs->pcLinkDir[1] maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
+  [[curValues objectForKey:PCLinkDir3] getCString:prefs->pcLinkDir[2] maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
+  [[curValues objectForKey:PCLinkDir4] getCString:prefs->pcLinkDir[3] maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
+  prefs->pcLinkEnable[0] = [[curValues objectForKey:PCLinkEnable1] intValue];
+  prefs->pcLinkEnable[1] = [[curValues objectForKey:PCLinkEnable2] intValue];
+  prefs->pcLinkEnable[2] = [[curValues objectForKey:PCLinkEnable3] intValue];
+  prefs->pcLinkEnable[3] = [[curValues objectForKey:PCLinkEnable4] intValue];
+  prefs->pcLinkReadOnly[0] = [[curValues objectForKey:PCLinkReadOnly1] intValue];
+  prefs->pcLinkReadOnly[1] = [[curValues objectForKey:PCLinkReadOnly2] intValue];
+  prefs->pcLinkReadOnly[2] = [[curValues objectForKey:PCLinkReadOnly3] intValue];
+  prefs->pcLinkReadOnly[3] = [[curValues objectForKey:PCLinkReadOnly4] intValue];
+  prefs->pcLinkTimestamps[0] = [[curValues objectForKey:PCLinkTimestamps1] intValue];
+  prefs->pcLinkTimestamps[1] = [[curValues objectForKey:PCLinkTimestamps2] intValue];
+  prefs->pcLinkTimestamps[2] = [[curValues objectForKey:PCLinkTimestamps3] intValue];
+  prefs->pcLinkTimestamps[3] = [[curValues objectForKey:PCLinkTimestamps4] intValue];
+  prefs->pcLinkTranslate[0] = [[curValues objectForKey:PCLinkTranslate1] intValue];
+  prefs->pcLinkTranslate[1] = [[curValues objectForKey:PCLinkTranslate2] intValue];
+  prefs->pcLinkTranslate[2] = [[curValues objectForKey:PCLinkTranslate3] intValue];
+  prefs->pcLinkTranslate[3] = [[curValues objectForKey:PCLinkTranslate4] intValue];
   [[curValues objectForKey:XEGSRomFile] getCString:prefs->xegsRomFile maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
   [[curValues objectForKey:XEGSGameRomFile] getCString:prefs->xegsGameRomFile maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
   [[curValues objectForKey:A1200XLRomFile] getCString:prefs->a1200XLRomFile maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
@@ -5166,6 +5346,26 @@ static Preferences *sharedInstance = nil;
     getStringDefault(HardDiskDir4);
     getBoolDefault(HardDrivesReadOnly);
     getStringDefault(HPath);
+    getStringDefault(PCLinkDir1);
+    getStringDefault(PCLinkDir2);
+    getStringDefault(PCLinkDir3);
+    getStringDefault(PCLinkDir4);
+    getBoolDefault(PCLinkEnable1);
+    getBoolDefault(PCLinkEnable2);
+    getBoolDefault(PCLinkEnable3);
+    getBoolDefault(PCLinkEnable4);
+    getBoolDefault(PCLinkReadOnly1);
+    getBoolDefault(PCLinkReadOnly2);
+    getBoolDefault(PCLinkReadOnly3);
+    getBoolDefault(PCLinkReadOnly4);
+    getBoolDefault(PCLinkTimestamps1);
+    getBoolDefault(PCLinkTimestamps2);
+    getBoolDefault(PCLinkTimestamps3);
+    getBoolDefault(PCLinkTimestamps4);
+    getBoolDefault(PCLinkTranslate1);
+    getBoolDefault(PCLinkTranslate2);
+    getBoolDefault(PCLinkTranslate3);
+    getBoolDefault(PCLinkTranslate4);
     getStringDefault(XEGSRomFile);
     getStringDefault(XEGSGameRomFile);
     getStringDefault(A1200XLRomFile);
@@ -5448,6 +5648,26 @@ static Preferences *sharedInstance = nil;
     setStringDefault(HardDiskDir4);
     setBoolDefault(HardDrivesReadOnly);
     setStringDefault(HPath);
+    setStringDefault(PCLinkDir1);
+    setStringDefault(PCLinkDir2);
+    setStringDefault(PCLinkDir3);
+    setStringDefault(PCLinkDir4);
+    setBoolDefault(PCLinkEnable1);
+    setBoolDefault(PCLinkEnable2);
+    setBoolDefault(PCLinkEnable3);
+    setBoolDefault(PCLinkEnable4);
+    setBoolDefault(PCLinkReadOnly1);
+    setBoolDefault(PCLinkReadOnly2);
+    setBoolDefault(PCLinkReadOnly3);
+    setBoolDefault(PCLinkReadOnly4);
+    setBoolDefault(PCLinkTimestamps1);
+    setBoolDefault(PCLinkTimestamps2);
+    setBoolDefault(PCLinkTimestamps3);
+    setBoolDefault(PCLinkTimestamps4);
+    setBoolDefault(PCLinkTranslate1);
+    setBoolDefault(PCLinkTranslate2);
+    setBoolDefault(PCLinkTranslate3);
+    setBoolDefault(PCLinkTranslate4);
     setStringDefault(XEGSRomFile);
     setStringDefault(XEGSGameRomFile);
     setStringDefault(A1200XLRomFile);
@@ -5715,6 +5935,26 @@ static Preferences *sharedInstance = nil;
     setConfig(HardDiskDir4);
     setConfig(HardDrivesReadOnly);
     setConfig(HPath);
+    setConfig(PCLinkDir1);
+    setConfig(PCLinkDir2);
+    setConfig(PCLinkDir3);
+    setConfig(PCLinkDir4);
+    setConfig(PCLinkEnable1);
+    setConfig(PCLinkEnable2);
+    setConfig(PCLinkEnable3);
+    setConfig(PCLinkEnable4);
+    setConfig(PCLinkReadOnly1);
+    setConfig(PCLinkReadOnly2);
+    setConfig(PCLinkReadOnly3);
+    setConfig(PCLinkReadOnly4);
+    setConfig(PCLinkTimestamps1);
+    setConfig(PCLinkTimestamps2);
+    setConfig(PCLinkTimestamps3);
+    setConfig(PCLinkTimestamps4);
+    setConfig(PCLinkTranslate1);
+    setConfig(PCLinkTranslate2);
+    setConfig(PCLinkTranslate3);
+    setConfig(PCLinkTranslate4);
     setConfig(XEGSRomFile);
     setConfig(XEGSGameRomFile);
     setConfig(A1200XLRomFile);
@@ -6080,6 +6320,26 @@ static Preferences *sharedInstance = nil;
     getConfig(HardDiskDir4);
     getConfig(HardDrivesReadOnly);
     getConfig(HPath);
+    getConfig(PCLinkDir1);
+    getConfig(PCLinkDir2);
+    getConfig(PCLinkDir3);
+    getConfig(PCLinkDir4);
+    getConfig(PCLinkEnable1);
+    getConfig(PCLinkEnable2);
+    getConfig(PCLinkEnable3);
+    getConfig(PCLinkEnable4);
+    getConfig(PCLinkReadOnly1);
+    getConfig(PCLinkReadOnly2);
+    getConfig(PCLinkReadOnly3);
+    getConfig(PCLinkReadOnly4);
+    getConfig(PCLinkTimestamps1);
+    getConfig(PCLinkTimestamps2);
+    getConfig(PCLinkTimestamps3);
+    getConfig(PCLinkTimestamps4);
+    getConfig(PCLinkTranslate1);
+    getConfig(PCLinkTranslate2);
+    getConfig(PCLinkTranslate3);
+    getConfig(PCLinkTranslate4);
     getConfig(XEGSRomFile);
     getConfig(XEGSGameRomFile);
     getConfig(A1200XLRomFile);
