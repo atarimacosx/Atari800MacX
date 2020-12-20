@@ -117,13 +117,6 @@ typedef enum {
     FILE_UPDATE
 } FileOpenType;
 
-DirEntry *Dir_Entry_Alloc() 
-{
-    DirEntry *entry = (DirEntry *) malloc(sizeof(DirEntry));
-    memset(entry, 0, sizeof(DirEntry));
-    return entry;
-}
-
 void Dir_Entry_Set_Flags_From_Attributes(DirEntry *entry, mode_t attr, u_int flags) {
     entry->Flags = Flag_InUse;
 
@@ -223,18 +216,6 @@ void Dir_Entry_Decode_Date(const UBYTE tsdata[6], struct tm* fileExpTime) {
 typedef struct fileName {
     UBYTE   Name[11];
 } FileName;
-
-FileName *File_Name_Alloc()
-{
-    FileName *name = (FileName *) malloc(sizeof(FileName));
-    memset(name, 0, sizeof(FileName));
-    return name;
-}
-
-void File_Name_Free(FileName *name)
-{
-    free(name);
-}
 
 int File_Name_Is_Equal(FileName *name, FileName *second)
 {
@@ -767,10 +748,12 @@ int File_Handle_Get_Next_Dir_Ent(FileHandle *hndl, DirEntry *dirEnt) {
     ULONG actual;
 
     while(File_Handle_Read(hndl, dirEnt, 23, &actual) == CIOStatSuccess && actual >= 23) {
-        FileName *name = File_Name_Alloc();
-        File_Name_Parse_From_Net(name, dirEnt->Name);
+        FileName name;
+        memset(&name, 0, sizeof(FileName));
+        
+        File_Name_Parse_From_Net(&name, dirEnt->Name);
 
-        if (File_Name_Wild_Match(&hndl->FnextPattern, name) && Dir_Entry_Test_Attr_Filter(dirEnt, hndl->FnextAttrFilter))
+        if (File_Name_Wild_Match(&hndl->FnextPattern, &name) && Dir_Entry_Test_Attr_Filter(dirEnt, hndl->FnextAttrFilter))
             return TRUE;
     }
 
