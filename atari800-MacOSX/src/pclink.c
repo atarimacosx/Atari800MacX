@@ -813,13 +813,8 @@ LinkDevice Link_Devices[LINK_DEVICE_NUM_DEVS];
 LinkDevice *Link_Device_Next_Write = NULL;
 
 ///////////////////////////////////////////////////////////////////////////
-void Link_Device_Set_Read_Only(LinkDevice *dev, int readOnly);
-void Link_Device_Set_Base_Path(LinkDevice *dev, char *basePath);
-void Link_Device_Set_Settings(LinkDevice *dev, int setTimestamps, int readOnly, char *basePath);
-void Link_Device_Shutdown(LinkDevice *dev);
 void Link_Device_Cold_Reset(LinkDevice *dev);
 void Link_Device_Begin_Command(LinkDevice *dev, Command cmd);
-void Link_Device_Abort_Command(LinkDevice *dev);
 void Link_Device_Advance_Command(LinkDevice *dev);
 int  Link_Device_Check_Valid_File_Handle(LinkDevice *dev, int setError);
 int  Link_Device_Is_Dir_Ent_Included(LinkDevice *dev, DirEntry *dirEnt);
@@ -864,25 +859,6 @@ void Link_Device_Cold_Reset() {
         for (fhNo=0; fhNo<15; fhNo++)
             File_Handle_Close(&Link_Devices[devNo].FileHandles[fhNo]);
     }
-}
-
-void Link_Device_Set_Read_Only(LinkDevice *dev, int readOnly) {
-    dev->ReadOnly = readOnly;
-}
-
-void Link_Device_Set_Base_Path(LinkDevice *dev, char *basePath) {
-    strncpy(dev->BasePathNative, basePath, FILENAME_MAX);
-}
-
-void Link_Device_Set_Settings(LinkDevice *dev, int setTimestamps,
-                              int readOnly, char *basePath) {
-    dev->SetTimestamps = setTimestamps;
-    Link_Device_Set_Read_Only(dev, readOnly);
-    Link_Device_Set_Base_Path(dev, basePath);
-}
-
-void Link_Device_Shutdown(LinkDevice *dev) {
-    Link_Device_Abort_Command(dev);
 }
 
 UBYTE Link_Device_On_Serial_Begin_Command( UBYTE *commandFrame,
@@ -1021,10 +997,6 @@ void Link_Device_Advance_Command(LinkDevice *dev) {
         case CommandNone:
             break;
     }
-}
-
-void Link_Device_Finish_Command(LinkDevice *dev) {
-    Link_Device_Abort_Command(dev);
 }
 
 int Link_Device_On_Put(LinkDevice *dev) {
