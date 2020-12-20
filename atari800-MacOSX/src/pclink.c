@@ -580,7 +580,7 @@ UBYTE File_Handle_Open_File(FileHandle *hndl, const char *nativePath,
         hndl->File = file;
 
         if ((stat(nativePath, &file_stats)) == -1) {
-            //TBD handle error;
+            return TranslateErrnoToSIOError(errno);
         }
 
         SLONG len = file_stats.st_size;
@@ -1236,7 +1236,7 @@ int Link_Device_On_Put(LinkDevice *dev) {
             openDir = dev->ParBuf.Function == 10 || (dev->ParBuf.Mode & 0x10) != 0;
 
             if ((dirStream = opendir(nativePath)) == NULL) {
-                // TBD Handle Error
+                return TranslateErrnoToSIOError(errno);
             }
 
             matched = FALSE;
@@ -1253,7 +1253,7 @@ int Link_Device_On_Put(LinkDevice *dev) {
                 strcpy(nativeFilePath, nativePath);
                 strcat(nativeFilePath, ep->d_name);
                 if ((stat(nativeFilePath, &file_stats)) == -1) {
-                    //TBD handle error;
+                    return TranslateErrnoToSIOError(errno);
                 }
                 slen = file_stats.st_size;
 
@@ -1408,7 +1408,7 @@ int Link_Device_On_Put(LinkDevice *dev) {
             strcat(path, dev->CurDir);
 
             if ((dirStream = opendir(path)) == NULL) {
-                // TBD Handle Error
+                return TranslateErrnoToSIOError(errno);
             }
 
             matched = FALSE;
@@ -1421,7 +1421,7 @@ int Link_Device_On_Put(LinkDevice *dev) {
                 strcat(fullPath, ep->d_name);
                 
                 if ((stat(fullPath, &file_stats)) == -1) {
-                    //TBD handle error;
+                    return TranslateErrnoToSIOError(errno);
                 }
                 Dir_Entry_Set_Flags_From_Attributes(&dirEnt,
                                                     file_stats.st_mode, file_stats.st_flags);
@@ -1479,13 +1479,13 @@ int Link_Device_On_Put(LinkDevice *dev) {
 
             if (File_Name_Is_Wild(&fname)) {
                 if ((dirStream = opendir(resultPath)) == NULL) {
-                    // TBD Handle Error
+                    return TranslateErrnoToSIOError(errno);
                 }
 
             matched = FALSE;
             while((ep = readdir(dirStream))) {
                 if ((stat(ep->d_name, &file_stats)) == -1) {
-                    //TBD handle error;
+                    return TranslateErrnoToSIOError(errno);
                 }
 
                 if (S_ISDIR(file_stats.st_mode))
@@ -1560,7 +1560,7 @@ int Link_Device_On_Put(LinkDevice *dev) {
             }
 
             if ((dirStream = opendir(path)) == NULL) {
-                // TBD Handle Error
+                return TranslateErrnoToSIOError(errno);
             }
 
             matched = FALSE;
@@ -1573,7 +1573,7 @@ int Link_Device_On_Put(LinkDevice *dev) {
                 strcat(fullPath, ep->d_name);
                 
                 if ((stat(fullPath, &file_stats)) == -1) {
-                    //TBD handle error;
+                    return TranslateErrnoToSIOError(errno);
                 }
 
                 Dir_Entry_Set_Flags_From_Attributes(&dirEnt,
