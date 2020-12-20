@@ -1898,6 +1898,7 @@ int Link_Device_On_Read(LinkDevice *dev) {
             diskInfo.BytesPerSectorHi = 2;
             diskInfo.SectorsPerCluster = 1;
             memcpy(diskInfo.VolumeLabel, "PCLink  ", 8);
+            diskInfo.VolumeLabel[7] = '0' + (dev->CommandAux2 & 0xF);
 
             memcpy(dev->TransferBuffer, &diskInfo, 64);
             dev->ExpectedBytes = 64;
