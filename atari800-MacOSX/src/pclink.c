@@ -813,7 +813,6 @@ LinkDevice Link_Devices[LINK_DEVICE_NUM_DEVS];
 LinkDevice *Link_Device_Next_Write = NULL;
 
 ///////////////////////////////////////////////////////////////////////////
-void Link_Device_Cold_Reset(LinkDevice *dev);
 void Link_Device_Begin_Command(LinkDevice *dev, Command cmd);
 void Link_Device_Advance_Command(LinkDevice *dev);
 int  Link_Device_Check_Valid_File_Handle(LinkDevice *dev, int setError);
@@ -856,8 +855,9 @@ void Link_Device_Cold_Reset() {
     int fhNo;
     
     for (devNo=0; devNo < LINK_DEVICE_NUM_DEVS; devNo++) {
-        for (fhNo=0; fhNo<15; fhNo++)
-            File_Handle_Close(&Link_Devices[devNo].FileHandles[fhNo]);
+        if (Link_Device_Enabled[devNo])
+            for (fhNo=0; fhNo<15; fhNo++)
+                File_Handle_Close(&Link_Devices[devNo].FileHandles[fhNo]);
     }
 }
 
