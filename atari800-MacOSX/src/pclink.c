@@ -116,11 +116,14 @@ DirEntry *Dir_Entry_Alloc()
     return entry;
 }
 
-void Dir_Entry_Set_Flags_From_Attributes(DirEntry *entry, mode_t attr) {
+void Dir_Entry_Set_Flags_From_Attributes(DirEntry *entry, mode_t attr, u_int flags) {
     entry->Flags = Flag_InUse;
 
     if (!(attr & S_IWRITE))
         entry->Flags |= Flag_Locked;
+
+    if (flags & UF_HIDDEN)
+        entry->Flags |= Flag_Hidden;
 
     if (S_ISDIR(attr))
         entry->Flags |= Flag_Directory;
@@ -1049,6 +1052,7 @@ int Link_Device_On_Put(LinkDevice *dev) {
     int setTimestamp;
     int matched;
     mode_t newmode;
+    u_int newflags;
     long long slen;
     size_t fnlen;
     size_t extlen;
@@ -1257,7 +1261,7 @@ int Link_Device_On_Put(LinkDevice *dev) {
                     slen = 0xFFFFFF;
 
                 Dir_Entry_Set_Flags_From_Attributes(&dirEnt,
-                    file_stats.st_mode);
+                                                    file_stats.st_mode, file_stats.st_flags);
 
                 if (ep->d_type == DT_DIR) {
                     // skip blasted . and .. dirs
@@ -1420,7 +1424,7 @@ int Link_Device_On_Put(LinkDevice *dev) {
                     //TBD handle error;
                 }
                 Dir_Entry_Set_Flags_From_Attributes(&dirEnt,
-                    file_stats.st_mode);
+                                                    file_stats.st_mode, file_stats.st_flags);
 
                 if (!Link_Device_Is_Dir_Ent_Included(dev, &dirEnt))
                     continue;
@@ -1488,7 +1492,7 @@ int Link_Device_On_Put(LinkDevice *dev) {
                     continue;
 
                 Dir_Entry_Set_Flags_From_Attributes(&dirEnt,
-                    file_stats.st_mode);
+                                                    file_stats.st_mode, file_stats.st_flags);
 
                 if (!Link_Device_Is_Dir_Ent_Included(dev, &dirEnt))
                     continue;
@@ -1522,7 +1526,7 @@ int Link_Device_On_Put(LinkDevice *dev) {
                     return TRUE;
                 }
 
-                Dir_Entry_Set_Flags_From_Attributes(&dirEnt, file_stats.st_mode);
+                Dir_Entry_Set_Flags_From_Attributes(&dirEnt, file_stats.st_mode, file_stats.st_flags);
 
                 if (Link_Device_Is_Dir_Ent_Included(dev, &dirEnt)) {
                     if (remove(resultPath)) {
@@ -1573,7 +1577,7 @@ int Link_Device_On_Put(LinkDevice *dev) {
                 }
 
                 Dir_Entry_Set_Flags_From_Attributes(&dirEnt,
-                    file_stats.st_mode);
+                                                    file_stats.st_mode, file_stats.st_flags);
 
                 if (!Link_Device_Is_Dir_Ent_Included(dev, &dirEnt))
                     continue;
@@ -1588,6 +1592,7 @@ int Link_Device_On_Put(LinkDevice *dev) {
                 File_Name_Append_Native(&fn, srcNativePath);
 
                 newmode = file_stats.st_mode;
+                newflags = file_stats.st_flags;
 
                 if (dev->ParBuf.Attr2 & 0x10)
                     newmode |= S_IWUSR;
@@ -1595,7 +1600,18 @@ int Link_Device_On_Put(LinkDevice *dev) {
                 if (dev->ParBuf.Attr2 & 0x01)
                     newmode &= ~S_IWUSR;
 
+                if (dev->ParBuf.Attr2 & 0x02)
+                    newflags |= UF_HIDDEN;
+
+                if (dev->ParBuf.Attr2 & 0x20)
+                    newflags &= ~UF_HIDDEN;
+
                 if (chmod(srcNativePath, newmode)) {
+                    dev->StatusError = TranslateErrnoToSIOError(errno);
+                    return TRUE;
+                    }
+
+                if (chflags(srcNativePath, newflags)) {
                     dev->StatusError = TranslateErrnoToSIOError(errno);
                     return TRUE;
                     }
