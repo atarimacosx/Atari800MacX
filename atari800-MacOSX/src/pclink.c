@@ -30,6 +30,8 @@
 #include "pclink.h"
 
 UBYTE ATTranslateWin32ErrorToSIOError(ULONG err);
+void AtariLFTabToHost(unsigned char *buffer, int len);
+void HostLFTabToAtari(unsigned char *buffer, int len);
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -841,7 +843,7 @@ int Link_Device_On_Read(LinkDevice *dev);
 void Link_Device_Init(void) {
     strcpy(Link_Devices[0].BasePathNative, "/Users/markg/Atari800MacX/pclink");
     strcpy(Link_Devices[1].BasePathNative, "/Users/markg/Atari800MacX/pclink");
-    
+    //Link_Devices[1].TranslateLFsAndTabs = TRUE;
     // Initialize all of the file handles for the devices.
     int devNo;
     int fhNo;
@@ -1764,6 +1766,9 @@ int Link_Device_On_Read(LinkDevice *dev) {
                 ULONG actual = 0;
 
                 dev->StatusError = File_Handle_Read(fh, dev->TransferBuffer, blocklen, &actual);
+                
+                if (dev->TranslateLFsAndTabs)
+                    HostLFTabToAtari(dev->TransferBuffer, actual);
 
                 dev->StatusLengthLo = (UBYTE)actual;
                 dev->StatusLengthHi = (UBYTE)(actual >> 8);
@@ -1782,6 +1787,9 @@ int Link_Device_On_Read(LinkDevice *dev) {
             blocklen = dev->StatusLengthLo + ((ULONG)dev->StatusLengthHi << 8);
             if (Link_Device_Check_Valid_File_Handle(dev, TRUE)) {
                 fh = &dev->FileHandles[dev->ParBuf.Handle - 1];
+
+                if (dev->TranslateLFsAndTabs)
+                    AtariLFTabToHost(dev->TransferBuffer, blocklen);
 
                 dev->StatusError = File_Handle_Write(fh, dev->TransferBuffer, blocklen);
             }
@@ -2101,4 +2109,31 @@ int Link_Device_Resolve_Native_Path(LinkDevice *dev, char *resultPath, const cha
     }
 
     return TRUE;
+}
+
+
+void AtariLFTabToHost(unsigned char *buffer, int len)
+{
+    int i;
+    unsigned char *ptr = buffer;
+
+    for (i=0;i<len;i++,ptr++) {
+        if (*ptr == 0x9b)
+            *ptr = 0x0a;
+        if (*ptr == 0x7F)
+            *ptr = 0x09;
+        }
+}
+
+void HostLFTabToAtari(unsigned char *buffer, int len)
+{
+    int i;
+    unsigned char *ptr = buffer;
+    
+    for (i=0;i<len;i++,ptr++) {
+        if (*ptr == 0x0a)
+            *ptr = 0x9b;
+        if (*ptr == 0x09)
+            *ptr = 0x7F;
+        }
 }
