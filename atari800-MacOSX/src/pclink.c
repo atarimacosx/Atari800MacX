@@ -34,6 +34,7 @@
 #define printf(fmt, ...) (0)
 #endif
 
+int  PCLink_Enabled = TRUE;
 char PCLink_base_dir[4][FILENAME_MAX];
 int  PCLinkEnable[4];
 int  PCLinkReadOnly[4];
@@ -817,7 +818,6 @@ LinkDevice Link_Devices[LINK_DEVICE_NUM_DEVS];
 LinkDevice *Link_Device_Next_Write = NULL;
 
 ///////////////////////////////////////////////////////////////////////////
-void Link_Device_Begin_Command(LinkDevice *dev, Command cmd);
 void Link_Device_Advance_Command(LinkDevice *dev);
 int  Link_Device_Check_Valid_File_Handle(LinkDevice *dev, int setError);
 int  Link_Device_Is_Dir_Ent_Included(LinkDevice *dev, DirEntry *dirEnt);

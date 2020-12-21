@@ -420,6 +420,7 @@ static NSDictionary *defaultValues() {
                 [NSString stringWithCString:hardDiskDir4Str encoding:NSUTF8StringEncoding], HardDiskDir4,
                 [NSNumber numberWithBool:YES], HardDrivesReadOnly, 
                 @"H1:>DOS;>DOS",HPath,
+                [NSNumber numberWithBool:YES], PCLinkDeviceEnable,
                 [NSString stringWithCString:pcLinkDir1Str encoding:NSUTF8StringEncoding], PCLinkDir1,
                 [NSString stringWithCString:pcLinkDir2Str encoding:NSUTF8StringEncoding], PCLinkDir2,
                 [NSString stringWithCString:pcLinkDir3Str encoding:NSUTF8StringEncoding], PCLinkDir3,
@@ -1015,7 +1016,8 @@ static Preferences *sharedInstance = nil;
     [pcLinkDir2Field setStringValue:[displayedValues objectForKey:PCLinkDir2]];
     [pcLinkDir3Field setStringValue:[displayedValues objectForKey:PCLinkDir3]];
     [pcLinkDir4Field setStringValue:[displayedValues objectForKey:PCLinkDir4]];
-    [pcLinkEnable1Button setState:[[displayedValues objectForKey:PCLinkEnable1] boolValue] ? NSOnState : NSOffState];
+    [pcLinkDeviceEnableButton setState:[[displayedValues objectForKey:PCLinkDeviceEnable] boolValue] ? NSOnState : NSOffState];
+    [pcLinkEnable1Button setState:[[displayedValues objectForKey:PCLinkEnable2] boolValue] ? NSOnState : NSOffState];
     [pcLinkEnable2Button setState:[[displayedValues objectForKey:PCLinkEnable2] boolValue] ? NSOnState : NSOffState];
     [pcLinkEnable3Button setState:[[displayedValues objectForKey:PCLinkEnable3] boolValue] ? NSOnState : NSOffState];
     [pcLinkEnable4Button setState:[[displayedValues objectForKey:PCLinkEnable4] boolValue] ? NSOnState : NSOffState];
@@ -2342,6 +2344,10 @@ static Preferences *sharedInstance = nil;
     [displayedValues setObject:[pcLinkDir2Field stringValue] forKey:PCLinkDir2];
     [displayedValues setObject:[pcLinkDir3Field stringValue] forKey:PCLinkDir3];
     [displayedValues setObject:[pcLinkDir4Field stringValue] forKey:PCLinkDir4];
+    if ([pcLinkDeviceEnableButton state] == NSOnState)
+        [displayedValues setObject:yes forKey:PCLinkDeviceEnable];
+    else
+        [displayedValues setObject:no forKey:PCLinkDeviceEnable];
     if ([pcLinkEnable1Button state] == NSOnState)
         [displayedValues setObject:yes forKey:PCLinkEnable1];
     else
@@ -3899,6 +3905,7 @@ static Preferences *sharedInstance = nil;
   [[curValues objectForKey:PCLinkDir2] getCString:prefs->pcLinkDir[1] maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
   [[curValues objectForKey:PCLinkDir3] getCString:prefs->pcLinkDir[2] maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
   [[curValues objectForKey:PCLinkDir4] getCString:prefs->pcLinkDir[3] maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
+  prefs->pcLinkDeviceEnable = [[curValues objectForKey:PCLinkDeviceEnable] intValue];
   prefs->pcLinkEnable[0] = [[curValues objectForKey:PCLinkEnable1] intValue];
   prefs->pcLinkEnable[1] = [[curValues objectForKey:PCLinkEnable2] intValue];
   prefs->pcLinkEnable[2] = [[curValues objectForKey:PCLinkEnable3] intValue];
@@ -5346,6 +5353,7 @@ static Preferences *sharedInstance = nil;
     getStringDefault(HardDiskDir4);
     getBoolDefault(HardDrivesReadOnly);
     getStringDefault(HPath);
+    getBoolDefault(PCLinkDeviceEnable);
     getStringDefault(PCLinkDir1);
     getStringDefault(PCLinkDir2);
     getStringDefault(PCLinkDir3);
@@ -5652,6 +5660,7 @@ static Preferences *sharedInstance = nil;
     setStringDefault(PCLinkDir2);
     setStringDefault(PCLinkDir3);
     setStringDefault(PCLinkDir4);
+    setBoolDefault(PCLinkDeviceEnable);
     setBoolDefault(PCLinkEnable1);
     setBoolDefault(PCLinkEnable2);
     setBoolDefault(PCLinkEnable3);
@@ -5939,6 +5948,7 @@ static Preferences *sharedInstance = nil;
     setConfig(PCLinkDir2);
     setConfig(PCLinkDir3);
     setConfig(PCLinkDir4);
+    setConfig(PCLinkDeviceEnable);
     setConfig(PCLinkEnable1);
     setConfig(PCLinkEnable2);
     setConfig(PCLinkEnable3);
@@ -6324,6 +6334,7 @@ static Preferences *sharedInstance = nil;
     getConfig(PCLinkDir2);
     getConfig(PCLinkDir3);
     getConfig(PCLinkDir4);
+    getConfig(PCLinkDeviceEnable);
     getConfig(PCLinkEnable1);
     getConfig(PCLinkEnable2);
     getConfig(PCLinkEnable3);

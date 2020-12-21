@@ -244,6 +244,7 @@
                 <outlet property="paletteChooseButton" destination="787" id="793"/>
                 <outlet property="paletteField" destination="786" id="788"/>
                 <outlet property="pbiExpansionMatrix" destination="7953" id="8367"/>
+                <outlet property="pcLinkDeviceEnableButton" destination="qtV-15-u3i" id="dbW-kD-NH3"/>
                 <outlet property="pcLinkDir1Field" destination="7F2-at-prL" id="zeB-Pt-oZR"/>
                 <outlet property="pcLinkDir2Field" destination="nv7-MX-2nx" id="W9n-IC-hL2"/>
                 <outlet property="pcLinkDir3Field" destination="Bqi-0F-17A" id="V2E-4k-VKi"/>
@@ -3451,6 +3452,14 @@ Command Path for Hx: Devices
                                                                 <rect key="frame" x="229" y="81" width="22" height="18"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                 <buttonCell key="cell" type="check" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="UVr-JE-y2v">
+                                                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                                    <font key="font" metaFont="system"/>
+                                                                </buttonCell>
+                                                            </button>
+                                                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="qtV-15-u3i">
+                                                                <rect key="frame" x="271" y="295" width="208" height="18"/>
+                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                <buttonCell key="cell" type="check" title="PCLink Device Overall Enabled" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="HVS-sO-fQk">
                                                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                                     <font key="font" metaFont="system"/>
                                                                 </buttonCell>

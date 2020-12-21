@@ -9,6 +9,7 @@
 #define pclink_h
 
 #define LINK_DEVICE_NUM_DEVS 5
+extern int PCLink_Enabled;
 extern char PCLink_base_dir[4][FILENAME_MAX];
 extern int  PCLinkEnable[4];
 extern int  PCLinkReadOnly[4];

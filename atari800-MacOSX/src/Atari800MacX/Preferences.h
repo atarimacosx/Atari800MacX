@@ -145,6 +145,7 @@
 #define HardDiskDir4 @"HardDiskDir4"
 #define HardDrivesReadOnly @"HardDrivesReadOnly"
 #define HPath @"HPath"
+#define PCLinkDeviceEnable @"PCLinkDeviceEnable"
 #define PCLinkDir1 @"PCLinkDir1"
 #define PCLinkDir2 @"PCLinkDir2"
 #define PCLinkDir3 @"PCLinkDir3"
@@ -407,6 +408,7 @@
     IBOutlet id hardDrivesReadOnlyButton;
     IBOutlet id hPathField;
     IBOutlet id intensityField;
+    IBOutlet id pcLinkDeviceEnableButton;
     IBOutlet id pcLinkDir1Field;
     IBOutlet id pcLinkDir2Field;
     IBOutlet id pcLinkDir3Field;

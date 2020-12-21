@@ -88,6 +88,7 @@ typedef struct ATARI800MACX_PREF {
                 char hardDiskDir[4][FILENAME_MAX]; 
                 int hardDrivesReadOnly;
                 char hPath[FILENAME_MAX];
+                int  pcLinkDeviceEnable;
                 char pcLinkDir[4][FILENAME_MAX];
                 int  pcLinkEnable[4];
                 int  pcLinkReadOnly[4];

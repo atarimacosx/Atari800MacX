@@ -1018,7 +1018,8 @@ void CalculatePrefsChanged()
     else
         hardDiskChanged = FALSE;
 
-    if ((strcmp(PCLink_base_dir[0], prefs.pcLinkDir[0]) != 0) ||
+    if ((PCLink_Enabled != prefs.pcLinkDeviceEnable) ||
+        (strcmp(PCLink_base_dir[0], prefs.pcLinkDir[0]) != 0) ||
         (strcmp(PCLink_base_dir[1], prefs.pcLinkDir[1]) != 0) ||
         (strcmp(PCLink_base_dir[2], prefs.pcLinkDir[2]) != 0) ||
         (strcmp(PCLink_base_dir[3], prefs.pcLinkDir[3]) != 0) ||
@@ -1283,6 +1284,7 @@ int loadMacPrefs(int firstTime)
     strcpy(Devices_atari_h_dir[3], prefs.hardDiskDir[3]);
     Devices_h_read_only = prefs.hardDrivesReadOnly;
     strcpy(Devices_h_exe_path, prefs.hPath);
+    PCLink_Enabled = prefs.pcLinkDeviceEnable;
     for (i=0; i<4; i++) {
         strcpy(PCLink_base_dir[i], prefs.pcLinkDir[i]);
         PCLinkEnable[i] = prefs.pcLinkEnable[i];

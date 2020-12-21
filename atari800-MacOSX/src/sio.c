@@ -1604,7 +1604,7 @@ void SIO_PutByte(int byte)
 					POKEY_DELAYED_SERIN_IRQ = SIO_SERIN_INTERVAL + SIO_ACK_INTERVAL;
                     TransferDest = 0;
 				}
-                else if (CommandFrame[0] == 0x6f) {
+                else if (CommandFrame[0] == 0x6f && PCLink_Enabled) {
                     //printf("End of PCLINK Command Frame %x\n", CommandFrame[1]);
                     TransferStatus = SIO_StatusRead;
                     POKEY_DELAYED_SERIN_IRQ = SIO_SERIN_INTERVAL + SIO_ACK_INTERVAL;
@@ -1667,7 +1667,7 @@ int SIO_GetByte(void)
 
 	switch (TransferStatus) {
 	case SIO_StatusRead:
-        if (TransferDest == 0x6f) {
+        if (TransferDest == 0x6f && PCLink_Enabled) {
             byte = Link_Device_On_Serial_Begin_Command(CommandFrame, &read, &ExpectedBytes, (char *) DataBuffer);
 
             if (byte == 'N')
