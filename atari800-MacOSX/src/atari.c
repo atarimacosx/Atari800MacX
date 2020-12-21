@@ -86,6 +86,7 @@ biteme!
 #include "memory.h"
 #include "monitor.h"
 #include "pia.h"
+#include "pclink.h"
 #include "platform.h"
 #include "pokey.h"
 #include "rtime.h"
@@ -252,6 +253,9 @@ void Atari800_Coldstart(void)
 	if (BIT3_enabled) {
 		BIT3_Reset();
 	}
+#endif
+#ifdef PCLINK
+    Link_Device_Cold_Reset();
 #endif
     Devices_WarmCold_Start();
 }
@@ -669,6 +673,9 @@ int Atari800_Initialise(int *argc, char *argv[])
 #endif
 #ifdef SIDE2
     SIDE2_Initialise(argc, argv);
+#endif
+#ifdef PCLINK
+    Link_Device_Init();
 #endif
 	/* Platform Specific Initialisation */
 	PLATFORM_Initialise(argc, argv);

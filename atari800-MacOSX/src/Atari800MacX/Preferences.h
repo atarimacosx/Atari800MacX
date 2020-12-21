@@ -145,6 +145,27 @@
 #define HardDiskDir4 @"HardDiskDir4"
 #define HardDrivesReadOnly @"HardDrivesReadOnly"
 #define HPath @"HPath"
+#define PCLinkDeviceEnable @"PCLinkDeviceEnable"
+#define PCLinkDir1 @"PCLinkDir1"
+#define PCLinkDir2 @"PCLinkDir2"
+#define PCLinkDir3 @"PCLinkDir3"
+#define PCLinkDir4 @"PCLinkDir4"
+#define PCLinkEnable1 @"PCLinkEnable1"
+#define PCLinkEnable2 @"PCLinkEnable2"
+#define PCLinkEnable3 @"PCLinkEnable3"
+#define PCLinkEnable4 @"PCLinkEnable4"
+#define PCLinkReadOnly1 @"PCLinkReadOnly1"
+#define PCLinkReadOnly2 @"PCLinkReadOnly2"
+#define PCLinkReadOnly3 @"PCLinkReadOnly3"
+#define PCLinkReadOnly4 @"PCLinkReadOnly4"
+#define PCLinkTimestamps1 @"PCLinkTimestamps1"
+#define PCLinkTimestamps2 @"PCLinkTimestamps2"
+#define PCLinkTimestamps3 @"PCLinkTimestamps3"
+#define PCLinkTimestamps4 @"PCLinkTimestamps4"
+#define PCLinkTranslate1 @"PCLinkTranslate1"
+#define PCLinkTranslate2 @"PCLinkTranslate2"
+#define PCLinkTranslate3 @"PCLinkTranslate3"
+#define PCLinkTranslate4 @"PCLinkTranslate4"
 #define UseAltiraXEGSRom @"UseAltiraXEGSRom"
 #define UseAltira1200XLRom @"UseAltira1200XLRom"
 #define UseAltiraOSBRom @"UseAltiraOSBRom"
@@ -388,6 +409,27 @@
     IBOutlet id hardDrivesReadOnlyButton;
     IBOutlet id hPathField;
     IBOutlet id intensityField;
+    IBOutlet id pcLinkDeviceEnableButton;
+    IBOutlet id pcLinkDir1Field;
+    IBOutlet id pcLinkDir2Field;
+    IBOutlet id pcLinkDir3Field;
+    IBOutlet id pcLinkDir4Field;
+    IBOutlet id pcLinkEnable1Button;
+    IBOutlet id pcLinkEnable2Button;
+    IBOutlet id pcLinkEnable3Button;
+    IBOutlet id pcLinkEnable4Button;
+    IBOutlet id pcLinkReadOnly1Button;
+    IBOutlet id pcLinkReadOnly2Button;
+    IBOutlet id pcLinkReadOnly3Button;
+    IBOutlet id pcLinkReadOnly4Button;
+    IBOutlet id pcLinkTranslate1Button;
+    IBOutlet id pcLinkTranslate2Button;
+    IBOutlet id pcLinkTranslate3Button;
+    IBOutlet id pcLinkTranslate4Button;
+    IBOutlet id pcLinkTimestamps1Button;
+    IBOutlet id pcLinkTimestamps2Button;
+    IBOutlet id pcLinkTimestamps3Button;
+    IBOutlet id pcLinkTimestamps4Button;
     IBOutlet id useAlitrraXEGSRomButton;
     IBOutlet id useAlitrra1200XLRomButton;
     IBOutlet id useAlitrraOSBRomButton;
@@ -605,6 +647,10 @@
 - (void)browseHardDisk2:(id)sender; 
 - (void)browseHardDisk3:(id)sender; 
 - (void)browseHardDisk4:(id)sender; 
+- (IBAction)browsePCLink1:(id)sender;
+- (IBAction)browsePCLink2:(id)sender;
+- (IBAction)browsePCLink3:(id)sender;
+- (IBAction)browsePCLink4:(id)sender;
 - (IBAction)browseAF80CharsetRom:(id)sender;
 - (IBAction)browseAF80Rom:(id)sender;
 - (IBAction)browseBit3CharsetRom:(id)sender;

@@ -49,6 +49,7 @@
 #ifdef MACOSX
 #include "mac_diskled.h"
 extern void UpdateMediaManagerInfo(void);
+#include "pclink.h"
 #endif
 
 #undef DEBUG_PRO
@@ -174,9 +175,10 @@ char SIO_status[512];
 #define SIO_FormatFrame     (0x06)
 static UBYTE CommandFrame[6];
 static int CommandIndex = 0;
-static UBYTE DataBuffer[512 + 3];
+static UBYTE DataBuffer[65536];
 static int DataIndex = 0;
 static int TransferStatus = SIO_NoFrame;
+static int TransferDest = 0;
 static int ExpectedBytes = 0;
 
 int ignore_header_writeprotect = FALSE;
@@ -1546,6 +1548,7 @@ static UBYTE Command_Frame(void)
 /* Enable/disable the command frame */
 void SIO_SwitchCommandFrame(int onoff)
 {
+    //printf("(%016llx) Switch Command %d\n",CPU_cycle_count,onoff);
 	if (onoff) {				/* Enabled */
 		if (TransferStatus != SIO_NoFrame)
 			Log_print("Unexpected command frame at state %x.", TransferStatus);
@@ -1590,6 +1593,7 @@ static UBYTE WriteSectorBack(void)
 /* Put a byte that comes out of POKEY. So get it here... */
 void SIO_PutByte(int byte)
 {
+    //printf("(%016llx) Put Byte %02x %d\n",CPU_cycle_count,byte,TransferStatus);
 	switch (TransferStatus) {
 	case SIO_CommandFrame:
 		if (CommandIndex < ExpectedBytes) {
@@ -1598,8 +1602,19 @@ void SIO_PutByte(int byte)
 				if (CommandFrame[0] >= 0x31 && CommandFrame[0] <= 0x38 && (SIO_drive_status[CommandFrame[0]-0x31] != SIO_OFF || BINLOAD_start_binloading)) {
 					TransferStatus = SIO_StatusRead;
 					POKEY_DELAYED_SERIN_IRQ = SIO_SERIN_INTERVAL + SIO_ACK_INTERVAL;
+#ifdef PCLINK
+                    TransferDest = 0;
 				}
-				else
+                else if (CommandFrame[0] == 0x6f && PCLink_Enabled) {
+                    //printf("End of PCLINK Command Frame %x\n", CommandFrame[1]);
+                    TransferStatus = SIO_StatusRead;
+                    POKEY_DELAYED_SERIN_IRQ = SIO_SERIN_INTERVAL + SIO_ACK_INTERVAL;
+                    TransferDest = 0x6f;
+                }
+#else
+            }
+#endif
+                else
 					TransferStatus = SIO_NoFrame;
 			}
 		}
@@ -1614,7 +1629,13 @@ void SIO_PutByte(int byte)
 			if (DataIndex >= ExpectedBytes) {
 				UBYTE sum = SIO_ChkSum(DataBuffer, ExpectedBytes - 1);
 				if (sum == DataBuffer[ExpectedBytes - 1]) {
-					UBYTE result = WriteSectorBack();
+                    UBYTE result;
+#ifdef PCLINK
+                    if (TransferDest)
+                        result = Link_Device_WriteFrame((char *) DataBuffer);
+                    else
+#endif
+                        result = WriteSectorBack();
 					if (result != 0) {
 						DataBuffer[0] = 'A';
 						DataBuffer[1] = result;
@@ -1648,10 +1669,34 @@ void SIO_PutByte(int byte)
 int SIO_GetByte(void)
 {
 	int byte = 0;
+    int read;
 
 	switch (TransferStatus) {
 	case SIO_StatusRead:
-		byte = Command_Frame();		/* Handle now the command */
+#ifdef PCLINK
+        if (TransferDest == 0x6f && PCLink_Enabled) {
+            byte = Link_Device_On_Serial_Begin_Command(CommandFrame, &read, &ExpectedBytes, (char *) DataBuffer);
+
+            if (byte == 'N')
+                TransferStatus = SIO_NoFrame;
+            else {
+                if (read) {
+                    ExpectedBytes++;
+                    DataBuffer[ ExpectedBytes ] = SIO_ChkSum(DataBuffer + 1, ExpectedBytes - 1);
+                    ExpectedBytes++;
+                    TransferStatus = SIO_ReadFrame;
+                    POKEY_DELAYED_SERIN_IRQ = SIO_SERIN_INTERVAL;
+                }
+                else {
+                    ExpectedBytes++;
+                    DataIndex = 0;
+                    TransferStatus = SIO_WriteFrame;
+                }
+            }
+        }
+        else
+#endif
+            byte = Command_Frame();		/* Handle now the command */
 		break;
 	case SIO_FormatFrame:
 		TransferStatus = SIO_ReadFrame;
@@ -1664,9 +1709,9 @@ int SIO_GetByte(void)
 				TransferStatus = SIO_NoFrame;
 			}
 			else {
-				/* set delay using the expected transfer speed */
-				POKEY_DELAYED_SERIN_IRQ = (DataIndex == 1) ? SIO_SERIN_INTERVAL
-					: ((SIO_SERIN_INTERVAL * POKEY_AUDF[POKEY_CHAN3] - 1) / 0x28 + 1);
+                /* set delay using the expected transfer speed */
+                POKEY_DELAYED_SERIN_IRQ = (DataIndex == 1) ? SIO_SERIN_INTERVAL
+                        : ((SIO_SERIN_INTERVAL * POKEY_AUDF[POKEY_CHAN3] - 1) / 0x28 + 1);
 			}
 		}
 		else {
@@ -1696,6 +1741,7 @@ int SIO_GetByte(void)
 		byte = CASSETTE_GetByte();
 		break;
 	}
+    //printf("(%016llx) Get Byte %02x %d\n",CPU_cycle_count, byte,TransferStatus);
 	return byte;
 }
 

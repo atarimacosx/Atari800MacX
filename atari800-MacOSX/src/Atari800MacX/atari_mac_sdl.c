@@ -74,6 +74,7 @@
 #include "xep80.h"
 #include "pbi_bb.h"
 #include "pbi_mio.h"
+#include "pclink.h"
 #include "preferences_c.h"
 #include "ultimate1mb.h"
 #include "side2.h"
@@ -210,6 +211,8 @@ extern int machineTypeChanged;
 extern int patchFlagsChanged;
 extern int keyboardJoystickChanged;
 extern int hardDiskChanged;
+extern int pcLinkChanged;
+extern int pcLinkOptionsChanged;
 extern int af80EnabledChanged;
 extern int bit3EnabledChanged;
 extern int xep80EnabledChanged;
@@ -4785,6 +4788,12 @@ void ProcessMacPrefsChange()
             Init_SDL_Joykeys();
         if (hardDiskChanged)
             Devices_H_Init();
+        if (pcLinkChanged) {
+            Atari800_Coldstart();
+        }
+        if (pcLinkOptionsChanged) {
+            Link_Device_Init_Devices();
+        }
         if (xep80EnabledChanged) {
             if (!XEP80_enabled && PLATFORM_80col)
                 PLATFORM_Switch80Col();

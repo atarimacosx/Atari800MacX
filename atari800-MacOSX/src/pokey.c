@@ -176,7 +176,7 @@ static void Update_Counter(int chan_mask);
 static int POKEY_siocheck(void)
 {
 	return (((POKEY_AUDF[POKEY_CHAN3] == 0x28 || POKEY_AUDF[POKEY_CHAN3] == 0x10
-	        || POKEY_AUDF[POKEY_CHAN3] == 0x08 || POKEY_AUDF[POKEY_CHAN3] == 0x0a)
+	        || POKEY_AUDF[POKEY_CHAN3] == 0x08 || POKEY_AUDF[POKEY_CHAN3] == 0x09 || POKEY_AUDF[POKEY_CHAN3] == 0x0a)
 		&& POKEY_AUDF[POKEY_CHAN4] == 0x00) /* intelligent peripherals speeds */
 		|| (POKEY_SKCTL & 0x78) == 0x28) /* cassette save mode */
 		&& (POKEY_AUDCTL[0] & 0x28) == 0x28;

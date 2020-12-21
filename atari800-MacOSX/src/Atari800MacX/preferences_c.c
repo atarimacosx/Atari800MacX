@@ -29,6 +29,7 @@
 #include "rdevice.h"
 #include "pbi_bb.h"
 #include "pbi_mio.h"
+#include "pclink.h"
 #include "ultimate1mb.h"
 #include "side2.h"
 #include "binload.h"
@@ -190,6 +191,8 @@ int machineTypeChanged;
 int patchFlagsChanged;
 int keyboardJoystickChanged;
 int hardDiskChanged;
+int pcLinkChanged;
+int pcLinkOptionsChanged;
 int osRomsChanged;
 int af80EnabledChanged;
 int bit3EnabledChanged;
@@ -1016,6 +1019,36 @@ void CalculatePrefsChanged()
     else
         hardDiskChanged = FALSE;
 
+    if ((PCLink_Enabled != prefs.pcLinkDeviceEnable) ||
+        (strcmp(PCLink_base_dir[0], prefs.pcLinkDir[0]) != 0) ||
+        (strcmp(PCLink_base_dir[1], prefs.pcLinkDir[1]) != 0) ||
+        (strcmp(PCLink_base_dir[2], prefs.pcLinkDir[2]) != 0) ||
+        (strcmp(PCLink_base_dir[3], prefs.pcLinkDir[3]) != 0) ||
+        (PCLinkEnable[0] != prefs.pcLinkEnable[0]) ||
+        (PCLinkEnable[1] != prefs.pcLinkEnable[1]) ||
+        (PCLinkEnable[2] != prefs.pcLinkEnable[2]) ||
+        (PCLinkEnable[3] != prefs.pcLinkEnable[3]))
+        pcLinkChanged = TRUE;
+    else
+        pcLinkChanged = FALSE;
+
+    if ( pcLinkChanged ||
+        (PCLinkReadOnly[0] != prefs.pcLinkReadOnly[0]) ||
+        (PCLinkReadOnly[1] != prefs.pcLinkReadOnly[1]) ||
+        (PCLinkReadOnly[2] != prefs.pcLinkReadOnly[2]) ||
+        (PCLinkReadOnly[3] != prefs.pcLinkReadOnly[3]) ||
+        (PCLinkTimestamps[0] != prefs.pcLinkTimestamps[0]) ||
+        (PCLinkTimestamps[1] != prefs.pcLinkTimestamps[1]) ||
+        (PCLinkTimestamps[2] != prefs.pcLinkTimestamps[2]) ||
+        (PCLinkTimestamps[3] != prefs.pcLinkTimestamps[3]) ||
+        (PCLinkTranslate[0] != prefs.pcLinkTranslate[0]) ||
+        (PCLinkTranslate[1] != prefs.pcLinkTranslate[1]) ||
+        (PCLinkTranslate[2] != prefs.pcLinkTranslate[2]) ||
+        (PCLinkTranslate[3] != prefs.pcLinkTranslate[3]))
+        pcLinkOptionsChanged = TRUE;
+    else
+        pcLinkOptionsChanged = FALSE;
+
     if ((strcmp(CFG_osb_filename, prefs.osBRomFile) !=0) ||
         (strcmp(CFG_xegs_filename, prefs.xegsRomFile) !=0) ||
         (strcmp(CFG_xegsGame_filename, prefs.xegsGameRomFile) !=0) ||
@@ -1252,6 +1285,14 @@ int loadMacPrefs(int firstTime)
     strcpy(Devices_atari_h_dir[3], prefs.hardDiskDir[3]);
     Devices_h_read_only = prefs.hardDrivesReadOnly;
     strcpy(Devices_h_exe_path, prefs.hPath);
+    PCLink_Enabled = prefs.pcLinkDeviceEnable;
+    for (i=0; i<4; i++) {
+        strcpy(PCLink_base_dir[i], prefs.pcLinkDir[i]);
+        PCLinkEnable[i] = prefs.pcLinkEnable[i];
+        PCLinkReadOnly[i] = prefs.pcLinkReadOnly[i];
+        PCLinkTimestamps[i] = prefs.pcLinkTimestamps[i];
+        PCLinkTranslate[i] = prefs.pcLinkTranslate[i];
+    }
     strcpy(CFG_xegs_filename, prefs.xegsRomFile);
     strcpy(CFG_xegsGame_filename, prefs.xegsGameRomFile);
     strcpy(CFG_1200xl_filename, prefs.a1200XLRomFile);
