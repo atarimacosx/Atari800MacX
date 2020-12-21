@@ -190,6 +190,8 @@ int machineTypeChanged;
 int patchFlagsChanged;
 int keyboardJoystickChanged;
 int hardDiskChanged;
+int pcLinkChanged;
+int pcLinkOptionsChanged;
 int osRomsChanged;
 int af80EnabledChanged;
 int bit3EnabledChanged;
@@ -1015,6 +1017,35 @@ void CalculatePrefsChanged()
         hardDiskChanged = TRUE;
     else
         hardDiskChanged = FALSE;
+
+    if ((strcmp(PCLink_base_dir[0], prefs.pcLinkDir[0]) != 0) ||
+        (strcmp(PCLink_base_dir[1], prefs.pcLinkDir[1]) != 0) ||
+        (strcmp(PCLink_base_dir[2], prefs.pcLinkDir[2]) != 0) ||
+        (strcmp(PCLink_base_dir[3], prefs.pcLinkDir[3]) != 0) ||
+        (PCLinkEnable[0] != prefs.pcLinkEnable[0]) ||
+        (PCLinkEnable[1] != prefs.pcLinkEnable[1]) ||
+        (PCLinkEnable[2] != prefs.pcLinkEnable[2]) ||
+        (PCLinkEnable[3] != prefs.pcLinkEnable[3]))
+        pcLinkChanged = TRUE;
+    else
+        pcLinkChanged = FALSE;
+
+    if ( pcLinkChanged ||
+        (PCLinkReadOnly[0] != prefs.pcLinkReadOnly[0]) ||
+        (PCLinkReadOnly[1] != prefs.pcLinkReadOnly[1]) ||
+        (PCLinkReadOnly[2] != prefs.pcLinkReadOnly[2]) ||
+        (PCLinkReadOnly[3] != prefs.pcLinkReadOnly[3]) ||
+        (PCLinkTimestamps[0] != prefs.pcLinkTimestamps[0]) ||
+        (PCLinkTimestamps[1] != prefs.pcLinkTimestamps[1]) ||
+        (PCLinkTimestamps[2] != prefs.pcLinkTimestamps[2]) ||
+        (PCLinkTimestamps[3] != prefs.pcLinkTimestamps[3]) ||
+        (PCLinkTranslate[0] != prefs.pcLinkTranslate[0]) ||
+        (PCLinkTranslate[1] != prefs.pcLinkTranslate[1]) ||
+        (PCLinkTranslate[2] != prefs.pcLinkTranslate[2]) ||
+        (PCLinkTranslate[3] != prefs.pcLinkTranslate[3]))
+        pcLinkOptionsChanged = TRUE;
+    else
+        pcLinkOptionsChanged = FALSE;
 
     if ((strcmp(CFG_osb_filename, prefs.osBRomFile) !=0) ||
         (strcmp(CFG_xegs_filename, prefs.xegsRomFile) !=0) ||
