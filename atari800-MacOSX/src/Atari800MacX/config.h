@@ -355,6 +355,8 @@
 
 #define SIDE2
 
+#define PCLINK
+
 #define EMUOS_ALTIRRA       1
 
 #define ATARI800MACX

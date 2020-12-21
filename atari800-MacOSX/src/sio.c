@@ -1602,6 +1602,7 @@ void SIO_PutByte(int byte)
 				if (CommandFrame[0] >= 0x31 && CommandFrame[0] <= 0x38 && (SIO_drive_status[CommandFrame[0]-0x31] != SIO_OFF || BINLOAD_start_binloading)) {
 					TransferStatus = SIO_StatusRead;
 					POKEY_DELAYED_SERIN_IRQ = SIO_SERIN_INTERVAL + SIO_ACK_INTERVAL;
+#ifdef PCLINK
                     TransferDest = 0;
 				}
                 else if (CommandFrame[0] == 0x6f && PCLink_Enabled) {
@@ -1610,6 +1611,9 @@ void SIO_PutByte(int byte)
                     POKEY_DELAYED_SERIN_IRQ = SIO_SERIN_INTERVAL + SIO_ACK_INTERVAL;
                     TransferDest = 0x6f;
                 }
+#else
+            }
+#endif
                 else
 					TransferStatus = SIO_NoFrame;
 			}
@@ -1626,9 +1630,11 @@ void SIO_PutByte(int byte)
 				UBYTE sum = SIO_ChkSum(DataBuffer, ExpectedBytes - 1);
 				if (sum == DataBuffer[ExpectedBytes - 1]) {
                     UBYTE result;
+#ifdef PCLINK
                     if (TransferDest)
                         result = Link_Device_WriteFrame((char *) DataBuffer);
                     else
+#endif
                         result = WriteSectorBack();
 					if (result != 0) {
 						DataBuffer[0] = 'A';
@@ -1667,6 +1673,7 @@ int SIO_GetByte(void)
 
 	switch (TransferStatus) {
 	case SIO_StatusRead:
+#ifdef PCLINK
         if (TransferDest == 0x6f && PCLink_Enabled) {
             byte = Link_Device_On_Serial_Begin_Command(CommandFrame, &read, &ExpectedBytes, (char *) DataBuffer);
 
@@ -1688,6 +1695,7 @@ int SIO_GetByte(void)
             }
         }
         else
+#endif
             byte = Command_Frame();		/* Handle now the command */
 		break;
 	case SIO_FormatFrame:

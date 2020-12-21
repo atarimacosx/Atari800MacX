@@ -254,7 +254,9 @@ void Atari800_Coldstart(void)
 		BIT3_Reset();
 	}
 #endif
+#ifdef PCLINK
     Link_Device_Cold_Reset();
+#endif
     Devices_WarmCold_Start();
 }
 
@@ -672,7 +674,9 @@ int Atari800_Initialise(int *argc, char *argv[])
 #ifdef SIDE2
     SIDE2_Initialise(argc, argv);
 #endif
+#ifdef PCLINK
     Link_Device_Init();
+#endif
 	/* Platform Specific Initialisation */
 	PLATFORM_Initialise(argc, argv);
 	Screen_Initialise(argc, argv);
