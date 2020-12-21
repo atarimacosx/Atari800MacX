@@ -527,7 +527,8 @@ void File_Handle_Set_Dir_Ent(FileHandle *hndl, DirEntry *dirEnt)
     hndl->DirEnt = *dirEnt;
 }
 
-void File_Handle_Add_Dir_Ent(FileHandle *hndl, DirEntry *dirEnt) {
+void File_Handle_Add_Dir_Ent(FileHandle *hndl, DirEntry *dirEnt)
+{
     //DirEntry toAdd;
     //memcpy(&toAdd, dirEnt, sizeof(DirEntry));
     //vector_add(&hndl->DirEnts, toAdd);
