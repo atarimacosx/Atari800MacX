@@ -175,7 +175,7 @@ char SIO_status[512];
 #define SIO_FormatFrame     (0x06)
 static UBYTE CommandFrame[6];
 static int CommandIndex = 0;
-static UBYTE DataBuffer[512 + 3];
+static UBYTE DataBuffer[65536];
 static int DataIndex = 0;
 static int TransferStatus = SIO_NoFrame;
 static int TransferDest = 0;

@@ -982,6 +982,7 @@ void Link_Device_Advance_Command(LinkDevice *dev) {
             break;
 
         case CommandRead:
+            printf("Read Command with Function=%d\n", dev->ParBuf.Function);
             if (dev->ParBuf.Function == 1) {
                 // fwrite is special
                 dev->ReadCommand = FALSE;
