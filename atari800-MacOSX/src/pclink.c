@@ -823,6 +823,7 @@ int Link_Device_On_Put(LinkDevice *dev);
 int Link_Device_On_Read(LinkDevice *dev);
 
 void Link_Device_Init_Devices(void) {
+    Link_Device_Enabled[0] = TRUE;
     strcpy(Link_Devices[0].BasePathNative, "~/");
     for (int i=0; i<4; i++) {
         strcpy(Link_Devices[i+1].BasePathNative, PCLink_base_dir[i]);
