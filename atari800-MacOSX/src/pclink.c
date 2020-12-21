@@ -110,6 +110,8 @@ typedef struct dirEntry {
     UBYTE   Sec;
 } DirEntry;
 
+typedef vec_t(DirEntry) DirEntry_vec_t;
+
 typedef enum {
     FILE_READ,
     FILE_WRITE,
@@ -455,7 +457,7 @@ typedef struct fileHandle {
     ULONG    Pos;
     ULONG    Length;
 
-    DirEntry *DirEnts;
+    DirEntry_vec_t DirEnts;
 
     DirEntry DirEnt;
     FileName FnextPattern;
@@ -475,15 +477,15 @@ void File_Handle_Init(FileHandle *hndl)
     hndl->Length = 0;
     memset(&hndl->DirEnt, 0, sizeof(DirEntry));
     memset(&hndl->FnextPattern, 0, sizeof(FileName));
-    int vec_size = vector_size(hndl->DirEnts);
+    int vec_size = hndl->DirEnts.length;
     if (vec_size)
-        vector_erase(hndl->DirEnts, 0, vec_size);
+        vec_clear(&hndl->DirEnts);
     hndl->File = NULL;
 }
 
 void File_Handle_Alloc_Init(FileHandle *hndl)
 {
-    hndl->DirEnts = vector_create();
+    vec_init(&hndl->DirEnts);
     File_Handle_Init(hndl);
 }
 
@@ -532,7 +534,7 @@ void File_Handle_Add_Dir_Ent(FileHandle *hndl, DirEntry *dirEnt)
     //DirEntry toAdd;
     //memcpy(&toAdd, dirEnt, sizeof(DirEntry));
     //vector_add(&hndl->DirEnts, toAdd);
-    vector_add(&hndl->DirEnts, *dirEnt);
+    vec_push(&hndl->DirEnts, *dirEnt);
 }
 
 UBYTE File_Handle_Open_File(FileHandle *hndl, const char *nativePath,
@@ -594,14 +596,10 @@ void File_Handle_Open_As_Directory(FileHandle *hndl,
                                    FileName* pattern, 
                                    UBYTE attrFilter)
 {
-    qsort(hndl->DirEnts,
-          vector_size(hndl->DirEnts),
-          sizeof(DirEntry),
-          Dir_Entry_Compare
-         );
+    vec_sort(&hndl->DirEnts, Dir_Entry_Compare);
     hndl->Open = TRUE;
     hndl->IsDirectory = TRUE;
-    hndl->Length = 23 * ((ULONG)vector_size(hndl->DirEnts) + 1);
+    hndl->Length = 23 * ((ULONG) hndl->DirEnts.length + 1);
     hndl->Pos = 23;
     hndl->AllowRead = TRUE;
     hndl->AllowWrite = FALSE;
@@ -613,7 +611,7 @@ void File_Handle_Open_As_Directory(FileHandle *hndl,
     hndl->DirEnt.LengthHi = (UBYTE)(hndl->Length >> 16);
     memcpy(hndl->DirEnt.Name, dirName->Name, 11);
 
-    vector_insert(&hndl->DirEnts, 0, hndl->DirEnt);
+    vec_insert(&hndl->DirEnts, 0, hndl->DirEnt);
 
     hndl->FnextPattern = *pattern;
     hndl->FnextAttrFilter = attrFilter;
@@ -664,7 +662,7 @@ UBYTE File_Handle_Read(FileHandle *hndl, void *dst, ULONG len, ULONG *actual) {
                 left = len;
         
             while(left > 0) {
-                const UBYTE *src = (const UBYTE *)&hndl->DirEnts[dirIndex];
+                const UBYTE *src = (const UBYTE *)&hndl->DirEnts.data[dirIndex];
                 ULONG tc = 23 - offset;
                 if (tc > left)
                     tc = left;
@@ -809,7 +807,7 @@ typedef struct linkDevice {
     UBYTE   TransferBuffer[65536];
 } LinkDevice;
 
-int Link_Device_Enabled[LINK_DEVICE_NUM_DEVS] = {1,1,0,0,0,0,0,0};
+int Link_Device_Enabled[LINK_DEVICE_NUM_DEVS];
 LinkDevice Link_Devices[LINK_DEVICE_NUM_DEVS];
 LinkDevice *Link_Device_Next_Write = NULL;
 
@@ -1339,7 +1337,7 @@ int Link_Device_On_Put(LinkDevice *dev) {
                                 FILE_APPEND, FALSE, TRUE, TRUE);
 
                             if (fh->WasCreated)
-                                dev->SetTimestamps = true;
+                                dev->SetTimestamps = TRUE;
                             break;
 
                         case 12:    // update
@@ -1656,7 +1654,7 @@ int Link_Device_On_Put(LinkDevice *dev) {
             }
 
             if (!Link_Device_Resolve_Native_Path_Dir(dev, FALSE, resultPath))
-                return true;
+                return TRUE;
 
             if (!File_Name_Parse_From_Net(&fname, dev->ParBuf.Name1)) {
                 dev->StatusError = CIOStatFileNameErr;
@@ -1778,7 +1776,7 @@ int Link_Device_On_Read(LinkDevice *dev) {
 
                 if (!File_Handle_Is_Open(fh)) {
                     dev->StatusError = CIOStatNotOpen;
-                    return true;
+                    return TRUE;
                 }
 
                 const ULONG len = File_Handle_Get_Position(fh);
@@ -1871,7 +1869,7 @@ int Link_Device_On_Read(LinkDevice *dev) {
         case 16:    // chdir
             dev->ExpectedBytes = 0;
             dev->StatusError = CIOStatNotSupported;
-            return true;
+            return TRUE;
 
         case 17:    // getcwd
             printf("Received getced($%02x) results.\n", dev->ParBuf.Handle);
@@ -1956,7 +1954,7 @@ int Link_Device_Resolve_Path(LinkDevice *dev, int allowDir, char *resultPath) {
 
     // parse out remaining components
 
-    int inext = false;
+    int inext = FALSE;
     int fnchars = 0;
     int extchars = 0;
     UBYTE c;
@@ -1971,7 +1969,7 @@ int Link_Device_Resolve_Path(LinkDevice *dev, int allowDir, char *resultPath) {
             if (fnchars)
                 strcat(resultPath, "\\");
 
-            inext = false;
+            inext = FALSE;
             fnchars = 0;
             extchars = 0;
             continue;
