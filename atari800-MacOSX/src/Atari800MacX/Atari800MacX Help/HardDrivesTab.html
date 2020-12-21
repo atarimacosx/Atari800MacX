@@ -37,7 +37,19 @@ Hard Drives Tab<br>
 <br>
 
 <a href="faq.html"></a><br>
-This tab allows you to set the directories used by the emulator for the
+
+This tab has two sub-tabs.  The first, H: Device, controls the traditional
+H: Device used in most Atari 800 emulators.  The second, PCLink, is a new
+device supported by Sio2bsd and the Alitrra emulator, as well as now
+Atari800MacX that allows access to the host file system using SpartaDOSX,
+as the H: device is not supported by Sparta.<br>
+
+<br>
+<b><u>H: Device subtab</u></b> <br>
+
+<br>
+
+This sub-tab allows you to set the directories used by the emulator for the
 Hard Disk Device Emulator, H: , and for the newly added (version 4.0
 and later) D: patch emulator, which uses some of the same directories
 used for H:.<br>
@@ -125,8 +137,153 @@ searched.<br>
 
 <br>
 
-<br>
+<b><u>PCLink subtab</u></b> <br>
 
 <br>
+
+This sub-tab allows you to configure the PCLink device.
+A PCLink device is a device on the serial I/O (SIO) bus that
+responds to file and directory I/O commands, typically a modern computer
+connected over an SIO2PC style adapter and running a PCLink server program.
+Unlike traditional disk emulation solutions, PCLink works directly at the
+file I/O layer level, avoiding the limitations of disk
+emulation and allowing full write access. In Atari800MacX's case, the server
+program is integrated into the emulator itself, making it even easier to set
+up.
+</p>
+
+<br>
+
+<img src="HardDriveTab2.jpg" title="" alt="" style="width: 753px; height: 514px;"><br>
+
+<br>
+<b>PCLink Options</b><br>
+<br>
+<u>PCLink Overall Device Enable</u><br>
+<p>
+This is the master on/off switch for PCLink.  It is analagous to plugging
+or unplugging the PCLink device from the SIO Bus.
+</p>
+
+<u>PCLink Individual Device Enable</u><br>
+<p>
+These four checkboxes control if that particular PCLx: device responds to
+commands from the Atari.
+</p>
+
+<u>PCLink Individual Device ReadOnly</u><br>
+<p>
+These four checkboxes control if that particular PCLx: device allows
+write and delete commands from the Atari.
+</p>
+
+<u>PCLink Individual Device Set Timestamps</u><br>
+<p>
+These four checkboxes control if that particular PCLx: device uses
+timestamps that are passed from the Atari in the PCLink control block
+when updating files on the host.
+</p>
+
+<u>PCLink Individual Device Translate LF/Tab </u><br>
+<p>
+These four checkboxes control if that particular PCLx: device does
+translation of Atari and Host Line Feed and Tab characters.  If enabled,
+upon reads from the host device Host Tabs and Line Feeds will be translated
+to their Atari equivelents.  On write, the reverse will happen.  Note, you
+do not want to enable this on drives where you will be loading or saving
+binary files.  It is allowable to point to of the PCLx: devices to the same
+base directory, so that you can use one for binary files and one for text
+files.  This allows for using Host editors with Atari
+compilers/interpreters.
+</p>
+
+<b>PCLink Usage</b><br>
+<br>
+<u>Accessing PCLink through CIO</u>
+<p>
+  Accessing the PCLink device requires special OS support; it cannot be accessed through CIO.
+  This means that neither BASIC nor Atari DOS can normally access PCLink, and for those the H: device should
+  be used instead.
+</p>
+
+<u>Accessing PCLink with SpartaDOS X</u>
+<p>
+  To access the PCLink device with SpartaDOS X, you must be using at least version 4.43 and have the PCLINK.SYS
+  device from the Toolkit disk.
+</p>
+<u>Loading PCLINK.SYS</u>
+<p>
+  The PCLINK.SYS driver can be executed directly or loaded via a <tt>DEVICE PCLINK.SYS</tt> statement in
+  CONFIG.SYS. When it loads, it should display a message like this:
+</p>
+<blockquote>
+  <pre class="atari" xml:space="preserve">
+D1:PCLINK.SYS
+PCLink v0.3, dev. 6, SIO id $6F
+
+D1:<span class="atari-inverted"> </span>
+  </pre>
+</blockquote>
+<p>
+  The /S flag can also be specified to the PCLINK.SYS driver to use the OS SIO routine instead of SpartaDOS X's
+  SIO routine. This allows the SIO Patch option to work and permits much faster transfers.
+</p>
+<u>Accessing files through PCLink</u>
+<p>
+  Once loaded, the PCLINK.SYS device exports a PCL: device to SpartaDOS X. Files can be copied from and to the
+  device, and programs can be loaded from it.
+</p>
+<u>Host file mapping</u>
+<p>
+  Since filenames are more restricted in Atari operating systems than on modern OSes, the filenames
+  on the host must be mapped using more restricted rules. Whenever possible, files are mapped directly,
+  but there are some limitations on the mapping:
+</p>
+<ul>
+  <li>Files that are 16MB (16,777,216 bytes) or larger cannot be seen or accessed.</li>
+  <li>Files whose names do not fit an 8.3 pattern or use characters other than A-Z, 0-9, or _ are inaccessible.</li>
+  <li>Filename mangling is used to avoid collisions with reserved DOS device names, such as <tt>LPT1</tt> or <tt>COM1</tt>. These filenames
+    are prefixed with <tt>!</tt> on the host, i.e. <tt>!COM1</tt>.
+  </li>
+</ul>
+<u>SIO protocol</u>
+<p>
+  The PCLink device is accessed through SIO device $6F, using the DOS2DOS
+  protocol. Unlike
+  a disk image, this protocol exposes the host filesystem using a file and
+  handle based paradigm instead as raw blocks.
+  While documenting the whole protocol is beyond the scope of this help, here
+  is a summary:
+</p>
+<ul>
+  <li>Three main SIO commands are supported: Put ($50), Read ($52), Status ($53).</li>
+  <li>The Put command is used to send command parameters.</li>
+  <li>The Read command is used to exchange command data or responses.</li>
+  <li>The Status command retrieves error codes and buffer sizes.</li>
+  <li>Supported function codes include:
+    <ul>
+      <li>init</li>
+      <li>read</li>
+      <li>write</li>
+      <li>seek</li>
+      <li>get file position</li>
+      <li>open file</li>
+      <li>close handle</li>
+      <li>get file length</li>
+      <li>find first file/directory</li>
+      <li>find next file/directory</li>
+      <li>change attributes</li>
+      <li>create directory</li>
+      <li>remove directory</li>
+      <li>change current directory</li>
+      <li>get current directory</li>
+      <li>get disk info</li>
+    </ul>
+  </li>
+</ul>
+<p>
+  When the SIO patch is enabled, Atari800MacX accelerates PCLink requests issued through the <tt>SIOV</tt> vector.
+</p>
+
 
 </body></html>
