@@ -29,6 +29,11 @@
 #include "vec.h"
 #include "pclink.h"
 
+#undef PCLINK_DEBUG
+#ifndef PCLINK_DEBUG
+#define printf(fmt, ...) (0)
+#endif
+
 char PCLink_base_dir[4][FILENAME_MAX];
 int  PCLinkEnable[4];
 int  PCLinkReadOnly[4];
