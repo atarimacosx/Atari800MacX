@@ -173,16 +173,20 @@ int Atari800GetCopyData(int startx, int endx, int starty, int endy, unsigned cha
 		data_ptr = screen_lines[i].data_ptr + startcol;
 		for (x=startcol;x<=endcol;x++,data_ptr++) {
 			char_count++;
-			character = MEMORY_dGetByte(data_ptr) & 0x7F;
+			character = MEMORY_dGetByte(data_ptr);
 			if (character <= 0x3F)
-				*data++ = character +0x20;
-			else if (character >= 'a' && character <= 'z')
-				*data++ = character;
+				*data++ = character + 0x20;
+            else if (character >= 0x40 && character <= 0x5F)
+                *data++ = character - 0x40;
+            else if (character >= 0x80 && character <= 0xBF)
+                *data++ = character + 0x20;
+            else if (character >= 0xC0 && character <= 0x9F)
+                *data++ = character - 0x40;
 			else
-				*data++ = ' ';
+				*data++ = character;
 		}
 		if (i!=endline) {
-			*data++ = '\n';
+            *data++ = 0x9b;//'\n';
 			char_count++;
 		}
 	}
