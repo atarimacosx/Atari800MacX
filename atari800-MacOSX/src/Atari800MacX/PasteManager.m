@@ -12,7 +12,7 @@ int PasteManagerStartPaste(void)
 	return([[PasteManager sharedInstance] startPaste]);
 }
 
-int PasteManagerGetScancode(unsigned short *code)
+int PasteManagerGetScancode(unsigned char *code)
 {
     return([[PasteManager sharedInstance] getScancode:code]);
 }
@@ -157,7 +157,7 @@ static PasteManager *sharedInstance = nil;
     return sharedInstance;
 }
 
-- (int)getScancode:(unsigned short *) code
+- (int)getScancode:(unsigned char *) code
 {
     if (pasteIndex < charCount) {
         *code = pasteBuffer[pasteIndex];
@@ -398,6 +398,18 @@ static PasteManager *sharedInstance = nil;
                     scancodeModifier |= 0x80;
                     pname += 5;
                     continue;
+                }
+                
+                if (strncmp(pname,"delay-",6) == 0) {
+                    pname += 6;
+                    int delayTicks = atoi(pname) & 0xFFFF;
+                    if (charCount < 2046) {
+                        pasteBuffer[charCount] = 9; // Unused scan code
+                        pasteBuffer[charCount+1] = (delayTicks & 0xFF00) >> 8;
+                        pasteBuffer[charCount+2] = delayTicks & 0x00FF;
+                        charCount += 3;
+                    }
+                    break;
                 }
                 
                 NSString *keyword = [NSString stringWithCString:name encoding:NSASCIIStringEncoding];

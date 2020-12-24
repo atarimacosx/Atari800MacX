@@ -17,7 +17,7 @@
 }
 
 + (PasteManager *)sharedInstance;
-- (int)getScancode:(unsigned short *) code;
+- (int)getScancode:(unsigned char *) code;
 - (void)pasteStringToKeys;
 - (BOOL)scancodeForCharacter:(char) c:(UInt8 *) ch;
 - (void)startCopy:(char *)string;

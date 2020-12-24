@@ -297,7 +297,7 @@ extern void ControlManagerMiniturize(void);
 extern void ControlManagerShowHelp(void);
 extern int ControlManagerMonitorRun(void);
 extern void ControlManagerFunctionKeysWindowShow(void);
-extern int PasteManagerGetScancode(unsigned short *code);
+extern int PasteManagerGetScancode(unsigned char *code);
 extern void SetSoundManagerEnable(int soundEnabled);
 extern void SetSoundManagerStereo(int soundStereo);
 extern void SetSoundManagerRecording(int soundRecording);
@@ -1362,7 +1362,7 @@ int Atari_Keyboard_International(void)
     static int text_key = AKEY_NONE;
     int text_type;
     static int paste_char;
-    static unsigned short last_scancode;
+    static unsigned char last_scancode;
 
     /* Check for presses in function keys window */
     INPUT_key_consol = INPUT_CONSOL_NONE;
@@ -1500,6 +1500,13 @@ int Atari_Keyboard_International(void)
                 }
                 if (last_scancode == AKEY_RETURN)
                     paste_char = 10*PASTE_KEY_DELAY;
+                else if (last_scancode == 9) {// unused scancode used for delay
+                    UBYTE byte1, byte2;
+                    last_scancode = AKEY_NONE;
+                    PasteManagerGetScancode(&byte1);
+                    PasteManagerGetScancode(&byte2);
+                    paste_char = (byte1 << 8) | byte2;
+                }
                 else
                     paste_char = PASTE_KEY_DELAY;
                 return last_scancode;
