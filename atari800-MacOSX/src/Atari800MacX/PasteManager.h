@@ -9,13 +9,18 @@
 
 
 @interface PasteManager : NSObject {
+    NSDictionary *parseDict;
 	NSString *pasteString;
-	int charCount;
+    int charCount;
+    UInt8 pasteBuffer[2048];
+    int pasteIndex;
 }
 
 + (PasteManager *)sharedInstance;
-- (int)startPaste;
-- (int)getChar:(unsigned short *) character;
+- (int)getScancode:(unsigned short *) code;
+- (void)pasteStringToKeys;
+- (BOOL)scancodeForCharacter:(char) c:(UInt8 *) ch;
 - (void)startCopy:(char *)string;
+- (int)startPaste;
 
 @end

@@ -297,7 +297,7 @@ extern void ControlManagerMiniturize(void);
 extern void ControlManagerShowHelp(void);
 extern int ControlManagerMonitorRun(void);
 extern void ControlManagerFunctionKeysWindowShow(void);
-extern int PasteManagerGetChar(unsigned short *character);
+extern int PasteManagerGetScancode(unsigned short *code);
 extern void SetSoundManagerEnable(int soundEnabled);
 extern void SetSoundManagerStereo(int soundStereo);
 extern void SetSoundManagerRecording(int soundRecording);
@@ -1361,6 +1361,8 @@ int Atari_Keyboard_International(void)
     char *text_input;
     static int text_key = AKEY_NONE;
     int text_type;
+    static int paste_char;
+    static unsigned short last_scancode;
 
     /* Check for presses in function keys window */
     INPUT_key_consol = INPUT_CONSOL_NONE;
@@ -1453,11 +1455,10 @@ int Atari_Keyboard_International(void)
             key_pressed = 0;
         }
         else {
-            unsigned short lastkeyuni;
-            
             if (pasteState == PASTE_START) {
                 copyStatus = COPY_IDLE;
                 pasteState = PASTE_IN_PROG;
+                paste_char = 0;
                 if (capsLockState == CAPS_UPPER || capsLockState == CAPS_GRAPHICS) {
                     capsLockState = CAPS_LOWER;
                     key_was_pressed = PASTE_KEY_DELAY;
@@ -1486,104 +1487,23 @@ int Atari_Keyboard_International(void)
                 }
             }
             
-            if (!PasteManagerGetChar(&lastkeyuni)) {
-                pasteState = PASTE_END;
-            }
-            
-            if (lastkeyuni >= 'A' && lastkeyuni <= 'Z') {
-                INPUT_key_shift = 1;
-                lastkey = lastkeyuni + 0x20;
-            }
-            else if (lastkeyuni == 0x0a) {
-                INPUT_key_shift = 0;
-                lastkey = 0xd;
+            if (paste_char > 3) {
+                paste_char--;
+                return last_scancode;
+            } else if (paste_char) {
+                paste_char--;
+                return AKEY_NONE; // Unused scan code
             }
             else {
-                switch (lastkeyuni) {
-                    case SDLK_EXCLAIM:
-                        INPUT_key_shift = 1;
-                        lastkey = SDLK_1;
-                        break;
-                    case SDLK_AT:
-                        INPUT_key_shift = 1;
-                        lastkey = SDLK_2;
-                        break;
-                    case SDLK_HASH:
-                        INPUT_key_shift = 1;
-                        lastkey = SDLK_3;
-                        break;
-                    case SDLK_DOLLAR:
-                        INPUT_key_shift = 1;
-                        lastkey = SDLK_4;
-                        break;
-                    case 0x25:
-                        INPUT_key_shift = 1;
-                        lastkey = SDLK_5;
-                        break;
-                    case SDLK_CARET:
-                        INPUT_key_shift = 1;
-                        lastkey = SDLK_6;
-                        break;
-                    case SDLK_AMPERSAND:
-                        INPUT_key_shift = 1;
-                        lastkey = SDLK_7;
-                        break;
-                    case SDLK_ASTERISK:
-                        INPUT_key_shift = 1;
-                        lastkey = SDLK_8;
-                        break;
-                    case SDLK_LEFTPAREN:
-                        INPUT_key_shift = 1;
-                        lastkey = SDLK_9;
-                        break;
-                    case SDLK_RIGHTPAREN:
-                        INPUT_key_shift = 1;
-                        lastkey = SDLK_0;
-                        break;
-                    case SDLK_UNDERSCORE:
-                        INPUT_key_shift = 1;
-                        lastkey = SDLK_MINUS;
-                        break;
-                    case SDLK_PLUS:
-                        INPUT_key_shift = 1;
-                        lastkey = SDLK_EQUALS;
-                        break;
-                    case 0x7c:
-                        INPUT_key_shift = 1;
-                        lastkey = SDLK_BACKSLASH;
-                        break;
-                    case SDLK_QUOTEDBL:
-                        INPUT_key_shift = 1;
-                        lastkey = SDLK_QUOTE;
-                        break;
-                    case SDLK_COLON:
-                        INPUT_key_shift = 1;
-                        lastkey = SDLK_SEMICOLON;
-                        break;
-                    case SDLK_LESS:
-                        INPUT_key_shift = 1;
-                        lastkey = SDLK_COMMA;
-                        break;
-                    case SDLK_GREATER:
-                        INPUT_key_shift = 1;
-                        lastkey = SDLK_PERIOD;
-                        break;
-                    case SDLK_QUESTION:
-                        INPUT_key_shift = 1;
-                        lastkey = SDLK_SLASH;
-                        break;
-                    default:
-                        INPUT_key_shift = 0;
-                        lastkey = lastkeyuni;
+                if (!PasteManagerGetScancode(&last_scancode)) {
+                    pasteState = PASTE_END;
                 }
+                if (last_scancode == AKEY_RETURN)
+                    paste_char = 10*PASTE_KEY_DELAY;
+                else
+                    paste_char = PASTE_KEY_DELAY;
+                return last_scancode;
             }
-            kbhits[SDL_SCANCODE_LGUI] = 0;
-            key_option = 0;
-            key_pressed = 1;
-            if (lastkey == SDLK_RETURN) {
-                key_was_pressed = 10*PASTE_KEY_DELAY;
-            } else
-                key_was_pressed = PASTE_KEY_DELAY;
         }
     }
     else {
@@ -1895,6 +1815,7 @@ int Atari_Keyboard_International(void)
                     if (INPUT_key_shift)
                         ControlManagerShowHelp();
                     break;
+#if 0
                 case SDLK_v:
                     if (!INPUT_key_shift) {
                         if (PasteManagerStartPaste())
@@ -1902,6 +1823,7 @@ int Atari_Keyboard_International(void)
                         capsLockPrePasteState = capsLockState;
                     }
                     break;
+#endif
                 case SDLK_c:
                     requestCopy = 1;
                     break;
