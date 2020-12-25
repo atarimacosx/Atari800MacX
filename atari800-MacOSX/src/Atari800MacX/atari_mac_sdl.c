@@ -106,6 +106,8 @@ int FULLSCREEN_MACOS = 0;
 int SCALE_MODE;
 double scaleFactor = 3;
 double scaleFactorFloat = 2.0;
+double scaleFactorRenderX;
+double scaleFactorRenderY;
 int GRAB_MOUSE = 0;
 int WIDTH_MODE;  /* Width mode, and the constants that define it */
 int current_w;
@@ -345,6 +347,7 @@ int  GetAtariScreenWidth(void);
 void CalcWindowSize(int *width, int *height);
 void SetWindowAspectRatio(void);
 static void SetRenderScale(void);
+void SelectionNormalize(int *startX, int *startY, int *endX, int* endY);
 
 // joystick emulation - Future enhancement will allow user to set these in 
 //   Preferences.
@@ -978,16 +981,20 @@ void SetWindowAspectRatio(void)
 static void SetRenderScale(void)
 {
     if (PLATFORM_80col) {
-        SDL_RenderSetScale(renderer,
-                           ((double) GetAtariScreenWidth() /
-                            (double) GetDisplayScreenWidth() ) *
-                           scaleFactorFloat,
-                           ((double) Screen_HEIGHT /
-                            (double) GetDisplayScreenHeight() ) *
-                           scaleFactorFloat);
+        scaleFactorRenderX = ((double) GetAtariScreenWidth() /
+                              (double) GetDisplayScreenWidth() ) *
+                              scaleFactorFloat;
+        scaleFactorRenderY = ((double) Screen_HEIGHT /
+                              (double) GetDisplayScreenHeight() ) *
+                              scaleFactorFloat;
     }
-    else
-        SDL_RenderSetScale(renderer, scaleFactorFloat, scaleFactorFloat);
+    else {
+        scaleFactorRenderX = scaleFactorFloat;
+        scaleFactorRenderY = scaleFactorFloat;
+    }
+    SDL_RenderSetScale(renderer,
+                       scaleFactorRenderX,
+                       scaleFactorRenderY);
 }
 
 static void Switch80Col(void)
@@ -1830,15 +1837,6 @@ int Atari_Keyboard_International(void)
                     if (INPUT_key_shift)
                         ControlManagerShowHelp();
                     break;
-#if 0
-                case SDLK_v:
-                    if (!INPUT_key_shift) {
-                        if (PasteManagerStartPaste())
-                            pasteState = PASTE_START;
-                        capsLockPrePasteState = capsLockState;
-                    }
-                    break;
-#endif
                 case SDLK_c:
                     requestCopy = 1;
                     break;
@@ -4292,11 +4290,12 @@ void HandleScreenChange(int requested_w, int requested_h)
         SDL_DestroyRenderer(renderer);
         renderer = SDL_CreateRenderer(MainWindow, -1, 0);
         if (!fixAspectFullscreen) {
-            SDL_RenderSetScale(renderer,
-                               (double) requested_w /
-                               (double) GetDisplayScreenWidth(),
-                               (double) requested_h /
-                               (double) GetDisplayScreenHeight());
+            scaleFactorRenderX = (double) requested_w /
+                                 (double) GetDisplayScreenWidth();
+            scaleFactorRenderY = (double) requested_h /
+                                 (double) GetDisplayScreenHeight();
+            SDL_RenderSetScale(renderer, scaleFactorRenderX,
+                               scaleFactorRenderY);
             screen_x_offset = 0;
             screen_y_offset = 0;
             }
@@ -4310,6 +4309,8 @@ void HandleScreenChange(int requested_w, int requested_h)
                 thisYScaleFactor = 1.0;
             thisXScaleFactor = ((double) GetAtariScreenWidth() /
                     (double) GetDisplayScreenWidth()) * thisYScaleFactor;
+            scaleFactorRenderX = thisXScaleFactor;
+            scaleFactorRenderY = thisYScaleFactor;
             SDL_RenderSetScale(renderer, thisXScaleFactor, thisYScaleFactor);
             screen_x_offset = ((double)((requested_w -
                                        ((int)(GetDisplayScreenWidth()* thisXScaleFactor)))/2))/thisXScaleFactor;;
@@ -4324,6 +4325,8 @@ void HandleScreenChange(int requested_w, int requested_h)
                                (double) GetDisplayScreenHeight();
             thisXScaleFactor = ((double) GetAtariScreenWidth() /
                     (double) GetDisplayScreenWidth()) * thisYScaleFactor;
+            scaleFactorRenderX = thisXScaleFactor;
+            scaleFactorRenderY = thisYScaleFactor;
             SDL_RenderSetScale(renderer, thisXScaleFactor, thisYScaleFactor);
             screen_x_offset = ((double)((requested_w -
                                        ((int)(GetDisplayScreenWidth()* thisXScaleFactor)))/2))/thisXScaleFactor;;
@@ -4599,6 +4602,8 @@ void ProcessMacMenus()
 		}
 	if (requestCopy) {
 		copyStatus = COPY_IDLE;
+        SelectionNormalize(&selectionStartX, &selectionStartY,
+                      &selectionEndX, &selectionEndY);
 		if (PLATFORM_80col) {
             if (XEP80_enabled) {
                 if (XEP80GetCopyData(selectionStartX,selectionEndX,
@@ -5051,10 +5056,35 @@ static void SDL_Atari_CX85(void)
 	}
 }
 
+void SelectionNormalize(int *startX, int *startY, int *endX, int* endY)
+{
+    if (*endX < *startX) {
+        int swap_x;
+        
+        swap_x = *endX;
+        *endX = *startX;
+        *startX = swap_x;
+    }
+    if (*endY < *startY) {
+        int swap_y;
+        
+        swap_y = *endY;
+        *endY = *startY;
+        *startY = swap_y;
+    }
+
+    if (FULLSCREEN_MACOS) {
+        *startX -= screen_x_offset;
+        *startY -= screen_y_offset;
+        *endX -= screen_x_offset;
+        *endY -= screen_y_offset;
+    }
+}
+
 void DrawSelectionRectangle(int orig_x, int orig_y, int copy_x, int copy_y)
 {
     int i,y;
-    double scale;
+    double scaleX, scaleY;
 
 	if (copy_x < orig_x) {
 		int swap_x;
@@ -5071,7 +5101,8 @@ void DrawSelectionRectangle(int orig_x, int orig_y, int copy_x, int copy_y)
 		orig_y = swap_y;
 	}
 	
-    scale = scaleFactorFloat;
+    scaleX = scaleFactorRenderX;
+    scaleY = scaleFactorRenderY;
 	
 	if (SCALE_MODE==NORMAL_SCALE || SCALE_MODE == SCANLINE_SCALE) {
 		register int pitch2;
@@ -5079,12 +5110,19 @@ void DrawSelectionRectangle(int orig_x, int orig_y, int copy_x, int copy_y)
 		
 		pitch2 = MainScreen->pitch / 2;
 
-		orig_x = (double) orig_x/scale;
-		orig_y = (double) orig_y/scale;
-		copy_x = (double) copy_x/scale;
-		copy_y = (double) copy_y/scale;
+		orig_x = (double) orig_x/scaleX;
+		orig_y = (double) orig_y/scaleY;
+		copy_x = (double) copy_x/scaleX;
+		copy_y = (double) copy_y/scaleY;
 		
-		start16 = (Uint16 *) MainScreen->pixels + 
+        if (FULLSCREEN_MACOS) {
+            orig_x -= screen_x_offset;
+            orig_y -= screen_y_offset;
+            copy_x -= screen_x_offset;
+            copy_y -= screen_y_offset;
+        }
+        
+		start16 = (Uint16 *) MainScreen->pixels +
 		(orig_y * pitch2) + orig_x;
 		for (i=0;i<(copy_x-orig_x+1);i++,start16++)
 			*start16 ^= 0xFFFF;
@@ -5115,10 +5153,12 @@ void ProcessCopySelection(int *first_row, int *last_row, int selectAll)
 	static int orig_y = 0;
 	int copy_x, copy_y;
 	static Uint8 mouse = 0;
-    double scale = 1.0;
-	
-    scale = scaleFactorFloat;
-	
+    double scaleX = 1.0;
+    double scaleY = 1.0;
+
+    scaleX = scaleFactorRenderX;
+    scaleY = scaleFactorRenderY;
+
 	if (selectAll) {
 		orig_x = 0;
 		orig_y = 0;
@@ -5150,10 +5190,10 @@ void ProcessCopySelection(int *first_row, int *last_row, int selectAll)
 				copyStatus = COPY_DEFINED;
 				orig_x = 0;
 				orig_y = 0;
-				selectionStartX = (double)orig_x/scale;
-				selectionStartY = (double)orig_y/scale;
-				selectionEndX = (double)copy_x/scale;
-				selectionEndY = (double)copy_y/scale;
+				selectionStartX = (double)orig_x/scaleX;
+				selectionStartY = (double)orig_y/scaleY;
+				selectionEndX = (double)copy_x/scaleX;
+				selectionEndY = (double)copy_y/scaleY;
 				DrawSelectionRectangle(orig_x, orig_y, copy_x, copy_y);
 			}
 			else if (mouse & SDL_BUTTON(1) ) {
@@ -5170,19 +5210,20 @@ void ProcessCopySelection(int *first_row, int *last_row, int selectAll)
 					copyStatus = COPY_IDLE;
 				} else {
 					copyStatus = COPY_DEFINED;
-					selectionStartX = (double)orig_x/scale;
-					selectionStartY = (double)orig_y/scale;
-					selectionEndX = (double)copy_x/scale;
-					selectionEndY = (double)copy_y/scale;
+					selectionStartX = (double)orig_x/scaleX;
+					selectionStartY = (double)orig_y/scaleY;
+					selectionEndX = (double)copy_x/scaleX;
+					selectionEndY = (double)copy_y/scaleY;
 				}
 			}
 			break;
 		case COPY_DEFINED:
 			if (selectAll){
-				selectionStartX = (double)orig_x/scale;
-				selectionStartY = (double)orig_y/scale;
-				selectionEndX = (double)copy_x/scale;
-				selectionEndY = (double)copy_y/scale;
+				selectionStartX = (double)orig_x/scaleX;
+				selectionStartY = (double)orig_y/scaleY;
+				selectionEndX = (double)copy_x/scaleX;
+				selectionEndY = (double)copy_y/scaleY;
+
 				DrawSelectionRectangle(orig_x, orig_y, copy_x, copy_y);
 			} else if (mouse & SDL_BUTTON(1)) {
 				copyStatus = COPY_STARTED;
@@ -5191,7 +5232,8 @@ void ProcessCopySelection(int *first_row, int *last_row, int selectAll)
 				DrawSelectionRectangle(orig_x, orig_y, copy_x, copy_y);
 			} else {
 				DrawSelectionRectangle(orig_x, orig_y, 
-									   selectionEndX*scale, selectionEndY*scale);
+									   selectionEndX*scaleX,
+                                       selectionEndY*scaleY);
 			}
 			break;
 	}

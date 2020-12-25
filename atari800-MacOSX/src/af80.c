@@ -439,20 +439,21 @@ int AF80GetCopyData(int startx, int endx, int starty, int endy, unsigned char *d
             character = af80_screen[row * 80 + col + table_start];
             count++;
             if (character == 0x9b) {
-                *data++ = ' ';
+                *data++ = character;
                 if (col == endcol && row != endrow) {
-                    *data++ = '\n';
+                    *data++ = 0x9b;
                     count++;
                     }
                 }
             else {
                 character &= 0x7F;
-                if (character >= ' ' && character <= 'z')
-                    *data++ = character & 0x7F;
-                else
-                    *data++ = ' ';
+                // If inverse attribute is set, change character
+                // for normal Atari inverse.
+                if (af80_attrib[row * 80 + col + table_start] & 0x01)
+                    character |= 0x80;
+                *data++ = character;
                 if (col == endcol  && row != endrow) {
-                    *data++ = '\n';
+                    *data++ = 0x9b;
                     count++;
                 }
             }

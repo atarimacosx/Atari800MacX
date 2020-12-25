@@ -2093,18 +2093,14 @@ int XEP80GetCopyData(int startx, int endx, int starty, int endy, unsigned char *
 			if (character == XEP80_ATARI_EOL) {
 				*data++ = ' ';
 				if (col == endcol && row != endrow) {
-					*data++ = '\n';
+					*data++ = 0x9B;
 					count++;
 					}
 				}
 			else {
-				character &= 0x7F;
-				if (character >= ' ' && character <= 'z')
-					*data++ = character & 0x7F;
-				else
-					*data++ = ' ';
+                *data++ = character;
 				if (col == endcol  && row != endrow) {
-					*data++ = '\n';
+					*data++ = 0x9B;
 					count++;
 				}
 			}

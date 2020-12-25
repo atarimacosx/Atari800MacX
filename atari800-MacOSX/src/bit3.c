@@ -306,21 +306,17 @@ int Bit3GetCopyData(int startx, int endx, int starty, int endy, unsigned char *d
             screen_pos = ((row * 80 + col + table_start)&0x3fff);
             character = bit3_screen[screen_pos&0x7ff];
             count++;
-            if (character == 0x9b) {
+            if (character == 0) {
                 *data++ = ' ';
                 if (col == endcol && row != endrow) {
-                    *data++ = '\n';
+                    *data++ = 0x9b;
                     count++;
                     }
                 }
             else {
-                character &= 0x7F;
-                if (character >= ' ' && character <= 'z')
-                    *data++ = character & 0x7F;
-                else
-                    *data++ = ' ';
+                *data++ = character;
                 if (col == endcol  && row != endrow) {
-                    *data++ = '\n';
+                    *data++ = 0x9b;
                     count++;
                 }
             }
