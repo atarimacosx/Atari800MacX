@@ -1487,18 +1487,26 @@ int Atari_Keyboard_International(void)
                 }
             }
             
+            // To get repeat characters to be recognized properly
+            // you need to have 3 frames of AKEY_NONE between the
+            // keypresses.  So, at the end of the delay, for values
+            // 3,2, and 1 for paste_char, AKEY_NONE will be returned.
+            // Then when paste_char is zero, we get another scancode
+            // from the paste manager.
             if (paste_char > 3) {
                 paste_char--;
                 return last_scancode;
             } else if (paste_char) {
                 paste_char--;
-                return AKEY_NONE; // Unused scan code
+                return AKEY_NONE;
             }
             else {
                 if (!PasteManagerGetScancode(&last_scancode)) {
                     pasteState = PASTE_END;
                 }
                 if (last_scancode == AKEY_RETURN)
+                    // Larger delay used for return to allow Atari program
+                    // to process what happens upon return.
                     paste_char = 10*PASTE_KEY_DELAY;
                 else if (last_scancode == 9) {// unused scancode used for delay
                     UBYTE byte1, byte2;
