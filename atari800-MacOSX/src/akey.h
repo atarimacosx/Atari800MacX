@@ -246,6 +246,6 @@
 // These Pseudo keycodes are used only for Paste automation.
 #define AKEY_DELAY_PSEUDO 0x09
 #define AKEY_START_PSEUDO 0x19
-#define AKEY_SELECT_PSEUDO 0x0
-#define AKEY_OPTION_PSEUDO 0x0
+#define AKEY_SELECT_PSEUDO 0x24
+#define AKEY_OPTION_PSEUDO 0x41
 #endif /* AKEY_H_ */

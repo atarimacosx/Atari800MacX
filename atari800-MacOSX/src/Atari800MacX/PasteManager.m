@@ -164,8 +164,7 @@ static PasteManager *sharedInstance = nil;
             @"f1" : [NSNumber numberWithInt:0x03],
             @"f2" : [NSNumber numberWithInt:0x04],
             @"f3" : [NSNumber numberWithInt:0x13],
-            @"f4" : [NSNumber numberWithInt:0x14],
-            @"break" : [NSNumber numberWithInt:AKEY_BREAK]
+            @"f4" : [NSNumber numberWithInt:0x14]
         };
         [parseDict retain];
     }
