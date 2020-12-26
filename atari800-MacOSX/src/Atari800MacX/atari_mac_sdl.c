@@ -1463,7 +1463,6 @@ int Atari_Keyboard_International(void)
             key_pressed = 0;
         }
         else {
-            printf("Here1 %d\n",paste_char);
             if (pasteState == PASTE_START) {
                 copyStatus = COPY_IDLE;
                 pasteState = PASTE_IN_PROG;
@@ -1475,9 +1474,7 @@ int Atari_Keyboard_International(void)
                 }
             }
 
-            printf("Here2 %d\n",paste_char);
             if (pasteState == PASTE_END) {
-                printf("Here2a\n");
                 pasteState = PASTE_IDLE;
                 if (capsLockPrePasteState == CAPS_UPPER) {
                     pasteState = PASTE_DONE;
@@ -1504,7 +1501,6 @@ int Atari_Keyboard_International(void)
             // 3,2, and 1 for paste_char, AKEY_NONE will be returned.
             // Then when paste_char is zero, we get another scancode
             // from the paste manager.
-            printf("Here %d\n",paste_char);
             if (paste_char > 3) {
                 paste_char--;
                 if (last_scancode == AKEY_START_PSEUDO) {
@@ -1544,7 +1540,6 @@ int Atari_Keyboard_International(void)
                 } else if (last_scancode == AKEY_SELECT_PSEUDO) {
                     INPUT_key_consol = (~INPUT_CONSOL_SELECT);
                     paste_char = FUNCTION_KEY_PRESS_DURATION;
-                    printf("Crap %d\n",paste_char);
                     return AKEY_NONE;
                 } else if (last_scancode == AKEY_OPTION_PSEUDO) {
                     INPUT_key_consol = (~INPUT_CONSOL_OPTION);
