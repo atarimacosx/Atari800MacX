@@ -18,110 +18,9 @@ int PasteManagerGetScancode(unsigned char *code)
     return([[PasteManager sharedInstance] getScancode:code]);
 }
 
-static char escapedCopyBuffer[64*1024];
-
-void PasteMangagerNonEscapeCopy(char *string)
-{
-    unsigned char *c = (unsigned char *) string;
-    while(*c) {
-        if (*c == 0x9B) {
-            strcat(escapedCopyBuffer,"\n");
-            c++;
-            continue;
-        }
-        
-    }
-}
-
-void PasteManagerEscapeCopy(char *string)
-{
-    int inv = 0;
-    
-    escapedCopyBuffer[0] = 0;
-
-    unsigned char *c = (unsigned char *) string;
-    while(*c) {
-        if (*c == 0x9B) {
-            strcat(escapedCopyBuffer,"\n");
-            c++;
-            continue;
-        }
-        
-        if ((*c ^ inv) & 0x80) {
-            inv ^= 0x80;
-
-            strcat(escapedCopyBuffer,"{inv}");
-        }
-
-        *c &= 0x7F;
-
-        if (*c == 0x00) {
-            strcat(escapedCopyBuffer,"{^},");
-        } else if (*c >= 0x01 && *c < 0x1B) {
-            unsigned char cprime;
-            strcat(escapedCopyBuffer,"{^}");
-            cprime = (char)('a' + (*c - 0x01));
-            strncat(escapedCopyBuffer,(char *)&cprime,1);
-        } else if (*c == 0x1B) {
-            strcat(escapedCopyBuffer,"{esc}{esc}");
-        } else if (*c == 0x1C) {
-            if (inv)
-                strcat(escapedCopyBuffer,"{esc}{+delete}");
-            else
-                strcat(escapedCopyBuffer,"{esc}{up}");
-        } else if (*c == 0x1D) {
-            if (inv)
-                strcat(escapedCopyBuffer,"{esc}{+insert}");
-            else
-                strcat(escapedCopyBuffer,"{esc}{down}");
-        } else if (*c == 0x1E) {
-            if (inv)
-                strcat(escapedCopyBuffer,"{esc}{^tab}");
-            else
-                strcat(escapedCopyBuffer,"{esc}{left}");
-        } else if (*c == 0x1F) {
-            if (inv)
-                strcat(escapedCopyBuffer,"{esc}{+tab}");
-            else
-                strcat(escapedCopyBuffer,"{esc}{right}");
-        } else if (*c >= 0x20 && *c < 0x60) {
-            strncat(escapedCopyBuffer,(char *)c,1);
-        } else if (*c == 0x60) {
-            strcat(escapedCopyBuffer,"{^}.");
-        } else if (*c >= 0x61 && *c < 0x7B) {
-            strncat(escapedCopyBuffer,(char *)c,1);
-        } else if (*c == 0x7B) {
-            strcat(escapedCopyBuffer,"{^};");
-        } else if (*c == 0x7C) {
-            strncat(escapedCopyBuffer,(char *)c,1);
-        } else if (*c == 0x7D) {
-            if (inv)
-                strcat(escapedCopyBuffer,"{esc}{^}2");
-            else
-                strcat(escapedCopyBuffer,"{esc}{clear}");
-        } else if (*c == 0x7E) {
-            if (inv)
-                strcat(escapedCopyBuffer,"{esc}{del}");
-            else
-                strcat(escapedCopyBuffer,"{esc}{back}");
-        } else if (*c == 0x7F) {
-            if (inv)
-                strcat(escapedCopyBuffer,"{esc}{ins}");
-            else
-                strcat(escapedCopyBuffer,"{esc}{tab}");
-        }
-        c++;
-    }
-
-    if (inv)
-        strcat(escapedCopyBuffer,"{inv}");
-
-}
-
 void PasteManagerStartCopy(char *string)
 {
-    PasteManagerEscapeCopy(string);
-	[[PasteManager sharedInstance] startCopy:escapedCopyBuffer];
+	[[PasteManager sharedInstance] startCopy:string];
 }
 
 @implementation PasteManager
@@ -169,6 +68,118 @@ static PasteManager *sharedInstance = nil;
         [parseDict retain];
     }
     return sharedInstance;
+}
+
+-(void) nonEscapeCopy: (char *) string
+{
+    unsigned char *c = (unsigned char *) string;
+    int count = 0;
+    
+    while(*c) {
+        if (*c == 0x9B) {
+            copyBuffer[count] = '\n';
+            c++;
+            count++;
+            continue;
+        }
+        
+        *c &= 0x7F;
+        if (*c >= 0x20 && *c <= 0x7C && *c != 0x7B && *c != 0x60)
+            copyBuffer[count] = *c;
+        else
+            copyBuffer[count] = ' ';
+        c++;
+        count++;
+        if (count == COPY_BUFFER_SIZE)
+            break;
+    }
+    
+    copyBuffer[count] = 0;
+}
+
+-(void) escapeCopy: (char *) string
+{
+    int inv = 0;
+    
+    copyBuffer[0] = 0;
+
+    unsigned char *c = (unsigned char *) string;
+    while(*c) {
+        if (*c == 0x9B) {
+            strcat(copyBuffer,"\n");
+            c++;
+            continue;
+        }
+        
+        if ((*c ^ inv) & 0x80) {
+            inv ^= 0x80;
+
+            strcat(copyBuffer,"{inv}");
+        }
+
+        *c &= 0x7F;
+
+        if (*c == 0x00) {
+            strcat(copyBuffer,"{^},");
+        } else if (*c >= 0x01 && *c < 0x1B) {
+            unsigned char cprime;
+            strcat(copyBuffer,"{^}");
+            cprime = (char)('a' + (*c - 0x01));
+            strncat(copyBuffer,(char *)&cprime,1);
+        } else if (*c == 0x1B) {
+            strcat(copyBuffer,"{esc}{esc}");
+        } else if (*c == 0x1C) {
+            if (inv)
+                strcat(copyBuffer,"{esc}{+delete}");
+            else
+                strcat(copyBuffer,"{esc}{up}");
+        } else if (*c == 0x1D) {
+            if (inv)
+                strcat(copyBuffer,"{esc}{+insert}");
+            else
+                strcat(copyBuffer,"{esc}{down}");
+        } else if (*c == 0x1E) {
+            if (inv)
+                strcat(copyBuffer,"{esc}{^tab}");
+            else
+                strcat(copyBuffer,"{esc}{left}");
+        } else if (*c == 0x1F) {
+            if (inv)
+                strcat(copyBuffer,"{esc}{+tab}");
+            else
+                strcat(copyBuffer,"{esc}{right}");
+        } else if (*c >= 0x20 && *c < 0x60) {
+            strncat(copyBuffer,(char *)c,1);
+        } else if (*c == 0x60) {
+            strcat(copyBuffer,"{^}.");
+        } else if (*c >= 0x61 && *c < 0x7B) {
+            strncat(copyBuffer,(char *)c,1);
+        } else if (*c == 0x7B) {
+            strcat(copyBuffer,"{^};");
+        } else if (*c == 0x7C) {
+            strncat(copyBuffer,(char *)c,1);
+        } else if (*c == 0x7D) {
+            if (inv)
+                strcat(copyBuffer,"{esc}{^}2");
+            else
+                strcat(copyBuffer,"{esc}{clear}");
+        } else if (*c == 0x7E) {
+            if (inv)
+                strcat(copyBuffer,"{esc}{del}");
+            else
+                strcat(copyBuffer,"{esc}{back}");
+        } else if (*c == 0x7F) {
+            if (inv)
+                strcat(copyBuffer,"{esc}{ins}");
+            else
+                strcat(copyBuffer,"{esc}{tab}");
+        }
+        c++;
+    }
+
+    if (inv)
+        strcat(copyBuffer,"{inv}");
+
 }
 
 - (int)getScancode:(unsigned char *) code
@@ -501,11 +512,12 @@ static PasteManager *sharedInstance = nil;
 
 - (void)startCopy:(char *)string
 {
+    [self escapeCopy:string];
 	NSPasteboard *pb = [NSPasteboard generalPasteboard];
 	NSArray *types = [NSArray arrayWithObjects:
 					  NSStringPboardType, nil];
 	[pb declareTypes:types owner:self];
-	[pb setString:[NSString stringWithCString:string encoding:NSASCIIStringEncoding] forType:NSStringPboardType];
+	[pb setString:[NSString stringWithCString:copyBuffer encoding:NSASCIIStringEncoding] forType:NSStringPboardType];
 }
 
 @end
