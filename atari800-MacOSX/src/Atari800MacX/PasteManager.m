@@ -452,7 +452,7 @@ static PasteManager *sharedInstance = nil;
                     break;
                 }
                 
-                NSString *keyword = [NSString stringWithCString:name encoding:NSASCIIStringEncoding];
+                NSString *keyword = [NSString stringWithCString:pname encoding:NSASCIIStringEncoding];
                 NSString *lowerKeyword = [keyword lowercaseString];
                 NSNumber *scannumber = parseDict[lowerKeyword];
                 if (scannumber != nil) {
