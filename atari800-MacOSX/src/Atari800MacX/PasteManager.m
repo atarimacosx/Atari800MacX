@@ -130,12 +130,12 @@ static PasteManager *sharedInstance = nil;
             strcat(copyBuffer,"{esc}{esc}");
         } else if (*c == 0x1C) {
             if (inv)
-                strcat(copyBuffer,"{esc}{+delete}");
+                strcat(copyBuffer,"{esc}{+del}");
             else
                 strcat(copyBuffer,"{esc}{up}");
         } else if (*c == 0x1D) {
             if (inv)
-                strcat(copyBuffer,"{esc}{+insert}");
+                strcat(copyBuffer,"{esc}{+ins}");
             else
                 strcat(copyBuffer,"{esc}{down}");
         } else if (*c == 0x1E) {
