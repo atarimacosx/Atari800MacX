@@ -180,7 +180,7 @@ int Atari800GetCopyData(int startx, int endx, int starty, int endy, unsigned cha
                 *data++ = character - 0x40;
             else if (character >= 0x80 && character <= 0xBF)
                 *data++ = character + 0x20;
-            else if (character >= 0xC0 && character <= 0x9F)
+            else if (character >= 0xC0 && character <= 0xDF)
                 *data++ = character - 0x40;
 			else
 				*data++ = character;
