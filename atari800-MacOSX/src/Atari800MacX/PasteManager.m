@@ -8,6 +8,8 @@
 #import "MacTypes.h"
 #import "akey.h"
 
+int PASTE_Escape_Copy = TRUE;
+
 int PasteManagerStartPaste(void)
 {
 	return([[PasteManager sharedInstance] startPaste]);
@@ -512,7 +514,10 @@ static PasteManager *sharedInstance = nil;
 
 - (void)startCopy:(char *)string
 {
-    [self escapeCopy:string];
+    if (PASTE_Escape_Copy)
+        [self escapeCopy:string];
+    else
+        [self nonEscapeCopy:string];
 	NSPasteboard *pb = [NSPasteboard generalPasteboard];
 	NSArray *types = [NSArray arrayWithObjects:
 					  NSStringPboardType, nil];
