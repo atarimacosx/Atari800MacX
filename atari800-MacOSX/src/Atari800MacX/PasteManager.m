@@ -6,6 +6,7 @@
 
 #import "PasteManager.h"
 #import "MacTypes.h"
+#import "akey.h"
 
 int PasteManagerStartPaste(void)
 {
@@ -18,6 +19,19 @@ int PasteManagerGetScancode(unsigned char *code)
 }
 
 static char escapedCopyBuffer[64*1024];
+
+void PasteMangagerNonEscapeCopy(char *string)
+{
+    unsigned char *c = (unsigned char *) string;
+    while(*c) {
+        if (*c == 0x9B) {
+            strcat(escapedCopyBuffer,"\n");
+            c++;
+            continue;
+        }
+        
+    }
+}
 
 void PasteManagerEscapeCopy(char *string)
 {
@@ -151,6 +165,7 @@ static PasteManager *sharedInstance = nil;
             @"f2" : [NSNumber numberWithInt:0x04],
             @"f3" : [NSNumber numberWithInt:0x13],
             @"f4" : [NSNumber numberWithInt:0x14],
+            @"break" : [NSNumber numberWithInt:AKEY_BREAK]
         };
         [parseDict retain];
     }
@@ -162,10 +177,7 @@ static PasteManager *sharedInstance = nil;
     if (pasteIndex < charCount) {
         *code = pasteBuffer[pasteIndex];
         pasteIndex++;
-        if (pasteIndex < charCount)
-            return(TRUE);
-        else
-            return(FALSE);
+        return(TRUE);
         }
     else {
         return(FALSE);
@@ -400,11 +412,29 @@ static PasteManager *sharedInstance = nil;
                     continue;
                 }
                 
+                if (strncmp(pname,"select",6) == 0) {
+                    pasteBuffer[charCount] = AKEY_SELECT_PSEUDO;
+                    charCount++;
+                    break;
+                }
+                
+                if (strncmp(pname,"start",5) == 0) {
+                    pasteBuffer[charCount] = AKEY_START_PSEUDO;
+                    charCount++;
+                    break;
+                }
+                
+                if (strncmp(pname,"option",6) == 0) {
+                    pasteBuffer[charCount] = AKEY_OPTION_PSEUDO;
+                    charCount++;
+                    break;
+                }
+                
                 if (strncmp(pname,"delay-",6) == 0) {
                     pname += 6;
                     int delayTicks = atoi(pname) & 0xFFFF;
                     if (charCount < 2046) {
-                        pasteBuffer[charCount] = 9; // Unused scan code
+                        pasteBuffer[charCount] = AKEY_DELAY_PSEUDO;
                         pasteBuffer[charCount+1] = (delayTicks & 0xFF00) >> 8;
                         pasteBuffer[charCount+2] = delayTicks & 0x00FF;
                         charCount += 3;

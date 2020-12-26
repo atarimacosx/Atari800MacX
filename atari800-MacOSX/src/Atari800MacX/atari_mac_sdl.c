@@ -571,6 +571,7 @@ static int capsLockPrePasteState = CAPS_UPPER;
 #define PASTE_END     3
 #define PASTE_DONE	  4
 #define PASTE_KEY_DELAY  4
+#define FUNCTION_KEY_PRESS_DURATION 10
 static int pasteState = PASTE_IDLE;
 
 static int soundStartupDelay = 44; // No audio for first 44 SDL sound loads until Pokey
@@ -1462,6 +1463,7 @@ int Atari_Keyboard_International(void)
             key_pressed = 0;
         }
         else {
+            printf("Here1 %d\n",paste_char);
             if (pasteState == PASTE_START) {
                 copyStatus = COPY_IDLE;
                 pasteState = PASTE_IN_PROG;
@@ -1472,8 +1474,10 @@ int Atari_Keyboard_International(void)
                     return(AKEY_CAPSTOGGLE);
                 }
             }
-            
+
+            printf("Here2 %d\n",paste_char);
             if (pasteState == PASTE_END) {
+                printf("Here2a\n");
                 pasteState = PASTE_IDLE;
                 if (capsLockPrePasteState == CAPS_UPPER) {
                     pasteState = PASTE_DONE;
@@ -1500,9 +1504,20 @@ int Atari_Keyboard_International(void)
             // 3,2, and 1 for paste_char, AKEY_NONE will be returned.
             // Then when paste_char is zero, we get another scancode
             // from the paste manager.
+            printf("Here %d\n",paste_char);
             if (paste_char > 3) {
                 paste_char--;
-                return last_scancode;
+                if (last_scancode == AKEY_START_PSEUDO) {
+                    INPUT_key_consol = (~INPUT_CONSOL_START);
+                    return AKEY_NONE;
+                } else if (last_scancode == AKEY_SELECT_PSEUDO) {
+                    INPUT_key_consol = (~INPUT_CONSOL_SELECT);
+                    return AKEY_NONE;
+                } else if (last_scancode == AKEY_OPTION_PSEUDO) {
+                    INPUT_key_consol = (~INPUT_CONSOL_OPTION);
+                    return AKEY_NONE;
+                } else
+                    return last_scancode;
             } else if (paste_char) {
                 paste_char--;
                 return AKEY_NONE;
@@ -1510,17 +1525,31 @@ int Atari_Keyboard_International(void)
             else {
                 if (!PasteManagerGetScancode(&last_scancode)) {
                     pasteState = PASTE_END;
+                    return AKEY_NONE;
                 }
                 if (last_scancode == AKEY_RETURN)
                     // Larger delay used for return to allow Atari program
                     // to process what happens upon return.
                     paste_char = 10*PASTE_KEY_DELAY;
-                else if (last_scancode == 9) {// unused scancode used for delay
+                else if (last_scancode == AKEY_DELAY_PSEUDO) {
                     UBYTE byte1, byte2;
                     last_scancode = AKEY_NONE;
                     PasteManagerGetScancode(&byte1);
                     PasteManagerGetScancode(&byte2);
                     paste_char = (byte1 << 8) | byte2;
+                } else if (last_scancode == AKEY_START_PSEUDO) {
+                    INPUT_key_consol = (~INPUT_CONSOL_START);
+                    paste_char = FUNCTION_KEY_PRESS_DURATION;
+                    return AKEY_NONE;
+                } else if (last_scancode == AKEY_SELECT_PSEUDO) {
+                    INPUT_key_consol = (~INPUT_CONSOL_SELECT);
+                    paste_char = FUNCTION_KEY_PRESS_DURATION;
+                    printf("Crap %d\n",paste_char);
+                    return AKEY_NONE;
+                } else if (last_scancode == AKEY_OPTION_PSEUDO) {
+                    INPUT_key_consol = (~INPUT_CONSOL_OPTION);
+                    paste_char = FUNCTION_KEY_PRESS_DURATION;
+                    return AKEY_NONE;
                 }
                 else
                     paste_char = PASTE_KEY_DELAY;
