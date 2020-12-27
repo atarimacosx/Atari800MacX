@@ -1458,7 +1458,11 @@ int Link_Device_On_Put(LinkDevice *dev) {
 
             matched = FALSE;
             while((ep = readdir(dirStream))) {
-                if ((stat(ep->d_name, &file_stats)) == -1) {
+                strcpy(fullPath, resultPath);
+                strcat(fullPath, "/");
+                strcat(fullPath, ep->d_name);
+                
+                if ((stat(fullPath, &file_stats)) == -1) {
                     return TranslateErrnoToSIOError(errno);
                 }
 
@@ -1477,9 +1481,6 @@ int Link_Device_On_Put(LinkDevice *dev) {
                 if (!File_Name_Wild_Match(&fname, &entryName))
                     continue;
 
-                strcpy(fullPath, resultPath);
-                strcat(fullPath, "/");
-                strcat(fullPath, ep->d_name);
                 if (remove(fullPath))
                     {
                     dev->StatusError = TranslateErrnoToSIOError(errno);
