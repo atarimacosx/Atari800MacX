@@ -5305,7 +5305,8 @@ int SDL_main(int argc, char **argv)
 
     CreateWindowCaption();
     SDL_SetWindowTitle(MainWindow, windowCaption);
-
+    PasteManagerUpdateEscapeCopyMenu();
+    
     if (useBuiltinPalette) {
         Colours_Generate(paletteBlack, paletteWhite, paletteIntensity, paletteColorShift);
         Colours_Format(paletteBlack, paletteWhite, paletteIntensity);

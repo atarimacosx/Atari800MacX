@@ -121,6 +121,7 @@
 	IBOutlet id arrowKeysOnlyItem;
 	IBOutlet id arrowKeysF1F4Item;
 	IBOutlet id startButton;
+    IBOutlet id escapeCopyMenuItem;
 }
 + (ControlManager *)sharedInstance;
 - (void)setLimitMenu:(int)limit;

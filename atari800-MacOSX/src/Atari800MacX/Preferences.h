@@ -290,6 +290,7 @@
 #define ClearCurrentMedia @"ClearCurrentMedia"
 #define KeyjoyEnable @"KeyjoyEnable"
 #define UseAtariCursorKeys @"UseAtariCursorKeys"
+#define EscapeCopy @"EscapeCopy"
 
 #define MAX_MODEMS				8
 

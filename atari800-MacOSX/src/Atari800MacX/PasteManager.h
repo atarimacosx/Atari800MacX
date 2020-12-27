@@ -17,6 +17,8 @@
     char copyBuffer[COPY_BUFFER_SIZE];
     UInt8 pasteBuffer[PASTE_BUFFER_SIZE];
     int pasteIndex;
+    BOOL useEscapeCopy;
+    IBOutlet id escapeCopyMenuItem;
 }
 
 + (PasteManager *)sharedInstance;
@@ -27,5 +29,9 @@
 - (int)startPaste;
 - (void)nonEscapeCopy:(char *) string;
 - (void)escapeCopy:(char *) string;
+- (void)setEscapeCopy:(BOOL) escape;
+- (NSNumber *)getEscapeCopy;
+- (IBAction)handleEscapeCopyMenu:(id)sender;
+- (void)updateEscapeCopyMenu;
 
 @end

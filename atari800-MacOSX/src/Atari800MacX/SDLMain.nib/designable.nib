@@ -113,6 +113,13 @@
                                     <action selector="selectAll:" target="498" id="np0-QJ-c9T"/>
                                 </connections>
                             </menuItem>
+                            <menuItem isSeparatorItem="YES" id="rg3-br-XfD"/>
+                            <menuItem title="Escape ATASCII On Copy" id="u4Q-E0-HNj">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="handleEscapeCopyMenu:" target="bvR-X1-pfS" id="AFh-3w-FTB"/>
+                                </connections>
+                            </menuItem>
                         </items>
                     </menu>
                 </menuItem>
@@ -1119,5 +1126,10 @@ DQ
             </connections>
         </customObject>
         <customObject id="788" userLabel="PrintOutputController" customClass="PrintOutputController"/>
+        <customObject id="bvR-X1-pfS" customClass="PasteManager">
+            <connections>
+                <outlet property="escapeCopyMenuItem" destination="u4Q-E0-HNj" id="JSx-er-O0u"/>
+            </connections>
+        </customObject>
     </objects>
 </document>

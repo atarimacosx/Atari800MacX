@@ -14,6 +14,7 @@
 #import "ControlManager.h"
 #import "Atari800Window.h"
 #import "KeyMapper.h"
+#import "PasteManager.h"
 #import "log.h"
 #import "config.h"
 
@@ -571,6 +572,8 @@ static NSDictionary *defaultValues() {
                 [NSNumber numberWithBool:NO], SaveCurrentMedia,
                 [NSNumber numberWithBool:YES], ClearCurrentMedia,
                 [NSNumber numberWithBool:YES], KeyjoyEnable,
+                [NSNumber numberWithBool:YES],
+                    EscapeCopy,
                 nil];
     }
     return dict;
@@ -668,6 +671,7 @@ static Preferences *sharedInstance = nil;
         [displayedValues setObject:[NSNumber numberWithFloat:origin.x] forKey:ApplicationWindowX];
         [displayedValues setObject:[NSNumber numberWithFloat:origin.y] forKey:ApplicationWindowY];
     }
+    [displayedValues setObject:[[PasteManager sharedInstance] getEscapeCopy] forKey:EscapeCopy];
 
 	// Get the changed prefs back from emulator
 	savePrefs();
@@ -697,6 +701,7 @@ static Preferences *sharedInstance = nil;
         sharedInstance = self;
 		modems = [NSMutableArray array];
 		[modems retain];
+        [[PasteManager sharedInstance] setEscapeCopy:[[curValues objectForKey:EscapeCopy] boolValue]];
     }
     return sharedInstance;
 }
@@ -4075,7 +4080,7 @@ static Preferences *sharedInstance = nil;
   prefs->padJoyAltFire = [[curValues objectForKey:PadJoyAltFire] intValue];
   prefs->mediaStatusDisplayed = [[curValues objectForKey:MediaStatusDisplayed] intValue];
   prefs->functionKeysDisplayed = [[curValues objectForKey:FunctionKeysDisplayed] intValue];
-	prefs->currPrinter =  [[curValues objectForKey:PrinterType] intValue];
+  prefs->currPrinter =  [[curValues objectForKey:PrinterType] intValue];
 }
 
 /*------------------------------------------------------------------------------
@@ -5437,6 +5442,7 @@ static Preferences *sharedInstance = nil;
     getBoolDefault(ExeFileEnabled);
     getBoolDefault(CassFileEnabled);
     getBoolDefault(KeyjoyEnable);
+    getBoolDefault(EscapeCopy);
     getIntDefault(Joystick1Mode);
     getIntDefault(Joystick2Mode);
     getIntDefault(Joystick3Mode);
@@ -5741,6 +5747,7 @@ static Preferences *sharedInstance = nil;
     setBoolDefault(ExeFileEnabled);
     setBoolDefault(CassFileEnabled);
     setBoolDefault(KeyjoyEnable);
+    setBoolDefault(EscapeCopy);
     setIntDefault(Joystick1Mode);
     setIntDefault(Joystick2Mode);
     setIntDefault(Joystick3Mode);
@@ -6030,6 +6037,7 @@ static Preferences *sharedInstance = nil;
     setConfig(ExeFileEnabled);
     setConfig(CassFileEnabled);
     setConfig(KeyjoyEnable);
+    setConfig(EscapeCopy);
     setConfig(Joystick1Mode);
     setConfig(Joystick2Mode);
     setConfig(Joystick3Mode);
@@ -6417,6 +6425,7 @@ static Preferences *sharedInstance = nil;
     getConfig(ExeFileEnabled);
     getConfig(CassFileEnabled);
     getConfig(KeyjoyEnable);
+    getConfig(EscapeCopy);
     getConfig(Joystick1Mode);
     getConfig(Joystick2Mode);
     getConfig(Joystick3Mode);

@@ -8,8 +8,6 @@
 #import "MacTypes.h"
 #import "akey.h"
 
-int PASTE_Escape_Copy = TRUE;
-
 int PasteManagerStartPaste(void)
 {
 	return([[PasteManager sharedInstance] startPaste]);
@@ -23,6 +21,11 @@ int PasteManagerGetScancode(unsigned char *code)
 void PasteManagerStartCopy(char *string)
 {
 	[[PasteManager sharedInstance] startCopy:string];
+}
+
+void PasteManagerUpdateEscapeCopyMenu()
+{
+    [[PasteManager sharedInstance] updateEscapeCopyMenu];
 }
 
 @implementation PasteManager
@@ -514,7 +517,7 @@ static PasteManager *sharedInstance = nil;
 
 - (void)startCopy:(char *)string
 {
-    if (PASTE_Escape_Copy)
+    if (useEscapeCopy)
         [self escapeCopy:string];
     else
         [self nonEscapeCopy:string];
@@ -525,4 +528,28 @@ static PasteManager *sharedInstance = nil;
 	[pb setString:[NSString stringWithCString:copyBuffer encoding:NSASCIIStringEncoding] forType:NSStringPboardType];
 }
 
+- (void)setEscapeCopy:(BOOL) escape
+{
+    useEscapeCopy = escape;
+    if (escape)
+        [escapeCopyMenuItem setState:NSControlStateValueOn];
+    else
+        [escapeCopyMenuItem setState:NSControlStateValueOff];
+}
+
+- (NSNumber *)getEscapeCopy
+{
+    NSNumber *value = [[NSNumber alloc] initWithBool:useEscapeCopy];
+    return value;
+}
+
+- (IBAction)handleEscapeCopyMenu:(id)sender
+{
+    [self setEscapeCopy:!useEscapeCopy];
+}
+
+- (void)updateEscapeCopyMenu;
+{
+    [self setEscapeCopy:useEscapeCopy];
+}
 @end
