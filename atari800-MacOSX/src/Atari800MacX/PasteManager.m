@@ -10,7 +10,12 @@
 
 int PasteManagerStartPaste(void)
 {
-	return([[PasteManager sharedInstance] startPaste]);
+    return([[PasteManager sharedInstance] startPaste]);
+}
+
+void PasteManagerStartPasteWithString(char *string)
+{
+    [[PasteManager sharedInstance] startPasteWithString:[NSString stringWithCString:string encoding:NSASCIIStringEncoding]];
 }
 
 int PasteManagerGetScancode(unsigned char *code)
@@ -217,6 +222,14 @@ static PasteManager *sharedInstance = nil;
 		return FALSE;
 		}
 	}
+
+- (void)startPasteWithString:(NSString *)string
+{
+    pasteString = string;
+    charCount = 0;
+    [self pasteStringToKeys];
+    pasteIndex = 0;
+}
 
 -(BOOL) scancodeForCharacter: (char) c: (UInt8 *) ch {
     switch(c) {

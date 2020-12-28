@@ -27,6 +27,7 @@
 - (BOOL)scancodeForCharacter:(char) c:(UInt8 *) ch;
 - (void)startCopy:(char *)string;
 - (int)startPaste;
+- (void)startPasteWithString:(NSString *)string;
 - (void)nonEscapeCopy:(char *) string;
 - (void)escapeCopy:(char *) string;
 - (void)setEscapeCopy:(BOOL) escape;
