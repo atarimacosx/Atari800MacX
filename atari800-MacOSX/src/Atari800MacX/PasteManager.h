@@ -18,6 +18,8 @@
     UInt8 pasteBuffer[PASTE_BUFFER_SIZE];
     int pasteIndex;
     BOOL useEscapeCopy;
+    NSString *startupPasteString;
+    BOOL startupPasteEnabled;
     IBOutlet id escapeCopyMenuItem;
 }
 
@@ -27,11 +29,14 @@
 - (BOOL)scancodeForCharacter:(char) c:(UInt8 *) ch;
 - (void)startCopy:(char *)string;
 - (int)startPaste;
-- (void)startPasteWithString:(NSString *)string;
+- (void)startPasteWithString;
 - (void)nonEscapeCopy:(char *) string;
 - (void)escapeCopy:(char *) string;
 - (void)setEscapeCopy:(BOOL) escape;
 - (NSNumber *)getEscapeCopy;
+- (void)setStartupPasteString:(NSString *)string;
+- (void)setStartupPasteEnabled:(BOOL)enabled;
+- (BOOL)getStartupPasteEnabled;
 - (IBAction)handleEscapeCopyMenu:(id)sender;
 - (void)updateEscapeCopyMenu;
 

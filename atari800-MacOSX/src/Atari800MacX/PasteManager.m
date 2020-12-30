@@ -13,9 +13,14 @@ int PasteManagerStartPaste(void)
     return([[PasteManager sharedInstance] startPaste]);
 }
 
-void PasteManagerStartPasteWithString(char *string)
+void PasteManagerStartPasteWithString()
 {
-    [[PasteManager sharedInstance] startPasteWithString:[NSString stringWithCString:string encoding:NSASCIIStringEncoding]];
+    [[PasteManager sharedInstance] startPasteWithString];
+}
+
+int PasteManagerStartupPasteEnabled()
+{
+    return([[PasteManager sharedInstance] getStartupPasteEnabled]);
 }
 
 int PasteManagerGetScancode(unsigned char *code)
@@ -76,6 +81,8 @@ static PasteManager *sharedInstance = nil;
             @"f4" : [NSNumber numberWithInt:0x14]
         };
         [parseDict retain];
+        startupPasteString = @"{delay-300}{^+}m";
+        startupPasteEnabled = YES;
     }
     return sharedInstance;
 }
@@ -223,9 +230,9 @@ static PasteManager *sharedInstance = nil;
 		}
 	}
 
-- (void)startPasteWithString:(NSString *)string
+- (void)startPasteWithString
 {
-    pasteString = string;
+    pasteString = startupPasteString;
     charCount = 0;
     [self pasteStringToKeys];
     pasteIndex = 0;
@@ -554,6 +561,21 @@ static PasteManager *sharedInstance = nil;
 {
     NSNumber *value = [[NSNumber alloc] initWithBool:useEscapeCopy];
     return value;
+}
+
+- (void)setStartupPasteString:(NSString *)string
+{
+    startupPasteString = string;
+}
+
+- (void)setStartupPasteEnabled:(BOOL)enabled
+{
+    startupPasteEnabled = enabled;
+}
+
+- (BOOL)getStartupPasteEnabled
+{
+    return startupPasteEnabled;
 }
 
 - (IBAction)handleEscapeCopyMenu:(id)sender

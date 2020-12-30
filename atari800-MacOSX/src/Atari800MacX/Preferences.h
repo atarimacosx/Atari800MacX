@@ -291,6 +291,8 @@
 #define KeyjoyEnable @"KeyjoyEnable"
 #define UseAtariCursorKeys @"UseAtariCursorKeys"
 #define EscapeCopy @"EscapeCopy"
+#define StartupPasteEnable @"StartupPasteEnable"
+#define StartupPasteString @"StartupPasteString"
 
 #define MAX_MODEMS				8
 
@@ -601,6 +603,8 @@
     IBOutlet id gamepadNumHatsField;
 	IBOutlet id saveCurrentMediaButton;
 	IBOutlet id clearCurrentMediaButton;
+    IBOutlet id startupPasteEnableButton;
+    IBOutlet id startupPasteStringField;
 
     int padNum; /* Remember number of gamepad for ID */
     char bsdPaths[MAX_MODEMS][FILENAME_MAX];

@@ -285,6 +285,8 @@
                 <outlet property="side2UltimateFlashTypePulldown" destination="nry-aB-2fm" id="HnE-3I-kyj"/>
                 <outlet property="speedLimitButton" destination="344" id="3901"/>
                 <outlet property="spriteCollisionsButton" destination="4243" id="4244"/>
+                <outlet property="startupPasteEnableButton" destination="BRo-aW-a73" id="ZFP-zW-KAY"/>
+                <outlet property="startupPasteStringField" destination="1Zl-Tc-EOn" id="WYQ-rR-eHg"/>
                 <outlet property="tvModeMatrix" destination="296" id="315"/>
                 <outlet property="ultimate1MBFlashFileField" destination="L66-Kk-m97" id="fLk-DD-8pF"/>
                 <outlet property="useAlitrra1200XLRomButton" destination="WQF-lH-Skv" id="4r9-Db-fEk"/>
@@ -8794,7 +8796,75 @@ DQ
                     </textField>
                 </subviews>
             </view>
-            <point key="canvasLocation" x="238" y="1340"/>
+            <point key="canvasLocation" x="204" y="1349"/>
+        </window>
+        <window title="Startup Paste String" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="KDQ-R8-GrA" userLabel="Startup Paste String">
+            <windowStyleMask key="styleMask" titled="YES"/>
+            <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+            <rect key="contentRect" x="320" y="201" width="546" height="243"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
+            <value key="minSize" type="size" width="81" height="2"/>
+            <view key="contentView" id="uJn-1k-cbf">
+                <rect key="frame" x="0.0" y="0.0" width="546" height="243"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="xoL-JF-vd8">
+                        <rect key="frame" x="-2" y="101" width="140" height="42"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="String To Paste On   Emulator Startup" id="ul7-3i-2B8">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1Zl-Tc-EOn">
+                        <rect key="frame" x="144" y="63" width="382" height="118"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="VTZ-K8-Wyz">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="CiC-kd-lmq">
+                        <rect key="frame" x="189" y="13" width="84" height="32"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <buttonCell key="cell" type="push" title="OK" bezelStyle="rounded" alignment="center" state="on" borderStyle="border" inset="2" id="Veb-yM-DLy">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                            <string key="keyEquivalent" base64-UTF8="YES">
+DQ
+</string>
+                        </buttonCell>
+                        <connections>
+                            <action selector="configNameOK:" target="-2" id="a7u-jC-wkI"/>
+                        </connections>
+                    </button>
+                    <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="j4a-8S-xbO">
+                        <rect key="frame" x="273" y="13" width="84" height="32"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="Alg-Bh-SVT">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                            <string key="keyEquivalent" base64-UTF8="YES">
+Gw
+</string>
+                        </buttonCell>
+                        <connections>
+                            <action selector="revert:" target="-2" id="4AA-aY-Axl"/>
+                        </connections>
+                    </button>
+                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="BRo-aW-a73">
+                        <rect key="frame" x="142" y="207" width="237" height="18"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <buttonCell key="cell" type="check" title="Enable Startup String Paste" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="y0b-mz-uvR">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                    </button>
+                </subviews>
+            </view>
+            <point key="canvasLocation" x="123" y="1089.5"/>
         </window>
     </objects>
     <resources>

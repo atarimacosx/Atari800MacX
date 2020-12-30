@@ -574,6 +574,8 @@ static NSDictionary *defaultValues() {
                 [NSNumber numberWithBool:YES], KeyjoyEnable,
                 [NSNumber numberWithBool:YES],
                     EscapeCopy,
+                [NSNumber numberWithBool:NO], StartupPasteEnable,
+                @"", StartupPasteString,
                 nil];
     }
     return dict;
@@ -702,6 +704,8 @@ static Preferences *sharedInstance = nil;
 		modems = [NSMutableArray array];
 		[modems retain];
         [[PasteManager sharedInstance] setEscapeCopy:[[curValues objectForKey:EscapeCopy] boolValue]];
+        [[PasteManager sharedInstance] setStartupPasteEnabled:[[curValues objectForKey:StartupPasteEnable] boolValue]];
+        [[PasteManager sharedInstance] setStartupPasteString:[curValues objectForKey:StartupPasteString]];
     }
     return sharedInstance;
 }
@@ -5443,6 +5447,8 @@ static Preferences *sharedInstance = nil;
     getBoolDefault(CassFileEnabled);
     getBoolDefault(KeyjoyEnable);
     getBoolDefault(EscapeCopy);
+    getBoolDefault(StartupPasteEnable);
+    getStringDefault(StartupPasteString);
     getIntDefault(Joystick1Mode);
     getIntDefault(Joystick2Mode);
     getIntDefault(Joystick3Mode);
@@ -5748,6 +5754,8 @@ static Preferences *sharedInstance = nil;
     setBoolDefault(CassFileEnabled);
     setBoolDefault(KeyjoyEnable);
     setBoolDefault(EscapeCopy);
+    setBoolDefault(StartupPasteEnable);
+    setStringDefault(StartupPasteString);
     setIntDefault(Joystick1Mode);
     setIntDefault(Joystick2Mode);
     setIntDefault(Joystick3Mode);
@@ -6038,6 +6046,8 @@ static Preferences *sharedInstance = nil;
     setConfig(CassFileEnabled);
     setConfig(KeyjoyEnable);
     setConfig(EscapeCopy);
+    setConfig(StartupPasteEnable);
+    setConfig(StartupPasteString);
     setConfig(Joystick1Mode);
     setConfig(Joystick2Mode);
     setConfig(Joystick3Mode);
@@ -6426,6 +6436,8 @@ static Preferences *sharedInstance = nil;
     getConfig(CassFileEnabled);
     getConfig(KeyjoyEnable);
     getConfig(EscapeCopy);
+    getConfig(StartupPasteEnable);
+    getConfig(StartupPasteString);
     getConfig(Joystick1Mode);
     getConfig(Joystick2Mode);
     getConfig(Joystick3Mode);

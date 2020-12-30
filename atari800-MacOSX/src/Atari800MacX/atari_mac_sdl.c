@@ -272,6 +272,8 @@ extern void MediaManagerShowCreatePanel(void);
 extern void MediaManager80ColMode(int xep80Enabled, int af80Enabled, int bit3Enabled, int xep80);
 extern int  PasteManagerStartPaste(void);
 extern void PasteManagerStartCopy(unsigned char *string);
+extern void PasteManagerStartPasteWithString();
+extern int  PasteManagerStartupPasteEnabled(void);
 extern void PasteManagerUpdateEscapeCopyMenu(void);
 extern void SetDisplayManagerWidthMode(int widthMode);
 extern void SetDisplayManagerFps(int fpsOn);
@@ -5379,6 +5381,12 @@ int SDL_main(int argc, char **argv)
     kbhits = (Uint8 *) SDL_GetKeyboardState(&numKbstate);
 	
 	chdir("../");
+    
+    /* Start bootup paste, if any */
+    if (PasteManagerStartupPasteEnabled()) {
+        PasteManagerStartPasteWithString();
+        pasteState = PASTE_START;
+    }
 
     while (!done) {
         /* Handle joysticks and paddles */
