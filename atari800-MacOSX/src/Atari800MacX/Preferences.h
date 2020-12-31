@@ -711,6 +711,9 @@
 - (void) saveCurrentMediaAction:(id)sender;
 - (void) saveCurrentMedia:(char [][FILENAME_MAX]) disk_filename:(char *) cassette_filename:
 						(char *) cart_filename:(char *) cart2_filename;
+- (IBAction)startupPasteConfigure:(id)sender;
+- (IBAction)startupPasteOK:(id)sender;
+- (IBAction)startupPasteCancel:(id)sender;
 - (void)windowWillClose:(NSNotification *)notification;
 - (void)gamepadConfigChange:(id)sender;
 - (void)gamepadButtonChange:(id)sender;

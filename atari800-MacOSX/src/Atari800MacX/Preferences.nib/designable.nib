@@ -3925,6 +3925,17 @@ Command Path for Hx: Devices
                                                 <action selector="selectCartImage:" target="-2" id="D96-fi-lIx"/>
                                             </connections>
                                         </popUpButton>
+                                        <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0Mp-jE-XLG">
+                                            <rect key="frame" x="3" y="15" width="183" height="32"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <buttonCell key="cell" type="push" title="Startup Paste..." bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Fly-dx-sm4">
+                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <action selector="startupPasteConfigure:" target="-2" id="vQ2-s8-UKZ"/>
+                                            </connections>
+                                        </button>
                                     </subviews>
                                 </view>
                             </tabViewItem>
@@ -8837,7 +8848,7 @@ DQ
 </string>
                         </buttonCell>
                         <connections>
-                            <action selector="configNameOK:" target="-2" id="a7u-jC-wkI"/>
+                            <action selector="startupPasteOK:" target="-2" id="grN-kk-l7z"/>
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="j4a-8S-xbO">
@@ -8851,7 +8862,7 @@ Gw
 </string>
                         </buttonCell>
                         <connections>
-                            <action selector="revert:" target="-2" id="4AA-aY-Axl"/>
+                            <action selector="startupPasteCancel:" target="-2" id="Jjs-V4-LaE"/>
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="BRo-aW-a73">

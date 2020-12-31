@@ -4986,6 +4986,30 @@ static Preferences *sharedInstance = nil;
         }
     }
 
+- (IBAction)startupPasteConfigure:(id)sender
+{
+    [startupPasteEnableButton setState:[[displayedValues objectForKey:StartupPasteEnable] boolValue] ? NSOnState : NSOffState];
+    [startupPasteStringField setStringValue:[displayedValues objectForKey:StartupPasteString]];
+    [NSApp runModalForWindow:[startupPasteEnableButton window]];
+}
+
+- (IBAction)startupPasteOK:(id)sender
+{
+    if ([startupPasteEnableButton state] == NSOnState)
+        [displayedValues setObject:[[NSNumber alloc] initWithBool:YES] forKey:StartupPasteEnable];
+    else
+        [displayedValues setObject:[[NSNumber alloc] initWithBool:NO] forKey:StartupPasteEnable];
+    [displayedValues setObject:[startupPasteStringField stringValue] forKey:StartupPasteString];
+    [NSApp stopModal];
+    [[startupPasteEnableButton window] close];
+}
+
+- (IBAction)startupPasteCancel:(id)sender
+{
+    [NSApp stopModal];
+    [[startupPasteEnableButton window] close];
+}
+
 - (void)leftJoyConfigure:(id)sender
 {
     [leftJoyUpPulldown selectItemAtIndex:[[displayedValues objectForKey:LeftJoyUp] intValue]];
