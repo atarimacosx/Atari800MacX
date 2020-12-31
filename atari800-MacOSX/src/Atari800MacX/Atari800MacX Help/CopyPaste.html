@@ -182,9 +182,20 @@ are presented in the following table:<br><br>
         <td>f4</td>
     </tr>
     </tbody>
-</table>
+</table><br><br>
 
-<br><br><big style="text-decoration: underline;"><big>
+You may also insert delays into the paste string by using an escape sequence
+of the following form:<br><br>
+
+<tt>{delay-t}</tt><br><br>
+
+Where t is the number of emulator ticks to delay.  In NTSC mode is 1/60 of
+a second, and in PAL mode it is 1/50 of a second.  So to delay for one
+second in NTSC mode, you would use an escape sequence of:<br><br>
+
+<tt>{delay-60}</tt><br><br>
+
+<big style="text-decoration: underline;"><big>
     
 Copying Text<br></big></big><br>
 
@@ -206,5 +217,36 @@ emulated.<br>
 Escaping of characters is turned on by default, this may be toggled on/off
 by using the "Escape ATASCII on copy" menu item in the Edit menu.  When
 escaping is off, graphical ATASCII characters will be replaced by spaces.
-<big><big><span style="text-decoration: underline;"></span></big></big><br>
+<br><br>
+
+<big style="text-decoration: underline;"><big>
+    
+Pasting Text Automation<br></big></big><br>
+
+One of the ways to automate the emualtor is by using a feature which allows
+you to specify a string to be pasted to the emulatore when the application
+starts.  This option is accessed from the <a href="BootMediaTab.html">Boot
+Media Tab</a> of Preferences.  On that tab, there is a button named
+"Startup Paste...".  When it is pressed, you are presented with the following
+dialog box:<br><br>
+
+<img src="StartupString.jpg" title="" alt="" height="262" width="544"><br><br>
+    
+You may enter the string to be pasted in the text box, and the checkbox is
+used to enable/disable the paste operation on emulation startup.<br><br>
+
+Another way to use this feature for automation is to use AppleScript.  The
+following is an example AppleScript to paste a string into the
+emulator:<br>
+
+<pre><code>
+set the clipboard to "String to Paste to Emulator"
+
+tell application "System Events" to tell process "Atari800MacX"
+    tell menu bar item "Edit" of menu bar 1
+        click menu item "Paste" of menu 1
+    end tell
+end tell
+</code></pre>
+
 </body></html>
