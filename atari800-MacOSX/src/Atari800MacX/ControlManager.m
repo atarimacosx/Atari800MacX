@@ -41,6 +41,7 @@ extern int pauseEmulator;
 extern int requestPauseEmulator;
 extern int requestColdReset;
 extern int requestWarmReset;
+extern int requestToolReset;
 extern int requestSaveState;
 extern int requestLoadState;
 extern int requestLimitChange;
@@ -718,6 +719,14 @@ static int monitorRunFirstTime = 1;
 - (IBAction)warmReset:(id)sender
 {
     requestWarmReset = 1;
+}
+
+/*------------------------------------------------------------------------------
+*  toolResetPress - This method handles the reset button in the toolbar.
+*-----------------------------------------------------------------------------*/
+- (IBAction)toolResetPress:(id)sender
+{
+    requestToolReset = 1;
 }
 
 /*------------------------------------------------------------------------------

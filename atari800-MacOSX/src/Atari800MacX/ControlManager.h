@@ -142,6 +142,7 @@
 - (IBAction)pause:(id)sender;
 - (IBAction)saveState:(id)sender;
 - (IBAction)warmReset:(id)sender;
+- (IBAction)toolResetPress:(id)sender;
 - (int)fatalError;
 - (void)error:(NSString *)errorString;
 - (void)error2:(char *)error1:(char *)error2;

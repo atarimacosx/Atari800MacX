@@ -8,11 +8,11 @@
 #import "Atari800WindowController.h"
 #import "ControlManager.h"
 
-#define ColdButtonIdentifier @"ColdButton"
 #define WarmButtonIdentifier @"WarmButton"
 #define SelectButtonIdentifier @"SelectButton"
 #define OptionButtonIdentifier @"OptionButton"
 #define StartButtonIdentifier @"StartButton"
+#define BreakButtonIdentifier @"BreakButton"
 #define ClearButtonIdentifier @"ClearButton"
 #define InverseButtonIdentifier @"InverseButton"
 #define PopoverIdentifier @"Popover"
@@ -61,9 +61,9 @@
     
     if ([identifier isEqualToString:TopLevelGroup])
     {
-        NSButton *coldButton = [NSButton buttonWithTitle:NSLocalizedString(@"Power", @"") target:[ControlManager sharedInstance] action:@selector(coldReset:)];
+        NSButton *breakButton = [NSButton buttonWithTitle:NSLocalizedString(@"Break", @"") target:[ControlManager sharedInstance] action:@selector(breakPressed:)];
         
-       NSButton *warmButton = [NSButton buttonWithTitle:NSLocalizedString(@"Reset", @"") target:[ControlManager sharedInstance] action:@selector(warmReset:)];
+       NSButton *warmButton = [NSButton buttonWithTitle:NSLocalizedString(@"Reset", @"") target:[ControlManager sharedInstance] action:@selector(toolResetPress:)];
 
         warmButton.bezelColor = [NSColor colorWithSRGBRed:0.639 green:0.420 blue:0.2 alpha:1.0];
         style = [[NSMutableParagraphStyle alloc] init];
@@ -126,7 +126,7 @@
 
         NSButton *inverseButton = [NSButton buttonWithImage:[NSImage imageNamed:@"Atari400KeyRepro60Rounded"] target:[ControlManager sharedInstance] action:@selector(inversePressed:)];
         
-        NSStackView *stackView = [NSStackView stackViewWithViews:@[coldButton, warmButton, optionButton, selectButton, startButton, helpButton, clearButton, inverseButton]];
+        NSStackView *stackView = [NSStackView stackViewWithViews:@[warmButton, optionButton, selectButton, startButton, helpButton, breakButton, clearButton, inverseButton]];
         stackView.spacing = 1;
         NSCustomTouchBarItem *customItemForLabel =
             [[NSCustomTouchBarItem alloc] initWithIdentifier:TopLevelGroup];

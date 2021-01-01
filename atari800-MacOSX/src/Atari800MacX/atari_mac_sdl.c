@@ -155,6 +155,7 @@ int requestGrabMouse = 0;
 int requestScreenshot = 0;
 int requestColdReset = 0;
 int requestWarmReset = 0;
+int requestToolReset = 0;
 int requestSaveState = 0;
 int requestLoadState = 0;
 int requestLimitChange = 0;
@@ -4592,13 +4593,29 @@ void ProcessMacMenus()
         requestColdReset = 0;
         }
     if (requestWarmReset) {
-	    if (Atari800_disable_basic && disable_all_basic) {
-			/* Disable basic on a warmstart, even though the real atarixl
-			   didn't work this way */
-			GTIA_consol_override = 2;
-			}
+        if (Atari800_disable_basic && disable_all_basic) {
+            /* Disable basic on a warmstart, even though the real atarixl
+               didn't work this way */
+            GTIA_consol_override = 2;
+            }
         Atari800_Warmstart();
         requestWarmReset = 0;
+        }
+    if (requestToolReset) {
+        UInt8 *kbhits;
+        kbhits = (Uint8 *) SDL_GetKeyboardState(NULL);
+        if ((kbhits[SDL_SCANCODE_LSHIFT]) || (kbhits[SDL_SCANCODE_RSHIFT]))
+        {
+            Atari800_Coldstart();
+        } else {
+            if (Atari800_disable_basic && disable_all_basic) {
+                /* Disable basic on a warmstart, even though the real atarixl
+                   didn't work this way */
+                GTIA_consol_override = 2;
+                }
+            Atari800_Warmstart();
+        }
+        requestToolReset = 0;
         }
     if (requestSaveState) {
         StateSav_SaveAtariState(saveFilename, "wb", TRUE);
