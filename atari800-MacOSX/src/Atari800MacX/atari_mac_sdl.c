@@ -4604,17 +4604,17 @@ void ProcessMacMenus()
     if (requestToolReset) {
         UInt8 *kbhits;
         kbhits = (Uint8 *) SDL_GetKeyboardState(NULL);
-        if ((kbhits[SDL_SCANCODE_LSHIFT]) || (kbhits[SDL_SCANCODE_RSHIFT]))
-        {
+        if ((kbhits[SDL_SCANCODE_LSHIFT]) || (kbhits[SDL_SCANCODE_RSHIFT])) {
             Atari800_Coldstart();
-        } else {
+            }
+        else {
             if (Atari800_disable_basic && disable_all_basic) {
                 /* Disable basic on a warmstart, even though the real atarixl
                    didn't work this way */
                 GTIA_consol_override = 2;
                 }
             Atari800_Warmstart();
-        }
+            }
         requestToolReset = 0;
         }
     if (requestSaveState) {
