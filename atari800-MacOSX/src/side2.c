@@ -26,11 +26,14 @@ int SIDE2_have_rom = FALSE;
 int SIDE2_Flash_Type = 0;
 
 static UBYTE side2_rom[0x80000];
+
 #ifdef ATARI800MACX
+void init_side2(void);
 char side2_rom_filename[FILENAME_MAX] = Util_FILENAME_NOT_SET;
 char side2_nvram_filename[FILENAME_MAX] = Util_FILENAME_NOT_SET;
 char side2_compact_flash_filename[FILENAME_MAX] = Util_FILENAME_NOT_SET;
 #else
+static void init_side2(void);
 static char side_rom_filename[FILENAME_MAX] = Util_FILENAME_NOT_SET;
 static char side2_nvram_filename[FILENAME_MAX] = Util_FILENAME_NOT_SET;
 static char side2_compact_flash_filename[FILENAME_MAX] = Util_FILENAME_NOT_SET;

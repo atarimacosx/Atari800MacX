@@ -48,7 +48,9 @@ enum {
     Atari800_MACHINE_XLXE,
     Atari800_MACHINE_5200,
     /* Number of values in the emumerator */
-    Atari800_MACHINE_SIZE
+    Atari800_MACHINE_SIZE,
+    Atari800_MACHINE_OSA,
+    Atari800_MACHINE_OSB
 };
 /* Don't change this variable directly; use Atari800_SetMachineType() instead. */
 extern int Atari800_machine_type;

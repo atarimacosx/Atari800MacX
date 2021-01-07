@@ -142,10 +142,10 @@ void ESC_Run(UBYTE esc_code)
 	}
 #ifdef CRASH_MENU
 	CPU_regPC -= 2;
-	UI_crash_address = CPU_regPC;
-	UI_crash_afterCIM = CPU_regPC + 2;
-	UI_crash_code = MEMORY_dGetByte(UI_crash_address);
-	UI_Run();
+//	UI_crash_address = CPU_regPC;
+//	UI_crash_afterCIM = CPU_regPC + 2;
+//	UI_crash_code = MEMORY_dGetByte(UI_crash_address);
+	//UI_Run();
 #else /* CRASH_MENU */
 #ifndef ATARI800MACX
 	CPU_cim_encountered = 1;

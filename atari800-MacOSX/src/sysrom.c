@@ -23,8 +23,8 @@
  */
 
 #include "config.h"
-
 #include <ctype.h>
+#include "cfg.h"
 #ifdef HAVE_DIRENT_H
 #include <dirent.h>
 #endif
@@ -35,7 +35,7 @@
 
 #include "sysrom.h"
 
-#include "cfg.h"
+
 #include "crc32.h"
 #include "log.h"
 #include "memory.h"
@@ -719,7 +719,11 @@ static int MatchROMVersionParameter(char const *string, int const *allowed_vals,
 
 int SYSROM_ReadConfig(char *string, char *ptr)
 {
+#ifdef ATARI800MACX
+    int id=1;
+#else
     int id = CFG_MatchTextParameter(string, cfg_strings, SYSROM_LOADABLE_SIZE);
+#endif
     if (id >= 0) {
         /* For faster start, don't check if CRC matches. */
         Util_strlcpy(SYSROM_roms[id].filename, ptr, FILENAME_MAX);

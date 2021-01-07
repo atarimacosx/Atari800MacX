@@ -1,5 +1,9 @@
 #ifndef CFG_H_
 #define CFG_H_
+
+#include <stdio.h>
+
+
 /* Checks for "popular" filenames of ROM images in the specified directory
    and sets CFG_*_filename to the ones found.
    If only_if_not_set is TRUE, then CFG_*_filename is modified only when

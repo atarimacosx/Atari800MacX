@@ -60,8 +60,6 @@
 		2D17D9840F538B710027F526 /* cfg.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D17D9830F538B710027F526 /* cfg.h */; };
 		2D1A748A107A66C0000049E3 /* MemoryEditorTableView.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D1A7488107A66C0000049E3 /* MemoryEditorTableView.h */; };
 		2D1A748B107A66C0000049E3 /* MemoryEditorTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D1A7489107A66C0000049E3 /* MemoryEditorTableView.m */; };
-		2D20134221D45A5B005793AE /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D20134021D076AA005793AE /* SDL2.framework */; };
-		2D20134321D45A5B005793AE /* SDL2.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 2D20134021D076AA005793AE /* SDL2.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		2D27A624106BE2BF002AAAE7 /* DisasmTableView.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D27A622106BE2BF002AAAE7 /* DisasmTableView.h */; };
 		2D27A625106BE2BF002AAAE7 /* DisasmTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D27A623106BE2BF002AAAE7 /* DisasmTableView.m */; };
 		2D2EAFF80DEE1E8100271295 /* pbi.c in Sources */ = {isa = PBXBuildFile; fileRef = 2D2EAFEE0DEE1E8100271295 /* pbi.c */; };
@@ -339,6 +337,7 @@
 		77324B9224AC2CC50007CB07 /* close810snd.wav in Resources */ = {isa = PBXBuildFile; fileRef = 77324B9024AC2CC50007CB07 /* close810snd.wav */; };
 		77324B9324AC2CC50007CB07 /* open810snd.wav in Resources */ = {isa = PBXBuildFile; fileRef = 77324B9124AC2CC50007CB07 /* open810snd.wav */; };
 		77A5A9D521EC3B440098C3A5 /* lock.png in Resources */ = {isa = PBXBuildFile; fileRef = 77A5A9D421EC3B430098C3A5 /* lock.png */; };
+		77E41FEC25A6BB70005E9C28 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 77E41FEB25A6BB70005E9C28 /* SDL2.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -358,7 +357,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				2D20134321D45A5B005793AE /* SDL2.framework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -449,7 +447,6 @@
 		2D17D9830F538B710027F526 /* cfg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cfg.h; path = ../cfg.h; sourceTree = SOURCE_ROOT; };
 		2D1A7488107A66C0000049E3 /* MemoryEditorTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MemoryEditorTableView.h; sourceTree = SOURCE_ROOT; };
 		2D1A7489107A66C0000049E3 /* MemoryEditorTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MemoryEditorTableView.m; sourceTree = SOURCE_ROOT; };
-		2D20134021D076AA005793AE /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SDL2.framework; sourceTree = "<group>"; };
 		2D20E42008565D3600649DDC /* MonitorWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MonitorWindow.h; sourceTree = "<group>"; };
 		2D20E42108565D3600649DDC /* MonitorWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MonitorWindow.m; sourceTree = "<group>"; };
 		2D27A622106BE2BF002AAAE7 /* DisasmTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DisasmTableView.h; sourceTree = SOURCE_ROOT; };
@@ -660,6 +657,7 @@
 		77324B9024AC2CC50007CB07 /* close810snd.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = close810snd.wav; sourceTree = "<group>"; };
 		77324B9124AC2CC50007CB07 /* open810snd.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = open810snd.wav; sourceTree = "<group>"; };
 		77A5A9D421EC3B430098C3A5 /* lock.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lock.png; sourceTree = "<group>"; };
+		77E41FEB25A6BB70005E9C28 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SDL2.framework; sourceTree = "<group>"; };
 		F507FF78034EB78801A8C8B4 /* doc.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = doc.icns; sourceTree = "<group>"; };
 		F5176916034BFE7501A8C8B4 /* Atari800MacX Help */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = folder; path = "Atari800MacX Help"; sourceTree = "<group>"; };
 		F555833A030EF41401A8C8B4 /* config.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = SOURCE_ROOT; };
@@ -731,8 +729,8 @@
 			files = (
 				2DAEDBC709B69AED005FF181 /* Cocoa.framework in Frameworks */,
 				2DAEDBC809B69AED005FF181 /* IOKit.framework in Frameworks */,
-				2D20134221D45A5B005793AE /* SDL2.framework in Frameworks */,
 				2DDD85100AAA055D00DE182D /* Carbon.framework in Frameworks */,
+				77E41FEC25A6BB70005E9C28 /* SDL2.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -860,8 +858,8 @@
 		1058C7A2FEA54F0111CA2CBB /* Other Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				77E41FEB25A6BB70005E9C28 /* SDL2.framework */,
 				2DDD850F0AAA055D00DE182D /* Carbon.framework */,
-				2D20134021D076AA005793AE /* SDL2.framework */,
 				2D9863E407BED49700596C6B /* IOKit.framework */,
 				2DFB2BC808A99F86004EF21F /* OpenGL.framework */,
 				29B97325FDCFA39411CA2CEA /* Foundation.framework */,
@@ -1646,7 +1644,6 @@
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					.,
-					"$(HOME)/Library/Frameworks",
 					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_1)",
 					"$(PROJECT_DIR)",
 				);
@@ -1692,7 +1689,6 @@
 				CODE_SIGN_IDENTITY = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					.,
-					"$(HOME)/Library/Frameworks",
 					"/Users/markg/Atari800MacX/atari800-MacOSX-3.0/src/Atari800MacX",
 					"/Users/markg/Atari800MacX/atari800-MacOSX-3.0/SDL-1.2.9/Xcode/SDL/build",
 					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_1)",
@@ -1700,9 +1696,6 @@
 				);
 				"FRAMEWORK_SEARCH_PATHS[arch=*]" = (
 					.,
-					"$(HOME)/Library/Frameworks",
-					"/Users/markg/Atari800MacX/atari800-MacOSX-3.0/src/Atari800MacX",
-					"/Users/markg/Atari800MacX/atari800-MacOSX-3.0/SDL-1.2.9/Xcode/SDL/build",
 					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_1)",
 					"$(PROJECT_DIR)",
 				);
