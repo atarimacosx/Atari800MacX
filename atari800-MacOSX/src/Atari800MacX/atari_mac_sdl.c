@@ -1374,6 +1374,7 @@ int Atari_Keyboard_International(void)
     static int text_key = AKEY_NONE;
     int text_type;
     static int paste_char;
+    static int return_delay = 0;
     static unsigned char last_scancode;
 
     /* Check for presses in function keys window */
@@ -1518,6 +1519,9 @@ int Atari_Keyboard_International(void)
                     return AKEY_NONE;
                 } else
                     return last_scancode;
+            } else if (return_delay) {
+                return_delay--;
+                return AKEY_NONE;
             } else if (paste_char) {
                 paste_char--;
                 return AKEY_NONE;
@@ -1527,11 +1531,12 @@ int Atari_Keyboard_International(void)
                     pasteState = PASTE_END;
                     return AKEY_NONE;
                 }
-                if (last_scancode == AKEY_RETURN)
+                if (last_scancode == AKEY_RETURN) {
                     // Larger delay used for return to allow Atari program
                     // to process what happens upon return.
-                    paste_char = 10*PASTE_KEY_DELAY;
-                else if (last_scancode == AKEY_DELAY_PSEUDO) {
+                    paste_char = PASTE_KEY_DELAY;
+                    return_delay = 9*PASTE_KEY_DELAY;
+                } else if (last_scancode == AKEY_DELAY_PSEUDO) {
                     UBYTE byte1, byte2;
                     last_scancode = AKEY_NONE;
                     PasteManagerGetScancode(&byte1);
