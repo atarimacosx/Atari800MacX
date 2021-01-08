@@ -27,7 +27,9 @@ void *IMG_Image_Open(const char *path, int write, int solidState)
         is_vhd = 0;
     } else {
         is_vhd = (strcmp(ext+1, "vhd") == 0) ||
-                 (strcmp(ext+1, "VHD") == 0);
+                 (strcmp(ext+1, "VHD") == 0) ||
+                 (strcmp(ext+1, "img") == 0) ||
+                 (strcmp(ext+1, "IMG") == 0);
     }
     
     if (is_vhd) {
