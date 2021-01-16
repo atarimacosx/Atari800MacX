@@ -2419,7 +2419,7 @@ NSImage *disketteImage;
            r = [cartImageSecondInsertButton frame];
            r.size.width = 96.0;
            [cartImageSecondInsertButton setFrame:r];
-           [cartImageSecondInsertButton setAction:@selector(cartSecondStatusChange::)];
+           [cartImageSecondInsertButton setAction:@selector(cartSecondStatusChange:)];
        }
            
     if (ULTIMATE_enabled) {
