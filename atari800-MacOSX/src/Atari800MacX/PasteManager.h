@@ -15,8 +15,8 @@
 	NSString *pasteString;
     int charCount;
     char copyBuffer[COPY_BUFFER_SIZE];
-    UInt8 pasteBuffer[PASTE_BUFFER_SIZE];
     int pasteIndex;
+    NSMutableArray *pasteBuffer;
     BOOL useEscapeCopy;
     NSString *startupPasteString;
     BOOL startupPasteEnabled;

@@ -202,7 +202,7 @@ static PasteManager *sharedInstance = nil;
 - (int)getScancode:(unsigned char *) code
 {
     if (pasteIndex < charCount) {
-        *code = pasteBuffer[pasteIndex];
+        *code = [pasteBuffer[pasteIndex] unsignedCharValue];
         pasteIndex++;
         return(TRUE);
         }
@@ -220,6 +220,7 @@ static PasteManager *sharedInstance = nil;
 		pasteString = [pb stringForType:bestType];
         charCount = 0;
         [self pasteStringToKeys];
+        charCount = [pasteBuffer count];
         pasteIndex = 0;
 		return TRUE;
 		}
@@ -233,8 +234,8 @@ static PasteManager *sharedInstance = nil;
 - (void)startPasteWithString
 {
     pasteString = startupPasteString;
-    charCount = 0;
     [self pasteStringToKeys];
+    charCount = [pasteBuffer count];
     pasteIndex = 0;
 }
 
@@ -394,6 +395,10 @@ static PasteManager *sharedInstance = nil;
     char  name[64];
     char  *pname;
 
+    if (pasteBuffer)
+        [pasteBuffer release];
+    pasteBuffer = [NSMutableArray arrayWithCapacity:2048];
+    [pasteBuffer retain];
     char *t = (char *)[pasteString UTF8String];
     char c;
     
@@ -448,32 +453,26 @@ static PasteManager *sharedInstance = nil;
                 }
                 
                 if (strncmp(pname,"select",6) == 0) {
-                    pasteBuffer[charCount] = AKEY_SELECT_PSEUDO;
-                    charCount++;
+                    [pasteBuffer addObject:[NSNumber numberWithUnsignedChar:AKEY_SELECT_PSEUDO]];
                     break;
                 }
                 
                 if (strncmp(pname,"start",5) == 0) {
-                    pasteBuffer[charCount] = AKEY_START_PSEUDO;
-                    charCount++;
+                    [pasteBuffer addObject:[NSNumber numberWithUnsignedChar:AKEY_START_PSEUDO]];
                     break;
                 }
                 
                 if (strncmp(pname,"option",6) == 0) {
-                    pasteBuffer[charCount] = AKEY_OPTION_PSEUDO;
-                    charCount++;
+                    [pasteBuffer addObject:[NSNumber numberWithUnsignedChar:AKEY_OPTION_PSEUDO]];
                     break;
                 }
                 
                 if (strncmp(pname,"delay-",6) == 0) {
                     pname += 6;
                     int delayTicks = atoi(pname) & 0xFFFF;
-                    if (charCount < 2046) {
-                        pasteBuffer[charCount] = AKEY_DELAY_PSEUDO;
-                        pasteBuffer[charCount+1] = (delayTicks & 0xFF00) >> 8;
-                        pasteBuffer[charCount+2] = delayTicks & 0x00FF;
-                        charCount += 3;
-                    }
+                    [pasteBuffer addObject:[NSNumber numberWithUnsignedChar:AKEY_DELAY_PSEUDO]];
+                    [pasteBuffer addObject:[NSNumber numberWithUnsignedChar:((delayTicks & 0xFF00) >> 8)]];
+                    [pasteBuffer addObject:[NSNumber numberWithUnsignedChar:(delayTicks & 0x00FF)]];
                     break;
                 }
                 
@@ -484,11 +483,7 @@ static PasteManager *sharedInstance = nil;
                     UInt8 scancode = [scannumber intValue];
                     if (scancodeModifier)
                         scancode = (scancode & 0x3F) | scancodeModifier;
-
-                    if (charCount < 2048) {
-                        pasteBuffer[charCount] = scancode;
-                        charCount++;
-                    }
+                    [pasteBuffer addObject:[NSNumber numberWithUnsignedChar:scancode]];
                 }
 
                 scancodeModifier = 0;
@@ -526,9 +521,8 @@ static PasteManager *sharedInstance = nil;
                 break;
         }
 
-        if (scancode != InvalidScancode && charCount < 2048) {
-            pasteBuffer[charCount] = scancode;
-            charCount++;
+        if (scancode != InvalidScancode) {
+            [pasteBuffer addObject:[NSNumber numberWithUnsignedChar:scancode]];
         }
         
         scancodeModifier = 0;
