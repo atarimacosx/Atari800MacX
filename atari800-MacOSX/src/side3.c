@@ -430,23 +430,74 @@ void SIDE2_D5PutByte(UWORD addr, UBYTE byte)
 
 void SIDE2_ColdStart(void)
 {
-    Coldstarted = TRUE;
-    // Reset RTC Chip
+    mFlashCtrl.ColdReset();
+    mRTC.ColdReset();
     CDS1305_ColdReset(rtc);
 
-    Reset_Cart_Bank();
-    SIDE2_SDX_Switch_Change(SIDE2_SDX_Mode_Switch);
+    memset(ram, 0xFF, sizeof(ram));
 
-    IDE_Reset = TRUE;
-    IDE_Enabled = TRUE;
+    DMA_From_SD = false;
+    DMA_Active = false;
+    DMA_Src_Address = 0;
+    DMA_Dst_Address = 0;
+    DMA_Counter = 0;
+    DMA_Src_Step = 1;
+    DMA_Dst_Step = 1;
+    DMA_And_Mask = 0xFF;
+    DMA_Xor_Mask = 0;
 
-    // If the CF card is absent, the removed flag is always set and can't be
-    // cleared. If it's present, the removed flag is cleared on powerup.
-    IDE_Removed = !SIDE2_Block_Device;
+    Emu_CCTL_Base = 0;
+    Emu_CCTL_Mask = 0;
+    Emu_Address_Mask = 0;
+    Emu_Data_Mask = 0;
+    Emu_Disable_Mask_A = 0;
+    Emu_Disable_Mask_B = 0;
+    Emu_Feature = 0;
+    Emu_Control = 0;
+    Emu_Control2 = 0;
+    Emu_Bank_A = 0;
+    Emu_Bank_B = 0;
+    Emu_Bank = 0;
+    Emu_Data = 0;
+    Emu_Disabled_A = FALSE;
+    Emu_Disabled_B = FALSE;
+    Emu_Locked = FALSE;
 
-    Update_IDE_Reset();
-    
-    MEMORY_SetFlashRoutines(SIDE2_Flash_Read, SIDE2_Flash_Write);
+    LED_Brightness = 80;
+
+    Emu_Cart_Enable_Requested = FALSE;
+    UpdateEmuCartEnabled();
+
+    // The ROM/flash bank A register is not reset by the push button, so we
+    // must do it explicitly for cold reset.
+    Bank_Flash_A = 0;
+    Flash_Offset_A = 0;
+
+    ResetCartBank();
+
+    Register_Mode = Primary;
+    Aperture_Enable = FALSE;
+    LED_Green_Manual_Enabled = FALSE;
+    Cold_Start_Flag = TRUE;
+    Button_Pressed = FALSE;
+    SD_Status &= 0x40;
+    SD_Status |= 0x05;
+
+    // The hardware resets bit 7 = 1 and doesn't clear it if an SD card is inserted.
+    // SIDE3.SYS 4.03 relies on this or it reports No Media on boot.
+    if (SIDE3_Block_Device)
+        SD_Status |= 0x80;
+
+    ResetSD();
+
+    SD_Next_Transfer_Time = 0;
+    UpdateLEDIntensity();
+    UpdateLEDGreen();
+    UpdateLED();
+
+    MEMORY_SetFlashRoutines(SIDE3_Flash_Read, SIDE3_Flash_Write);
+
+
 }
 
 void SIDE2_Set_Cart_Enables(int leftEnable, int rightEnable) {
