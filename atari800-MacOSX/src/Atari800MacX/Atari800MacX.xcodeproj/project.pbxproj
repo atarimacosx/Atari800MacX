@@ -121,6 +121,8 @@
 		2D9627CB106C43700081F384 /* BreakpointCurrentLine.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D9627CA106C43700081F384 /* BreakpointCurrentLine.png */; };
 		2D975D3824E388A800B8A7F5 /* Atari800WindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D975D3624E388A700B8A7F5 /* Atari800WindowController.h */; };
 		2D975D3924E388A800B8A7F5 /* Atari800WindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D975D3724E388A700B8A7F5 /* Atari800WindowController.m */; };
+		2DA4926E25C76CFE00817A39 /* scheduler.h in Headers */ = {isa = PBXBuildFile; fileRef = 2DA4926C25C76CFE00817A39 /* scheduler.h */; };
+		2DA4926F25C76CFE00817A39 /* scheduler.c in Sources */ = {isa = PBXBuildFile; fileRef = 2DA4926D25C76CFE00817A39 /* scheduler.c */; };
 		2DA5816309C5F38700331696 /* devices.c in Sources */ = {isa = PBXBuildFile; fileRef = 2DA5816209C5F38700331696 /* devices.c */; };
 		2DA5F7BD24D090E3002EBBFA /* sysrom.c in Sources */ = {isa = PBXBuildFile; fileRef = 2DA5F7BB24D090E2002EBBFA /* sysrom.c */; };
 		2DA5F7BE24D090E3002EBBFA /* sysrom.h in Headers */ = {isa = PBXBuildFile; fileRef = 2DA5F7BC24D090E3002EBBFA /* sysrom.h */; };
@@ -559,6 +561,8 @@
 		2D9B7BBF07F618C80059298E /* PrintableGraphics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrintableGraphics.h; sourceTree = "<group>"; };
 		2D9B7BC007F618C80059298E /* PrintableGraphics.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PrintableGraphics.m; sourceTree = "<group>"; };
 		2DA416410844552E00EA7648 /* PrintOutputConfirm.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = PrintOutputConfirm.nib; sourceTree = SOURCE_ROOT; };
+		2DA4926C25C76CFE00817A39 /* scheduler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = scheduler.h; path = ../scheduler.h; sourceTree = "<group>"; };
+		2DA4926D25C76CFE00817A39 /* scheduler.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = scheduler.c; path = ../scheduler.c; sourceTree = "<group>"; };
 		2DA5816209C5F38700331696 /* devices.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = devices.c; path = ../devices.c; sourceTree = SOURCE_ROOT; };
 		2DA5F7BB24D090E2002EBBFA /* sysrom.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = sysrom.c; path = ../sysrom.c; sourceTree = "<group>"; };
 		2DA5F7BC24D090E3002EBBFA /* sysrom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sysrom.h; path = ../sysrom.h; sourceTree = "<group>"; };
@@ -1018,6 +1022,8 @@
 				2DE7FC59250DCC01000C2DAD /* side2.h */,
 				F5558359030EF4CD01A8C8B4 /* sio.h */,
 				2D1668190F51F08700A78B94 /* sio.c */,
+				2DA4926D25C76CFE00817A39 /* scheduler.c */,
+				2DA4926C25C76CFE00817A39 /* scheduler.h */,
 				2DF62CAA084D728600BBD3D2 /* screen.h */,
 				2D16681B0F51F0A200A78B94 /* sndsave.c */,
 				2D16681C0F51F0A200A78B94 /* sndsave.h */,
@@ -1195,6 +1201,7 @@
 				2DAEDAFD09B69AED005FF181 /* pokey.h in Headers */,
 				2DAEDAFE09B69AED005FF181 /* platform.h in Headers */,
 				2DAEDAFF09B69AED005FF181 /* pia.h in Headers */,
+				2DA4926E25C76CFE00817A39 /* scheduler.h in Headers */,
 				2DAEDB0009B69AED005FF181 /* monitor.h in Headers */,
 				2DAEDB0209B69AED005FF181 /* statesav.h in Headers */,
 				2DAEDB0309B69AED005FF181 /* antic.h in Headers */,
@@ -1507,6 +1514,7 @@
 				2D6A0BEB251C21050062B581 /* img_raw.c in Sources */,
 				2DE6EB7C24CE197000A55386 /* altirraos_800.c in Sources */,
 				2DAEDBC109B69AED005FF181 /* SectorEditorDataSource.m in Sources */,
+				2DA4926F25C76CFE00817A39 /* scheduler.c in Sources */,
 				2DAEDBC209B69AED005FF181 /* SectorEditorWindow.m in Sources */,
 				2DAEDBC309B69AED005FF181 /* SectorEditorAsciiFieldCell.m in Sources */,
 				2DAEDBC409B69AED005FF181 /* util.c in Sources */,

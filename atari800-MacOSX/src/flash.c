@@ -25,6 +25,8 @@
 #define printf(fmt, ...) (0)
 #endif
 
+void SectorErase(FlashEmu *flash, ULONG address);
+
 FlashEmu *Flash_Init(void *mem, int type) {
     FlashEmu *flash = (FlashEmu *) malloc(sizeof(FlashEmu));
     
@@ -53,6 +55,8 @@ FlashEmu *Flash_Init(void *mem, int type) {
         case Flash_TypeS29GL01P:
         case Flash_TypeS29GL512P:
         case Flash_TypeS29GL256P:
+        case Flash_TypeM29W800DT:
+        case Flash_TypeMX29LV640DT:
             flash->A12iUnlock = TRUE;
             break;
     }
@@ -66,6 +70,8 @@ FlashEmu *Flash_Init(void *mem, int type) {
         case Flash_TypeAm29F010B:
         case Flash_TypeM29F010B:
         case Flash_TypeHY29F040A:
+        case Flash_TypeM29W800DT:
+        case Flash_TypeMX29LV640DT:
             flash->SectorEraseTimeoutCycles = 1;
             break;
 
@@ -97,6 +103,10 @@ void Flash_Cold_Reset(FlashEmu *flash) {
     flash->CommandPhase = 0;
 
     flash->ToggleBits = 0;
+}
+
+int Flash_Is_Control_Read_Enabled(FlashEmu *flash) {
+    return flash->ReadMode != ReadMode_Normal;
 }
 
 int Flash_Read_Byte(FlashEmu *flash, uint32_t address, uint8_t *data) {
@@ -302,6 +312,13 @@ int Flash_Debug_Read_Byte(FlashEmu *flash, uint32_t address, uint8_t *data) {
                         case Flash_TypeHY29F040A:
                             *data = 0xAD;    // XX00 Manufacturer ID: Hynix (Hyundai)
                             break;
+                        case Flash_TypeM29W800DT:
+                            data = 0x20;    // XX00 Manufacturer ID: Numonyx
+                            break;
+
+                        case Flash_TypeMX29LV640DT:
+                            data = 0xC2;    // XX00 Manufacturer ID: Macronix
+                            break;
                     }
                     break;
 
@@ -353,6 +370,36 @@ int Flash_Debug_Read_Byte(FlashEmu *flash, uint32_t address, uint8_t *data) {
 
                         case Flash_TypeHY29F040A:
                             *data = 0xA4;
+                            break;
+                        
+                        case Flash_TypeM29W800DT:
+                            data = 0xD7;
+                            break;
+
+                        case Flash_TypeMX29LV640DT:
+                            data = 0xC2;
+                            break;
+                    }
+                    break;
+
+                case 0x02:
+                    switch(flash->FlashType) {
+                        case Flash_TypeMX29LV640DT:
+                            data = 0xC9;
+                            break;
+                        default:
+                            data = 0x00;    // XX02 Sector Protect Verify: 00 not protected
+                            break;
+                    }
+                    break;
+
+                case 0x03:
+                    switch(flash->FlashType) {
+                        case Flash_TypeMX29LV640DT:
+                            data = 0xC9;
+                            break;
+                        default:
+                            data = 0x00;
                             break;
                     }
                     break;
@@ -428,6 +475,8 @@ int Flash_Write_Byte(FlashEmu *flash, uint32_t address, uint8_t value) {
 
                 case Flash_TypeS29GL01P:
                 case Flash_TypeS29GL512P:
+                case Flash_TypeM29W800DT:
+                case Flash_TypeMX29LV640DT:
                 case Flash_TypeS29GL256P:
                     if ((address & 0xFFF) == 0xAAA && value == 0xAA)
                         flash->CommandPhase = 1;
@@ -448,6 +497,8 @@ int Flash_Write_Byte(FlashEmu *flash, uint32_t address, uint8_t value) {
                     case Flash_TypeS29GL01P:
                     case Flash_TypeS29GL512P:
                     case Flash_TypeS29GL256P:
+                    case Flash_TypeM29W800DT:
+                    case Flash_TypeMX29LV640DT:
                         if ((address & 0xFFF) == 0x555)
                             flash->CommandPhase = 2;
                         break;
@@ -592,6 +643,11 @@ int Flash_Write_Byte(FlashEmu *flash, uint32_t address, uint8_t value) {
                     case Flash_TypeBM29F040:
                     case Flash_TypeHY29F040A:
                         memset(flash->Memory, 0xFF, 0x80000);
+                        break;
+
+                    case Flash_TypeM29W800DT:
+                    case Flash_TypeMX29LV640DT:
+                        memset(flash->Memory, 0xFF, 0x800000);        // 8M (64Mbit)
                         break;
 
                     case Flash_TypeAm29F016D:
@@ -909,4 +965,101 @@ int Flash_Write_Byte(FlashEmu *flash, uint32_t address, uint8_t value) {
     }
 
     return FALSE;
+}
+
+void SectorErase(FlashEmu *flash, ULONG address) {
+    switch(flash->FlashType) {
+        case Flash_TypeAm29F010:
+        case Flash_TypeAm29F010B:
+        case Flash_TypeM29F010B:
+            address &= 0x1C000;
+            memset(flash->Memory + address, 0xFF, 0x4000);
+            printf("Erasing sector $%05X-%05X\n", address, address + 0x3FFF);
+            break;
+        case Flash_TypeAm29F040:
+        case Flash_TypeAm29F040B:
+        case Flash_TypeA29040:
+        case Flash_TypeBM29F040:
+        case Flash_TypeHY29F040A:
+            address &= 0x70000;
+            memset(flash->Memory + address, 0xFF, 0x10000);
+            printf("Erasing sector $%05X-%05X\n", address, address + 0xFFFF);
+            break;
+        case Flash_TypeSST39SF040:
+            address &= 0x7F000;
+            memset(flash->Memory + address, 0xFF, 0x1000);
+            printf("Erasing sector $%05X-%05X\n", address, address + 0xFFF);
+            break;
+        case Flash_TypeAm29F016D:
+            address &= 0x1F0000;
+            memset(flash->Memory + address, 0xFF, 0x10000);
+            printf("Erasing sector $%06X-%06X\n", address, address + 0xFFFF);
+            break;
+        case Flash_TypeAm29F032B:
+            address &= 0x3F0000;
+            memset(flash->Memory + address, 0xFF, 0x10000);
+            printf("Erasing sector $%06X-%06X\n", address, address + 0xFFFF);
+            break;
+        case Flash_TypeS29GL01P:
+            address &= 0x7FF0000;
+            memset(flash->Memory + address, 0xFF, 0x20000);
+            printf("Erasing sector $%07X-%07X\n", address, address + 0x1FFFF);
+            break;
+        case Flash_TypeS29GL512P:
+            address &= 0x3FF0000;
+            memset(flash->Memory + address, 0xFF, 0x20000);
+            printf("Erasing sector $%07X-%07X\n", address, address + 0x1FFFF);
+            break;
+        case Flash_TypeS29GL256P:
+            address &= 0x1FF0000;
+            memset(flash->Memory + address, 0xFF, 0x20000);
+            printf("Erasing sector $%07X-%07X\n", address, address + 0x1FFFF);
+            break;
+        case Flash_TypeM29W800DT:
+            {
+                // All blocks are 64K in the M29W800DT, except for the last 64K which
+                // is subdivided into 32K, 16K, 4K, 4K, and 8K, in that order.
+                ULONG blockSize = 0x10000;
+
+                address &= 0x7FF000;
+                if (address < 0x7F0000) {
+                    address &= 0x7F0000;
+                } else if (address < 0x7F8000) {
+                    address = 0x7F0000;
+                    blockSize = 0x8000;
+                } else if (address < 0x7FC000) {
+                    address = 0x7F8000;
+                    blockSize = 0x4000;
+                } else if (address < 0x7FD000) {
+                    address = 0x7FC000;
+                    blockSize = 0x1000;
+                } else if (address < 0x7FE000) {
+                    address = 0x7FD000;
+                    blockSize = 0x1000;
+                } else {
+                    address = 0x7FE000;
+                    blockSize = 0x2000;
+                }
+
+                memset(flash->Memory + address, 0xFF, blockSize);
+                printf("Erasing block $%07X-%07X\n", address, address + blockSize - 1);
+            }
+            break;
+        case Flash_TypeMX29LV640DT:
+            {
+                // All blocks are 64K in the MX29LV640D, except for the last 64K which
+                // is subdivided into 8K blocks.
+                ULONG blockSize = 0x10000;
+
+                address &= 0x7FE000;
+                if (address < 0x7F0000)
+                    address &= 0x7F0000;
+                else
+                    blockSize = 0x2000;
+
+                memset(flash->Memory + address, 0xFF, blockSize);
+                printf("Erasing block $%07X-%07X\n", address, address + blockSize - 1);
+            }
+            break;
+    }
 }

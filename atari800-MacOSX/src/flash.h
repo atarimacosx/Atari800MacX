@@ -34,6 +34,8 @@ enum FlashType {
 	Flash_TypeBM29F040,	// BRIGHT 512K x 8-bit
 	Flash_TypeM29F010B, 	// STMicroelectronics 128K x 8-bit (then Numonyx, now Micron)
 	Flash_TypeHY29F040A,	// Hynix HY29F040A 512K x 8-bit
+    Flash_TypeM29W800DT,    // Numonyx 1M x 8-bit, top device
+    Flash_TypeMX29LV640DT,// Macronyx 1M x 8-bit, top device
 };
 
 enum ReadMode {
@@ -67,4 +69,8 @@ void Flash_Cold_Reset(FlashEmu *Flash);
 int Flash_Read_Byte(FlashEmu *flash, uint32_t address, uint8_t *data);
 int Flash_Debug_Read_Byte(FlashEmu *flash, uint32_t address, uint8_t *data);
 int Flash_Write_Byte(FlashEmu *flash, uint32_t address, uint8_t value);
+int Flash_Is_Control_Read_Enabled(FlashEmu *flash);
+
+
+
 
