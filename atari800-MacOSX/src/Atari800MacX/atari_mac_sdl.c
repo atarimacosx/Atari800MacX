@@ -574,7 +574,7 @@ static int capsLockPrePasteState = CAPS_UPPER;
 #define PASTE_IN_PROG 2
 #define PASTE_END     3
 #define PASTE_DONE	  4
-#define PASTE_KEY_DELAY  4
+#define PASTE_KEY_DELAY  8
 #define FUNCTION_KEY_PRESS_DURATION 10
 static int pasteState = PASTE_IDLE;
 
