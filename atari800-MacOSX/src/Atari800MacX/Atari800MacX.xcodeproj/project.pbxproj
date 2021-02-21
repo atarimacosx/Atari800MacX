@@ -64,6 +64,8 @@
 		2D20134321D45A5B005793AE /* SDL2.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 2D20134021D076AA005793AE /* SDL2.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		2D27A624106BE2BF002AAAE7 /* DisasmTableView.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D27A622106BE2BF002AAAE7 /* DisasmTableView.h */; };
 		2D27A625106BE2BF002AAAE7 /* DisasmTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D27A623106BE2BF002AAAE7 /* DisasmTableView.m */; };
+		2D2C04FB25E1EA63000FF6BA /* rtcmcp7951x.c in Sources */ = {isa = PBXBuildFile; fileRef = 2D2C04F925E1EA63000FF6BA /* rtcmcp7951x.c */; };
+		2D2C04FC25E1EA63000FF6BA /* rtcmcp7951x.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D2C04FA25E1EA63000FF6BA /* rtcmcp7951x.h */; };
 		2D2EAFF80DEE1E8100271295 /* pbi.c in Sources */ = {isa = PBXBuildFile; fileRef = 2D2EAFEE0DEE1E8100271295 /* pbi.c */; };
 		2D2EAFF90DEE1E8100271295 /* pbi.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D2EAFEF0DEE1E8100271295 /* pbi.h */; };
 		2D2EB0070DEE1F9D00271295 /* votrax.c in Sources */ = {isa = PBXBuildFile; fileRef = 2D2EB0050DEE1F9D00271295 /* votrax.c */; };
@@ -456,6 +458,8 @@
 		2D20E42108565D3600649DDC /* MonitorWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MonitorWindow.m; sourceTree = "<group>"; };
 		2D27A622106BE2BF002AAAE7 /* DisasmTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DisasmTableView.h; sourceTree = SOURCE_ROOT; };
 		2D27A623106BE2BF002AAAE7 /* DisasmTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DisasmTableView.m; sourceTree = SOURCE_ROOT; };
+		2D2C04F925E1EA63000FF6BA /* rtcmcp7951x.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = rtcmcp7951x.c; path = ../rtcmcp7951x.c; sourceTree = "<group>"; };
+		2D2C04FA25E1EA63000FF6BA /* rtcmcp7951x.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = rtcmcp7951x.h; path = ../rtcmcp7951x.h; sourceTree = "<group>"; };
 		2D2EAFEE0DEE1E8100271295 /* pbi.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pbi.c; path = ../pbi.c; sourceTree = SOURCE_ROOT; };
 		2D2EAFEF0DEE1E8100271295 /* pbi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pbi.h; path = ../pbi.h; sourceTree = SOURCE_ROOT; };
 		2D2EB0050DEE1F9D00271295 /* votrax.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = votrax.c; path = ../votrax.c; sourceTree = SOURCE_ROOT; };
@@ -1017,6 +1021,8 @@
 				2D10A79609B0E209001F913C /* rdevice.c */,
 				2D10A79709B0E209001F913C /* rdevice.h */,
 				2D63725724F73FB600905B2E /* rtcds1305.c */,
+				2D2C04F925E1EA63000FF6BA /* rtcmcp7951x.c */,
+				2D2C04FA25E1EA63000FF6BA /* rtcmcp7951x.h */,
 				2D63725924F741D900905B2E /* rtcds1305.h */,
 				2DE7FC5A250DCC01000C2DAD /* side2.c */,
 				2DE7FC59250DCC01000C2DAD /* side2.h */,
@@ -1315,6 +1321,7 @@
 				2D0BA11A107D6EF000DEF450 /* LabelDataSource.h in Headers */,
 				2D0BA125107D724600DEF450 /* Label.h in Headers */,
 				2D0325CF10853FC200983A3E /* PiaDataSource.h in Headers */,
+				2D2C04FC25E1EA63000FF6BA /* rtcmcp7951x.h in Headers */,
 				2D0325F610854BEB00983A3E /* RegDataSource.h in Headers */,
 				2D0326961085649200983A3E /* AnticDataSource.h in Headers */,
 				2D0326B91085684F00983A3E /* GtiaDataSource.h in Headers */,
@@ -1569,6 +1576,7 @@
 				2D32203B25885D4500CF099D /* vec.c in Sources */,
 				2DA74FB210782987008F0171 /* WatchTableView.m in Sources */,
 				2D1A748B107A66C0000049E3 /* MemoryEditorTableView.m in Sources */,
+				2D2C04FB25E1EA63000FF6BA /* rtcmcp7951x.c in Sources */,
 				2D0BA11B107D6EF000DEF450 /* LabelDataSource.m in Sources */,
 				2D0BA126107D724600DEF450 /* Label.m in Sources */,
 				2DA5F7BD24D090E3002EBBFA /* sysrom.c in Sources */,
