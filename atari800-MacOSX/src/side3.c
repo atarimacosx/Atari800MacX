@@ -14,7 +14,7 @@
 #include "ide.h"
 #include "log.h"
 #include "memory.h"
-#include "rtcds1305.h"
+#include "rtccmp7951x.h"
 #include "util.h"
 #include "pia.h"
 #include "flash.h"
@@ -81,7 +81,7 @@ static enum RegisterMode Register_Mode = Register_Mode_Primary;
 
 static UBYTE SD_Status = 0x00;       // $D5F3 primary set
 static UBYTE SD_CRC7 = 0;
-uint64 SD_Next_Transfer_Time = 0;
+static uint64 SD_Next_Transfer_Time = 0;
 static UBYTE SD_Prev_Read = 0;
 static UBYTE SD_Next_Read = 0;
 
@@ -217,7 +217,7 @@ static void init_side3(void)
         SIDE2_Block_Device = TRUE;
     }
         
-    flash = Flash_Init(side2_rom, Flash_TypeMX29LV640DT);
+    flash = Flash_Init(side3_rom, Flash_TypeMX29LV640DT);
 }
 
 void SIDE2_Remove_Block_Device(void)
@@ -230,7 +230,7 @@ void SIDE2_Remove_Block_Device(void)
     }
 }
 
-int SIDE2_Add_Block_Device(char *filename) {
+int SIDE3_Add_Block_Device(char *filename) {
     if (ide == NULL ) {
         ide = IDE_Init();
     }
@@ -292,7 +292,7 @@ int SIDE3_Save_Rom(char *filename)
 int SIDE3_Initialise(int *argc, char *argv[])
 {
     init_side3();
-    rtc = CDS1305_Init();
+    rtc = MCP7951X_Init();
     LoadNVRAM();
 
     return TRUE;
@@ -301,7 +301,7 @@ int SIDE3_Initialise(int *argc, char *argv[])
 void SIDE3_Exit(void)
 {
     SaveNVRAM();
-    CDS1305_Exit(rtc);
+    MCP7951X_Init(rtc);
 }
 
 void SIDE2_SDX_Switch_Change(int state)
@@ -550,7 +550,7 @@ void SIDE2_D5PutByte(UWORD addr, UBYTE byte)
                         UBTYE delta = SD_Status ^ value;
 
                         if (delta & 0x04)
-                            mRTC.Reselect();
+                            MCP7951X_Reselect(rtc);
 
                         SD_Status = (SD_Status & 0x42) + (value & 0xBD);
 
@@ -868,44 +868,44 @@ void UpdateWindowA() {
         switch(Emu_Control & EC_Mode) {
             case 0:     // 8/16K mode
             default:
-                effectiveBank = mEmuBankA;
+                effectiveBank = EmuBankA;
                 break;
             case 1:     // Williams mode
                 effectiveBank = 0;
                 break;
             case 2:     // XEGS/BB mode
-                effectiveBank = mEmuBank;
+                effectiveBank = EmuBank;
                 break;
             case 4:     // MegaCart mode
-                effectiveBank = mEmuBank << 1;
+                effectiveBank = EmuBank << 1;
                 break;
         }
 
-        const bool readOnly = (mBankRAMWriteProtect & 1) != 0;
-        splitBanks = (mEmuControl & kEC_Mode) == 2 && (mEmuFeature & kEF_BountyBob);
+        const bool readOnly = (BankRAMWriteProtect & 1) != 0;
+        splitBanks = (EmuControl & EC_Mode) == 2 && (EmuFeature & EF_BountyBob);
 
         if (splitBanks) {
-            mWindowOffsetA2 = ((uint32)(effectiveBank >> 4) << 13) + 0x21000;
+            WindowOffsetA2 = ((ULONG)(effectiveBank >> 4) << 13) + 0x21000;
 
             effectiveBank &= 15;
         }
 
-        mWindowOffsetA1 = (uint32)effectiveBank << 13;
+        WindowOffsetA1 = (ULONG)effectiveBank << 13;
 
         if (!splitBanks)
-            mWindowOffsetA2 = mWindowOffsetA1 + 0x1000;
+            WindowOffsetA2 = WindowOffsetA1 + 0x1000;
 
         const ATMemoryAccessMode bbsbLayerMode = (mEmuFeature & kEF_BountyBob) ? kATMemoryAccessMode_ARW : kATMemoryAccessMode_0;
         mpMemMan->SetLayerModes(mpMemLayerSpecialBank1, bbsbLayerMode);
         mpMemMan->SetLayerModes(mpMemLayerSpecialBank2, bbsbLayerMode);
     } else {
         if (useFlash) {
-            mWindowOffsetA1 = mFlashOffsetA;
+            WindowOffsetA1 = FlashOffsetA;
         } else {
-            mWindowOffsetA1 = (uint32)mBankRAMA << 13;
+            WindowOffsetA1 = (ULONG)BankRAMA << 13;
         }
 
-        mWindowOffsetA2 = mWindowOffsetA1 + 0x1000;
+        WindowOffsetA2 = WindowOffsetA1 + 0x1000;
         mpMemMan->EnableLayer(mpMemLayerSpecialBank1, false);
         mpMemMan->EnableLayer(mpMemLayerSpecialBank2, false);
     }
@@ -914,24 +914,24 @@ void UpdateWindowA() {
         mpMemMan->EnableLayer(mpMemLayerWindowA2, false);
     }
 
-    mbWindowUsingFlashA = useFlash;
+    WindowUsingFlashA = useFlash;
     if (useFlash) {
         const bool enableFlashControlReadA = mFlashCtrl.IsControlReadEnabled();
 
         mpMemMan->SetLayerModes(mpMemLayerFlashControlA, enableFlashControlReadA ? kATMemoryAccessMode_ARW : kATMemoryAccessMode_W);
-        mpMemMan->SetLayerMemory(mpMemLayerWindowA, mFlash + mWindowOffsetA1);
+        mpMemMan->SetLayerMemory(mpMemLayerWindowA, Flash + WindowOffsetA1);
 
         if (splitBanks)
-            mpMemMan->SetLayerMemory(mpMemLayerWindowA2, mFlash + mWindowOffsetA2);
+            mpMemMan->SetLayerMemory(mpMemLayerWindowA2, Flash + WindowOffsetA2);
     } else {
         mpMemMan->EnableLayer(mpMemLayerFlashControlA, false);
-        mpMemMan->SetLayerMemory(mpMemLayerWindowA, mRAM + mWindowOffsetA1);
+        mpMemMan->SetLayerMemory(mpMemLayerWindowA, RAM + WindowOffsetA1);
 
         if (splitBanks)
-            mpMemMan->SetLayerMemory(mpMemLayerWindowA2, mRAM + mWindowOffsetA2);
+            mpMemMan->SetLayerMemory(mpMemLayerWindowA2, RAM + WindowOffsetA2);
     }
 
-    const bool readOnly = (mBankRAMWriteProtect & 1) != 0;
+    const bool readOnly = (BankRAMWriteProtect & 1) != 0;
 
     if (splitBanks) {
         mpMemMan->EnableLayer(mpMemLayerWindowA2, true);
@@ -1776,7 +1776,7 @@ void ResetSD() {
 }
 
 UBYTE TransferRTC(UBYTE v) {
-    return rtc.Transfer(v);
+    return MCP7951X_Transfer(rtc,v);
 }
 
 void DMAScheduleEvent(int id) {
@@ -1858,8 +1858,8 @@ void RescheduleDMA() {
 void SIDE2_ColdStart(void)
 {
     mFlashCtrl.ColdReset();
-    mRTC.ColdReset();
-    CDS1305_ColdReset(rtc);
+
+    MCP7951X_ColdReset(rtc);
 
     memset(ram, 0xFF, sizeof(ram));
 
@@ -1947,32 +1947,32 @@ void SIDE2_Set_Cart_Enables(int leftEnable, int rightEnable) {
 
 static void LoadNVRAM()
 {
-    UBYTE buf[0x72];
+    MCP7951X_NVState nvstate;
     FILE *f;
     int len;
     
-    f = fopen(side2_nvram_filename, "rb");
+    f = fopen(side3_nvram_filename, "rb");
     if (f == NULL) {
-        memset(buf, 0, sizeof(buf));
+        memset(&nvstate, 0, sizeof(nvstate));
     } else {
-        len = fread(buf, 1, 0x72, f);
+        len = fread(&nvstate, 1, sizeof(nvstate), f);
         fclose(f);
-        if (len != 0x72) {
-            memset(buf, 0, sizeof(buf));
+        if (len != sizeof(nvstate)) {
+            memset(&nvstate, 0, sizeof(nvstate));
         }
     }
-    CDS1305_Load(rtc, buf);
+    MCP7951X_Load(rtc, buf);
 }
 
 static void SaveNVRAM()
 {
-    UBYTE buf[0x72];
+    MCP7951X_NVState nvstate;
     FILE *f;
 
-    CDS1305_Save(rtc, buf);
-    f = fopen(side2_nvram_filename, "wb");
+    MCP7951X_SAVE(rtc, &nvstate);
+    f = fopen(side3_nvram_filename, "wb");
     if (f != NULL) {
-        fwrite(buf, 1, 0x72, f);
+        fwrite(&nvstate, 1, sizeof(nvstate), f);
         fclose(f);
     }
 }
