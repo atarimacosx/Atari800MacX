@@ -2351,10 +2351,10 @@ void CPU_GO(int limit)
 		CPU_GetStatus();
 
 #ifdef CRASH_MENU
-		UI_crash_address = GET_PC();
-		UI_crash_afterCIM = GET_PC() + 1;
-		UI_crash_code = insn;
-		UI_Run();
+//		UI_crash_address = GET_PC();
+//		UI_crash_afterCIM = GET_PC() + 1;
+//		UI_crash_code = insn;
+		//UI_Run();
 #else
 		CPU_cim_encountered = TRUE;
 		ENTER_MONITOR;

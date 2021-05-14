@@ -13,9 +13,14 @@
 extern int ULTIMATE_enabled;
 extern int ULTIMATE_have_rom;
 extern int SIDE2_enabled;
+extern int ULTIMATE_Flash_Type;
+
+#ifdef ATARI800MACX
 extern char ultimate_rom_filename[FILENAME_MAX];
 extern char ultimate_nvram_filename[FILENAME_MAX];
-extern int ULTIMATE_Flash_Type;
+#else
+extern tatic char ultimate_rom_filename[FILENAME_MAX];
+#endif
 
 void init_ultimate(void);
 int ULTIMATE_Initialise(int *argc, char *argv[]);

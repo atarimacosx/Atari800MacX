@@ -12,10 +12,19 @@ extern int SIDE2_SDX_Mode_Switch;
 extern int SIDE2_Flash_Type;
 extern int SIDE2_Block_Device;
 extern char side2_rom_filename[FILENAME_MAX];
+
+#ifdef ATARI800MACX
+extern void init_side2(void);
+extern char side2_rom_filename[FILENAME_MAX];
 extern char side2_nvram_filename[FILENAME_MAX];
 extern char side2_compact_flash_filename[FILENAME_MAX];
+#else
+extern static void init_side2(void);
+extern static char side_rom_filename[FILENAME_MAX];
+extern static char side2_nvram_filename[FILENAME_MAX];
+extern static char side2_compact_flash_filename[FILENAME_MAX];
+#endif
 
-void init_side2(void);
 int SIDE2_Initialise(int *argc, char *argv[]);
 void SIDE2_Exit(void);
 int SIDE2_D5GetByte(UWORD addr, int no_side_effects);
