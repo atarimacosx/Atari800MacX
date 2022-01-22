@@ -3125,6 +3125,7 @@ void Atari_DisplayScreen(UBYTE * screen)
     rect.y = screen_y_offset;
     rect.w = MainScreen->w;
     rect.h = MainScreen->h;
+    SDL_RenderClear(renderer);
     SDL_RenderCopy(renderer, texture, NULL, &rect);
 
     // Add the scanlines if we are in that mode
