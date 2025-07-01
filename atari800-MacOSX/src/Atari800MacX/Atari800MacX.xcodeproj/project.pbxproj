@@ -339,6 +339,30 @@
 		77324B9224AC2CC50007CB07 /* close810snd.wav in Resources */ = {isa = PBXBuildFile; fileRef = 77324B9024AC2CC50007CB07 /* close810snd.wav */; };
 		77324B9324AC2CC50007CB07 /* open810snd.wav in Resources */ = {isa = PBXBuildFile; fileRef = 77324B9124AC2CC50007CB07 /* open810snd.wav */; };
 		77A5A9D521EC3B440098C3A5 /* lock.png in Resources */ = {isa = PBXBuildFile; fileRef = 77A5A9D421EC3B430098C3A5 /* lock.png */; };
+		2DF0000125CF99D02DF0DE9C /* netsio.c in Sources */ = {isa = PBXBuildFile; fileRef = 2DF0000025CF99D02DF0DE9C /* netsio.c */; };
+		2DF0000325CF99D02DF0DE9C /* netsio.h in Headers */ = {isa = PBXBuildFile; fileRef = 2DF0000225CF99D02DF0DE9C /* netsio.h */; };
+		2DF0000525CF99D02DF0DE9C /* artifact.c in Sources */ = {isa = PBXBuildFile; fileRef = 2DF0000425CF99D02DF0DE9C /* artifact.c */; };
+		2DF0000725CF99D02DF0DE9C /* artifact.h in Headers */ = {isa = PBXBuildFile; fileRef = 2DF0000625CF99D02DF0DE9C /* artifact.h */; };
+		2DF0000925CF99D02DF0DE9C /* filter_ntsc.c in Sources */ = {isa = PBXBuildFile; fileRef = 2DF0000825CF99D02DF0DE9C /* filter_ntsc.c */; };
+		2DF0000B25CF99D02DF0DE9C /* filter_ntsc.h in Headers */ = {isa = PBXBuildFile; fileRef = 2DF0000A25CF99D02DF0DE9C /* filter_ntsc.h */; };
+		2DF0000D25CF99D02DF0DE9C /* pal_blending.c in Sources */ = {isa = PBXBuildFile; fileRef = 2DF0000C25CF99D02DF0DE9C /* pal_blending.c */; };
+		2DF0000F25CF99D02DF0DE9C /* pal_blending.h in Headers */ = {isa = PBXBuildFile; fileRef = 2DF0000E25CF99D02DF0DE9C /* pal_blending.h */; };
+		2DF0001125CF99D02DF0DE9C /* colours_ntsc.c in Sources */ = {isa = PBXBuildFile; fileRef = 2DF0001025CF99D02DF0DE9C /* colours_ntsc.c */; };
+		2DF0001325CF99D02DF0DE9C /* colours_ntsc.h in Headers */ = {isa = PBXBuildFile; fileRef = 2DF0001225CF99D02DF0DE9C /* colours_ntsc.h */; };
+		2DF0001525CF99D02DF0DE9C /* colours_pal.c in Sources */ = {isa = PBXBuildFile; fileRef = 2DF0001425CF99D02DF0DE9C /* colours_pal.c */; };
+		2DF0001725CF99D02DF0DE9C /* colours_pal.h in Headers */ = {isa = PBXBuildFile; fileRef = 2DF0001625CF99D02DF0DE9C /* colours_pal.h */; };
+		2DF0001925CF99D02DF0DE9C /* colours_external.c in Sources */ = {isa = PBXBuildFile; fileRef = 2DF0001825CF99D02DF0DE9C /* colours_external.c */; };
+		2DF0001B25CF99D02DF0DE9C /* colours_external.h in Headers */ = {isa = PBXBuildFile; fileRef = 2DF0001A25CF99D02DF0DE9C /* colours_external.h */; };
+		2DF0001D25CF99D02DF0DE9C /* videomode.c in Sources */ = {isa = PBXBuildFile; fileRef = 2DF0001C25CF99D02DF0DE9C /* videomode.c */; };
+		2DF0001F25CF99D02DF0DE9C /* videomode.h in Headers */ = {isa = PBXBuildFile; fileRef = 2DF0001E25CF99D02DF0DE9C /* videomode.h */; };
+		2DF0002125CF99D02DF0DE9C /* pokeyrec.c in Sources */ = {isa = PBXBuildFile; fileRef = 2DF0002025CF99D02DF0DE9C /* pokeyrec.c */; };
+		2DF0002325CF99D02DF0DE9C /* pokeyrec.h in Headers */ = {isa = PBXBuildFile; fileRef = 2DF0002225CF99D02DF0DE9C /* pokeyrec.h */; };
+		2DF0002525CF99D02DF0DE9C /* voicebox.c in Sources */ = {isa = PBXBuildFile; fileRef = 2DF0002425CF99D02DF0DE9C /* voicebox.c */; };
+		2DF0002725CF99D02DF0DE9C /* voicebox.h in Headers */ = {isa = PBXBuildFile; fileRef = 2DF0002625CF99D02DF0DE9C /* voicebox.h */; };
+		2DF0002925CF99D02DF0DE9C /* votraxsnd.c in Sources */ = {isa = PBXBuildFile; fileRef = 2DF0002825CF99D02DF0DE9C /* votraxsnd.c */; };
+		2DF0002B25CF99D02DF0DE9C /* votraxsnd.h in Headers */ = {isa = PBXBuildFile; fileRef = 2DF0002A25CF99D02DF0DE9C /* votraxsnd.h */; };
+		2DF0002D25CF99D02DF0DE9C /* atari_ntsc/atari_ntsc.c in Sources */ = {isa = PBXBuildFile; fileRef = 2DF0002C25CF99D02DF0DE9C /* atari_ntsc/atari_ntsc.c */; };
+		2DF0002F25CF99D02DF0DE9C /* atari_ntsc/atari_ntsc.h in Headers */ = {isa = PBXBuildFile; fileRef = 2DF0002E25CF99D02DF0DE9C /* atari_ntsc/atari_ntsc.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -722,6 +746,30 @@
 		F5C68C3D032B1E4501A8C8B4 /* Fuji.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Fuji.icns; sourceTree = "<group>"; };
 		F5E6BF3A032D9AF501A8C8B4 /* SDLMain.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = SDLMain.nib; sourceTree = "<group>"; };
 		F5E6BF3E032DA88501A8C8B4 /* Preferences.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = Preferences.nib; sourceTree = "<group>"; };
+		2DF0000025CF99D02DF0DE9C /* netsio.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "../netsio.c"; sourceTree = "<group>"; };
+		2DF0000225CF99D02DF0DE9C /* netsio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "../netsio.h"; sourceTree = "<group>"; };
+		2DF0000425CF99D02DF0DE9C /* artifact.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "../artifact.c"; sourceTree = "<group>"; };
+		2DF0000625CF99D02DF0DE9C /* artifact.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "../artifact.h"; sourceTree = "<group>"; };
+		2DF0000825CF99D02DF0DE9C /* filter_ntsc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "../filter_ntsc.c"; sourceTree = "<group>"; };
+		2DF0000A25CF99D02DF0DE9C /* filter_ntsc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "../filter_ntsc.h"; sourceTree = "<group>"; };
+		2DF0000C25CF99D02DF0DE9C /* pal_blending.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "../pal_blending.c"; sourceTree = "<group>"; };
+		2DF0000E25CF99D02DF0DE9C /* pal_blending.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "../pal_blending.h"; sourceTree = "<group>"; };
+		2DF0001025CF99D02DF0DE9C /* colours_ntsc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "../colours_ntsc.c"; sourceTree = "<group>"; };
+		2DF0001225CF99D02DF0DE9C /* colours_ntsc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "../colours_ntsc.h"; sourceTree = "<group>"; };
+		2DF0001425CF99D02DF0DE9C /* colours_pal.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "../colours_pal.c"; sourceTree = "<group>"; };
+		2DF0001625CF99D02DF0DE9C /* colours_pal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "../colours_pal.h"; sourceTree = "<group>"; };
+		2DF0001825CF99D02DF0DE9C /* colours_external.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "../colours_external.c"; sourceTree = "<group>"; };
+		2DF0001A25CF99D02DF0DE9C /* colours_external.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "../colours_external.h"; sourceTree = "<group>"; };
+		2DF0001C25CF99D02DF0DE9C /* videomode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "../videomode.c"; sourceTree = "<group>"; };
+		2DF0001E25CF99D02DF0DE9C /* videomode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "../videomode.h"; sourceTree = "<group>"; };
+		2DF0002025CF99D02DF0DE9C /* pokeyrec.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "../pokeyrec.c"; sourceTree = "<group>"; };
+		2DF0002225CF99D02DF0DE9C /* pokeyrec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "../pokeyrec.h"; sourceTree = "<group>"; };
+		2DF0002425CF99D02DF0DE9C /* voicebox.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "../voicebox.c"; sourceTree = "<group>"; };
+		2DF0002625CF99D02DF0DE9C /* voicebox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "../voicebox.h"; sourceTree = "<group>"; };
+		2DF0002825CF99D02DF0DE9C /* votraxsnd.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "../votraxsnd.c"; sourceTree = "<group>"; };
+		2DF0002A25CF99D02DF0DE9C /* votraxsnd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "../votraxsnd.h"; sourceTree = "<group>"; };
+		2DF0002C25CF99D02DF0DE9C /* atari_ntsc/atari_ntsc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "../atari_ntsc/atari_ntsc.c"; sourceTree = "<group>"; };
+		2DF0002E25CF99D02DF0DE9C /* atari_ntsc/atari_ntsc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "../atari_ntsc/atari_ntsc.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1196,6 +1244,18 @@
 				2DAEDAFE09B69AED005FF181 /* platform.h in Headers */,
 				2DAEDAFF09B69AED005FF181 /* pia.h in Headers */,
 				2DAEDB0009B69AED005FF181 /* monitor.h in Headers */,
+				2DF0000325CF99D02DF0DE9C /* netsio.h in Headers */,
+				2DF0000725CF99D02DF0DE9C /* artifact.h in Headers */,
+				2DF0000B25CF99D02DF0DE9C /* filter_ntsc.h in Headers */,
+				2DF0000F25CF99D02DF0DE9C /* pal_blending.h in Headers */,
+				2DF0001325CF99D02DF0DE9C /* colours_ntsc.h in Headers */,
+				2DF0001725CF99D02DF0DE9C /* colours_pal.h in Headers */,
+				2DF0001B25CF99D02DF0DE9C /* colours_external.h in Headers */,
+				2DF0001F25CF99D02DF0DE9C /* videomode.h in Headers */,
+				2DF0002325CF99D02DF0DE9C /* pokeyrec.h in Headers */,
+				2DF0002725CF99D02DF0DE9C /* voicebox.h in Headers */,
+				2DF0002B25CF99D02DF0DE9C /* votraxsnd.h in Headers */,
+				2DF0002F25CF99D02DF0DE9C /* atari_ntsc/atari_ntsc.h in Headers */,
 				2DAEDB0209B69AED005FF181 /* statesav.h in Headers */,
 				2DAEDB0309B69AED005FF181 /* antic.h in Headers */,
 				2DAEDB0409B69AED005FF181 /* atari.h in Headers */,
@@ -1437,6 +1497,18 @@
 				2DE6EB8224CE197000A55386 /* altirraos_xl.c in Sources */,
 				2D829B3B24F9B21500AB9584 /* ultimate1mb.c in Sources */,
 				2DAEDB7009B69AED005FF181 /* SDLMain.m in Sources */,
+				2DF0000125CF99D02DF0DE9C /* netsio.c in Sources */,
+				2DF0000525CF99D02DF0DE9C /* artifact.c in Sources */,
+				2DF0000925CF99D02DF0DE9C /* filter_ntsc.c in Sources */,
+				2DF0000D25CF99D02DF0DE9C /* pal_blending.c in Sources */,
+				2DF0001125CF99D02DF0DE9C /* colours_ntsc.c in Sources */,
+				2DF0001525CF99D02DF0DE9C /* colours_pal.c in Sources */,
+				2DF0001925CF99D02DF0DE9C /* colours_external.c in Sources */,
+				2DF0001D25CF99D02DF0DE9C /* videomode.c in Sources */,
+				2DF0002125CF99D02DF0DE9C /* pokeyrec.c in Sources */,
+				2DF0002525CF99D02DF0DE9C /* voicebox.c in Sources */,
+				2DF0002925CF99D02DF0DE9C /* votraxsnd.c in Sources */,
+				2DF0002D25CF99D02DF0DE9C /* atari_ntsc/atari_ntsc.c in Sources */,
 				2DAEDB7109B69AED005FF181 /* memory.c in Sources */,
 				2DAEDB7209B69AED005FF181 /* log.c in Sources */,
 				2DAEDB7309B69AED005FF181 /* list.c in Sources */,
