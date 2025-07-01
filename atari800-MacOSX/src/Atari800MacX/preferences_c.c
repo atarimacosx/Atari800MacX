@@ -33,6 +33,7 @@
 #include "ultimate1mb.h"
 #include "side2.h"
 #include "binload.h"
+#include "sysrom.h"
 
 #define MAX_DIRECTORIES 8
 
@@ -303,7 +304,8 @@ void savePrefs() {
     prefssave.bit3_enabled = BIT3_enabled;
     prefssave.xep80_enabled = XEP80_enabled;
 	prefssave.xep80_port = XEP80_port;
-    prefssave.COL80_autoswitch = COL80_autoswitch;
+    /* TODO: COL80_autoswitch removed in newer Atari800 core - needs Mac-specific replacement */
+    prefssave.COL80_autoswitch = 0; /* COL80_autoswitch; */
     prefssave.enableSound = sound_enabled;
 	prefssave.soundVolume = sound_volume;
     prefssave.enableStereo = POKEYSND_stereo_enabled; 
@@ -325,7 +327,7 @@ void savePrefs() {
                                         Atari800_builtin_basic,
                                         Atari800_builtin_game,
                                         Atari800_keyboard_leds,
-                                        Atari800_jumper_present);
+                                        Atari800_jumper);
 
 	prefssave.currPrinter = currPrinter;
 	prefssave.artifactingMode = ANTIC_artif_mode;
@@ -965,7 +967,7 @@ void CalculatePrefsChanged()
             (Atari800_builtin_basic != new_basic) ||
             (Atari800_builtin_game != new_game) ||
             (Atari800_keyboard_leds != new_leds) ||
-            (Atari800_jumper_present != new_jumper) ||
+            (Atari800_jumper != new_jumper) ||
             (bbRequested != prefs.blackBoxEnabled) ||
             (mioRequested != prefs.mioEnabled) ||
             (ULTIMATE_enabled != new_ultimate))
@@ -1049,13 +1051,13 @@ void CalculatePrefsChanged()
     else
         pcLinkOptionsChanged = FALSE;
 
-    if ((strcmp(CFG_osb_filename, prefs.osBRomFile) !=0) ||
-        (strcmp(CFG_xegs_filename, prefs.xegsRomFile) !=0) ||
-        (strcmp(CFG_xegsGame_filename, prefs.xegsGameRomFile) !=0) ||
-        (strcmp(CFG_1200xl_filename, prefs.a1200XLRomFile) !=0) ||
-		(strcmp(CFG_xlxe_filename, prefs.xlRomFile) !=0) ||
-		(strcmp(CFG_basic_filename, prefs.basicRomFile) !=0) ||
-		(strcmp(CFG_5200_filename, prefs.a5200RomFile) !=0) ||
+    if ((strcmp(SYSROM_roms[SYSROM_B_NTSC].filename ? SYSROM_roms[SYSROM_B_NTSC].filename : "", prefs.osBRomFile) !=0) ||
+        (strcmp(SYSROM_roms[SYSROM_BB01R4_OS].filename ? SYSROM_roms[SYSROM_BB01R4_OS].filename : "", prefs.xegsRomFile) !=0) ||
+        (strcmp(SYSROM_roms[SYSROM_XEGAME].filename ? SYSROM_roms[SYSROM_XEGAME].filename : "", prefs.xegsGameRomFile) !=0) ||
+        (strcmp(SYSROM_roms[SYSROM_AA01R11].filename ? SYSROM_roms[SYSROM_AA01R11].filename : "", prefs.a1200XLRomFile) !=0) ||
+		(strcmp(SYSROM_roms[SYSROM_BB01R3].filename ? SYSROM_roms[SYSROM_BB01R3].filename : "", prefs.xlRomFile) !=0) ||
+		(strcmp(SYSROM_roms[SYSROM_BASIC_C].filename ? SYSROM_roms[SYSROM_BASIC_C].filename : "", prefs.basicRomFile) !=0) ||
+		(strcmp(SYSROM_roms[SYSROM_5200A].filename ? SYSROM_roms[SYSROM_5200A].filename : "", prefs.a5200RomFile) !=0) ||
         (strcmp(af80_rom_filename, prefs.af80RomFile) != 0) ||
         (strcmp(af80_charset_filename, prefs.af80CharsetFile) != 0) ||
         (strcmp(bit3_rom_filename, prefs.bit3RomFile) != 0) ||
@@ -1156,7 +1158,7 @@ int loadMacPrefs(int firstTime)
                        &MEMORY_ram_size, &axlon_enabled,
                        &mosaic_enabled, &ULTIMATE_enabled,
                        &Atari800_builtin_basic, &Atari800_builtin_game,
-                       &Atari800_keyboard_leds, &Atari800_jumper_present);
+                       &Atari800_keyboard_leds, &Atari800_jumper);
     if (axlon_enabled) {
         MEMORY_axlon_num_banks = prefs.axlonBankMask + 1;
         PREFS_axlon_num_banks = MEMORY_axlon_num_banks;
@@ -1248,7 +1250,8 @@ int loadMacPrefs(int firstTime)
         BIT3_enabled = FALSE;
     if (AF80_enabled && BIT3_enabled)
         BIT3_enabled = FALSE;
-    COL80_autoswitch = prefs.COL80_autoswitch;
+    /* TODO: COL80_autoswitch removed in newer Atari800 core - needs Mac-specific replacement */
+    /* COL80_autoswitch = prefs.COL80_autoswitch; */
 	XEP80_port = prefs.xep80_port;
 	XEP80_FONTS_oncolor = prefs.xep80_oncolor;
 	XEP80_FONTS_offcolor = prefs.xep80_offcolor;
@@ -1293,13 +1296,14 @@ int loadMacPrefs(int firstTime)
         PCLinkTimestamps[i] = prefs.pcLinkTimestamps[i];
         PCLinkTranslate[i] = prefs.pcLinkTranslate[i];
     }
-    strcpy(CFG_xegs_filename, prefs.xegsRomFile);
-    strcpy(CFG_xegsGame_filename, prefs.xegsGameRomFile);
-    strcpy(CFG_1200xl_filename, prefs.a1200XLRomFile);
-    strcpy(CFG_osb_filename, prefs.osBRomFile);
-    strcpy(CFG_xlxe_filename, prefs.xlRomFile);
-    strcpy(CFG_basic_filename, prefs.basicRomFile);
-    strcpy(CFG_5200_filename, prefs.a5200RomFile);
+    /* Set ROM filenames using new SYSROM system */
+    SYSROM_SetPath(prefs.xegsRomFile, 1, SYSROM_BB01R4_OS);
+    SYSROM_SetPath(prefs.xegsGameRomFile, 1, SYSROM_XEGAME);  
+    SYSROM_SetPath(prefs.a1200XLRomFile, 1, SYSROM_AA01R11);
+    SYSROM_SetPath(prefs.osBRomFile, 1, SYSROM_B_NTSC);
+    SYSROM_SetPath(prefs.xlRomFile, 1, SYSROM_BB01R3);
+    SYSROM_SetPath(prefs.basicRomFile, 1, SYSROM_BASIC_C);
+    SYSROM_SetPath(prefs.a5200RomFile, 1, SYSROM_5200A);
     Atari800_useAlitrraXEGSRom = prefs.useAltirraXEGSRom;
     Atari800_useAlitrra1200XLRom = prefs.useAltirra1200XLRom;
     Atari800_useAlitrraOSBRom = prefs.useAltirraOSBRom;

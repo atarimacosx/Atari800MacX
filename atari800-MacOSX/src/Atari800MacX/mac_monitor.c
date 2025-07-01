@@ -1069,13 +1069,12 @@ int MONITOR_monitorCmd(char *input)
 #endif
 					show_instruction(addr, 22);
 					mon_printf("; %Xcyc ; ", cycles[MEMORY_SafeGetByte(addr)]);
+					/* Note: CPU register history tracking was removed in newer Atari800 core.
+					   Display current register values instead of historical ones. */
 					mon_printf("A=%02x S=%02x X=%02x Y=%02x P=",
-						CPU_remember_A[(CPU_remember_PC_curpos+i)%CPU_REMEMBER_PC_STEPS],
-						CPU_remember_S[(CPU_remember_PC_curpos+i)%CPU_REMEMBER_PC_STEPS],
-						CPU_remember_X[(CPU_remember_PC_curpos+i)%CPU_REMEMBER_PC_STEPS],
-						CPU_remember_Y[(CPU_remember_PC_curpos+i)%CPU_REMEMBER_PC_STEPS]);
+						CPU_regA, CPU_regS, CPU_regX, CPU_regY);
 					for(j=0;j<8;j++)
-						prBuff[j] = (CPU_remember_P[(CPU_remember_PC_curpos+i)%CPU_REMEMBER_PC_STEPS] &
+						prBuff[j] = (CPU_regP &
 									(0x80>>j)?"NV*BDIZC"[j]:'-');
 					prBuff[8] = '\n';
 					prBuff[9] = 0;
