@@ -48,6 +48,9 @@
 #include "akey.h"
 #include "atari.h"
 #include "bit3.h"
+#if SUPPORTS_CHANGE_VIDEOMODE
+#include "videomode.h"
+#endif
 #include "esc.h"
 #include "input.h"
 #include "mac_colours.h"
@@ -5689,3 +5692,52 @@ int SDL_main(int argc, char **argv)
     Log_flushlog();
     return 0;
 }
+
+#if SUPPORTS_CHANGE_VIDEOMODE
+/* Stub implementations for videomode support functions.
+   These provide basic compatibility but don't implement full video mode switching.
+   TODO: Implement proper video mode management for macOS. */
+
+int PLATFORM_SupportsVideomode(VIDEOMODE_MODE_t mode, int stretch, int rotate90)
+{
+    /* For now, only support basic modes without stretching/rotation */
+    return (mode == VIDEOMODE_MODE_NORMAL && !stretch && !rotate90);
+}
+
+void PLATFORM_SetVideoMode(VIDEOMODE_resolution_t const *res, int windowed, VIDEOMODE_MODE_t mode, int rotate90)
+{
+    /* Stub: Video mode changes not yet implemented for macOS.
+       The existing SDL implementation handles basic windowing. */
+    Log_print("PLATFORM_SetVideoMode: Video mode switching not yet implemented for macOS");
+}
+
+VIDEOMODE_resolution_t *PLATFORM_DesktopResolution(void)
+{
+    /* Return a static default resolution for compatibility */
+    static VIDEOMODE_resolution_t desktop_res = { 1024, 768 };
+    return &desktop_res;
+}
+
+int PLATFORM_WindowMaximised(void)
+{
+    /* Stub: Window state detection not implemented */
+    return 0;
+}
+
+VIDEOMODE_resolution_t *PLATFORM_AvailableResolutions(unsigned int *size)
+{
+    /* Return a basic set of resolutions for compatibility */
+    static VIDEOMODE_resolution_t resolutions[] = {
+        { 640, 480 },
+        { 800, 600 },
+        { 1024, 768 },
+        { 1280, 1024 }
+    };
+    
+    if (size)
+        *size = sizeof(resolutions) / sizeof(resolutions[0]);
+    
+    return resolutions;
+}
+
+#endif /* SUPPORTS_CHANGE_VIDEOMODE */
