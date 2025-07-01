@@ -1,30 +1,7 @@
-/*
- * cpu.h - 6502 CPU emulation
- *
- * Copyright (C) 1995-1998 David Firth
- * Copyright (C) 1998-2025 Atari800 development team (see DOC/CREDITS)
- *
- * This file is part of the Atari800 emulator project which emulates
- * the Atari 400, 800, 800XL, 130XE, and 5200 8-bit computers.
- *
- * Atari800 is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * Atari800 is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with Atari800; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
-*/
-
 #ifndef CPU_H_
 #define CPU_H_
 
+#include <stdint.h>
 #include "config.h"
 #ifdef ASAP /* external project, see http://asap.sf.net */
 #include "asap_internal.h"
@@ -40,6 +17,7 @@
 #define CPU_Z_FLAG 0x02
 #define CPU_C_FLAG 0x01
 
+void CPU_Initialise(void);		/* used in the assembler version of cpu.c only */
 void CPU_GetStatus(void);
 void CPU_PutStatus(void);
 void CPU_Reset(void);
@@ -48,6 +26,12 @@ void CPU_StateRead(UBYTE SaveVerbose, UBYTE StateVersion);
 void CPU_NMI(void);
 void CPU_GO(int limit);
 #define CPU_GenerateIRQ() (CPU_IRQ = 1)
+
+#ifdef FALCON_CPUASM
+extern void CPU_INIT(void);
+extern void CPU_GET(void);		/* put from CCR, N & Z FLAG into regP */
+extern void CPU_PUT(void);		/* put from regP into CCR, N & Z FLAG */
+#endif
 
 extern UWORD CPU_regPC;
 extern UBYTE CPU_regA;
@@ -79,9 +63,16 @@ extern UBYTE CPU_cim_encountered;
 
 #define CPU_REMEMBER_PC_STEPS 64
 extern UWORD CPU_remember_PC[CPU_REMEMBER_PC_STEPS];
-extern UBYTE CPU_remember_op[CPU_REMEMBER_PC_STEPS][3];
 extern unsigned int CPU_remember_PC_curpos;
 extern int CPU_remember_xpos[CPU_REMEMBER_PC_STEPS];
+#ifdef MACOSX
+extern int CPU_hit_breakpoint;
+extern UBYTE CPU_remember_A[CPU_REMEMBER_PC_STEPS];
+extern UBYTE CPU_remember_X[CPU_REMEMBER_PC_STEPS];
+extern UBYTE CPU_remember_Y[CPU_REMEMBER_PC_STEPS];
+extern UBYTE CPU_remember_S[CPU_REMEMBER_PC_STEPS];
+extern UBYTE CPU_remember_P[CPU_REMEMBER_PC_STEPS];
+#endif
 
 #define CPU_REMEMBER_JMP_STEPS 16
 extern UWORD CPU_remember_JMP[CPU_REMEMBER_JMP_STEPS];
@@ -90,5 +81,7 @@ extern unsigned int CPU_remember_jmp_curpos;
 #ifdef MONITOR_PROFILE
 extern int CPU_instruction_count[256];
 #endif
+
+extern uint64_t CPU_cycle_count;
 
 #endif /* CPU_H_ */

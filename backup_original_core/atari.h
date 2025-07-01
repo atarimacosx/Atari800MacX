@@ -9,7 +9,13 @@
 
 /* Fundamental declarations ---------------------------------------------- */
 
-#define Atari800_TITLE  "Atari 800 Emulator, Version " PACKAGE_VERSION
+#ifdef ATARI800MACX
+#define Atari800_TITLE  "Atari800MacX Emulator, Version 5.0"
+#define Atari800BASE_TITLE  "Atari 800 Emulator, Version 2.0.3"
+#else
+#define Atari800_TITLE  "Atari 800 Emulator, Version 2.0.3"
+#endif
+
 
 #ifndef FALSE
 #define FALSE  0
@@ -38,11 +44,11 @@
 
 /* Machine type. */
 enum {
-	Atari800_MACHINE_800,
-	Atari800_MACHINE_XLXE,
-	Atari800_MACHINE_5200,
-	/* Number of values in the emumerator */
-	Atari800_MACHINE_SIZE
+    Atari800_MACHINE_800,
+    Atari800_MACHINE_XLXE,
+    Atari800_MACHINE_5200,
+    /* Number of values in the emumerator */
+    Atari800_MACHINE_SIZE
 };
 /* Don't change this variable directly; use Atari800_SetMachineType() instead. */
 extern int Atari800_machine_type;
@@ -66,6 +72,7 @@ extern int Atari800_f_keys;
    Used only for Atari800_MACHINE_XLXE. Always call
    Atari800_UpdateJumper() after changing this variable. */
 extern int Atari800_jumper;
+extern int Atari800_jumper_present;
 void Atari800_UpdateJumper(void);
 
 /* Indicates existence of XEGS' built-in game.
@@ -117,8 +124,6 @@ extern int Atari800_collisions_in_skipped_frames;
 
 /* Set to TRUE to run emulated Atari as fast as possible */
 extern int Atari800_turbo;
-/* Percentage speed or 0 for max turbo */
-extern int Atari800_turbo_speed;
 
 /* Set to TRUE to start in the monitor. It's up to each port's
 	main.c to implement this (initially only SDL supports it). */

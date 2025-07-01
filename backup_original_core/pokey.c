@@ -32,6 +32,9 @@
 
 #include "atari.h"
 #include "cpu.h"
+#ifdef ATARI800MACX
+#include "emuio.h"
+#endif
 #include "esc.h"
 #include "pia.h"
 #include "pokey.h"
@@ -49,9 +52,6 @@
 #include "log.h"
 #include "input.h"
 #include "pbi.h"
-#ifdef NETSIO
-#include "netsio.h"
-#endif
 
 #ifdef POKEYREC
 #include "pokeyrec.h"
@@ -146,6 +146,9 @@ UBYTE POKEY_GetByte(UWORD addr, int no_side_effects)
 #ifdef DEBUG3
 		printf("SERIO: SERIN read, bytevalue %02x\n", POKEY_SERIN);
 #endif
+#ifdef SERIO_SOUND
+		POKEYSND_UpdateSerio(0,byte);
+#endif
 		break;
 	case POKEY_OFFSET_IRQST:
 		byte = POKEY_IRQST;
@@ -158,6 +161,11 @@ UBYTE POKEY_GetByte(UWORD addr, int no_side_effects)
 		}
 #endif
 		break;
+#ifdef ATARI800MACX
+	case 0x0C:
+		byte = Emuio_ReadByte();
+		break;
+#endif
 	}
 
 	return byte;
@@ -168,7 +176,7 @@ static void Update_Counter(int chan_mask);
 static int POKEY_siocheck(void)
 {
 	return (((POKEY_AUDF[POKEY_CHAN3] == 0x28 || POKEY_AUDF[POKEY_CHAN3] == 0x10
-	        || POKEY_AUDF[POKEY_CHAN3] == 0x08 || POKEY_AUDF[POKEY_CHAN3] == 0x0a)
+	        || POKEY_AUDF[POKEY_CHAN3] == 0x08 || POKEY_AUDF[POKEY_CHAN3] == 0x09 || POKEY_AUDF[POKEY_CHAN3] == 0x0a)
 		&& POKEY_AUDF[POKEY_CHAN4] == 0x00) /* intelligent peripherals speeds */
 		|| (POKEY_SKCTL & 0x78) == 0x28) /* cassette save mode */
 		&& (POKEY_AUDCTL[0] & 0x28) == 0x28;
@@ -262,17 +270,6 @@ void POKEY_PutByte(UWORD addr, UBYTE byte)
 #endif
 		if ((POKEY_SKCTL & 0x70) == 0x20 && POKEY_siocheck())
 			SIO_PutByte(byte);
-#ifdef NETSIO
-		/* TODO: proper way to enable modem
-		 * When testing various FujiNet provided peripherals, I've noticed modem was not working.
-		 * Quick fix was to test (POKEY_SKCTL & 0x70) == 0x70 instead of calling more complex POKEY_siocheck().
-		 * Modem started to work (tested Ice-T with CP/M, BobTerm). However, I'm not sure how to test POKEY
-		 * registers for only valid serial port output modes.
-		 */
-		else if (netsio_enabled && (POKEY_SKCTL & 0x70) == 0x70)
-			NetSIO_PutByte(byte);
-#endif
-
 		/* check if cassette 2-tone mode has been enabled */
 		if ((POKEY_SKCTL & 0x08) == 0x00) {
 			/* intelligent device */
@@ -295,6 +292,9 @@ void POKEY_PutByte(UWORD addr, UBYTE byte)
 				POKEY_DELAYED_XMTDONE_IRQ = 0;
 			}
 		};
+#ifdef SERIO_SOUND
+		POKEYSND_UpdateSerio(1, byte);
+#endif
 		break;
 	case POKEY_OFFSET_STIMER:
 		POKEY_DivNIRQ[POKEY_CHAN1] = POKEY_DivNMax[POKEY_CHAN1];
@@ -322,6 +322,11 @@ void POKEY_PutByte(UWORD addr, UBYTE byte)
 			CASSETTE_ResetPOKEY();
 			/* TODO other registers should also be reset. */
 		}
+		break;
+#ifdef ATARI800MACX
+	case 0x0C:
+		Emuio_WriteByte(byte);
+#endif
 		break;
 #ifdef STEREO_SOUND
 	case POKEY_OFFSET_AUDC1 + POKEY_OFFSET_POKEY2:
@@ -421,7 +426,7 @@ int POKEY_Initialise(int *argc, char *argv[])
 		POKEY_poly17_lookup[i] = (UBYTE) (reg >> 1);
 	}
 
-#ifndef BASIC
+#if !defined(BASIC) && !defined(ATARI800MACX)
 	if (INPUT_Playingback()) {
 		random_scanline_counter = INPUT_PlaybackInt();
 	}
@@ -438,9 +443,11 @@ int POKEY_Initialise(int *argc, char *argv[])
 #endif
 	}
 #ifndef BASIC
+#ifndef ATARI800MACX
 	if (INPUT_Recording()) {
 		INPUT_RecordInt(random_scanline_counter);
 	}
+#endif
 #endif
 
 	return TRUE;
@@ -465,6 +472,10 @@ void POKEY_Scanline(void)
 
 #ifdef POKEY_UPDATE
 	pokey_update();
+#endif
+
+#ifdef VOL_ONLY_SOUND
+	POKEYSND_UpdateVolOnly();
 #endif
 
 #ifndef BASIC
@@ -514,22 +525,6 @@ void POKEY_Scanline(void)
 #endif
 		}
 	}
-#ifdef NETSIO
-	/* Check NetSIO for pending Rx bytes */
-	if (netsio_enabled && POKEY_DELAYED_SERIN_IRQ == 0) {
-		int avail = netsio_available();
-		if (avail > 0) {
-			/* TODO make various SIO speeds working
-			 * currently the POKEY_DELAYED_SERIN_IRQ is set to the same values ignoring the actual speed
-			 * and forcing baud rate to 19200
-			 */
-			if (avail == 1)
-				POKEY_DELAYED_SERIN_IRQ = SIO_SERIN_INTERVAL * 2 + 4;
-			else
-			 	POKEY_DELAYED_SERIN_IRQ = SIO_SERIN_INTERVAL + 2;
-		}
-	}
-#endif /* NETSIO */
 
 	if (POKEY_DELAYED_SEROUT_IRQ > 0) {
 		if (--POKEY_DELAYED_SEROUT_IRQ == 0) {

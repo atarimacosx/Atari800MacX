@@ -16,7 +16,7 @@ typedef enum SIO_tagUnitStatus {
 	SIO_READ_WRITE
 } SIO_UnitStatus;
 
-extern char SIO_status[256];
+extern char SIO_status[512];
 extern SIO_UnitStatus SIO_drive_status[SIO_MAX_DRIVES];
 extern char SIO_filename[SIO_MAX_DRIVES][FILENAME_MAX];
 
@@ -35,9 +35,6 @@ void SIO_Handler(void);
 
 UBYTE SIO_ChkSum(const UBYTE *buffer, int length);
 void SIO_SwitchCommandFrame(int onoff);
-#ifdef NETSIO
-void NetSIO_PutByte(int byte);
-#endif /* NETSIO */
 void SIO_PutByte(int byte);
 int SIO_GetByte(void);
 int SIO_Initialise(int *argc, char *argv[]);
@@ -61,5 +58,9 @@ int SIO_WriteStatusBlock(int unit, const UBYTE *buffer);
 int SIO_WriteSector(int unit, int sector, const UBYTE *buffer);
 void SIO_StateSave(void);
 void SIO_StateRead(void);
+
+#ifdef MACOSX
+int SIO_IsVapi(int diskno); 
+#endif
 
 #endif	/* SIO_H_ */
