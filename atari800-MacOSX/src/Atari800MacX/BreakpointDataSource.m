@@ -187,8 +187,8 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 							[condString appendString:@"S Reg"];
 							bytes=1;
 							break;
-						case MONITOR_BREAKPOINT_MEM>>3:
-							[condString appendString:[NSMutableString stringWithFormat:@"Memory Location %04X",cond->addr]];
+						case MONITOR_BREAKPOINT_MEMORY>>3:
+							[condString appendString:[NSMutableString stringWithFormat:@"Memory Location %04X",cond->m_addr]];
 							bytes=1;
 							break;
 						case MONITOR_BREAKPOINT_READ>>3:
@@ -229,11 +229,11 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 							default:
 								break;
 						}
-						if (bytes==1) [condString appendString:[NSString stringWithFormat:@"%02X", cond->val]];
-						else[condString appendString:[NSString stringWithFormat:@"%04X", cond->addr]];
+						if (bytes==1) [condString appendString:[NSString stringWithFormat:@"%02X", cond->value]];
+						else[condString appendString:[NSString stringWithFormat:@"%04X", cond->value]];
 					}
 			}
-			if (!cond->on) {
+			if (!cond->enabled) {
 				condAttribString = [[NSAttributedString alloc] initWithString:condString attributes:grayDict];
 			}
 			else {

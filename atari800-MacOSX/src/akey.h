@@ -34,6 +34,25 @@
 #define AKEY_CX85_NO               -28
 #define AKEY_CX85_DELETE           -29
 #define AKEY_CX85_YES              -30
+#define AKEY_TURBO                 -31
+#ifdef USE_UI_BASIC_ONSCREEN_KEYBOARD
+#define AKEY_KEYB                  -32
+#endif
+
+#if SDL2
+	// SDL_GameControllerButton(s) in AKEY
+	#define AKEY_CONTROLLER_BUTTON_FIRST      -200
+	#define AKEY_CONTROLLER_BUTTON_A          -200
+	#define AKEY_CONTROLLER_BUTTON_B          -199
+	#define AKEY_CONTROLLER_BUTTON_X          -198
+	#define AKEY_CONTROLLER_BUTTON_Y          -197
+	#define AKEY_CONTROLLER_BUTTON_DPAD_UP    -189
+	#define AKEY_CONTROLLER_BUTTON_DPAD_DOWN  -188
+	#define AKEY_CONTROLLER_BUTTON_DPAD_LEFT  -187
+	#define AKEY_CONTROLLER_BUTTON_DPAD_RIGHT -186
+	#define AKEY_CONTROLLER_BUTTON_LAST       -101
+	#define AKEY_CONTROLLER_BUTTON_TRIGGER    -100
+#endif /* SDL2 */
 
 #define AKEY_SHFT 0x40
 #define AKEY_CTRL 0x80
@@ -243,9 +262,10 @@
 #define AKEY_5200_HASH 0x23
 #define AKEY_5200_ASTERISK 0x27
 
-// These Pseudo keycodes are used only for Paste automation.
-#define AKEY_DELAY_PSEUDO 0x09
-#define AKEY_START_PSEUDO 0x19
-#define AKEY_SELECT_PSEUDO 0x24
-#define AKEY_OPTION_PSEUDO 0x41
+/* Mac-specific pseudo key constants for GUI compatibility */
+#define AKEY_START_PSEUDO   0x100
+#define AKEY_SELECT_PSEUDO  0x101  
+#define AKEY_OPTION_PSEUDO  0x102
+#define AKEY_DELAY_PSEUDO   0x103
+
 #endif /* AKEY_H_ */

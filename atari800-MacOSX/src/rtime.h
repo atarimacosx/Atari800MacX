@@ -21,7 +21,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.  
 
 extern int RTIME_enabled;
 
-void RTIME_Initialise(int *argc, char *argv[]);
+int RTIME_ReadConfig(char *string, char *ptr);
+void RTIME_WriteConfig(FILE *fp);
+int RTIME_Initialise(int *argc, char *argv[]);
 UBYTE RTIME_GetByte(void);
 void RTIME_PutByte(UBYTE byte);
 #endif /* RTIME_H_ */

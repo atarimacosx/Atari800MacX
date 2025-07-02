@@ -34,6 +34,9 @@ int Util_stricmp(const char *str1, const char *str2);
 #define Util_stricmp stricmp
 #endif
 
+/* Returns TRUE if str1 ends with the characters in str2, regardless of case. */
+int Util_striendswith(const char *str1, const char *str2);
+
 /* Same as strncasecmp(), compare 2 strings, limited to size. */
 int Util_strnicmp(const char *str1, const char *str2, size_t size);
 
@@ -64,9 +67,6 @@ void Util_chomp(char *s);
 
 /* Similar to Basic's trim(): removes leading and trailing whitespace. */
 void Util_trim(char *s);
-
-/* Removes the file extension from a file. */
-void UTIL_strip_ext(char *fname);
 
 /* Converts the string to a non-negative integer and returns it.
    The string must represent the number and nothing else.
@@ -138,6 +138,24 @@ void Util_splitpath(const char *path, char *dir_part, char *file_part);
    or ends with the separator char, or path2 starts with the separator char. */
 void Util_catpath(char *result, const char *path1, const char *path2);
 
+/* Takes input string p in the form of "foo%bar##.ext" and converts to "foo%%bar%02d.ext",
+   storing the result in the char array pointed to by buffer (with a max size bufsize).
+   At most 9 digits are supported; if more that that, uses the format specifed in default.
+   Default format should use the hash specification also, like "atari###.ext".
+
+   Returns the maximum number supported by the pattern. */
+int Util_filenamepattern(const char *p, char *buffer, int bufsize, const char *default_pattern);
+
+/* Find the next available filename given by format (which can be found using a call to
+   Util_filenamepattern). The maximum value must be given in no_max, and the returned
+   filename is stored in buffer, with max bufsize characters. The no_last pointer is
+   used to remember the last successful value. no_last should be initialized with a -1
+   before calling this function for the first time.
+
+   Returns TRUE if successful, or FALSE if allow_overwrite is FALSE and could not find
+   an unused filename. Will always be successful if allow_overwrite is TRUE. */
+int Util_findnextfilename(const char *format, int *no_last, int no_max, char *buffer, int bufsize, int allow_overwrite);
+
 
 /* File I/O -------------------------------------------------------------- */
 
@@ -207,5 +225,8 @@ FILE *Util_uniqopen(char *filename, const char *mode);
 
 void Util_sleep(double s);
 double Util_time(void);
+
+/* Get current working directory. */
+char *Util_getcwd(char *buf, size_t size);
 
 #endif /* UTIL_H_ */

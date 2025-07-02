@@ -238,25 +238,7 @@ static DIR *dp = NULL;
 
 static int Devices_OpenDir(const char *filename)
 {
-#ifdef ATARI800MACX
-	char *multi_aster;
-	
 	Util_splitpath(filename, dir_path, filename_pattern);
-
-	if ((multi_aster = strstr(filename_pattern, "***")) != NULL) {
-		multi_aster[1] = '.';  /* Change *** to *.*  for Special MyDos Case */
-	} else if ((multi_aster = strstr(filename_pattern, "**")) != NULL) {  
-		static char temp[FILENAME_MAX];
-		/* Handle MyDos which can use ** instead of *.* */
-		multi_aster++;
-		Util_stpcpy(temp, multi_aster);
-		*multi_aster = '.';
-		multi_aster++;
-		Util_stpcpy(multi_aster, temp);
-	}
-#else
-	Util_splitpath(filename, dir_path, filename_pattern);
-#endif
 	if (dp != NULL)
 		closedir(dp);
 	dp = opendir(dir_path);
@@ -497,14 +479,6 @@ static UBYTE Devices_RemoveDirectory(const char *filename)
 
 
 /* H: device emulation --------------------------------------------------- */
-#ifdef D_PATCH	
-static UWORD d_old_table_address = 0;
-static UWORD in_d_patch = FALSE;
-static char d_path[FILENAME_MAX];
-static int Devices_D_IsDefault(void);
-
-#define OLD_D_HANDLER(X) (MEMORY_dGetWord(d_old_table_address + X) + 1)
-#endif
 
 #define DEFAULT_H_PATH  "H1:>DOS;>DOS"
 
@@ -522,17 +496,12 @@ int Devices_h_read_only = TRUE;
    is used. */
 char Devices_h_exe_path[FILENAME_MAX] = DEFAULT_H_PATH;
 
+/* H device rename; one can add 'D' in command line */
+char Devices_h_device_name = 'H';
+
 /* Devices_h_current_dir must be empty or terminated with Util_DIR_SEP_CHAR;
    only Util_DIR_SEP_CHAR can be used as a directory separator here */
 char Devices_h_current_dir[4][FILENAME_MAX];
-
-#ifdef D_PATCH
-/* Devices_d_current_dir must be empty or terminated with Util_DIR_SEP_CHAR;
- only Util_DIR_SEP_CHAR can be used as a directory separator here */
-static char d_current_dir[FILENAME_MAX];
-static int  d_current_drive = 1;
-static int  d_assigned_current = 0;
-#endif
 
 /* stream open via H: device per IOCB */
 static FILE *h_fp[8] = { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL };
@@ -552,10 +521,6 @@ static int h_wascr[8];
    in Devices_h_read. */
 static char h_lastop[8];
 
-#ifdef D_PATCH
-static int d_is_default[8] = {FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE};
-#endif
-
 Util_tmpbufdef(static, h_tmpbuf[8])
 
 /* IOCB #, 0-7 */
@@ -563,12 +528,6 @@ static int h_iocb;
 
 /* H: device number, 0-3 */
 static int h_devnum;
-
-#ifdef ATARI800MACX
-extern int currPrinter;
-extern char atari_print_dir[FILENAME_MAX];
-extern void PrintOutputControllerPrintChar(char character);
-#endif
 
 /* filename as specified after "Hn:" */
 static char atari_filename[FILENAME_MAX];
@@ -604,11 +563,7 @@ void Devices_H_CloseAll(void)
 		}
 }
 
-#ifdef ATARI800MACX
-void Devices_H_Init(void)
-#else
 static void Devices_H_Init(void)
-#endif
 {
 	if (devbug)
 		Log_print("HHINIT");
@@ -652,6 +607,12 @@ int Devices_Initialise(int *argc, char *argv[])
 				Util_strlcpy(Devices_h_exe_path, argv[++i], FILENAME_MAX);
 			else a_m = TRUE;
 		}
+		else if (strcmp(argv[i], "-Hdevicename") == 0) {
+			if (i_a){
+				Devices_h_device_name = argv[++i][0];
+			}
+			else a_m = TRUE;
+		}
 		else if (strcmp(argv[i], "-hreadonly") == 0)
 			Devices_h_read_only = TRUE;
 		else if (strcmp(argv[i], "-hreadwrite") == 0)
@@ -665,6 +626,7 @@ int Devices_Initialise(int *argc, char *argv[])
 				Log_print("\t-H3 <path>       Set path for H3: device");
 				Log_print("\t-H4 <path>       Set path for H4: device");
 				Log_print("\t-Hpath <path>    Set path for Atari executables on the H: device");
+				Log_print("\t-Hdevicename <X> Use this letter to access the Host device, instead of H:");
 				Log_print("\t-hreadonly       Enable read-only mode for H: device");
 				Log_print("\t-hreadwrite      Disable read-only mode for H: device");
 				Log_print("\t-devbug          Debugging messages for H: and P: devices");
@@ -682,26 +644,6 @@ int Devices_Initialise(int *argc, char *argv[])
 
 	return TRUE;
 }
-
-#ifdef ATARI800MACX
-void Devices_WarmCold_Start(void)
-{
-	int i;
-	
-	for (i=0;i<4;i++)
-		Devices_h_current_dir[i][0] = '\0';
-#ifdef D_PATCH
-	/* Devices_d_current_dir must be empty or terminated with Util_DIR_SEP_CHAR;
-	 only Util_DIR_SEP_CHAR can be used as a directory separator here */
-	d_current_dir[0] = 0;
-	d_current_drive = 1;
-	d_assigned_current = 0;
-	for (i=0;i<8;i++)
-		d_is_default[i] = FALSE;
-#endif
-	
-}
-#endif
 
 void Devices_Exit(void)
 {
@@ -850,21 +792,9 @@ static int Devices_GetNumber(int set_textmode)
 			h_textmode[h_iocb] = FALSE;
 		return devnum - 1;
 	}
-    if (in_d_patch) {
-        if (devnum == 6 || devnum == 7) {
-            if (set_textmode)
-                h_textmode[h_iocb] = FALSE;
-            return devnum - 6;
-        } else {
-            if (set_textmode)
-                h_textmode[h_iocb] = TRUE;
-            return devnum - 8;
-        }
-    } else {
-        if (set_textmode)
-            h_textmode[h_iocb] = TRUE;
-        return devnum - 6;
-    }
+	if (set_textmode)
+		h_textmode[h_iocb] = TRUE;
+	return devnum - 6;
 }
 
 static UWORD Devices_GetHostPath(int set_textmode)
@@ -876,15 +806,6 @@ static UWORD Devices_GetHostPath(int set_textmode)
 	bufadr = Devices_GetAtariPath(h_devnum, atari_filename);
 	if (bufadr == 0)
 		return 0;
-#ifdef D_PATCH	
-	if (in_d_patch) {
-		if (Devices_D_IsDefault()) {
-			Util_catpath(d_path, Devices_atari_h_dir[h_devnum], d_current_dir);
-			Util_catpath(host_path, d_path, atari_path);
-			return bufadr;
-		}
-	}
-#endif		
 	Util_catpath(host_path, Devices_atari_h_dir[h_devnum], atari_path);
 	return bufadr;
 }
@@ -1625,7 +1546,7 @@ static void Devices_H_Load(int mydos)
 		int devnum;
 		const char *q;
 		char *r;
-		if (p[0] == 'H' && p[1] >= '1' && p[1] <= '4' && p[2] == ':') {
+		if (p[0] == Devices_h_device_name && p[1] >= '1' && p[1] <= '4' && p[2] == ':') {
 			devnum = p[1] - '1';
 			p += 3;
 		}
@@ -1651,12 +1572,6 @@ static void Devices_H_Load(int mydos)
 		/* open from the specified location */
 		if (Devices_GetAtariPath(h_devnum, atari_filename) == 0)
 			return;
-#ifdef D_PATCH	
-		if (in_d_patch && Devices_D_IsDefault()) {
-				Util_catpath(d_path, Devices_atari_h_dir[h_devnum], d_current_dir);
-				Util_catpath(host_path, d_path, atari_path);
-		} else {
-#endif		
 		Util_catpath(host_path, Devices_atari_h_dir[h_devnum], atari_path);
 		*binf = fopen(host_path, "rb");
 		if (*binf == NULL) {
@@ -1664,10 +1579,8 @@ static void Devices_H_Load(int mydos)
 			CPU_SetN;
 			return;
 		}
-#ifdef D_PATCH
-        }
-#endif
 	}
+
 	/* check header */
 	if (fread(buf, 1, 2, *binf) != 2 || buf[0] != 0xff || buf[1] != 0xff) {
 		fclose(*binf);
@@ -1791,68 +1704,6 @@ static void Devices_H_ChangeDirectory(void)
 	CPU_ClrN;
 }
 
-#ifdef ATARI800MACX
-static void Devices_H_ChangeDefaultDrive(void)
-{
-#ifdef D_PATCH	
-	int new_current_drive;
-#endif
-	
-	if (devbug)
-		Log_print("Change default drive Command");
-#ifdef D_PATCH	
-	/* If we aren't running MyDOS, don't do this, as it can interfere
-	   with access to normal D: drives if we add an erroneous default */
-	if (MEMORY_dGetByte(0x700) != 'M') {
-		CPU_regY = 168; /* invalid device command */
-		CPU_SetN;
-		return;
-	}
-	
-	new_current_drive = MEMORY_dGetByte(Devices_ICDNOZ);
-	if (new_current_drive == 1) {
-		UWORD bufadr = MEMORY_dGetWordAligned(Devices_ICBALZ);
-		if (MEMORY_dGetByte(bufadr+0) != 'D' ||
-			MEMORY_dGetByte(bufadr+1) != ':') {
-			if (MEMORY_dGetByte(bufadr+0) != '\0' &&
-				MEMORY_dGetByte(bufadr+1) != '\0' &&
-				MEMORY_dGetByte(bufadr+2) != '\0' &&
-				MEMORY_dGetByte(bufadr+0) == 'D' &&
-				MEMORY_dGetByte(bufadr+2) == ':')
-				d_current_drive = new_current_drive;
-		}
-	} else
-		d_current_drive = new_current_drive;
-
-	if (d_current_drive <= 4) {
-		printf("current drive now: %d\n",d_current_drive);
-		d_assigned_current = FALSE;
-		CPU_regY = 1;
-		CPU_ClrN;
-	}
-	
-	if (Devices_GetHostPath(FALSE) == 0)
-		return;
-	
-	if (!Util_direxists(host_path)) {
-		CPU_regY = 150;
-		CPU_SetN;
-		return;
-	}
-	
-	d_assigned_current = TRUE;
-	if (atari_path[0] == '\0')
-		d_current_dir[0] = '\0';
-	else {
-		char *p = Util_stpcpy(d_current_dir, atari_path);
-		p[0] = Util_DIR_SEP_CHAR;
-		p[1] = '\0';
-	}
-
-#endif
-}
-#endif
-
 static void Devices_H_DiskInfo(void)
 {
 	static UBYTE info[16] = {
@@ -1968,13 +1819,7 @@ static void Devices_H_Special(void)
 		Devices_H_RemoveDirectory();
 		return;
 #endif
-#ifdef ATARI800MACX
 	case 0x29: /* MyDOS */
-		Devices_H_ChangeDefaultDrive();
-		return;
-#else
-	case 0x29: /* MyDOS */
-#endif
 	case 0x2c: /* Sparta */
 		Devices_H_ChangeDirectory();
 		return;
@@ -1998,278 +1843,6 @@ static void Devices_H_Special(void)
 	CPU_SetN;
 }
 
-#ifdef D_PATCH
-static int Devices_D_IsDefault(void)
-{
-	UWORD bufadr = MEMORY_dGetWordAligned(Devices_ICBALZ);
-	
-	/* Determine if path atari passed in starts with 'D:',
-	   If so, then we are using default drive */
-	if (MEMORY_dGetByte(bufadr+0) != '\0' &&
-		MEMORY_dGetByte(bufadr+1) != '\0' &&
-		MEMORY_dGetByte(bufadr+0) == 'D' &&
-		MEMORY_dGetByte(bufadr+1) == ':')
-		return TRUE;
-	/* Determine if path atari passed in doesn't start with
-	 'Dx:', if not, then we are using default drive */
-	else if (MEMORY_dGetByte(bufadr+0) != '\0' &&
-			 MEMORY_dGetByte(bufadr+1) != '\0' &&
-			 MEMORY_dGetByte(bufadr+2) != '\0' &&
-			 MEMORY_dGetByte(bufadr+0) != 'D' &&
-			 MEMORY_dGetByte(bufadr+2) != ':')
-		return TRUE;
-	else 
-		return FALSE;
-}
-
-static void Devices_D_Open(void)
-{
-	UBYTE devnum; 
-	
-	if (devbug)
-		Log_print("DOPEN");
-	devnum = MEMORY_dGetByte(Devices_ICDNOZ);
-
-	if (!Devices_GetIOCB())
-		return;
-		
-	/* If it is drive one, and MyDos has assigned a current default drive
-	   to one of the hard drives, and we are using a default drive 
-	   filename, then handle it with the H: Open */
-	if (devnum == 1 && d_assigned_current && Devices_D_IsDefault()) {
-		d_is_default[h_iocb] = TRUE;  /* Remember it was a default access */
-		in_d_patch = TRUE;
-		Devices_H_Open();
-		in_d_patch = FALSE;
-	} else {
-		/* Remember it wasn't a default access */
-		d_is_default[h_iocb] = FALSE;
-		/* If it's drive 1-4, then pass it back to the Atari and the old D:
-		   handler */
-		if (devnum <= 4) {
-			CPU_regPC = OLD_D_HANDLER(Devices_TABLE_OPEN);
-		/* Otherwise, handle it with the H: handler */
-		} else {
-			in_d_patch = TRUE;
-			Devices_H_Open();
-			in_d_patch = FALSE;
-		}
-	}
-}
-
-static void Devices_D_Close(void)
-{
-	UBYTE devnum; 
-	
-	if (devbug)
-		Log_print("DCLOS");
-	devnum = MEMORY_dGetByte(Devices_ICDNOZ);
-	/* If it is drive one, and MyDos has assigned a current default drive
-	 to one of the hard drives... */
-	if (devnum == 1 && d_assigned_current) {
-		if (!Devices_GetIOCB())
-			return;
-		/* ...and we marked it as using a default drive during the open,
-	       then handle it with the H: driver. */
-		if (d_is_default[h_iocb]) {
-			in_d_patch = TRUE;
-			Devices_H_Close();
-			in_d_patch = FALSE;
-			d_is_default[h_iocb] = FALSE;
-		/* Otherwise handle it with the D: handler */
-		} else
-			CPU_regPC = OLD_D_HANDLER(Devices_TABLE_CLOS);
-	} else if (devnum <= 4) {
-		CPU_regPC = OLD_D_HANDLER(Devices_TABLE_CLOS);
-	/* Otherwise, handle it with the H: handler */
-	} else {
-		in_d_patch = TRUE;
-		Devices_H_Close();
-		in_d_patch = FALSE;
-	}
-}
-
-static void Devices_D_Read(void)
-{
-	UBYTE devnum; 
-	
-	if (devbug)
-		Log_print("DREAD");
-	devnum = MEMORY_dGetByte(Devices_ICDNOZ);
-	/* If it is drive one, and MyDos has assigned a current default drive
-	 to one of the hard drives... */
-	if (devnum == 1 && d_assigned_current) {
-		if (!Devices_GetIOCB())
-			return;
-		/* ...and we marked it as using a default drive during the open,
-		 then handle it with the H: driver. */
-		if (d_is_default[h_iocb]) {
-			in_d_patch = TRUE;
-			Devices_H_Read();
-			in_d_patch = FALSE;
-		/* Otherwise handle it with the D: handler */
-		} else
-			CPU_regPC = OLD_D_HANDLER(Devices_TABLE_READ);		
-	} else if (devnum <= 4) {
-		CPU_regPC = OLD_D_HANDLER(Devices_TABLE_READ);
-	/* Otherwise, handle it with the H: handler */
-	} else {
-		in_d_patch = TRUE;
-		Devices_H_Read();
-		in_d_patch = FALSE;
-	}
-}
-
-static void Devices_D_Write(void)
-{
-	UBYTE devnum; 
-	
-	if (devbug)
-		Log_print("DWRIT");
-	devnum = MEMORY_dGetByte(Devices_ICDNOZ);
-	/* If it is drive one, and MyDos has assigned a current default drive
-	 to one of the hard drives... */
-	if (devnum == 1 && d_assigned_current) {
-		if (!Devices_GetIOCB())
-			return;
-		/* ...and we marked it as using a default drive during the open,
-		 then handle it with the H: driver. */
-		if (d_is_default[h_iocb]) {
-			in_d_patch = TRUE;
-			Devices_H_Write();
-			in_d_patch = FALSE;
-		/* Otherwise handle it with the D: handler */
-		} else
-			CPU_regPC = OLD_D_HANDLER(Devices_TABLE_WRIT);		
-	} else if (devnum <= 4) {
-		CPU_regPC = OLD_D_HANDLER(Devices_TABLE_WRIT);
-	/* Otherwise, handle it with the H: handler */
-	} else {
-		in_d_patch = TRUE;
-		Devices_H_Write();
-		in_d_patch = FALSE;
-	}
-}
-
-static void Devices_D_Status(void)
-{
-	UBYTE devnum; 
-	
-	if (devbug)
-		Log_print("DSTAT");
-	devnum = MEMORY_dGetByte(Devices_ICDNOZ);
-	/* If it is drive one, and MyDos has assigned a current default drive
-	 to one of the hard drives... */
-	if (devnum == 1 && d_assigned_current) {
-		if (!Devices_GetIOCB())
-			return;
-		/* ...and we marked it as using a default drive during the open,
-		 then handle it with the H: driver. */
-		if (d_is_default[h_iocb]) {
-			in_d_patch = TRUE;
-			Devices_H_Status();
-			in_d_patch = FALSE;
-		/* Otherwise handle it with the D: handler */
-		} else
-			CPU_regPC = OLD_D_HANDLER(Devices_TABLE_STAT);
-	} else if (devnum <= 4) {
-		CPU_regPC = OLD_D_HANDLER(Devices_TABLE_STAT);
-	/* Otherwise, handle it with the H: handler */
-	} else {
-		in_d_patch = TRUE;
-		Devices_H_Status();
-		in_d_patch = FALSE;
-	}
-}
-
-static void Devices_D_Special(void)
-{
-	UBYTE devnum, code; 
-	
-	if (devbug)
-		Log_print("DSPEC");
-	devnum = MEMORY_dGetByte(Devices_ICDNOZ);
-	code = MEMORY_dGetByte(Devices_ICCOMZ);
-
-	/* Because of d_assigned_current, the following test will only be true 
-	   if we are using MyDOS */
-	if (devnum == 1 && d_assigned_current && code != 0x29) {
-		switch(code) {
-			/* Codes which expect a closed iocb and have a filename */
-			case 0x20: /* Rename */
-			case 0x21: /* Delete */
-			case 0x23: /* Lock */
-			case 0x24: /* Unlock */
-			case 0x22: /* MyDOS MakeDir*/
-			case 0x2a: /* MyDOS, Sparta MakeDir*/
-			case 0x2b: /* Sparta RemoveDir*/
-				if (Devices_D_IsDefault()) {
-					in_d_patch = TRUE;
-					Devices_H_Special();
-					in_d_patch = FALSE;
-				}
-				else
-					CPU_regPC = OLD_D_HANDLER(Devices_TABLE_SPEC);					
-				return;
-			/* Codes which expect an open iocb */	
-			case 0x25: /* Point */
-			case 0x26: /* Note */
-				if (!Devices_GetIOCB())
-					return;
-				if (d_is_default[h_iocb]) {
-					in_d_patch = TRUE;
-					Devices_H_Special();
-					in_d_patch = FALSE;
-				}
-				else
-					CPU_regPC = OLD_D_HANDLER(Devices_TABLE_SPEC);					
-			/* Special case - may have file, may not */
-			case 0x27: /* Sparta, MyDOS=Load FileLength */ 
-				/* With load file, we may or may not need a filename */
-				if (!Devices_GetIOCB())
-					return;
-				if (h_fp[h_iocb] == NULL) {
-					if (Devices_D_IsDefault()) {
-						in_d_patch = TRUE;
-						Devices_H_Special();
-						in_d_patch = FALSE;
-					}
-					else
-						CPU_regPC = OLD_D_HANDLER(Devices_TABLE_SPEC);					
-				} else {
-					if (d_is_default[h_iocb]) {
-						in_d_patch = TRUE;
-						Devices_H_Special();
-						in_d_patch = FALSE;
-					}
-					else
-						CPU_regPC = OLD_D_HANDLER(Devices_TABLE_SPEC);					
-				}
-				return;
-			/* Sparta Commands which we don't handle in MyDos mode 
-			   and unknown commands, so just let the DOS driver reject them */
-			case 0x28: /* Sparta Load*/
-			case 0x2c: /* Sparta ChangeDir*/
-			case 0x2f: /* Sparta DiskInfo*/
-			case 0x30: /* Sparta Absolute Path*/
-			default:
-				CPU_regPC = OLD_D_HANDLER(Devices_TABLE_SPEC);
-				return;
-		}
-	/* The Set Directory Special command needs to be processed for all drives
-	   not just the the hard drive enulated ones */
-	} else if ((code == 0x29) || (devnum > 4)) {
-		in_d_patch = TRUE;
-		Devices_H_Special();
-		in_d_patch = FALSE;
-		/* If it is a real drive, then MyDos needs to see the command as well */
-		if ((code == 0x29) && (devnum <= 4))
-			CPU_regPC = OLD_D_HANDLER(Devices_TABLE_SPEC);
-	} else {
-		CPU_regPC = OLD_D_HANDLER(Devices_TABLE_SPEC);
-	}
-}
-#endif 
 
 /* P: device emulation --------------------------------------------------- */
 
@@ -2305,14 +1878,6 @@ static void Devices_P_Close(void)
 	if (devbug)
 		Log_print("PHCLOS");
 
-#ifdef ATARI800MACX
-    if (currPrinter != 0) {
-		CPU_regY = 1;
-		CPU_ClrN;
-		return;
-	}
-#endif		
-	
 	if (phf != NULL) {
 		fclose(phf);
 		phf = NULL;
@@ -2342,24 +1907,9 @@ static void Devices_P_Open(void)
 	if (devbug)
 		Log_print("PHOPEN");
 
-#ifdef ATARI800MACX
- 	if (currPrinter != 0) {
-		CPU_regY = 1;
-		CPU_ClrN;
-		return;
-	}
-#endif		
-	
 	if (phf != NULL)
 		Devices_P_Close();
 
-#ifdef ATARI800MACX
-	strcpy(spool_file,atari_print_dir);
-	strcat(spool_file,"/");
-	strcat(spool_file,"SPOOL_XXXXXX\0");
-	phf = fdopen(mkstemp(spool_file), "w");
-#endif	
-	
 	phf = Util_uniqopen(spool_file, "w");
 	if (phf != NULL) {
 		CPU_regY = 1;
@@ -2379,39 +1929,12 @@ static void Devices_P_Write(void)
 		Log_print("PHWRIT");
 
 	byte = CPU_regA;
-#ifdef ATARI800MACX	
-    if (currPrinter == 0)
-	{
-		if (byte == 0x9b)
-			byte = '\n';
-		
-		fputc(byte, phf);
-		CPU_regY = 1;
-		CPU_ClrN;
-	}
-    else if (currPrinter == 4)
-    {
-        PrintOutputControllerPrintChar(byte);
-        CPU_regY = 1;
-        CPU_ClrN;
-    }
-    else
-    {
-        if (byte == 0x9b)
-            byte = 0x0D;
-        
-        PrintOutputControllerPrintChar(byte);
-        CPU_regY = 1;
-        CPU_ClrN;
-    }
-#else
 	if (byte == 0x9b)
 		byte = '\n';
 
 	fputc(byte, phf);
 	CPU_regY = 1;
 	CPU_ClrN;
-#endif
 }
 
 static void Devices_P_Status(void)
@@ -2522,6 +2045,98 @@ static void Devices_K_Read(void)
 }
 
 #endif /* BASIC */
+
+/* B: device emulation --------------------------------------------------- */
+
+/* The B: device is intended as a handler for interoperating with a web browser.
+ * The device is OPENed, a url is WRITE-n, then it is CLOSEd.
+ * Upon closing, the ready flag in the structure is set to TRUE.
+ * This can tested by the host port, reset to FALSE then if the string contained
+ * in the url member looks like a url, a browser to can be spawned to that url.
+ * The user can also be notified via a popup that an Atari program is requesting
+ * browser access.
+ */
+
+struct DEV_B dev_b_status;
+
+static void Devices_B_Open(void)
+{
+	if (devbug)
+		Log_print("B: OPEN");
+
+	if (MEMORY_dGetByte(Devices_ICAX1Z) != 8) {
+		CPU_regY = 163; /* read-only device */
+		CPU_SetN;
+		return;
+	}
+
+	memset(dev_b_status.url, 0, sizeof(dev_b_status.url));
+	dev_b_status.pos = 0;
+	dev_b_status.ready = FALSE;
+
+	CPU_regY = 1;	/* open OK */
+	CPU_ClrN;
+}
+
+static void Devices_B_Close(void)
+{
+	if (devbug)
+		Log_print("B: CLOSE (%s)", dev_b_status.url);
+
+	if (dev_b_status.pos > 0)
+		dev_b_status.ready = TRUE;
+
+	CPU_regY = 1;
+	CPU_ClrN;
+}
+
+static void Devices_B_Write(void)
+{
+	UBYTE byte;
+
+	byte = CPU_regA;
+
+	if (devbug)
+		Log_print("B: WRITE ([%d] %02X, '%c')", dev_b_status.pos, byte, byte);
+
+	if (byte == 0x9b)
+		byte = '\0';
+
+	if (dev_b_status.pos >= sizeof(dev_b_status.url) - 1) {
+		CPU_regY = 135; /* attempted to write to a read-only device */
+		CPU_SetN;
+		return;
+	}
+	dev_b_status.url[dev_b_status.pos++] = byte;
+
+	CPU_regY = 1;
+	CPU_ClrN;
+}
+
+static void Devices_B_Null(void)
+{
+	if (devbug)
+		Log_print("B: NULL");
+}
+
+static void Devices_B_Read(void)
+{
+	if (devbug)
+		Log_print("B: READ");
+
+	CPU_regY = 136; /* end of file */
+	CPU_SetN;
+}
+
+static void Devices_B_Init(void)
+{
+	if (devbug)
+		Log_print("B: INIT");
+
+	CPU_regY = 1;
+	CPU_ClrN;
+}
+
 
 /* Atari BASIC loader ---------------------------------------------------- */
 
@@ -2773,9 +2388,6 @@ static void Devices_CloseBasicFile(void)
 /* Patches management ---------------------------------------------------- */
 
 int Devices_enable_h_patch = TRUE;
-#ifdef D_PATCH
-int Devices_enable_d_patch = TRUE;
-#endif
 int Devices_enable_p_patch = TRUE;
 int Devices_enable_r_patch = FALSE;
 int Devices_enable_b_patch = FALSE;
@@ -2915,7 +2527,9 @@ int Devices_PatchOS(void)
    So after we put H: entry in HATABS, we only check if 'H' is still where
    we put it (h_entry_address).
    Devices_UpdateHATABSEntry and Devices_RemoveHATABSEntry can be used to add
-   other devices than H:. */
+   other devices than H:.
+   Keep in mind that H: can be renamed to whatever you want in command line.
+   */
 
 #define HATABS 0x31a
 
@@ -2942,24 +2556,6 @@ UWORD Devices_UpdateHATABSEntry(char device, UWORD entry_address,
 	return entry_address;
 }
 
-#ifdef D_PATCH	
-void Devices_ReplaceHATABSEntry(char device, UWORD table_address, UWORD *old_table_address)
-{
-	UWORD address;
-	
-	for (address = HATABS; address < HATABS + 33; address += 3) {
-		if (MEMORY_dGetByte(address) == device) {
-			if (table_address != MEMORY_dGetWord(address+1)) {
-				if (old_table_address != NULL)
-					*old_table_address = MEMORY_dGetWord(address+1);
-				MEMORY_dPutWord(address + 1, table_address);
-			}
-		}
-	}
-	/* entry not found */
-}
-#endif
-
 void Devices_RemoveHATABSEntry(char device, UWORD entry_address,
 							  UWORD table_address)
 {
@@ -2974,58 +2570,54 @@ static UWORD h_entry_address = 0;
 #ifdef R_IO_DEVICE
 static UWORD r_entry_address = 0;
 #endif
+static UWORD b_entry_address = 0;
 
-#define H_DEVICE_BEGIN  0xd040
-#define H_TABLE_ADDRESS 0xd040
-#define H_PATCH_OPEN    0xd050
-#define H_PATCH_CLOS    0xd053
-#define H_PATCH_READ    0xd056
-#define H_PATCH_WRIT    0xd059
-#define H_PATCH_STAT    0xd05c
-#define H_PATCH_SPEC    0xd05f
-#define H_DEVICE_END    0xd061
+#define H_DEVICE_BEGIN  0xd140
+#define H_TABLE_ADDRESS 0xd140
+#define H_PATCH_OPEN    0xd150
+#define H_PATCH_CLOS    0xd153
+#define H_PATCH_READ    0xd156
+#define H_PATCH_WRIT    0xd159
+#define H_PATCH_STAT    0xd15c
+#define H_PATCH_SPEC    0xd15f
+#define H_DEVICE_END    0xd161
 
 #ifdef R_IO_DEVICE
-#define R_DEVICE_BEGIN  0xd080
-#define R_TABLE_ADDRESS 0xd080
-#define R_PATCH_OPEN    0xd0a0
-#define R_PATCH_CLOS    0xd0a3
-#define R_PATCH_READ    0xd0a6
-#define R_PATCH_WRIT    0xd0a9
-#define R_PATCH_STAT    0xd0ac
-#define R_PATCH_SPEC    0xd0af
-#define R_PATCH_INIT    0xd0b3
-#define R_DEVICE_END    0xd0b5
+#define R_DEVICE_BEGIN  0xd180
+#define R_TABLE_ADDRESS 0xd180
+#define R_PATCH_OPEN    0xd1a0
+#define R_PATCH_CLOS    0xd1a3
+#define R_PATCH_READ    0xd1a6
+#define R_PATCH_WRIT    0xd1a9
+#define R_PATCH_STAT    0xd1ac
+#define R_PATCH_SPEC    0xd1af
+#define R_PATCH_INIT    0xd1b3
+#define R_DEVICE_END    0xd1b5
 #endif
 
-#ifdef D_PATCH	
-#define D_DEVICE_BEGIN  0xd0c0
-#define D_TABLE_ADDRESS 0xd0c0
-#define D_PATCH_OPEN    0xd0d0
-#define D_PATCH_CLOS    0xd0d3
-#define D_PATCH_READ    0xd0d6
-#define D_PATCH_WRIT    0xd0d9
-#define D_PATCH_STAT    0xd0dc
-#define D_PATCH_SPEC    0xd0df
-#define D_PATCH_INIT    0xd0e3
-#define D_DEVICE_END    0xd0e5
-#endif
+#define B_DEVICE_BEGIN  0xd1c0
+#define B_TABLE_ADDRESS 0xd1c0
+#define B_PATCH_OPEN    0xd1d0
+#define B_PATCH_CLOS    0xd1d3
+#define B_PATCH_READ    0xd1d6
+#define B_PATCH_WRIT    0xd1d9
+#define B_PATCH_STAT    0xd1dc
+#define B_PATCH_SPEC    0xd1df
+#define B_PATCH_INIT    0xd1e3
+#define B_DEVICE_END    0xd1e5
 
 void Devices_Frame(void)
 {
 	if (Devices_enable_h_patch)
-		h_entry_address = Devices_UpdateHATABSEntry('H', h_entry_address, H_TABLE_ADDRESS);
+		h_entry_address = Devices_UpdateHATABSEntry(Devices_h_device_name, h_entry_address, H_TABLE_ADDRESS);
 
-#ifdef D_PATCH	
-	if (Devices_enable_d_patch)
-		Devices_ReplaceHATABSEntry('D', D_TABLE_ADDRESS, &d_old_table_address);
-#endif
-	
 #ifdef R_IO_DEVICE
 	if (Devices_enable_r_patch)
 		r_entry_address = Devices_UpdateHATABSEntry('R', r_entry_address, R_TABLE_ADDRESS);
 #endif
 
+	if (Devices_enable_b_patch)
+		b_entry_address = Devices_UpdateHATABSEntry('B', b_entry_address, B_TABLE_ADDRESS);
 }
 
 /* this is called when Devices_enable_h_patch is toggled */
@@ -3053,7 +2645,7 @@ void Devices_UpdatePatches(void)
 	}
 	else {						/* disable H: device */
 		/* remove H: entry from HATABS */
-		Devices_RemoveHATABSEntry('H', h_entry_address, H_TABLE_ADDRESS);
+		Devices_RemoveHATABSEntry(Devices_h_device_name, h_entry_address, H_TABLE_ADDRESS);
 		/* remove patches */
 		ESC_Remove(ESC_HHOPEN);
 		ESC_Remove(ESC_HHCLOS);
@@ -3065,45 +2657,6 @@ void Devices_UpdatePatches(void)
 		MEMORY_dFillMem(H_DEVICE_BEGIN, 0xff, H_DEVICE_END - H_DEVICE_BEGIN + 1);
 	}
 
-#ifdef D_PATCH	
-	if (Devices_enable_d_patch) {		/* enable D: device */
-		/* change memory attributes for the area, where we put
-		 the D: handler table and patches */
-		MEMORY_SetROM(D_DEVICE_BEGIN, D_DEVICE_END);
-		/* set handler table */
-		MEMORY_dPutWord(D_TABLE_ADDRESS + Devices_TABLE_OPEN, D_PATCH_OPEN - 1);
-		MEMORY_dPutWord(D_TABLE_ADDRESS + Devices_TABLE_CLOS, D_PATCH_CLOS - 1);
-		MEMORY_dPutWord(D_TABLE_ADDRESS + Devices_TABLE_READ, D_PATCH_READ - 1);
-		MEMORY_dPutWord(D_TABLE_ADDRESS + Devices_TABLE_WRIT, D_PATCH_WRIT - 1);
-		MEMORY_dPutWord(D_TABLE_ADDRESS + Devices_TABLE_STAT, D_PATCH_STAT - 1);
-		MEMORY_dPutWord(D_TABLE_ADDRESS + Devices_TABLE_SPEC, D_PATCH_SPEC - 1);
-		/* set patches */
-		ESC_AddEscRts(D_PATCH_OPEN, ESC_DOPEN, Devices_D_Open);
-		ESC_AddEscRts(D_PATCH_CLOS, ESC_DCLOS, Devices_D_Close);
-		ESC_AddEscRts(D_PATCH_READ, ESC_DREAD, Devices_D_Read);
-		ESC_AddEscRts(D_PATCH_WRIT, ESC_DWRIT, Devices_D_Write);
-		ESC_AddEscRts(D_PATCH_STAT, ESC_DSTAT, Devices_D_Status);
-		ESC_AddEscRts(D_PATCH_SPEC, ESC_DSPEC, Devices_D_Special);
-		/* D: in HATABS will be replaced next frame by Devices_Frame */
-	}
-	else {						/* disable D: device */
-		/* put DOS D: entry back in HATABS */
-		if (d_old_table_address)
-			Devices_ReplaceHATABSEntry('D', d_old_table_address, NULL);
-		d_old_table_address = 0;
-		
-		/* remove patches */
-		ESC_Remove(ESC_DOPEN);
-		ESC_Remove(ESC_DCLOS);
-		ESC_Remove(ESC_DREAD);
-		ESC_Remove(ESC_DWRIT);
-		ESC_Remove(ESC_DSTAT);
-		ESC_Remove(ESC_DSPEC);
-		/* fill memory area used for table and patches with 0xff */
-		MEMORY_dFillMem(D_DEVICE_BEGIN, 0xff, D_DEVICE_END - D_DEVICE_BEGIN + 1);
-	}
-#endif	
-	
 #ifdef R_IO_DEVICE
 	if (Devices_enable_r_patch) {		/* enable R: device */
 		/* change memory attributes for the area, where we put
@@ -3142,6 +2695,39 @@ void Devices_UpdatePatches(void)
 	}
 #endif /* defined(R_IO_DEVICE) */
 
+	if (Devices_enable_b_patch) {
+		/* add B: device to HATABS */
+		MEMORY_SetROM(B_DEVICE_BEGIN, B_DEVICE_END);
+		/* set handler table */
+		MEMORY_dPutWord(B_TABLE_ADDRESS + Devices_TABLE_OPEN, B_PATCH_OPEN - 1);
+		MEMORY_dPutWord(B_TABLE_ADDRESS + Devices_TABLE_CLOS, B_PATCH_CLOS - 1);
+		MEMORY_dPutWord(B_TABLE_ADDRESS + Devices_TABLE_READ, B_PATCH_READ - 1);
+		MEMORY_dPutWord(B_TABLE_ADDRESS + Devices_TABLE_WRIT, B_PATCH_WRIT - 1);
+		MEMORY_dPutWord(B_TABLE_ADDRESS + Devices_TABLE_STAT, B_PATCH_STAT - 1);
+		MEMORY_dPutWord(B_TABLE_ADDRESS + Devices_TABLE_SPEC, B_PATCH_SPEC - 1);
+		MEMORY_dPutWord(B_TABLE_ADDRESS + Devices_TABLE_INIT, B_PATCH_INIT - 1);
+		/* set patches */
+		ESC_AddEscRts(B_PATCH_OPEN, ESC_BOPEN, Devices_B_Open);
+		ESC_AddEscRts(B_PATCH_CLOS, ESC_BCLOS, Devices_B_Close);
+		ESC_AddEscRts(B_PATCH_READ, ESC_BREAD, Devices_B_Read);
+		ESC_AddEscRts(B_PATCH_WRIT, ESC_BWRIT, Devices_B_Write);
+		ESC_AddEscRts(B_PATCH_STAT, ESC_BSTAT, Devices_B_Null);
+		ESC_AddEscRts(B_PATCH_SPEC, ESC_BSPEC, Devices_B_Null);
+		ESC_AddEscRts(B_PATCH_INIT, ESC_BINIT, Devices_B_Init);
+	}
+	else {
+		/* remove B: entry from HATABS */
+		Devices_RemoveHATABSEntry('B', b_entry_address, B_TABLE_ADDRESS);
+		/* remove patches */
+		ESC_Remove(ESC_BOPEN);
+		ESC_Remove(ESC_BCLOS);
+		ESC_Remove(ESC_BREAD);
+		ESC_Remove(ESC_BWRIT);
+		ESC_Remove(ESC_BSTAT);
+		ESC_Remove(ESC_BSPEC);
+		/* fill memory area used for table and patches with 0xff */
+		MEMORY_dFillMem(B_DEVICE_BEGIN, 0xff, B_DEVICE_END - B_DEVICE_BEGIN + 1);
+	}
 }
 
 /*

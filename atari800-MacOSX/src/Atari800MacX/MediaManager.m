@@ -61,6 +61,7 @@ typedef struct {
 
 extern void PauseAudio(int pause);
 extern int CalcAtariType(int machineType, int ramSize, int axlon, int mosaic, int ultimate, int basic, int game, int leds, int jumper);
+extern int Atari800_jumper_present;
 extern char atari_disk_dirs[][FILENAME_MAX];
 extern char atari_diskset_dir[FILENAME_MAX];
 extern char atari_rom_dir[FILENAME_MAX];

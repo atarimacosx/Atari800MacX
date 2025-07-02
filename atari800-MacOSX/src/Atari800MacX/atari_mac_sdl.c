@@ -84,6 +84,35 @@
 #include "util.h"
 #include "capslock.h"
 
+/* Mac-specific constants and variables for compatibility */
+#ifndef XEP80_SCRN_HEIGHT
+#define XEP80_SCRN_HEIGHT 300
+#endif
+
+/* Mac-specific pseudo key constants */
+#define AKEY_START_PSEUDO   0x100
+#define AKEY_SELECT_PSEUDO  0x101  
+#define AKEY_OPTION_PSEUDO  0x102
+#define AKEY_DELAY_PSEUDO   0x103
+
+/* Mac-specific XEP80 variables */
+static int XEP80_first_row = 0;
+static int XEP80_last_row = 0;
+int COL80_autoswitch = 0;
+static int XEP80_sent_count = 0;
+static int XEP80_last_sent_count = 0;
+
+/* Mac-specific jumper variable */
+int Atari800_jumper_present = 0;
+
+/* Mac-specific Alitrra ROM preference variables */
+int Atari800_useAlitrra1200XLRom = 0;
+int Atari800_useAlitrra5200Rom = 0;
+int Atari800_useAlitrraBasicRom = 0;
+int Atari800_useAlitrraOSBRom = 0;
+int Atari800_useAlitrraXEGSRom = 0;
+int Atari800_useAlitrraXLRom = 0;
+
 /* Local variables that control the display and sound modes.  They need to be visable externally
    so the preferences and menu manager Objective-C files may access them. */
 #define FULL_DISPLAY_COUNT 3
@@ -705,7 +734,7 @@ void Sound_Update(void)
 	
 	if (!sound_enabled || pauseCount) return;
 	/* produce samples from the sound emulation */
-	samples_written = MZPOKEYSND_UpdateProcessBuffer();
+	samples_written = POKEYSND_UpdateProcessBuffer();
 	bytes_per_sample = (POKEYSND_stereo_enabled ? 2 : 1)*((sound_bits == 16) ? 2:1);
 	bytes_per_ms = (bytes_per_sample)*(dsprate/1000.0);
 	bytes_written = (sound_bits == 8 ? samples_written : samples_written*2);
@@ -730,13 +759,13 @@ void Sound_Update(void)
 	newpos = dsp_write_pos + bytes_written;
 	if (newpos/dsp_buffer_bytes == dsp_write_pos/dsp_buffer_bytes) {
 		/* no wrap */
-		memcpy(dsp_buffer+(dsp_write_pos%dsp_buffer_bytes), MZPOKEYSND_process_buffer, bytes_written);
+		memcpy(dsp_buffer+(dsp_write_pos%dsp_buffer_bytes), POKEYSND_process_buffer, bytes_written);
 	}
 	else {
 		/* wraps */
 		int first_part_size = dsp_buffer_bytes - (dsp_write_pos%dsp_buffer_bytes);
-		memcpy(dsp_buffer+(dsp_write_pos%dsp_buffer_bytes), MZPOKEYSND_process_buffer, first_part_size);
-		memcpy(dsp_buffer, MZPOKEYSND_process_buffer+first_part_size, bytes_written-first_part_size);
+		memcpy(dsp_buffer+(dsp_write_pos%dsp_buffer_bytes), POKEYSND_process_buffer, first_part_size);
+		memcpy(dsp_buffer, POKEYSND_process_buffer+first_part_size, bytes_written-first_part_size);
 	}
 	dsp_write_pos = newpos;
 	if (callbacktick == 0) {
@@ -2742,7 +2771,7 @@ void Reinit_Joysticks(void)
 *  Atari_Initialise - Initializes the SDL video and sound functions.  The command
 *    line args are currently unused.
 *-----------------------------------------------------------------------------*/
-void PLATFORM_Initialise(int *argc, char *argv[])
+int PLATFORM_Initialise(int *argc, char *argv[])
 {
     int i, j;
     int no_joystick;
@@ -2780,7 +2809,7 @@ void PLATFORM_Initialise(int *argc, char *argv[])
     SDL_Sound_Initialise(argc, argv);
 
     if (help_only)
-        return;     /* return before changing the gfx mode */
+        return TRUE;     /* return before changing the gfx mode */
     
     InitializeVideo();
     Atari800OriginSet();
@@ -2789,6 +2818,8 @@ void PLATFORM_Initialise(int *argc, char *argv[])
     
     if (no_joystick == 0)
         Init_Joysticks(argc, argv);
+    
+    return TRUE;
 }
 
 /*------------------------------------------------------------------------------
@@ -4172,8 +4203,39 @@ void INPUT_DrawMousePointer()
 {
 }
 
-void INPUT_Initialise(int *argc, char *argv[])
+int INPUT_Initialise(int *argc, char *argv[])
 {
+	return TRUE;
+}
+
+int RTIME_Initialise(int *argc, char *argv[])
+{
+	return TRUE;
+}
+
+/* Mac-specific XEP80 copy function stub */
+int XEP80GetCopyData(int startx, int endx, int starty, int endy, unsigned char *data)
+{
+	/* Stub implementation - return false indicating no data copied */
+	return FALSE;
+}
+
+/* Mac-specific screen drawing function stubs */
+void Screen_DrawHDDiskLED(void)
+{
+	/* Stub implementation - no hard disk LED drawing */
+}
+
+void Screen_DrawCapslock(int state)
+{
+	/* Stub implementation - no caps lock display */
+}
+
+/* Mac-specific SIO function stub */
+int SIO_IsVapi(int diskno)
+{
+	/* Stub implementation - return false indicating no VAPI support */
+	return FALSE;
 }
 
 int INPUT_joy_multijoy = 0;

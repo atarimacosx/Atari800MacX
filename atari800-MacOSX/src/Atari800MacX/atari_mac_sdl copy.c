@@ -6631,8 +6631,9 @@ void INPUT_DrawMousePointer()
 {
 }
 
-void INPUT_Initialise(int *argc, char *argv[])
+int INPUT_Initialise(int *argc, char *argv[])
 {
+	return TRUE;
 }
 
 int INPUT_joy_multijoy = 0;
@@ -8120,7 +8121,7 @@ int Setup_HID_Notifications(void)
     result = IOMasterPort(MACH_PORT_NULL, &masterPort);
     if (result || !masterPort)
     {
-        printf("ERR: CouldnÕt create a master I/O Kit port(%08x)\n", result);
+        printf("ERR: Couldnï¿½t create a master I/O Kit port(%08x)\n", result);
         return -1;
     }
 
@@ -8128,7 +8129,7 @@ int Setup_HID_Notifications(void)
     matchingDict = IOServiceMatching(kIOUSBDeviceClassName);
     if (!matchingDict)
     {
-        printf("CouldnÕt create a USB matching dictionary\n");
+        printf("Couldnï¿½t create a USB matching dictionary\n");
         mach_port_deallocate(mach_task_self(), masterPort);
         return -1;
     }
@@ -8145,7 +8146,7 @@ int Setup_HID_Notifications(void)
                                      kCFNumberSInt32Type, &usbSubClass));
 
     //To set up asynchronous notifications, create a notification port and 
-    //add its run loop event source to the programÕs run loop
+    //add its run loop event source to the programï¿½s run loop
     gNotifyPort = IONotificationPortCreate(masterPort);
     runLoopSource = IONotificationPortGetRunLoopSource(gNotifyPort);
     CFRunLoopAddSource(CFRunLoopGetCurrent(), runLoopSource, 

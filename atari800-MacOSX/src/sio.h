@@ -62,4 +62,7 @@ int SIO_WriteSector(int unit, int sector, const UBYTE *buffer);
 void SIO_StateSave(void);
 void SIO_StateRead(void);
 
+/* Mac-specific SIO function */
+int SIO_IsVapi(int diskno);
+
 #endif	/* SIO_H_ */

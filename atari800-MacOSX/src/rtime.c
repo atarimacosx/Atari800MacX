@@ -24,17 +24,19 @@
 
 #include "config.h"
 #include <stdlib.h>	/* for NULL */
+#include <stdio.h>
 #include <string.h>	/* for strcmp() */
 #ifdef HAVE_TIME_H
 #include <time.h>
 #endif
-#ifdef WIN32
+#ifdef HAVE_WINDOWS_H
 #include <windows.h>
 #endif
 
 #include "atari.h"
 #include "log.h"
 #include "rtime.h"
+#include "util.h"
 
 int RTIME_enabled = 1;
 
@@ -47,7 +49,24 @@ static int rtime_tmp2 = 0;
 
 static UBYTE regset[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 
-void RTIME_Initialise(int *argc, char *argv[])
+int RTIME_ReadConfig(char *string, char *ptr)
+{
+	if (strcmp(string, "RTIME") == 0) {
+		int value = Util_sscanbool(ptr);
+		if (value < 0)
+			return FALSE;
+		RTIME_enabled = value;
+	}
+	else return FALSE;
+	return TRUE;
+}
+
+void RTIME_WriteConfig(FILE *fp)
+{
+	fprintf(fp, "RTIME=%d\n", RTIME_enabled);
+}
+
+int RTIME_Initialise(int *argc, char *argv[])
 {
 	int i;
 	int j;
@@ -65,9 +84,11 @@ void RTIME_Initialise(int *argc, char *argv[])
 		}
 	}
 	*argc = j;
+
+	return TRUE;
 }
 
-#if defined(WIN32) || (defined(HAVE_TIME) && defined(HAVE_LOCALTIME))
+#if defined(HAVE_WINDOWS_H) || (defined(HAVE_TIME) && defined(HAVE_LOCALTIME))
 
 static int hex2bcd(int h)
 {
@@ -76,7 +97,7 @@ static int hex2bcd(int h)
 
 static int gettime(int p)
 {
-#ifdef WIN32
+#ifdef HAVE_WINDOWS_H
 	SYSTEMTIME st;
 	GetLocalTime(&st);
 	switch (p) {
@@ -95,7 +116,7 @@ static int gettime(int p)
 	case 6:
 		return hex2bcd(((st.wDayOfWeek + 2) % 7) + 1);
 	}
-#else /* WIN32 */
+#else /* HAVE_WINDOWS_H */
 	time_t tt;
 	struct tm *lt;
 
@@ -118,13 +139,13 @@ static int gettime(int p)
 	case 6:
 		return hex2bcd(((lt->tm_wday + 2) % 7) + 1);
 	}
-#endif /* WIN32 */
+#endif /* HAVE_WINDOWS_H */
 	return 0;
 }
 
 #define HAVE_GETTIME
 
-#endif /* defined(WIN32) || (defined(HAVE_TIME) && defined(HAVE_LOCALTIME)) */
+#endif /* defined(HAVE_WINDOWS_H) || (defined(HAVE_TIME) && defined(HAVE_LOCALTIME)) */
 
 UBYTE RTIME_GetByte(void)
 {

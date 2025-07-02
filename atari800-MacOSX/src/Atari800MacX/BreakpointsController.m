@@ -68,7 +68,7 @@ static BreakpointsController *sharedInstance = nil;
 	int i;
 	
 	for (i=0;i<MONITOR_breakpoint_table_size;i++)
-		if (MONITOR_breakpoint_table[i].on)
+		if (MONITOR_breakpoint_table[i].enabled)
 			one_break_entry_on = TRUE;
 	if (one_break_entry_on && break_table_on)
 		MONITOR_breakpoints_enabled = TRUE;
@@ -118,7 +118,7 @@ static BreakpointsController *sharedInstance = nil;
 	int lastIndexOn = -1;
 	
 	for (i=MONITOR_breakpoint_table_size-1;i>=0;i--) {
-		if (MONITOR_breakpoint_table[i].on) {
+		if (MONITOR_breakpoint_table[i].enabled) {
 			lastIndexOn = i;
 			break;
 		}
@@ -126,7 +126,7 @@ static BreakpointsController *sharedInstance = nil;
 	
 	if (lastIndexOn != -1) {
 		if (MONITOR_breakpoint_table[lastIndexOn].condition == MONITOR_BREAKPOINT_OR)
-			MONITOR_breakpoint_table[lastIndexOn].on = FALSE;
+			MONITOR_breakpoint_table[lastIndexOn].enabled = FALSE;
 	}
 	[disDataSource updateBreakpoints];
 	[breakpointDataSource adjustBreakpointEnables];
@@ -209,21 +209,22 @@ static BreakpointsController *sharedInstance = nil;
 		cond->condition = MONITOR_BREAKPOINT_OR;
 		theBreakpoint = [breakpoints objectAtIndex:([breakpoints count]-1)];
 		if ([theBreakpoint isEnabled] != 0)
-			cond->on = TRUE;
+			cond->enabled = TRUE;
 		else
-			cond->on = FALSE;
+			cond->enabled = FALSE;
 		MONITOR_breakpoint_table_size++;
 		cond++;
 	}
 	cond->condition = MONITOR_BREAKPOINT_PC | MONITOR_BREAKPOINT_EQUAL;
-	cond->addr = pc;
-	cond->on = TRUE;
+	cond->value = pc;
+	cond->enabled = TRUE;
 	MONITOR_breakpoint_table_size++;
 	
 	// Check if we are setting Break at current PC, and if so do something to
 	//             stop it from hitting the first time.
+	// Note: CPU_hit_breakpoint variable removed in newer core
 	if (pc == CPU_regPC) {
-		CPU_hit_breakpoint = TRUE;
+		// This functionality may need to be implemented differently in newer core
 	}
 	dirty = TRUE;
 }
@@ -247,28 +248,28 @@ static BreakpointsController *sharedInstance = nil;
 		cond->condition = MONITOR_BREAKPOINT_OR;
 		theBreakpoint = [breakpoints objectAtIndex:([breakpoints count]-1)];
 		if ([theBreakpoint isEnabled] != 0)
-			cond->on = TRUE;
+			cond->enabled = TRUE;
 		else
-			cond->on = FALSE;
+			cond->enabled = FALSE;
 		MONITOR_breakpoint_table_size++;
 		cond++;
 	}
 	
 	if (size == HALFWORD_SIZE) {
 		cond->condition = type | MONITOR_BREAKPOINT_EQUAL;
-		cond->addr = memAddr;
-		cond->on = TRUE;
+		cond->m_addr = memAddr;
+		cond->enabled = TRUE;
 		MONITOR_breakpoint_table_size++;
 	}
 	else {
 		cond->condition = type | MONITOR_BREAKPOINT_EQUAL | MONITOR_BREAKPOINT_GREATER;
-		cond->addr = memAddr;
-		cond->on = TRUE;
+		cond->m_addr = memAddr;
+		cond->enabled = TRUE;
 		MONITOR_breakpoint_table_size++;
 		cond++;
 		cond->condition = type | MONITOR_BREAKPOINT_EQUAL | MONITOR_BREAKPOINT_LESS;
-		cond->addr = memAddr+1;
-		cond->on = TRUE;
+		cond->m_addr = memAddr+1;
+		cond->enabled = TRUE;
 		MONITOR_breakpoint_table_size++;
 	}
 	dirty = TRUE;
@@ -293,31 +294,31 @@ static BreakpointsController *sharedInstance = nil;
 		cond->condition = MONITOR_BREAKPOINT_OR;
 		theBreakpoint = [breakpoints objectAtIndex:([breakpoints count]-1)];
 		if ([theBreakpoint isEnabled] != 0)
-			cond->on = TRUE;
+			cond->enabled = TRUE;
 		else
-			cond->on = FALSE;
+			cond->enabled = FALSE;
 		MONITOR_breakpoint_table_size++;
 		cond++;
 	}
 	
 	if (size == HALFWORD_SIZE) {
-		cond->condition = MONITOR_BREAKPOINT_MEM | MONITOR_BREAKPOINT_EQUAL;
-		cond->addr = memAddr;
-		cond->val = memValue & 0xFF;
-		cond->on = TRUE;
+		cond->condition = MONITOR_BREAKPOINT_MEMORY | MONITOR_BREAKPOINT_EQUAL;
+		cond->m_addr = memAddr;
+		cond->value = memValue & 0xFF;
+		cond->enabled = TRUE;
 		MONITOR_breakpoint_table_size++;
 	}
 	else {
-		cond->condition = MONITOR_BREAKPOINT_MEM | MONITOR_BREAKPOINT_EQUAL;
-		cond->addr = memAddr;
-		cond->val = memValue & 0xFF;
-		cond->on = TRUE;
+		cond->condition = MONITOR_BREAKPOINT_MEMORY | MONITOR_BREAKPOINT_EQUAL;
+		cond->m_addr = memAddr;
+		cond->value = memValue & 0xFF;
+		cond->enabled = TRUE;
 		MONITOR_breakpoint_table_size++;
 		cond++;
-		cond->condition = MONITOR_BREAKPOINT_MEM | MONITOR_BREAKPOINT_EQUAL;
-		cond->addr = memAddr+1;
-		cond->val = (memValue & 0xFF00) >> 8;
-		cond->on = TRUE;
+		cond->condition = MONITOR_BREAKPOINT_MEMORY | MONITOR_BREAKPOINT_EQUAL;
+		cond->m_addr = memAddr+1;
+		cond->value = (memValue & 0xFF00) >> 8;
+		cond->enabled = TRUE;
 		MONITOR_breakpoint_table_size++;
 	}
 	dirty = TRUE;	

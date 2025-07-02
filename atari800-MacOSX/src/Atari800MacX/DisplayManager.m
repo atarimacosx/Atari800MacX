@@ -18,6 +18,7 @@ extern int SCALE_MODE;
 extern int scaleFactor;
 extern int requestWidthModeChange;
 extern int WIDTH_MODE;
+extern int COL80_autoswitch;
 extern int Screen_show_atari_speed;
 extern int requestFullScreenChange;
 extern int request80ColChange;

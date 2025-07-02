@@ -35,60 +35,60 @@
 		cond = [newCondition getCondition];
 		switch (cond->condition) {
 			case MONITOR_BREAKPOINT_PC | MONITOR_BREAKPOINT_EQUAL:
-				pcMin = cond->addr;
-				pcMax = cond->addr;
+				pcMin = cond->value;
+				pcMax = cond->value;
 				break;
 			case MONITOR_BREAKPOINT_PC | MONITOR_BREAKPOINT_LESS:
-				pcMax = cond->addr-1;
+				pcMax = cond->value-1;
 				break;
 			case MONITOR_BREAKPOINT_PC | MONITOR_BREAKPOINT_LESS | MONITOR_BREAKPOINT_EQUAL:
-				pcMax = cond->addr;
+				pcMax = cond->value;
 				break;
 			case MONITOR_BREAKPOINT_PC | MONITOR_BREAKPOINT_GREATER:
-				pcMin = cond->addr+1;
+				pcMin = cond->value+1;
 				break;
 			case MONITOR_BREAKPOINT_PC | MONITOR_BREAKPOINT_GREATER | MONITOR_BREAKPOINT_EQUAL:
-				pcMin = cond->addr;
+				pcMin = cond->value;
 				break;
 			case MONITOR_BREAKPOINT_READ | MONITOR_BREAKPOINT_EQUAL:
 			case MONITOR_BREAKPOINT_WRITE | MONITOR_BREAKPOINT_EQUAL:
 			case MONITOR_BREAKPOINT_ACCESS | MONITOR_BREAKPOINT_EQUAL:
-			case MONITOR_BREAKPOINT_MEM | MONITOR_BREAKPOINT_LESS:
-			case MONITOR_BREAKPOINT_MEM | MONITOR_BREAKPOINT_GREATER:
-			case MONITOR_BREAKPOINT_MEM | MONITOR_BREAKPOINT_EQUAL | MONITOR_BREAKPOINT_LESS:
-			case MONITOR_BREAKPOINT_MEM | MONITOR_BREAKPOINT_EQUAL | MONITOR_BREAKPOINT_GREATER:
-			case MONITOR_BREAKPOINT_MEM | MONITOR_BREAKPOINT_LESS | MONITOR_BREAKPOINT_GREATER:
-				memMin = cond->addr;
-				memMax = cond->addr;
+			case MONITOR_BREAKPOINT_MEMORY | MONITOR_BREAKPOINT_LESS:
+			case MONITOR_BREAKPOINT_MEMORY | MONITOR_BREAKPOINT_GREATER:
+			case MONITOR_BREAKPOINT_MEMORY | MONITOR_BREAKPOINT_EQUAL | MONITOR_BREAKPOINT_LESS:
+			case MONITOR_BREAKPOINT_MEMORY | MONITOR_BREAKPOINT_EQUAL | MONITOR_BREAKPOINT_GREATER:
+			case MONITOR_BREAKPOINT_MEMORY | MONITOR_BREAKPOINT_LESS | MONITOR_BREAKPOINT_GREATER:
+				memMin = cond->m_addr;
+				memMax = cond->m_addr;
 				break;
-			case MONITOR_BREAKPOINT_MEM | MONITOR_BREAKPOINT_EQUAL:
+			case MONITOR_BREAKPOINT_MEMORY | MONITOR_BREAKPOINT_EQUAL:
 				if (memMin == -1 && memMax == -1) {
-					memMin = cond->addr;
-					memMax = cond->addr;
+					memMin = cond->m_addr;
+					memMax = cond->m_addr;
 				}
 				else {
-					memMax = cond->addr;
+					memMax = cond->m_addr;
 				}
 				break;
 			case MONITOR_BREAKPOINT_READ | MONITOR_BREAKPOINT_LESS:
 			case MONITOR_BREAKPOINT_WRITE | MONITOR_BREAKPOINT_LESS:
 			case MONITOR_BREAKPOINT_ACCESS | MONITOR_BREAKPOINT_LESS:
-				memMax = cond->addr-1;
+				memMax = cond->m_addr-1;
 				break;
 			case MONITOR_BREAKPOINT_READ | MONITOR_BREAKPOINT_LESS | MONITOR_BREAKPOINT_EQUAL:
 			case MONITOR_BREAKPOINT_WRITE | MONITOR_BREAKPOINT_LESS | MONITOR_BREAKPOINT_EQUAL:
 			case MONITOR_BREAKPOINT_ACCESS | MONITOR_BREAKPOINT_LESS | MONITOR_BREAKPOINT_EQUAL:
-				memMax = cond->addr;
+				memMax = cond->m_addr;
 				break;
 			case MONITOR_BREAKPOINT_READ | MONITOR_BREAKPOINT_GREATER:
 			case MONITOR_BREAKPOINT_WRITE | MONITOR_BREAKPOINT_GREATER:
 			case MONITOR_BREAKPOINT_ACCESS | MONITOR_BREAKPOINT_GREATER:
-				memMin = cond->addr+1;
+				memMin = cond->m_addr+1;
 				break;
 			case MONITOR_BREAKPOINT_READ | MONITOR_BREAKPOINT_GREATER | MONITOR_BREAKPOINT_EQUAL:
 			case MONITOR_BREAKPOINT_WRITE | MONITOR_BREAKPOINT_GREATER | MONITOR_BREAKPOINT_EQUAL:
 			case MONITOR_BREAKPOINT_ACCESS | MONITOR_BREAKPOINT_GREATER | MONITOR_BREAKPOINT_EQUAL:
-				memMin = cond->addr;
+				memMin = cond->m_addr;
 				break;
 		}
 	}
@@ -98,13 +98,13 @@
 		BOOL anyOn = FALSE;
 		for (i=0;i<[conditions count];i++) {
 			cond = [[conditions objectAtIndex:i] getCondition];
-			if (cond->on)
+			if (cond->enabled)
 				anyOn = TRUE;
 		}
 		cond = [[conditions objectAtIndex:([conditions count]-1)] getCondition];
-		cond->on = anyOn;
+		cond->enabled = anyOn;
 		cond = &MONITOR_breakpoint_table[end];
-		cond->on = anyOn;
+		cond->enabled = anyOn;
 	}
 	return(self);
 }
@@ -169,12 +169,12 @@
 		on = FALSE;
 	
 	for (i=startTableIndex;i<=endTableIndex;i++) {
-		MONITOR_breakpoint_table[i].on = on;
+		MONITOR_breakpoint_table[i].enabled = on;
 	}
 	for (i=0;i<[conditions count];i++) {
 		theCondition = [conditions objectAtIndex:i];
 		cond = [theCondition getCondition];
-		cond->on = on;
+		cond->enabled = on;
 	}
 }
 
@@ -187,7 +187,7 @@
 	
 	for (i=0;i<[conditions count];i++) {
 		cond = [[conditions objectAtIndex:i] getCondition];
-		if (cond->on)
+		if (cond->enabled)
 			anyOn = TRUE;
 		else
 			allOn = FALSE;
@@ -217,7 +217,7 @@
 				case MONITOR_BREAKPOINT_LESS | MONITOR_BREAKPOINT_EQUAL:
 				case MONITOR_BREAKPOINT_GREATER:
 				case MONITOR_BREAKPOINT_GREATER | MONITOR_BREAKPOINT_EQUAL:
-					if (cond->on)
+					if (cond->enabled)
 						pc = TRUE;
 					break;
 				default:
