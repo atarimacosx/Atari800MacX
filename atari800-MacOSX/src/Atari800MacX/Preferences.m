@@ -996,11 +996,11 @@ static Preferences *sharedInstance = nil;
 	else
 		[pbiExpansionMatrix selectCellWithTag:1];		
 	/* Update FujiNet UI fields */
-	if ([[displayedValues objectForKey:FujiNetEnabled] boolValue] == YES)
+	if ([displayedValues objectForKey:FujiNetEnabled] && [[displayedValues objectForKey:FujiNetEnabled] boolValue] == YES)
 		[fujiNetEnabledButton setState:NSOnState];
 	else
 		[fujiNetEnabledButton setState:NSOffState];
-	[fujiNetPortField setStringValue:[displayedValues objectForKey:FujiNetPort]];
+	[fujiNetPortField setStringValue:[displayedValues objectForKey:FujiNetPort] ?: @"9997"];
 	[fujiNetStatusField setStringValue:@"Not Connected"];
     [af80RomFileField setStringValue:[displayedValues objectForKey:AF80RomFile]];
     [af80CharsetRomFileField setStringValue:[displayedValues objectForKey:AF80CharsetFile]];
@@ -1796,7 +1796,7 @@ static Preferences *sharedInstance = nil;
         [paletteChooseButton setEnabled:NO];
         [adjustPaletteButton setEnabled:NO];
         }
-    [displayedValues setObject:[paletteField stringValue] forKey:PaletteFile];
+    [displayedValues setObject:[paletteField stringValue] ?: @"" forKey:PaletteFile];
     if ([fpsButton state] == NSOnState)
         [displayedValues setObject:yes forKey:ShowFPS];
     else
@@ -1899,7 +1899,7 @@ static Preferences *sharedInstance = nil;
         [displayedValues setObject:yes forKey:EnableDPatch];
     else
         [displayedValues setObject:no forKey:EnableDPatch];
-    [displayedValues setObject:[printCommandField stringValue] forKey:PrintCommand];   
+    [displayedValues setObject:[printCommandField stringValue] ?: @"" forKey:PrintCommand];   
     if ([enablePPatchButton state] == NSOnState) {
         [displayedValues setObject:yes forKey:EnablePPatch];
         [printCommandField setEnabled:YES];
@@ -2167,7 +2167,7 @@ static Preferences *sharedInstance = nil;
         [displayedValues setObject:yes forKey:EnableRPatch];
     else
         [displayedValues setObject:no forKey:EnableRPatch];
-    [displayedValues setObject:[rPatchPortField stringValue] forKey:RPatchPort];
+    [displayedValues setObject:[rPatchPortField stringValue] ?: @"" forKey:RPatchPort];
 	switch([[rPatchSerialMatrix selectedCell] tag]) {
         case 0:
 		default:
@@ -2328,16 +2328,16 @@ static Preferences *sharedInstance = nil;
             [displayedValues setObject:yes forKey:MioEnabled];
             break;
     }
-    [displayedValues setObject:[fujiNetPortField stringValue] forKey:FujiNetPort];
-    [displayedValues setObject:[af80RomFileField stringValue] forKey:AF80RomFile];
-    [displayedValues setObject:[af80CharsetRomFileField stringValue] forKey:AF80CharsetFile];
-    [displayedValues setObject:[bit3RomFileField stringValue] forKey:Bit3RomFile];
-    [displayedValues setObject:[bit3CharsetRomFileField stringValue] forKey:Bit3CharsetFile];
-    [displayedValues setObject:[blackBoxRomFileField stringValue] forKey:BlackBoxRomFile];
-    [displayedValues setObject:[mioRomFileField stringValue] forKey:MioRomFile];
-    [displayedValues setObject:[ultimate1MBFlashFileField stringValue] forKey:Ultimate1MBRomFile];
-    [displayedValues setObject:[side2FlashFileField stringValue] forKey:Side2RomFile];
-    [displayedValues setObject:[side2CFFileField stringValue] forKey:Side2CFFile];
+    [displayedValues setObject:[fujiNetPortField stringValue] ?: @"9997" forKey:FujiNetPort];
+    [displayedValues setObject:[af80RomFileField stringValue] ?: @"" forKey:AF80RomFile];
+    [displayedValues setObject:[af80CharsetRomFileField stringValue] ?: @"" forKey:AF80CharsetFile];
+    [displayedValues setObject:[bit3RomFileField stringValue] ?: @"" forKey:Bit3RomFile];
+    [displayedValues setObject:[bit3CharsetRomFileField stringValue] ?: @"" forKey:Bit3CharsetFile];
+    [displayedValues setObject:[blackBoxRomFileField stringValue] ?: @"" forKey:BlackBoxRomFile];
+    [displayedValues setObject:[mioRomFileField stringValue] ?: @"" forKey:MioRomFile];
+    [displayedValues setObject:[ultimate1MBFlashFileField stringValue] ?: @"" forKey:Ultimate1MBRomFile];
+    [displayedValues setObject:[side2FlashFileField stringValue] ?: @"" forKey:Side2RomFile];
+    [displayedValues setObject:[side2CFFileField stringValue] ?: @"" forKey:Side2CFFile];
     switch([side2UltimateFlashTypePulldown indexOfSelectedItem]) {
         case 0:
         default:
@@ -2356,25 +2356,25 @@ static Preferences *sharedInstance = nil;
             [displayedValues setObject:yes forKey:Side2SDXMode];
             break;
     }
-    [displayedValues setObject:[blackBoxScsiDiskFileField stringValue] forKey:BlackBoxScsiDiskFile];
-	[displayedValues setObject:[mioScsiDiskFileField stringValue] forKey:MioScsiDiskFile];
+    [displayedValues setObject:[blackBoxScsiDiskFileField stringValue] ?: @"" forKey:BlackBoxScsiDiskFile];
+	[displayedValues setObject:[mioScsiDiskFileField stringValue] ?: @"" forKey:MioScsiDiskFile];
 	 
-	[displayedValues setObject:[imageDirField stringValue] forKey:ImageDir];
-    [displayedValues setObject:[printDirField stringValue] forKey:PrintDir];
-    [displayedValues setObject:[hardDiskDir1Field stringValue] forKey:HardDiskDir1];
-    [displayedValues setObject:[hardDiskDir2Field stringValue] forKey:HardDiskDir2];
-    [displayedValues setObject:[hardDiskDir3Field stringValue] forKey:HardDiskDir3];
-    [displayedValues setObject:[hardDiskDir4Field stringValue] forKey:HardDiskDir4];
+	[displayedValues setObject:[imageDirField stringValue] ?: @"" forKey:ImageDir];
+    [displayedValues setObject:[printDirField stringValue] ?: @"" forKey:PrintDir];
+    [displayedValues setObject:[hardDiskDir1Field stringValue] ?: @"" forKey:HardDiskDir1];
+    [displayedValues setObject:[hardDiskDir2Field stringValue] ?: @"" forKey:HardDiskDir2];
+    [displayedValues setObject:[hardDiskDir3Field stringValue] ?: @"" forKey:HardDiskDir3];
+    [displayedValues setObject:[hardDiskDir4Field stringValue] ?: @"" forKey:HardDiskDir4];
     if ([hardDrivesReadOnlyButton state] == NSOnState)
         [displayedValues setObject:yes forKey:HardDrivesReadOnly];
     else
         [displayedValues setObject:no forKey:HardDrivesReadOnly];
-    [displayedValues setObject:[hPathField stringValue] forKey:HPath];
+    [displayedValues setObject:[hPathField stringValue] ?: @"" forKey:HPath];
 
-    [displayedValues setObject:[pcLinkDir1Field stringValue] forKey:PCLinkDir1];
-    [displayedValues setObject:[pcLinkDir2Field stringValue] forKey:PCLinkDir2];
-    [displayedValues setObject:[pcLinkDir3Field stringValue] forKey:PCLinkDir3];
-    [displayedValues setObject:[pcLinkDir4Field stringValue] forKey:PCLinkDir4];
+    [displayedValues setObject:[pcLinkDir1Field stringValue] ?: @"" forKey:PCLinkDir1];
+    [displayedValues setObject:[pcLinkDir2Field stringValue] ?: @"" forKey:PCLinkDir2];
+    [displayedValues setObject:[pcLinkDir3Field stringValue] ?: @"" forKey:PCLinkDir3];
+    [displayedValues setObject:[pcLinkDir4Field stringValue] ?: @"" forKey:PCLinkDir4];
     if ([pcLinkDeviceEnableButton state] == NSOnState)
         [displayedValues setObject:yes forKey:PCLinkDeviceEnable];
     else
@@ -2444,13 +2444,13 @@ static Preferences *sharedInstance = nil;
     else
         [displayedValues setObject:no forKey:PCLinkTranslate4];
     
-    [displayedValues setObject:[xegsRomFileField stringValue] forKey:XEGSRomFile];
-    [displayedValues setObject:[xegsGameRomFileField stringValue] forKey:XEGSGameRomFile];
-    [displayedValues setObject:[a1200xlRomFileField stringValue] forKey:A1200XLRomFile];
-    [displayedValues setObject:[osBRomFileField stringValue] forKey:OsBRomFile];
-    [displayedValues setObject:[xlRomFileField stringValue] forKey:XlRomFile];
-    [displayedValues setObject:[basicRomFileField stringValue] forKey:BasicRomFile];
-    [displayedValues setObject:[a5200RomFileField stringValue] forKey:A5200RomFile];
+    [displayedValues setObject:[xegsRomFileField stringValue] ?: @"" forKey:XEGSRomFile];
+    [displayedValues setObject:[xegsGameRomFileField stringValue] ?: @"" forKey:XEGSGameRomFile];
+    [displayedValues setObject:[a1200xlRomFileField stringValue] ?: @"" forKey:A1200XLRomFile];
+    [displayedValues setObject:[osBRomFileField stringValue] ?: @"" forKey:OsBRomFile];
+    [displayedValues setObject:[xlRomFileField stringValue] ?: @"" forKey:XlRomFile];
+    [displayedValues setObject:[basicRomFileField stringValue] ?: @"" forKey:BasicRomFile];
+    [displayedValues setObject:[a5200RomFileField stringValue] ?: @"" forKey:A5200RomFile];
     if ([useAlitrraXEGSRomButton state] == NSOnState)
         [displayedValues setObject:yes forKey:UseAltiraXEGSRom];
     else
@@ -2476,34 +2476,34 @@ static Preferences *sharedInstance = nil;
     else
         [displayedValues setObject:no forKey:UseAltiraBasicRom];
 
-    [displayedValues setObject:[diskImageDirField stringValue] forKey:DiskImageDir];
-    [displayedValues setObject:[diskSetDirField stringValue] forKey:DiskSetDir];
-    [displayedValues setObject:[cartImageDirField stringValue] forKey:CartImageDir];
-    [displayedValues setObject:[cassImageDirField stringValue] forKey:CassImageDir];
-    [displayedValues setObject:[exeFileDirField stringValue] forKey:ExeFileDir];
-    [displayedValues setObject:[savedStateDirField stringValue] forKey:SavedStateDir];
-    [displayedValues setObject:[configDirField stringValue] forKey:ConfigDir];
+    [displayedValues setObject:[diskImageDirField stringValue] ?: @"" forKey:DiskImageDir];
+    [displayedValues setObject:[diskSetDirField stringValue] ?: @"" forKey:DiskSetDir];
+    [displayedValues setObject:[cartImageDirField stringValue] ?: @"" forKey:CartImageDir];
+    [displayedValues setObject:[cassImageDirField stringValue] ?: @"" forKey:CassImageDir];
+    [displayedValues setObject:[exeFileDirField stringValue] ?: @"" forKey:ExeFileDir];
+    [displayedValues setObject:[savedStateDirField stringValue] ?: @"" forKey:SavedStateDir];
+    [displayedValues setObject:[configDirField stringValue] ?: @"" forKey:ConfigDir];
 
 	if (([saveCurrentMediaButton state] == NSOnState) && ([[displayedValues objectForKey:SaveCurrentMedia] boolValue] == NO))
 		[self clearBootMedia];
-    [displayedValues setObject:[d1FileField stringValue] forKey:D1File];
-    [displayedValues setObject:[d2FileField stringValue] forKey:D2File];
-    [displayedValues setObject:[d3FileField stringValue] forKey:D3File];
-    [displayedValues setObject:[d4FileField stringValue] forKey:D4File];
-    [displayedValues setObject:[d5FileField stringValue] forKey:D5File];
-    [displayedValues setObject:[d6FileField stringValue] forKey:D6File];
-    [displayedValues setObject:[d7FileField stringValue] forKey:D7File];
-    [displayedValues setObject:[d8FileField stringValue] forKey:D8File];
-    [displayedValues setObject:[cartFileField stringValue] forKey:CartFile];
+    [displayedValues setObject:[d1FileField stringValue] ?: @"" forKey:D1File];
+    [displayedValues setObject:[d2FileField stringValue] ?: @"" forKey:D2File];
+    [displayedValues setObject:[d3FileField stringValue] ?: @"" forKey:D3File];
+    [displayedValues setObject:[d4FileField stringValue] ?: @"" forKey:D4File];
+    [displayedValues setObject:[d5FileField stringValue] ?: @"" forKey:D5File];
+    [displayedValues setObject:[d6FileField stringValue] ?: @"" forKey:D6File];
+    [displayedValues setObject:[d7FileField stringValue] ?: @"" forKey:D7File];
+    [displayedValues setObject:[d8FileField stringValue] ?: @"" forKey:D8File];
+    [displayedValues setObject:[cartFileField stringValue] ?: @"" forKey:CartFile];
     if ([[cartFileField stringValue] isEqual:@"BASIC"])
         [cartFileSelectButton selectItemAtIndex:1];
     else if ([[cartFileField stringValue] isEqual:@"SIDE2"])
         [cartFileSelectButton selectItemAtIndex:2];
     else
         [cartFileSelectButton selectItemAtIndex:0];
-    [displayedValues setObject:[cart2FileField stringValue] forKey:Cart2File];
-    [displayedValues setObject:[exeFileField stringValue] forKey:ExeFile];
-    [displayedValues setObject:[cassFileField stringValue] forKey:CassFile];
+    [displayedValues setObject:[cart2FileField stringValue] ?: @"" forKey:Cart2File];
+    [displayedValues setObject:[exeFileField stringValue] ?: @"" forKey:ExeFile];
+    [displayedValues setObject:[cassFileField stringValue] ?: @"" forKey:CassFile];
     if ([d1FileEnabledButton state] == NSOnState)
         [displayedValues setObject:yes forKey:D1FileEnabled];
     else
@@ -4322,8 +4322,8 @@ static Preferences *sharedInstance = nil;
 		}
     [displayedValues setObject:prefssave->enableStereo ? yes : no forKey:EnableStereo];
 
-	[displayedValues setObject:no forKey:FujiNetEnabled];  /* FujiNet enabled by default */
-	[displayedValues setObject:@"9997" forKey:FujiNetPort];  /* Default FujiNet port */
+	[displayedValues setObject:([curValues objectForKey:FujiNetEnabled] && [[curValues objectForKey:FujiNetEnabled] boolValue]) ? yes : no forKey:FujiNetEnabled];
+	[displayedValues setObject:[curValues objectForKey:FujiNetPort] ?: @"9997" forKey:FujiNetPort];
 	[displayedValues setObject:prefssave->blackBoxEnabled ? yes : no forKey:BlackBoxEnabled];
 	[displayedValues setObject:prefssave->mioEnabled ? yes : no forKey:MioEnabled];
     [displayedValues setObject:prefssave->side2SDXMode ? yes : no forKey:Side2SDXMode];
@@ -4605,7 +4605,7 @@ static Preferences *sharedInstance = nil;
             [[curValues objectForKey:GamepadConfigArray] 
                 addObject:[NSString stringWithString:[configNameField stringValue]]];
             /* Set the current config to it */
-            [displayedValues setObject:[configNameField stringValue] forKey:GamepadConfigCurrent];
+            [displayedValues setObject:[configNameField stringValue] ?: @"" forKey:GamepadConfigCurrent];
             /* Add the name to the menu...*/
             [gamepadConfigPulldown insertItemWithTitle:[configNameField stringValue] atIndex: (2+currNumConfigs)];
             [gamepad1ConfigPulldown insertItemWithTitle:[configNameField stringValue] atIndex: (1+currNumConfigs)];
@@ -4675,7 +4675,7 @@ static Preferences *sharedInstance = nil;
             [[NSUserDefaults standardUserDefaults] 
                 setObject:[displayedValues objectForKey:Button5200Assignment] forKey:button5200Key];
             /* Set the current config to it */
-            [displayedValues setObject:[configNameField stringValue] forKey:GamepadConfigCurrent];
+            [displayedValues setObject:[configNameField stringValue] ?: @"" forKey:GamepadConfigCurrent];
             }
         }
     else if (action == (6 + numberOfConfigs)) { /* Delete Config */
@@ -5021,7 +5021,7 @@ static Preferences *sharedInstance = nil;
         [displayedValues setObject:[[NSNumber alloc] initWithBool:YES] forKey:StartupPasteEnable];
     else
         [displayedValues setObject:[[NSNumber alloc] initWithBool:NO] forKey:StartupPasteEnable];
-    [displayedValues setObject:[startupPasteStringField stringValue] forKey:StartupPasteString];
+    [displayedValues setObject:[startupPasteStringField stringValue] ?: @"" forKey:StartupPasteString];
     [NSApp stopModal];
     [[startupPasteEnableButton window] close];
 }
