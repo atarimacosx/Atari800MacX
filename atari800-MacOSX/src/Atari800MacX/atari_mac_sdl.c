@@ -5317,14 +5317,10 @@ int SDL_main(int argc, char **argv)
         return 3;
 
 #ifdef NETSIO
-    /* Initialize NetSIO for FujiNet connectivity */
-    if (netsio_init(9997) < 0) {
-        Log_print("NetSIO: Failed to initialize FujiNet connection on port 9997");
-    } else {
-        Log_print("NetSIO: FujiNet interface ready on port 9997");
-        /* Note: SIO patches are only disabled when FujiNet is actually connected */
-        /* The patches will be disabled dynamically when netsio_enabled is set */
-    }
+    /* Initialize NetSIO for FujiNet connectivity only if enabled in preferences */
+    /* For now, NetSIO is disabled by default to prevent boot issues */
+    /* TODO: Check FujiNetEnabled preference and initialize conditionally */
+    Log_print("NetSIO: FujiNet support available but not initialized (disabled by default)");
 #endif
 
     if (!EnableDisplayManager80ColMode(Atari800_machine_type, XEP80_enabled, AF80_enabled, BIT3_enabled))

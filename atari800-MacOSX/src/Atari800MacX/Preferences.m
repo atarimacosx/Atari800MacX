@@ -2307,12 +2307,12 @@ static Preferences *sharedInstance = nil;
 	[displayedValues setObject:[NSNumber numberWithInt:mosaicBankMaxs[[mosaicMemSizePulldown indexOfSelectedItem]]] forKey:MosaicMaxBank];
 	switch([[pbiExpansionMatrix selectedCell] tag]) {
         case 0:
-		default:
             [displayedValues setObject:yes forKey:FujiNetEnabled];
             [displayedValues setObject:no forKey:BlackBoxEnabled];
             [displayedValues setObject:no forKey:MioEnabled];
             break;
         case 1:
+		default:
             [displayedValues setObject:no forKey:FujiNetEnabled];
             [displayedValues setObject:no forKey:BlackBoxEnabled];
             [displayedValues setObject:no forKey:MioEnabled];
