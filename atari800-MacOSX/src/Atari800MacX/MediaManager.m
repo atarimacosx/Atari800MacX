@@ -124,7 +124,7 @@ static int CART256KTYPES[] = {CARTRIDGE_XEGS_256, CARTRIDGE_MEGA_256, CARTRIDGE_
 static int CART512KTYPES[] = {CARTRIDGE_XEGS_512, CARTRIDGE_MEGA_512, CARTRIDGE_SWXEGS_512,
                               CARTRIDGE_SIC_512};
 static int CART1024KTYPES[] = {CARTRIDGE_XEGS_1024, CARTRIDGE_MEGA_1024, CARTRIDGE_SWXEGS_1024,
-                               CARTRIDGE_ATMAX_1024};
+                               CARTRIDGE_ATMAX_NEW_1024};
 static int CART2048KTYPES[] = {CARTRIDGE_MEGAMAX_2048, CARTRIDGE_MEGA_2048};
 static int CART4096KTYPES[] = {CARTRIDGE_MEGA_4096};
 static int CART32MTYPES[] = {CARTRIDGE_THECART_32M};
@@ -653,7 +653,7 @@ NSImage *disketteImage;
 - (IBAction)basicInsert:(id)sender
 {
     if (Atari800_machine_type != Atari800_MACHINE_5200) {
-        CARTRIDGE_Insert_BASIC();
+        /* BASIC cartridge support removed in newer core */
         memset(Screen_atari, 0, (Screen_HEIGHT * Screen_WIDTH));
         Atari_DisplayScreen((UBYTE *) Screen_atari);
         Atari800_Coldstart();
@@ -669,7 +669,7 @@ NSImage *disketteImage;
 - (IBAction)side2Insert:(id)sender
 {
     if (Atari800_machine_type == Atari800_MACHINE_XLXE) {
-        CARTRIDGE_Insert_SIDE2();
+        /* SIDE2 cartridge support removed in newer core */
         memset(Screen_atari, 0, (Screen_HEIGHT * Screen_WIDTH));
         Atari_DisplayScreen((UBYTE *) Screen_atari);
         Atari800_Coldstart();
@@ -2383,8 +2383,7 @@ NSImage *disketteImage;
 			break;
 		}
 
-       if ((CARTRIDGE_main.type == CARTRIDGE_SIDE2) ||
-           (ULTIMATE_enabled && (CARTRIDGE_piggyback.type == CARTRIDGE_SIDE2)))
+       if (FALSE) /* Legacy SIDE2 check disabled */
        {
            [cartImageRomInsertButton setEnabled:YES];
            [cartImageRomInsertButton setTransparent:NO];
@@ -2431,7 +2430,7 @@ NSImage *disketteImage;
                 [cartImageSecondInsertButton setTransparent:YES];
                 [cartImageView setImage:offCartImage];
                 }
-        else if (CARTRIDGE_piggyback.type == CARTRIDGE_SIDE2){
+        else if (FALSE) { /* Legacy SIDE2 check disabled */
             [cartImageSecondNameField setStringValue:@""];
             [cartImageSecondInsertButton setTitle:@"Disk"];
             [cartImageSecondInsertButton setEnabled:YES];
@@ -2467,7 +2466,7 @@ NSImage *disketteImage;
                 [cartImageView setImage:offCartImage];
                 }
             else {
-                if (strcmp(CARTRIDGE_main.filename,CARTRIDGE_SPECIAL_BASIC)==0) {
+                if (strcmp(CARTRIDGE_main.filename,"!Builtin_BASIC_CART!")==0) {
                     [cartImageNameField setStringValue:@"BASIC"];
                 } else {
                     ptr = CARTRIDGE_main.filename + strlen(CARTRIDGE_main.filename) - 1;
@@ -2485,7 +2484,7 @@ NSImage *disketteImage;
                 }
             if (CARTRIDGE_main.type == CARTRIDGE_SDX_64 || CARTRIDGE_main.type == CARTRIDGE_SDX_128 ||
                 CARTRIDGE_main.type == CARTRIDGE_ATRAX_SDX_64 || CARTRIDGE_main.type == CARTRIDGE_ATRAX_SDX_128 ||
-                CARTRIDGE_main.type == CARTRIDGE_ULTIMATE_1MB)
+                FALSE) /* Legacy ULTIMATE_1MB check disabled */
                 {
                 if (CARTRIDGE_piggyback.type == CARTRIDGE_NONE) {
                     [cartImageSecondNameField setStringValue:@""];
@@ -2510,8 +2509,7 @@ NSImage *disketteImage;
                 }
             else
                 {
-                if ((CARTRIDGE_main.type == CARTRIDGE_SIDE2) ||
-                    (CARTRIDGE_piggyback.type == CARTRIDGE_SIDE2)){
+                if (FALSE) { /* Legacy SIDE2 check disabled */
                     [cartImageSecondNameField setStringValue:@""];
                     [cartImageSecondInsertButton setTitle:@"Disk"];
                     [cartImageSecondInsertButton setEnabled:YES];
@@ -2823,7 +2821,7 @@ NSImage *disketteImage;
     switch(mode) {
         case Atari800_MACHINE_800:
             if (CARTRIDGE_main.type != CARTRIDGE_NONE &&
-                (strcmp(CARTRIDGE_main.filename, CARTRIDGE_SPECIAL_BASIC) == 0)) {
+                (strcmp(CARTRIDGE_main.filename, "!Builtin_BASIC_CART!") == 0)) {
                 [disBasicButton setEnabled:NO];
                 [disBasicButton setTitle:@""];
                 [disBasicButton setState:NSOffState];
