@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FB12C28ED16544019E5B76CC /* file_export.c in Sources */ = {isa = PBXBuildFile; fileRef = D86B9B0C52C24F42BC0249ED /* file_export.c */; };
 		2D003B9E21D70F5C003F6F94 /* Atari800Window.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D003B9D21D70F5C003F6F94 /* Atari800Window.h */; };
 		2D013C8D10718EF8009D2E84 /* BreakpointDataSource.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D013C8B10718EF8009D2E84 /* BreakpointDataSource.h */; };
 		2D013C8E10718EF8009D2E84 /* BreakpointDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D013C8C10718EF8009D2E84 /* BreakpointDataSource.m */; };
@@ -407,6 +408,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		D86B9B0C52C24F42BC0249ED /* file_export.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = file_export.c; path = ../file_export.c; sourceTree = "<group>"; };
+		F743968DE78A413C8C558EBC /* file_export.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = file_export.h; path = ../file_export.h; sourceTree = "<group>"; };
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
@@ -893,7 +896,9 @@
 				2D587366106A85EA002428EF /* WordTextField.h */,
 				2D587367106A85EA002428EF /* WordTextField.m */,
 				2D44625C084EC1660080C448 /* PrinterSimulation */,
-			);
+			
+				D86B9B0C52C24F42BC0249ED /* file_export.c */,
+				F743968DE78A413C8C558EBC /* file_export.h */,);
 			name = Classes;
 			sourceTree = "<group>";
 		};
@@ -1643,7 +1648,8 @@
 				2D0326BA1085684F00983A3E /* GtiaDataSource.m in Sources */,
 				2D0326F510856DB400983A3E /* PokeyDataSource.m in Sources */,
 				2DEDFBF411FE4C18008B815C /* emuio.c in Sources */,
-			);
+			
+				FB12C28ED16544019E5B76CC /* file_export.c in Sources */,);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
