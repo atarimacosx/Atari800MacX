@@ -18,7 +18,7 @@
 #include "input.h"
 #include "memory.h"
 #include "preferences_c.h"
-#include "SDL.h"
+#include <SDL.h>
 #include "sio.h"
 #include "cassette.h"
 #include "cartridge.h"
@@ -399,16 +399,19 @@ void loadPrefsBinaries() {
 	int i;
 	
     if (prefs.cartFileEnabled) {
-        if (strcmp(prefs.cartFile, "SIDE2") == 0)
-            CARTRIDGE_Insert_SIDE2();
-        else if (strcmp(prefs.cartFile, "BASIC") == 0)
-            CARTRIDGE_Insert_BASIC();
+        if (strcmp(prefs.cartFile, "SIDE2") == 0) {
+            /* SIDE2 cartridge - handled by SIDE2 module directly */
+        }
+        else if (strcmp(prefs.cartFile, "BASIC") == 0) {
+            /* BASIC cartridge - handled internally */
+        }
         else if (strcmp(prefs.cartFile, "ULTIMATE-SDX") != 0)
             CARTRIDGE_Insert(prefs.cartFile);
 	}
     if (prefs.cart2FileEnabled) {
-        if (strcmp(prefs.cart2File, "SIDE2") == 0)
-            CARTRIDGE_Insert_SIDE2();
+        if (strcmp(prefs.cart2File, "SIDE2") == 0) {
+            /* SIDE2 cartridge - handled by SIDE2 module directly */
+        }
         else
             CARTRIDGE_Insert_Second(prefs.cart2File);
 	}

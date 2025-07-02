@@ -5682,7 +5682,7 @@ int SDL_main(int argc, char **argv)
             Atari_DisplayScreen((UBYTE *) Screen_atari);
         }
         /* If emulator is in SIDE2 mode without a valid ROM */
-        else if (((CARTRIDGE_main.type == CARTRIDGE_SIDE2) || (CARTRIDGE_piggyback.type == CARTRIDGE_SIDE2)) && !SIDE2_have_rom) {
+        else if (!SIDE2_have_rom) {
             /* Clear the screen if we are in 5200 mode, with no cartridge */
             BasicUIInit();
             memset(Screen_atari_b, 0, (Screen_HEIGHT * Screen_WIDTH));
@@ -5803,3 +5803,78 @@ VIDEOMODE_resolution_t *PLATFORM_AvailableResolutions(unsigned int *size)
 }
 
 #endif /* SUPPORTS_CHANGE_VIDEOMODE */
+
+/* PLATFORM functions required by new Atari800 core */
+int PLATFORM_SoundSetup(Sound_setup_t *setup)
+{
+    /* Mac uses existing SDL audio setup in Sound_Initialise() */
+    return sound_enabled;
+}
+
+void PLATFORM_SoundExit(void)
+{
+    /* Mac handles sound cleanup in Sound_Exit() */
+    SDL_CloseAudio();
+}
+
+void PLATFORM_SoundPause(void)
+{
+    SDL_PauseAudio(1);
+}
+
+void PLATFORM_SoundContinue(void)
+{
+    SDL_PauseAudio(0);
+}
+
+unsigned int PLATFORM_SoundAvailable(void)
+{
+    /* Return reasonable buffer size for Mac audio */
+    return sound_enabled ? 4096 : 0;
+}
+
+void PLATFORM_SoundWrite(UBYTE const *buffer, unsigned int size)
+{
+    /* Mac handles sound writing through existing callback system */
+    /* This is a compatibility stub */
+}
+
+int PLATFORM_PORT(int num)
+{
+    /* Mac-specific controller port implementation */
+    return 0xFF; /* No input */
+}
+
+int PLATFORM_TRIG(int num)
+{
+    /* Mac-specific trigger implementation */
+    return 1; /* Not pressed */
+}
+
+void PLATFORM_GetPixelFormat(PLATFORM_pixel_format_t *format)
+{
+    /* Mac-specific pixel format */
+    if (format) {
+        format->bpp = 32;
+        format->rmask = 0x00FF0000;
+        format->gmask = 0x0000FF00;
+        format->bmask = 0x000000FF;
+    }
+}
+
+void PLATFORM_MapRGB(void *dest, int const *palette, int size)
+{
+    /* Mac delegate to standard palette mapping */
+    int i;
+    Uint32 *colors = (Uint32 *)dest;
+    
+    for (i = 0; i < size; i += 3) {
+        /* Convert RGB to 32-bit ARGB format */
+        colors[i/3] = (0xFF << 24) | (palette[i] << 16) | (palette[i+1] << 8) | palette[i+2];
+    }
+}
+
+void PLATFORM_PaletteUpdate(void)
+{
+    /* Mac handles palette updates through existing system */
+}

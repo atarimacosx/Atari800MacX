@@ -591,8 +591,8 @@
 		2D9B7BC007F618C80059298E /* PrintableGraphics.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PrintableGraphics.m; sourceTree = "<group>"; };
 		2DA416410844552E00EA7648 /* PrintOutputConfirm.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = PrintOutputConfirm.nib; sourceTree = SOURCE_ROOT; };
 		2DA5816209C5F38700331696 /* devices.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = devices.c; path = "../../../../../../../../_priv/dev/atari/atari800/src/devices.c"; sourceTree = SOURCE_ROOT; };
-		2DA5F7BB24D090E2002EBBFA /* sysrom.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = sysrom.c; path = ../sysrom.c; sourceTree = "<group>"; };
-		2DA5F7BC24D090E3002EBBFA /* sysrom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sysrom.h; path = ../sysrom.h; sourceTree = "<group>"; };
+		2DA5F7BB24D090E2002EBBFA /* sysrom.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = sysrom.c; path = "../../../../../../../../_priv/dev/atari/atari800/src/sysrom.c"; sourceTree = SOURCE_ROOT; };
+		2DA5F7BC24D090E3002EBBFA /* sysrom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sysrom.h; path = "../../../../../../../../_priv/dev/atari/atari800/src/sysrom.h"; sourceTree = SOURCE_ROOT; };
 		2DA5F7BF24D09122002EBBFA /* crc32.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = crc32.c; path = ../crc32.c; sourceTree = "<group>"; };
 		2DA5F7C024D09122002EBBFA /* crc32.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = crc32.h; path = ../crc32.h; sourceTree = "<group>"; };
 		2DA74FAF10782987008F0171 /* WatchTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WatchTableView.h; sourceTree = SOURCE_ROOT; };
