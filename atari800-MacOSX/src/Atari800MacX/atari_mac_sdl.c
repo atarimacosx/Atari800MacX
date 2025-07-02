@@ -5626,7 +5626,7 @@ int SDL_main(int argc, char **argv)
             Atari_DisplayScreen((UBYTE *) Screen_atari);
         }
         /* If emulator isn't paused, and 5200 has a cartridge */
-        else if (!pauseEmulator && !((Atari800_machine_type == Atari800_MACHINE_5200) && (CARTRIDGE_main.type == CARTRIDGE_NONE)) && ((ULTIMATE_enabled && ULTIMATE_have_rom) || !ULTIMATE_enabled)) {
+        else if (!pauseEmulator && !((Atari800_machine_type == Atari800_MACHINE_5200) && (CARTRIDGE_main.type == CARTRIDGE_NONE))) {
 			PBI_BB_Frame(); /* just to make the menu key go up automatically */
             Devices_Frame();
             GTIA_Frame();
