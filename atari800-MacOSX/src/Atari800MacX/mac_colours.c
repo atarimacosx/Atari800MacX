@@ -230,7 +230,7 @@ void Colours_Generate(int black, int white, int colors, int shift)    /* generat
       }
     }
 
-void Colours_Initialise(int *argc, char *argv[])
+void Mac_Colours_Initialise(int *argc, char *argv[])
 {
 	int i, j;
 	int generate_palette = FALSE;
