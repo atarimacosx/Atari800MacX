@@ -96,6 +96,30 @@ static UWORD assemblerAddr;
     and from antic.h, gtia.h, pia.h and pokey.h.
     Symbols must be sorted by address. If the adress has different names
     when reading/writing to it, put the read name first. */
+
+/* Mac-specific monitor enhancements - add missing type definitions */
+typedef struct {
+	char *name;
+	UWORD addr;
+} symtable_rec;
+
+/* Add missing monitor breakpoint constants for Mac compatibility */
+#define MONITOR_BREAKPOINT_MEM 256
+#define MONITOR_BREAKPOINT_CLRN 2
+#define MONITOR_BREAKPOINT_SETN 3
+#define MONITOR_BREAKPOINT_CLRV 4
+#define MONITOR_BREAKPOINT_SETV 5
+#define MONITOR_BREAKPOINT_CLRB 6
+#define MONITOR_BREAKPOINT_SETB 7
+#define MONITOR_BREAKPOINT_CLRD 8
+#define MONITOR_BREAKPOINT_SETD 9
+#define MONITOR_BREAKPOINT_CLRI 10
+#define MONITOR_BREAKPOINT_SETI 11
+#define MONITOR_BREAKPOINT_CLRZ 12
+#define MONITOR_BREAKPOINT_SETZ 13
+#define MONITOR_BREAKPOINT_CLRC 14
+#define MONITOR_BREAKPOINT_SETC 15
+
 #ifdef MACOSX_MON_ENHANCEMENTS
 const symtable_rec symtable_builtin[] = {
 #else

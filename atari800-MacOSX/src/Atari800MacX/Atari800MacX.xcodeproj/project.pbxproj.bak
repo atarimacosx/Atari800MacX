@@ -92,11 +92,13 @@
 		2D5F5948256070D600903877 /* eeprom.c in Sources */ = {isa = PBXBuildFile; fileRef = 2D5F5946256070D600903877 /* eeprom.c */; };
 		2D63725824F73FB700905B2E /* rtcds1305.c in Sources */ = {isa = PBXBuildFile; fileRef = 2D63725724F73FB600905B2E /* rtcds1305.c */; };
 		2D63725A24F741DA00905B2E /* rtcds1305.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D63725924F741D900905B2E /* rtcds1305.h */; };
-				2D6A0BEA251C21050062B581 /* img_raw.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D6A0BE8251C21050062B581 /* img_raw.h */; };
+		2D66DBF70F538D0200F882D6 /* cfg.c in Sources */ = {isa = PBXBuildFile; fileRef = 2D66DBF60F538D0200F882D6 /* cfg.c */; };
+		2D6A0BEA251C21050062B581 /* img_raw.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D6A0BE8251C21050062B581 /* img_raw.h */; };
 		2D6A0BEB251C21050062B581 /* img_raw.c in Sources */ = {isa = PBXBuildFile; fileRef = 2D6A0BE9251C21050062B581 /* img_raw.c */; };
 		2D6A0BEE251C225F0062B581 /* img_disk.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D6A0BEC251C225F0062B581 /* img_disk.h */; };
 		2D6A0BEF251C225F0062B581 /* img_disk.c in Sources */ = {isa = PBXBuildFile; fileRef = 2D6A0BED251C225F0062B581 /* img_disk.c */; };
-				2D76730B21EA791E00D99B0E /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2D76730A21EA791E00D99B0E /* Media.xcassets */; };
+		2D70069D0F55F9F80092DA70 /* mac_monitor.c in Sources */ = {isa = PBXBuildFile; fileRef = 2D70069C0F55F9F80092DA70 /* mac_monitor.c */; };
+		2D76730B21EA791E00D99B0E /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2D76730A21EA791E00D99B0E /* Media.xcassets */; };
 		2D76730E21EA7F9A00D99B0E /* atari810off.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D76730C21EA7F9A00D99B0E /* atari810off.png */; };
 		2D76731321EA846800D99B0E /* atari810emtpy.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D76731121EA846800D99B0E /* atari810emtpy.png */; };
 		2D76731721EA870800D99B0E /* atari810closed.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D76731521EA870700D99B0E /* atari810closed.png */; };
@@ -1608,7 +1610,10 @@
 				2D17D9770F537D860027F526 /* pbi_mio.c in Sources */,
 				2D17D9790F537D860027F526 /* pbi_scsi.c in Sources */,
 				2DE7FC58250DC655000C2DAD /* capslock.c in Sources */,
-				2D0CA96C24B176360089AC88 /* AtasciiPrinter.m in Sources */,				2DBBC09C0FDC448800FD54E5 /* PasteManager.m in Sources */,
+				2D0CA96C24B176360089AC88 /* AtasciiPrinter.m in Sources */,
+				2D66DBF70F538D0200F882D6 /* cfg.c in Sources */,
+				2D70069D0F55F9F80092DA70 /* mac_monitor.c in Sources */,
+				2DBBC09C0FDC448800FD54E5 /* PasteManager.m in Sources */,
 				2DC8D7872526B8C6006F537F /* flash.c in Sources */,
 				2DEF29240FDCBE6E00660E07 /* PasteWindow.m in Sources */,
 				2D14CDFF0FFEEEDF00E60EAA /* copydata.c in Sources */,
@@ -1698,7 +1703,7 @@
 				INSTALL_PATH = "$(HOME)/Applications";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = "";
-				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-framework",
@@ -1755,7 +1760,7 @@
 				INSTALL_PATH = "$(HOME)/Applications";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = "";
-				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-framework",
@@ -1821,7 +1826,7 @@
 				INSTALL_PATH = "$(HOME)/Applications";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = "";
-				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-framework",
@@ -1853,7 +1858,7 @@
 				ENABLE_TESTABILITY = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_VERSION = "";
-				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.4u.sdk";
 				ZERO_LINK = NO;
@@ -1867,7 +1872,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.4u.sdk";
 			};
 			name = Deployment;
@@ -1877,7 +1882,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.4u.sdk";
 			};
 			name = Default;
