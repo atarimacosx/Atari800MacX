@@ -5896,8 +5896,7 @@ int ULTIMATE_Save_Rom(char *filename) { return FALSE; }
 int Screen_show_capslock = 0;
 int Screen_show_hd_sector_counter = 0;
 
-/* UI system stubs */
-char UI_BASIC_driver[256] = "B:";
+/* UI system stubs - UI_BASIC_driver now provided by ui_basic.c */
 
 /* System ROM functions */
 int SYSROM_FindType(void) { return 0; }
