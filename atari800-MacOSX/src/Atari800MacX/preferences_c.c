@@ -400,7 +400,8 @@ void loadPrefsBinaries() {
 	
     if (prefs.cartFileEnabled) {
         if (strcmp(prefs.cartFile, "SIDE2") == 0) {
-            /* SIDE2 cartridge - handled by SIDE2 module directly */
+            /* SIDE2 cartridge - enable SIDE2 emulation */
+            CARTRIDGE_Insert("!SIDE2_CART!");
         }
         else if (strcmp(prefs.cartFile, "BASIC") == 0) {
             /* BASIC cartridge - handled internally */
@@ -410,7 +411,8 @@ void loadPrefsBinaries() {
 	}
     if (prefs.cart2FileEnabled) {
         if (strcmp(prefs.cart2File, "SIDE2") == 0) {
-            /* SIDE2 cartridge - handled by SIDE2 module directly */
+            /* SIDE2 cartridge - enable SIDE2 emulation */
+            CARTRIDGE_Insert_Second("!SIDE2_CART!");
         }
         else
             CARTRIDGE_Insert_Second(prefs.cart2File);

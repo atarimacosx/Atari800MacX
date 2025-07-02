@@ -141,6 +141,9 @@
 #ifdef VOICEBOX
 #include "voicebox.h"
 #endif
+#ifdef SIDE2
+#include "side2.h"
+#endif
 #if SUPPORTS_CHANGE_VIDEOMODE
 #include "videomode.h"
 #endif
@@ -806,6 +809,9 @@ int Atari800_Initialise(int *argc, char *argv[])
 #endif
 		|| !SIO_Initialise (argc, argv)
 		|| !CARTRIDGE_Initialise(argc, argv)
+#ifdef SIDE2
+		|| !SIDE2_Initialise(argc, argv)
+#endif
 		|| !CASSETTE_Initialise(argc, argv)
 		|| !PBI_Initialise(argc,argv)
 #ifdef VOICEBOX
@@ -1056,6 +1062,9 @@ int Atari800_Exit(int run_monitor)
 #endif
 		PBI_Exit();
 		CASSETTE_Exit(); /* Finish writing to the cassette file */
+#ifdef SIDE2
+		SIDE2_Exit();
+#endif
 		CARTRIDGE_Exit();
 		SIO_Exit();	/* umount disks, so temporary files are deleted */
 #ifdef IDE
