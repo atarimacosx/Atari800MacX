@@ -162,8 +162,7 @@ sourceOperationMaskForDraggingContext:(NSDraggingContext)context
                     [suffix isEqualToString:@"img"] ||
                     [suffix isEqualToString:@"IMG"] ||
                     [suffix isEqualToString:@"vhd"] ||
-					[suffix isEqualToString:@"VHD"] ) &&
-                     FALSE))
+					[suffix isEqualToString:@"VHD"]))
 					return NSDragOperationNone;
             }
 		if (sourceDragMask & NSDragOperationMove)
