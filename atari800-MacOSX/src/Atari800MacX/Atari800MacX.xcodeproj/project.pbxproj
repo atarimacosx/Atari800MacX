@@ -695,7 +695,7 @@
 		F5176916034BFE7501A8C8B4 /* Atari800MacX Help */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = folder; path = "Atari800MacX Help"; sourceTree = "<group>"; };
 		F555833A030EF41401A8C8B4 /* config.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = SOURCE_ROOT; };
 		F555833C030EF4CD01A8C8B4 /* memory.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = memory.h; path = ../memory.h; sourceTree = SOURCE_ROOT; };
-		F555833D030EF4CD01A8C8B4 /* memory.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = memory.c; path = ../memory.c; sourceTree = SOURCE_ROOT; };
+		F555833D030EF4CD01A8C8B4 /* memory.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = memory.c; path = "../../../../../../../../_priv/dev/atari/atari800/src/memory.c"; sourceTree = SOURCE_ROOT; };
 		F555833E030EF4CD01A8C8B4 /* log.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = log.h; path = ../log.h; sourceTree = SOURCE_ROOT; };
 		F555833F030EF4CD01A8C8B4 /* log.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = log.c; path = ../log.c; sourceTree = SOURCE_ROOT; };
 		F5558340030EF4CD01A8C8B4 /* list.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = list.h; path = ../list.h; sourceTree = SOURCE_ROOT; };
@@ -729,7 +729,7 @@
 		F5558366030EF4CD01A8C8B4 /* pia.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = pia.h; path = ../pia.h; sourceTree = SOURCE_ROOT; };
 		F5558367030EF4CD01A8C8B4 /* monitor.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = monitor.h; path = ../monitor.h; sourceTree = SOURCE_ROOT; };
 		F555836C030EF4CD01A8C8B4 /* statesav.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = statesav.h; path = ../statesav.h; sourceTree = SOURCE_ROOT; };
-		F5558372030EF4CD01A8C8B4 /* atari.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = atari.c; path = ../atari.c; sourceTree = SOURCE_ROOT; };
+		F5558372030EF4CD01A8C8B4 /* atari.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = atari.c; path = "../../../../../../../../_priv/dev/atari/atari800/src/atari.c"; sourceTree = SOURCE_ROOT; };
 		F5558373030EF4CD01A8C8B4 /* antic.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = antic.h; path = ../antic.h; sourceTree = SOURCE_ROOT; };
 		F5558374030EF4CD01A8C8B4 /* atari.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = atari.h; path = ../atari.h; sourceTree = SOURCE_ROOT; };
 		F5558375030EF4CD01A8C8B4 /* antic.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = antic.c; path = ../antic.c; sourceTree = SOURCE_ROOT; };
@@ -782,7 +782,7 @@
 		BCA4539AB54D4FA8B645F6B7 /* colours.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = colours.c; path = ../colours.c; sourceTree = SOURCE_ROOT; };
 		CCAB7EF1B4EA48F084C084AB /* screen.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = screen.c; path = ../screen.c; sourceTree = SOURCE_ROOT; };
 		6D4FBABA5CDF4BF08D45B745 /* sound.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = sound.c; path = "../../../../../../../../_priv/dev/atari/atari800/src/sound.c"; sourceTree = SOURCE_ROOT; };
-		9F6282481EBD44FFA37EEE93 /* monitor.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = monitor.c; path = ../monitor.c; sourceTree = SOURCE_ROOT; };
+		9F6282481EBD44FFA37EEE93 /* monitor.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = monitor.c; path = "../../../../../../../../_priv/dev/atari/atari800/src/monitor.c"; sourceTree = SOURCE_ROOT; };
 		AE7FF0CADE9D4B23A1A0F2D5 /* input.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = input.c; path = ../input.c; sourceTree = SOURCE_ROOT; };
 		CE6158050F1A4B5DB96DDC88 /* ui.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ui.c; path = "../../../../../../../../_priv/dev/atari/atari800/src/ui.c"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */

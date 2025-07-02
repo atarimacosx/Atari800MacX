@@ -5878,3 +5878,24 @@ void PLATFORM_PaletteUpdate(void)
 {
     /* Mac handles palette updates through existing system */
 }
+
+/* Mac-specific wrapper functions for legacy device support */
+void Devices_H_Init(void)
+{
+    /* Device H initialization - handled internally by new core */
+}
+
+int Devices_enable_d_patch = 1; /* Mac device patch enable flag */
+
+/* Mac-specific flash memory functions for legacy support */
+UBYTE MEMORY_FlashGetByte(UWORD addr)
+{
+    /* Flash memory read - delegated to standard memory system */
+    return MEMORY_GetByte(addr);
+}
+
+void MEMORY_FlashPutByte(UWORD addr, UBYTE byte)
+{
+    /* Flash memory write - delegated to standard memory system */
+    MEMORY_PutByte(addr, byte);
+}
