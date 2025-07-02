@@ -5322,8 +5322,8 @@ int SDL_main(int argc, char **argv)
         Log_print("NetSIO: Failed to initialize FujiNet connection on port 9997");
     } else {
         Log_print("NetSIO: FujiNet interface ready on port 9997");
-        /* Disable patched SIO for NetSIO compatibility */
-        ESC_enable_sio_patch = Devices_enable_h_patch = Devices_enable_p_patch = Devices_enable_r_patch = FALSE;
+        /* Note: SIO patches are only disabled when FujiNet is actually connected */
+        /* The patches will be disabled dynamically when netsio_enabled is set */
     }
 #endif
 
