@@ -323,6 +323,8 @@ static NSDictionary *defaultValues() {
                 [NSNumber numberWithInt:-1], AtariSwitchTypeVer5,
                 [NSNumber numberWithInt:7],AxlonBankMask,
                 [NSNumber numberWithInt:3],MosaicMaxBank,
+                [NSNumber numberWithBool:NO],FujiNetEnabled,
+                @"9997",FujiNetPort,
                 [NSNumber numberWithBool:NO],MioEnabled,
                 [NSNumber numberWithBool:NO],BlackBoxEnabled,
                 @"",AF80RomFile,
@@ -985,12 +987,21 @@ static Preferences *sharedInstance = nil;
 	}
 	if (!foundMatch)
 		[mosaicMemSizePulldown selectItemAtIndex:0];
-	if ([[displayedValues objectForKey:BlackBoxEnabled] boolValue] == YES)
-		[pbiExpansionMatrix selectCellWithTag:1];
-	else if ([[displayedValues objectForKey:MioEnabled] boolValue] == YES)
+	if ([[displayedValues objectForKey:FujiNetEnabled] boolValue] == YES)
+		[pbiExpansionMatrix selectCellWithTag:0];
+	else if ([[displayedValues objectForKey:BlackBoxEnabled] boolValue] == YES)
 		[pbiExpansionMatrix selectCellWithTag:2];
+	else if ([[displayedValues objectForKey:MioEnabled] boolValue] == YES)
+		[pbiExpansionMatrix selectCellWithTag:3];
 	else
-		[pbiExpansionMatrix selectCellWithTag:0];		
+		[pbiExpansionMatrix selectCellWithTag:1];		
+	/* Update FujiNet UI fields */
+	if ([[displayedValues objectForKey:FujiNetEnabled] boolValue] == YES)
+		[fujiNetEnabledButton setState:NSOnState];
+	else
+		[fujiNetEnabledButton setState:NSOffState];
+	[fujiNetPortField setStringValue:[displayedValues objectForKey:FujiNetPort]];
+	[fujiNetStatusField setStringValue:@"Not Connected"];
     [af80RomFileField setStringValue:[displayedValues objectForKey:AF80RomFile]];
     [af80CharsetRomFileField setStringValue:[displayedValues objectForKey:AF80CharsetFile]];
     [bit3RomFileField setStringValue:[displayedValues objectForKey:Bit3RomFile]];
@@ -2297,18 +2308,27 @@ static Preferences *sharedInstance = nil;
 	switch([[pbiExpansionMatrix selectedCell] tag]) {
         case 0:
 		default:
+            [displayedValues setObject:yes forKey:FujiNetEnabled];
             [displayedValues setObject:no forKey:BlackBoxEnabled];
             [displayedValues setObject:no forKey:MioEnabled];
             break;
         case 1:
-            [displayedValues setObject:yes forKey:BlackBoxEnabled];
+            [displayedValues setObject:no forKey:FujiNetEnabled];
+            [displayedValues setObject:no forKey:BlackBoxEnabled];
             [displayedValues setObject:no forKey:MioEnabled];
             break;
         case 2:
+            [displayedValues setObject:no forKey:FujiNetEnabled];
+            [displayedValues setObject:yes forKey:BlackBoxEnabled];
+            [displayedValues setObject:no forKey:MioEnabled];
+            break;
+        case 3:
+            [displayedValues setObject:no forKey:FujiNetEnabled];
             [displayedValues setObject:no forKey:BlackBoxEnabled];
             [displayedValues setObject:yes forKey:MioEnabled];
             break;
     }
+    [displayedValues setObject:[fujiNetPortField stringValue] forKey:FujiNetPort];
     [displayedValues setObject:[af80RomFileField stringValue] forKey:AF80RomFile];
     [displayedValues setObject:[af80CharsetRomFileField stringValue] forKey:AF80CharsetFile];
     [displayedValues setObject:[bit3RomFileField stringValue] forKey:Bit3RomFile];
@@ -4302,6 +4322,8 @@ static Preferences *sharedInstance = nil;
 		}
     [displayedValues setObject:prefssave->enableStereo ? yes : no forKey:EnableStereo];
 
+	[displayedValues setObject:no forKey:FujiNetEnabled];  /* FujiNet enabled by default */
+	[displayedValues setObject:@"9997" forKey:FujiNetPort];  /* Default FujiNet port */
 	[displayedValues setObject:prefssave->blackBoxEnabled ? yes : no forKey:BlackBoxEnabled];
 	[displayedValues setObject:prefssave->mioEnabled ? yes : no forKey:MioEnabled];
     [displayedValues setObject:prefssave->side2SDXMode ? yes : no forKey:Side2SDXMode];
@@ -5312,6 +5334,8 @@ static Preferences *sharedInstance = nil;
     getIntDefault(AtariSwitchTypeVer5);
 	getIntDefault(AxlonBankMask);
 	getIntDefault(MosaicMaxBank);
+	getBoolDefault(FujiNetEnabled);
+	getStringDefault(FujiNetPort);
 	getBoolDefault(MioEnabled);
 	getBoolDefault(BlackBoxEnabled);
     getStringDefault(MioRomFile);
@@ -5623,6 +5647,8 @@ static Preferences *sharedInstance = nil;
     setIntDefault(AtariSwitchTypeVer5);
 	setIntDefault(AxlonBankMask);
 	setIntDefault(MosaicMaxBank);
+	setBoolDefault(FujiNetEnabled);
+	setStringDefault(FujiNetPort);
 	setBoolDefault(MioEnabled);
 	setBoolDefault(BlackBoxEnabled);
     setStringDefault(MioRomFile);
@@ -5915,6 +5941,8 @@ static Preferences *sharedInstance = nil;
     setConfig(AtariSwitchTypeVer5);
 	setConfig(AxlonBankMask);
 	setConfig(MosaicMaxBank);
+	setConfig(FujiNetEnabled);
+	setConfig(FujiNetPort);
 	setConfig(MioEnabled);
 	setConfig(BlackBoxEnabled);
     setConfig(MioRomFile);
@@ -6305,6 +6333,8 @@ static Preferences *sharedInstance = nil;
     getConfig(AtariSwitchTypeVer5);
 	getConfig(AxlonBankMask);
 	getConfig(MosaicMaxBank);
+	getConfig(FujiNetEnabled);
+	getConfig(FujiNetPort);
 	getConfig(MioEnabled);
 	getConfig(BlackBoxEnabled);
     getConfig(MioRomFile);

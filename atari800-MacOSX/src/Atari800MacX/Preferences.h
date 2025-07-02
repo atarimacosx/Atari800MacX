@@ -172,6 +172,8 @@
 #define UseAltiraXLRom @"UseAltiraXLRom"
 #define UseAltira5200Rom @"UseAltira5200Rom"
 #define UseAltiraBasicRom @"UseAltiraBasicRom"
+#define FujiNetEnabled @"FujiNetEnabled"
+#define FujiNetPort @"FujiNetPort"
 #define XEGSRomFile @"XEGSRomFile"
 #define XEGSGameRomFile @"XEGSGameRomFile"
 #define A1200XLRomFile @"A1200XLRomFile"
@@ -315,6 +317,9 @@
 	IBOutlet id axlonMemSizePulldown;
 	IBOutlet id mosaicMemSizePulldown;
 	IBOutlet id pbiExpansionMatrix;
+	IBOutlet id fujiNetEnabledButton;
+	IBOutlet id fujiNetPortField;
+	IBOutlet id fujiNetStatusField;
 	IBOutlet id mioRomFileField;
 	IBOutlet id blackBoxRomFileField;
 	IBOutlet id blackBoxScsiDiskFileField;
