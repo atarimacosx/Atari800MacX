@@ -83,6 +83,9 @@
 #include "side2.h"
 #include "util.h"
 #include "capslock.h"
+#ifdef NETSIO
+#include "netsio.h"
+#endif
 
 /* Mac-specific constants and variables for compatibility */
 #ifndef XEP80_SCRN_HEIGHT
@@ -5312,6 +5315,17 @@ int SDL_main(int argc, char **argv)
 
     if (!Atari800_Initialise(&argc, argv))
         return 3;
+
+#ifdef NETSIO
+    /* Initialize NetSIO for FujiNet connectivity */
+    if (netsio_init(9997) < 0) {
+        Log_print("NetSIO: Failed to initialize FujiNet connection on port 9997");
+    } else {
+        Log_print("NetSIO: FujiNet interface ready on port 9997");
+        /* Disable patched SIO for NetSIO compatibility */
+        ESC_enable_sio_patch = Devices_enable_h_patch = Devices_enable_p_patch = Devices_enable_r_patch = FALSE;
+    }
+#endif
 
     if (!EnableDisplayManager80ColMode(Atari800_machine_type, XEP80_enabled, AF80_enabled, BIT3_enabled))
         {
