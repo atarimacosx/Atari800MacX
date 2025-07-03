@@ -987,20 +987,13 @@ static Preferences *sharedInstance = nil;
 	}
 	if (!foundMatch)
 		[mosaicMemSizePulldown selectItemAtIndex:0];
-	/* Check if pbiExpansionMatrix has enough cells for FujiNet */
-	if ([pbiExpansionMatrix numberOfRows] * [pbiExpansionMatrix numberOfColumns] < 4) {
-		NSLog(@"WARNING: pbiExpansionMatrix only has %ld cells, need 4 for FujiNet support", 
-			  (long)([pbiExpansionMatrix numberOfRows] * [pbiExpansionMatrix numberOfColumns]));
-	}
-	
-	if ([[displayedValues objectForKey:FujiNetEnabled] boolValue] == YES)
-		[pbiExpansionMatrix selectCellWithTag:0];
-	else if ([[displayedValues objectForKey:BlackBoxEnabled] boolValue] == YES)
+	/* Update PBI expansion matrix (Black Box, MIO, None) */
+	if ([[displayedValues objectForKey:BlackBoxEnabled] boolValue] == YES)
 		[pbiExpansionMatrix selectCellWithTag:2];
 	else if ([[displayedValues objectForKey:MioEnabled] boolValue] == YES)
 		[pbiExpansionMatrix selectCellWithTag:3];
 	else
-		[pbiExpansionMatrix selectCellWithTag:1];		
+		[pbiExpansionMatrix selectCellWithTag:1]; /* None */		
 	/* Update FujiNet UI fields */
 	if ([displayedValues objectForKey:FujiNetEnabled] && [[displayedValues objectForKey:FujiNetEnabled] boolValue] == YES)
 		[fujiNetEnabledButton setState:NSOnState];
@@ -2312,24 +2305,16 @@ static Preferences *sharedInstance = nil;
 	[displayedValues setObject:[NSNumber numberWithInt:axlonBankMasks[[axlonMemSizePulldown indexOfSelectedItem]]] forKey:AxlonBankMask];
 	[displayedValues setObject:[NSNumber numberWithInt:mosaicBankMaxs[[mosaicMemSizePulldown indexOfSelectedItem]]] forKey:MosaicMaxBank];
 	switch([[pbiExpansionMatrix selectedCell] tag]) {
-        case 0:
-            [displayedValues setObject:yes forKey:FujiNetEnabled];
-            [displayedValues setObject:no forKey:BlackBoxEnabled];
-            [displayedValues setObject:no forKey:MioEnabled];
-            break;
         case 1:
 		default:
-            [displayedValues setObject:no forKey:FujiNetEnabled];
             [displayedValues setObject:no forKey:BlackBoxEnabled];
             [displayedValues setObject:no forKey:MioEnabled];
             break;
         case 2:
-            [displayedValues setObject:no forKey:FujiNetEnabled];
             [displayedValues setObject:yes forKey:BlackBoxEnabled];
             [displayedValues setObject:no forKey:MioEnabled];
             break;
         case 3:
-            [displayedValues setObject:no forKey:FujiNetEnabled];
             [displayedValues setObject:no forKey:BlackBoxEnabled];
             [displayedValues setObject:yes forKey:MioEnabled];
             break;

@@ -1236,11 +1236,31 @@ int loadMacPrefs(int firstTime)
 	machine_switch_type = prefs.atariSwitchType; 
 	disable_all_basic = prefs.disableAllBasic;
     Atari800_disable_basic = prefs.disableBasic;
+    
+#ifdef NETSIO
+    /* When FujiNet is enabled, disable SIO patches to route all commands through NetSIO */
+    if (prefs.fujiNetEnabled) {
+        ESC_enable_sio_patch = FALSE;
+        Devices_enable_h_patch = FALSE;
+        Devices_enable_d_patch = FALSE; 
+        Devices_enable_p_patch = FALSE;
+        Devices_enable_r_patch = FALSE;
+    } else {
+        /* FujiNet disabled, use normal patch preferences */
+        ESC_enable_sio_patch = prefs.enableSioPatch;
+        Devices_enable_h_patch = prefs.enableHPatch;
+        Devices_enable_d_patch = prefs.enableDPatch;
+        Devices_enable_p_patch = prefs.enablePPatch;
+        Devices_enable_r_patch = prefs.enableRPatch;
+    }
+#else
+    /* NetSIO not compiled in, use normal patch preferences */
     ESC_enable_sio_patch = prefs.enableSioPatch;
     Devices_enable_h_patch = prefs.enableHPatch;
 	Devices_enable_d_patch = prefs.enableDPatch;
     Devices_enable_p_patch = prefs.enablePPatch;
     Devices_enable_r_patch = prefs.enableRPatch;
+#endif
 	RDevice_serial_enabled = prefs.rPatchSerialEnabled;
 	strncpy(RDevice_serial_device, prefs.rPatchSerialPort,FILENAME_MAX);
     portnum = prefs.rPatchPort;

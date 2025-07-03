@@ -5294,6 +5294,7 @@ int IsCopyDefined(void)
 *-----------------------------------------------------------------------------*/
 int SDL_main(int argc, char **argv)
 {
+    Log_print("TEST: Starting SDL_main - FujiNet debug test");
     int keycode;
     int done = 0;
     int i;
@@ -5317,22 +5318,34 @@ int SDL_main(int argc, char **argv)
         return 3;
 
 #ifdef NETSIO
+    Log_print("DEBUG: NetSIO compilation enabled, initializing FujiNet connectivity...");
     /* Initialize NetSIO for FujiNet connectivity only if enabled in preferences */
     {
         ATARI800MACX_PREF *prefs = getPrefStorage();
+        Log_print("DEBUG: Retrieved preferences, fujiNetEnabled=%d, fujiNetPort=%d", prefs->fujiNetEnabled, prefs->fujiNetPort);
         if (prefs->fujiNetEnabled) {
             int port = prefs->fujiNetPort;
             if (port <= 0 || port > 65535) port = 9997; // Default port if invalid
             
+            /* Disable patched SIO for all devices when using NetSIO */
+            ESC_enable_sio_patch = FALSE;
+            Devices_enable_h_patch = FALSE; 
+            Devices_enable_p_patch = FALSE;
+            Devices_enable_r_patch = FALSE;
+            printf("NetSIO: Disabled SIO patches to route all commands through FujiNet\n");
+            
+            printf("DEBUG: Attempting netsio_init on port %d...\n", port);
             if (netsio_init(port) == 0) {
-                Log_print("NetSIO: FujiNet support initialized on port %d", port);
+                printf("NetSIO: FujiNet support initialized on port %d\n", port);
             } else {
-                Log_print("NetSIO: Failed to initialize FujiNet support on port %d", port);
+                printf("NetSIO: Failed to initialize FujiNet support on port %d\n", port);
             }
         } else {
             Log_print("NetSIO: FujiNet support available but disabled in preferences");
         }
     }
+#else
+    Log_print("DEBUG: NETSIO not compiled in - no FujiNet support");
 #endif
 
     if (!EnableDisplayManager80ColMode(Atari800_machine_type, XEP80_enabled, AF80_enabled, BIT3_enabled))
