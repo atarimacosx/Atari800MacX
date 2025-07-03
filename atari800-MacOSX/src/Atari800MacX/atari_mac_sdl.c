@@ -5300,6 +5300,9 @@ int SDL_main(int argc, char **argv)
     int i;
     int retVal;
 	double last_time = 0.0;
+    /* Flag for delayed FujiNet restart */
+    static int fujinet_restart_pending = 0;
+    static int fujinet_restart_delay = 0;
 
     POKEYSND_stereo_enabled = FALSE; /* Turn this off here....otherwise games only come
                              from one channel...you only want this for demos mainly
@@ -5317,36 +5320,8 @@ int SDL_main(int argc, char **argv)
     if (!Atari800_Initialise(&argc, argv))
         return 3;
 
-#ifdef NETSIO
-    Log_print("DEBUG: NetSIO compilation enabled, initializing FujiNet connectivity...");
-    /* Initialize NetSIO for FujiNet connectivity only if enabled in preferences */
-    {
-        ATARI800MACX_PREF *prefs = getPrefStorage();
-        Log_print("DEBUG: Retrieved preferences, fujiNetEnabled=%d, fujiNetPort=%d", prefs->fujiNetEnabled, prefs->fujiNetPort);
-        if (prefs->fujiNetEnabled) {
-            int port = prefs->fujiNetPort;
-            if (port <= 0 || port > 65535) port = 9997; // Default port if invalid
-            
-            /* Disable patched SIO for all devices when using NetSIO */
-            ESC_enable_sio_patch = FALSE;
-            Devices_enable_h_patch = FALSE; 
-            Devices_enable_p_patch = FALSE;
-            Devices_enable_r_patch = FALSE;
-            printf("NetSIO: Disabled SIO patches to route all commands through FujiNet\n");
-            
-            printf("DEBUG: Attempting netsio_init on port %d...\n", port);
-            if (netsio_init(port) == 0) {
-                printf("NetSIO: FujiNet support initialized on port %d\n", port);
-            } else {
-                printf("NetSIO: Failed to initialize FujiNet support on port %d\n", port);
-            }
-        } else {
-            Log_print("NetSIO: FujiNet support available but disabled in preferences");
-        }
-    }
-#else
-    Log_print("DEBUG: NETSIO not compiled in - no FujiNet support");
-#endif
+    /* Load Mac preferences to properly set machine type and other settings for first time startup */
+    loadMacPrefs(TRUE);
 
     if (!EnableDisplayManager80ColMode(Atari800_machine_type, XEP80_enabled, AF80_enabled, BIT3_enabled))
         {
@@ -5394,6 +5369,28 @@ int SDL_main(int argc, char **argv)
 		SetControlManagerPBIExpansion(2);
 	else
 		SetControlManagerPBIExpansion(0);
+		
+#ifdef NETSIO
+    /* Initialize NetSIO for FujiNet connectivity if enabled in preferences */
+    /* This happens after machine type and SIO patches are properly set by loadMacPrefs() */
+    {
+        ATARI800MACX_PREF *prefs = getPrefStorage();
+        if (prefs->fujiNetEnabled) {
+            int port = prefs->fujiNetPort;
+            if (port <= 0 || port > 65535) port = 9997; // Default port if invalid
+            
+            printf("DEBUG: About to call netsio_init on port %d\n", port);
+            if (netsio_init(port) == 0) {
+                printf("DEBUG: netsio_init succeeded, will trigger restart after main loop starts\n");
+                /* Set flag to trigger restart after main loop starts */
+                fujinet_restart_pending = 1;
+                fujinet_restart_delay = 60; /* Wait 60 frames (~1 second) */
+            } else {
+                printf("DEBUG: netsio_init FAILED\n");
+            }
+        }
+    }
+#endif
 	SetControlManagerArrowKeys(useAtariCursorKeys);
 	PrintOutputControllerSelectPrinter(currPrinter);
     UpdateMediaManagerInfo(); 
@@ -5436,6 +5433,17 @@ int SDL_main(int argc, char **argv)
     }
 
     while (!done) {
+        /* Handle delayed FujiNet restart */
+        if (fujinet_restart_pending && fujinet_restart_delay > 0) {
+            fujinet_restart_delay--;
+            if (fujinet_restart_delay == 0) {
+                printf("DEBUG: Triggering delayed FujiNet machine initialization\n");
+                Atari800_InitialiseMachine();
+                fujinet_restart_pending = 0;
+                printf("DEBUG: FujiNet delayed machine initialization completed\n");
+            }
+        }
+        
         /* Handle joysticks and paddles */
         SDL_Atari_PORT(&STICK[0], &STICK[1], &STICK[2], &STICK[3]);
         keycode = SDL_Atari_TRIG(&TRIG_input[0], &TRIG_input[1], &TRIG_input[2], &TRIG_input[3],

@@ -200,6 +200,9 @@ static void send_block_to_fujinet(const uint8_t *block, size_t len) {
     send_to_fujinet(packet, len + 2);
 }
 
+/* Store configured port for use in response routing */
+static uint16_t netsio_port = 9997;
+
 /* Initialize NetSIO:
 *   - connect to FujiNet socket
 *   - create FIFO
@@ -209,6 +212,9 @@ int netsio_init(uint16_t port) {
     struct sockaddr_in addr;
     pthread_t rx_thread;
     int broadcast = 1;
+    
+    /* Store the configured port */
+    netsio_port = port;
 
     /* create emulator <-> netsio FIFOs */
     if (pipe(fds0) < 0)
@@ -260,36 +266,36 @@ int netsio_init(uint16_t port) {
     /* Allow port reuse so both FujiNet-PC and emulator can use port 9997 */
     int reuse = 1;
     if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof(reuse)) < 0) {
-        printf("NetSIO: Warning - failed to set SO_REUSEADDR\n");
+        Log_print("NetSIO: Warning - failed to set SO_REUSEADDR");
     }
     
 #ifdef SO_REUSEPORT
     if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEPORT, &reuse, sizeof(reuse)) < 0) {
-        printf("NetSIO: Warning - failed to set SO_REUSEPORT\n");
+        Log_print("NetSIO: Warning - failed to set SO_REUSEPORT");
     }
 #endif
 
-    /* Bind to port 9997 for receiving from FujiNet-PC (original architecture) */
+    /* Bind to configured port for receiving from FujiNet-PC */
     if (bind(sockfd, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
-        printf("NetSIO: Failed to bind to port %d - trying port sharing\n", port);
+        Log_print("NetSIO: Failed to bind to port %d - trying port sharing", port);
         
         /* If bind fails, it might mean FujiNet-PC is using the port */
         /* In this case, we'll use a different port for receiving */
         addr.sin_port = 0; /* Let system assign port */
         if (bind(sockfd, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
-            printf("NetSIO: Failed to bind to any port\n");
+            Log_print("NetSIO: Failed to bind to any port");
             close(sockfd);
             return -1;
         }
         
         socklen_t addr_len = sizeof(addr);
         getsockname(sockfd, (struct sockaddr *)&addr, &addr_len);
-        printf("NetSIO: Bound to fallback port %d\n", ntohs(addr.sin_port));
+        Log_print("NetSIO: Bound to fallback port %d", ntohs(addr.sin_port));
     } else {
-        printf("NetSIO: Successfully bound to port %d\n", port);
+        Log_print("NetSIO: Successfully bound to port %d", port);
     }
     
-    printf("NetSIO: Waiting for FujiNet-PC to discover and connect...\n");
+    Log_print("NetSIO: Waiting for FujiNet-PC to discover and connect...");
 
     /* spawn receiver thread */
     if (pthread_create(&rx_thread, NULL, fujinet_rx_thread, NULL) != 0)
@@ -302,6 +308,35 @@ int netsio_init(uint16_t port) {
     pthread_detach(rx_thread);
 
     return 0;
+}
+
+/* Shutdown NetSIO subsystem */
+void netsio_shutdown(void) {
+    /* Set flag to indicate NetSIO is disabled */
+    netsio_enabled = 0;
+    
+    /* Close socket if it's open */
+    if (sockfd >= 0) {
+        close(sockfd);
+        sockfd = -1;
+    }
+    
+    /* Close FIFO pipes if they're open */
+    if (fds0[0] >= 0) {
+        close(fds0[0]);
+        fds0[0] = -1;
+    }
+    if (fds0[1] >= 0) {
+        close(fds0[1]);
+        fds0[1] = -1;
+    }
+    
+    /* Reset state variables */
+    fujinet_known = 0;
+    netsio_sync_wait = 0;
+    netsio_cmd_state = 0;
+    netsio_next_write_size = 0;
+    netsio_sync_num = 0;
 }
 
 /* Called when a command frame with sync response is sent to FujiNet */
@@ -513,11 +548,8 @@ static void *fujinet_rx_thread(void *arg) {
             continue;
         }
         
-        printf("NetSIO: Received %zd bytes from FujiNet-PC: ", n);
-        for (int i = 0; i < n; i++) {
-            printf("%02X ", buf[i]);
-        }
-        printf("\n");
+        Log_print("NetSIO: Received %zd bytes from FujiNet-PC: %02X %02X %02X...", n, 
+                 (n > 0) ? buf[0] : 0, (n > 1) ? buf[1] : 0, (n > 2) ? buf[2] : 0);
         
         /* Set up FujiNet-PC address for responses (only on first packet) */
         if (!fujinet_known) {
@@ -527,10 +559,10 @@ static void *fujinet_rx_thread(void *arg) {
                 /* For IPv4, use sizeof sockaddr_in */
                 fujinet_addr_len = sizeof(struct sockaddr_in);
                 
-                /* Fix destination port - FujiNet-PC listens on 9997, not the source port */
+                /* Fix destination port - FujiNet-PC listens on configured port, not the source port */
                 struct sockaddr_in *addr_in = (struct sockaddr_in *)&fujinet_addr;
-                addr_in->sin_port = htons(9997);
-                printf("NetSIO: Set response destination to port 9997\n");
+                addr_in->sin_port = htons(netsio_port);
+                Log_print("NetSIO: Set response destination to port %d", netsio_port);
             }
         }
 
@@ -563,7 +595,7 @@ static void *fujinet_rx_thread(void *arg) {
                 Log_print("netsio: recv: device connected");
 #endif
                 netsio_enabled = 1;
-                printf("NetSIO: *** DEVICE_CONNECTED received - netsio_enabled = %d ***\n", netsio_enabled);
+                Log_print("NetSIO: *** DEVICE_CONNECTED received - netsio_enabled = %d ***", netsio_enabled);
                 break;
             }
 
@@ -580,8 +612,8 @@ static void *fujinet_rx_thread(void *arg) {
             {
                 uint8_t r = NETSIO_ALIVE_RESPONSE;
                 struct sockaddr_in *addr_in = (struct sockaddr_in *)&fujinet_addr;
-                printf("NetSIO: Sending ALIVE_RESPONSE (C5) to %s:%d\n", 
-                       inet_ntoa(addr_in->sin_addr), ntohs(addr_in->sin_port));
+                Log_print("NetSIO: Sending ALIVE_RESPONSE (C5) to %s:%d", 
+                         inet_ntoa(addr_in->sin_addr), ntohs(addr_in->sin_port));
                 send_to_fujinet(&r, 1);
 #ifdef DEBUG2
                 Log_print("netsio: recv: IT'S ALIVE!");
