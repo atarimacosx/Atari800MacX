@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="16097" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="23727" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment version="101202" identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="16097"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="23727"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="NSApplication">
@@ -590,6 +590,37 @@
                                     </items>
                                 </menu>
                             </menuItem>
+                            <menuItem title="NTSC Filter Presets" id="cFs-gf-yKb">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <menu key="submenu" title="NTSC Filter Presets" id="PyY-Jx-HQv">
+                                    <items>
+                                        <menuItem title="Composite Video" id="bTd-cV-XdL">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="ntscFilterPreset:" target="498" id="j74-iq-egI"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="S-Video" tag="1" id="svd-pV-4JI">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="ntscFilterPreset:" target="498" id="8u9-BR-gSq"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="RGB Monitor" tag="2" id="zTM-k8-lMt">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="ntscFilterPreset:" target="498" id="ZLB-vC-gN0"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Monochrome" tag="3" id="bgs-Jo-YW9">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="ntscFilterPreset:" target="498" id="sLT-l8-Jhe"/>
+                                            </connections>
+                                        </menuItem>
+                                    </items>
+                                </menu>
+                            </menuItem>
                             <menuItem title="Fullscreen" id="442">
                                 <string key="keyEquivalent" base64-UTF8="YES">
 DQ
@@ -1020,7 +1051,7 @@ DQ
                     </menu>
                 </menuItem>
             </items>
-            <point key="canvasLocation" x="116" y="-477"/>
+            <point key="canvasLocation" x="-480" y="-824"/>
         </menu>
         <customObject id="194" userLabel="SDLMain" customClass="SDLMain"/>
         <customObject id="253" userLabel="Font Manager" customClass="NSFontManager"/>
@@ -1082,6 +1113,10 @@ DQ
                 <outlet property="displayFpsItem" destination="544" id="546"/>
                 <outlet property="fullscreenItem" destination="442" id="539"/>
                 <outlet property="grabMouseItem" destination="541" id="543"/>
+                <outlet property="ntscCompositePresetItem" destination="bTd-cV-XdL" id="gmd-kZ-lKC"/>
+                <outlet property="ntscMonochromePresetItem" destination="bgs-Jo-YW9" id="VHh-NF-joX"/>
+                <outlet property="ntscRGBPresetItem" destination="zTM-k8-lMt" id="q8f-oC-Bnw"/>
+                <outlet property="ntscSVideoPresetItem" destination="svd-pV-4JI" id="Vma-zP-Zyk"/>
                 <outlet property="pasteMenu" destination="605" id="FFJ-kN-BCM"/>
                 <outlet property="revXLXEGTIAItem" destination="831" id="841"/>
                 <outlet property="scaleModeNormalItem" destination="711" id="716"/>
