@@ -16,7 +16,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "5297"
             endingLineNumber = "5297"
-            landmarkName = "SDL_main(argc, argv)"
+            landmarkName = "ProcessCopySelection(first_row, last_row, selectAll)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -32,8 +32,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "5321"
             endingLineNumber = "5321"
-            landmarkName = "SDL_main(argc, argv)"
-            landmarkType = "9">
+            landmarkName = "unknown"
+            landmarkType = "0">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -48,8 +48,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "5324"
             endingLineNumber = "5324"
-            landmarkName = "SDL_main(argc, argv)"
-            landmarkType = "9">
+            landmarkName = "unknown"
+            landmarkType = "0">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy

@@ -364,4 +364,10 @@
 
 #define NETSIO              1
 
+/* NTSC Video Filter System */
+#define NTSC_FILTER         1
+
+/* PAL Blending System */
+#define PAL_BLENDING        1
+
 #define ATARI800MACX

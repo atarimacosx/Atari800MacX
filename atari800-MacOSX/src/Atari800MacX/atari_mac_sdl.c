@@ -77,6 +77,7 @@
 #include "xep80.h"
 #include "pbi_bb.h"
 #include "pbi_mio.h"
+#include "artifact.h"
 #include "pclink.h"
 #include "preferences_c.h"
 #include "ultimate1mb.h"
@@ -4449,9 +4450,10 @@ void ProcessMacMenus()
          requestSoundRecordingChange = 0;
          }
     if (requestArtifChange) {
-         ANTIC_UpdateArtifacting();
+         /* Use new artifact system instead of legacy ANTIC_UpdateArtifacting */
+         ARTIFACT_Set(ARTIFACT_mode);
 		 UpdateMediaManagerInfo();
-		 SetDisplayManagerArtifactMode(ANTIC_artif_mode);
+		 SetDisplayManagerArtifactMode(ARTIFACT_mode);
 	     requestArtifChange = 0;
 	     }
     if (requestLimitChange) {
