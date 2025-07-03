@@ -17,6 +17,7 @@
 #import "PasteManager.h"
 #import "log.h"
 #import "config.h"
+#import "netsio.h"
 
 #import <IOKit/IOKitLib.h>
 #import <IOKit/serial/IOSerialKeys.h>
@@ -1000,7 +1001,7 @@ static Preferences *sharedInstance = nil;
 	else
 		[fujiNetEnabledButton setState:NSOffState];
 	[fujiNetPortField setStringValue:[displayedValues objectForKey:FujiNetPort] ?: @"9997"];
-	[fujiNetStatusField setStringValue:@"Not Connected"];
+	[self updateFujiNetStatus];
     [af80RomFileField setStringValue:[displayedValues objectForKey:AF80RomFile]];
     [af80CharsetRomFileField setStringValue:[displayedValues objectForKey:AF80CharsetFile]];
     [bit3RomFileField setStringValue:[displayedValues objectForKey:Bit3RomFile]];
@@ -3247,6 +3248,40 @@ static Preferences *sharedInstance = nil;
 /* FujiNet preference change handler */
 - (IBAction)fujiNetChanged:(id)sender {
     [self miscChanged:sender];
+    // Update status immediately when preferences change
+    [self updateFujiNetStatus];
+}
+
+/* Update FujiNet status display */
+- (void)updateFujiNetStatus {
+    extern volatile int netsio_enabled;
+    extern int fujinet_known;
+    
+    // Check if FujiNet is enabled in preferences first
+    BOOL fujiNetPrefEnabled = [[displayedValues objectForKey:FujiNetEnabled] boolValue];
+    
+    if (fujiNetPrefEnabled && netsio_enabled && fujinet_known) {
+        [fujiNetStatusField setStringValue:@"Connected"];
+    } else if (fujiNetPrefEnabled && !netsio_enabled) {
+        [fujiNetStatusField setStringValue:@"Initializing..."];
+    } else if (fujiNetPrefEnabled && netsio_enabled && !fujinet_known) {
+        [fujiNetStatusField setStringValue:@"Waiting for FujiNet..."];
+    } else {
+        [fujiNetStatusField setStringValue:@"Not Connected"];
+    }
+}
+
+/* Update FujiNet status for all open preference windows */
++ (void)updateFujiNetStatusForAllWindows {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        Preferences *sharedPrefs = [Preferences sharedInstance];
+        if (sharedPrefs) {
+            // Check if the preferences window is currently open
+            if ([sharedPrefs->prefTabView window] && [[sharedPrefs->prefTabView window] isVisible]) {
+                [sharedPrefs updateFujiNetStatus];
+            }
+        }
+    });
 }
 
 /* The following methods allow the user to choose the ROM files */

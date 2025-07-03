@@ -651,6 +651,8 @@
 
 - (IBAction)miscChanged:(id)sender;	/* Action message for most of the misc items in the UI to get displayedValues  */
 - (IBAction)fujiNetChanged:(id)sender;	/* Action message for FujiNet UI changes */
+- (void)updateFujiNetStatus;	/* Update FujiNet connection status display */
++ (void)updateFujiNetStatusForAllWindows;	/* Update FujiNet status for all open preference windows */
 - (void)browsePalette:(id)sender; 
 - (void)browseImage:(id)sender; 
 - (void)browsePrint:(id)sender; 
