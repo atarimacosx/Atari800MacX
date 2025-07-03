@@ -5318,9 +5318,21 @@ int SDL_main(int argc, char **argv)
 
 #ifdef NETSIO
     /* Initialize NetSIO for FujiNet connectivity only if enabled in preferences */
-    /* For now, NetSIO is disabled by default to prevent boot issues */
-    /* TODO: Check FujiNetEnabled preference and initialize conditionally */
-    Log_print("NetSIO: FujiNet support available but not initialized (disabled by default)");
+    {
+        ATARI800MACX_PREF *prefs = getPrefStorage();
+        if (prefs->fujiNetEnabled) {
+            int port = prefs->fujiNetPort;
+            if (port <= 0 || port > 65535) port = 9997; // Default port if invalid
+            
+            if (netsio_init(port) == 0) {
+                Log_print("NetSIO: FujiNet support initialized on port %d", port);
+            } else {
+                Log_print("NetSIO: Failed to initialize FujiNet support on port %d", port);
+            }
+        } else {
+            Log_print("NetSIO: FujiNet support available but disabled in preferences");
+        }
+    }
 #endif
 
     if (!EnableDisplayManager80ColMode(Atari800_machine_type, XEP80_enabled, AF80_enabled, BIT3_enabled))

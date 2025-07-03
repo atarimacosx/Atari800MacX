@@ -987,6 +987,12 @@ static Preferences *sharedInstance = nil;
 	}
 	if (!foundMatch)
 		[mosaicMemSizePulldown selectItemAtIndex:0];
+	/* Check if pbiExpansionMatrix has enough cells for FujiNet */
+	if ([pbiExpansionMatrix numberOfRows] * [pbiExpansionMatrix numberOfColumns] < 4) {
+		NSLog(@"WARNING: pbiExpansionMatrix only has %ld cells, need 4 for FujiNet support", 
+			  (long)([pbiExpansionMatrix numberOfRows] * [pbiExpansionMatrix numberOfColumns]));
+	}
+	
 	if ([[displayedValues objectForKey:FujiNetEnabled] boolValue] == YES)
 		[pbiExpansionMatrix selectCellWithTag:0];
 	else if ([[displayedValues objectForKey:BlackBoxEnabled] boolValue] == YES)
@@ -2329,6 +2335,12 @@ static Preferences *sharedInstance = nil;
             break;
     }
     [displayedValues setObject:[fujiNetPortField stringValue] ?: @"9997" forKey:FujiNetPort];
+    
+    /* Read FujiNet checkbox state and update preferences */
+    if ([fujiNetEnabledButton state] == NSOnState)
+        [displayedValues setObject:yes forKey:FujiNetEnabled];
+    else
+        [displayedValues setObject:no forKey:FujiNetEnabled];
     [displayedValues setObject:[af80RomFileField stringValue] ?: @"" forKey:AF80RomFile];
     [displayedValues setObject:[af80CharsetRomFileField stringValue] ?: @"" forKey:AF80CharsetFile];
     [displayedValues setObject:[bit3RomFileField stringValue] ?: @"" forKey:Bit3RomFile];
@@ -3247,6 +3259,11 @@ static Preferences *sharedInstance = nil;
 }
 
 
+/* FujiNet preference change handler */
+- (IBAction)fujiNetChanged:(id)sender {
+    [self miscChanged:sender];
+}
+
 /* The following methods allow the user to choose the ROM files */
    
 - (IBAction)browseAF80Rom:(id)sender {
@@ -3874,6 +3891,8 @@ static Preferences *sharedInstance = nil;
     prefs->enableRPatch = [[curValues objectForKey:EnableRPatch] intValue];
     prefs->rPatchPort = [[curValues objectForKey:RPatchPort] intValue];
 	prefs->rPatchSerialEnabled = [[curValues objectForKey:RPatchSerialEnabled] intValue];
+    prefs->fujiNetEnabled = [[curValues objectForKey:FujiNetEnabled] intValue];
+    prefs->fujiNetPort = [[curValues objectForKey:FujiNetPort] intValue];
 	prefs->useAtariCursorKeys = [[curValues objectForKey:UseAtariCursorKeys] intValue];
     [[curValues objectForKey:RPatchSerialPort]getCString:prefs->rPatchSerialPort maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
     [[curValues objectForKey:PrintCommand] getCString:prefs->printCommand maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding ];

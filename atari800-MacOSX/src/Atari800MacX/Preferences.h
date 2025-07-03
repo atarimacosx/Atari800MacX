@@ -650,6 +650,7 @@
 - (void)revertToDefault:(id)sender;    
 
 - (IBAction)miscChanged:(id)sender;	/* Action message for most of the misc items in the UI to get displayedValues  */
+- (IBAction)fujiNetChanged:(id)sender;	/* Action message for FujiNet UI changes */
 - (void)browsePalette:(id)sender; 
 - (void)browseImage:(id)sender; 
 - (void)browsePrint:(id)sender; 
