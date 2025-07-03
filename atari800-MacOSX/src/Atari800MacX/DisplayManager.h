@@ -32,6 +32,11 @@
 	IBOutlet id XLXEGTIAItem;
 	IBOutlet id GTIA400800Item;
 	IBOutlet id CTIA400800Item;
+	/* Enhanced artifact modes */
+	IBOutlet id ntscNewArtifactItem;
+	IBOutlet id ntscFullFilterItem;
+	IBOutlet id palSimpleBlendItem;
+	IBOutlet id palFullBlendItem;
     IBOutlet id copyMenu;
     IBOutlet id pasteMenu;
     IBOutlet id selectAllMenu;

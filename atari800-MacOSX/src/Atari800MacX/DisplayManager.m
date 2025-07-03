@@ -186,42 +186,60 @@ static DisplayManager *sharedInstance = nil;
 *-----------------------------------------------------------------------------*/
 - (void)setArtifactModeMenu:(int)artifactMode
 {
+	/* Reset all menu items to off state */
+	[NoArtifactItem setState:NSOffState];
+	[revXLXEGTIAItem setState:NSOffState];
+	[XLXEGTIAItem setState:NSOffState];
+	[GTIA400800Item setState:NSOffState];
+	[CTIA400800Item setState:NSOffState];
+	[ntscNewArtifactItem setState:NSOffState];
+	[ntscFullFilterItem setState:NSOffState];
+	[palSimpleBlendItem setState:NSOffState];
+	[palFullBlendItem setState:NSOffState];
+
+	/* Handle both old (0-4) and new (ARTIFACT_t enum) systems */
 	switch(artifactMode)
 	{
-		case 0:
+		case 0: /* ARTIFACT_NONE */
 			[NoArtifactItem setState:NSOnState];
-			[revXLXEGTIAItem setState:NSOffState];
-			[XLXEGTIAItem setState:NSOffState];
-			[GTIA400800Item setState:NSOffState];
-			[CTIA400800Item setState:NSOffState];
 			break;
-		case 1:
-			[NoArtifactItem setState:NSOffState];
+		case 1: /* ARTIFACT_NTSC_OLD - maps to old revXLXE GTIA */
 			[revXLXEGTIAItem setState:NSOnState];
-			[XLXEGTIAItem setState:NSOffState];
-			[GTIA400800Item setState:NSOffState];
-			[CTIA400800Item setState:NSOffState];
 			break;
-		case 2:
-			[NoArtifactItem setState:NSOffState];
-			[revXLXEGTIAItem setState:NSOffState];
-			[XLXEGTIAItem setState:NSOnState];
-			[GTIA400800Item setState:NSOffState];
-			[CTIA400800Item setState:NSOffState];
+		case 2: /* ARTIFACT_NTSC_NEW - maps to new enhanced mode */
+			[ntscNewArtifactItem setState:NSOnState];
 			break;
-		case 3:
-			[NoArtifactItem setState:NSOffState];
-			[revXLXEGTIAItem setState:NSOffState];
-			[XLXEGTIAItem setState:NSOffState];
-			[GTIA400800Item setState:NSOnState];
-			[CTIA400800Item setState:NSOffState];
+		case 3: /* ARTIFACT_NTSC_FULL (if enabled) or PAL_SIMPLE */
+#if NTSC_FILTER
+			[ntscFullFilterItem setState:NSOnState];
+#else
+			[palSimpleBlendItem setState:NSOnState];
+#endif
 			break;
-		case 4:
-			[NoArtifactItem setState:NSOffState];
-			[revXLXEGTIAItem setState:NSOffState];
-			[XLXEGTIAItem setState:NSOffState];
-			[GTIA400800Item setState:NSOffState];
-			[CTIA400800Item setState:NSOnState];
+		case 4: /* PAL_SIMPLE or PAL_BLEND depending on build config */
+#ifndef NO_SIMPLE_PAL_BLENDING
+			[palSimpleBlendItem setState:NSOnState];
+#else
+#ifdef PAL_BLENDING
+			[palFullBlendItem setState:NSOnState];
+#endif
+#endif
+			break;
+		case 5: /* PAL_BLEND (if both NTSC_FILTER and PAL modes enabled) */
+#ifdef PAL_BLENDING
+			[palFullBlendItem setState:NSOnState];
+#endif
+			break;
+		default:
+			/* Fallback for compatibility with old system */
+			if (artifactMode <= 4) {
+				/* Handle legacy mode mapping */
+				switch(artifactMode) {
+					case 2: [XLXEGTIAItem setState:NSOnState]; break;
+					case 3: [GTIA400800Item setState:NSOnState]; break;
+					case 4: [CTIA400800Item setState:NSOnState]; break;
+				}
+			}
 			break;
 	}
 }
@@ -448,7 +466,12 @@ static DisplayManager *sharedInstance = nil;
 
 - (IBAction)artifactModeChange:(id)sender
 {
-	ANTIC_artif_mode = [sender tag];
+	int tag = [sender tag];
+	
+	/* Convert menu tag to ARTIFACT_t enum and set via new API */
+	ARTIFACT_Set((ARTIFACT_t)tag);
+	
+	/* Update display to reflect changes */
 	requestArtifChange = 1;
 }
 

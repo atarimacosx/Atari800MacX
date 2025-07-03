@@ -4738,7 +4738,7 @@ void ProcessMacPrefsChange()
         if (artifChanged)
             {
             ANTIC_UpdateArtifacting();
-			SetDisplayManagerArtifactMode(ANTIC_artif_mode);
+			SetDisplayManagerArtifactMode(ARTIFACT_mode);
             }
         if (paletteChanged)
             {
@@ -4876,7 +4876,7 @@ void ProcessMacPrefsChange()
     SetDisplayManagerWidthMode(WIDTH_MODE);
     SetDisplayManagerFps(Screen_show_atari_speed);
     SetDisplayManagerScaleMode(SCALE_MODE);
-	SetDisplayManagerArtifactMode(ANTIC_artif_mode);
+	SetDisplayManagerArtifactMode(ARTIFACT_mode);
 	SetDisplayManager80ColMode(XEP80_enabled, XEP80_port, AF80_enabled, BIT3_enabled, PLATFORM_80col);
     SetDisplayManagerXEP80Autoswitch(COL80_autoswitch);
 	MediaManager80ColMode(XEP80_enabled, AF80_enabled, BIT3_enabled, PLATFORM_80col);
@@ -5381,7 +5381,7 @@ int SDL_main(int argc, char **argv)
     SetDisplayManagerWidthMode(WIDTH_MODE);
     SetDisplayManagerFps(Screen_show_atari_speed);
     SetDisplayManagerScaleMode(SCALE_MODE);
-	SetDisplayManagerArtifactMode(ANTIC_artif_mode);
+	SetDisplayManagerArtifactMode(ARTIFACT_mode);
 	SetDisplayManager80ColMode(XEP80_enabled, XEP80_port, AF80_enabled, BIT3_enabled, PLATFORM_80col);
     SetDisplayManagerXEP80Autoswitch(COL80_autoswitch);
 	MediaManager80ColMode(XEP80_enabled, AF80_enabled, BIT3_enabled, PLATFORM_80col);
