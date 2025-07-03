@@ -12,6 +12,10 @@
 #import "af80.h"
 #import "bit3.h"
 #import "xep80.h"
+#import "artifact.h"
+#ifdef NTSC_FILTER
+#import "filter_ntsc.h"
+#endif
 
 extern void PLATFORM_Switch80Col(void);
 extern int SCALE_MODE;
@@ -49,6 +53,10 @@ void SetDisplayManagerScaleMode(int scaleMode) {
 
 void SetDisplayManagerArtifactMode(int artifactMode) {
     [[DisplayManager sharedInstance] setArtifactModeMenu:(artifactMode)];
+    }
+
+void SetDisplayManagerNtscPreset(int preset) {
+    [[DisplayManager sharedInstance] setNtscPresetMenu:(preset)];
     }
 
 void SetDisplayManagerGrabMouse(int mouseOn) {
@@ -242,6 +250,40 @@ static DisplayManager *sharedInstance = nil;
 			}
 			break;
 	}
+}
+
+/*------------------------------------------------------------------------------
+*  setNtscPresetMenu - This method is used to set the menu text for the
+*     NTSC filter preset menu items.
+*-----------------------------------------------------------------------------*/
+- (void)setNtscPresetMenu:(int)preset
+{
+#ifdef NTSC_FILTER
+	/* Reset all preset menu items */
+	[ntscCompositePresetItem setState:NSOffState];
+	[ntscSVideoPresetItem setState:NSOffState];
+	[ntscRGBPresetItem setState:NSOffState];
+	[ntscMonochromePresetItem setState:NSOffState];
+	
+	/* Set the active preset */
+	switch(preset) {
+		case FILTER_NTSC_PRESET_COMPOSITE:
+			[ntscCompositePresetItem setState:NSOnState];
+			break;
+		case FILTER_NTSC_PRESET_SVIDEO:
+			[ntscSVideoPresetItem setState:NSOnState];
+			break;
+		case FILTER_NTSC_PRESET_RGB:
+			[ntscRGBPresetItem setState:NSOnState];
+			break;
+		case FILTER_NTSC_PRESET_MONOCHROME:
+			[ntscMonochromePresetItem setState:NSOnState];
+			break;
+		default:
+			/* Custom preset - no menu item selected */
+			break;
+	}
+#endif
 }
 
 - (bool)enable80ColModeMenu:(int)machineType:(int)xep80Enabled:(int)af80Enabled:(int)bit3Enabled
@@ -473,6 +515,26 @@ static DisplayManager *sharedInstance = nil;
 	
 	/* Update display to reflect changes */
 	requestArtifChange = 1;
+}
+
+- (IBAction)ntscFilterPreset:(id)sender
+{
+#ifdef NTSC_FILTER
+	int preset = [sender tag];
+	
+	/* Set NTSC filter to NTSC_FULL mode first */
+	ARTIFACT_Set(ARTIFACT_NTSC_FULL);
+	
+	/* Apply the selected preset */
+	FILTER_NTSC_SetPreset(preset);
+	FILTER_NTSC_Update(FILTER_NTSC_emu);
+	
+	/* Update menu state */
+	[self setNtscPresetMenu:preset];
+	
+	/* Request display update */
+	requestArtifChange = 1;
+#endif
 }
 
 /*------------------------------------------------------------------------------

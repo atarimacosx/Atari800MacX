@@ -37,6 +37,11 @@
 	IBOutlet id ntscFullFilterItem;
 	IBOutlet id palSimpleBlendItem;
 	IBOutlet id palFullBlendItem;
+	/* NTSC Filter Presets */
+	IBOutlet id ntscCompositePresetItem;
+	IBOutlet id ntscSVideoPresetItem;
+	IBOutlet id ntscRGBPresetItem;
+	IBOutlet id ntscMonochromePresetItem;
     IBOutlet id copyMenu;
     IBOutlet id pasteMenu;
     IBOutlet id selectAllMenu;
@@ -47,6 +52,7 @@
 - (void)setFpsMenu:(int)fpsOn;
 - (void)setScaleModeMenu:(int)scaleMode;
 - (void)setArtifactModeMenu:(int)artifactMode;
+- (void)setNtscPresetMenu:(int)preset;
 - (bool)enable80ColModeMenu:(int)machineType:(int)xep80Enabled:(int)af80Enabled:(int)bit3Enabled;
 - (void)set80ColModeMenu:(int)xep80Enabled:(int)xep80Port:(int)af80Enabled:(int)bit3Enabled:(int)col80;
 
@@ -63,6 +69,7 @@
 - (IBAction)screenshot:(id)sender;
 - (IBAction)widthMode:(id)sender;
 - (IBAction)artifactModeChange:(id)sender;
+- (IBAction)ntscFilterPreset:(id)sender;
 - (IBAction) paste:(id) sender;
 - (IBAction) selectAll:(id) sender;
 - (IBAction) copy:(id) sender;
