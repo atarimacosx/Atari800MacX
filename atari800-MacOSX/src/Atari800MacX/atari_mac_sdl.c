@@ -382,6 +382,10 @@ void PauseAudio(int pause);
 void CreateWindowCaption(void);
 void ProcessCopySelection(int *first_row, int *last_row, int selectAll);
 void HandleScreenChange(int requested_w, int requested_h);
+
+/* Global variables for delayed FujiNet restart */
+static int fujinet_restart_pending = 0;
+static int fujinet_restart_delay = 0;
 int  GetAtariScreenWidth(void);
 void CalcWindowSize(int *width, int *height);
 void SetWindowAspectRatio(void);
@@ -4764,9 +4768,35 @@ void ProcessMacPrefsChange()
             }
         if (patchFlagsChanged)
             {
+            printf("DEBUG: patchFlagsChanged triggered\n");
             ESC_UpdatePatches();
 			Devices_UpdatePatches();
+            
+#ifdef NETSIO
+            /* If FujiNet was just enabled, initialize NetSIO and use delayed restart */
+            ATARI800MACX_PREF *prefs = getPrefStorage();
+            printf("DEBUG: Checking FujiNet re-enable: fujiNetEnabled=%d, netsio_enabled=%d\n", 
+                   prefs->fujiNetEnabled, netsio_enabled);
+            if (prefs->fujiNetEnabled && !netsio_enabled) {
+                int port = prefs->fujiNetPort;
+                if (port <= 0 || port > 65535) port = 9997;
+                
+                if (netsio_init(port) == 0) {
+                    printf("DEBUG: FujiNet re-enabled, NetSIO reinitialized on port %d\n", port);
+                    /* Use delayed restart mechanism like startup */
+                    fujinet_restart_pending = 1;
+                    fujinet_restart_delay = 60; /* Wait 60 frames (~1 second) */
+                    printf("DEBUG: Set fujinet_restart_pending=1, delay=60\n");
+                    /* Skip immediate coldstart, let delayed mechanism handle it */
+                    goto skip_coldstart;
+                } else {
+                    printf("DEBUG: FujiNet re-enable failed - netsio_init returned error\n");
+                }
+            }
+#endif
+            
             Atari800_Coldstart();
+            skip_coldstart:
             }
         if (keyboardJoystickChanged)
             Init_SDL_Joykeys();
@@ -5300,9 +5330,6 @@ int SDL_main(int argc, char **argv)
     int i;
     int retVal;
 	double last_time = 0.0;
-    /* Flag for delayed FujiNet restart */
-    static int fujinet_restart_pending = 0;
-    static int fujinet_restart_delay = 0;
 
     POKEYSND_stereo_enabled = FALSE; /* Turn this off here....otherwise games only come
                              from one channel...you only want this for demos mainly
@@ -5436,6 +5463,9 @@ int SDL_main(int argc, char **argv)
         /* Handle delayed FujiNet restart */
         if (fujinet_restart_pending && fujinet_restart_delay > 0) {
             fujinet_restart_delay--;
+            if (fujinet_restart_delay == 10) { /* Debug at 10 frames remaining */
+                printf("DEBUG: FujiNet delayed restart countdown: %d frames remaining\n", fujinet_restart_delay);
+            }
             if (fujinet_restart_delay == 0) {
                 printf("DEBUG: Triggering delayed FujiNet machine initialization\n");
                 Atari800_InitialiseMachine();
