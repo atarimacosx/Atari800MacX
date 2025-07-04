@@ -59,6 +59,10 @@ void SetDisplayManagerNtscPreset(int preset) {
     [[DisplayManager sharedInstance] setNtscPresetMenu:(preset)];
     }
 
+void UpdateDisplayManagerArtifactMenu(int tvMode) {
+    [[DisplayManager sharedInstance] updateArtifactMenuForTVMode:(tvMode)];
+    }
+
 void SetDisplayManagerGrabMouse(int mouseOn) {
     [[DisplayManager sharedInstance] setGrabmouseMenu:(mouseOn)];
     }
@@ -286,6 +290,43 @@ static DisplayManager *sharedInstance = nil;
 #endif
 }
 
+/*------------------------------------------------------------------------------
+*  updateArtifactMenuForTVMode - This method enables/disables artifact menu
+*     items based on the current TV mode (NTSC/PAL).
+*-----------------------------------------------------------------------------*/
+- (void)updateArtifactMenuForTVMode:(int)tvMode
+{
+	/* 0 = NTSC, 1 = PAL */
+	BOOL isNTSC = (tvMode == 0);
+	BOOL isPAL = (tvMode == 1);
+	
+	/* NTSC artifact modes - enabled only in NTSC mode */
+	[revXLXEGTIAItem setEnabled:isNTSC];      /* NTSC Old */
+	[ntscNewArtifactItem setEnabled:isNTSC];   /* NTSC New */
+	[ntscFullFilterItem setEnabled:isNTSC];    /* NTSC Full Filter */
+	
+	/* PAL artifact modes - enabled only in PAL mode */
+	[palSimpleBlendItem setEnabled:isPAL];     /* PAL Simple Blend */
+	[palFullBlendItem setEnabled:isPAL];       /* PAL Full Blend */
+	
+	/* No Artifact is always enabled */
+	[NoArtifactItem setEnabled:YES];
+	
+	/* Old compatibility modes - disable in new system */
+	[XLXEGTIAItem setEnabled:NO];              /* Hide old XL/XE GTIA */
+	[GTIA400800Item setEnabled:NO];            /* Hide old GTIA 400/800 */
+	[CTIA400800Item setEnabled:NO];            /* Hide old CTIA 400/800 */
+	
+#ifdef NTSC_FILTER
+	/* NTSC Filter Presets - only available in NTSC mode with NTSC Full Filter */
+	BOOL ntscFilterActive = isNTSC && (ARTIFACT_mode == ARTIFACT_NTSC_FULL);
+	[ntscCompositePresetItem setEnabled:ntscFilterActive];
+	[ntscSVideoPresetItem setEnabled:ntscFilterActive];
+	[ntscRGBPresetItem setEnabled:ntscFilterActive];
+	[ntscMonochromePresetItem setEnabled:ntscFilterActive];
+#endif
+}
+
 - (bool)enable80ColModeMenu:(int)machineType:(int)xep80Enabled:(int)af80Enabled:(int)bit3Enabled
 {
     [[MediaManager sharedInstance] enable80ColMode:machineType];
@@ -510,14 +551,8 @@ static DisplayManager *sharedInstance = nil;
 {
 	int tag = [sender tag];
 	
-	/* Debug output to see what's being called */
-	printf("DEBUG: artifactModeChange called with tag: %d\n", tag);
-	
 	/* Convert menu tag to ARTIFACT_t enum and set via new API */
 	ARTIFACT_Set((ARTIFACT_t)tag);
-	
-	/* Debug: Show current artifact mode after setting */
-	printf("DEBUG: ARTIFACT_mode is now: %d\n", ARTIFACT_mode);
 	
 	/* Update display to reflect changes */
 	requestArtifChange = 1;
@@ -528,25 +563,18 @@ static DisplayManager *sharedInstance = nil;
 #ifdef NTSC_FILTER
 	int preset = [sender tag];
 	
-	/* Debug output */
-	printf("DEBUG: ntscFilterPreset called with preset: %d\n", preset);
-	
 	/* Set NTSC filter to NTSC_FULL mode first */
 	ARTIFACT_Set(ARTIFACT_NTSC_FULL);
-	printf("DEBUG: Set ARTIFACT_mode to NTSC_FULL (%d)\n", ARTIFACT_NTSC_FULL);
 	
 	/* Apply the selected preset */
 	FILTER_NTSC_SetPreset(preset);
 	FILTER_NTSC_Update(FILTER_NTSC_emu);
-	printf("DEBUG: Applied NTSC filter preset %d\n", preset);
 	
 	/* Update menu state */
 	[self setNtscPresetMenu:preset];
 	
 	/* Request display update */
 	requestArtifChange = 1;
-#else
-	printf("DEBUG: NTSC_FILTER not enabled in build\n");
 #endif
 }
 

@@ -316,6 +316,7 @@ extern void SetDisplayManagerWidthMode(int widthMode);
 extern void SetDisplayManagerFps(int fpsOn);
 extern void SetDisplayManagerScaleMode(int scaleMode);
 extern void SetDisplayManagerArtifactMode(int scaleMode);
+extern void UpdateDisplayManagerArtifactMenu(int tvMode);
 extern void SetDisplayManagerGrabMouse(int mouseOn);
 extern void SetDisplayManager80ColMode(int xep80Enabled, int xep80Port, int af80Enabled, int bit3Enabled, int xep80);
 extern int EnableDisplayManager80ColMode(int machineType, int xep80Enabled, int af80Enabled, int bit3Enabled);
@@ -4739,6 +4740,7 @@ void ProcessMacPrefsChange()
             {
             ANTIC_UpdateArtifacting();
 			SetDisplayManagerArtifactMode(ARTIFACT_mode);
+	UpdateDisplayManagerArtifactMenu(Atari800_tv_mode);
             }
         if (paletteChanged)
             {
@@ -4877,6 +4879,7 @@ void ProcessMacPrefsChange()
     SetDisplayManagerFps(Screen_show_atari_speed);
     SetDisplayManagerScaleMode(SCALE_MODE);
 	SetDisplayManagerArtifactMode(ARTIFACT_mode);
+	UpdateDisplayManagerArtifactMenu(Atari800_tv_mode);
 	SetDisplayManager80ColMode(XEP80_enabled, XEP80_port, AF80_enabled, BIT3_enabled, PLATFORM_80col);
     SetDisplayManagerXEP80Autoswitch(COL80_autoswitch);
 	MediaManager80ColMode(XEP80_enabled, AF80_enabled, BIT3_enabled, PLATFORM_80col);
@@ -5382,6 +5385,7 @@ int SDL_main(int argc, char **argv)
     SetDisplayManagerFps(Screen_show_atari_speed);
     SetDisplayManagerScaleMode(SCALE_MODE);
 	SetDisplayManagerArtifactMode(ARTIFACT_mode);
+	UpdateDisplayManagerArtifactMenu(Atari800_tv_mode);
 	SetDisplayManager80ColMode(XEP80_enabled, XEP80_port, AF80_enabled, BIT3_enabled, PLATFORM_80col);
     SetDisplayManagerXEP80Autoswitch(COL80_autoswitch);
 	MediaManager80ColMode(XEP80_enabled, AF80_enabled, BIT3_enabled, PLATFORM_80col);

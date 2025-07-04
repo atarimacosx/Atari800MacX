@@ -53,6 +53,7 @@
 - (void)setScaleModeMenu:(int)scaleMode;
 - (void)setArtifactModeMenu:(int)artifactMode;
 - (void)setNtscPresetMenu:(int)preset;
+- (void)updateArtifactMenuForTVMode:(int)tvMode;
 - (bool)enable80ColModeMenu:(int)machineType:(int)xep80Enabled:(int)af80Enabled:(int)bit3Enabled;
 - (void)set80ColModeMenu:(int)xep80Enabled:(int)xep80Port:(int)af80Enabled:(int)bit3Enabled:(int)col80;
 

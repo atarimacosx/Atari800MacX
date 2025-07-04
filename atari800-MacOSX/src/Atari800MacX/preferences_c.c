@@ -46,6 +46,7 @@ extern void SaveMedia(char disk_filename[][FILENAME_MAX],
 			   char cart_filename[FILENAME_MAX],
 			   char cart2_filename[FILENAME_MAX]);
 extern void PrintOutputControllerSelectPrinter(int printer);
+extern void UpdateDisplayManagerArtifactMenu(int tvMode);
 
 extern char Devices_h_exe_path[FILENAME_MAX];
 extern int useBuiltinPalette;
@@ -1165,6 +1166,8 @@ int loadMacPrefs(int firstTime)
     else {
         Atari800_tv_mode = Atari800_TV_PAL;
         }
+    /* Update Display menu artifact options based on new TV mode */
+    UpdateDisplayManagerArtifactMenu(prefs.tvMode);
 	emulationSpeed = prefs.emulationSpeed;
     refresh_rate = prefs.refreshRatio;
     ANTIC_artif_mode = prefs.artifactingMode;
