@@ -870,7 +870,16 @@ static Preferences *sharedInstance = nil;
     [spriteCollisionsButton setState:[[displayedValues objectForKey:SpriteCollisions] boolValue] ? NSOnState : NSOffState];
     index = [[displayedValues objectForKey:RefreshRatio] intValue] - 1;
     [refreshRatioPulldown  selectItemAtIndex:index];
-    [artifactingPulldown  selectItemAtIndex:[[displayedValues objectForKey:ArtifactingMode] intValue]];
+    /* Update artifact pulldown for current TV mode before setting selection */
+    [self updateArtifactingPulldownForTVMode];
+    /* Select item by tag value, not index */
+    int artifactMode = [[displayedValues objectForKey:ArtifactingMode] intValue];
+    for (int i = 0; i < [artifactingPulldown numberOfItems]; i++) {
+        if ([[artifactingPulldown itemAtIndex:i] tag] == artifactMode) {
+            [artifactingPulldown selectItemAtIndex:i];
+            break;
+        }
+    }
     [artifactNewButton setState:[[displayedValues objectForKey:ArtifactNew] boolValue] ? NSOnState : NSOffState];
     [blackLevelField setIntValue:[[displayedValues objectForKey:BlackLevel] intValue]];
     [whiteLevelField setIntValue:[[displayedValues objectForKey:WhiteLevel] intValue]];
@@ -1717,6 +1726,8 @@ static Preferences *sharedInstance = nil;
             [displayedValues setObject:one forKey:TvMode];
             break;
     }
+    /* Update artifact pulldown based on TV mode */
+    [self updateArtifactingPulldownForTVMode];
     switch([refreshRatioPulldown indexOfSelectedItem]) {
         case 0:
 		default:
@@ -1736,24 +1747,9 @@ static Preferences *sharedInstance = nil;
         [displayedValues setObject:yes forKey:SpriteCollisions];
     else
         [displayedValues setObject:no forKey:SpriteCollisions];
-    switch([artifactingPulldown indexOfSelectedItem]) {
-        case 0:
-		default:
-            [displayedValues setObject:zero forKey:ArtifactingMode];
-            break;
-        case 1:
-            [displayedValues setObject:one forKey:ArtifactingMode];
-            break;
-        case 2:
-            [displayedValues setObject:two forKey:ArtifactingMode];
-            break;
-        case 3:
-            [displayedValues setObject:three forKey:ArtifactingMode];
-            break;
-        case 4:
-            [displayedValues setObject:four forKey:ArtifactingMode];
-            break;
-    }
+    /* Get artifact mode from the selected item's tag, not its index */
+    int artifactTag = [[artifactingPulldown selectedItem] tag];
+    [displayedValues setObject:[NSNumber numberWithInt:artifactTag] forKey:ArtifactingMode];
     if ([artifactNewButton state] == NSOnState)
         [displayedValues setObject:yes forKey:ArtifactNew];
     else
@@ -6589,6 +6585,59 @@ static Preferences *sharedInstance = nil;
 - (void)windowWillClose:(NSNotification *)notification {
     NSWindow *window = [notification object];
     (void)[window makeFirstResponder:window];
+}
+
+/*------------------------------------------------------------------------------
+*  updateArtifactingPulldownForTVMode - Updates the artifact pulldown menu
+*  to show only the appropriate options based on current TV mode (NTSC/PAL)
+*-----------------------------------------------------------------------------*/
+- (void)updateArtifactingPulldownForTVMode {
+    int currentSelection = [artifactingPulldown indexOfSelectedItem];
+    int tvMode = [[tvModeMatrix selectedCell] tag];
+    
+    /* Save current title to try to restore it if possible */
+    NSString *currentTitle = [[artifactingPulldown selectedItem] title];
+    
+    /* Clear and rebuild the pulldown */
+    [artifactingPulldown removeAllItems];
+    
+    if (tvMode == 0) { /* NTSC Mode */
+        [artifactingPulldown addItemWithTitle:@"No Artifact"];        /* Tag 0 = ARTIFACT_NONE */
+        [artifactingPulldown addItemWithTitle:@"NTSC Old"];           /* Tag 1 = ARTIFACT_NTSC_OLD */
+        [artifactingPulldown addItemWithTitle:@"NTSC New"];           /* Tag 2 = ARTIFACT_NTSC_NEW */
+#ifdef NTSC_FILTER
+        [artifactingPulldown addItemWithTitle:@"NTSC Full Filter"];   /* Tag 3 = ARTIFACT_NTSC_FULL */
+#endif
+    } else { /* PAL Mode */
+        [artifactingPulldown addItemWithTitle:@"No Artifact"];        /* Tag 0 = ARTIFACT_NONE */
+#ifndef NO_SIMPLE_PAL_BLENDING
+        [artifactingPulldown addItemWithTitle:@"PAL Simple Blend"];   /* Tag 1 = ARTIFACT_PAL_SIMPLE in PAL mode */
+#endif
+#ifdef PAL_BLENDING
+        [artifactingPulldown addItemWithTitle:@"PAL Full Blend"];     /* Tag 2 = ARTIFACT_PAL_BLEND in PAL mode */
+#endif
+    }
+    
+    /* Set tags for proper mapping */
+    if (tvMode == 0) { /* NTSC */
+        for (int i = 0; i < [artifactingPulldown numberOfItems]; i++) {
+            [[artifactingPulldown itemAtIndex:i] setTag:i];
+        }
+    } else { /* PAL */
+        [[artifactingPulldown itemAtIndex:0] setTag:0]; /* No Artifact = 0 */
+        if ([artifactingPulldown numberOfItems] > 1)
+            [[artifactingPulldown itemAtIndex:1] setTag:4]; /* PAL Simple = 4 */
+        if ([artifactingPulldown numberOfItems] > 2)
+            [[artifactingPulldown itemAtIndex:2] setTag:5]; /* PAL Blend = 5 */
+    }
+    
+    /* Try to restore selection by title, or default to "No Artifact" */
+    NSInteger newIndex = [artifactingPulldown indexOfItemWithTitle:currentTitle];
+    if (newIndex != NSNotFound) {
+        [artifactingPulldown selectItemAtIndex:newIndex];
+    } else {
+        [artifactingPulldown selectItemAtIndex:0]; /* Default to "No Artifact" */
+    }
 }
 
 @end

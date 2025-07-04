@@ -757,5 +757,6 @@
 - (void)loadConfigurationMenu:(id)sender;
 - (void)loadConfigurationUI:(char *)filename;
 - (void)loadConfigFile:(NSString *)filename;
+- (void)updateArtifactingPulldownForTVMode;
 
 @end

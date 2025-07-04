@@ -510,8 +510,14 @@ static DisplayManager *sharedInstance = nil;
 {
 	int tag = [sender tag];
 	
+	/* Debug output to see what's being called */
+	printf("DEBUG: artifactModeChange called with tag: %d\n", tag);
+	
 	/* Convert menu tag to ARTIFACT_t enum and set via new API */
 	ARTIFACT_Set((ARTIFACT_t)tag);
+	
+	/* Debug: Show current artifact mode after setting */
+	printf("DEBUG: ARTIFACT_mode is now: %d\n", ARTIFACT_mode);
 	
 	/* Update display to reflect changes */
 	requestArtifChange = 1;
@@ -522,18 +528,25 @@ static DisplayManager *sharedInstance = nil;
 #ifdef NTSC_FILTER
 	int preset = [sender tag];
 	
+	/* Debug output */
+	printf("DEBUG: ntscFilterPreset called with preset: %d\n", preset);
+	
 	/* Set NTSC filter to NTSC_FULL mode first */
 	ARTIFACT_Set(ARTIFACT_NTSC_FULL);
+	printf("DEBUG: Set ARTIFACT_mode to NTSC_FULL (%d)\n", ARTIFACT_NTSC_FULL);
 	
 	/* Apply the selected preset */
 	FILTER_NTSC_SetPreset(preset);
 	FILTER_NTSC_Update(FILTER_NTSC_emu);
+	printf("DEBUG: Applied NTSC filter preset %d\n", preset);
 	
 	/* Update menu state */
 	[self setNtscPresetMenu:preset];
 	
 	/* Request display update */
 	requestArtifChange = 1;
+#else
+	printf("DEBUG: NTSC_FILTER not enabled in build\n");
 #endif
 }
 

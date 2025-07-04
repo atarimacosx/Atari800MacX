@@ -567,25 +567,28 @@
                                                 <action selector="artifactModeChange:" target="498" id="835"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Rev XL/XE GTIA Artifacting" tag="1" id="831">
+                                        <menuItem title="NTSC Old" tag="1" id="831">
                                             <connections>
                                                 <action selector="artifactModeChange:" target="498" id="836"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="XL/XE GTIA Artifacting" tag="2" id="832">
+                                        <menuItem title="NTSC New" tag="2" id="832">
                                             <connections>
                                                 <action selector="artifactModeChange:" target="498" id="837"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="400/800 GTIA Artifacting" tag="3" id="833">
+                                        <menuItem title="NTSC Full Filter" tag="3" id="833">
                                             <connections>
                                                 <action selector="artifactModeChange:" target="498" id="838"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="400/800 CTIA Artifacting" tag="4" id="834">
+                                        <menuItem title="PAL Simple Blend" tag="4" id="834">
                                             <connections>
                                                 <action selector="artifactModeChange:" target="498" id="839"/>
                                             </connections>
+                                        </menuItem>
+                                        <menuItem title="PAL Full Blend" id="Hem-gv-V2P">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
                                         </menuItem>
                                     </items>
                                 </menu>
