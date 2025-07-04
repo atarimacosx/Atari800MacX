@@ -288,7 +288,9 @@ static NSDictionary *defaultValues() {
                 [NSNumber numberWithInt:1], RefreshRatio, 
                 [NSNumber numberWithInt:1], SpriteCollisions, 
                 [NSNumber numberWithInt:0], ArtifactingMode, 
-                [NSNumber numberWithBool:YES], ArtifactNew, 
+                [NSNumber numberWithBool:YES], ArtifactNew,
+                [NSNumber numberWithInt:0], NTSCArtifactingMode,
+                [NSNumber numberWithInt:0], PALArtifactingMode, 
                 [NSNumber numberWithBool:NO], UseBuiltinPalette, 
                 [NSNumber numberWithBool:YES], AdjustPalette,
                 [NSNumber numberWithInt:0], BlackLevel, 
@@ -709,10 +711,6 @@ static Preferences *sharedInstance = nil;
         [[PasteManager sharedInstance] setEscapeCopy:[[curValues objectForKey:EscapeCopy] boolValue]];
         [[PasteManager sharedInstance] setStartupPasteEnabled:[[curValues objectForKey:StartupPasteEnable] boolValue]];
         [[PasteManager sharedInstance] setStartupPasteString:[curValues objectForKey:StartupPasteString]];
-        
-        /* Initialize separate artifact mode memory - default to No Artifact */
-        savedNTSCArtifactMode = 0;  /* ARTIFACT_NONE */
-        savedPALArtifactMode = 0;   /* ARTIFACT_NONE */
     }
     return sharedInstance;
 }
@@ -874,13 +872,24 @@ static Preferences *sharedInstance = nil;
     [spriteCollisionsButton setState:[[displayedValues objectForKey:SpriteCollisions] boolValue] ? NSOnState : NSOffState];
     index = [[displayedValues objectForKey:RefreshRatio] intValue] - 1;
     [refreshRatioPulldown  selectItemAtIndex:index];
-    /* Initialize saved artifact modes from current preference */
+    /* Initialize separate NTSC/PAL artifact preferences if not already set */
     int artifactMode = [[displayedValues objectForKey:ArtifactingMode] intValue];
     int currentTVMode = [[displayedValues objectForKey:TvMode] intValue];
-    if (currentTVMode == 0) {
-        savedNTSCArtifactMode = artifactMode;
-    } else {
-        savedPALArtifactMode = artifactMode;
+    
+    /* Initialize both mode preferences based on current artifact mode */
+    if ([[displayedValues objectForKey:NTSCArtifactingMode] intValue] == 0 &&
+        [[displayedValues objectForKey:PALArtifactingMode] intValue] == 0) {
+        
+        /* First time - initialize based on current mode and artifact setting */
+        if (currentTVMode == 0) {
+            [displayedValues setObject:[NSNumber numberWithInt:artifactMode] forKey:NTSCArtifactingMode];
+            [displayedValues setObject:[NSNumber numberWithInt:0] forKey:PALArtifactingMode];
+        } else {
+            [displayedValues setObject:[NSNumber numberWithInt:0] forKey:NTSCArtifactingMode];
+            [displayedValues setObject:[NSNumber numberWithInt:artifactMode] forKey:PALArtifactingMode];
+        }
+        
+        /* Initialized separate NTSC/PAL artifact preferences */
     }
     
     /* Update artifact pulldown for current TV mode before setting selection */
@@ -1729,6 +1738,18 @@ static Preferences *sharedInstance = nil;
             [displayedValues setObject:two forKey:WidthMode];
             break;
     }
+    /* Save current artifact selection BEFORE changing TV mode */
+    int previousTVMode = [[displayedValues objectForKey:TvMode] intValue];
+    if ([artifactingPulldown numberOfItems] > 0 && [artifactingPulldown indexOfSelectedItem] >= 0) {
+        int currentArtifactTag = [[artifactingPulldown selectedItem] tag];
+        /* Save the artifact mode for the current TV mode */
+        if (previousTVMode == 0) {
+            [displayedValues setObject:[NSNumber numberWithInt:currentArtifactTag] forKey:NTSCArtifactingMode];
+        } else {
+            [displayedValues setObject:[NSNumber numberWithInt:currentArtifactTag] forKey:PALArtifactingMode];
+        }
+    }
+    
     switch([[tvModeMatrix selectedCell] tag]) {
         case 0:
 		default:
@@ -6609,16 +6630,6 @@ static Preferences *sharedInstance = nil;
 - (void)updateArtifactingPulldownForTVMode {
     int tvMode = [[tvModeMatrix selectedCell] tag];
     
-    /* Save current selection to appropriate mode before rebuilding */
-    if ([artifactingPulldown numberOfItems] > 0 && [artifactingPulldown indexOfSelectedItem] >= 0) {
-        int currentTag = [[artifactingPulldown selectedItem] tag];
-        if (tvMode == 0) {
-            savedNTSCArtifactMode = currentTag;
-        } else {
-            savedPALArtifactMode = currentTag;
-        }
-    }
-    
     /* Clear and rebuild the pulldown */
     [artifactingPulldown removeAllItems];
     
@@ -6653,12 +6664,15 @@ static Preferences *sharedInstance = nil;
     }
     
     /* Restore appropriate selection based on TV mode */
-    int targetTag = (tvMode == 0) ? savedNTSCArtifactMode : savedPALArtifactMode;
+    int targetTag = (tvMode == 0) ? 
+        [[displayedValues objectForKey:NTSCArtifactingMode] intValue] :
+        [[displayedValues objectForKey:PALArtifactingMode] intValue];
     BOOL found = NO;
     
     /* Try to find item with saved tag */
     for (int i = 0; i < [artifactingPulldown numberOfItems]; i++) {
-        if ([[artifactingPulldown itemAtIndex:i] tag] == targetTag) {
+        int itemTag = [[artifactingPulldown itemAtIndex:i] tag];
+        if (itemTag == targetTag) {
             [artifactingPulldown selectItemAtIndex:i];
             found = YES;
             break;
@@ -6670,9 +6684,9 @@ static Preferences *sharedInstance = nil;
         [artifactingPulldown selectItemAtIndex:0];
         /* Update saved selection to reflect the default */
         if (tvMode == 0) {
-            savedNTSCArtifactMode = 0;
+            [displayedValues setObject:[NSNumber numberWithInt:0] forKey:NTSCArtifactingMode];
         } else {
-            savedPALArtifactMode = 0;
+            [displayedValues setObject:[NSNumber numberWithInt:0] forKey:PALArtifactingMode];
         }
     }
     
