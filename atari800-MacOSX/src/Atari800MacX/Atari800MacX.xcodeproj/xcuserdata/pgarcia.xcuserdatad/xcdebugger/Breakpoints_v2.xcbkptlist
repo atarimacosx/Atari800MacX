@@ -48,8 +48,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "5324"
             endingLineNumber = "5324"
-            landmarkName = "unknown"
-            landmarkType = "0">
+            landmarkName = "IsCopyDefined()"
+            landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -64,7 +64,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "5327"
             endingLineNumber = "5327"
-            landmarkName = "SDL_main(argc, argv)"
+            landmarkName = "IsCopyDefined()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -80,8 +80,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "5331"
             endingLineNumber = "5331"
-            landmarkName = "SDL_main(argc, argv)"
-            landmarkType = "9">
+            landmarkName = "unknown"
+            landmarkType = "0">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy

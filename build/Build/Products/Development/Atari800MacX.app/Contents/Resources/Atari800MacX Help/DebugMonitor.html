@@ -1,0 +1,1531 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><title>Debug Monitor</title>
+
+
+
+
+
+
+
+
+  
+
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1"></head><body>
+
+
+
+
+
+
+
+<table border="0" cellpadding="2" cellspacing="2" width="100%">
+
+
+
+
+
+
+
+  <tbody>
+
+
+
+
+
+
+
+    <tr>
+
+
+
+
+
+
+
+      <td valign="top" width="20%"><img src="fuji.gif" alt="" height="90" width="123">
+      <br>
+
+
+
+
+
+
+
+      </td>
+
+
+
+
+
+
+
+      <td valign="top"><b><font size="+3">Atari800MacX
+Help<br>
+
+
+
+
+
+
+
+Debug Monitor<br>
+
+
+
+
+
+
+
+      </font></b><br>
+
+
+
+
+
+
+
+      </td>
+
+
+
+
+
+
+
+    </tr>
+
+
+
+
+
+
+
+  
+  
+  
+  
+  
+  
+  </tbody>
+</table>
+
+
+
+
+
+
+
+<br>
+
+
+
+
+
+
+
+<br>
+The Debug Monitor on the Atari800MacX emulator allows you to debug
+programs written for the Atari800 on the emulator. &nbsp;With it you
+can single step programs, display memory, set breakpoints, and much,
+much more.&nbsp; Starting with version 4.2, a graphical debugger has
+been added..&nbsp; To access the debugger, simply press F8 while the
+emulator is running.&nbsp; The standard command line monitor and the
+graphical debugger may be toggled on and off by the Debugger GUI button
+on the top of the monitor windows.&nbsp; The following picture shows
+the graphical debugger on (the command line monitor is still available
+at the top of the graphical debugger).&nbsp; .The graphical debugger is
+documented on the <a href="GraphicalDebug.html">Graphical Debugger</a> page.<br>
+
+
+
+
+
+
+
+<br>
+
+
+
+
+
+
+
+<img style="width: 532px; height: 596px;" alt="" src="GraphicalDebug.png"><br>
+
+
+
+
+
+
+
+<br>
+<br>
+Commands are typed in the input box at the bottom of the window, or on the command line in Fullscreen mode, and
+are executed by pressing return. &nbsp;There is also command history,
+so you can get to commands you have entered before with the up an down
+arrows. &nbsp;To exit the monitor and continue your program, use the
+command 'cont'. &nbsp; To get a list of all of the commands, and simple
+help on them type 'help' or '?'. &nbsp;To quit the emulator from the
+monitor screen, type 'quit'.<br>
+
+
+
+
+
+<br>
+
+
+
+
+
+Whenever the monitor stops, it prints out the processor's current status. &nbsp;In the above example, the line is:<br>
+
+
+
+
+
+<br>
+
+
+<span style="font-family: monospace;">
+
+
+262&nbsp;&nbsp; 2 F2FD LDA $02FC ;CH &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (00FF)&nbsp; A=ff S=f5 X=80 Y=01 P=--*B--ZC</span><br style="font-family: monospace;">
+
+
+
+
+
+<br>
+
+
+
+
+
+The meaning of the fields in this line are as follows:<br>
+
+
+
+
+
+<br>
+
+
+
+
+
+<span style="font-weight: bold; font-family: monospace;">262</span><span style="font-family: monospace;">&nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Vertical scan position when processor
+was stopped &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><br style="font-family: monospace;">
+
+
+
+
+
+<span style="font-weight: bold; font-family: monospace;">2</span><span style="font-family: monospace;"> &nbsp;&nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Horizontal scan position when processor was
+stopped</span><br style="font-family: monospace;">
+
+
+
+
+
+<span style="font-weight: bold; font-family: monospace;">F2FD</span><span style="font-family: monospace;">&nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Current value of the Program Counter</span><br style="font-family: monospace;">
+
+
+
+
+
+<span style="font-weight: bold; font-family: monospace;">LDA $02FC</span><span style="font-family: monospace;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Disassembly of the instruction at the PC location</span><br style="font-family: monospace;">
+
+
+
+
+
+<span style="font-weight: bold; font-family: monospace;">;CH</span><span style="font-family: monospace;"> &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;A symbol that is referenced by the instruction <br>
+
+
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;($2FC in this
+case)</span><br style="font-family: monospace;">
+
+
+
+
+
+<span style="font-weight: bold; font-family: monospace;">(00FF)&nbsp;</span><span style="font-family: monospace;"> &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Value at memory location referenced by instruction, <br>
+
+
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;or in the case</span><span style="font-family: monospace;"> of
+a conditional branch, a Y or N <br>
+
+
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;which indicates if the branch</span><span style="font-family: monospace;"> will be taken. &nbsp;In <br>
+
+
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;this case $02FC contains 00FF.</span><br style="font-family: monospace;">
+
+
+
+
+
+<span style="font-weight: bold; font-family: monospace;">A=ff S=f5 X=80 Y=01</span><span style="font-family: monospace;"> Current value of the other processor registers</span><br style="font-family: monospace;">
+
+
+
+
+
+<span style="font-weight: bold; font-family: monospace;">P=--*B--ZC </span><span style="font-family: monospace;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Current value of the processor flags.</span><br style="font-family: monospace;">
+
+
+
+
+
+<br>
+
+
+
+
+
+The full set of commands and an explanation of their use follows. &nbsp;A parameter in brackets [] means that it is optional:<br>
+
+
+
+
+
+<br>
+
+
+<h1>Monitor Control Commands</h1>
+
+
+
+
+
+<span style="font-weight: bold; text-decoration: underline;">HELP</span><br>
+
+
+
+
+<span style="font-weight: bold; text-decoration: underline;">?</span><br>
+
+
+
+
+<div style="margin-left: 40px;">
+Print a list of all commands plus a brief description of each.<br>
+
+
+
+
+</div>
+
+
+
+
+<span style="font-weight: bold; text-decoration: underline;">CONT</span> <br>
+
+
+
+
+
+<div style="margin-left: 40px;">Exits the monitor and continues&nbsp;emulation<br>
+
+
+
+
+
+</div>
+
+
+
+
+
+
+<span style="font-weight: bold; text-decoration: underline;">QUIT</span><br>
+
+
+
+
+<div style="margin-left: 40px;">Quit the emulator.<br>
+
+
+
+
+</div>
+
+
+
+
+<span style="font-weight: bold; text-decoration: underline;">COLDSTART</span>, <br>
+
+
+
+<div style="margin-left: 40px;">Execute a coldstart on the emulator, and leave the monitor.<br>
+
+
+
+</div>
+
+
+
+<span style="font-weight: bold; text-decoration: underline;">WARMSTART</span>, <br>
+
+
+
+<div style="margin-left: 40px;">Execute a warmstart on the emulator, and leave the monitor.<br>
+
+
+</div>
+
+
+
+<h1>Processor Related Commands</h1>
+
+
+
+
+
+<span style="font-weight: bold; text-decoration: underline;"></span><span style="font-weight: bold; text-decoration: underline;">SHOW</span><br>
+
+
+
+
+
+<div style="margin-left: 40px;">Shows the current state of processor registers. &nbsp;(The display is similar to the line displayed when the monitor is entered.<br>
+
+
+
+
+
+</div>
+
+
+
+
+
+<span style="font-weight: bold; text-decoration: underline;"></span><span style="font-weight: bold; text-decoration: underline;">SETPC hexval</span><br style="font-weight: bold; text-decoration: underline;">
+
+
+
+
+
+<span style="font-weight: bold; text-decoration: underline;">SETA hexval</span><br style="font-weight: bold; text-decoration: underline;">
+
+
+
+
+
+<span style="font-weight: bold; text-decoration: underline;">SETS hexval</span><br style="font-weight: bold; text-decoration: underline;">
+
+
+
+
+
+<span style="font-weight: bold; text-decoration: underline;">SETX hexval</span><br style="font-weight: bold; text-decoration: underline;">
+
+
+
+
+
+<span style="font-weight: bold; text-decoration: underline;">SETY hexval</span><br style="font-weight: bold; text-decoration: underline;">
+
+
+
+
+
+<div style="margin-left: 40px;">Set &nbsp;the processor register (PC, A, S, X, or Y) to the hexadecimal value specified by <span style="font-style: italic;">hexval</span>.<br>
+
+
+
+
+
+</div>
+
+
+
+
+
+<span style="font-weight: bold; text-decoration: underline;">SETN</span><br style="font-weight: bold; text-decoration: underline;">
+
+
+
+
+
+<span style="font-weight: bold; text-decoration: underline;">SETV</span><br style="font-weight: bold; text-decoration: underline;">
+
+
+
+
+
+<span style="font-weight: bold; text-decoration: underline;">SETD</span><br style="font-weight: bold; text-decoration: underline;">
+
+
+
+
+
+<span style="font-weight: bold; text-decoration: underline;">SETI</span><br style="font-weight: bold; text-decoration: underline;">
+
+
+
+
+
+<span style="font-weight: bold; text-decoration: underline;">SETZ</span><br style="font-weight: bold; text-decoration: underline;">
+
+
+
+
+
+<span style="font-weight: bold; text-decoration: underline;">SETC</span><span style="font-weight: bold; text-decoration: underline;"><br>
+
+
+
+
+
+</span>
+<div style="margin-left: 40px;">Set the specified flag (N,V,D,I,Z, or C). <br>
+
+
+
+
+
+</div>
+
+
+
+
+
+<span style="font-weight: bold; text-decoration: underline;">CLRN</span><br style="font-weight: bold; text-decoration: underline;">
+
+
+
+
+
+<span style="font-weight: bold; text-decoration: underline;">CLRV</span><br style="font-weight: bold; text-decoration: underline;">
+
+
+
+
+
+<span style="font-weight: bold; text-decoration: underline;">CLRD</span><br style="font-weight: bold; text-decoration: underline;">
+
+
+
+
+
+<span style="font-weight: bold; text-decoration: underline;">CLRI</span><br style="font-weight: bold; text-decoration: underline;">
+
+
+
+
+
+<span style="font-weight: bold; text-decoration: underline;">CLRZ</span><br style="font-weight: bold; text-decoration: underline;">
+
+
+
+
+
+<span style="font-weight: bold; text-decoration: underline;">CLRC</span><span style="font-weight: bold; text-decoration: underline;"><br>
+
+
+
+
+
+</span>
+<div style="margin-left: 40px;">Clear the specified flag (N,V,D,I,Z, or C). <br>
+
+
+
+
+
+</div>
+
+
+
+
+
+<span style="font-weight: bold; text-decoration: underline;"></span>
+<h1>Memory&nbsp;Commands</h1>
+
+
+
+
+
+<span style="font-weight: bold; text-decoration: underline;">C startaddr hexval...</span><br style="font-weight: bold; text-decoration: underline;">
+
+
+
+
+
+<div style="margin-left: 40px;">Change memory starting at the hexadecimal address specified by <span style="font-style: italic;">startaddr</span> with a series of bytes specified by <span style="font-style: italic;">hexval</span>. &nbsp;For example, the command "C 0 00 01 02" would set the byte at address 0 to 0, address 1 to 1, and address 2 to 2.<br>
+
+
+
+
+
+</div>
+
+
+
+
+
+<span style="font-weight: bold; text-decoration: underline;">D [startaddr]&nbsp;</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>
+
+
+
+
+
+<div style="margin-left: 40px;">Disassemble memory starting at hexadecimal address <span style="font-style: italic;">startaddr</span>. &nbsp;If <span style="font-style: italic;">startaddr</span> is not specified, then disassembly will continue from the last disassembled location.
+
+</div>
+
+
+
+
+
+<span style="font-weight: bold; text-decoration: underline;">F startaddr endaddr hexval</span><br>
+
+
+
+
+
+<div style="margin-left: 40px;">Fill memory starting at hexadecimal address <span style="font-style: italic;">startaddr</span> and ending at address <span style="font-style: italic;">endaddr</span> with the hex byte value specified by <span style="font-style: italic;">hexval</span>.<br>
+
+
+
+
+
+</div>
+
+
+
+
+
+<span style="font-weight: bold; text-decoration: underline;">M [startaddr] </span><br>
+
+
+
+
+
+<div style="margin-left: 40px;">Display memory starting at <span style="font-style: italic;">startaddr</span> location. &nbsp;If <span style="font-style: italic;">startaddr</span> is not specified, then memory dumping will continue from the last dumped location.<br>
+
+
+
+
+
+</div>
+
+
+
+<span style="font-weight: bold; text-decoration: underline;">
+
+MM srcaddr destaddr bytecnt</span><br>
+
+
+
+<div style="margin-left: 40px;">
+
+Move <span style="font-style: italic;">bytecnt </span>bytes of memory starting at address <span style="font-style: italic;">srcaddr</span> to address <span style="font-style: italic;">destaddr</span>. &nbsp;Memory move will handle overlapping regions correctly, reversing the order of copying as needed.<br>
+
+
+
+</div>
+
+
+
+<span style="font-weight: bold; text-decoration: underline;">
+
+S startaddr endaddr hexval...</span><br>
+
+
+
+<div style="margin-left: 40px;">
+
+Search memory from <span style="font-style: italic;">startaddr</span> to <span style="font-style: italic;">endaddr</span> for a sequence of bytes specified by the hexadecminal values that follow.<br>
+
+
+
+</div>
+
+
+
+<span style="font-weight: bold; text-decoration: underline;">STACK</span><br>
+
+
+
+
+
+<div style="margin-left: 40px;">Show the current stack contents.
+&nbsp;Each JSR that has occurred will show it's calling location and the
+called subroutine. &nbsp;Parameters that have been passed on the stack
+are shown separately. &nbsp;The following is an example:<br>
+
+
+<div style="margin-left: 40px;"><span style="font-family: monospace;">&gt; stack</span><br style="font-family: monospace;">
+
+
+<span style="font-family: monospace;">01F6 : 5E F2&nbsp;&nbsp;&nbsp; F25C : JSR F2FD</span><br style="font-family: monospace;">
+
+
+<span style="font-family: monospace;">01F8 : EE E6&nbsp;&nbsp;&nbsp; E6EC : JSR E6F4</span><br style="font-family: monospace;">
+
+
+<span style="font-family: monospace;">01FA : D2 E5&nbsp;&nbsp;&nbsp; E5D0 : JSR E6EA</span><br style="font-family: monospace;">
+
+
+<span style="font-family: monospace;">01FC : F6 BD&nbsp;&nbsp;&nbsp; BDF4 : JSR BD0F</span><br style="font-family: monospace;">
+
+
+<span style="font-family: monospace;">01FE : 70 A0&nbsp;&nbsp;&nbsp; A06E : JSR BDED</span><br style="font-family: monospace;">
+
+
+</div>
+
+
+
+
+
+</div>
+
+
+
+
+
+<span style="font-weight: bold; text-decoration: underline; font-family: monospace;"></span><span style="font-weight: bold; text-decoration: underline;"><span style="font-family: monospace;">
+
+R</span>OM startaddr endaddr </span><br>
+
+
+
+<div style="margin-left: 40px;">
+
+Convert memory from address <span style="font-style: italic;">startaddr</span> to address <span style="font-style: italic;">endaddr</span> to be considered by the emulator as&nbsp;ROM<br>
+
+
+
+</div>
+
+
+
+<span style="font-weight: bold; text-decoration: underline;">
+
+RAM startaddr endaddr </span><br>
+
+
+
+<div style="margin-left: 40px;">
+
+Convert memory from address <span style="font-style: italic;">startaddr</span> to address <span style="font-style: italic;">endaddr</span> to be considered by the emulator as&nbsp;RAM<br>
+
+
+
+</div>
+
+
+
+<span style="font-weight: bold; text-decoration: underline;"></span><span style="font-weight: bold; text-decoration: underline;">HARDWARE startaddr endaddr</span><br>
+
+
+
+<div style="margin-left: 40px;">
+
+Convert memory from address <span style="font-style: italic;">startaddr</span> to address <span style="font-style: italic;">endaddr</span> to be considered by the emulator as HARDWARE<br>
+
+
+
+</div>
+
+
+
+<span style="font-weight: bold; text-decoration: underline;">BANK [banknum] </span><br style="font-weight: bold; text-decoration: underline;">
+
+
+
+<div style="margin-left: 40px;">
+
+Switch current memory bank in use to <span style="font-style: italic;">banknum. &nbsp;</span>If the parameter is omitted, then show the current bank number. (XE systems)<br>
+
+
+
+</div>
+
+
+
+<span style="font-weight: bold; text-decoration: underline;">
+
+READ file startaddr nbytes</span><br>
+
+
+
+<div style="margin-left: 40px;">Read from the host file named <span style="font-style: italic;">file</span> into memory starting at <span style="font-style: italic;">startaddr</span> for <span style="font-style: italic;">nbytes</span> bytes<br>
+
+
+
+</div>
+
+
+
+<span style="font-weight: bold; text-decoration: underline;">
+
+READSEC drive sector count addr</span><br>
+
+
+
+<div style="margin-left: 40px;">
+
+Read <span style="font-style: italic;">count</span> disk sectors starting at sector number <span style="font-style: italic;">sector</span> from drive number <span style="font-style: italic;">drive</span> into memory at address <span style="font-style: italic;">addr</span>.<br>
+
+
+
+</div>
+
+
+
+<span style="font-weight: bold; text-decoration: underline;">
+
+WRITE startaddr endaddr [file] [init&gt;0] [run&gt;0]</span><br>
+
+
+
+<div style="margin-left: 40px;">
+Write memory from <span style="font-style: italic;">startaddr</span> to <span style="font-style: italic;">endaddr</span> to a file. &nbsp;If the <span style="font-style: italic;">file</span> parameter is specified, it is used as the filename, otherwise "memdump.dat" is used. &nbsp;The two other optional parameters <span style="font-style: italic;">init</span> and <span style="font-style: italic;">run</span> specify the initialization and run address used for a Atari binary loadable file. &nbsp;If either of <span style="font-style: italic;">init</span> or <span style="font-style: italic;">run</span> is specified, the Atari binary file header is written before the data.<br>
+
+
+
+</div>
+
+
+
+<span style="font-weight: bold; text-decoration: underline;">
+
+WRITESEC drive# count addr</span><br>
+
+
+
+<div style="margin-left: 40px;">
+
+Write <span style="font-style: italic;">count</span> disk sectors starting at sector number <span style="font-style: italic;">sector</span> and drive number <span style="font-style: italic;">drive</span> from memory starting at address <span style="font-style: italic;">addr</span>.<br>
+
+
+
+</div>
+
+
+
+<span style="font-weight: bold; text-decoration: underline;">
+
+SUM startaddr endaddr</span><br>
+
+
+
+<div style="margin-left: 40px;">
+
+Add the bytes of memory from <span style="font-style: italic;">startaddr</span> to <span style="font-style: italic;">endaddr</span> and display the result as a 32 bit sum.<br>
+
+
+
+</div>
+
+
+
+<h1>Tracing and Execution Control Commands</h1>
+
+
+
+
+
+<span style="font-weight: bold; text-decoration: underline;"></span><span style="font-weight: bold; text-decoration: underline;">
+TRON&nbsp;file</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>
+
+
+
+<div style="margin-left: 40px;">
+Turn tracing of instructions to a file on. &nbsp;The instruction trace is saved in a file named <span style="font-style: italic;">file</span>.
+&nbsp;Each line of the file represents the log of execution of one
+instructions, and is similar to the line displayed when the monitor is
+entered.<br>
+
+
+
+</div>
+
+
+
+
+<span style="font-weight: bold; text-decoration: underline;">TROFF</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>
+
+
+
+<div style="margin-left: 40px;">Trace instruction tracing previously turned on with the TRON command off.<br>
+
+
+
+</div>
+
+
+
+<span style="font-weight: bold; text-decoration: underline;">
+BREAK [addr]</span><br>
+
+
+
+<div style="margin-left: 40px;">
+
+Set a simple breakpoint at the address specified by <span style="font-style: italic;">addr</span>. &nbsp;If <span style="font-style: italic;">addr</span> is omitted, then display the currently set breakpoint, if any. &nbsp;Specifying a value of zero for <span style="font-style: italic;">addr</span> will turn a previously enabled breakpoint off.<br>
+
+
+
+</div>
+
+
+
+<span style="text-decoration: underline; font-weight: bold;">
+
+YBREAK [pos] </span><br>
+
+
+
+<div style="margin-left: 40px;">
+
+Set a scanline breakpoint at scanline <span style="font-style: italic;">pos</span>. &nbsp; If <span style="font-style: italic;">pos</span> is omitted, the current scanline breakpoint setting will be displayed. If <span style="font-style: italic;">pos</span>
+is -1, the breakpoint will be disabled. &nbsp;Specifying a value for
+pos of a scanline + 1000 will cause that scanline to flicker when it is
+displayed. &nbsp;For example, ybreak 1100 will cause scanline 100 to
+flicker.<br>
+
+
+
+</div>
+
+
+<span style="font-weight: bold; text-decoration: underline;">
+
+
+BRKHERE [on|off] </span><br>
+
+
+<div style="margin-left: 40px;">Sets BRK opcode behavior to stop in the monitor (on) or not (off).<br>
+
+
+</div>
+
+
+<span style="font-weight: bold; text-decoration: underline;">
+
+
+MONHIST [on|off] </span><br>
+
+
+<div style="margin-left: 40px;">Turn monitor history keeping on/off.
+&nbsp;Keeping history will slow down the emulation, so this allows the
+debugger to only keep the history when the programmer needs it. &nbsp;
+See the HISTORY command next.<br>
+
+
+</div>
+
+
+
+<span style="font-weight: bold; text-decoration: underline;">
+
+HISTORY<br>
+
+
+
+H</span><br>
+
+
+
+<div style="margin-left: 40px;">Display disassembly of last 32 PC
+address executed if monitor history keeping has been turned on with
+MONHIST. &nbsp;Display is the same format as displayed when the monitor
+is entered.<br>
+
+
+
+</div>
+
+
+
+<span style="font-weight: bold; text-decoration: underline;">JUMPS</span><br>
+
+
+
+<div style="margin-left: 40px;">
+List last 32 locations of JMP/JSR<br>
+
+
+
+</div>
+
+
+<span style="font-weight: bold; text-decoration: underline;">G</span><br>
+
+
+
+<div style="margin-left: 40px;">Single step one instruction and return to the monitor.<br>
+
+
+
+</div>
+
+
+<span style="font-weight: bold; text-decoration: underline;">
+O</span><br>
+
+
+<div style="margin-left: 40px;">Step over the instruction, which is used to step over subroutine jumps.<br>
+
+
+</div>
+
+
+
+<span style="font-weight: bold; text-decoration: underline;">
+
+R</span> <br>
+
+
+
+<div style="margin-left: 40px;">Execute until a return instruction is executed and return to monitor.<br>
+
+
+
+</div>
+
+
+<span style="font-weight: bold; text-decoration: underline;">B</span><br>
+
+
+
+
+<div style="margin-left: 40px;">Complex Breakpoint Commands.
+&nbsp;Complex breakpoints function through a breakpoint table made up
+of possibly many breakpoint conditions. &nbsp;The breakpoint checking
+has been optimized to have as little impact on emulation execution
+speed as possible, however all of the conditions may be checked each
+emulated cycle, &nbsp;and the memory location conditions are especially
+processor intensive. &nbsp;Each condition (entry) is explicitly anded
+with the next, so that a breakpoint only fires if all of the entries
+are true. &nbsp;However, the exception to this is the OR condition,
+which allows you to have several chains of anded conditions ored
+together. &nbsp;An example follows at the end of the subcommand
+descriptions. A description of each subcommand follows:<br>
+
+
+
+
+</div>
+
+
+
+
+<br>
+
+
+<div style="margin-left: 40px;"><span style="text-decoration: underline; font-weight: bold;">B<br>
+
+
+</span>
+<div style="margin-left: 40px;">Using the B command without a subcommand will print out the current breakpoint table.&nbsp;<br>
+
+
+</div>
+
+
+<span style="text-decoration: underline; font-weight: bold;">
+
+B ?<br>
+
+
+</span>
+<div style="margin-left: 40px;">This will print out a brief help summary on the complex breakpoint commands.<br>
+
+
+</div>
+
+
+<span style="font-weight: bold; text-decoration: underline;">
+
+B C<br>
+
+
+</span>
+<div style="margin-left: 40px;">This subcommand will clear all breakpoints in the table.<br>
+
+
+</div>
+
+
+<span style="font-weight: bold; text-decoration: underline;">
+
+B D num<br>
+
+
+</span>
+<div style="margin-left: 40px;">This subcommand&nbsp;deletes one entry in entry in the breakpoint table, whose number is <span style="font-style: italic;">num</span>. &nbsp;Breakpoint table entries are numbered starting at 0.<br>
+
+
+</div>
+
+
+<span style="font-weight: bold; text-decoration: underline;">
+
+B ON</span><br>
+
+
+<div style="margin-left: 40px;">The on subcommand with no parameters
+turns the entire breakpoint table ON. &nbsp;Individual breakpoint table
+entries must also be on for them to be active.<br>
+
+
+</div>
+
+
+<span style="font-weight: bold; text-decoration: underline;">
+
+B ON&nbsp;num1 [num2 ...]</span><br>
+
+
+<div style="margin-left: 40px;">The on subcommand followed by
+breakpoint table entry numbers turns the entries associated with those
+numbers on. &nbsp;This allows the user to enter breakpoint entries, and
+turn them on and off individually.<br>
+
+
+</div>
+
+
+<span style="font-weight: bold; text-decoration: underline;">
+
+B OFF</span><br>
+
+
+<div style="margin-left: 40px;">The
+off subcommand with no parameters turns the entire breakpoint table OFF.
+&nbsp;This means that even if the individual breakpoint table entries are on, no breakpoints will fire.<br>
+
+
+</div>
+
+
+<span style="font-weight: bold; text-decoration: underline;"></span><span style="font-weight: bold; text-decoration: underline;">
+
+B OFF num1 [num2 ...]</span><br>
+
+
+<div style="margin-left: 40px;">The
+off subcommand followed by breakpoint table entry numbers turns the
+entries associated with those numbers off. &nbsp;This allows the user to
+enter breakpoint entries, and turn them on and off individually.<br>
+
+
+</div>
+
+
+<span style="font-weight: bold; text-decoration: underline;">B [num] cond1 [cond2 ... ]<br>
+
+
+</span>
+<div style="margin-left: 40px;">This subcommand is used to insert breakpoint table entries. &nbsp;If the option <span style="font-style: italic;">num</span>
+parameter is specified, the entries will be inserted at that breakpoint
+number, and existing entries will be shifted to higher numbers.
+&nbsp;If <span style="font-style: italic;">num</span> is not
+specified, or is higher than the highest entry plus one, the entry will
+be added at the end of the table. &nbsp;A condition (<span style="font-style: italic;">cond1</span>, <span style="font-style: italic;">cond2</span>) is on of the following:<br>
+
+
+<span style="font-weight: bold;"><span style="text-decoration: underline;">TYPE OPERATOR VALUE</span><br>
+
+
+</span>
+<div style="margin-left: 40px;">This triplet of type operator value is entered with no spaces in between the three components. <br>
+
+
+Where TYPE is:<br>
+
+
+<div style="margin-left: 40px;"><span style="font-weight: bold;">PC</span>, <span style="font-weight: bold;">A</span>, <span style="font-weight: bold;">X</span>, <span style="font-weight: bold;">Y</span>, <span style="font-weight: bold;">S</span>, <span style="font-weight: bold;">READ</span>, <span style="font-weight: bold;">WRITE</span>, or <span style="font-weight: bold;">ACCESS &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;</span></div>
+
+
+</div>
+
+
+<div style="margin-left: 40px;">Where OPERATOR is:<br>
+
+
+<div style="margin-left: 40px;"><span style="font-weight: bold;">&lt;,</span> <span style="font-weight: bold;">&lt;=</span>, <span style="font-weight: bold;">=</span>, <span style="font-weight: bold;">==</span>, <span style="font-weight: bold;">&gt;</span>, <span style="font-weight: bold;">&gt;=</span>, <span style="font-weight: bold;">!=</span>. or <span style="font-weight: bold;">&lt;&gt;</span><br>
+
+
+</div>
+
+
+And finally VALUE, in hex, is what TYPE is compared to.<br>
+
+
+For example:<br>
+
+
+<div style="margin-left: 40px; font-family: monospace;">PC=1000&nbsp;&nbsp;&nbsp; &nbsp;Will break when the program counter is 1000<br>
+
+
+A&lt;45&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;Will break when the accumulator is less than 45<br>
+
+
+X&gt;=4&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;Will break when the x register is greater than or equal to 4<br>
+
+
+Y!=2&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;Will break when the y register is not equal to 2<br>
+
+
+S==1F6&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;Will break when the s register is equal to 1f6<br>
+
+
+READ&lt;1000&nbsp;&nbsp;&nbsp;Will break when a memory address less than 1000 is read<br>
+
+
+WRITE&gt;2000&nbsp;&nbsp;Will break when a memory address greater than 2000 is written.<br>
+
+
+ACCESS==200&nbsp;Will break when memory address 200 is read or written<br>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+<div style="margin-left: 40px;"><span style="text-decoration: underline;"><span style="font-weight: bold;">MEM ADDR OPERATOR VALUE<br>
+
+
+</span></span>
+<div style="margin-left: 40px;">Where MEM is a constant string 'MEM'.<br>
+
+
+Where ADDR is the memory address, in hex, whose contents is to be compared.<br>
+
+
+Where OPERATOR is:<br>
+
+
+<div style="margin-left: 40px;"><span style="font-weight: bold;">&lt;,</span> <span style="font-weight: bold;">&lt;=</span>, <span style="font-weight: bold;">=</span>, <span style="font-weight: bold;">==</span>, <span style="font-weight: bold;">&gt;</span>, <span style="font-weight: bold;">&gt;=</span>, <span style="font-weight: bold;">!=</span>. or <span style="font-weight: bold;">&lt;&gt;</span><br>
+
+
+</div>
+
+
+And finally VALUE is what the contents of the memory, in hex, is compared to.<br>
+
+
+</div>
+
+
+<div style="margin-left: 80px;">For example:<br>
+
+
+<span style="font-family: monospace;">MEM100=45 &nbsp;&nbsp;Will break when the program counter is 1000</span><br style="font-family: monospace;">
+
+
+<span style="font-family: monospace;">MEM1000&gt;78&nbsp;&nbsp;Will break when the accumulator is less than 45</span><br style="font-family: monospace;">
+
+
+</div>
+
+
+</div>
+
+
+<div style="margin-left: 40px;"><span style="text-decoration: underline;"><span style="font-weight: bold;">SETN</span></span><span style="text-decoration: underline;"><span style="font-weight: bold;"><br>
+
+
+SETV</span></span><span style="text-decoration: underline;"><span style="font-weight: bold;"><br>
+
+
+</span></span><span style="text-decoration: underline;"><span style="font-weight: bold;">SETB</span></span><span style="text-decoration: underline;"><span style="font-weight: bold;"><br>
+
+
+SETD</span></span><span style="text-decoration: underline;"><span style="font-weight: bold;"><br>
+
+
+</span></span><span style="text-decoration: underline;"><span style="font-weight: bold;">SETI</span></span><span style="text-decoration: underline;"><span style="font-weight: bold;"><br>
+
+
+SETZ</span></span><span style="text-decoration: underline;"><span style="font-weight: bold;"><br>
+
+
+</span></span><span style="text-decoration: underline;"><span style="font-weight: bold;">SETC</span></span><span style="text-decoration: underline;"><span style="font-weight: bold;"><br>
+
+
+</span></span>
+<div style="margin-left: 40px;">The condition breaks when the processor flag specified is set.</div>
+
+
+<span style="text-decoration: underline;"><span style="font-weight: bold;">CLRN</span></span><span style="text-decoration: underline;"><span style="font-weight: bold;"><br>
+
+
+CLRV</span></span><span style="text-decoration: underline;"><span style="font-weight: bold;"><br>
+
+
+</span></span><span style="text-decoration: underline;"><span style="font-weight: bold;">CLRB</span></span><span style="text-decoration: underline;"><span style="font-weight: bold;"><br>
+
+
+CLRD</span></span><span style="text-decoration: underline;"><span style="font-weight: bold;"><br>
+
+
+</span></span><span style="text-decoration: underline;"><span style="font-weight: bold;">CLRI</span></span><span style="text-decoration: underline;"><span style="font-weight: bold;"><br>
+
+
+CLRZ</span></span><span style="text-decoration: underline;"><span style="font-weight: bold;"><br>
+
+
+</span></span><span style="text-decoration: underline;"><span style="font-weight: bold;">CLRC</span></span><span style="text-decoration: underline;"><span style="font-weight: bold;"><br>
+
+
+</span></span>
+<div style="margin-left: 40px;">The condition breaks when the processor flag specified is clear.</div>
+
+
+<span style="text-decoration: underline;"><span style="font-weight: bold;"></span></span><span style="text-decoration: underline;"><span style="font-weight: bold;">OR<br>
+
+
+</span></span>
+<div style="margin-left: 40px;">The OR condition is a special case and
+indicates that the break will fire when the conditions prior to it in
+the breakpoint table occur <span style="font-style: italic;">or</span> the conditions after it occur. &nbsp;There can be multiple OR's in the breakpoint table.<span style="text-decoration: underline;"><span style="font-weight: bold;"></span></span><br>
+
+
+<span style="text-decoration: underline;"><span style="font-weight: bold;"></span></span></div>
+
+
+<span style="text-decoration: underline;"><span style="font-weight: bold;"></span></span></div>
+
+
+<br>
+
+
+Finally, here are some examples of the B commands<br>
+
+
+<br>
+
+
+B PC&gt;=203f A&lt;3a OR PC=3a7f X&lt;&gt;0 <br>
+
+
+<div style="margin-left: 40px;">Creates a breakpoint table with 5
+entries. &nbsp;Note that ands are implied between conditions, so this
+table says the breakpoint will fire if condition1 AND condition2 occur
+OR condition4 AND condition5 occur.<br>
+
+
+</div>
+
+
+
+
+B 2
+MEM1000=4a&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>
+
+
+<div style="margin-left: 40px;">Adds a new entry on position 2<br>
+
+
+</div>
+B D
+1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<br>
+
+
+<div style="margin-left: 40px;">Deletes entry on position 1<br>
+
+
+</div>
+B OR
+SETD&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<br>
+
+
+<div style="margin-left: 40px;">Adds 2 new entries at the end of the table<br>
+
+
+</div>
+
+
+</div>
+
+
+<h1>Atari Hardware Register Commands</h1>
+
+
+
+
+
+<span style="font-weight: bold; text-decoration: underline;"></span><span style="font-weight: bold; text-decoration: underline;"></span><span style="text-decoration: underline; font-weight: bold;">
+
+ANTIC</span><br style="text-decoration: underline; font-weight: bold;">
+
+
+
+<span style="text-decoration: underline; font-weight: bold;">GTIA</span><br style="text-decoration: underline; font-weight: bold;">
+
+
+
+<span style="text-decoration: underline; font-weight: bold;">PIA</span><br style="text-decoration: underline; font-weight: bold;">
+
+
+
+<span style="text-decoration: underline; font-weight: bold;">POKEY</span><br style="text-decoration: underline; font-weight: bold;">
+
+
+
+<div style="margin-left: 40px;">Display hardware registers for a specific chip.<br>
+
+
+
+</div>
+
+
+
+<span style="font-weight: bold; text-decoration: underline;">
+
+DLIST [startaddr]</span><br style="font-weight: bold; text-decoration: underline;">
+
+
+
+<div style="margin-left: 40px;">Show the Display List starting at address <span style="font-style: italic;">startaddr</span>. &nbsp;If <span style="font-style: italic;">startaddr</span> is not specified, it will show the display list continuing from where it was last displayed.<br>
+
+
+
+</div>
+
+
+
+<span style="font-weight: bold; text-decoration: underline;">
+
+DLIST CURR</span><br style="font-weight: bold; text-decoration: underline;">
+
+
+
+<div style="margin-left: 40px;">
+
+Show the Display List from the currently in use location.<br>
+
+
+
+</div>
+
+
+<h1>Assembler Commands</h1>
+
+
+
+
+
+<span style="font-weight: bold; text-decoration: underline;"></span><span style="font-weight: bold; text-decoration: underline;"></span><span style="font-weight: bold; text-decoration: underline;">
+
+A [startaddr] </span><br>
+
+
+<div style="margin-left: 40px;">
+
+
+Start simple assembler, with assembled code being stored at <span style="font-style: italic;">startaddr</span>. &nbsp;The assembler is exited by entering a blank line.<br>
+
+
+</div>
+
+
+
+<span style="font-weight: bold; text-decoration: underline;">LABELS OFF</span><br>
+
+
+
+<div style="margin-left: 40px;">
+
+
+Turn all labels off, both builtin and any loaded by the user.<br>
+</div>
+
+<span style="font-weight: bold; text-decoration: underline;">LABELS LOAD filename</span><br>
+<div style="margin-left: 40px;">Load user labels from an assembler
+output file.&nbsp; This version turns off builtin labels, if you want
+builtins enabled, use "LABELS ADD" insead.&nbsp; In versions 4.2 and
+greater is does not clear the current user labels, but allows the user
+to merge two label files.<br>
+</div>
+
+
+<span style="font-weight: bold; text-decoration: underline;">LABELS ADD filename</span><br>
+<div style="margin-left: 40px;">Load user labels from an assembler output file.&nbsp; This turns turn on builtin
+labels.&nbsp; In versions 4.2 and greater is does not clear the current user
+labels, but allows the user to merge two label files.<br>
+</div>
+
+
+<span style="font-weight: bold; text-decoration: underline;">LABELS SET name value &nbsp;  </span><br>
+<div style="margin-left: 40px;">Add a user label with the given name and value.<br>
+</div>
+
+
+<span style="font-weight: bold; text-decoration: underline;">LABELS LIST</span><br>
+<div style="margin-left: 40px;">List user defined labels.<br>
+</div>
+
+
+<span style="font-weight: bold; text-decoration: underline;">LABELS VALUE</span><br>
+<div style="margin-left: 40px;">
+
+
+
+
+
+
+Lookup label value given name.<br>
+</div>
+
+
+<span style="font-weight: bold; text-decoration: underline;">LABELS NAME</span><br>
+<div style="margin-left: 40px;">
+
+
+
+
+
+
+Lookup label name given value.<br>
+</div>
+
+
+<br>
+
+
+
+
+
+
+<span style="font-weight: bold; text-decoration: underline;"></span><span style="font-weight: bold; text-decoration: underline;"></span><br>
+
+
+
+
+
+
+
+
+</body></html>

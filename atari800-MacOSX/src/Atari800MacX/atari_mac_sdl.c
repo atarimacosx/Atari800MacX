@@ -5468,7 +5468,7 @@ int SDL_main(int argc, char **argv)
     int numKbstate;
     kbhits = (Uint8 *) SDL_GetKeyboardState(&numKbstate);
 	
-	chdir("../");
+	// chdir("../"); // Removed: This breaks FujiNet when running from app bundle
     
     /* Start bootup paste, if any */
     if (PasteManagerStartupPasteEnabled()) {

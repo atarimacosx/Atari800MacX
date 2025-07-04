@@ -1,0 +1,374 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>Printer Tab</title>
+
+
+  <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+
+</head>
+
+
+<body>
+
+<table border="0" cellpadding="2" cellspacing="2" width="100%">
+
+  <tbody>
+
+    <tr>
+
+      <td valign="top" width="20%"><img src="fuji.gif" alt="" height="90" width="123">
+      <br>
+
+      </td>
+
+      <td valign="top"><b><font size="+3">Atari800MacX
+Help<br>
+
+Preferences Window<br>
+
+Printer Tab<br>
+
+      </font></b><br>
+
+      </td>
+
+    </tr>
+
+  </tbody>
+</table>
+
+<br>
+
+<br>
+
+The Printer Tab controls the type of printer emulation that is used
+for outputting to the P: device from the emulated Atari.&nbsp;
+Note,
+that the P: Patch must be enabled on the Atari System Tab for this tab
+to be active.<br>
+
+<br>
+
+The are five choices for printer emulation, Text Printer, Atari 825,
+Atari 1020, Epson FX-80, and ATASCII Printer. &nbsp;The Text printer simply sends
+the
+printer output to a text file with optional script processing, while
+the other four choices emulator a
+legacy printer or a printer capable of printing Atari special characters, and allow the user to save the printer output in a PDF
+file. &nbsp;More info on use of the printer can be found on the <a href="PrinterEmulation.html">Printer Emulation</a>
+help page.<br>
+
+<br>
+
+The sections below describe the options available for each of
+the printer types.<br>
+
+<br>
+
+<br>
+
+<b><u>Text Printer</u><br>
+
+</b>
+<blockquote><img style="width: 722px; height: 491px;" alt="" src="PrinterTextTab.jpg"><br>
+
+  <br>
+
+  <span style="font-weight: bold; text-decoration: underline;">Print
+Command:</span><br>
+
+The only option for this printer type is&nbsp;the command used to
+print. &nbsp;Within the command, %s is used to
+represent the file name of the temporary file generated during
+printing. &nbsp;For example,
+if you wanted the printed text to be opened in BBEdit, you would enter
+"bbedit
+%s" (without quotes) in the box. &nbsp;By default, the OSX command
+"open
+%s" is used, which will open the printed text in TextEdit by default,
+unless
+you have changed your file associations. &nbsp;The temporary files
+used
+for
+printing are created in the printer output directory, which you can
+choose on the <a href="DirectoriesTab.html">Default
+Directories Tab</a>. &nbsp;Also,
+if
+you
+have UNIX printing set up, you could directly print using "lpr %s"<br>
+
+</blockquote>
+
+<br>
+
+<br>
+
+<b><u>Atari 825 Printer</u><br>
+
+</b>
+<blockquote><img style="width: 724px; height: 488px;" alt="" src="Printer825Tab.jpg"><br>
+
+  <br>
+
+  <span style="font-weight: bold; text-decoration: underline;">Character
+Set:</span><br>
+
+This&nbsp;option allows you to choose which international character
+set will be used with the printer. &nbsp;On the real Atari 825,
+this was set by a DIP switch.<br>
+
+  <br>
+
+  <span style="font-weight: bold; text-decoration: underline;">Form
+Length:</span><br>
+
+This option sets the form length, in inches, for pages output by the
+Printer Emulation. &nbsp;The real Atari 825 does not have a concept
+of form feeds or page length, but this setting is used to determine the
+length of a page in the PDF output file from the Printer Emulation.
+&nbsp;For more details, see the&nbsp;<a href="PrinterEmulation.html">Printer Emulation</a>
+help page.<br>
+
+  <br>
+
+  <span style="font-weight: bold; text-decoration: underline;">Auto
+Linefeed:</span><br>
+
+This option, which is set by default, will automatically add a linefeed
+character to every carriage return sent from the emulated Atari to the
+emulated Printer. &nbsp;This function was normally preformed by the
+printer hardware interface or driver on the Atari (Atari 850 or other).
+&nbsp;If you get blank lines in your output, you may need to turn
+this option off.<br>
+
+</blockquote>
+
+<br>
+
+<b><u>Atari 1020 Printer</u><br>
+
+</b>
+<blockquote><img style="width: 722px; height: 491px;" alt="" src="Printer1020Tab.jpg"><br>
+
+  <br>
+
+  <span style="font-weight: bold; text-decoration: underline;">Pen
+1-4 Color:</span><br>
+
+This&nbsp;option
+allows you to choose the color of each pen in the Atari 1020 printer.
+&nbsp;specifying the values of Red, Green, and Blue between 0-255 for each one.<br>
+
+  <br>
+
+  <span style="font-weight: bold; text-decoration: underline;">Print
+Width:</span><br>
+
+This original Atari1020 used 4" wide paper, and had a print width of
+3.77 inches. &nbsp; You can use this original print width centered
+in normal width modern paper, or you can specify double print width, in
+which case all of the printer output will be scaled up by a factor of 2
+(both height and width), and the printer output will fill most of the
+width of modern paper.<br>
+
+  <br>
+
+  <span style="font-weight: bold; text-decoration: underline;"></span><span style="font-weight: bold; text-decoration: underline;">Form
+Length:</span><br>
+
+This
+option sets the form length, in inches, for pages output by the Printer
+Emulation. &nbsp;The real Atari 825 does not have a concept of form
+feeds or
+page length, but this setting is used to determine the length of a page
+in the PDF output file from the Printer Emulation. &nbsp;For more
+details,
+see the&nbsp;<a href="PrinterEmulation.html">Printer
+Emulation</a>
+help page.<br>
+
+  <br>
+
+  <span style="font-weight: bold; text-decoration: underline;">Auto
+Linefeed:</span><br>
+
+This
+option, which is set by default, will automatically add a linefeed
+character to every carriage return sent from the emulated Atari to the
+emulated Printer. &nbsp;This function was normally performed by the
+printer
+hardware interface or driver on the Atari (Atari 850 or other).
+&nbsp;If you
+get blank lines in your output, you may need to turn this option off.<br>
+
+  <br>
+
+  <span style="font-weight: bold; text-decoration: underline;">Auto
+Adjust Image to Start of Page:</span><br>
+
+This
+option automatically readjusts the paper, so that the output of the
+printer starts at the top of the page. &nbsp;This is useful for the
+1020, as the printer may print above the start paper location, and
+would then print off the top of the page.<br>
+
+</blockquote>
+
+<br>
+
+<br>
+
+<b><u>Epson FX-80 Printer</u><br>
+
+</b>
+<blockquote><img style="width: 722px; height: 491px;" alt="" src="PrinterEpsonTab.jpg"><br>
+
+  <br>
+
+  <span style="font-weight: bold; text-decoration: underline;">Character
+Set:</span><br>
+
+This&nbsp;option
+allows you to choose which international character set will be used
+by default with the printer. &nbsp;On the real Epson, this was set
+by a DIP switch.<br>
+
+  <span style="font-weight: bold; text-decoration: underline;"><br>
+
+Print Pitch:</span><br>
+
+This&nbsp;option
+allows you to choose which character pitch will be used by default with
+the printer. &nbsp;On the real Epson, this was set by a DIP switch.<br>
+
+  <br>
+
+  <span style="font-weight: bold; text-decoration: underline;">Print
+Weight:</span><br>
+
+This&nbsp;option
+allows you to choose which character weight will be used by default
+with
+the printer. &nbsp;On the real Epson, this was set by a DIP switch.<br>
+
+  <br>
+
+  <span style="font-weight: bold; text-decoration: underline;">Form
+Length:</span><br>
+
+This
+option sets the form length, in inches, for pages output by the Printer
+Emulation. &nbsp;On the Epson emulation, this sets both the
+internal page length in the emulated printer, as well as determining
+the length of a page
+in the PDF output file from the Printer Emulation. &nbsp;For more
+details,
+see the&nbsp;<a href="PrinterEmulation.html">Printer
+Emulation</a>
+help page.<br>
+
+  <br>
+
+  <span style="font-weight: bold; text-decoration: underline;">Auto
+Linefeed:</span><br>
+
+This
+option, which is set by default, will automatically add a linefeed
+character to every carriage return sent from the emulated Atari to the
+emulated Printer. &nbsp;This function was normally performed by the
+printer
+hardware interface or driver on the Atari (Atari 850 or other).
+&nbsp;If you
+get blank lines in your output, you may need to turn this option off.<br>
+
+  <br>
+
+  <span style="font-weight: bold; text-decoration: underline;">Print
+Slashed Zero:</span><br>
+
+This&nbsp;option
+allows you to choose if zero characters are printed with a slash by
+default with
+the printer. &nbsp;On the real Epson, this was set by a DIP switch.<br>
+
+  <br>
+
+  <span style="font-weight: bold; text-decoration: underline;">Auto
+Skip Perforation:</span><br>
+
+This
+option, sets the printer to automatically skip 6 lines at the end of
+the page. &nbsp;This is very useful for program listings and other
+non-page formated output. &nbsp;On the real Epson, this was set by
+a DIP switch. &nbsp;Also, if you choose this option, you may
+additionally choose to split the 6 lines between the top and bottom of
+the page, giving a 3 line margin at the top, and a 3 line margin at the
+bottom &nbsp;of the page. &nbsp;This additional option was not
+available on the original printer.<br>
+
+  <br>
+
+</blockquote>
+<b><u>ATASCII Printer</u><br>
+
+</b>
+<blockquote><img style="width: 724px; height: 488px;" alt="" src="PrinterAtasciiTab.png"><br>
+
+  <br>
+
+    <span style="font-weight: bold; text-decoration: underline;">Character
+  Size:</span><br>
+
+  This&nbsp;option allows you to choose the font size for
+  the ATASCII character set.  The default is 12 point,
+  which will produce around 45 characters per line.  The
+  minimum is 7 point (around 80 characters per line) and
+  the maximum is 24 point.<br>
+
+    <br>
+
+    <span style="font-weight: bold; text-decoration: underline;">Gap Between Lines:
+  </span><br>
+
+  This&nbsp;option allows you to choose the amount of space
+  between each output line.  The default of zero points
+  will allow some space between normal text, but Atari
+  graphics characters will be directly next to each other
+  on adjacent lines, allowing them to be used for graphics.
+  You may also choose to have been 1 and 4 points of space
+  in addtion to this.<br>
+
+    <br>
+
+  <span style="font-weight: bold; text-decoration: underline;">Form
+Length:</span><br>
+
+This option sets the form length, in inches, for pages output by the
+Printer Emulation. &nbsp;This setting is used to determine the
+length of a page in the PDF output file from the Printer Emulation.
+&nbsp;For more details, see the&nbsp;<a href="PrinterEmulation.html">Printer Emulation</a>
+help page.<br>
+
+  <br>
+
+<span style="font-weight: bold; text-decoration: underline;">Font:</span><br>
+
+This option allows the user to choose an ATASCII Mac font.
+The default ATASII font included in the applicaiton is named
+AtariClassic-Regular and it is the default selection.  If you
+would like to use another font, it must have the Atari
+characters starting at Unicode 0xE000, like the fonts found
+here: <a href="https://atari8bit.net/atari-fonts/">https://atari8bit.net/atari-fonts/.</a>
+<br>(AtariClassic font can be found here: <a href="http://members.bitstream.net/marksim/atarimac/fonts.html">http://members.bitstream.net/marksim/atarimac/fonts.html</a>)
+<br>
+
+</blockquote>
+
+
+
+
+<br>
+
+</body>
+</html>

@@ -1,0 +1,257 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+
+
+  
+  
+  
+  
+  <title>Disk Image Editor</title>
+  <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+</head>
+
+
+<body>
+
+
+<table border="0" cellpadding="2" cellspacing="2" width="100%">
+
+
+  <tbody>
+
+
+    <tr>
+
+
+      <td valign="top" width="20%"><img src="fuji.gif" alt="" height="90" width="123"> <br>
+
+
+      </td>
+
+
+      <td valign="top"><b><font size="+3">Atari800MacX Help<br>
+
+
+Disk Image Editor<br>
+
+
+      </font></b><br>
+
+
+      </td>
+
+
+    </tr>
+
+
+  
+  
+  </tbody>
+</table>
+
+
+<br>
+
+
+<br>
+The Disk Image Editor on the Atari800MacX emulator allows you to edit a
+ATR disk image that is formated with any of the supported Atari DOS
+formats.&nbsp; You may Import and Export files from/to the Mac file
+system, as well as manipulate files and directories on the
+image.&nbsp;&nbsp; The supported Atari DOS&nbsp; types are Atari DOS
+1.0,
+Atari DOS 2.x, Atari DOS 3.0, Atari DOS 4.0, Atari DOS XE, TopDOS,
+BiboDos, MyDos, SpartaDos 2+, and BWDOS.&nbsp; When you select the Edit
+Disk Image menu item and pick a disk image to edit, you get a window
+like the one shown below.&nbsp; You may open multiple disk images at
+once, and even drop and drag files between them. &nbsp;You can open an
+image that is mounted in the emulator drive, but be very careful if you
+do, as the two processes may corrupt the image. &nbsp;The emualtor
+should not be accessing the image when you change it.<br>
+
+
+<br>
+
+
+<img src="DiskEditor.jpg" title="" alt="Disk Editor Window" style="width: 631px; height: 407px;"><br>
+
+
+<br>
+
+
+The Disk Editor has the following elements:<br>
+
+
+<br>
+
+
+<b><u>Image Type</u><br>
+
+
+</b>
+<blockquote><img src="DiskEditor1.jpg" title="" alt="" style="width: 317px; height: 24px;"><br>
+
+
+  <br>
+
+
+The top of the file list view displays the type of DOS the
+image was formatted with.<br>
+
+
+</blockquote>
+
+
+<b><u>Current Image Directory</u><br>
+
+
+</b>
+<blockquote><img src="DiskEditor2.jpg" title="" alt="" style="width: 317px; height: 29px;"><br>
+
+
+  <br>
+
+
+This pulldown displays the current directory on the disk image.&nbsp; If
+the image does not support disk directories, this will be MAIN.&nbsp;
+You may navigate to a lower disk directory by double clicking on the
+directory name in the file list.&nbsp; To navigate back up the
+directory tree, you may use this pulldown to select the directory to
+move to.<br>
+
+
+</blockquote>
+
+
+<b><u>File List<br>
+
+
+<br>
+
+
+</u></b>
+<div style="margin-left: 40px;"><img src="DiskEditor3.jpg" title="" alt="" style="width: 306px; height: 266px;"><br>
+
+
+<br>
+
+
+This area lists the files in the current directory, in a format similar
+to that used by the DOS type for that image.&nbsp; Files may be dragged
+and dropped to/from a Finder window to import/export the files.&nbsp;
+Files may also be dragged and dropped between disk editor
+windows.&nbsp; Dragging of Directories is not supported.<br>
+
+
+</div>
+
+
+<br>
+
+
+<b><u>Free Space<br>
+
+
+<br>
+
+
+</u></b>
+<div style="margin-left: 40px;"><img src="DiskEditor4.jpg" title="" alt="" style="width: 284px; height: 23px;"><br>
+
+
+<br>
+
+
+This displays the amount of free space on the disk image in Kilobytes,
+not sectors or blocks.<br>
+
+
+</div>
+
+
+<br>
+
+
+<b><u>Header Write Protect Bit Set In Image<br>
+
+
+<br>
+
+
+</u></b>
+<div style="margin-left: 40px;"><img src="DiskEditor5.jpg" title="" alt="" style="width: 266px; height: 28px;"><br>
+
+
+<br>
+
+
+This checkbox displays the state of the Write Protect bit in the header
+of the ATR image.&nbsp; You may change it by clicking on the
+checkbox.&nbsp; Normally, if this is set, it will prevent the emulator
+and other programs from writing to the image.&nbsp; However, don't
+confuse this with the permissions on the file image in the MacOSX
+operating system, as they are separate.<br>
+
+
+</div>
+
+
+<br>
+
+
+<b><u>Action Buttons<br>
+
+
+<br>
+
+
+</u></b>
+<div style="margin-left: 40px;"><img style="width: 230px; height: 224px;" alt="" title="" src="DiskEditor6.jpg"><br>
+
+
+<br>
+
+
+These buttons are used to perform operations on selected files in the
+File List.&nbsp; If they are not active, it may be that no files are
+selected, the wrong file types are selected for the operation
+(directories), or the disk may be write protected, either by the
+operating system, or by the ATR header write protect bit.&nbsp; (Note
+for a directory to be deleted, it must be empty.)<br>
+
+
+</div>
+
+
+<br>
+
+
+<b><u>Linefeed Translation<br>
+
+
+<br>
+
+
+</u></b>
+<div style="margin-left: 40px;"><img src="DiskEditor7.jpg" title="" alt="" style="width: 228px; height: 30px;"><br>
+
+
+<br>
+
+
+This checkbox turns the translation of Atari Linefeed characters on or
+off for Import/Export operations to the Mac File system.<br>
+
+
+</div>
+
+
+<blockquote> <br>
+
+
+</blockquote>
+
+
+</body>
+</html>

@@ -4,6 +4,58 @@
 
 **Atari800MacX** is a sophisticated macOS port of the cross-platform Atari800 emulator. It wraps the core Atari800 emulation engine with a native Cocoa interface, providing Mac-specific features while maintaining the accuracy and performance of the original emulator.
 
+## Version 7.0.0 Development Notes
+
+### Video Feature Changes Analysis (July 2025)
+
+**CRITICAL**: During 7.0.0 development, significant video/NTSC filter changes were made. Before finalizing the release, verify what video features were already available in the previous Atari800MacX version.
+
+#### Changes Made in 7.0.0 (Commits b718228 → e07bd03):
+
+**NTSC Filter Integration:**
+- Added NTSC_FILTER and PAL_BLENDING preprocessor definitions
+- Integrated with new `artifact.h` system from Atari800 core
+- Replaced legacy `ANTIC_UpdateArtifacting` with `ARTIFACT_Set()` API
+- Added NTSC filter preset support (Composite, S-Video, RGB, Monochrome)
+
+**UI Enhancements:**
+- **Display Menu**: Added NTSC Filter Presets submenu
+- **Preferences**: TV mode-aware artifact dropdown (NTSC vs PAL options)
+- **Dynamic Menus**: Menu items enable/disable based on current TV mode
+- **Persistent Settings**: Separate preferences for NTSC/PAL artifact modes
+
+**New Artifact Modes:**
+- NTSC-NEW, NTSC-FULL (full NTSC filter)
+- PAL-SIMPLE, PAL-BLEND (PAL blending modes)
+
+**Files Modified:**
+- `DisplayManager.h/m` - Major changes to artifact handling
+- `Preferences.h/m` - TV mode-aware artifact selection
+- `atari_mac_sdl.c` - Core artifact system integration
+- `SDLMain.nib` - Interface Builder connections for new menus
+
+#### Core Version Facts (from official Atari800 releases):
+- **Atari800 4.1.0 (April 2019)**: Built-in Altirra ROMs introduced
+- **Atari800 4.2.0 (December 2019)**: Pokey recording, libatari800, R: device
+- **Atari800 5.0.0 (May 2022)**: AVI recording, "gamma values in NTSC filter presets updated" (indicates NTSC filters existed before)
+- **Current**: Atari800 5.2.0 (December 2023)
+
+#### ACTION REQUIRED:
+**Test the previous Atari800MacX version 6.x to determine:**
+1. Did it have NTSC filter presets in the Display menu?
+2. Did it support NTSC-FULL, PAL-BLEND artifact modes?
+3. Did it have TV mode-aware artifact selection?
+
+**If YES** → Consider reverting video changes as redundant
+**If NO** → Changes are legitimate UI improvements exposing existing core features
+
+#### Revert Commands (if needed):
+```bash
+git revert b718228..e07bd03
+# Or selectively revert specific commits:
+git revert e07bd03 ee25e43 674221c 8b9450f 4ca8a09 54ae172 043efaf 7b44962 b718228
+```
+
 ### Current Architecture
 
 ```
