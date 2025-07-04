@@ -709,6 +709,10 @@ static Preferences *sharedInstance = nil;
         [[PasteManager sharedInstance] setEscapeCopy:[[curValues objectForKey:EscapeCopy] boolValue]];
         [[PasteManager sharedInstance] setStartupPasteEnabled:[[curValues objectForKey:StartupPasteEnable] boolValue]];
         [[PasteManager sharedInstance] setStartupPasteString:[curValues objectForKey:StartupPasteString]];
+        
+        /* Initialize separate artifact mode memory - default to No Artifact */
+        savedNTSCArtifactMode = 0;  /* ARTIFACT_NONE */
+        savedPALArtifactMode = 0;   /* ARTIFACT_NONE */
     }
     return sharedInstance;
 }
@@ -870,10 +874,18 @@ static Preferences *sharedInstance = nil;
     [spriteCollisionsButton setState:[[displayedValues objectForKey:SpriteCollisions] boolValue] ? NSOnState : NSOffState];
     index = [[displayedValues objectForKey:RefreshRatio] intValue] - 1;
     [refreshRatioPulldown  selectItemAtIndex:index];
+    /* Initialize saved artifact modes from current preference */
+    int artifactMode = [[displayedValues objectForKey:ArtifactingMode] intValue];
+    int currentTVMode = [[displayedValues objectForKey:TvMode] intValue];
+    if (currentTVMode == 0) {
+        savedNTSCArtifactMode = artifactMode;
+    } else {
+        savedPALArtifactMode = artifactMode;
+    }
+    
     /* Update artifact pulldown for current TV mode before setting selection */
     [self updateArtifactingPulldownForTVMode];
     /* Select item by tag value, not index */
-    int artifactMode = [[displayedValues objectForKey:ArtifactingMode] intValue];
     for (int i = 0; i < [artifactingPulldown numberOfItems]; i++) {
         if ([[artifactingPulldown itemAtIndex:i] tag] == artifactMode) {
             [artifactingPulldown selectItemAtIndex:i];
@@ -1750,6 +1762,9 @@ static Preferences *sharedInstance = nil;
     /* Get artifact mode from the selected item's tag, not its index */
     int artifactTag = [[artifactingPulldown selectedItem] tag];
     [displayedValues setObject:[NSNumber numberWithInt:artifactTag] forKey:ArtifactingMode];
+    
+    /* Update checkbox visibility when artifact mode changes */
+    [self updateArtifactNewButtonVisibility];
     if ([artifactNewButton state] == NSOnState)
         [displayedValues setObject:yes forKey:ArtifactNew];
     else
@@ -6592,11 +6607,17 @@ static Preferences *sharedInstance = nil;
 *  to show only the appropriate options based on current TV mode (NTSC/PAL)
 *-----------------------------------------------------------------------------*/
 - (void)updateArtifactingPulldownForTVMode {
-    int currentSelection = [artifactingPulldown indexOfSelectedItem];
     int tvMode = [[tvModeMatrix selectedCell] tag];
     
-    /* Save current title to try to restore it if possible */
-    NSString *currentTitle = [[artifactingPulldown selectedItem] title];
+    /* Save current selection to appropriate mode before rebuilding */
+    if ([artifactingPulldown numberOfItems] > 0 && [artifactingPulldown indexOfSelectedItem] >= 0) {
+        int currentTag = [[artifactingPulldown selectedItem] tag];
+        if (tvMode == 0) {
+            savedNTSCArtifactMode = currentTag;
+        } else {
+            savedPALArtifactMode = currentTag;
+        }
+    }
     
     /* Clear and rebuild the pulldown */
     [artifactingPulldown removeAllItems];
@@ -6631,13 +6652,52 @@ static Preferences *sharedInstance = nil;
             [[artifactingPulldown itemAtIndex:2] setTag:5]; /* PAL Blend = 5 */
     }
     
-    /* Try to restore selection by title, or default to "No Artifact" */
-    NSInteger newIndex = [artifactingPulldown indexOfItemWithTitle:currentTitle];
-    if (newIndex != NSNotFound) {
-        [artifactingPulldown selectItemAtIndex:newIndex];
-    } else {
-        [artifactingPulldown selectItemAtIndex:0]; /* Default to "No Artifact" */
+    /* Restore appropriate selection based on TV mode */
+    int targetTag = (tvMode == 0) ? savedNTSCArtifactMode : savedPALArtifactMode;
+    BOOL found = NO;
+    
+    /* Try to find item with saved tag */
+    for (int i = 0; i < [artifactingPulldown numberOfItems]; i++) {
+        if ([[artifactingPulldown itemAtIndex:i] tag] == targetTag) {
+            [artifactingPulldown selectItemAtIndex:i];
+            found = YES;
+            break;
+        }
     }
+    
+    /* If not found, default to first item (No Artifact) */
+    if (!found && [artifactingPulldown numberOfItems] > 0) {
+        [artifactingPulldown selectItemAtIndex:0];
+        /* Update saved selection to reflect the default */
+        if (tvMode == 0) {
+            savedNTSCArtifactMode = 0;
+        } else {
+            savedPALArtifactMode = 0;
+        }
+    }
+    
+    /* Update artifact new checkbox visibility - hide it for new artifact system */
+    [self updateArtifactNewButtonVisibility];
+}
+
+/*------------------------------------------------------------------------------
+*  updateArtifactNewButtonVisibility - Hide/show the artifact new checkbox
+*     based on current artifact selection (obsolete with new system)
+*-----------------------------------------------------------------------------*/
+- (void)updateArtifactNewButtonVisibility {
+    int selectedTag = ([artifactingPulldown indexOfSelectedItem] >= 0) ? 
+                      [[artifactingPulldown selectedItem] tag] : 0;
+    
+    /* Hide the checkbox for new artifact modes where it's not relevant */
+    BOOL shouldHide = (selectedTag == 2 ||   /* ARTIFACT_NTSC_NEW */
+                       selectedTag == 3 ||   /* ARTIFACT_NTSC_FULL */ 
+                       selectedTag == 4 ||   /* ARTIFACT_PAL_SIMPLE */
+                       selectedTag == 5);    /* ARTIFACT_PAL_BLEND */
+    
+    [artifactNewButton setHidden:shouldHide];
+    
+    /* Also update the label if it exists */
+    /* Note: You might need to connect a label outlet if there's explanatory text */
 }
 
 @end

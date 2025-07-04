@@ -622,6 +622,10 @@
     NSMutableDictionary *displayedValues;	// Values displayed in the UI
     NSTimer *theIdentifyTimer;
     NSTimer *theTopTimer;
+    
+    /* Separate memory for NTSC and PAL artifact selections */
+    int savedNTSCArtifactMode;
+    int savedPALArtifactMode;
 }
 
 + (id)objectForKey:(id)key;	/* Convenience for getting global preferences */
