@@ -60,6 +60,11 @@ void SetDisplayManagerNtscPreset(int preset) {
     }
 
 void UpdateDisplayManagerArtifactMenu(int tvMode) {
+    /* Validate TV mode before calling update */
+    if (tvMode < 0 || tvMode > 1) {
+        NSLog(@"UpdateDisplayManagerArtifactMenu: Invalid TV mode %d, using NTSC (0)", tvMode);
+        tvMode = 0; /* Default to NTSC */
+    }
     [[DisplayManager sharedInstance] updateArtifactMenuForTVMode:(tvMode)];
     }
 
@@ -296,18 +301,31 @@ static DisplayManager *sharedInstance = nil;
 *-----------------------------------------------------------------------------*/
 - (void)updateArtifactMenuForTVMode:(int)tvMode
 {
+	/* Filter out invalid TV mode values */
+	if (tvMode < 0 || tvMode > 1) {
+		return;
+	}
+	
 	/* 0 = NTSC, 1 = PAL */
 	BOOL isNTSC = (tvMode == 0);
 	BOOL isPAL = (tvMode == 1);
-	
 	/* NTSC artifact modes - enabled only in NTSC mode */
 	[revXLXEGTIAItem setEnabled:isNTSC];      /* NTSC Old */
 	[ntscNewArtifactItem setEnabled:isNTSC];   /* NTSC New */
 	[ntscFullFilterItem setEnabled:isNTSC];    /* NTSC Full Filter */
 	
 	/* PAL artifact modes - enabled only in PAL mode */
+#ifndef NO_SIMPLE_PAL_BLENDING
 	[palSimpleBlendItem setEnabled:isPAL];     /* PAL Simple Blend */
+#else
+	[palSimpleBlendItem setEnabled:NO];
+#endif
+
+#ifdef PAL_BLENDING
 	[palFullBlendItem setEnabled:isPAL];       /* PAL Full Blend */
+#else
+	[palFullBlendItem setEnabled:NO];
+#endif
 	
 	/* No Artifact is always enabled */
 	[NoArtifactItem setEnabled:YES];
@@ -318,13 +336,18 @@ static DisplayManager *sharedInstance = nil;
 	[CTIA400800Item setEnabled:NO];            /* Hide old CTIA 400/800 */
 	
 #ifdef NTSC_FILTER
-	/* NTSC Filter Presets - only available in NTSC mode with NTSC Full Filter */
+	/* NTSC Filter Presets - only available when NTSC Full Filter mode is active */
 	BOOL ntscFilterActive = isNTSC && (ARTIFACT_mode == ARTIFACT_NTSC_FULL);
+	[ntscFilterPresetsSubmenu setEnabled:ntscFilterActive];
 	[ntscCompositePresetItem setEnabled:ntscFilterActive];
 	[ntscSVideoPresetItem setEnabled:ntscFilterActive];
 	[ntscRGBPresetItem setEnabled:ntscFilterActive];
 	[ntscMonochromePresetItem setEnabled:ntscFilterActive];
+	
 #endif
+	
+	/* Update menu selection to match current artifact mode */
+	[self setArtifactModeMenu:ARTIFACT_mode];
 }
 
 - (bool)enable80ColModeMenu:(int)machineType:(int)xep80Enabled:(int)af80Enabled:(int)bit3Enabled
@@ -550,18 +573,26 @@ static DisplayManager *sharedInstance = nil;
 - (IBAction)artifactModeChange:(id)sender
 {
 	int tag = [sender tag];
+	/* Artifact mode selected from menu */
 	
 	/* Convert menu tag to ARTIFACT_t enum and set via new API */
 	ARTIFACT_Set((ARTIFACT_t)tag);
 	
 	/* Update display to reflect changes */
 	requestArtifChange = 1;
+	
+	/* Immediately update menu to enable/disable NTSC filter presets */
+	/* Note: We know we're in NTSC mode if NTSC Full Filter was selected */
+	if (tag == 3) { /* ARTIFACT_NTSC_FULL */
+		[self updateArtifactMenuForTVMode:0]; /* 0 = NTSC */
+	}
 }
 
 - (IBAction)ntscFilterPreset:(id)sender
 {
 #ifdef NTSC_FILTER
 	int preset = [sender tag];
+	
 	
 	/* Set NTSC filter to NTSC_FULL mode first */
 	ARTIFACT_Set(ARTIFACT_NTSC_FULL);
@@ -575,6 +606,11 @@ static DisplayManager *sharedInstance = nil;
 	
 	/* Request display update */
 	requestArtifChange = 1;
+	
+	/* Update artifact menu to reflect new mode (we're in NTSC mode for presets) */
+	[self updateArtifactMenuForTVMode:0]; /* 0 = NTSC */
+#else
+	NSLog(@"NTSC Filter Preset Action Called but NTSC_FILTER not defined!");
 #endif
 }
 

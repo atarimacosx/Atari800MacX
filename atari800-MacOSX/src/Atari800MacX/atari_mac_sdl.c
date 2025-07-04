@@ -78,6 +78,9 @@
 #include "pbi_bb.h"
 #include "pbi_mio.h"
 #include "artifact.h"
+#ifdef NTSC_FILTER
+#include "filter_ntsc.h"
+#endif
 #include "pclink.h"
 #include "preferences_c.h"
 #include "ultimate1mb.h"
@@ -5386,6 +5389,14 @@ int SDL_main(int argc, char **argv)
     SetDisplayManagerScaleMode(SCALE_MODE);
 	SetDisplayManagerArtifactMode(ARTIFACT_mode);
 	UpdateDisplayManagerArtifactMenu(Atari800_tv_mode);
+	
+#ifdef NTSC_FILTER
+	/* Initialize NTSC filter for Mac port */
+	if (FILTER_NTSC_emu == NULL) {
+		FILTER_NTSC_emu = FILTER_NTSC_New();
+		FILTER_NTSC_Update(FILTER_NTSC_emu);
+	}
+#endif
 	SetDisplayManager80ColMode(XEP80_enabled, XEP80_port, AF80_enabled, BIT3_enabled, PLATFORM_80col);
     SetDisplayManagerXEP80Autoswitch(COL80_autoswitch);
 	MediaManager80ColMode(XEP80_enabled, AF80_enabled, BIT3_enabled, PLATFORM_80col);
@@ -5412,14 +5423,14 @@ int SDL_main(int argc, char **argv)
             int port = prefs->fujiNetPort;
             if (port <= 0 || port > 65535) port = 9997; // Default port if invalid
             
-            printf("DEBUG: About to call netsio_init on port %d\n", port);
+            Log_print("DEBUG: About to call netsio_init on port %d", port);
             if (netsio_init(port) == 0) {
-                printf("DEBUG: netsio_init succeeded, will trigger restart after main loop starts\n");
+                Log_print("DEBUG: netsio_init succeeded, will trigger restart after main loop starts");
                 /* Set flag to trigger restart after main loop starts */
                 fujinet_restart_pending = 1;
                 fujinet_restart_delay = 60; /* Wait 60 frames (~1 second) */
             } else {
-                printf("DEBUG: netsio_init FAILED\n");
+                Log_print("DEBUG: netsio_init FAILED");
             }
         }
     }
@@ -5470,13 +5481,13 @@ int SDL_main(int argc, char **argv)
         if (fujinet_restart_pending && fujinet_restart_delay > 0) {
             fujinet_restart_delay--;
             if (fujinet_restart_delay == 10) { /* Debug at 10 frames remaining */
-                printf("DEBUG: FujiNet delayed restart countdown: %d frames remaining\n", fujinet_restart_delay);
+                Log_print("DEBUG: FujiNet delayed restart countdown: %d frames remaining", fujinet_restart_delay);
             }
             if (fujinet_restart_delay == 0) {
-                printf("DEBUG: Triggering delayed FujiNet machine initialization\n");
+                Log_print("DEBUG: Triggering delayed FujiNet machine initialization");
                 Atari800_InitialiseMachine();
                 fujinet_restart_pending = 0;
-                printf("DEBUG: FujiNet delayed machine initialization completed\n");
+                Log_print("DEBUG: FujiNet delayed machine initialization completed");
             }
         }
         
@@ -5792,15 +5803,27 @@ int PLATFORM_WindowMaximised(void)
 VIDEOMODE_resolution_t *PLATFORM_AvailableResolutions(unsigned int *size)
 {
     /* Return a basic set of resolutions for compatibility */
-    static VIDEOMODE_resolution_t resolutions[] = {
+    static VIDEOMODE_resolution_t static_resolutions[] = {
         { 640, 480 },
         { 800, 600 },
         { 1024, 768 },
         { 1280, 1024 }
     };
     
+    unsigned int count = sizeof(static_resolutions) / sizeof(static_resolutions[0]);
+    
+    /* Allocate heap memory for resolutions so they can be properly freed */
+    VIDEOMODE_resolution_t *resolutions = (VIDEOMODE_resolution_t *)malloc(count * sizeof(VIDEOMODE_resolution_t));
+    if (resolutions == NULL) {
+        if (size) *size = 0;
+        return NULL;
+    }
+    
+    /* Copy static data to heap-allocated memory */
+    memcpy(resolutions, static_resolutions, count * sizeof(VIDEOMODE_resolution_t));
+    
     if (size)
-        *size = sizeof(resolutions) / sizeof(resolutions[0]);
+        *size = count;
     
     return resolutions;
 }

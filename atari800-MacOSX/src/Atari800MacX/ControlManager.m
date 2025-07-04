@@ -993,6 +993,20 @@ static int monitorRunFirstTime = 1;
 *-----------------------------------------------------------------------------*/
 - (void)messagePrint:(char *)printString
 {
+    /* Ensure UI updates happen on the main thread */
+    if ([NSThread isMainThread]) {
+        /* Already on main thread, execute directly */
+        [self messagePrintOnMainThread:printString];
+    } else {
+        /* Dispatch to main thread */
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self messagePrintOnMainThread:printString];
+        });
+    }
+}
+
+- (void)messagePrintOnMainThread:(char *)printString
+{
     NSRange theEnd;
     NSString *stringObj;
 

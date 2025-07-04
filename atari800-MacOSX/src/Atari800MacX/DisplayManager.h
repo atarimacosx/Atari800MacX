@@ -38,6 +38,7 @@
 	IBOutlet id palSimpleBlendItem;
 	IBOutlet id palFullBlendItem;
 	/* NTSC Filter Presets */
+	IBOutlet id ntscFilterPresetsSubmenu;
 	IBOutlet id ntscCompositePresetItem;
 	IBOutlet id ntscSVideoPresetItem;
 	IBOutlet id ntscRGBPresetItem;

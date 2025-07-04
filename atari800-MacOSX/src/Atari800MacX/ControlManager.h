@@ -163,6 +163,7 @@
 - (void) releaseKey:(int)keyCode;
 - (IBAction)monitorExecute:(id)sender;
 - (void)messagePrint:(char *)printString;
+- (void)messagePrintOnMainThread:(char *)printString;
 - (void)messageWindowShow:(id)sender;
 - (NSPoint)messagesOriginSave;
 - (NSPoint)functionKeysOriginSave;

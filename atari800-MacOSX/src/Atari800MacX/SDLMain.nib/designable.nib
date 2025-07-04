@@ -564,31 +564,34 @@
                                     <items>
                                         <menuItem title="No Artifacting" id="830">
                                             <connections>
-                                                <action selector="artifactModeChange:" target="498" id="835"/>
+                                                <action selector="artifactModeChange:" target="498" id="ZT8-Qz-8ln"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem title="NTSC Old" tag="1" id="831">
                                             <connections>
-                                                <action selector="artifactModeChange:" target="498" id="836"/>
+                                                <action selector="artifactModeChange:" target="498" id="gdr-Kz-G9Y"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem title="NTSC New" tag="2" id="832">
                                             <connections>
-                                                <action selector="artifactModeChange:" target="498" id="837"/>
+                                                <action selector="artifactModeChange:" target="498" id="b0n-wJ-HAU"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem title="NTSC Full Filter" tag="3" id="833">
                                             <connections>
-                                                <action selector="artifactModeChange:" target="498" id="838"/>
+                                                <action selector="artifactModeChange:" target="498" id="o2o-iU-eeC"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem title="PAL Simple Blend" tag="4" id="834">
                                             <connections>
-                                                <action selector="artifactModeChange:" target="498" id="839"/>
+                                                <action selector="artifactModeChange:" target="498" id="1lX-pR-M5V"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="PAL Full Blend" id="Hem-gv-V2P">
+                                        <menuItem title="PAL Full Blend" tag="5" id="Hem-gv-V2P">
                                             <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="artifactModeChange:" target="498" id="TYZ-X7-cD3"/>
+                                            </connections>
                                         </menuItem>
                                     </items>
                                 </menu>
@@ -600,25 +603,25 @@
                                         <menuItem title="Composite Video" id="bTd-cV-XdL">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
-                                                <action selector="ntscFilterPreset:" target="498" id="j74-iq-egI"/>
+                                                <action selector="ntscFilterPreset:" target="498" id="OJD-lF-kue"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem title="S-Video" tag="1" id="svd-pV-4JI">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
-                                                <action selector="ntscFilterPreset:" target="498" id="8u9-BR-gSq"/>
+                                                <action selector="ntscFilterPreset:" target="498" id="clD-pc-ZUY"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem title="RGB Monitor" tag="2" id="zTM-k8-lMt">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
-                                                <action selector="ntscFilterPreset:" target="498" id="ZLB-vC-gN0"/>
+                                                <action selector="ntscFilterPreset:" target="498" id="JCw-Tz-cVU"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem title="Monochrome" tag="3" id="bgs-Jo-YW9">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
-                                                <action selector="ntscFilterPreset:" target="498" id="sLT-l8-Jhe"/>
+                                                <action selector="ntscFilterPreset:" target="498" id="Htp-lE-OQz"/>
                                             </connections>
                                         </menuItem>
                                     </items>
@@ -1106,9 +1109,8 @@ DQ
         </customObject>
         <customObject id="498" userLabel="DisplayManager" customClass="DisplayManager">
             <connections>
-                <outlet property="CTIA400800Item" destination="834" id="844"/>
                 <outlet property="GTIA400800Item" destination="833" id="843"/>
-                <outlet property="NoArtifactItem" destination="830" id="840"/>
+                <outlet property="NoArtifactItem" destination="830" id="REX-ws-YQK"/>
                 <outlet property="XLXEGTIAItem" destination="832" id="842"/>
                 <outlet property="af80ModeItem" destination="MnU-TU-cRx" id="vFu-px-Qsg"/>
                 <outlet property="bit3ModeItem" destination="5Bm-Vo-lcW" id="Sm2-fg-1BT"/>
@@ -1117,9 +1119,14 @@ DQ
                 <outlet property="fullscreenItem" destination="442" id="539"/>
                 <outlet property="grabMouseItem" destination="541" id="543"/>
                 <outlet property="ntscCompositePresetItem" destination="bTd-cV-XdL" id="gmd-kZ-lKC"/>
+                <outlet property="ntscFilterPresetsSubmenu" destination="cFs-gf-yKb" id="whO-py-gnQ"/>
+                <outlet property="ntscFullFilterItem" destination="833" id="R4Z-8p-ZdJ"/>
                 <outlet property="ntscMonochromePresetItem" destination="bgs-Jo-YW9" id="VHh-NF-joX"/>
+                <outlet property="ntscNewArtifactItem" destination="832" id="xl6-L8-5w7"/>
                 <outlet property="ntscRGBPresetItem" destination="zTM-k8-lMt" id="q8f-oC-Bnw"/>
                 <outlet property="ntscSVideoPresetItem" destination="svd-pV-4JI" id="Vma-zP-Zyk"/>
+                <outlet property="palFullBlendItem" destination="Hem-gv-V2P" id="UbC-OR-Eq9"/>
+                <outlet property="palSimpleBlendItem" destination="834" id="NAu-hg-uDD"/>
                 <outlet property="pasteMenu" destination="605" id="FFJ-kN-BCM"/>
                 <outlet property="revXLXEGTIAItem" destination="831" id="841"/>
                 <outlet property="scaleModeNormalItem" destination="711" id="716"/>

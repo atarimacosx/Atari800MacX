@@ -548,8 +548,10 @@ static void *fujinet_rx_thread(void *arg) {
             continue;
         }
         
+#ifdef DEBUG_NETSIO_VERBOSE
         Log_print("NetSIO: Received %zd bytes from FujiNet-PC: %02X %02X %02X...", n, 
                  (n > 0) ? buf[0] : 0, (n > 1) ? buf[1] : 0, (n > 2) ? buf[2] : 0);
+#endif
         
         /* Set up FujiNet-PC address for responses (only on first packet) */
         if (!fujinet_known) {
@@ -612,8 +614,9 @@ static void *fujinet_rx_thread(void *arg) {
             {
                 uint8_t r = NETSIO_ALIVE_RESPONSE;
                 struct sockaddr_in *addr_in = (struct sockaddr_in *)&fujinet_addr;
+                /* Commented out to reduce message spam - this happens very frequently
                 Log_print("NetSIO: Sending ALIVE_RESPONSE (C5) to %s:%d", 
-                         inet_ntoa(addr_in->sin_addr), ntohs(addr_in->sin_port));
+                         inet_ntoa(addr_in->sin_addr), ntohs(addr_in->sin_port)); */
                 send_to_fujinet(&r, 1);
 #ifdef DEBUG2
                 Log_print("netsio: recv: IT'S ALIVE!");
