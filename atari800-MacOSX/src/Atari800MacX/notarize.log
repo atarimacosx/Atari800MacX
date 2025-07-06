@@ -1,0 +1,4 @@
+Conducting pre-submission checks for Atari800MacX-7.0.0-beta1.dmg and initiating connection to the Apple notary service...
+Error: No Keychain password item found for profile: AC_PASSWORD
+
+Run 'notarytool store-credentials' to create another credential profile.

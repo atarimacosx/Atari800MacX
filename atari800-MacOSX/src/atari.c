@@ -344,6 +344,30 @@ int Atari800_InitialiseMachine(void)
 	int have_roms;
 	ESC_ClearAll();
 	have_roms = load_roms();
+	
+	/* Fallback mechanism: if Atari 800 fails to load ROMs, try 800XL */
+	if (!have_roms && Atari800_machine_type == Atari800_MACHINE_800) {
+		/* Log the fallback attempt */
+		Log_print("Atari 800 ROM loading failed, falling back to 800XL with built-in ROMs");
+		
+		/* Switch to 800XL with 64K RAM and built-in BASIC */
+		Atari800_machine_type = Atari800_MACHINE_XLXE;
+		MEMORY_ram_size = 64;
+		Atari800_builtin_basic = TRUE;
+		Atari800_builtin_game = FALSE;
+		Atari800_keyboard_leds = FALSE;
+		Atari800_f_keys = TRUE;
+		Atari800_jumper = FALSE;
+		Atari800_keyboard_detached = FALSE;
+		
+		/* Try loading ROMs again with the new machine type */
+		have_roms = load_roms();
+		
+		if (have_roms) {
+			Log_print("Successfully switched to 800XL configuration");
+		}
+	}
+	
 	Atari800_UpdateKeyboardDetached();
 	Atari800_UpdateJumper();
 	MEMORY_InitialiseMachine();

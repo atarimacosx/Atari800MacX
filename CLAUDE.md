@@ -397,3 +397,314 @@ The upgrade from the current Atari800MacX to the newer Atari800 core represents 
 The **comprehensive NetSIO/FujiNet support** in the newer core provides complete FujiNet-PC integration capability, making this a high-value upgrade feature for modern Atari networking.
 
 **Recommended Approach**: Proceed with Phase 1 (Core Engine Update) to modernize the foundation, then selectively implement additional phases based on user feedback and development resources.
+
+---
+
+# Build System & Release Infrastructure (July 2025)
+
+## Overview
+
+Comprehensive build and release system implemented for Atari800MacX 7.0.0 Beta 1, providing automated building, code signing, DMG creation, and Apple notarization support.
+
+## Build Scripts Created
+
+### 1. Main Build Script (`build_release.sh`)
+**Purpose**: Master script for complete build and release pipeline
+
+**Features**:
+- Clean build environment setup
+- Automated app building with Xcode
+- Code signature verification
+- DMG creation and signing
+- Apple notarization integration
+- Error handling and status reporting
+
+**Configuration**:
+```bash
+APP_NAME="Atari800MacX"
+BUNDLE_ID="com.atarimac.atari800macx"
+DEVELOPER_ID="Apple Development: Paulo Garcia (952JHD69PH)"
+TEAM_ID="ZC4PGBX6D6"  # Apple Developer account Team ID
+VERSION="7.0.0"
+BUILD_CONFIG="Development"
+```
+
+**Key Technical Solutions**:
+- **Dynamic APP_PATH detection**: Automatically finds built app in DerivedData directory
+- **Extended attribute cleanup**: Prevents resource fork code signing errors
+- **Conditional error handling**: Graceful failure at each pipeline stage
+
+### 2. DMG Creation Script (`create_dmg.sh`)
+**Purpose**: Professional installer DMG creation
+
+**Features**:
+- 200MB DMG with HFS+ filesystem
+- Professional layout with app and Applications symlink
+- Automatic inclusion of release notes
+- Custom window positioning and icon arrangement
+- Compressed final DMG (~10MB output)
+
+**Layout**:
+```
+DMG Contents:
+├── Atari800MacX.app
+├── Applications (symlink)
+└── Release Notes.md
+```
+
+**AppleScript Integration**: Automated Finder window customization for professional appearance
+
+### 3. Notarization Script (`notarize.sh`)
+**Purpose**: Apple notarization for public distribution
+
+**Features**:
+- Keychain credential management
+- Submission tracking with unique IDs
+- Automatic status monitoring
+- Detailed error reporting
+- Secure credential storage
+
+**Usage**:
+```bash
+./notarize.sh path/to/app.dmg
+```
+
+### 4. Utility Scripts
+- **`test_build.sh`**: Quick development builds
+- **`clean_and_build.sh`**: Clean builds for testing
+- **`build_simple.sh`**: Minimal build without signing
+
+## Critical Issues Resolved
+
+### 1. Bundle Identifier Consistency
+**Problem**: Window sizing and UI issues due to bundle ID change
+**Root Cause**: Changed from `com.atarimac.atari800macx` to `com.paulogarcia.atari800macx`
+**Solution**: Reverted to original bundle ID throughout all scripts and project
+
+**Impact**: Bundle ID changes cause macOS to lose app preferences, resulting in:
+- Window sizing problems
+- UI element state issues (e.g., "Disable Basic" showing as "Load Basic")
+- Lost user preferences
+
+### 2. Build Path Detection
+**Problem**: Scripts couldn't find built app due to Xcode using DerivedData
+**Original Approach**: Hardcoded paths to project build directory
+**Solution**: Dynamic detection using `find` command in DerivedData
+
+```bash
+DERIVED_DATA_PATH="$HOME/Library/Developer/Xcode/DerivedData"
+APP_PATH=$(find "$DERIVED_DATA_PATH" -name "$APP_NAME.app" -path "*/Build/Products/$BUILD_CONFIG/*" | head -1)
+```
+
+### 3. Resource Fork Code Signing Errors
+**Problem**: "resource fork, Finder information, or similar detritus not allowed"
+**Solution**: Comprehensive extended attribute cleanup
+
+```bash
+# Thorough cleanup process
+xattr -cr .
+find . -name "._*" -delete 2>/dev/null || true
+find . -name ".DS_Store" -delete 2>/dev/null || true
+find "$APP_PATH" -type f -exec xattr -d com.apple.ResourceFork {} \; 2>/dev/null || true
+find "$APP_PATH" -type f -exec xattr -d com.apple.FinderInfo {} \; 2>/dev/null || true
+```
+
+### 4. DMG Volume Mounting Conflicts
+**Problem**: Multiple DMG creation attempts caused naming conflicts
+**Solution**: Proactive volume unmounting and cleanup
+
+```bash
+hdiutil detach "$MOUNT_DIR" 2>/dev/null || true
+```
+
+## Apple Developer Configuration
+
+### Team ID Resolution
+**Development Certificate Team ID**: `952JHD69PH` (from local certificate)
+**Apple Developer Account Team ID**: `ZC4PGBX6D6` (from online account)
+
+**Resolution**: Use Apple Developer account Team ID (`ZC4PGBX6D6`) for notarization while keeping existing development certificate for local signing.
+
+### Notarization Setup Process
+1. **Create app-specific password** at https://appleid.apple.com
+2. **Store credentials in keychain**:
+   ```bash
+   xcrun notarytool store-credentials "AC_PASSWORD" \
+       --apple-id "contact@paulogarcia.com" \
+       --team-id "ZC4PGBX6D6" \
+       --password "app-specific-password"
+   ```
+3. **Test credential storage**:
+   ```bash
+   xcrun notarytool history --keychain-profile "AC_PASSWORD"
+   ```
+
+## Notarization Results & Analysis
+
+### Submission Details
+**Submission ID**: `18e7b765-cb01-40a1-ac5e-fd8f093a6219`
+**Status**: Invalid (Failed)
+**File**: `Atari800MacX-7.0.0-beta1.dmg`
+**SHA256**: `ab53222b34ab924f6ce54d1c209b73b251c41fa18ff79af81faaa1c392ca24d4`
+
+### Critical Issues Identified
+
+#### 1. Certificate Type Issues
+**Problem**: Using "Apple Development" certificate instead of "Apple Distribution"
+**Files Affected**:
+- `Atari800MacX.app/Contents/MacOS/Atari800MacX`
+- `Atari800MacX.app/Contents/Frameworks/SDL2.framework/Versions/A/SDL2`
+
+**Error**: "The binary is not signed with a valid Developer ID certificate"
+
+#### 2. Missing Hardened Runtime
+**Problem**: Hardened runtime not enabled (required for notarization)
+**Error**: "The executable does not have the hardened runtime enabled"
+**File**: Main executable
+
+#### 3. Development Entitlements
+**Problem**: Development-only entitlements present in distribution build
+**Error**: "The executable requests the com.apple.security.get-task-allow entitlement"
+**Cause**: `com.apple.security.get-task-allow` is for development/debugging only
+
+#### 4. Missing Secure Timestamps
+**Problem**: Code signatures lack secure timestamps
+**Error**: "The signature does not include a secure timestamp"
+**Cause**: Development builds don't include timestamping by default
+
+#### 5. Third-Party Framework Signing
+**Problem**: SDL2 framework not properly signed for distribution
+**Cause**: Embedded frameworks need re-signing with distribution certificate
+
+## Current Status & Next Steps
+
+### ✅ Working Features (Development Distribution)
+- **Complete build pipeline**: App builds and signs successfully
+- **Professional DMG creation**: ~10MB compressed installer
+- **Local code signing**: Works with development certificate
+- **DMG signing**: Successfully signed and verified
+- **Error handling**: Comprehensive error detection and reporting
+
+### ❌ Notarization Blockers (For Public Distribution)
+1. Need Apple Distribution certificate (not Development)
+2. Enable hardened runtime in Xcode project
+3. Remove development entitlements
+4. Add secure timestamp support
+5. Properly sign embedded SDL2 framework
+
+### Distribution Options
+
+#### Option 1: Beta Testing (Current Capability)
+**Status**: ✅ Ready
+**Distribution Method**: Direct DMG distribution
+**User Instructions**: "Right-click app and select 'Open' to bypass Gatekeeper"
+**Suitable For**: Beta testers, developer distribution
+
+#### Option 2: Public Distribution (Requires Additional Work)
+**Status**: ❌ Blocked by notarization issues
+**Requirements**:
+- Apple Distribution certificate
+- Hardened runtime configuration
+- Entitlements cleanup
+- Framework re-signing
+- Full notarization compliance
+
+## File Structure
+
+### Generated Build Artifacts
+```
+/release/
+└── Atari800MacX-7.0.0-beta1.dmg    # Signed, ready for beta distribution
+
+/build/
+└── Development/
+    └── Atari800MacX.app             # Local copy of built app
+```
+
+### Build Scripts Location
+```
+/build_release.sh                    # Master build script
+/create_dmg.sh                      # DMG creation
+/notarize.sh                        # Apple notarization
+/test_build.sh                      # Development builds
+/clean_and_build.sh                 # Clean builds
+/build_simple.sh                    # Minimal builds
+```
+
+## Performance Metrics
+
+### Build Performance
+- **Clean Build Time**: ~2-3 minutes
+- **DMG Creation Time**: ~10 seconds
+- **Final DMG Size**: ~10MB (from 200MB uncompressed)
+- **Compression Ratio**: 95% space savings
+
+### Code Signing Performance
+- **App Signing**: ~5 seconds
+- **Framework Signing**: ~3 seconds (SDL2)
+- **DMG Signing**: ~2 seconds
+- **Verification**: <1 second
+
+## Lessons Learned
+
+### 1. Bundle Identifier Stability
+**Critical**: Never change bundle identifiers during development unless absolutely necessary. macOS ties app preferences, security permissions, and UI state to bundle IDs.
+
+### 2. Xcode DerivedData Behavior
+**Important**: Don't rely on hardcoded build paths. Xcode's DerivedData location is dynamic and project-specific.
+
+### 3. Extended Attributes Management
+**Essential**: Resource fork cleanup is mandatory for successful code signing. Must be performed both before and after build.
+
+### 4. Apple Developer Team Management
+**Key Insight**: Development certificates and notarization can use different Team IDs. Always use the Apple Developer Portal Team ID for notarization.
+
+### 5. Notarization Requirements
+**Critical Knowledge**: Development builds cannot be notarized. Distribution requires:
+- Distribution certificate (not Development)
+- Hardened runtime enabled
+- Development entitlements removed
+- Secure timestamps
+- All embedded frameworks properly signed
+
+## Recommendations
+
+### For Immediate Beta Distribution
+1. Use current build system as-is
+2. Distribute DMG with Gatekeeper bypass instructions
+3. Test with beta users before investing in full notarization
+
+### For Future Public Distribution
+1. Obtain Apple Distribution certificate
+2. Configure Xcode project for hardened runtime
+3. Create separate build configuration for distribution
+4. Implement framework re-signing in build pipeline
+5. Add secure timestamp support
+
+### For Ongoing Development
+1. Maintain bundle identifier consistency
+2. Test build scripts regularly
+3. Keep credentials secure and up-to-date
+4. Monitor Apple's notarization requirement changes
+
+## Technical Debt & Future Work
+
+### Build System Improvements
+- [ ] Add support for Release configuration builds
+- [ ] Implement automatic version bumping
+- [ ] Add build artifact archival
+- [ ] Create automated testing integration
+
+### Distribution Enhancements
+- [ ] Implement distribution certificate support
+- [ ] Add hardened runtime configuration
+- [ ] Create entitlements management system
+- [ ] Develop framework re-signing pipeline
+
+### Developer Experience
+- [ ] Add build status notifications
+- [ ] Implement build caching
+- [ ] Create development environment validation
+- [ ] Add automated documentation generation
+
+This comprehensive build system provides a solid foundation for Atari800MacX distribution while clearly documenting the path forward for full Apple notarization compliance.

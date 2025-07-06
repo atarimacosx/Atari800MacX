@@ -7,9 +7,9 @@ set -e  # Exit on error
 
 # Configuration
 APP_NAME="Atari800MacX"
-BUNDLE_ID="com.paulogarcia.atari800macx"
+BUNDLE_ID="com.atarimac.atari800macx"
 DEVELOPER_ID="Apple Development: Paulo Garcia (952JHD69PH)"
-TEAM_ID="952JHD69PH"
+TEAM_ID="ZC4PGBX6D6"
 VERSION="7.0.0"
 BUILD_CONFIG="Development"
 
@@ -18,7 +18,9 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 PROJECT_DIR="$SCRIPT_DIR/atari800-MacOSX/src/Atari800MacX"
 BUILD_DIR="$SCRIPT_DIR/build"
 RELEASE_DIR="$SCRIPT_DIR/release"
-APP_PATH="$BUILD_DIR/$BUILD_CONFIG/$APP_NAME.app"
+# Find the actual build path from xcodebuild
+DERIVED_DATA_PATH="$HOME/Library/Developer/Xcode/DerivedData"
+APP_PATH=$(find "$DERIVED_DATA_PATH" -name "$APP_NAME.app" -path "*/Build/Products/$BUILD_CONFIG/*" | head -1)
 DMG_NAME="$APP_NAME-$VERSION-beta1"
 DMG_PATH="$RELEASE_DIR/$DMG_NAME.dmg"
 
@@ -42,21 +44,41 @@ mkdir -p "$RELEASE_DIR"
 echo -e "${YELLOW}Step 2: Building $APP_NAME...${NC}"
 cd "$PROJECT_DIR"
 
-# Clean extended attributes first
+# Clean extended attributes thoroughly
+echo "Cleaning extended attributes from source..."
 xattr -cr .
+find . -name "._*" -delete 2>/dev/null || true
+find . -name ".DS_Store" -delete 2>/dev/null || true
 
 xcodebuild -project "$APP_NAME.xcodeproj" \
     -scheme "$APP_NAME" \
     -configuration "$BUILD_CONFIG" \
-    -derivedDataPath "$BUILD_DIR" \
     clean build
 
-# Clean extended attributes from built app
+# Update APP_PATH after build
+APP_PATH=$(find "$DERIVED_DATA_PATH" -name "$APP_NAME.app" -path "*/Build/Products/$BUILD_CONFIG/*" | head -1)
+
+# Check if app was built successfully
+if [ ! -d "$APP_PATH" ]; then
+    echo -e "${RED}Error: App not found at expected location${NC}"
+    echo "Searched in: $DERIVED_DATA_PATH"
+    echo "Looking for: $APP_NAME.app in */Build/Products/$BUILD_CONFIG/*"
+    exit 1
+fi
+
+echo "Found app at: $APP_PATH"
+
+# Clean extended attributes from built app more thoroughly
 if [ -d "$APP_PATH" ]; then
-    echo "Cleaning extended attributes from built app..."
+    echo "Thoroughly cleaning extended attributes from built app..."
     xattr -cr "$APP_PATH"
     find "$APP_PATH" -name "._*" -delete 2>/dev/null || true
     find "$APP_PATH" -name ".DS_Store" -delete 2>/dev/null || true
+    find "$APP_PATH" -name "*.dSYM" -exec xattr -cr {} \; 2>/dev/null || true
+    
+    # Remove any resource fork data specifically
+    find "$APP_PATH" -type f -exec xattr -d com.apple.ResourceFork {} \; 2>/dev/null || true
+    find "$APP_PATH" -type f -exec xattr -d com.apple.FinderInfo {} \; 2>/dev/null || true
 fi
 
 # Step 3: Verify code signing
@@ -66,7 +88,7 @@ echo -e "${GREEN}✓ Code signature verified${NC}"
 
 # Step 4: Create DMG
 echo -e "${YELLOW}Step 4: Creating DMG...${NC}"
-"$SCRIPT_DIR/create_dmg.sh"
+BUILT_APP_PATH="$APP_PATH" "$SCRIPT_DIR/create_dmg.sh"
 
 # Step 5: Sign the DMG
 echo -e "${YELLOW}Step 5: Signing DMG...${NC}"

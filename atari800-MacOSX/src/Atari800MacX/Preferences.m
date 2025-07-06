@@ -318,7 +318,7 @@ static NSDictionary *defaultValues() {
                 [NSNumber numberWithInt:0], XEP80OffColor,
                 [NSNumber numberWithBool:YES], XEGSKeyboard,
                 [NSNumber numberWithBool:NO], A1200XLJumper,
-                [NSNumber numberWithInt:4], AtariType,
+                [NSNumber numberWithInt:7], AtariType,
                 [NSNumber numberWithInt:-1], AtariTypeVer4,
                 [NSNumber numberWithInt:-1], AtariTypeVer5,
                 [NSNumber numberWithInt:7], AtariSwitchType,

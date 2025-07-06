@@ -1775,7 +1775,7 @@
 					"-lm",
 					"-lz",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.paulogarcia.atari800macx;
+				PRODUCT_BUNDLE_IDENTIFIER = com.atarimac.atari800macx;
 				PRODUCT_NAME = Atari800MacX;
 				SDKROOT = macosx;
 				SECTORDER_FLAGS = "";
@@ -1834,7 +1834,7 @@
 					"-lm",
 					"-lz",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.paulogarcia.atari800macx;
+				PRODUCT_BUNDLE_IDENTIFIER = com.atarimac.atari800macx;
 				PRODUCT_NAME = Atari800MacX;
 				SDKROOT = macosx;
 				SECTORDER_FLAGS = "";
@@ -1902,7 +1902,7 @@
 					"-lm",
 					"-lz",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.paulogarcia.atari800macx;
+				PRODUCT_BUNDLE_IDENTIFIER = com.atarimac.atari800macx;
 				PRODUCT_NAME = Atari800MacX;
 				SDKROOT = macosx;
 				SECTORDER_FLAGS = "";

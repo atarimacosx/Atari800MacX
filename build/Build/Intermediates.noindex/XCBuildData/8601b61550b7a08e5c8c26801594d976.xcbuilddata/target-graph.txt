@@ -1,2 +1,0 @@
-Target dependency graph (1 target)
-Target 'Atari800MacX' in project 'Atari800MacX' (no dependencies)

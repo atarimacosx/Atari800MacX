@@ -12,8 +12,8 @@ if [ $# -eq 0 ]; then
 fi
 
 DMG_PATH="$1"
-BUNDLE_ID="com.paulogarcia.atari800macx"
-TEAM_ID="952JHD69PH"
+BUNDLE_ID="com.atarimac.atari800macx"
+TEAM_ID="ZC4PGBX6D6"
 
 # Colors
 RED='\033[0;31m'

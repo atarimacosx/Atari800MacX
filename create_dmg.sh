@@ -14,7 +14,14 @@ VOLUME_NAME="Atari800MacX 7.0.0 Beta 1"
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 BUILD_DIR="$SCRIPT_DIR/build"
 RELEASE_DIR="$SCRIPT_DIR/release"
-APP_PATH="$BUILD_DIR/Development/$APP_NAME.app"
+# Use the app path passed as environment variable from build script, or find it
+if [ -n "$BUILT_APP_PATH" ]; then
+    APP_PATH="$BUILT_APP_PATH"
+else
+    # Find the actual build path from DerivedData
+    DERIVED_DATA_PATH="$HOME/Library/Developer/Xcode/DerivedData"
+    APP_PATH=$(find "$DERIVED_DATA_PATH" -name "$APP_NAME.app" -path "*/Build/Products/Development/*" | head -1)
+fi
 DMG_PATH="$RELEASE_DIR/$DMG_NAME.dmg"
 TEMP_DMG_PATH="$RELEASE_DIR/temp.dmg"
 MOUNT_DIR="/Volumes/$VOLUME_NAME"
@@ -22,9 +29,21 @@ MOUNT_DIR="/Volumes/$VOLUME_NAME"
 # Ensure directories exist
 mkdir -p "$RELEASE_DIR"
 
+# Check if app exists
+if [ ! -d "$APP_PATH" ]; then
+    echo "Error: App not found at $APP_PATH"
+    echo "Please build the app first or check the path"
+    exit 1
+fi
+
+echo "Using app at: $APP_PATH"
+
 # Remove old DMG if exists
 rm -f "$DMG_PATH"
 rm -f "$TEMP_DMG_PATH"
+
+# Unmount any existing volumes with this name
+hdiutil detach "$MOUNT_DIR" 2>/dev/null || true
 
 echo "Creating DMG for $APP_NAME..."
 
