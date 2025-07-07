@@ -1,5 +1,55 @@
-.DS_Store
+# Local development files
+CLAUDE.md
+RELEASE_NOTES_*.md
+a800release.txt
 
-/atari800-MacOSX/src/Atari800MacX/build/
-/atari800-MacOSX/src/Atari800MacX/Atari800MacX.xcodeproj/project.xcworkspace/xcuserdata/*
-/atari800-MacOSX/src/Atari800MacX/Atari800MacX.xcodeproj/project.xcworkspace/xcuserdata/markg.xcuserdatad/UserInterfaceState.xcuserstate
+# Build scripts
+*.sh
+*.py
+
+# Backup files
+*.bak
+*.backup
+*~
+backup_*/
+
+# Release artifacts
+*.dmg
+release/
+
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Xcode
+*.pbxuser
+\!default.pbxuser
+*.mode1v3
+\!default.mode1v3
+*.mode2v3
+\!default.mode2v3
+*.perspectivev3
+\!default.perspectivev3
+xcuserdata/
+*.xccheckout
+*.moved-aside
+DerivedData/
+*.hmap
+*.ipa
+*.xcuserstate
+project.xcworkspace/
+*.xcworkspace/
+\!default.xcworkspace/
+
+# Build products
+build/
+*.build/
+
+# Logs
+*.log
+EOF < /dev/null

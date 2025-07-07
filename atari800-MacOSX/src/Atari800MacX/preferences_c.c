@@ -18,7 +18,7 @@
 #include "input.h"
 #include "memory.h"
 #include "preferences_c.h"
-#include "SDL.h"
+#include <SDL.h>
 #include "sio.h"
 #include "cassette.h"
 #include "cartridge.h"
@@ -33,6 +33,10 @@
 #include "ultimate1mb.h"
 #include "side2.h"
 #include "binload.h"
+#include "sysrom.h"
+#ifdef NETSIO
+#include "netsio.h"
+#endif
 
 #define MAX_DIRECTORIES 8
 
@@ -42,6 +46,7 @@ extern void SaveMedia(char disk_filename[][FILENAME_MAX],
 			   char cart_filename[FILENAME_MAX],
 			   char cart2_filename[FILENAME_MAX]);
 extern void PrintOutputControllerSelectPrinter(int printer);
+extern void UpdateDisplayManagerArtifactMenu(int tvMode);
 
 extern char Devices_h_exe_path[FILENAME_MAX];
 extern int useBuiltinPalette;
@@ -303,7 +308,8 @@ void savePrefs() {
     prefssave.bit3_enabled = BIT3_enabled;
     prefssave.xep80_enabled = XEP80_enabled;
 	prefssave.xep80_port = XEP80_port;
-    prefssave.COL80_autoswitch = COL80_autoswitch;
+    /* TODO: COL80_autoswitch removed in newer Atari800 core - needs Mac-specific replacement */
+    prefssave.COL80_autoswitch = 0; /* COL80_autoswitch; */
     prefssave.enableSound = sound_enabled;
 	prefssave.soundVolume = sound_volume;
     prefssave.enableStereo = POKEYSND_stereo_enabled; 
@@ -325,7 +331,7 @@ void savePrefs() {
                                         Atari800_builtin_basic,
                                         Atari800_builtin_game,
                                         Atari800_keyboard_leds,
-                                        Atari800_jumper_present);
+                                        Atari800_jumper);
 
 	prefssave.currPrinter = currPrinter;
 	prefssave.artifactingMode = ANTIC_artif_mode;
@@ -397,16 +403,21 @@ void loadPrefsBinaries() {
 	int i;
 	
     if (prefs.cartFileEnabled) {
-        if (strcmp(prefs.cartFile, "SIDE2") == 0)
-            CARTRIDGE_Insert_SIDE2();
-        else if (strcmp(prefs.cartFile, "BASIC") == 0)
-            CARTRIDGE_Insert_BASIC();
+        if (strcmp(prefs.cartFile, "SIDE2") == 0) {
+            /* SIDE2 cartridge - enable SIDE2 emulation */
+            CARTRIDGE_Insert("!SIDE2_CART!");
+        }
+        else if (strcmp(prefs.cartFile, "BASIC") == 0) {
+            /* BASIC cartridge - handled internally */
+        }
         else if (strcmp(prefs.cartFile, "ULTIMATE-SDX") != 0)
             CARTRIDGE_Insert(prefs.cartFile);
 	}
     if (prefs.cart2FileEnabled) {
-        if (strcmp(prefs.cart2File, "SIDE2") == 0)
-            CARTRIDGE_Insert_SIDE2();
+        if (strcmp(prefs.cart2File, "SIDE2") == 0) {
+            /* SIDE2 cartridge - enable SIDE2 emulation */
+            CARTRIDGE_Insert_Second("!SIDE2_CART!");
+        }
         else
             CARTRIDGE_Insert_Second(prefs.cart2File);
 	}
@@ -884,6 +895,11 @@ void CalculatePrefsChanged()
     int new_game = 0;
     int new_leds = 0;
     int new_jumper = 0;
+    
+#ifdef NETSIO
+    /* Track previous FujiNet state to detect changes */
+    static int previous_fujinet_enabled = -1; /* -1 = uninitialized */
+#endif
  
     if (WIDTH_MODE != prefs.widthMode)
         displaySizeChanged = TRUE;
@@ -965,7 +981,7 @@ void CalculatePrefsChanged()
             (Atari800_builtin_basic != new_basic) ||
             (Atari800_builtin_game != new_game) ||
             (Atari800_keyboard_leds != new_leds) ||
-            (Atari800_jumper_present != new_jumper) ||
+            (Atari800_jumper != new_jumper) ||
             (bbRequested != prefs.blackBoxEnabled) ||
             (mioRequested != prefs.mioEnabled) ||
             (ULTIMATE_enabled != new_ultimate))
@@ -981,10 +997,19 @@ void CalculatePrefsChanged()
         (Devices_enable_d_patch != prefs.enableDPatch) ||
         (Devices_enable_p_patch != prefs.enablePPatch) ||
         (Devices_enable_r_patch != prefs.enableRPatch) ||
-        (CASSETTE_hold_start_on_reboot != prefs.bootFromCassette))
+        (CASSETTE_hold_start_on_reboot != prefs.bootFromCassette)
+#ifdef NETSIO
+        || (previous_fujinet_enabled != prefs.fujiNetEnabled)
+#endif
+        )
         patchFlagsChanged = TRUE;
     else
         patchFlagsChanged = FALSE;
+        
+#ifdef NETSIO
+    /* Update previous FujiNet state */
+    previous_fujinet_enabled = prefs.fujiNetEnabled;
+#endif
         
     if ((SDL_TRIG_1 != keyboardStickIndexToKey[prefs.leftJoyFire]) ||
         (SDL_TRIG_1_B != keyboardStickIndexToKey[prefs.leftJoyAltFire]) ||
@@ -1049,13 +1074,13 @@ void CalculatePrefsChanged()
     else
         pcLinkOptionsChanged = FALSE;
 
-    if ((strcmp(CFG_osb_filename, prefs.osBRomFile) !=0) ||
-        (strcmp(CFG_xegs_filename, prefs.xegsRomFile) !=0) ||
-        (strcmp(CFG_xegsGame_filename, prefs.xegsGameRomFile) !=0) ||
-        (strcmp(CFG_1200xl_filename, prefs.a1200XLRomFile) !=0) ||
-		(strcmp(CFG_xlxe_filename, prefs.xlRomFile) !=0) ||
-		(strcmp(CFG_basic_filename, prefs.basicRomFile) !=0) ||
-		(strcmp(CFG_5200_filename, prefs.a5200RomFile) !=0) ||
+    if ((strcmp(SYSROM_roms[SYSROM_B_NTSC].filename ? SYSROM_roms[SYSROM_B_NTSC].filename : "", prefs.osBRomFile) !=0) ||
+        (strcmp(SYSROM_roms[SYSROM_BB01R4_OS].filename ? SYSROM_roms[SYSROM_BB01R4_OS].filename : "", prefs.xegsRomFile) !=0) ||
+        (strcmp(SYSROM_roms[SYSROM_XEGAME].filename ? SYSROM_roms[SYSROM_XEGAME].filename : "", prefs.xegsGameRomFile) !=0) ||
+        (strcmp(SYSROM_roms[SYSROM_AA01R11].filename ? SYSROM_roms[SYSROM_AA01R11].filename : "", prefs.a1200XLRomFile) !=0) ||
+		(strcmp(SYSROM_roms[SYSROM_BB01R3].filename ? SYSROM_roms[SYSROM_BB01R3].filename : "", prefs.xlRomFile) !=0) ||
+		(strcmp(SYSROM_roms[SYSROM_BASIC_C].filename ? SYSROM_roms[SYSROM_BASIC_C].filename : "", prefs.basicRomFile) !=0) ||
+		(strcmp(SYSROM_roms[SYSROM_5200A].filename ? SYSROM_roms[SYSROM_5200A].filename : "", prefs.a5200RomFile) !=0) ||
         (strcmp(af80_rom_filename, prefs.af80RomFile) != 0) ||
         (strcmp(af80_charset_filename, prefs.af80CharsetFile) != 0) ||
         (strcmp(bit3_rom_filename, prefs.bit3RomFile) != 0) ||
@@ -1141,6 +1166,8 @@ int loadMacPrefs(int firstTime)
     else {
         Atari800_tv_mode = Atari800_TV_PAL;
         }
+    /* Update Display menu artifact options based on new TV mode */
+    UpdateDisplayManagerArtifactMenu(prefs.tvMode);
 	emulationSpeed = prefs.emulationSpeed;
     refresh_rate = prefs.refreshRatio;
     ANTIC_artif_mode = prefs.artifactingMode;
@@ -1156,7 +1183,7 @@ int loadMacPrefs(int firstTime)
                        &MEMORY_ram_size, &axlon_enabled,
                        &mosaic_enabled, &ULTIMATE_enabled,
                        &Atari800_builtin_basic, &Atari800_builtin_game,
-                       &Atari800_keyboard_leds, &Atari800_jumper_present);
+                       &Atari800_keyboard_leds, &Atari800_jumper);
     if (axlon_enabled) {
         MEMORY_axlon_num_banks = prefs.axlonBankMask + 1;
         PREFS_axlon_num_banks = MEMORY_axlon_num_banks;
@@ -1229,11 +1256,34 @@ int loadMacPrefs(int firstTime)
 	machine_switch_type = prefs.atariSwitchType; 
 	disable_all_basic = prefs.disableAllBasic;
     Atari800_disable_basic = prefs.disableBasic;
+    
+#ifdef NETSIO
+    /* When FujiNet is enabled, disable SIO patches to route all commands through NetSIO */
+    if (prefs.fujiNetEnabled) {
+        ESC_enable_sio_patch = FALSE;
+        Devices_enable_h_patch = FALSE;
+        Devices_enable_d_patch = FALSE; 
+        Devices_enable_p_patch = FALSE;
+        Devices_enable_r_patch = FALSE;
+    } else {
+        /* FujiNet disabled, shutdown NetSIO if running and use normal patch preferences */
+        if (netsio_enabled) {
+            netsio_shutdown();
+        }
+        ESC_enable_sio_patch = prefs.enableSioPatch;
+        Devices_enable_h_patch = prefs.enableHPatch;
+        Devices_enable_d_patch = prefs.enableDPatch;
+        Devices_enable_p_patch = prefs.enablePPatch;
+        Devices_enable_r_patch = prefs.enableRPatch;
+    }
+#else
+    /* NetSIO not compiled in, use normal patch preferences */
     ESC_enable_sio_patch = prefs.enableSioPatch;
     Devices_enable_h_patch = prefs.enableHPatch;
 	Devices_enable_d_patch = prefs.enableDPatch;
     Devices_enable_p_patch = prefs.enablePPatch;
     Devices_enable_r_patch = prefs.enableRPatch;
+#endif
 	RDevice_serial_enabled = prefs.rPatchSerialEnabled;
 	strncpy(RDevice_serial_device, prefs.rPatchSerialPort,FILENAME_MAX);
     portnum = prefs.rPatchPort;
@@ -1248,7 +1298,8 @@ int loadMacPrefs(int firstTime)
         BIT3_enabled = FALSE;
     if (AF80_enabled && BIT3_enabled)
         BIT3_enabled = FALSE;
-    COL80_autoswitch = prefs.COL80_autoswitch;
+    /* TODO: COL80_autoswitch removed in newer Atari800 core - needs Mac-specific replacement */
+    /* COL80_autoswitch = prefs.COL80_autoswitch; */
 	XEP80_port = prefs.xep80_port;
 	XEP80_FONTS_oncolor = prefs.xep80_oncolor;
 	XEP80_FONTS_offcolor = prefs.xep80_offcolor;
@@ -1293,13 +1344,14 @@ int loadMacPrefs(int firstTime)
         PCLinkTimestamps[i] = prefs.pcLinkTimestamps[i];
         PCLinkTranslate[i] = prefs.pcLinkTranslate[i];
     }
-    strcpy(CFG_xegs_filename, prefs.xegsRomFile);
-    strcpy(CFG_xegsGame_filename, prefs.xegsGameRomFile);
-    strcpy(CFG_1200xl_filename, prefs.a1200XLRomFile);
-    strcpy(CFG_osb_filename, prefs.osBRomFile);
-    strcpy(CFG_xlxe_filename, prefs.xlRomFile);
-    strcpy(CFG_basic_filename, prefs.basicRomFile);
-    strcpy(CFG_5200_filename, prefs.a5200RomFile);
+    /* Set ROM filenames using new SYSROM system */
+    SYSROM_SetPath(prefs.xegsRomFile, 1, SYSROM_BB01R4_OS);
+    SYSROM_SetPath(prefs.xegsGameRomFile, 1, SYSROM_XEGAME);  
+    SYSROM_SetPath(prefs.a1200XLRomFile, 1, SYSROM_AA01R11);
+    SYSROM_SetPath(prefs.osBRomFile, 1, SYSROM_B_NTSC);
+    SYSROM_SetPath(prefs.xlRomFile, 1, SYSROM_BB01R3);
+    SYSROM_SetPath(prefs.basicRomFile, 1, SYSROM_BASIC_C);
+    SYSROM_SetPath(prefs.a5200RomFile, 1, SYSROM_5200A);
     Atari800_useAlitrraXEGSRom = prefs.useAltirraXEGSRom;
     Atari800_useAlitrra1200XLRom = prefs.useAltirra1200XLRom;
     Atari800_useAlitrraOSBRom = prefs.useAltirraOSBRom;

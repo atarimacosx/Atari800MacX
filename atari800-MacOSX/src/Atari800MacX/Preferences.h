@@ -25,6 +25,8 @@
 #define SpriteCollisions @"SpriteCollisions"
 #define ArtifactingMode @"ArtifactingMode"
 #define ArtifactNew @"ArtifactNew"
+#define NTSCArtifactingMode @"NTSCArtifactingMode"
+#define PALArtifactingMode @"PALArtifactingMode"
 #define UseBuiltinPalette @"UseBuiltinPalette"
 #define AdjustPalette @"AdjustPalette"
 #define BlackLevel @"BlackLevel"
@@ -172,6 +174,8 @@
 #define UseAltiraXLRom @"UseAltiraXLRom"
 #define UseAltira5200Rom @"UseAltira5200Rom"
 #define UseAltiraBasicRom @"UseAltiraBasicRom"
+#define FujiNetEnabled @"FujiNetEnabled"
+#define FujiNetPort @"FujiNetPort"
 #define XEGSRomFile @"XEGSRomFile"
 #define XEGSGameRomFile @"XEGSGameRomFile"
 #define A1200XLRomFile @"A1200XLRomFile"
@@ -315,6 +319,9 @@
 	IBOutlet id axlonMemSizePulldown;
 	IBOutlet id mosaicMemSizePulldown;
 	IBOutlet id pbiExpansionMatrix;
+	IBOutlet id fujiNetEnabledButton;
+	IBOutlet id fujiNetPortField;
+	IBOutlet id fujiNetStatusField;
 	IBOutlet id mioRomFileField;
 	IBOutlet id blackBoxRomFileField;
 	IBOutlet id blackBoxScsiDiskFileField;
@@ -645,6 +652,7 @@
 - (void)revertToDefault:(id)sender;    
 
 - (IBAction)miscChanged:(id)sender;	/* Action message for most of the misc items in the UI to get displayedValues  */
+- (IBAction)fujiNetChanged:(id)sender;	/* Action message for FujiNet UI changes */
 - (void)browsePalette:(id)sender; 
 - (void)browseImage:(id)sender; 
 - (void)browsePrint:(id)sender; 
@@ -751,5 +759,6 @@
 - (void)loadConfigurationMenu:(id)sender;
 - (void)loadConfigurationUI:(char *)filename;
 - (void)loadConfigFile:(NSString *)filename;
+- (void)updateArtifactingPulldownForTVMode;
 
 @end

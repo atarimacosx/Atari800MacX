@@ -86,7 +86,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 	
 	[(NSString *) anObject getCString:buffer maxLength:80 encoding:NSASCIIStringEncoding]; 
 	
-	if (get_hex(buffer, &hexval)) {
+	if (get_hex_gui(buffer, &hexval)) {
 		MEMORY_PutByte(regDefs[rowIndex].writeAddr, hexval);
 		[(ControlManager *)owner updateMonitorGUIHardware];
 	}

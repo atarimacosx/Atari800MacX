@@ -162,8 +162,7 @@ sourceOperationMaskForDraggingContext:(NSDraggingContext)context
                     [suffix isEqualToString:@"img"] ||
                     [suffix isEqualToString:@"IMG"] ||
                     [suffix isEqualToString:@"vhd"] ||
-					[suffix isEqualToString:@"VHD"] ) &&
-                     (CARTRIDGE_main.type == CARTRIDGE_SIDE2))
+					[suffix isEqualToString:@"VHD"]))
 					return NSDragOperationNone;
             }
 		if (sourceDragMask & NSDragOperationMove)
@@ -211,11 +210,10 @@ sourceOperationMaskForDraggingContext:(NSDraggingContext)context
 	   else if ([self tag] == 8)
 			[[MediaManager sharedInstance] cassInsertFile:[files objectAtIndex:0]]; 
        else if ([self tag] == 9) {
-           if ((CARTRIDGE_main.type == CARTRIDGE_SIDE2) &&
-               ([suffix isEqualToString:@"img"] ||
-                [suffix isEqualToString:@"IMG"] ||
-                [suffix isEqualToString:@"vhd"] ||
-                [suffix isEqualToString:@"VHD"])) {
+           if ([suffix isEqualToString:@"img"] ||
+               [suffix isEqualToString:@"IMG"] ||
+               [suffix isEqualToString:@"vhd"] ||
+               [suffix isEqualToString:@"VHD"]) {
                [[MediaManager sharedInstance] side2AttachCFFile:[files objectAtIndex:0]];
            } else {
            [[MediaManager sharedInstance] cartInsertFile:[files objectAtIndex:0]];

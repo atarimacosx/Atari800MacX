@@ -2,7 +2,7 @@
  * gtia.c - GTIA chip emulation
  *
  * Copyright (C) 1995-1998 David Firth
- * Copyright (C) 1998-2005 Atari800 development team (see DOC/CREDITS)
+ * Copyright (C) 1998-2015 Atari800 development team (see DOC/CREDITS)
  *
  * This file is part of the Atari800 emulator project which emulates
  * the Atari 400, 800, 800XL, 130XE, and 5200 8-bit computers.
@@ -36,7 +36,6 @@
 #endif
 #include "pokeysnd.h"
 #include "screen.h"
-#include "devices.h"
 
 /* GTIA Registers ---------------------------------------------------------- */
 
@@ -148,7 +147,6 @@ static ULONG *grafp_ptr[4];
 static int global_sizem[4];
 
 static const int PM_Width[4] = {1, 2, 1, 4};
-static int patch_ram[0x100];
 
 /* Meaning of bits in GTIA_pm_scanline:
 bit 0 - Player 0
@@ -266,7 +264,7 @@ static void generate_partial_pmpl_colls(int l, int r)
 	if (r < 0 || l >= (int) sizeof(GTIA_pm_scanline) / (int) sizeof(GTIA_pm_scanline[0]))
 		return;
 	if (r >= (int) sizeof(GTIA_pm_scanline) / (int) sizeof(GTIA_pm_scanline[0])) {
-		r = (int) sizeof(GTIA_pm_scanline) / (int) sizeof(GTIA_pm_scanline[0]);
+		r = (int) sizeof(GTIA_pm_scanline) / (int) sizeof(GTIA_pm_scanline[0]) - 1;
 	}
 	if (l < 0)
 		l = 0;
@@ -435,9 +433,6 @@ void GTIA_Frame(void)
 
 UBYTE GTIA_GetByte(UWORD addr, int no_side_effects)
 {
-    if ((Devices_enable_d_patch || Devices_enable_h_patch || Devices_enable_r_patch) && addr >= 0xd040) {
-        return patch_ram[addr & 0xFF];
-    }
 	switch (addr & 0x1f) {
 	case GTIA_OFFSET_M0PF:
 #ifdef NEW_CYCLE_EXACT
@@ -598,9 +593,6 @@ UBYTE GTIA_GetByte(UWORD addr, int no_side_effects)
 
 void GTIA_PutByte(UWORD addr, UBYTE byte)
 {
-    if ((Devices_enable_d_patch || Devices_enable_h_patch || Devices_enable_r_patch) && addr >= 0xd040) {
-        patch_ram[addr & 0xFF] = byte;
-    }
 #if !defined(BASIC) && !defined(CURSES_BASIC)
 	UWORD cword;
 	UWORD cword2;
@@ -608,7 +600,7 @@ void GTIA_PutByte(UWORD addr, UBYTE byte)
 #ifdef NEW_CYCLE_EXACT
 	int x; /* the cycle-exact update position in GTIA_pm_scanline */
 	if (ANTIC_DRAWING_SCREEN) {
-		if ((addr & 0x1f) != GTIA_PRIOR) {
+		if ((addr & 0x1f) != GTIA_OFFSET_PRIOR) {
 			ANTIC_UpdateScanline();
 		} else {
 			ANTIC_UpdateScanlinePrior(byte);

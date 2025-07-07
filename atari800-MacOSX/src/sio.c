@@ -2,7 +2,7 @@
  * sio.c - Serial I/O emulation
  *
  * Copyright (C) 1995-1998 David Firth
- * Copyright (C) 1998-2008 Atari800 development team (see DOC/CREDITS)
+ * Copyright (C) 1998-2010 Atari800 development team (see DOC/CREDITS)
  *
  * This file is part of the Atari800 emulator project which emulates
  * the Atari 400, 800, 800XL, 130XE, and 5200 8-bit computers.
@@ -21,6 +21,9 @@
  * along with Atari800; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
+
+#define _POSIX_C_SOURCE 200112L /* for snprintf */
+
 #include "config.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -45,16 +48,12 @@
 #ifndef BASIC
 #include "statesav.h"
 #endif
-
-#ifdef MACOSX
-#include "mac_diskled.h"
-extern void UpdateMediaManagerInfo(void);
-#include "pclink.h"
-#endif
+#ifdef NETSIO
+#include "netsio.h"
+#endif /* NETSIO */
 
 #undef DEBUG_PRO
 #undef DEBUG_VAPI
-#undef VAPI_OVERRIDE
 
 /* If ATR image is in double density (256 bytes per sector),
    then the boot sectors (sectors 1-3) can be:
@@ -101,7 +100,7 @@ typedef struct tagpro_additional_info_t {
 
 /* stores dup sector information for VAPI images */
 typedef struct tagvapi_sec_info_t {
-	unsigned int sec_count;
+	int sec_count;
 	unsigned int sec_offset[MAX_VAPI_PHANTOM_SEC];
 	unsigned char sec_status[MAX_VAPI_PHANTOM_SEC];
 	unsigned int sec_rot_pos[MAX_VAPI_PHANTOM_SEC];
@@ -163,7 +162,7 @@ int SIO_last_op;
 int SIO_last_op_time = 0;
 int SIO_last_drive;
 int SIO_last_sector;
-char SIO_status[512];
+char SIO_status[256];
 
 /* Serial I/O emulation support */
 #define SIO_NoFrame         (0x00)
@@ -175,11 +174,13 @@ char SIO_status[512];
 #define SIO_FormatFrame     (0x06)
 static UBYTE CommandFrame[6];
 static int CommandIndex = 0;
-static UBYTE DataBuffer[65536];
+static UBYTE DataBuffer[65535 + 3]; /* large buffer for FujiNet */
 static int DataIndex = 0;
 static int TransferStatus = SIO_NoFrame;
-static int TransferDest = 0;
 static int ExpectedBytes = 0;
+#ifdef NETSIO
+int NetSIO_GetByte(void);
+#endif
 
 int ignore_header_writeprotect = FALSE;
 
@@ -205,16 +206,6 @@ void SIO_Exit(void)
 		SIO_Dismount(i);
 }
 
-#ifdef MACOSX
-int SIO_IsVapi(int diskno) 
-{
-	if (image_type[diskno-1] == IMAGE_TYPE_VAPI)
-		return TRUE;
-	else
-		return FALSE;
-}
-#endif
-
 int SIO_Mount(int diskno, const char *filename, int b_open_readonly)
 {
 	FILE *f = NULL;
@@ -227,9 +218,7 @@ int SIO_Mount(int diskno, const char *filename, int b_open_readonly)
 
 	/* release previous disk */
 	SIO_Dismount(diskno);
-#ifdef VAPI_OVERRIDE
-	VapiLoadImage(filename);
-#endif	
+
 	/* open file */
 	if (!b_open_readonly)
 		f = Util_fopen(filename, "rb+", sio_tmpbuf[diskno - 1]);
@@ -303,7 +292,7 @@ int SIO_Mount(int diskno, const char *filename, int b_open_readonly)
 		image_type[diskno - 1] = IMAGE_TYPE_ATR;
 
 		sectorsize[diskno - 1] = (header.secsizehi << 8) + header.secsizelo;
-		if (sectorsize[diskno - 1] != 128 && sectorsize[diskno - 1] != 256 && sectorsize[diskno - 1] != 512) {
+		if (sectorsize[diskno - 1] != 128 && sectorsize[diskno - 1] != 256) {
 			Util_fclose(f, sio_tmpbuf[diskno - 1]);
 			return FALSE;
 		}
@@ -344,9 +333,6 @@ int SIO_Mount(int diskno, const char *filename, int b_open_readonly)
 			}
 			sectorcount[diskno - 1] >>= 1;
 		}
-		else if (sectorsize[diskno - 1] == 512) {
-			sectorcount[diskno - 1] >>= 2;
-		}
 	}
 	else if (header.magic1 == 'A' && header.magic2 == 'T' && header.seccountlo == '8' &&
 		 header.seccounthi == 'X') {
@@ -354,7 +340,7 @@ int SIO_Mount(int diskno, const char *filename, int b_open_readonly)
 		vapi_additional_info_t *info;
 		vapi_file_header_t fileheader;
 		vapi_track_header_t trackheader;
-		ULONG trackoffset, totalsectors;
+		int trackoffset, totalsectors;
 
 		/* .atx is read only for now */
 #ifndef VAPI_WRITE_ENABLE
@@ -405,9 +391,9 @@ int SIO_Mount(int diskno, const char *filename, int b_open_readonly)
 			trackoffset += next;
 		}
 
-		info = Util_malloc(sizeof(vapi_additional_info_t));
+		info = (vapi_additional_info_t *)Util_malloc(sizeof(vapi_additional_info_t));
 		additional_info[diskno-1] = info;
-		info->sectors = Util_malloc(sectorcount[diskno - 1] * 
+		info->sectors = (vapi_sec_info_t *)Util_malloc(sectorcount[diskno - 1] * 
  					    sizeof(vapi_sec_info_t));
 		memset(info->sectors, 0, sectorcount[diskno - 1] * 
  					 sizeof(vapi_sec_info_t));
@@ -415,7 +401,7 @@ int SIO_Mount(int diskno, const char *filename, int b_open_readonly)
 		/* Now read all the sector data */
 		trackoffset = VAPI_32(fileheader.startdata);
 		while (trackoffset > 0 && trackoffset < file_length) {
-			ULONG sectorcnt, seclistdata,next;
+			int sectorcnt, seclistdata,next;
 			vapi_sector_list_header_t sectorlist;
 			vapi_sector_header_t sectorheader;
 			vapi_sec_info_t *sector;
@@ -530,9 +516,9 @@ int SIO_Mount(int diskno, const char *filename, int b_open_readonly)
 				sectorcount[diskno - 1] = 720;
 			}
 
-			info = Util_malloc(sizeof(pro_additional_info_t));
+			info = (pro_additional_info_t *)Util_malloc(sizeof(pro_additional_info_t));
 			additional_info[diskno-1] = info;
-			info->count = Util_malloc(sectorcount[diskno - 1]);
+			info->count = (unsigned char *)Util_malloc(sectorcount[diskno - 1]);
 			memset(info->count, 0, sectorcount[diskno -1]);
 			info->max_sector = (file_length-16)/(128+12);
 		}
@@ -619,7 +605,7 @@ void SIO_SizeOfSector(UBYTE unit, int sector, int *sz, ULONG *ofs)
 		vapi_sec_info_t *secinfo;
 
 		size = 128;
-		info = additional_info[unit];
+		info = (vapi_additional_info_t *)additional_info[unit];
 		if (info == NULL)
 			offset = 0;
 		else if (sector > sectorcount[unit])
@@ -631,10 +617,6 @@ void SIO_SizeOfSector(UBYTE unit, int sector, int *sz, ULONG *ofs)
 			else
 				offset = secinfo->sec_offset[0];
 		}
-	}
-	else if (sectorsize[unit] == 512) {
-		size = 512;
-		offset = header_size + (sector -1) * size;
 	}
 	else if (sector < 4) {
 		/* special case for first three sectors in ATR and XFD image */
@@ -658,11 +640,8 @@ static int SeekSector(int unit, int sector)
 	ULONG offset;
 	int size;
 
-#ifdef MACOSX
-	LED_SetSector(sector);
-#endif
 	SIO_last_sector = sector;
-	sprintf(SIO_status, "%d: %d", unit + 1, sector);
+	snprintf(SIO_status, sizeof(SIO_status), "%d: %d", unit + 1, sector);
 	SIO_SizeOfSector((UBYTE) unit, sector, &size, &offset);
 	fseek(disk[unit], offset, SEEK_SET);
 
@@ -686,9 +665,6 @@ int SIO_ReadSector(int unit, int sector, UBYTE *buffer)
 	SIO_last_op = SIO_LAST_READ;
 	SIO_last_op_time = 1;
 	SIO_last_drive = unit + 1;
-#ifdef MACOSX
-				LED_SetRead(unit, 1);
-#endif
 	/* FIXME: what sector size did the user expect? */
 	size = SeekSector(unit, sector);
 	if (image_type[unit] == IMAGE_TYPE_PRO) {
@@ -696,7 +672,10 @@ int SIO_ReadSector(int unit, int sector, UBYTE *buffer)
 		unsigned char *count;
 		info = (pro_additional_info_t *)additional_info[unit];
 		count = info->count;
-		fread(buffer, 1, 12, disk[unit]);
+		if (fread(buffer, 1, 12, disk[unit]) < 12) {
+			Log_print("Error in header of .pro image: sector:%d", sector);
+			return 'E';
+		}
 		/* handle duplicate sectors */
 		if (buffer[5] != 0) {
 			int dupnum = count[sector];
@@ -713,12 +692,17 @@ int SIO_ReadSector(int unit, int sector, UBYTE *buffer)
 				}
 				size = SeekSector(unit, sector);
 				/* read sector header */
-				fread(buffer, 1, 12, disk[unit]);
+				if (fread(buffer, 1, 12, disk[unit]) < 12) {
+					Log_print("Error in header2 of .pro image: sector:%d dupnum:%d", sector, dupnum);
+					return 'E';
+				}
 			}
 		}
 		/* bad sector */
 		if (buffer[1] != 0xff) {
-			fread(buffer, 1, size, disk[unit]);
+			if (fread(buffer, 1, size, disk[unit]) < size) {
+				Log_print("Error in bad sector of .pro image: sector:%d", sector);
+			}
 			io_success[unit] = sector;
 #ifdef DEBUG_PRO
 			Log_print("bad sector:%d", sector);
@@ -732,7 +716,7 @@ int SIO_ReadSector(int unit, int sector, UBYTE *buffer)
 		ULONG secindex = 0;
 		static int lasttrack = 0;
 		unsigned int currpos, time, delay, rotations, bestdelay;
-		unsigned char beststatus;
+/*		unsigned char beststatus;*/
 		int fromtrack, trackstostep, j;
 
 		info = (vapi_additional_info_t *)additional_info[unit];
@@ -779,7 +763,7 @@ int SIO_ReadSector(int unit, int sector, UBYTE *buffer)
 #endif
 
 		bestdelay = 10 * VAPI_CYCLES_PER_ROT;
-		beststatus = 0;
+/*		beststatus = 0;*/
 		for (j=0;j<secinfo->sec_count;j++) {
 			if (secinfo->sec_rot_pos[j]  < currpos)
 				delay = (VAPI_CYCLES_PER_ROT - currpos) + secinfo->sec_rot_pos[j];
@@ -792,7 +776,7 @@ int SIO_ReadSector(int unit, int sector, UBYTE *buffer)
 #endif
 			if (delay < bestdelay) {
 				bestdelay = delay;
-				beststatus = secinfo->sec_status[j];
+/*				beststatus = secinfo->sec_status[j];*/
 				secindex = j;
 			}
 		}
@@ -814,53 +798,33 @@ int SIO_ReadSector(int unit, int sector, UBYTE *buffer)
 		info->sec_stat_buff[2] = 0xe0;
 		info->sec_stat_buff[3] = 0;
 		if (secinfo->sec_status[secindex] != 0xFF) {
-			fread(buffer, 1, size, disk[unit]);
+			if (fread(buffer, 1, size, disk[unit]) < size) {
+				Log_print("error reading sector:%d", sector);
+			}
 			io_success[unit] = sector;
 			info->vapi_delay_time += VAPI_CYCLES_PER_ROT + 10000;
 #ifdef DEBUG_VAPI
 			Log_print("bad sector:%d 0x%0X delay:%d", sector, secinfo->sec_status[secindex],info->vapi_delay_time );
 #endif
-#ifdef VAPI_OVERRIDE
-			{
-				unsigned int vapicount;
-				unsigned char vapibuffer[520];
-				info->vapi_delay_time = VapiSectorRead(sector, (unsigned int) ANTIC_CPU_CLOCK, &vapicount, vapibuffer);
-				Log_print("VAPI delay = %d status='%c'",info->vapi_delay_time,vapibuffer[9]);
-				memcpy(buffer, &vapibuffer[10], vapicount);
-				io_success[unit] = 0;
-				return(vapibuffer[9]);
-			}
-#endif
-#ifndef VAPI_OVERRIDE			
 			{
 			int i;
 				if (secinfo->sec_status[secindex] == 0xB7) {
 					for (i=0;i<128;i++) {
 						Log_print("0x%02x",buffer[i]);
 						if (buffer[i] == 0x33)
-							buffer[i] = random() & 0xFF;
+							buffer[i] = rand() & 0xFF;
 					}
 				}
 			}
-#endif			
 			return 'E';
 		}
 #ifdef DEBUG_VAPI
 		Log_flushlog();
 #endif		
-#ifdef VAPI_OVERRIDE
-		{
-			unsigned int vapicount;
-			unsigned char vapibuffer[520];
-			info->vapi_delay_time = VapiSectorRead(sector, (unsigned int) ANTIC_CPU_CLOCK, &vapicount, vapibuffer);
-			Log_print("VAPI delay = %d status='%c'\n",info->vapi_delay_time,vapibuffer[9]);
-			memcpy(buffer, &vapibuffer[10], vapicount);
-			io_success[unit] = 0;
-			return(vapibuffer[9]);
-		}
-#endif
 	}
-	fread(buffer, 1, size, disk[unit]);	
+	if (fread(buffer, 1, size, disk[unit]) < size) {
+		Log_print("incomplete sector num:%d", sector);
+	}
 	io_success[unit] = 0;
 	return 'C';
 }
@@ -875,9 +839,6 @@ int SIO_WriteSector(int unit, int sector, const UBYTE *buffer)
 		return 'N';
 	if (SIO_drive_status[unit] != SIO_READ_WRITE || sector <= 0 || sector > sectorcount[unit])
 		return 'E';
-#ifdef MACOSX
-	LED_SetWrite(unit, 1);
-#endif
 	SIO_last_op = SIO_LAST_WRITE;
 	SIO_last_op_time = 1;
 	SIO_last_drive = unit + 1;
@@ -890,12 +851,12 @@ int SIO_WriteSector(int unit, int sector, const UBYTE *buffer)
 		secinfo = &info->sectors[sector-1];
 		
 		if (secinfo->sec_count != 1) {
-			// No writes to sectors with duplicates or missing sectors
+			/* No writes to sectors with duplicates or missing sectors */
 			return 'E';
 		}
 		
 		if (secinfo->sec_status[0] != 0xFF) {
-			// No writes to bad sectors
+			/* No writes to bad sectors */
 			return 'E';
 		}
 		
@@ -913,7 +874,7 @@ int SIO_WriteSector(int unit, int sector, const UBYTE *buffer)
 		phantom = &info->phantom[sector-1];
 		
 		if (phantom->phantom_count != 0) {
-			// No writes to sectors with duplicates 
+			/* No writes to sectors with duplicates */
 			return 'E';
 		}
 		
@@ -955,8 +916,6 @@ int SIO_FormatDisk(int unit, UBYTE *buffer, int sectsize, int sectcount)
 	bootsectsize = 128;
 	if (sectsize == 256 && save_boot_sectors_type != BOOT_SECTORS_LOGICAL)
 		bootsectsize = 256;
-	if (sectsize == 512)
-		bootsectsize = 512;
 	bootsectcount = sectcount < 3 ? sectcount : 3;
 	/* Umount the file and open it in "wb" mode (it will truncate the file) */
 	SIO_Dismount(unit + 1);
@@ -1023,23 +982,11 @@ int SIO_WriteStatusBlock(int unit, const UBYTE *buffer)
 	   I'm not sure about this density settings, my XF551
 	   honors only the sector size and ignores the density */
 	size = buffer[6] * 256 + buffer[7];
-	if (size == 128 || size == 256 || size == 512)
+	if (size == 128 || size == 256)
 		SIO_format_sectorsize[unit] = size;
-#ifdef MACOSX		
-	else if (buffer[5] == 8) {
-		SIO_format_sectorsize[unit] = 256;
-		}
-	else {
-		SIO_format_sectorsize[unit] = 128;
-		}
-#endif		
 	/* Note that the number of heads are minus 1 */
 	SIO_format_sectorcount[unit] = buffer[0] * (buffer[2] * 256 + buffer[3]) * (buffer[4] + 1);
-#ifdef MACOSX
-	if (SIO_format_sectorcount[unit] < 4 || SIO_format_sectorcount[unit] > 65536)
-#else
 	if (SIO_format_sectorcount[unit] < 1 || SIO_format_sectorcount[unit] > 65535)
-#endif
 		SIO_format_sectorcount[unit] = 720;
 	return 'C';
 }
@@ -1126,7 +1073,9 @@ int SIO_DriveStatus(int unit, UBYTE *buffer)
 	if (io_success[unit] != 0  && image_type[unit] == IMAGE_TYPE_PRO) {
 		int sector = io_success[unit];
 		SeekSector(unit, sector);
-		fread(buffer, 1, 4, disk[unit]);
+		if (fread(buffer, 1, 4, disk[unit]) < 4) {
+			Log_print("SIO_DriveStatus: failed to read sector header");
+		}
 		return 'C';
 	}
 	else if (io_success[unit] != 0  && image_type[unit] == IMAGE_TYPE_VAPI &&
@@ -1262,6 +1211,7 @@ void SIO_Handler(void)
 				result = 'E';
 			break;
 		case 0x53:				/* Status */
+		case 0xD3:				/* xf551 hispeed */
 			if (4 == length) {
 				result = SIO_DriveStatus(unit, DataBuffer);
 				if (result == 'C') {
@@ -1491,6 +1441,7 @@ static UBYTE Command_Frame(void)
 		SIO_last_drive = unit + 1;
 		return 'A';
 	case 0x53:				/* Status */
+	case 0xD3:				/* xf551 hispeed */
 #ifdef DEBUG
 		Log_print("Status frame: %02x %02x %02x %02x %02x",
 			CommandFrame[0], CommandFrame[1], CommandFrame[2],
@@ -1541,23 +1492,57 @@ static UBYTE Command_Frame(void)
 			CommandFrame[3], CommandFrame[4]);
 #endif
 		TransferStatus = SIO_NoFrame;
-		return 'E';
+		return 'N';
 	}
 }
 
 /* Enable/disable the command frame */
 void SIO_SwitchCommandFrame(int onoff)
 {
-    //printf("(%016llx) Switch Command %d\n",CPU_cycle_count,onoff);
-	if (onoff) {				/* Enabled */
-		if (TransferStatus != SIO_NoFrame)
-			Log_print("Unexpected command frame at state %x.", TransferStatus);
+	if (onoff)
+	{				/* Enabled */
+#ifdef NETSIO
+		if (netsio_enabled)
+			netsio_cmd_on();
+#endif /* NETSIO */
+		if (TransferStatus != SIO_NoFrame) 
+#ifdef NETSIO
+			/* With NetSIO we do not track end of read frame, SIO_ReadFrame is last status */
+			if (netsio_enabled && TransferStatus != SIO_ReadFrame)
+#endif /* NETSIO */
+				Log_print("Unexpected command frame at state %x.", TransferStatus);
 		CommandIndex = 0;
 		DataIndex = 0;
 		ExpectedBytes = 5;
-		TransferStatus = SIO_CommandFrame;
+		TransferStatus = SIO_CommandFrame; /* Send Command Frame bytes in SIO_PutByte */
 	}
-	else {
+	else
+	{
+#ifdef NETSIO
+		if (netsio_enabled)
+		{
+			if (CommandIndex < ExpectedBytes)
+			{
+#ifdef DEBUG
+				Log_print("Short command frame: %d bytes", CommandIndex);
+#endif
+				/* a) Send short CF ...
+				if (CommandIndex > 0)
+					netsio_send_block(CommandFrame, CommandIndex);
+				*/
+				/* b) Skip sending short/invalid CF */
+				TransferStatus = SIO_NoFrame;
+			}
+			else
+			{
+				netsio_cmd_off_sync();
+				netsio_wait_for_sync(); /* Wait for sync response (ACK/NAK/NONE) */
+				/* POKEY_DELAYED_SERIN_IRQ = SIO_SERIN_INTERVAL * 8;*/
+				TransferStatus = SIO_StatusRead; /* Receive ACK/NAK in SIO_GetByte */
+			}
+		}
+		else
+#endif /* NETSIO */		
 		if (TransferStatus != SIO_StatusRead && TransferStatus != SIO_NoFrame &&
 			TransferStatus != SIO_ReadFrame) {
 			if (!(TransferStatus == SIO_CommandFrame && CommandIndex == 0))
@@ -1590,10 +1575,80 @@ static UBYTE WriteSectorBack(void)
 	}
 }
 
+#ifdef NETSIO
+void NetSIO_PutByte(int byte)
+{
+#ifdef DEBUG2
+	Log_print("NetSIO_PutByte_%d: %02x", TransferStatus, byte);
+#endif
+	switch (TransferStatus) {
+	case SIO_CommandFrame:
+		/* Transmitting Command Frame bytes */
+		if (CommandIndex < ExpectedBytes) 
+		{
+			CommandFrame[CommandIndex++] = byte; /* Collect CF bytes into buffer */
+			if (CommandIndex == ExpectedBytes)
+			{
+				netsio_send_block(CommandFrame, ExpectedBytes); /* Send CF buffer */
+			}
+		}
+		else
+		{
+#ifdef DEBUG
+			Log_print("Long Command Frame: %d bytes", CommandIndex);
+#endif
+			netsio_send_byte(byte); /* Send extra byte */
+		}
+		break;
+	case SIO_WriteFrame:
+		/* Transmitting Data Frame (SIO Write command) */
+		if (DataIndex < ExpectedBytes)
+		{
+			/* TODO: bleh grh sending multiple data blocks - make it better */
+			DataBuffer[DataIndex++] = byte;  /* Collect data bytes into buffer */
+			if (DataIndex == ExpectedBytes)
+			{
+				if ((DataIndex-1) % NETSIO_WRITE_CHUNK_SIZE > 0)
+					 /* Send data buffer */
+					netsio_send_block(DataBuffer + NETSIO_WRITE_CHUNK_SIZE * ((DataIndex-1) / NETSIO_WRITE_CHUNK_SIZE), (DataIndex-1) % NETSIO_WRITE_CHUNK_SIZE);
+				 /* send checksum byte + sync */
+				netsio_send_byte_sync(DataBuffer[DataIndex-1]);
+				netsio_wait_for_sync() ; /* Wait for sync response (ACK/NAK/NONE) */
+				POKEY_DELAYED_SERIN_IRQ = SIO_SERIN_INTERVAL * 8;
+				DataIndex = 0;
+				TransferStatus = SIO_FinalStatus; /* Receive ACK+COMPLETE/NAK in SIO_GetByte */
+			}
+			else
+			{
+				if (DataIndex % NETSIO_WRITE_CHUNK_SIZE == 0)
+				{
+					netsio_send_block(DataBuffer + NETSIO_WRITE_CHUNK_SIZE * ((DataIndex-1) / NETSIO_WRITE_CHUNK_SIZE), NETSIO_WRITE_CHUNK_SIZE); /* Send data buffer */
+				}
+			}
+		}
+		else
+		{
+			Log_print("Invalid data frame!");
+		}
+		break;
+	default:
+		/* Transmitting other bytes (maybe modem) */
+		netsio_send_byte(byte); /* Send byte */
+		break;
+	}
+}
+#endif /* NETSIO */
+
 /* Put a byte that comes out of POKEY. So get it here... */
 void SIO_PutByte(int byte)
 {
-    //printf("(%016llx) Put Byte %02x %d\n",CPU_cycle_count,byte,TransferStatus);
+#ifdef NETSIO
+	if (netsio_enabled)
+	{
+		NetSIO_PutByte(byte);
+		return;
+	}
+#endif /* NETSIO */
 	switch (TransferStatus) {
 	case SIO_CommandFrame:
 		if (CommandIndex < ExpectedBytes) {
@@ -1602,19 +1657,8 @@ void SIO_PutByte(int byte)
 				if (CommandFrame[0] >= 0x31 && CommandFrame[0] <= 0x38 && (SIO_drive_status[CommandFrame[0]-0x31] != SIO_OFF || BINLOAD_start_binloading)) {
 					TransferStatus = SIO_StatusRead;
 					POKEY_DELAYED_SERIN_IRQ = SIO_SERIN_INTERVAL + SIO_ACK_INTERVAL;
-#ifdef PCLINK
-                    TransferDest = 0;
 				}
-                else if (CommandFrame[0] == 0x6f && PCLink_Enabled) {
-                    //printf("End of PCLINK Command Frame %x\n", CommandFrame[1]);
-                    TransferStatus = SIO_StatusRead;
-                    POKEY_DELAYED_SERIN_IRQ = SIO_SERIN_INTERVAL + SIO_ACK_INTERVAL;
-                    TransferDest = 0x6f;
-                }
-#else
-            }
-#endif
-                else
+				else
 					TransferStatus = SIO_NoFrame;
 			}
 		}
@@ -1629,13 +1673,7 @@ void SIO_PutByte(int byte)
 			if (DataIndex >= ExpectedBytes) {
 				UBYTE sum = SIO_ChkSum(DataBuffer, ExpectedBytes - 1);
 				if (sum == DataBuffer[ExpectedBytes - 1]) {
-                    UBYTE result;
-#ifdef PCLINK
-                    if (TransferDest)
-                        result = Link_Device_WriteFrame((char *) DataBuffer);
-                    else
-#endif
-                        result = WriteSectorBack();
+					UBYTE result = WriteSectorBack();
 					if (result != 0) {
 						DataBuffer[0] = 'A';
 						DataBuffer[1] = result;
@@ -1663,40 +1701,115 @@ void SIO_PutByte(int byte)
 	}
 	CASSETTE_PutByte(byte);
 	/* POKEY_DELAYED_SEROUT_IRQ = SIO_SEROUT_INTERVAL; */ /* already set in pokey.c */
+#ifdef DEBUG2
+	if (POKEY_DELAYED_SERIN_IRQ > 0) {
+		Log_print("SIO_PutByte: DELAYED_SERIN_IRQ %d", POKEY_DELAYED_SERIN_IRQ);
+	}
+#endif
 }
+
+#ifdef NETSIO
+int NetSIO_GetByte(void)
+{
+	UBYTE b;
+
+	if(netsio_available() > 0)
+	{
+		if (netsio_recv_byte(&b) < 0)
+		{
+#ifdef DEBUG
+			Log_print("NetSIO_GetByte: recv error");
+#endif
+			b = 0xFF;
+		}
+	}
+	else
+		b = 0xFF;
+
+	switch (TransferStatus) {
+	case SIO_StatusRead:
+		if (b == 'A')
+		{ /* ACK received */
+			if (netsio_next_write_size > 0)
+			{
+				TransferStatus = SIO_WriteFrame;
+				ExpectedBytes = netsio_next_write_size;
+				DataIndex = 0;
+			}
+			else
+			{
+				TransferStatus = SIO_ReadFrame;
+			}
+		}
+		else if (b == 'N')
+		{ /* NAK received */
+#ifdef DEBUG
+			Log_print("NetSIO_GetByte: NAK received");
+#endif
+			TransferStatus = SIO_NoFrame;
+		}
+		else
+		{
+#ifdef DEBUG
+			Log_print("NetSIO_GetByte: unexpected byte %02x", b);
+#endif
+			TransferStatus = SIO_NoFrame;
+		}
+		break;
+	case SIO_ReadFrame:
+		break;
+	case SIO_FinalStatus: /* After SIO_WriteFrame */
+		if (++DataIndex == 1)
+		{
+			if (b == 'A') /* ACK received */
+			{
+				/* Wait for C/E */
+			}
+			else if (b == 'N') /* NAK received */
+			{
+#ifdef DEBUG
+				Log_print("NetSIO_GetByte: NAK received");
+#endif
+				TransferStatus = SIO_NoFrame;
+			}
+			else
+			{
+#ifdef DEBUG
+				Log_print("NetSIO_GetByte: unexpected byte %02x", b);
+#endif
+				TransferStatus = SIO_NoFrame;
+			}
+		}
+		else
+		{
+			TransferStatus = SIO_NoFrame;
+		}
+		break;
+	default:
+		/* Receiving other bytes (maybe modem) */
+		break;
+	}
+#ifdef DEBUG2
+	Log_print("NetSIO_GetByte_%d: %02x", ts, (int)b);
+#endif
+
+	return (int)b;
+}
+#endif /* NETSIO */
 
 /* Get a byte from the floppy to the pokey. */
 int SIO_GetByte(void)
 {
 	int byte = 0;
-    int read;
+
+#ifdef NETSIO
+	if (netsio_enabled)
+		return NetSIO_GetByte();
+#endif /* NETSIO */
 
 	switch (TransferStatus) {
 	case SIO_StatusRead:
-#ifdef PCLINK
-        if (TransferDest == 0x6f && PCLink_Enabled) {
-            byte = Link_Device_On_Serial_Begin_Command(CommandFrame, &read, &ExpectedBytes, (char *) DataBuffer);
-
-            if (byte == 'N')
-                TransferStatus = SIO_NoFrame;
-            else {
-                if (read) {
-                    ExpectedBytes++;
-                    DataBuffer[ ExpectedBytes ] = SIO_ChkSum(DataBuffer + 1, ExpectedBytes - 1);
-                    ExpectedBytes++;
-                    TransferStatus = SIO_ReadFrame;
-                    POKEY_DELAYED_SERIN_IRQ = SIO_SERIN_INTERVAL;
-                }
-                else {
-                    ExpectedBytes++;
-                    DataIndex = 0;
-                    TransferStatus = SIO_WriteFrame;
-                }
-            }
-        }
-        else
-#endif
-            byte = Command_Frame();		/* Handle now the command */
+		byte = Command_Frame();		/* Handle now the command */
 		break;
 	case SIO_FormatFrame:
 		TransferStatus = SIO_ReadFrame;
@@ -1709,9 +1822,9 @@ int SIO_GetByte(void)
 				TransferStatus = SIO_NoFrame;
 			}
 			else {
-                /* set delay using the expected transfer speed */
-                POKEY_DELAYED_SERIN_IRQ = (DataIndex == 1) ? SIO_SERIN_INTERVAL
-                        : ((SIO_SERIN_INTERVAL * POKEY_AUDF[POKEY_CHAN3] - 1) / 0x28 + 1);
+				/* set delay using the expected transfer speed */
+				POKEY_DELAYED_SERIN_IRQ = (DataIndex == 1) ? SIO_SERIN_INTERVAL
+					: ((SIO_SERIN_INTERVAL * POKEY_AUDF[POKEY_CHAN3] - 1) / 0x28 + 1);
 			}
 		}
 		else {
@@ -1741,7 +1854,11 @@ int SIO_GetByte(void)
 		byte = CASSETTE_GetByte();
 		break;
 	}
-    //printf("(%016llx) Get Byte %02x %d\n",CPU_cycle_count, byte,TransferStatus);
+#ifdef DEBUG2
+	if (POKEY_DELAYED_SERIN_IRQ > 0) {
+		Log_print("SIO_GetByte: DELAYED_SERIN_IRQ %d", POKEY_DELAYED_SERIN_IRQ);
+	}
+#endif
 	return byte;
 }
 
@@ -1821,3 +1938,7 @@ void SIO_StateRead(void)
 }
 
 #endif /* BASIC */
+
+/*
+vim:ts=4:sw=4:
+*/

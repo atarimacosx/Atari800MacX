@@ -1425,7 +1425,7 @@ static void draw_an_gtia_bug(const ULONG *t_pm_scanline_ptr)
 		data <<= 2;\
 	FOUR_LOOP_END(data)\
 }
-#ifndef ATARIMACOSX
+
 #define DO_PMG_HIRES_NEW(data, tally) {\
 	const UBYTE *c_pm_scanline_ptr = (const UBYTE *) t_pm_scanline_ptr;\
 	int pm_pixel;\
@@ -1439,21 +1439,6 @@ static void draw_an_gtia_bug(const ULONG *t_pm_scanline_ptr)
 		tally <<= 6;\
 	FOUR_LOOP_END(data)\
 }
-#else
-#define DO_PMG_HIRES_NEW(data, tally) {\
-	const UBYTE *c_pm_scanline_ptr = (const UBYTE *) t_pm_scanline_ptr;\
-	int pm_pixel;\
-	FOUR_LOOP_BEGIN(data)\
-		pm_pixel = *c_pm_scanline_ptr++;\
-		if (pm_pixel) \
-			WRITE_VIDEO(ptr++, (COLOUR(pm_lookup_ptr[pm_pixel] | L_PF2) & hires_mask(data & 0xc0)) | hires_lum(data & 0xc0));\
-		else\
-			WRITE_VIDEO(ptr++, art_lookup_new[(tally & 0xfc0000) >> 18]); \
-		data <<= 2;\
-		tally <<= 6;\
-	FOUR_LOOP_END(data)\
-}
-#endif
 
 #endif /* USE_COLOUR_TRANSLATION_TABLE */
 

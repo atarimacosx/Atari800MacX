@@ -83,7 +83,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 	else if ([[aTableColumn identifier] isEqual:@"ENA"]) {
 		cond = [[myBreakpoint conditionAtIndex:rowIndex] getCondition];
 		
-		if (cond->on)
+		if (cond->enabled)
 			return ([NSNumber numberWithInt:1]);
 		else
 			return ([NSNumber numberWithInt:0]);
@@ -156,7 +156,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 				case MONITOR_BREAKPOINT_S:
 					index = EDITOR_BREAKPOINT_S;
 					break;
-				case MONITOR_BREAKPOINT_MEM:
+				case MONITOR_BREAKPOINT_MEMORY:
 					index = EDITOR_BREAKPOINT_MEM;
 					break;
 				case MONITOR_BREAKPOINT_READ:
@@ -175,10 +175,10 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 	else if ([[aTableColumn identifier] isEqual:@"VAL1"]) {		
 		cond = [[myBreakpoint conditionAtIndex:rowIndex] getCondition];
 		
-		if ((cond->condition & 0xF8) == MONITOR_BREAKPOINT_MEM) {
+		if ((cond->condition & 0xF8) == MONITOR_BREAKPOINT_MEMORY) {
 			NSString *value;
 			
-			value = [NSString stringWithFormat:@"%04X",cond->addr];
+			value = [NSString stringWithFormat:@"%04X",cond->m_addr];
 			return(value);
 		}
 		else
@@ -228,10 +228,10 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 				case MONITOR_BREAKPOINT_READ:
 				case MONITOR_BREAKPOINT_WRITE:
 				case MONITOR_BREAKPOINT_ACCESS:
-					value = [NSString stringWithFormat:@"%04X",cond->addr];
+					value = [NSString stringWithFormat:@"%04X",cond->value];
 					break;
 				default:
-  				    value = [NSString stringWithFormat:@"%02X",cond->val];
+  				    value = [NSString stringWithFormat:@"%02X",cond->value];
 					break;
 			}
 			return(value);
@@ -264,9 +264,9 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 		cond = [[myBreakpoint conditionAtIndex:rowIndex] getCondition];
 		
 		if ([anObject intValue] == 0) 
-			cond->on = FALSE;
+			cond->enabled = FALSE;
 		else
-			cond->on = TRUE;
+			cond->enabled = TRUE;
 				
 		if (editableConditionCount != [myBreakpoint conditionCount]) {
 			int i;
@@ -274,14 +274,14 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 			
 			for (i=0;i<editableConditionCount;i++) {
 				cond = [[myBreakpoint conditionAtIndex:i] getCondition];
-				if (cond->on)
+				if (cond->enabled)
 					anyOn = TRUE;
 			}
 			
 			// If any of the conditions are on, the OR condition should be on
 			// If they are all off, it should be off
 			cond = [[myBreakpoint conditionAtIndex:editableConditionCount] getCondition];
-			cond->on = anyOn;
+			cond->enabled = anyOn;
 		}
 	}
 	else if ([[aTableColumn identifier] isEqual:@"REG"]) {
@@ -359,7 +359,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 					partialCondition = MONITOR_BREAKPOINT_S;
 					break;
 				case EDITOR_BREAKPOINT_MEM:
-					partialCondition = MONITOR_BREAKPOINT_MEM;
+					partialCondition = MONITOR_BREAKPOINT_MEMORY;
 					break;
 				case EDITOR_BREAKPOINT_READ:
 					partialCondition = MONITOR_BREAKPOINT_READ;
@@ -377,8 +377,8 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 				cond->condition = (cond->condition & 0x07) | partialCondition;
 		}
 		if (cond->condition != oldCondition) {
-			cond->addr = 0;
-			cond->val = 0;
+			cond->value = 0;
+			cond->m_addr = 0;
 		}
 	}
 	else if ([[aTableColumn identifier] isEqual:@"VAL1"]) {
@@ -388,13 +388,13 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 		cond = [[myBreakpoint conditionAtIndex:rowIndex] getCondition];
 
 		// Don't allow changes in this field on anything but memory address condition
-		if ((cond->condition & 0xF8) != MONITOR_BREAKPOINT_MEM)
+		if ((cond->condition & 0xF8) != MONITOR_BREAKPOINT_MEMORY)
 			return;
 		[anObject getCString:fieldStr maxLength:80 encoding:NSASCIIStringEncoding];
 		
 		if (get_val_gui(fieldStr, &val) == FALSE)
 			return;
-		cond->addr = val;
+		cond->m_addr = val;
 	}
 	else if ([[aTableColumn identifier] isEqual:@"REL"]) {
 		int partialCondition = 0;
@@ -445,10 +445,10 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 			case MONITOR_BREAKPOINT_READ:
 			case MONITOR_BREAKPOINT_WRITE:
 			case MONITOR_BREAKPOINT_ACCESS:
-				cond->addr = val;
+				cond->value = val;
 				break;
 			default:
-				cond->val = val;
+				cond->value = val;
 				break;
 		}
 	}

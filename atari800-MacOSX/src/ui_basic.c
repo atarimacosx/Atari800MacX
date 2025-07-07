@@ -129,3 +129,77 @@ void ClearScreen(void)
 #endif
 	ClearRectangle(0x94, 0, 0, 39, 23);
 }
+
+/* Missing UI functions required by newer Atari800 core - implemented as Mac stubs */
+
+static int MacUISelect(const char *title, int flags, int default_item, const UI_tMenuItem *menu, int *seltype) 
+{
+    /* Mac uses native dialogs - return default item for now */
+    if (seltype) *seltype = 0;
+    return default_item;
+}
+
+static int MacUISelectInt(int default_value, int min_value, int max_value) 
+{
+    /* Mac uses native dialogs - return default value */
+    return default_value;
+}
+
+static int MacUISelectSlider(const char *title, int start_value, int max_value,
+                            void (*label_fun)(char *label, int value, void *user_data), void *user_data)
+{
+    /* Mac uses native dialogs - return start value */
+    return start_value;
+}
+
+static int MacUIEditString(const char *title, char *string, int size)
+{
+    /* Mac uses native dialogs - return FALSE indicating no change */
+    return FALSE;
+}
+
+static int MacUIGetSaveFilename(char *filename, char directories[][FILENAME_MAX], int n_directories)
+{
+    /* Mac uses native save dialogs - return FALSE indicating cancelled */
+    return FALSE;
+}
+
+static int MacUIGetLoadFilename(char *filename, char directories[][FILENAME_MAX], int n_directories)
+{
+    /* Mac uses native open dialogs - return FALSE indicating cancelled */
+    return FALSE;
+}
+
+static int MacUIGetDirectoryPath(char *directory)
+{
+    /* Mac uses native directory dialogs - return FALSE indicating cancelled */
+    return FALSE;
+}
+
+static void MacUIMessage(const char *message, int waitforkey)
+{
+    /* Mac uses native message dialogs - could implement NSAlert here if needed */
+    printf("UI Message: %s\n", message);
+}
+
+static void MacUIInfoScreen(const char *title, const char *message)
+{
+    /* Mac uses native info dialogs - could implement NSAlert here if needed */
+    printf("UI Info: %s\n%s\n", title, message);
+}
+
+/* Use existing BasicUIInit function - no need to redefine */
+
+/* UI driver structure required by newer Atari800 core */
+UI_tDriver UI_BASIC_driver = {
+    &MacUISelect,
+    &MacUISelectInt,
+    &MacUISelectSlider,
+    &MacUIEditString,
+    &MacUIGetSaveFilename,
+    &MacUIGetLoadFilename,
+    &MacUIGetDirectoryPath,
+    &MacUIMessage,
+    &MacUIInfoScreen,
+    &BasicUIInit
+};

@@ -17,6 +17,7 @@
 #import "PasteManager.h"
 #import "log.h"
 #import "config.h"
+#import "netsio.h"
 
 #import <IOKit/IOKitLib.h>
 #import <IOKit/serial/IOSerialKeys.h>
@@ -287,7 +288,9 @@ static NSDictionary *defaultValues() {
                 [NSNumber numberWithInt:1], RefreshRatio, 
                 [NSNumber numberWithInt:1], SpriteCollisions, 
                 [NSNumber numberWithInt:0], ArtifactingMode, 
-                [NSNumber numberWithBool:YES], ArtifactNew, 
+                [NSNumber numberWithBool:YES], ArtifactNew,
+                [NSNumber numberWithInt:0], NTSCArtifactingMode,
+                [NSNumber numberWithInt:0], PALArtifactingMode, 
                 [NSNumber numberWithBool:NO], UseBuiltinPalette, 
                 [NSNumber numberWithBool:YES], AdjustPalette,
                 [NSNumber numberWithInt:0], BlackLevel, 
@@ -315,7 +318,7 @@ static NSDictionary *defaultValues() {
                 [NSNumber numberWithInt:0], XEP80OffColor,
                 [NSNumber numberWithBool:YES], XEGSKeyboard,
                 [NSNumber numberWithBool:NO], A1200XLJumper,
-                [NSNumber numberWithInt:4], AtariType,
+                [NSNumber numberWithInt:7], AtariType,
                 [NSNumber numberWithInt:-1], AtariTypeVer4,
                 [NSNumber numberWithInt:-1], AtariTypeVer5,
                 [NSNumber numberWithInt:7], AtariSwitchType,
@@ -323,6 +326,8 @@ static NSDictionary *defaultValues() {
                 [NSNumber numberWithInt:-1], AtariSwitchTypeVer5,
                 [NSNumber numberWithInt:7],AxlonBankMask,
                 [NSNumber numberWithInt:3],MosaicMaxBank,
+                [NSNumber numberWithBool:NO],FujiNetEnabled,
+                @"9997",FujiNetPort,
                 [NSNumber numberWithBool:NO],MioEnabled,
                 [NSNumber numberWithBool:NO],BlackBoxEnabled,
                 @"",AF80RomFile,
@@ -867,7 +872,35 @@ static Preferences *sharedInstance = nil;
     [spriteCollisionsButton setState:[[displayedValues objectForKey:SpriteCollisions] boolValue] ? NSOnState : NSOffState];
     index = [[displayedValues objectForKey:RefreshRatio] intValue] - 1;
     [refreshRatioPulldown  selectItemAtIndex:index];
-    [artifactingPulldown  selectItemAtIndex:[[displayedValues objectForKey:ArtifactingMode] intValue]];
+    /* Initialize separate NTSC/PAL artifact preferences if not already set */
+    int artifactMode = [[displayedValues objectForKey:ArtifactingMode] intValue];
+    int currentTVMode = [[displayedValues objectForKey:TvMode] intValue];
+    
+    /* Initialize both mode preferences based on current artifact mode */
+    if ([[displayedValues objectForKey:NTSCArtifactingMode] intValue] == 0 &&
+        [[displayedValues objectForKey:PALArtifactingMode] intValue] == 0) {
+        
+        /* First time - initialize based on current mode and artifact setting */
+        if (currentTVMode == 0) {
+            [displayedValues setObject:[NSNumber numberWithInt:artifactMode] forKey:NTSCArtifactingMode];
+            [displayedValues setObject:[NSNumber numberWithInt:0] forKey:PALArtifactingMode];
+        } else {
+            [displayedValues setObject:[NSNumber numberWithInt:0] forKey:NTSCArtifactingMode];
+            [displayedValues setObject:[NSNumber numberWithInt:artifactMode] forKey:PALArtifactingMode];
+        }
+        
+        /* Initialized separate NTSC/PAL artifact preferences */
+    }
+    
+    /* Update artifact pulldown for current TV mode before setting selection */
+    [self updateArtifactingPulldownForTVMode];
+    /* Select item by tag value, not index */
+    for (int i = 0; i < [artifactingPulldown numberOfItems]; i++) {
+        if ([[artifactingPulldown itemAtIndex:i] tag] == artifactMode) {
+            [artifactingPulldown selectItemAtIndex:i];
+            break;
+        }
+    }
     [artifactNewButton setState:[[displayedValues objectForKey:ArtifactNew] boolValue] ? NSOnState : NSOffState];
     [blackLevelField setIntValue:[[displayedValues objectForKey:BlackLevel] intValue]];
     [whiteLevelField setIntValue:[[displayedValues objectForKey:WhiteLevel] intValue]];
@@ -985,12 +1018,20 @@ static Preferences *sharedInstance = nil;
 	}
 	if (!foundMatch)
 		[mosaicMemSizePulldown selectItemAtIndex:0];
+	/* Update PBI expansion matrix (Black Box, MIO, None) */
 	if ([[displayedValues objectForKey:BlackBoxEnabled] boolValue] == YES)
-		[pbiExpansionMatrix selectCellWithTag:1];
-	else if ([[displayedValues objectForKey:MioEnabled] boolValue] == YES)
 		[pbiExpansionMatrix selectCellWithTag:2];
+	else if ([[displayedValues objectForKey:MioEnabled] boolValue] == YES)
+		[pbiExpansionMatrix selectCellWithTag:3];
 	else
-		[pbiExpansionMatrix selectCellWithTag:0];		
+		[pbiExpansionMatrix selectCellWithTag:1]; /* None */		
+	/* Update FujiNet UI fields */
+	if ([displayedValues objectForKey:FujiNetEnabled] && [[displayedValues objectForKey:FujiNetEnabled] boolValue] == YES)
+		[fujiNetEnabledButton setState:NSOnState];
+	else
+		[fujiNetEnabledButton setState:NSOffState];
+	[fujiNetPortField setStringValue:[displayedValues objectForKey:FujiNetPort] ?: @"9997"];
+	[fujiNetStatusField setStringValue:@"Not Connected"];
     [af80RomFileField setStringValue:[displayedValues objectForKey:AF80RomFile]];
     [af80CharsetRomFileField setStringValue:[displayedValues objectForKey:AF80CharsetFile]];
     [bit3RomFileField setStringValue:[displayedValues objectForKey:Bit3RomFile]];
@@ -1697,6 +1738,18 @@ static Preferences *sharedInstance = nil;
             [displayedValues setObject:two forKey:WidthMode];
             break;
     }
+    /* Save current artifact selection BEFORE changing TV mode */
+    int previousTVMode = [[displayedValues objectForKey:TvMode] intValue];
+    if ([artifactingPulldown numberOfItems] > 0 && [artifactingPulldown indexOfSelectedItem] >= 0) {
+        int currentArtifactTag = [[artifactingPulldown selectedItem] tag];
+        /* Save the artifact mode for the current TV mode */
+        if (previousTVMode == 0) {
+            [displayedValues setObject:[NSNumber numberWithInt:currentArtifactTag] forKey:NTSCArtifactingMode];
+        } else {
+            [displayedValues setObject:[NSNumber numberWithInt:currentArtifactTag] forKey:PALArtifactingMode];
+        }
+    }
+    
     switch([[tvModeMatrix selectedCell] tag]) {
         case 0:
 		default:
@@ -1706,6 +1759,8 @@ static Preferences *sharedInstance = nil;
             [displayedValues setObject:one forKey:TvMode];
             break;
     }
+    /* Update artifact pulldown based on TV mode */
+    [self updateArtifactingPulldownForTVMode];
     switch([refreshRatioPulldown indexOfSelectedItem]) {
         case 0:
 		default:
@@ -1725,24 +1780,12 @@ static Preferences *sharedInstance = nil;
         [displayedValues setObject:yes forKey:SpriteCollisions];
     else
         [displayedValues setObject:no forKey:SpriteCollisions];
-    switch([artifactingPulldown indexOfSelectedItem]) {
-        case 0:
-		default:
-            [displayedValues setObject:zero forKey:ArtifactingMode];
-            break;
-        case 1:
-            [displayedValues setObject:one forKey:ArtifactingMode];
-            break;
-        case 2:
-            [displayedValues setObject:two forKey:ArtifactingMode];
-            break;
-        case 3:
-            [displayedValues setObject:three forKey:ArtifactingMode];
-            break;
-        case 4:
-            [displayedValues setObject:four forKey:ArtifactingMode];
-            break;
-    }
+    /* Get artifact mode from the selected item's tag, not its index */
+    int artifactTag = [[artifactingPulldown selectedItem] tag];
+    [displayedValues setObject:[NSNumber numberWithInt:artifactTag] forKey:ArtifactingMode];
+    
+    /* Update checkbox visibility when artifact mode changes */
+    [self updateArtifactNewButtonVisibility];
     if ([artifactNewButton state] == NSOnState)
         [displayedValues setObject:yes forKey:ArtifactNew];
     else
@@ -1785,7 +1828,7 @@ static Preferences *sharedInstance = nil;
         [paletteChooseButton setEnabled:NO];
         [adjustPaletteButton setEnabled:NO];
         }
-    [displayedValues setObject:[paletteField stringValue] forKey:PaletteFile];
+    [displayedValues setObject:[paletteField stringValue] ?: @"" forKey:PaletteFile];
     if ([fpsButton state] == NSOnState)
         [displayedValues setObject:yes forKey:ShowFPS];
     else
@@ -1888,7 +1931,7 @@ static Preferences *sharedInstance = nil;
         [displayedValues setObject:yes forKey:EnableDPatch];
     else
         [displayedValues setObject:no forKey:EnableDPatch];
-    [displayedValues setObject:[printCommandField stringValue] forKey:PrintCommand];   
+    [displayedValues setObject:[printCommandField stringValue] ?: @"" forKey:PrintCommand];   
     if ([enablePPatchButton state] == NSOnState) {
         [displayedValues setObject:yes forKey:EnablePPatch];
         [printCommandField setEnabled:YES];
@@ -2156,7 +2199,7 @@ static Preferences *sharedInstance = nil;
         [displayedValues setObject:yes forKey:EnableRPatch];
     else
         [displayedValues setObject:no forKey:EnableRPatch];
-    [displayedValues setObject:[rPatchPortField stringValue] forKey:RPatchPort];
+    [displayedValues setObject:[rPatchPortField stringValue] ?: @"" forKey:RPatchPort];
 	switch([[rPatchSerialMatrix selectedCell] tag]) {
         case 0:
 		default:
@@ -2295,29 +2338,36 @@ static Preferences *sharedInstance = nil;
 	[displayedValues setObject:[NSNumber numberWithInt:axlonBankMasks[[axlonMemSizePulldown indexOfSelectedItem]]] forKey:AxlonBankMask];
 	[displayedValues setObject:[NSNumber numberWithInt:mosaicBankMaxs[[mosaicMemSizePulldown indexOfSelectedItem]]] forKey:MosaicMaxBank];
 	switch([[pbiExpansionMatrix selectedCell] tag]) {
-        case 0:
+        case 1:
 		default:
             [displayedValues setObject:no forKey:BlackBoxEnabled];
             [displayedValues setObject:no forKey:MioEnabled];
             break;
-        case 1:
+        case 2:
             [displayedValues setObject:yes forKey:BlackBoxEnabled];
             [displayedValues setObject:no forKey:MioEnabled];
             break;
-        case 2:
+        case 3:
             [displayedValues setObject:no forKey:BlackBoxEnabled];
             [displayedValues setObject:yes forKey:MioEnabled];
             break;
     }
-    [displayedValues setObject:[af80RomFileField stringValue] forKey:AF80RomFile];
-    [displayedValues setObject:[af80CharsetRomFileField stringValue] forKey:AF80CharsetFile];
-    [displayedValues setObject:[bit3RomFileField stringValue] forKey:Bit3RomFile];
-    [displayedValues setObject:[bit3CharsetRomFileField stringValue] forKey:Bit3CharsetFile];
-    [displayedValues setObject:[blackBoxRomFileField stringValue] forKey:BlackBoxRomFile];
-    [displayedValues setObject:[mioRomFileField stringValue] forKey:MioRomFile];
-    [displayedValues setObject:[ultimate1MBFlashFileField stringValue] forKey:Ultimate1MBRomFile];
-    [displayedValues setObject:[side2FlashFileField stringValue] forKey:Side2RomFile];
-    [displayedValues setObject:[side2CFFileField stringValue] forKey:Side2CFFile];
+    [displayedValues setObject:[fujiNetPortField stringValue] ?: @"9997" forKey:FujiNetPort];
+    
+    /* Read FujiNet checkbox state and update preferences */
+    if ([fujiNetEnabledButton state] == NSOnState)
+        [displayedValues setObject:yes forKey:FujiNetEnabled];
+    else
+        [displayedValues setObject:no forKey:FujiNetEnabled];
+    [displayedValues setObject:[af80RomFileField stringValue] ?: @"" forKey:AF80RomFile];
+    [displayedValues setObject:[af80CharsetRomFileField stringValue] ?: @"" forKey:AF80CharsetFile];
+    [displayedValues setObject:[bit3RomFileField stringValue] ?: @"" forKey:Bit3RomFile];
+    [displayedValues setObject:[bit3CharsetRomFileField stringValue] ?: @"" forKey:Bit3CharsetFile];
+    [displayedValues setObject:[blackBoxRomFileField stringValue] ?: @"" forKey:BlackBoxRomFile];
+    [displayedValues setObject:[mioRomFileField stringValue] ?: @"" forKey:MioRomFile];
+    [displayedValues setObject:[ultimate1MBFlashFileField stringValue] ?: @"" forKey:Ultimate1MBRomFile];
+    [displayedValues setObject:[side2FlashFileField stringValue] ?: @"" forKey:Side2RomFile];
+    [displayedValues setObject:[side2CFFileField stringValue] ?: @"" forKey:Side2CFFile];
     switch([side2UltimateFlashTypePulldown indexOfSelectedItem]) {
         case 0:
         default:
@@ -2336,25 +2386,25 @@ static Preferences *sharedInstance = nil;
             [displayedValues setObject:yes forKey:Side2SDXMode];
             break;
     }
-    [displayedValues setObject:[blackBoxScsiDiskFileField stringValue] forKey:BlackBoxScsiDiskFile];
-	[displayedValues setObject:[mioScsiDiskFileField stringValue] forKey:MioScsiDiskFile];
+    [displayedValues setObject:[blackBoxScsiDiskFileField stringValue] ?: @"" forKey:BlackBoxScsiDiskFile];
+	[displayedValues setObject:[mioScsiDiskFileField stringValue] ?: @"" forKey:MioScsiDiskFile];
 	 
-	[displayedValues setObject:[imageDirField stringValue] forKey:ImageDir];
-    [displayedValues setObject:[printDirField stringValue] forKey:PrintDir];
-    [displayedValues setObject:[hardDiskDir1Field stringValue] forKey:HardDiskDir1];
-    [displayedValues setObject:[hardDiskDir2Field stringValue] forKey:HardDiskDir2];
-    [displayedValues setObject:[hardDiskDir3Field stringValue] forKey:HardDiskDir3];
-    [displayedValues setObject:[hardDiskDir4Field stringValue] forKey:HardDiskDir4];
+	[displayedValues setObject:[imageDirField stringValue] ?: @"" forKey:ImageDir];
+    [displayedValues setObject:[printDirField stringValue] ?: @"" forKey:PrintDir];
+    [displayedValues setObject:[hardDiskDir1Field stringValue] ?: @"" forKey:HardDiskDir1];
+    [displayedValues setObject:[hardDiskDir2Field stringValue] ?: @"" forKey:HardDiskDir2];
+    [displayedValues setObject:[hardDiskDir3Field stringValue] ?: @"" forKey:HardDiskDir3];
+    [displayedValues setObject:[hardDiskDir4Field stringValue] ?: @"" forKey:HardDiskDir4];
     if ([hardDrivesReadOnlyButton state] == NSOnState)
         [displayedValues setObject:yes forKey:HardDrivesReadOnly];
     else
         [displayedValues setObject:no forKey:HardDrivesReadOnly];
-    [displayedValues setObject:[hPathField stringValue] forKey:HPath];
+    [displayedValues setObject:[hPathField stringValue] ?: @"" forKey:HPath];
 
-    [displayedValues setObject:[pcLinkDir1Field stringValue] forKey:PCLinkDir1];
-    [displayedValues setObject:[pcLinkDir2Field stringValue] forKey:PCLinkDir2];
-    [displayedValues setObject:[pcLinkDir3Field stringValue] forKey:PCLinkDir3];
-    [displayedValues setObject:[pcLinkDir4Field stringValue] forKey:PCLinkDir4];
+    [displayedValues setObject:[pcLinkDir1Field stringValue] ?: @"" forKey:PCLinkDir1];
+    [displayedValues setObject:[pcLinkDir2Field stringValue] ?: @"" forKey:PCLinkDir2];
+    [displayedValues setObject:[pcLinkDir3Field stringValue] ?: @"" forKey:PCLinkDir3];
+    [displayedValues setObject:[pcLinkDir4Field stringValue] ?: @"" forKey:PCLinkDir4];
     if ([pcLinkDeviceEnableButton state] == NSOnState)
         [displayedValues setObject:yes forKey:PCLinkDeviceEnable];
     else
@@ -2424,13 +2474,13 @@ static Preferences *sharedInstance = nil;
     else
         [displayedValues setObject:no forKey:PCLinkTranslate4];
     
-    [displayedValues setObject:[xegsRomFileField stringValue] forKey:XEGSRomFile];
-    [displayedValues setObject:[xegsGameRomFileField stringValue] forKey:XEGSGameRomFile];
-    [displayedValues setObject:[a1200xlRomFileField stringValue] forKey:A1200XLRomFile];
-    [displayedValues setObject:[osBRomFileField stringValue] forKey:OsBRomFile];
-    [displayedValues setObject:[xlRomFileField stringValue] forKey:XlRomFile];
-    [displayedValues setObject:[basicRomFileField stringValue] forKey:BasicRomFile];
-    [displayedValues setObject:[a5200RomFileField stringValue] forKey:A5200RomFile];
+    [displayedValues setObject:[xegsRomFileField stringValue] ?: @"" forKey:XEGSRomFile];
+    [displayedValues setObject:[xegsGameRomFileField stringValue] ?: @"" forKey:XEGSGameRomFile];
+    [displayedValues setObject:[a1200xlRomFileField stringValue] ?: @"" forKey:A1200XLRomFile];
+    [displayedValues setObject:[osBRomFileField stringValue] ?: @"" forKey:OsBRomFile];
+    [displayedValues setObject:[xlRomFileField stringValue] ?: @"" forKey:XlRomFile];
+    [displayedValues setObject:[basicRomFileField stringValue] ?: @"" forKey:BasicRomFile];
+    [displayedValues setObject:[a5200RomFileField stringValue] ?: @"" forKey:A5200RomFile];
     if ([useAlitrraXEGSRomButton state] == NSOnState)
         [displayedValues setObject:yes forKey:UseAltiraXEGSRom];
     else
@@ -2456,34 +2506,34 @@ static Preferences *sharedInstance = nil;
     else
         [displayedValues setObject:no forKey:UseAltiraBasicRom];
 
-    [displayedValues setObject:[diskImageDirField stringValue] forKey:DiskImageDir];
-    [displayedValues setObject:[diskSetDirField stringValue] forKey:DiskSetDir];
-    [displayedValues setObject:[cartImageDirField stringValue] forKey:CartImageDir];
-    [displayedValues setObject:[cassImageDirField stringValue] forKey:CassImageDir];
-    [displayedValues setObject:[exeFileDirField stringValue] forKey:ExeFileDir];
-    [displayedValues setObject:[savedStateDirField stringValue] forKey:SavedStateDir];
-    [displayedValues setObject:[configDirField stringValue] forKey:ConfigDir];
+    [displayedValues setObject:[diskImageDirField stringValue] ?: @"" forKey:DiskImageDir];
+    [displayedValues setObject:[diskSetDirField stringValue] ?: @"" forKey:DiskSetDir];
+    [displayedValues setObject:[cartImageDirField stringValue] ?: @"" forKey:CartImageDir];
+    [displayedValues setObject:[cassImageDirField stringValue] ?: @"" forKey:CassImageDir];
+    [displayedValues setObject:[exeFileDirField stringValue] ?: @"" forKey:ExeFileDir];
+    [displayedValues setObject:[savedStateDirField stringValue] ?: @"" forKey:SavedStateDir];
+    [displayedValues setObject:[configDirField stringValue] ?: @"" forKey:ConfigDir];
 
 	if (([saveCurrentMediaButton state] == NSOnState) && ([[displayedValues objectForKey:SaveCurrentMedia] boolValue] == NO))
 		[self clearBootMedia];
-    [displayedValues setObject:[d1FileField stringValue] forKey:D1File];
-    [displayedValues setObject:[d2FileField stringValue] forKey:D2File];
-    [displayedValues setObject:[d3FileField stringValue] forKey:D3File];
-    [displayedValues setObject:[d4FileField stringValue] forKey:D4File];
-    [displayedValues setObject:[d5FileField stringValue] forKey:D5File];
-    [displayedValues setObject:[d6FileField stringValue] forKey:D6File];
-    [displayedValues setObject:[d7FileField stringValue] forKey:D7File];
-    [displayedValues setObject:[d8FileField stringValue] forKey:D8File];
-    [displayedValues setObject:[cartFileField stringValue] forKey:CartFile];
+    [displayedValues setObject:[d1FileField stringValue] ?: @"" forKey:D1File];
+    [displayedValues setObject:[d2FileField stringValue] ?: @"" forKey:D2File];
+    [displayedValues setObject:[d3FileField stringValue] ?: @"" forKey:D3File];
+    [displayedValues setObject:[d4FileField stringValue] ?: @"" forKey:D4File];
+    [displayedValues setObject:[d5FileField stringValue] ?: @"" forKey:D5File];
+    [displayedValues setObject:[d6FileField stringValue] ?: @"" forKey:D6File];
+    [displayedValues setObject:[d7FileField stringValue] ?: @"" forKey:D7File];
+    [displayedValues setObject:[d8FileField stringValue] ?: @"" forKey:D8File];
+    [displayedValues setObject:[cartFileField stringValue] ?: @"" forKey:CartFile];
     if ([[cartFileField stringValue] isEqual:@"BASIC"])
         [cartFileSelectButton selectItemAtIndex:1];
     else if ([[cartFileField stringValue] isEqual:@"SIDE2"])
         [cartFileSelectButton selectItemAtIndex:2];
     else
         [cartFileSelectButton selectItemAtIndex:0];
-    [displayedValues setObject:[cart2FileField stringValue] forKey:Cart2File];
-    [displayedValues setObject:[exeFileField stringValue] forKey:ExeFile];
-    [displayedValues setObject:[cassFileField stringValue] forKey:CassFile];
+    [displayedValues setObject:[cart2FileField stringValue] ?: @"" forKey:Cart2File];
+    [displayedValues setObject:[exeFileField stringValue] ?: @"" forKey:ExeFile];
+    [displayedValues setObject:[cassFileField stringValue] ?: @"" forKey:CassFile];
     if ([d1FileEnabledButton state] == NSOnState)
         [displayedValues setObject:yes forKey:D1FileEnabled];
     else
@@ -3227,6 +3277,11 @@ static Preferences *sharedInstance = nil;
 }
 
 
+/* FujiNet preference change handler */
+- (IBAction)fujiNetChanged:(id)sender {
+    [self miscChanged:sender];
+}
+
 /* The following methods allow the user to choose the ROM files */
    
 - (IBAction)browseAF80Rom:(id)sender {
@@ -3854,6 +3909,8 @@ static Preferences *sharedInstance = nil;
     prefs->enableRPatch = [[curValues objectForKey:EnableRPatch] intValue];
     prefs->rPatchPort = [[curValues objectForKey:RPatchPort] intValue];
 	prefs->rPatchSerialEnabled = [[curValues objectForKey:RPatchSerialEnabled] intValue];
+    prefs->fujiNetEnabled = [[curValues objectForKey:FujiNetEnabled] intValue];
+    prefs->fujiNetPort = [[curValues objectForKey:FujiNetPort] intValue];
 	prefs->useAtariCursorKeys = [[curValues objectForKey:UseAtariCursorKeys] intValue];
     [[curValues objectForKey:RPatchSerialPort]getCString:prefs->rPatchSerialPort maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
     [[curValues objectForKey:PrintCommand] getCString:prefs->printCommand maxLength:FILENAME_MAX encoding:NSASCIIStringEncoding ];
@@ -4302,6 +4359,8 @@ static Preferences *sharedInstance = nil;
 		}
     [displayedValues setObject:prefssave->enableStereo ? yes : no forKey:EnableStereo];
 
+	[displayedValues setObject:([curValues objectForKey:FujiNetEnabled] && [[curValues objectForKey:FujiNetEnabled] boolValue]) ? yes : no forKey:FujiNetEnabled];
+	[displayedValues setObject:[curValues objectForKey:FujiNetPort] ?: @"9997" forKey:FujiNetPort];
 	[displayedValues setObject:prefssave->blackBoxEnabled ? yes : no forKey:BlackBoxEnabled];
 	[displayedValues setObject:prefssave->mioEnabled ? yes : no forKey:MioEnabled];
     [displayedValues setObject:prefssave->side2SDXMode ? yes : no forKey:Side2SDXMode];
@@ -4583,7 +4642,7 @@ static Preferences *sharedInstance = nil;
             [[curValues objectForKey:GamepadConfigArray] 
                 addObject:[NSString stringWithString:[configNameField stringValue]]];
             /* Set the current config to it */
-            [displayedValues setObject:[configNameField stringValue] forKey:GamepadConfigCurrent];
+            [displayedValues setObject:[configNameField stringValue] ?: @"" forKey:GamepadConfigCurrent];
             /* Add the name to the menu...*/
             [gamepadConfigPulldown insertItemWithTitle:[configNameField stringValue] atIndex: (2+currNumConfigs)];
             [gamepad1ConfigPulldown insertItemWithTitle:[configNameField stringValue] atIndex: (1+currNumConfigs)];
@@ -4653,7 +4712,7 @@ static Preferences *sharedInstance = nil;
             [[NSUserDefaults standardUserDefaults] 
                 setObject:[displayedValues objectForKey:Button5200Assignment] forKey:button5200Key];
             /* Set the current config to it */
-            [displayedValues setObject:[configNameField stringValue] forKey:GamepadConfigCurrent];
+            [displayedValues setObject:[configNameField stringValue] ?: @"" forKey:GamepadConfigCurrent];
             }
         }
     else if (action == (6 + numberOfConfigs)) { /* Delete Config */
@@ -4999,7 +5058,7 @@ static Preferences *sharedInstance = nil;
         [displayedValues setObject:[[NSNumber alloc] initWithBool:YES] forKey:StartupPasteEnable];
     else
         [displayedValues setObject:[[NSNumber alloc] initWithBool:NO] forKey:StartupPasteEnable];
-    [displayedValues setObject:[startupPasteStringField stringValue] forKey:StartupPasteString];
+    [displayedValues setObject:[startupPasteStringField stringValue] ?: @"" forKey:StartupPasteString];
     [NSApp stopModal];
     [[startupPasteEnableButton window] close];
 }
@@ -5312,6 +5371,8 @@ static Preferences *sharedInstance = nil;
     getIntDefault(AtariSwitchTypeVer5);
 	getIntDefault(AxlonBankMask);
 	getIntDefault(MosaicMaxBank);
+	getBoolDefault(FujiNetEnabled);
+	getStringDefault(FujiNetPort);
 	getBoolDefault(MioEnabled);
 	getBoolDefault(BlackBoxEnabled);
     getStringDefault(MioRomFile);
@@ -5623,6 +5684,8 @@ static Preferences *sharedInstance = nil;
     setIntDefault(AtariSwitchTypeVer5);
 	setIntDefault(AxlonBankMask);
 	setIntDefault(MosaicMaxBank);
+	setBoolDefault(FujiNetEnabled);
+	setStringDefault(FujiNetPort);
 	setBoolDefault(MioEnabled);
 	setBoolDefault(BlackBoxEnabled);
     setStringDefault(MioRomFile);
@@ -5915,6 +5978,8 @@ static Preferences *sharedInstance = nil;
     setConfig(AtariSwitchTypeVer5);
 	setConfig(AxlonBankMask);
 	setConfig(MosaicMaxBank);
+	setConfig(FujiNetEnabled);
+	setConfig(FujiNetPort);
 	setConfig(MioEnabled);
 	setConfig(BlackBoxEnabled);
     setConfig(MioRomFile);
@@ -6305,6 +6370,8 @@ static Preferences *sharedInstance = nil;
     getConfig(AtariSwitchTypeVer5);
 	getConfig(AxlonBankMask);
 	getConfig(MosaicMaxBank);
+	getConfig(FujiNetEnabled);
+	getConfig(FujiNetPort);
 	getConfig(MioEnabled);
 	getConfig(BlackBoxEnabled);
     getConfig(MioRomFile);
@@ -6554,6 +6621,97 @@ static Preferences *sharedInstance = nil;
 - (void)windowWillClose:(NSNotification *)notification {
     NSWindow *window = [notification object];
     (void)[window makeFirstResponder:window];
+}
+
+/*------------------------------------------------------------------------------
+*  updateArtifactingPulldownForTVMode - Updates the artifact pulldown menu
+*  to show only the appropriate options based on current TV mode (NTSC/PAL)
+*-----------------------------------------------------------------------------*/
+- (void)updateArtifactingPulldownForTVMode {
+    int tvMode = [[tvModeMatrix selectedCell] tag];
+    
+    /* Clear and rebuild the pulldown */
+    [artifactingPulldown removeAllItems];
+    
+    if (tvMode == 0) { /* NTSC Mode */
+        [artifactingPulldown addItemWithTitle:@"No Artifact"];        /* Tag 0 = ARTIFACT_NONE */
+        [artifactingPulldown addItemWithTitle:@"NTSC Old"];           /* Tag 1 = ARTIFACT_NTSC_OLD */
+        [artifactingPulldown addItemWithTitle:@"NTSC New"];           /* Tag 2 = ARTIFACT_NTSC_NEW */
+#ifdef NTSC_FILTER
+        [artifactingPulldown addItemWithTitle:@"NTSC Full Filter"];   /* Tag 3 = ARTIFACT_NTSC_FULL */
+#endif
+    } else { /* PAL Mode */
+        [artifactingPulldown addItemWithTitle:@"No Artifact"];        /* Tag 0 = ARTIFACT_NONE */
+#ifndef NO_SIMPLE_PAL_BLENDING
+        [artifactingPulldown addItemWithTitle:@"PAL Simple Blend"];   /* Tag 1 = ARTIFACT_PAL_SIMPLE in PAL mode */
+#endif
+#ifdef PAL_BLENDING
+        [artifactingPulldown addItemWithTitle:@"PAL Full Blend"];     /* Tag 2 = ARTIFACT_PAL_BLEND in PAL mode */
+#endif
+    }
+    
+    /* Set tags for proper mapping */
+    if (tvMode == 0) { /* NTSC */
+        for (int i = 0; i < [artifactingPulldown numberOfItems]; i++) {
+            [[artifactingPulldown itemAtIndex:i] setTag:i];
+        }
+    } else { /* PAL */
+        [[artifactingPulldown itemAtIndex:0] setTag:0]; /* No Artifact = 0 */
+        if ([artifactingPulldown numberOfItems] > 1)
+            [[artifactingPulldown itemAtIndex:1] setTag:4]; /* PAL Simple = 4 */
+        if ([artifactingPulldown numberOfItems] > 2)
+            [[artifactingPulldown itemAtIndex:2] setTag:5]; /* PAL Blend = 5 */
+    }
+    
+    /* Restore appropriate selection based on TV mode */
+    int targetTag = (tvMode == 0) ? 
+        [[displayedValues objectForKey:NTSCArtifactingMode] intValue] :
+        [[displayedValues objectForKey:PALArtifactingMode] intValue];
+    BOOL found = NO;
+    
+    /* Try to find item with saved tag */
+    for (int i = 0; i < [artifactingPulldown numberOfItems]; i++) {
+        int itemTag = [[artifactingPulldown itemAtIndex:i] tag];
+        if (itemTag == targetTag) {
+            [artifactingPulldown selectItemAtIndex:i];
+            found = YES;
+            break;
+        }
+    }
+    
+    /* If not found, default to first item (No Artifact) */
+    if (!found && [artifactingPulldown numberOfItems] > 0) {
+        [artifactingPulldown selectItemAtIndex:0];
+        /* Update saved selection to reflect the default */
+        if (tvMode == 0) {
+            [displayedValues setObject:[NSNumber numberWithInt:0] forKey:NTSCArtifactingMode];
+        } else {
+            [displayedValues setObject:[NSNumber numberWithInt:0] forKey:PALArtifactingMode];
+        }
+    }
+    
+    /* Update artifact new checkbox visibility - hide it for new artifact system */
+    [self updateArtifactNewButtonVisibility];
+}
+
+/*------------------------------------------------------------------------------
+*  updateArtifactNewButtonVisibility - Hide/show the artifact new checkbox
+*     based on current artifact selection (obsolete with new system)
+*-----------------------------------------------------------------------------*/
+- (void)updateArtifactNewButtonVisibility {
+    int selectedTag = ([artifactingPulldown indexOfSelectedItem] >= 0) ? 
+                      [[artifactingPulldown selectedItem] tag] : 0;
+    
+    /* Hide the checkbox for new artifact modes where it's not relevant */
+    BOOL shouldHide = (selectedTag == 2 ||   /* ARTIFACT_NTSC_NEW */
+                       selectedTag == 3 ||   /* ARTIFACT_NTSC_FULL */ 
+                       selectedTag == 4 ||   /* ARTIFACT_PAL_SIMPLE */
+                       selectedTag == 5);    /* ARTIFACT_PAL_BLEND */
+    
+    [artifactNewButton setHidden:shouldHide];
+    
+    /* Also update the label if it exists */
+    /* Note: You might need to connect a label outlet if there's explanatory text */
 }
 
 @end

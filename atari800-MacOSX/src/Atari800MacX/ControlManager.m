@@ -21,6 +21,7 @@
 #import "monitor.h"
 #import "SDL.h"
 #import "cpu.h"
+#import "mac_monitor.h"
 #import "ui.h"
 #import <stdarg.h>
 
@@ -33,6 +34,7 @@
 extern void PauseAudio(int pause);
 extern void MONITOR_monitorEnter(void);
 extern int MONITOR_monitorCmd(char *input);
+extern int Atari800_jumper_present;
 extern int CalcAtariType(int machineType, int ramSize, int axlon, int mosaic, int ultimate, int basic, int game, int leds, int jumper);
 
 
@@ -991,6 +993,20 @@ static int monitorRunFirstTime = 1;
 *-----------------------------------------------------------------------------*/
 - (void)messagePrint:(char *)printString
 {
+    /* Ensure UI updates happen on the main thread */
+    if ([NSThread isMainThread]) {
+        /* Already on main thread, execute directly */
+        [self messagePrintOnMainThread:printString];
+    } else {
+        /* Dispatch to main thread */
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self messagePrintOnMainThread:printString];
+        });
+    }
+}
+
+- (void)messagePrintOnMainThread:(char *)printString
+{
     NSRange theEnd;
     NSString *stringObj;
 
@@ -1455,13 +1471,13 @@ static int monitorRunFirstTime = 1;
 	[foundMemoryLocations retain];
 	memorySearchLength = 0;
 	
-	if (get_hex(findString, &hexval)) {
+	if (get_hex_gui(findString, &hexval)) {
 		memorySearchLength = 0;
 		do {
 			tab[memorySearchLength++] = (UBYTE) hexval;
 			if (hexval & 0xff00)
 				tab[memorySearchLength++] = (UBYTE) (hexval >> 8);
-		} while (get_hex(NULL, &hexval));
+		} while (get_hex_gui(NULL, &hexval));
 	}
 	if (memorySearchLength) {
 		int addr;

@@ -12,6 +12,7 @@
 #include <string.h>
 #include <time.h>
 #include "cpu.h"
+#include "antic.h"
 #include "img_disk.h"
 #include "ide.h"
 
@@ -42,7 +43,8 @@ void VDWriteUnalignedLEU64(void *p, uint64_t v) { *(uint64_t *)p = v; }
 
 uint64_t GetTimeTicks() {
 #if 1
-    return CPU_cycle_count;
+    /* CPU_cycle_count removed in newer Atari800 core - use ANTIC_xpos as timing substitute */
+    return ANTIC_xpos;
 #else
     struct timespec time;
     uint32_t usecs;

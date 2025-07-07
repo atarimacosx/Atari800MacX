@@ -48,6 +48,8 @@ typedef struct ATARI800MACX_PREF {
                 int rPatchPort;
 				int rPatchSerialEnabled;
 				char rPatchSerialPort[FILENAME_MAX];
+                int fujiNetEnabled;
+                int fujiNetPort;
                 char printCommand[FILENAME_MAX];
                 int bootFromCassette; 
                 int speedLimit; 

@@ -146,7 +146,16 @@ int SIDE2_Change_Rom(char *filename, int new) {
         if (new)
             strcpy(side2_rom_filename, filename);
         strcpy(side2_nvram_filename, side2_rom_filename);
-        UTIL_strip_ext(side2_nvram_filename);
+        /* Use Util_splitpath to remove extension and rebuild without it */
+        {
+            char dir[FILENAME_MAX], file[FILENAME_MAX];
+            char *dot_pos;
+            Util_splitpath(side2_nvram_filename, dir, file);
+            /* Remove extension from filename */
+            dot_pos = strrchr(file, '.');
+            if (dot_pos) *dot_pos = '\0';
+            Util_catpath(side2_nvram_filename, dir, file);
+        }
         strcat(side2_nvram_filename,".nvram");
         LoadNVRAM();
         if (flash == NULL) {

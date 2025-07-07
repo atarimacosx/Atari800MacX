@@ -96,6 +96,76 @@ static UWORD assemblerAddr;
     and from antic.h, gtia.h, pia.h and pokey.h.
     Symbols must be sorted by address. If the adress has different names
     when reading/writing to it, put the read name first. */
+
+/* Mac-specific monitor enhancements - type definitions moved to monitor.h */
+
+/* Mac-specific label management functions */
+void load_user_labels(const char *filename) {
+    /* Stub implementation for label loading */
+}
+
+void free_user_labels(void) {
+    /* Stub implementation for freeing labels */
+}
+
+char *find_user_label(const char *label) {
+    /* Stub implementation for finding labels */
+    return NULL;
+}
+
+void add_user_label(const char *label, int addr) {
+    /* Stub implementation for adding labels */
+}
+
+/* Mac-specific disassembly functions */
+UWORD MONITOR_get_disasm_start(UWORD start_addr, UWORD pc_addr) {
+    /* Stub implementation for getting disassembly start address */
+    return start_addr;
+}
+
+/* Mac-specific monitor types and variables needed by Mac GUI */
+typedef struct {
+    char *name;
+    UWORD addr;
+} symtable_rec;
+
+int symtable_builtin_enable = 1;
+int symtable_user_size = 0;
+symtable_rec *symtable_user = NULL;
+symtable_rec *symtable_builtin = NULL;
+symtable_rec *symtable_builtin_5200 = NULL;
+int break_table_on = 1;
+int MONITOR_break_active = 0;
+
+/* Mac-specific breakpoint constants for flag conditions */
+#define MONITOR_BREAKPOINT_CLRN 2
+#define MONITOR_BREAKPOINT_SETN 3
+#define MONITOR_BREAKPOINT_CLRV 4
+#define MONITOR_BREAKPOINT_SETV 5
+#define MONITOR_BREAKPOINT_CLRB 6
+#define MONITOR_BREAKPOINT_SETB 7
+#define MONITOR_BREAKPOINT_CLRD 8
+#define MONITOR_BREAKPOINT_SETD 9
+#define MONITOR_BREAKPOINT_CLRI 10
+#define MONITOR_BREAKPOINT_SETI 11
+#define MONITOR_BREAKPOINT_CLRZ 12
+#define MONITOR_BREAKPOINT_SETZ 13
+#define MONITOR_BREAKPOINT_CLRC 14
+#define MONITOR_BREAKPOINT_SETC 15
+#define MONITOR_BREAKPOINT_MEM 256
+#define MONITOR_BREAKPOINT_CLRV 4
+#define MONITOR_BREAKPOINT_SETV 5
+#define MONITOR_BREAKPOINT_CLRB 6
+#define MONITOR_BREAKPOINT_SETB 7
+#define MONITOR_BREAKPOINT_CLRD 8
+#define MONITOR_BREAKPOINT_SETD 9
+#define MONITOR_BREAKPOINT_CLRI 10
+#define MONITOR_BREAKPOINT_SETI 11
+#define MONITOR_BREAKPOINT_CLRZ 12
+#define MONITOR_BREAKPOINT_SETZ 13
+#define MONITOR_BREAKPOINT_CLRC 14
+#define MONITOR_BREAKPOINT_SETC 15
+
 #ifdef MACOSX_MON_ENHANCEMENTS
 const symtable_rec symtable_builtin[] = {
 #else
@@ -1069,13 +1139,12 @@ int MONITOR_monitorCmd(char *input)
 #endif
 					show_instruction(addr, 22);
 					mon_printf("; %Xcyc ; ", cycles[MEMORY_SafeGetByte(addr)]);
+					/* Note: CPU register history tracking was removed in newer Atari800 core.
+					   Display current register values instead of historical ones. */
 					mon_printf("A=%02x S=%02x X=%02x Y=%02x P=",
-						CPU_remember_A[(CPU_remember_PC_curpos+i)%CPU_REMEMBER_PC_STEPS],
-						CPU_remember_S[(CPU_remember_PC_curpos+i)%CPU_REMEMBER_PC_STEPS],
-						CPU_remember_X[(CPU_remember_PC_curpos+i)%CPU_REMEMBER_PC_STEPS],
-						CPU_remember_Y[(CPU_remember_PC_curpos+i)%CPU_REMEMBER_PC_STEPS]);
+						CPU_regA, CPU_regS, CPU_regX, CPU_regY);
 					for(j=0;j<8;j++)
-						prBuff[j] = (CPU_remember_P[(CPU_remember_PC_curpos+i)%CPU_REMEMBER_PC_STEPS] &
+						prBuff[j] = (CPU_regP &
 									(0x80>>j)?"NV*BDIZC"[j]:'-');
 					prBuff[8] = '\n';
 					prBuff[9] = 0;
@@ -2686,3 +2755,23 @@ Revision 1.2  2001/03/18 06:34:58  knik
 WIN32 conditionals removed
 
 */
+
+/* Mac-specific monitor GUI compatibility functions */
+
+/* Parse hexadecimal value from string buffer - Mac GUI version */
+int get_hex_gui(const char *buffer, UWORD *hexval)
+{
+	unsigned int val;
+	if (sscanf(buffer, "%x", &val) == 1 && val <= 0xFFFF) {
+		*hexval = (UWORD)val;
+		return TRUE;
+	}
+	return FALSE;
+}
+
+/* Parse value expression from string buffer - Mac GUI version */
+int get_val_gui(const char *buffer, UWORD *val)
+{
+	/* For now, just treat it as a hex value */
+	return get_hex(buffer, val);
+}

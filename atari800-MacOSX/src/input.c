@@ -136,7 +136,7 @@ static char gzbuf[GZBUFSIZE+1];
 #define EVENT_RECORDING_VERSION 1
 #endif
 
-void INPUT_Initialise(int *argc, char *argv[])
+int INPUT_Initialise(int *argc, char *argv[])
 {
 	int i;
 	int j;
@@ -259,6 +259,7 @@ void INPUT_Initialise(int *argc, char *argv[])
 
 	INPUT_CenterMousePointer();
 	*argc = j;
+	return TRUE;
 }
 
 /* For event recording */

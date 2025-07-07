@@ -539,50 +539,59 @@ void SYSROM_SetDefaults(void)
 
 /* Ordered lists of ROM IDs to choose automatically when SYSROM_os_versions or
    SYSROM_basic_version are set to SYSROM_AUTO. */
-static int const autochoose_order_800_ntsc[] = { SYSROM_B_NTSC, SYSROM_A_NTSC, SYSROM_A_PAL, SYSROM_800_CUSTOM,
+static int const autochoose_order_800_ntsc[] = { 
 #if EMUOS_ALTIRRA
                                                  SYSROM_ALTIRRA_800,
 #endif /* EMOUS_ALTIRRA */
+                                                 SYSROM_B_NTSC, SYSROM_A_NTSC, SYSROM_A_PAL, SYSROM_800_CUSTOM,
                                                  -1 };
-static int const autochoose_order_800_pal[] = { SYSROM_A_PAL, SYSROM_B_NTSC, SYSROM_A_NTSC, SYSROM_800_CUSTOM,
+static int const autochoose_order_800_pal[] = { 
 #if EMUOS_ALTIRRA
                                                 SYSROM_ALTIRRA_800,
 #endif /* EMOUS_ALTIRRA */
+                                                SYSROM_A_PAL, SYSROM_B_NTSC, SYSROM_A_NTSC, SYSROM_800_CUSTOM,
                                                 -1 };
-static int const autochoose_order_1200xl[] = { SYSROM_AA01R11, SYSROM_AA00R10, SYSROM_BB00R1, SYSROM_BB01R2, SYSROM_BB01R3, SYSROM_BB01R4_OS, SYSROM_BB01R59, SYSROM_BB01R59A, SYSROM_BB02R3, SYSROM_BB02R3V4, SYSROM_CC01R4, SYSROM_XL_CUSTOM,
+static int const autochoose_order_1200xl[] = { 
 #if EMUOS_ALTIRRA
                                                SYSROM_ALTIRRA_XL,
 #endif /* EMOUS_ALTIRRA */
+                                               SYSROM_AA01R11, SYSROM_AA00R10, SYSROM_BB00R1, SYSROM_BB01R2, SYSROM_BB01R3, SYSROM_BB01R4_OS, SYSROM_BB01R59, SYSROM_BB01R59A, SYSROM_BB02R3, SYSROM_BB02R3V4, SYSROM_CC01R4, SYSROM_XL_CUSTOM,
                                                -1 };
-static int const autochoose_order_600xl[] = { SYSROM_BB00R1, SYSROM_BB01R2, SYSROM_BB01R3, SYSROM_BB01R4_OS, SYSROM_AA01R11, SYSROM_AA00R10, SYSROM_BB01R59, SYSROM_BB01R59A, SYSROM_BB02R3, SYSROM_BB02R3V4, SYSROM_CC01R4, SYSROM_XL_CUSTOM,
+static int const autochoose_order_600xl[] = { 
 #if EMUOS_ALTIRRA
                                               SYSROM_ALTIRRA_XL,
 #endif /* EMOUS_ALTIRRA */
+                                              SYSROM_BB00R1, SYSROM_BB01R2, SYSROM_BB01R3, SYSROM_BB01R4_OS, SYSROM_AA01R11, SYSROM_AA00R10, SYSROM_BB01R59, SYSROM_BB01R59A, SYSROM_BB02R3, SYSROM_BB02R3V4, SYSROM_CC01R4, SYSROM_XL_CUSTOM,
                                               -1 };
-static int const autochoose_order_800xl[] = { SYSROM_BB01R2, SYSROM_BB01R3, SYSROM_BB01R4_OS, SYSROM_BB00R1, SYSROM_AA01R11, SYSROM_AA00R10, SYSROM_BB01R59, SYSROM_BB01R59A, SYSROM_BB02R3, SYSROM_BB02R3V4, SYSROM_CC01R4, SYSROM_XL_CUSTOM,
+static int const autochoose_order_800xl[] = { 
 #if EMUOS_ALTIRRA
                                               SYSROM_ALTIRRA_XL,
 #endif /* EMOUS_ALTIRRA */
+                                              SYSROM_BB01R2, SYSROM_BB01R3, SYSROM_BB01R4_OS, SYSROM_BB00R1, SYSROM_AA01R11, SYSROM_AA00R10, SYSROM_BB01R59, SYSROM_BB01R59A, SYSROM_BB02R3, SYSROM_BB02R3V4, SYSROM_CC01R4, SYSROM_XL_CUSTOM,
                                               -1 };
-static int const autochoose_order_xe[] = { SYSROM_BB01R3, SYSROM_BB01R4_OS, SYSROM_BB01R2, SYSROM_BB00R1, SYSROM_AA01R11, SYSROM_AA00R10, SYSROM_BB01R59, SYSROM_BB01R59A, SYSROM_BB02R3, SYSROM_BB02R3V4, SYSROM_CC01R4, SYSROM_XL_CUSTOM,
+static int const autochoose_order_xe[] = { 
 #if EMUOS_ALTIRRA
                                            SYSROM_ALTIRRA_XL,
 #endif /* EMOUS_ALTIRRA */
+                                           SYSROM_BB01R3, SYSROM_BB01R4_OS, SYSROM_BB01R2, SYSROM_BB00R1, SYSROM_AA01R11, SYSROM_AA00R10, SYSROM_BB01R59, SYSROM_BB01R59A, SYSROM_BB02R3, SYSROM_BB02R3V4, SYSROM_CC01R4, SYSROM_XL_CUSTOM,
                                            -1 };
-static int const autochoose_order_xegs[] = { SYSROM_BB01R4_OS, SYSROM_BB01R3, SYSROM_BB01R2, SYSROM_BB00R1, SYSROM_AA01R11, SYSROM_AA00R10, SYSROM_BB01R59, SYSROM_BB01R59A, SYSROM_BB02R3, SYSROM_BB02R3V4, SYSROM_CC01R4, SYSROM_XL_CUSTOM,
+static int const autochoose_order_xegs[] = { 
 #if EMUOS_ALTIRRA
                                              SYSROM_ALTIRRA_XL,
 #endif /* EMOUS_ALTIRRA */
+                                             SYSROM_BB01R4_OS, SYSROM_BB01R3, SYSROM_BB01R2, SYSROM_BB00R1, SYSROM_AA01R11, SYSROM_AA00R10, SYSROM_BB01R59, SYSROM_BB01R59A, SYSROM_BB02R3, SYSROM_BB02R3V4, SYSROM_CC01R4, SYSROM_XL_CUSTOM,
                                              -1 };
-static int const autochoose_order_5200[] = { SYSROM_5200, SYSROM_5200A, SYSROM_5200_CUSTOM,
+static int const autochoose_order_5200[] = { 
 #if EMUOS_ALTIRRA
                                              SYSROM_ALTIRRA_5200,
 #endif /* EMOUS_ALTIRRA */
+                                             SYSROM_5200, SYSROM_5200A, SYSROM_5200_CUSTOM,
                                              -1 };
-static int const autochoose_order_basic[] = { SYSROM_BASIC_C, SYSROM_BASIC_B, SYSROM_BASIC_A, SYSROM_BASIC_CUSTOM,
+static int const autochoose_order_basic[] = { 
 #if EMUOS_ALTIRRA
                                               SYSROM_ALTIRRA_BASIC,
 #endif /* EMOUS_ALTIRRA */
+                                              SYSROM_BASIC_C, SYSROM_BASIC_B, SYSROM_BASIC_A, SYSROM_BASIC_CUSTOM,
                                               -1 };
 static int const autochoose_order_xegame[] = { SYSROM_XEGAME, SYSROM_XEGAME_CUSTOM, -1 };
 

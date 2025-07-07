@@ -1,5 +1,8 @@
 /* config.h.  */
 
+/* Package version for upgraded Atari800 core */
+#define PACKAGE_VERSION "5.2.0-FujiNet"
+
 /* Define to empty if the keyword does not work.  */
 /* #undef const */
 
@@ -127,7 +130,7 @@
 /* #undef HAVE_NDIR_H */
 
 /* Define if you have the <strings.h> header file.  */
-/* #undef HAVE_STRINGS_H */
+#define HAVE_STRINGS_H 1
 
 /* Define if you have the <sys/dir.h> header file.  */
 /* #undef HAVE_SYS_DIR_H */
@@ -358,5 +361,13 @@
 #define PCLINK
 
 #define EMUOS_ALTIRRA       1
+
+#define NETSIO              1
+
+/* NTSC Video Filter System */
+#define NTSC_FILTER         1
+
+/* PAL Blending System */
+#define PAL_BLENDING        1
 
 #define ATARI800MACX

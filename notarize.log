@@ -1,0 +1,11 @@
+Conducting pre-submission checks for Atari800MacX-7.0.0-beta1.dmg and initiating connection to the Apple notary service...
+Submission ID received
+  id: 18e7b765-cb01-40a1-ac5e-fd8f093a6219
+Successfully uploaded file
+  id: 18e7b765-cb01-40a1-ac5e-fd8f093a6219
+  path: /Users/pgarcia/Documents/_priv/dev/atari/Atari800MacX/release/Atari800MacX-7.0.0-beta1.dmg
+Waiting for processing to complete.
+Current status: In Progress...Current status: In Progress....Current status: In Progress.....Current status: Invalid......Processing complete
+  id: 18e7b765-cb01-40a1-ac5e-fd8f093a6219
+  status: Invalid
+

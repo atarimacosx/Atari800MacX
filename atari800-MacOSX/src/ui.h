@@ -30,10 +30,13 @@
 
 /* Three legitimate entries to UI module. */
 int UI_SelectCartType(int k);
+int UI_SelectCartTypeBetween(int *types);
+int UI_Initialise(int *argc, char *argv[]);
 void UI_Run(void);
 
 extern int UI_is_active;
 extern int UI_alt_function;
+extern int UI_current_function;
 
 #ifdef CRASH_MENU
 extern int UI_crash_code;
@@ -48,7 +51,9 @@ extern char UI_saved_files_dir[UI_MAX_DIRECTORIES][FILENAME_MAX];
 extern int UI_n_atari_files_dir;
 extern int UI_n_saved_files_dir;
 
-#ifdef SDL
+extern int UI_show_hidden_files;
+
+#ifdef GUI_SDL
 void PLATFORM_SetJoystickKey(int joystick, int direction, int value);
 void PLATFORM_GetJoystickKeyName(int joystick, int direction, char *buffer, int bufsize);
 int GetRawKey(void);
@@ -75,10 +80,13 @@ int GetRawKey(void);
 #define UI_MENU_ABOUT            16
 #define UI_MENU_EXIT             17
 #define UI_MENU_CASSETTE         18
-#ifdef MACOSX
-#define UI_MENU_SAVECFG          30
-#define UI_MENU_LOADCFG          31
-#endif
+#define UI_MENU_CONTROLLER       19
+#define UI_MENU_WINDOWS	         20
+#define UI_MENU_QUICKSAVESTATE   21
+#define UI_MENU_QUICKLOADSTATE   22
+
+
+#define UI_MENU_VIDEO_RECORDING  24
 
 /* Structure of menu item. Each menu is just an array of items of this structure
    terminated by UI_MENU_END */
@@ -87,7 +95,7 @@ typedef struct
 	UWORD flags;   /* Flags, see values below */
 	SWORD retval;  /* Value returned by Select when this item is selected */
 	               /* < 0 means that item is strictly informative and cannot be selected */
-	char *prefix;  /* Text to prepend the item */
+	const char *prefix;  /* Text to prepend the item */
 	char *item;    /* Main item text */
 	const char *suffix;  /* Optional text to show after the item text (e.g. key shortcut) */
 	               /* or (if (flags & UI_ITEM_TIP) != 0) "tooltip" */
@@ -99,6 +107,7 @@ typedef struct
 #define UI_ITEM_CHECK   0x02  /* Item represents a boolean value */
 #define UI_ITEM_FILESEL 0x03  /* Item invokes file/directory selection */
 #define UI_ITEM_SUBMENU 0x04  /* Item opens a submenu */
+#define UI_ITEM_END     0x05  /* Indicates end of menu */
 /* UI_ITEM_CHECK means that the value of UI_ITEM_CHECKED is shown.
    UI_ITEM_FILESEL and UI_ITEM_SUBMENU are just for optional decorations,
    so the user knows what happens when he/she selects this item. */
@@ -130,7 +139,7 @@ typedef struct
 #define UI_MENU_SUBMENU(retval, item)                          { UI_ITEM_SUBMENU, retval, NULL, item, NULL }
 #define UI_MENU_SUBMENU_SUFFIX(retval, item, suffix)           { UI_ITEM_SUBMENU, retval, NULL, item, suffix }
 #define UI_MENU_SUBMENU_ACCEL(retval, item, keystroke)         { UI_ITEM_SUBMENU, retval, NULL, item, UI_MENU_ACCEL(keystroke) }
-#define UI_MENU_END                                            { UI_ITEM_HIDDEN, 0, NULL, NULL, NULL }
+#define UI_MENU_END                                            { UI_ITEM_END, 0, NULL, NULL, NULL }
 
 /* UI driver entry prototypes */
 
@@ -147,6 +156,19 @@ typedef int (*UI_fnSelect)(const char *title, int flags, int default_item, const
 /* SelectInt returns an integer chosen by the user from the range min_value..max_value.
    default_value is the initial selection and the value returned if the selection is cancelled. */
 typedef int (*UI_fnSelectInt)(int default_value, int min_value, int max_value);
+/* SelectSlider selects integer chosen by user from the range 0..max_value.
+   start_value is the slider's initial value. The label displayed at the slider is created
+   by calling label_fun. This function takes three parameters:
+   - *label - a buffer into which the label shuld be written to (not longer than 10 chars,
+     excluding the trailing \0);
+   - value - the slider's current value, on which the label should be based;
+   - *user_data - a pointer to any data provided by user in SelectSlider's
+     *user_data parameter.
+   Returns -1 when the user has cancelled.
+   The return value should be converted by user to a usable range. */
+typedef int (*UI_fnSelectSlider)(char const *title, int start_value, int max_value,
+				 void (*label_fun)(char *label, int value, void *user_data),
+				 void *user_data);
 /* EditString provides string input. pString is shown initially and can be modified by the user.
    It won't exceed nSize characters, including NUL. Note that pString may be modified even
    when the user pressed Esc. */
@@ -171,6 +193,7 @@ typedef void (*UI_fnInit)(void);
 /* Bit masks for flags */
 #define UI_SELECT_POPUP   0x01
 #define UI_SELECT_DRAG    0x02
+#define UI_SELECT_JOY_BTN 0x04
 
 /* Values returned via seltype */
 #define UI_USER_SELECT    1
@@ -183,6 +206,7 @@ typedef struct
 {
 	UI_fnSelect           fSelect;
 	UI_fnSelectInt        fSelectInt;
+	UI_fnSelectSlider     fSelectSlider;
 	UI_fnEditString       fEditString;
 	UI_fnGetSaveFilename  fGetSaveFilename;
 	UI_fnGetLoadFilename  fGetLoadFilename;

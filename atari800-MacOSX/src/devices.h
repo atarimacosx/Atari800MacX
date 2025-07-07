@@ -5,6 +5,7 @@
 #include "atari.h" /* UWORD */
 
 int Devices_Initialise(int *argc, char *argv[]);
+void Devices_Exit(void);
 int Devices_PatchOS(void);
 void Devices_Frame(void);
 void Devices_UpdatePatches(void);
@@ -14,16 +15,14 @@ UWORD Devices_SkipDeviceName(void);
 extern int Devices_enable_h_patch;
 extern int Devices_enable_p_patch;
 extern int Devices_enable_r_patch;
-#ifdef ATARI800MACX
-#ifdef D_PATCH	
-extern int Devices_enable_d_patch;
-#endif
-#endif
+extern int Devices_enable_b_patch;
 
 extern char Devices_atari_h_dir[4][FILENAME_MAX];
 extern int Devices_h_read_only;
 
 extern char Devices_h_exe_path[FILENAME_MAX];
+
+extern char Devices_h_device_name;
 
 extern char Devices_h_current_dir[4][FILENAME_MAX];
 
@@ -84,7 +83,5 @@ extern struct DEV_B dev_b_status;
 
 UWORD Devices_UpdateHATABSEntry(char device, UWORD entry_address, UWORD table_address);
 void Devices_RemoveHATABSEntry(char device, UWORD entry_address, UWORD table_address);
-#ifdef ATARI800MACX
-void Devices_WarmCold_Start(void);
-#endif
+
 #endif /* DEVICES_H_ */

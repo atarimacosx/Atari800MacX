@@ -85,17 +85,20 @@ FILE *MONITOR_trace_file = NULL;
 
 #ifdef MONITOR_HINTS
 
+#ifndef SYMTABLE_REC_DEFINED
 typedef struct {
 	char *name;
 	UWORD addr;
 } symtable_rec;
+#define SYMTABLE_REC_DEFINED
+#endif
 
  /* Symbol names taken from atari.equ - part of disassembler by Erich Bacher
     and from antic.h, gtia.h, pia.h and pokey.h.
     Symbols must be sorted by address. If the address has different names
     when reading/writing to it, put the read name first. */
 
-static const symtable_rec symtable_builtin[] = {
+const symtable_rec symtable_builtin[] = {
 	{"NGFLAG",  0x0001}, {"CASINI",  0x0002}, {"CASINI+1",0x0003}, {"RAMLO",   0x0004},
 	{"RAMLO+1", 0x0005}, {"TRAMSZ",  0x0006}, {"CMCMD",   0x0007}, {"WARMST",  0x0008},
 	{"BOOT",    0x0009}, {"DOSVEC",  0x000a}, {"DOSVEC+1",0x000b}, {"DOSINI",  0x000c},
@@ -301,7 +304,7 @@ static const symtable_rec symtable_builtin[] = {
 	{NULL,    0x0000}
 };
 
-static const symtable_rec symtable_builtin_5200[] = {
+const symtable_rec symtable_builtin_5200[] = {
 	{"POKMSK",  0x0000}, {"RTCLOKH",  0x0001}, {"RTCLOKL",0x0002}, {"CRITIC",   0x0003},
 	{"ATRACT", 0x0004}, {"SDLSTL",  0x0005}, {"SDLSTH",   0x0006}, {"SDMCTL",  0x0007},
 	{"PCOLR0",    0x0008}, {"PCOLR1",  0x0009}, {"PCOLR2",0x000a}, {"PCOLR3",  0x000b},
@@ -349,10 +352,10 @@ static const symtable_rec symtable_builtin_5200[] = {
 	{NULL,    0x0000}
 };
 
-static int symtable_builtin_enable = TRUE;
+int symtable_builtin_enable = TRUE;
 
-static symtable_rec *symtable_user = NULL;
-static int symtable_user_size = 0;
+symtable_rec *symtable_user = NULL;
+int symtable_user_size = 0;
 
 static const char *find_label_name(UWORD addr, int is_write)
 {
@@ -1961,7 +1964,7 @@ int MONITOR_Run(void)
 				   ANTIC_DMACTL, ANTIC_CHACTL, ANTIC_dlist & 0xff, ANTIC_dlist >> 8, ANTIC_HSCROL, ANTIC_VSCROL);
 			printf("PMBASE=%02X    CHBASE=%02X    VCOUNT=%02X    "
 				   "NMIEN= %02X    ypos=%4d\n",
-				   ANTIC_PMBASE, ANTIC_CHBASE, ANTIC_GetByte(ANTIC_OFFSET_VCOUNT), ANTIC_NMIEN, ANTIC_ypos);
+				   ANTIC_PMBASE, ANTIC_CHBASE, ANTIC_GetByte(ANTIC_OFFSET_VCOUNT, FALSE), ANTIC_NMIEN, ANTIC_ypos);
 		}
 		else if (strcmp(t, "PIA") == 0) {
 			printf("PACTL= %02X    PBCTL= %02X    PORTA= %02X    "

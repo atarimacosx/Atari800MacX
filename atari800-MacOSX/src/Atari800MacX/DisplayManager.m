@@ -12,12 +12,17 @@
 #import "af80.h"
 #import "bit3.h"
 #import "xep80.h"
+#import "artifact.h"
+#ifdef NTSC_FILTER
+#import "filter_ntsc.h"
+#endif
 
 extern void PLATFORM_Switch80Col(void);
 extern int SCALE_MODE;
 extern int scaleFactor;
 extern int requestWidthModeChange;
 extern int WIDTH_MODE;
+extern int COL80_autoswitch;
 extern int Screen_show_atari_speed;
 extern int requestFullScreenChange;
 extern int request80ColChange;
@@ -48,6 +53,19 @@ void SetDisplayManagerScaleMode(int scaleMode) {
 
 void SetDisplayManagerArtifactMode(int artifactMode) {
     [[DisplayManager sharedInstance] setArtifactModeMenu:(artifactMode)];
+    }
+
+void SetDisplayManagerNtscPreset(int preset) {
+    [[DisplayManager sharedInstance] setNtscPresetMenu:(preset)];
+    }
+
+void UpdateDisplayManagerArtifactMenu(int tvMode) {
+    /* Validate TV mode before calling update */
+    if (tvMode < 0 || tvMode > 1) {
+        NSLog(@"UpdateDisplayManagerArtifactMenu: Invalid TV mode %d, using NTSC (0)", tvMode);
+        tvMode = 0; /* Default to NTSC */
+    }
+    [[DisplayManager sharedInstance] updateArtifactMenuForTVMode:(tvMode)];
     }
 
 void SetDisplayManagerGrabMouse(int mouseOn) {
@@ -185,44 +203,151 @@ static DisplayManager *sharedInstance = nil;
 *-----------------------------------------------------------------------------*/
 - (void)setArtifactModeMenu:(int)artifactMode
 {
+	/* Reset all menu items to off state */
+	[NoArtifactItem setState:NSOffState];
+	[revXLXEGTIAItem setState:NSOffState];
+	[XLXEGTIAItem setState:NSOffState];
+	[GTIA400800Item setState:NSOffState];
+	[CTIA400800Item setState:NSOffState];
+	[ntscNewArtifactItem setState:NSOffState];
+	[ntscFullFilterItem setState:NSOffState];
+	[palSimpleBlendItem setState:NSOffState];
+	[palFullBlendItem setState:NSOffState];
+
+	/* Handle both old (0-4) and new (ARTIFACT_t enum) systems */
 	switch(artifactMode)
 	{
-		case 0:
+		case 0: /* ARTIFACT_NONE */
 			[NoArtifactItem setState:NSOnState];
-			[revXLXEGTIAItem setState:NSOffState];
-			[XLXEGTIAItem setState:NSOffState];
-			[GTIA400800Item setState:NSOffState];
-			[CTIA400800Item setState:NSOffState];
 			break;
-		case 1:
-			[NoArtifactItem setState:NSOffState];
+		case 1: /* ARTIFACT_NTSC_OLD - maps to old revXLXE GTIA */
 			[revXLXEGTIAItem setState:NSOnState];
-			[XLXEGTIAItem setState:NSOffState];
-			[GTIA400800Item setState:NSOffState];
-			[CTIA400800Item setState:NSOffState];
 			break;
-		case 2:
-			[NoArtifactItem setState:NSOffState];
-			[revXLXEGTIAItem setState:NSOffState];
-			[XLXEGTIAItem setState:NSOnState];
-			[GTIA400800Item setState:NSOffState];
-			[CTIA400800Item setState:NSOffState];
+		case 2: /* ARTIFACT_NTSC_NEW - maps to new enhanced mode */
+			[ntscNewArtifactItem setState:NSOnState];
 			break;
-		case 3:
-			[NoArtifactItem setState:NSOffState];
-			[revXLXEGTIAItem setState:NSOffState];
-			[XLXEGTIAItem setState:NSOffState];
-			[GTIA400800Item setState:NSOnState];
-			[CTIA400800Item setState:NSOffState];
+		case 3: /* ARTIFACT_NTSC_FULL (if enabled) or PAL_SIMPLE */
+#if NTSC_FILTER
+			[ntscFullFilterItem setState:NSOnState];
+#else
+			[palSimpleBlendItem setState:NSOnState];
+#endif
 			break;
-		case 4:
-			[NoArtifactItem setState:NSOffState];
-			[revXLXEGTIAItem setState:NSOffState];
-			[XLXEGTIAItem setState:NSOffState];
-			[GTIA400800Item setState:NSOffState];
-			[CTIA400800Item setState:NSOnState];
+		case 4: /* PAL_SIMPLE or PAL_BLEND depending on build config */
+#ifndef NO_SIMPLE_PAL_BLENDING
+			[palSimpleBlendItem setState:NSOnState];
+#else
+#ifdef PAL_BLENDING
+			[palFullBlendItem setState:NSOnState];
+#endif
+#endif
+			break;
+		case 5: /* PAL_BLEND (if both NTSC_FILTER and PAL modes enabled) */
+#ifdef PAL_BLENDING
+			[palFullBlendItem setState:NSOnState];
+#endif
+			break;
+		default:
+			/* Fallback for compatibility with old system */
+			if (artifactMode <= 4) {
+				/* Handle legacy mode mapping */
+				switch(artifactMode) {
+					case 2: [XLXEGTIAItem setState:NSOnState]; break;
+					case 3: [GTIA400800Item setState:NSOnState]; break;
+					case 4: [CTIA400800Item setState:NSOnState]; break;
+				}
+			}
 			break;
 	}
+}
+
+/*------------------------------------------------------------------------------
+*  setNtscPresetMenu - This method is used to set the menu text for the
+*     NTSC filter preset menu items.
+*-----------------------------------------------------------------------------*/
+- (void)setNtscPresetMenu:(int)preset
+{
+#ifdef NTSC_FILTER
+	/* Reset all preset menu items */
+	[ntscCompositePresetItem setState:NSOffState];
+	[ntscSVideoPresetItem setState:NSOffState];
+	[ntscRGBPresetItem setState:NSOffState];
+	[ntscMonochromePresetItem setState:NSOffState];
+	
+	/* Set the active preset */
+	switch(preset) {
+		case FILTER_NTSC_PRESET_COMPOSITE:
+			[ntscCompositePresetItem setState:NSOnState];
+			break;
+		case FILTER_NTSC_PRESET_SVIDEO:
+			[ntscSVideoPresetItem setState:NSOnState];
+			break;
+		case FILTER_NTSC_PRESET_RGB:
+			[ntscRGBPresetItem setState:NSOnState];
+			break;
+		case FILTER_NTSC_PRESET_MONOCHROME:
+			[ntscMonochromePresetItem setState:NSOnState];
+			break;
+		default:
+			/* Custom preset - no menu item selected */
+			break;
+	}
+#endif
+}
+
+/*------------------------------------------------------------------------------
+*  updateArtifactMenuForTVMode - This method enables/disables artifact menu
+*     items based on the current TV mode (NTSC/PAL).
+*-----------------------------------------------------------------------------*/
+- (void)updateArtifactMenuForTVMode:(int)tvMode
+{
+	/* Filter out invalid TV mode values */
+	if (tvMode < 0 || tvMode > 1) {
+		return;
+	}
+	
+	/* 0 = NTSC, 1 = PAL */
+	BOOL isNTSC = (tvMode == 0);
+	BOOL isPAL = (tvMode == 1);
+	/* NTSC artifact modes - enabled only in NTSC mode */
+	[revXLXEGTIAItem setEnabled:isNTSC];      /* NTSC Old */
+	[ntscNewArtifactItem setEnabled:isNTSC];   /* NTSC New */
+	[ntscFullFilterItem setEnabled:isNTSC];    /* NTSC Full Filter */
+	
+	/* PAL artifact modes - enabled only in PAL mode */
+#ifndef NO_SIMPLE_PAL_BLENDING
+	[palSimpleBlendItem setEnabled:isPAL];     /* PAL Simple Blend */
+#else
+	[palSimpleBlendItem setEnabled:NO];
+#endif
+
+#ifdef PAL_BLENDING
+	[palFullBlendItem setEnabled:isPAL];       /* PAL Full Blend */
+#else
+	[palFullBlendItem setEnabled:NO];
+#endif
+	
+	/* No Artifact is always enabled */
+	[NoArtifactItem setEnabled:YES];
+	
+	/* Old compatibility modes - disable in new system */
+	[XLXEGTIAItem setEnabled:NO];              /* Hide old XL/XE GTIA */
+	[GTIA400800Item setEnabled:NO];            /* Hide old GTIA 400/800 */
+	[CTIA400800Item setEnabled:NO];            /* Hide old CTIA 400/800 */
+	
+#ifdef NTSC_FILTER
+	/* NTSC Filter Presets - only available when NTSC Full Filter mode is active */
+	BOOL ntscFilterActive = isNTSC && (ARTIFACT_mode == ARTIFACT_NTSC_FULL);
+	[ntscFilterPresetsSubmenu setEnabled:ntscFilterActive];
+	[ntscCompositePresetItem setEnabled:ntscFilterActive];
+	[ntscSVideoPresetItem setEnabled:ntscFilterActive];
+	[ntscRGBPresetItem setEnabled:ntscFilterActive];
+	[ntscMonochromePresetItem setEnabled:ntscFilterActive];
+	
+#endif
+	
+	/* Update menu selection to match current artifact mode */
+	[self setArtifactModeMenu:ARTIFACT_mode];
 }
 
 - (bool)enable80ColModeMenu:(int)machineType:(int)xep80Enabled:(int)af80Enabled:(int)bit3Enabled
@@ -447,8 +572,46 @@ static DisplayManager *sharedInstance = nil;
 
 - (IBAction)artifactModeChange:(id)sender
 {
-	ANTIC_artif_mode = [sender tag];
+	int tag = [sender tag];
+	/* Artifact mode selected from menu */
+	
+	/* Convert menu tag to ARTIFACT_t enum and set via new API */
+	ARTIFACT_Set((ARTIFACT_t)tag);
+	
+	/* Update display to reflect changes */
 	requestArtifChange = 1;
+	
+	/* Immediately update menu to enable/disable NTSC filter presets */
+	/* Note: We know we're in NTSC mode if NTSC Full Filter was selected */
+	if (tag == 3) { /* ARTIFACT_NTSC_FULL */
+		[self updateArtifactMenuForTVMode:0]; /* 0 = NTSC */
+	}
+}
+
+- (IBAction)ntscFilterPreset:(id)sender
+{
+#ifdef NTSC_FILTER
+	int preset = [sender tag];
+	
+	
+	/* Set NTSC filter to NTSC_FULL mode first */
+	ARTIFACT_Set(ARTIFACT_NTSC_FULL);
+	
+	/* Apply the selected preset */
+	FILTER_NTSC_SetPreset(preset);
+	FILTER_NTSC_Update(FILTER_NTSC_emu);
+	
+	/* Update menu state */
+	[self setNtscPresetMenu:preset];
+	
+	/* Request display update */
+	requestArtifChange = 1;
+	
+	/* Update artifact menu to reflect new mode (we're in NTSC mode for presets) */
+	[self updateArtifactMenuForTVMode:0]; /* 0 = NTSC */
+#else
+	NSLog(@"NTSC Filter Preset Action Called but NTSC_FILTER not defined!");
+#endif
 }
 
 /*------------------------------------------------------------------------------
