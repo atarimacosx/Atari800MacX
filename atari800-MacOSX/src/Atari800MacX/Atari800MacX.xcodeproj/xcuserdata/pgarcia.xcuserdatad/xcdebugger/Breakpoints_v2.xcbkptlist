@@ -80,7 +80,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "5337"
             endingLineNumber = "5337"
-            landmarkName = "IsCopyDefined()"
+            landmarkName = "ProcessCopySelection(first_row, last_row, selectAll)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>

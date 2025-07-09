@@ -737,7 +737,13 @@ void SDL_Sound_Update(void)
 		/* then we allow the callback to run.. */
 		SDL_UnlockAudio();
 		/* and delay until it runs and allows space. */
-		SDL_Delay(1);
+		if (speed_limit == 1) {
+			SDL_Delay(1);
+		} else {
+			/* When running at full speed, just drop the audio data */
+			SDL_LockAudio();
+			break;
+		}
 		SDL_LockAudio();
 		/*printf("sound buffer overflow:%d %d\n",gap, dsp_buffer_bytes);*/
 		gap = dsp_write_pos - dsp_read_pos;
@@ -5731,9 +5737,11 @@ int SDL_main(int argc, char **argv)
 				Casette_Frame();
             SDL_DrawMousePointer();
             POKEY_Frame();
-			SDL_Sound_Update();
+            if (speed_limit == 1) {
+                SDL_Sound_Update();
+                Atari800_Sync();
+            }
             Atari800_nframes++;
-            Atari800_Sync();
             CountFPS();
 			if (speed_limit == 0 || (speed_limit == 1 && deltatime <= 1.0/Atari800_FPS_PAL)) {
 				if (Atari800Time() >= last_time + 1.0/60.0) {
