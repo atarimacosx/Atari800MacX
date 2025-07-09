@@ -1358,6 +1358,37 @@ int loadMacPrefs(int firstTime)
     Atari800_useAlitrraXLRom = prefs.useAltirraXLRom;
     Atari800_useAlitrra5200Rom = prefs.useAltirra5200Rom;
     Atari800_useAlitrraBasicRom = prefs.useAltirraBasicRom;
+    
+    /* Set ROM versions based on "Use Altirra" preferences */
+#if EMUOS_ALTIRRA
+    /* For 800/400 */
+    if (prefs.useAltirraOSBRom) {
+        SYSROM_os_versions[Atari800_MACHINE_800] = SYSROM_ALTIRRA_800;
+    } else {
+        SYSROM_os_versions[Atari800_MACHINE_800] = SYSROM_AUTO;
+    }
+    
+    /* For XL/XE */
+    if (prefs.useAltirraXLRom) {
+        SYSROM_os_versions[Atari800_MACHINE_XLXE] = SYSROM_ALTIRRA_XL;
+    } else {
+        SYSROM_os_versions[Atari800_MACHINE_XLXE] = SYSROM_AUTO;
+    }
+    
+    /* For 5200 */
+    if (prefs.useAltirra5200Rom) {
+        SYSROM_os_versions[Atari800_MACHINE_5200] = SYSROM_ALTIRRA_5200;
+    } else {
+        SYSROM_os_versions[Atari800_MACHINE_5200] = SYSROM_AUTO;
+    }
+    
+    /* For BASIC */
+    if (prefs.useAltirraBasicRom) {
+        SYSROM_basic_version = SYSROM_ALTIRRA_BASIC;
+    } else {
+        SYSROM_basic_version = SYSROM_AUTO;
+    }
+#endif
 
     strcpy(atari_disk_dirs[0], prefs.diskImageDir);
     strcpy(atari_diskset_dir,prefs.diskSetDir);
