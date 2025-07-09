@@ -1645,8 +1645,44 @@ void SIO_PutByte(int byte)
 #ifdef NETSIO
 	if (netsio_enabled)
 	{
-		NetSIO_PutByte(byte);
-		return;
+		/* For disk devices, check if local disk has priority */
+		if (TransferStatus == SIO_CommandFrame && CommandIndex == 0) {
+			/* This is the device ID byte */
+			if (byte >= 0x31 && byte <= 0x38) {
+				int drive = byte - 0x31;
+				if (SIO_drive_status[drive] != SIO_OFF) {
+					/* Local disk is mounted, skip NetSIO and use local disk */
+					/* Continue with normal SIO processing below */
+				} else {
+					/* No local disk, use NetSIO */
+					NetSIO_PutByte(byte);
+					return;
+				}
+			} else {
+				/* Not a disk device, use NetSIO */
+				NetSIO_PutByte(byte);
+				return;
+			}
+		} else {
+			/* Already processing or not a command frame, use previous decision */
+			/* If we got here, we're using local disk for current transaction */
+			if (TransferStatus != SIO_CommandFrame) {
+				/* Check the device ID from the command frame */
+				if (CommandFrame[0] >= 0x31 && CommandFrame[0] <= 0x38) {
+					int drive = CommandFrame[0] - 0x31;
+					if (SIO_drive_status[drive] == SIO_OFF) {
+						/* Local disk was unmounted? Use NetSIO */
+						NetSIO_PutByte(byte);
+						return;
+					}
+					/* Otherwise continue with local processing */
+				} else {
+					/* Not a disk device, should use NetSIO */
+					NetSIO_PutByte(byte);
+					return;
+				}
+			}
+		}
 	}
 #endif /* NETSIO */
 	switch (TransferStatus) {
@@ -1804,7 +1840,22 @@ int SIO_GetByte(void)
 
 #ifdef NETSIO
 	if (netsio_enabled)
-		return NetSIO_GetByte();
+	{
+		/* Check if we should use local disk instead of NetSIO */
+		if (CommandFrame[0] >= 0x31 && CommandFrame[0] <= 0x38) {
+			int drive = CommandFrame[0] - 0x31;
+			if (SIO_drive_status[drive] != SIO_OFF) {
+				/* Local disk is mounted, use local disk instead of NetSIO */
+				/* Continue with normal SIO processing below */
+			} else {
+				/* No local disk, use NetSIO */
+				return NetSIO_GetByte();
+			}
+		} else {
+			/* Not a disk device, use NetSIO */
+			return NetSIO_GetByte();
+		}
+	}
 #endif /* NETSIO */
 
 	switch (TransferStatus) {
