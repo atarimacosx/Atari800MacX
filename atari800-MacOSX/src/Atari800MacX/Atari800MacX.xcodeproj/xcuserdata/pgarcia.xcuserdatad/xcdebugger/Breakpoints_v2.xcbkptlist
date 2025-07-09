@@ -14,8 +14,8 @@
             filePath = "atari_mac_sdl.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "5297"
-            endingLineNumber = "5297"
+            startingLineNumber = "5303"
+            endingLineNumber = "5303"
             landmarkName = "ProcessCopySelection(first_row, last_row, selectAll)"
             landmarkType = "9">
          </BreakpointContent>
@@ -30,10 +30,10 @@
             filePath = "atari_mac_sdl.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "5321"
-            endingLineNumber = "5321"
-            landmarkName = "unknown"
-            landmarkType = "0">
+            startingLineNumber = "5327"
+            endingLineNumber = "5327"
+            landmarkName = "ProcessCopySelection(first_row, last_row, selectAll)"
+            landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -46,9 +46,9 @@
             filePath = "atari_mac_sdl.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "5324"
-            endingLineNumber = "5324"
-            landmarkName = "IsCopyDefined()"
+            startingLineNumber = "5330"
+            endingLineNumber = "5330"
+            landmarkName = "ProcessCopySelection(first_row, last_row, selectAll)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -62,9 +62,9 @@
             filePath = "atari_mac_sdl.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "5327"
-            endingLineNumber = "5327"
-            landmarkName = "IsCopyDefined()"
+            startingLineNumber = "5333"
+            endingLineNumber = "5333"
+            landmarkName = "ProcessCopySelection(first_row, last_row, selectAll)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -78,10 +78,10 @@
             filePath = "atari_mac_sdl.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "5331"
-            endingLineNumber = "5331"
-            landmarkName = "unknown"
-            landmarkType = "0">
+            startingLineNumber = "5337"
+            endingLineNumber = "5337"
+            landmarkName = "IsCopyDefined()"
+            landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -113,6 +113,86 @@
             startingLineNumber = "269"
             endingLineNumber = "269"
             landmarkName = "netsio_init(port)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "8820128C-6AEA-4295-A41B-985A8EFC5F9D"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "atari_mac_sdl.c"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "4381"
+            endingLineNumber = "4381"
+            landmarkName = "HandleScreenChange(requested_w, requested_h)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "C34E6B1B-FC5F-4660-B230-E5B22E1A682E"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "atari_mac_sdl.c"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "850"
+            endingLineNumber = "850"
+            landmarkName = "InitializeWindow(w, h)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "36139F98-F6F5-40E7-83B3-54C9CCA3A842"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "atari_mac_sdl.c"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "859"
+            endingLineNumber = "859"
+            landmarkName = "InitializeWindow(w, h)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "66FC6936-A0A5-4CB5-8877-A8B00D6113BE"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "atari_mac_sdl.c"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "869"
+            endingLineNumber = "869"
+            landmarkName = "InitializeWindow(w, h)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "D45A4F18-4256-4B73-AAE9-FD6B63EDEA26"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "atari_mac_sdl.c"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "4384"
+            endingLineNumber = "4384"
+            landmarkName = "HandleScreenChange(requested_w, requested_h)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>

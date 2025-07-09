@@ -144,7 +144,7 @@ int screen_y_offset = 0;
 int FULLSCREEN_MACOS = 0;
 int SCALE_MODE;
 double scaleFactor = 3;
-double scaleFactorFloat = 2.0;
+double scaleFactorFloat = 3.0;
 double scaleFactorRenderX;
 double scaleFactorRenderY;
 int GRAB_MOUSE = 0;
@@ -858,6 +858,14 @@ void InitializeWindow(int w, int h)
     renderer = SDL_CreateRenderer(MainWindow, -1, 0);
     SetRenderScale();
     
+    // Set the viewport to the full window
+    SDL_RenderSetViewport(renderer, NULL);
+    // Initialize offsets to 0 - the 384-pixel texture already has the content centered
+    //paulo screen_x_offset = 0;
+    // Offset to center the 336-pixel visible area of the 384-pixel buffer
+    screen_x_offset = 0;  // Show pixels 24-360 of the 384-pixel buffer
+    screen_y_offset = 0;
+    
     // Save Mac Window for later use
     SDL_SysWMinfo wmInfo;
     SDL_VERSION(&wmInfo.version);
@@ -895,7 +903,9 @@ void InitializeWindow(int w, int h)
 *-----------------------------------------------------------------------------*/
 void InitializeVideo()
 {
-    int w = GetAtariScreenWidth();
+    //paulo
+    //int w = Screen_WIDTH *  scaleFactorFloat;;
+    int w = GetAtariScreenWidth();  // Back to visible width
     int h = Screen_HEIGHT;
 
     SDL_ShowCursor(SDL_ENABLE); // show mouse cursor
@@ -4380,6 +4390,7 @@ void HandleScreenChange(int requested_w, int requested_h)
             if (scaleFactorFloat < 1.0)
                 scaleFactorFloat = 1.0;
         }
+        //paulo new_w = Screen_WIDTH * scaleFactorFloat;  // Use full 384 pixel width
         new_w = GetAtariScreenWidth() * scaleFactorFloat;
         new_h = Screen_HEIGHT * scaleFactorFloat;
         Log_print("Setting Screen: %dx%d %f",new_w,new_h,scaleFactorFloat);
@@ -4387,7 +4398,10 @@ void HandleScreenChange(int requested_w, int requested_h)
         SDL_SetWindowSize(MainWindow, new_w, new_h);
         current_w = new_w;
         current_h = new_h;
-        screen_x_offset = 0;
+        //paulo Set offsets to 0 - the 384-pixel texture already has the content centered
+        //pauloscreen_x_offset = 0;
+        // Offset to center the 336-pixel visible area of the 384-pixel buffer
+        screen_x_offset = 0;  // Show pixels 24-360 of the 384-pixel buffer
         screen_y_offset = 0;
         }
     // Make sure the full display is shown and clear

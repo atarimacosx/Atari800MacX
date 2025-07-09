@@ -280,8 +280,8 @@ static NSDictionary *defaultValues() {
     if (!dict) {
         dict = [[NSDictionary alloc] initWithObjectsAndKeys:
                 [NSNumber numberWithInt:0], ScaleMode,
-                [NSNumber numberWithInt:2], ScaleFactor,
-                [NSNumber numberWithFloat:2.0], ScaleFactorFloat,
+                [NSNumber numberWithInt:3], ScaleFactor,
+                [NSNumber numberWithFloat:3.0], ScaleFactorFloat,
                 [NSNumber numberWithInt:1], WidthMode,
                 [NSNumber numberWithInt:0], TvMode, 
                 [NSNumber numberWithFloat:1.0], EmulationSpeed,
