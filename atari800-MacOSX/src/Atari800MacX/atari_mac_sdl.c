@@ -4401,7 +4401,7 @@ void HandleScreenChange(int requested_w, int requested_h)
         //paulo Set offsets to 0 - the 384-pixel texture already has the content centered
         //pauloscreen_x_offset = 0;
         // Offset to center the 336-pixel visible area of the 384-pixel buffer
-        screen_x_offset = 0;  // Show pixels 24-360 of the 384-pixel buffer
+        screen_x_offset = 0 ;  // Show pixels 24-360 of the 384-pixel buffer
         screen_y_offset = 0;
         }
     // Make sure the full display is shown and clear
