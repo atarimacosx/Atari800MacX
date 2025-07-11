@@ -49,6 +49,10 @@ project.xcworkspace/
 # Build products
 build/
 *.build/
+*.o
+config.h
+config.status
+Makefile
 
 # Logs
 *.log
