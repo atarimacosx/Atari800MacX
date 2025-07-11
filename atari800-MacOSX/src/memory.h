@@ -64,7 +64,7 @@ extern UBYTE MEMORY_attrib[65536];
 #define MEMORY_PutWord(x, y)            MEMORY_PutByte(x, (UBYTE) (y)); MEMORY_PutByte((x) + 1, (UBYTE) ((y) >> 8));
 /* Reads a byte from ADDR, but without any side effects. */
 #define MEMORY_SafeGetByte(addr)        (MEMORY_attrib[addr] == MEMORY_HARDWARE ? MEMORY_HwGetByte(addr, TRUE) : (MEMORY_attrib[addr] == MEMORY_FLASH ? MEMORY_FlashGetByte(addr) : MEMORY_mem[addr]))
-#define MEMORY_PutByte(addr, byte)	 do { if (MEMORY_attrib[addr] == MEMORY_RAM) MEMORY_mem[addr] = byte; else if (MEMORY_attrib[addr] == MEMORY_HARDWARE) MEMORY_HwPutByte(addr, byte); else if (MEMORY_attrib[addr] == MEMORY_FLASH) MEMORY_FlashPutByte(addr, byte);} while (0)
+#define MEMORY_PutByte(addr, byte) do { if (MEMORY_attrib[addr] == MEMORY_RAM) MEMORY_mem[addr] = byte; else if (MEMORY_attrib[addr] == MEMORY_HARDWARE) MEMORY_HwPutByte(addr, byte); else if (MEMORY_attrib[addr] == MEMORY_FLASH) MEMORY_FlashPutByte(addr, byte);} while (0)
 #define MEMORY_SetRAM(addr1, addr2) memset(MEMORY_attrib + (addr1), MEMORY_RAM, (addr2) - (addr1) + 1)
 #define MEMORY_SetROM(addr1, addr2) memset(MEMORY_attrib + (addr1), MEMORY_ROM, (addr2) - (addr1) + 1)
 #define MEMORY_SetHARDWARE(addr1, addr2) memset(MEMORY_attrib + (addr1), MEMORY_HARDWARE, (addr2) - (addr1) + 1)
