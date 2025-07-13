@@ -25,8 +25,8 @@
 
 static UBYTE ultimate_rom[0x80000];
 #ifdef ATARI800MACX
-char ultimate_rom_filename[FILENAME_MAX] = "/Users/markg/Atari800MacX/Altirra-3.20/ultimate.rom";
-char ultimate_nvram_filename[FILENAME_MAX] = "/Users/markg/Atari800MacX/Altirra-3.20/ultimate.nvram";
+char ultimate_rom_filename[FILENAME_MAX] = "";
+char ultimate_nvram_filename[FILENAME_MAX] = "";
 #else
 static char ultimate_rom_filename[FILENAME_MAX] = Util_FILENAME_NOT_SET;
 #endif

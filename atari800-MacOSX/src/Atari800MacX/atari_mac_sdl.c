@@ -5998,6 +5998,7 @@ void SIDE2_Remove_Block_Device(void) {}
 void SIDE2_SDX_Switch_Change(int state) {}
 int SIDE2_Save_Rom(char *filename) { return FALSE; }
 
+#ifndef ULTIMATE_1MB
 /* ULTIMATE 1MB cartridge system stubs */
 int ULTIMATE_enabled = 0;
 int ULTIMATE_have_rom = 0;
@@ -6015,6 +6016,7 @@ UBYTE ULTIMATE_D6D7GetByte(UWORD addr, int no_side_effects) { return 0xFF; }
 void ULTIMATE_D6D7PutByte(UWORD addr, UBYTE byte) {}
 int ULTIMATE_Flash_Type = 0; /* This is a variable, not a function */
 int ULTIMATE_Save_Rom(char *filename) { return FALSE; }
+#endif /* !ULTIMATE_1MB */
 
 /* Screen display functions */
 int Screen_show_capslock = 0;
