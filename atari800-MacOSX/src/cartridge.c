@@ -1623,7 +1623,7 @@ int CARTRIDGE_Insert_SIDE2(void)
     }
 }
 
-void CARTRDIGE_Switch_To_Piggyback(int pbi_button)
+void CARTRIDGE_Switch_To_Piggyback(int pbi_button)
 {
     if (CARTRIDGE_piggyback.type == CARTRIDGE_NONE) {
         MEMORY_Cart809fDisable();
@@ -1637,7 +1637,7 @@ void CARTRDIGE_Switch_To_Piggyback(int pbi_button)
     }
 }
 
-void CARTRDIGE_Switch_To_Main(void)
+void CARTRIDGE_Switch_To_Main(void)
 {
     active_cart = &CARTRIDGE_main;
     if (CARTRIDGE_piggyback.type == CARTRIDGE_SIDE2) {

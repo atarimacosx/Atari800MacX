@@ -5936,23 +5936,29 @@ void Devices_H_Init(void)
 int Devices_enable_d_patch = 1; /* Mac device patch enable flag */
 
 /* Mac-specific flash memory functions for legacy support */
+/* Commented out - defined in memory.c
 UBYTE MEMORY_FlashGetByte(UWORD addr)
 {
-    /* Flash memory read - delegated to standard memory system */
+    // Flash memory read - delegated to standard memory system
     return MEMORY_GetByte(addr);
 }
+*/
 
+/* Commented out - defined in memory.c
 void MEMORY_FlashPutByte(UWORD addr, UBYTE byte)
 {
-    /* Flash memory write - delegated to standard memory system */
+    // Flash memory write - delegated to standard memory system
     MEMORY_PutByte(addr, byte);
 }
+*/
 
 /* Additional legacy flash memory support */
+/* Commented out - provided by memory.c
 void MEMORY_SetFlashRoutines(UBYTE (*get)(UWORD), void (*put)(UWORD, UBYTE))
 {
-    /* Flash routine setup - handled internally by new core */
+    // Flash routine setup - handled internally by new core
 }
+*/
 
 /* MONITOR system stubs for Mac GUI compatibility */
 int MONITOR_assemblerMode = 0;
@@ -5998,25 +6004,27 @@ void SIDE2_Remove_Block_Device(void) {}
 void SIDE2_SDX_Switch_Change(int state) {}
 int SIDE2_Save_Rom(char *filename) { return FALSE; }
 
-#ifndef ULTIMATE_1MB
 /* ULTIMATE 1MB cartridge system stubs */
-int ULTIMATE_enabled = 0;
-int ULTIMATE_have_rom = 0;
+/* These variables are already defined in ultimate1mb.c: */
+/* int ULTIMATE_enabled = 0; */
+/* int ULTIMATE_have_rom = 0; */
 
-/* ULTIMATE filename variables - these need to be defined */
+/* ULTIMATE filename variables - these need to be defined here as they're used by Mac GUI */
+/* Commented out - defined in ultimate1mb.c
 char ultimate_nvram_filename[FILENAME_MAX] = "";
 char ultimate_rom_filename[FILENAME_MAX] = "";
+*/
 
-/* ULTIMATE function implementations with correct signatures */
+/* These functions are provided by ultimate1mb.c:
 int ULTIMATE_Change_Rom(char *filename, int new) { return FALSE; }
 UBYTE ULTIMATE_D1GetByte(UWORD addr, int no_side_effects) { return 0xFF; }
 void ULTIMATE_D1PutByte(UWORD addr, UBYTE byte) {}
 int ULTIMATE_D1ffPutByte(UBYTE byte) { return FALSE; }
 UBYTE ULTIMATE_D6D7GetByte(UWORD addr, int no_side_effects) { return 0xFF; }
 void ULTIMATE_D6D7PutByte(UWORD addr, UBYTE byte) {}
-int ULTIMATE_Flash_Type = 0; /* This is a variable, not a function */
+int ULTIMATE_Flash_Type = 0;
 int ULTIMATE_Save_Rom(char *filename) { return FALSE; }
-#endif /* !ULTIMATE_1MB */
+*/
 
 /* Screen display functions */
 int Screen_show_capslock = 0;
@@ -6024,13 +6032,30 @@ int Screen_show_hd_sector_counter = 0;
 
 /* UI system stubs - UI_BASIC_driver now provided by ui_basic.c */
 
-/* System ROM functions */
+/* System ROM functions - temporary stubs until sysrom.c linking is fixed */
+/* Commented out - provided by sysrom.c
 int SYSROM_FindType(void) { return 0; }
+void SYSROM_ChooseROMs(int no_builtin_basic, int random_fill) {}
+int SYSROM_FindInDir(const char *directory, int only_if_not_set) { return TRUE; }
+int SYSROM_Initialise(int *argc, char *argv[]) { return TRUE; }
+int SYSROM_LoadImage(const char *filename, UBYTE *buffer, int expected_size) { 
+    // Critical: return TRUE to allow booting
+    return TRUE; 
+}
+int SYSROM_ReadConfig(char *string, char *ptr) { return TRUE; }
+void SYSROM_SetDefaults(void) {}
+int SYSROM_SetPath(char const *filename, int num, ...) { 
+    return 0; // SYSROM_OK
+}
+void SYSROM_WriteConfig(FILE *fp) {}
+*/
 
 /* Monitor symbol table support */
+/* Commented out - defined in monitor.c
 int symtable_builtin_enable = 1;
 int symtable_user_size = 0;
 void *symtable_user = NULL;
+*/
 
 /* Monitor utility functions */
 void add_user_label(char *name, UWORD addr) {}
@@ -6056,6 +6081,7 @@ typedef struct {
 } symtable_rec;
 
 /* Built-in symbol tables for monitor/debugger */
+/* Commented out - defined in monitor.c
 const symtable_rec symtable_builtin[] = {
     {"RTCLOK", 0x0012},
     {"COLPM0", 0xD012},
@@ -6070,6 +6096,7 @@ const symtable_rec symtable_builtin_5200[] = {
     {"GTIA", 0xC000},
     {NULL, 0}
 };
+*/
 
 /* Monitor GUI helper functions */
 int get_hex_gui(char *string, UWORD *result)
@@ -6134,22 +6161,70 @@ int get_val_gui(char *string, UWORD *result)
 
 /* Additional missing symbols for Mac compatibility */
 
-/* Cartridge BountyBob support stubs */
-UBYTE CARTRIDGE_BountyBob1[256];
-UBYTE CARTRIDGE_BountyBob2[256];
+/* Cartridge BountyBob support - functions defined in cartridge.c */
 
 /* Device system stubs - variable already defined earlier in file */
 /* Devices_H_Init function is already defined at line 5883 */
 
 /* Additional MONITOR system functions - removed duplicate symbols */
+int MONITOR_BBRK_on = FALSE;
+UWORD MONITOR_BPC = 0;
+void MONITOR_Exit(void) {}
+void MONITOR_PreloadLabelFile(const char *filename) {}
+
+/* SIDE2 cartridge support stubs */
+int SIDE2_D5GetByte(UWORD addr, int no_side_effects) { return -1; }
+void SIDE2_D5PutByte(UWORD addr, UBYTE byte) {}
+void SIDE2_Exit(void) {}
+int SIDE2_Initialise(int *argc, char *argv[]) { return TRUE; }
+void SIDE2_Set_Cart_Enables(int a, int b) {}
+
+/* UI system stubs for Mac */
+int UI_Initialise(int *argc, char *argv[])
+{
+    /* UI initialization handled by Mac-specific code */
+    return TRUE;
+}
+
+int UI_show_hidden_files = FALSE;
+
+/* Sound system stubs */
+Sound_setup_t Sound_out = {
+    44100,  /* freq */
+    1,      /* channels */
+    16,     /* sample_size */
+    TRUE    /* buffer_frames */
+};
+
+int Sound_enabled = TRUE;
+
+Sound_setup_t Sound_desired = {
+    44100,  /* freq */
+    1,      /* channels */
+    16,     /* sample_size */
+    TRUE    /* buffer_frames */
+};
+
+void Sound_Update(void) {}
+void Sound_WriteConfig(FILE *fp) {}
+double Sound_AdjustSpeed(void) { return 1.0; }
+void Sound_Continue(void) {}
+void Sound_Exit(void) {}
+void Sound_Pause(void) {}
+int Sound_ReadConfig(char *string, char *ptr) { return TRUE; }
+int Sound_Setup(void) { return TRUE; }
 
 /* Additional ULTIMATE cartridge functions */
+/* Commented out - defined in ultimate1mb.c
 UBYTE ULTIMATE_D3GetByte(UWORD addr, int no_side_effects)
 {
-    return 0xFF; /* Return default value for unimplemented hardware */
+    return 0xFF;
 }
+*/
 
+/* Commented out - defined in ultimate1mb.c
 void ULTIMATE_D3PutByte(UWORD addr, UBYTE byte)
 {
-    /* ULTIMATE D3 write - no action needed for stub */
+    // ULTIMATE D3 write - no action needed for stub
 }
+*/

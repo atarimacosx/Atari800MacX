@@ -84,9 +84,10 @@ int GetRawKey(void);
 #define UI_MENU_WINDOWS	         20
 #define UI_MENU_QUICKSAVESTATE   21
 #define UI_MENU_QUICKLOADSTATE   22
+#define UI_MENU_SAVECFG          23
+#define UI_MENU_LOADCFG          24
 
-
-#define UI_MENU_VIDEO_RECORDING  24
+#define UI_MENU_VIDEO_RECORDING  25
 
 /* Structure of menu item. Each menu is just an array of items of this structure
    terminated by UI_MENU_END */

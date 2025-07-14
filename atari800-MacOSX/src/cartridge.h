@@ -214,8 +214,8 @@ void CARTRIDGE_SetType(CARTRIDGE_image_t *cart, int type);
 void CARTRIDGE_SetTypeAutoReboot(CARTRIDGE_image_t *cart, int type);
 #ifdef ATARI800MACX
 /* Switch to piggback cartridge from/to Ultimate. */
-void CARTRDIGE_Switch_To_Piggyback(int pbi_button);
-void CARTRDIGE_Switch_To_Main(void);
+void CARTRIDGE_Switch_To_Piggyback(int pbi_button);
+void CARTRIDGE_Switch_To_Main(void);
 #endif
 /* Removes the left cartridge. */
 void CARTRIDGE_Remove(void);
