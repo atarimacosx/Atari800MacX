@@ -1078,9 +1078,9 @@ void CalculatePrefsChanged()
         (strcmp(SYSROM_roms[SYSROM_BB01R4_OS].filename ? SYSROM_roms[SYSROM_BB01R4_OS].filename : "", prefs.xegsRomFile) !=0) ||
         (strcmp(SYSROM_roms[SYSROM_XEGAME].filename ? SYSROM_roms[SYSROM_XEGAME].filename : "", prefs.xegsGameRomFile) !=0) ||
         (strcmp(SYSROM_roms[SYSROM_AA01R11].filename ? SYSROM_roms[SYSROM_AA01R11].filename : "", prefs.a1200XLRomFile) !=0) ||
-		(strcmp(SYSROM_roms[SYSROM_BB01R3].filename ? SYSROM_roms[SYSROM_BB01R3].filename : "", prefs.xlRomFile) !=0) ||
-		(strcmp(SYSROM_roms[SYSROM_BASIC_C].filename ? SYSROM_roms[SYSROM_BASIC_C].filename : "", prefs.basicRomFile) !=0) ||
-		(strcmp(SYSROM_roms[SYSROM_5200A].filename ? SYSROM_roms[SYSROM_5200A].filename : "", prefs.a5200RomFile) !=0) ||
+		(strcmp(SYSROM_roms[SYSROM_XL_CUSTOM].filename ? SYSROM_roms[SYSROM_XL_CUSTOM].filename : "", prefs.xlRomFile) !=0) ||
+		(strcmp(SYSROM_roms[SYSROM_BASIC_CUSTOM].filename ? SYSROM_roms[SYSROM_BASIC_CUSTOM].filename : "", prefs.basicRomFile) !=0) ||
+		(strcmp(SYSROM_roms[SYSROM_5200_CUSTOM].filename ? SYSROM_roms[SYSROM_5200_CUSTOM].filename : "", prefs.a5200RomFile) !=0) ||
         (strcmp(af80_rom_filename, prefs.af80RomFile) != 0) ||
         (strcmp(af80_charset_filename, prefs.af80CharsetFile) != 0) ||
         (strcmp(bit3_rom_filename, prefs.bit3RomFile) != 0) ||
@@ -1349,15 +1349,46 @@ int loadMacPrefs(int firstTime)
     SYSROM_SetPath(prefs.xegsGameRomFile, 1, SYSROM_XEGAME);  
     SYSROM_SetPath(prefs.a1200XLRomFile, 1, SYSROM_AA01R11);
     SYSROM_SetPath(prefs.osBRomFile, 1, SYSROM_B_NTSC);
-    SYSROM_SetPath(prefs.xlRomFile, 1, SYSROM_BB01R3);
-    SYSROM_SetPath(prefs.basicRomFile, 1, SYSROM_BASIC_C);
-    SYSROM_SetPath(prefs.a5200RomFile, 1, SYSROM_5200A);
+    SYSROM_SetPath(prefs.xlRomFile, 1, SYSROM_XL_CUSTOM);
+    SYSROM_SetPath(prefs.basicRomFile, 1, SYSROM_BASIC_CUSTOM);
+    SYSROM_SetPath(prefs.a5200RomFile, 1, SYSROM_5200_CUSTOM);
     Atari800_useAlitrraXEGSRom = prefs.useAltirraXEGSRom;
     Atari800_useAlitrra1200XLRom = prefs.useAltirra1200XLRom;
     Atari800_useAlitrraOSBRom = prefs.useAltirraOSBRom;
     Atari800_useAlitrraXLRom = prefs.useAltirraXLRom;
     Atari800_useAlitrra5200Rom = prefs.useAltirra5200Rom;
     Atari800_useAlitrraBasicRom = prefs.useAltirraBasicRom;
+    
+    /* Set ROM versions based on "Use Altirra" preferences */
+#if EMUOS_ALTIRRA
+    /* For 800/400 */
+    if (prefs.useAltirraOSBRom) {
+        SYSROM_os_versions[Atari800_MACHINE_800] = SYSROM_ALTIRRA_800;
+    } else {
+        SYSROM_os_versions[Atari800_MACHINE_800] = SYSROM_AUTO;
+    }
+    
+    /* For XL/XE */
+    if (prefs.useAltirraXLRom) {
+        SYSROM_os_versions[Atari800_MACHINE_XLXE] = SYSROM_ALTIRRA_XL;
+    } else {
+        SYSROM_os_versions[Atari800_MACHINE_XLXE] = SYSROM_AUTO;
+    }
+    
+    /* For 5200 */
+    if (prefs.useAltirra5200Rom) {
+        SYSROM_os_versions[Atari800_MACHINE_5200] = SYSROM_ALTIRRA_5200;
+    } else {
+        SYSROM_os_versions[Atari800_MACHINE_5200] = SYSROM_AUTO;
+    }
+    
+    /* For BASIC */
+    if (prefs.useAltirraBasicRom) {
+        SYSROM_basic_version = SYSROM_ALTIRRA_BASIC;
+    } else {
+        SYSROM_basic_version = SYSROM_AUTO;
+    }
+#endif
 
     strcpy(atari_disk_dirs[0], prefs.diskImageDir);
     strcpy(atari_diskset_dir,prefs.diskSetDir);

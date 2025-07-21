@@ -119,7 +119,6 @@ SYSROM_t SYSROM_roms[SYSROM_SIZE] = {
 #define SYSROM_ALTIRRA_800_LOADABLE_SIZE (4)
 #define SYSROM_ALTIRRA_XL_LOADABLE_SIZE  (5)
 
-#ifdef ATARI800MACX
 /* Used in reading the config file to match option names. */
 static char const * const readable_strings[SYSROM_LOADABLE_SIZE] = {
     "Atari 400/800 OS Version A - NTSC",
@@ -149,6 +148,7 @@ static char const * const readable_strings[SYSROM_LOADABLE_SIZE] = {
     "Atari XE Game System Custom OS",
 };
 
+#if 0 /* ATARI800MACX disabled section - not used */
 #else
 
 /* Used in reading the config file to match option names. */
@@ -217,8 +217,7 @@ static char const * const cfg_strings_rev[SYSROM_SIZE+1] = {
 };
 #endif
 
-#ifdef ATARI800MACX
-
+/* These functions are needed by both Mac and standard implementations */
 char *memstr(char *buffer, char *str, int size)
 {
     char *p;
@@ -356,7 +355,9 @@ int SYSROM_FindImageType(const unsigned char *image)
     return SYSROM_XL_CUSTOM;
 }
 
-#else
+#if 0 /* def ATARI800MACX - disabled to use full implementation */
+/* Mac-specific readable strings would go here if needed */
+#endif
 
 /* Number of ROM paths not set during initialisation. */
 static int num_unset_roms = SYSROM_LOADABLE_SIZE;
@@ -906,4 +907,3 @@ int SYSROM_Initialise(int *argc, char *argv[])
 
     return TRUE;
 }
-#endif

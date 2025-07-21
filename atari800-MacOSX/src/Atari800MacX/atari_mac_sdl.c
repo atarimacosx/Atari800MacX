@@ -144,7 +144,7 @@ int screen_y_offset = 0;
 int FULLSCREEN_MACOS = 0;
 int SCALE_MODE;
 double scaleFactor = 3;
-double scaleFactorFloat = 2.0;
+double scaleFactorFloat = 3.0;
 double scaleFactorRenderX;
 double scaleFactorRenderY;
 int GRAB_MOUSE = 0;
@@ -737,7 +737,13 @@ void SDL_Sound_Update(void)
 		/* then we allow the callback to run.. */
 		SDL_UnlockAudio();
 		/* and delay until it runs and allows space. */
-		SDL_Delay(1);
+		if (speed_limit == 1) {
+			SDL_Delay(1);
+		} else {
+			/* When running at full speed, just drop the audio data */
+			SDL_LockAudio();
+			break;
+		}
 		SDL_LockAudio();
 		/*printf("sound buffer overflow:%d %d\n",gap, dsp_buffer_bytes);*/
 		gap = dsp_write_pos - dsp_read_pos;
@@ -858,6 +864,14 @@ void InitializeWindow(int w, int h)
     renderer = SDL_CreateRenderer(MainWindow, -1, 0);
     SetRenderScale();
     
+    // Set the viewport to the full window
+    SDL_RenderSetViewport(renderer, NULL);
+    // Initialize offsets to 0 - the 384-pixel texture already has the content centered
+    //paulo screen_x_offset = 0;
+    // Offset to center the 336-pixel visible area of the 384-pixel buffer
+    screen_x_offset = 0;  // Show pixels 24-360 of the 384-pixel buffer
+    screen_y_offset = 0;
+    
     // Save Mac Window for later use
     SDL_SysWMinfo wmInfo;
     SDL_VERSION(&wmInfo.version);
@@ -895,7 +909,9 @@ void InitializeWindow(int w, int h)
 *-----------------------------------------------------------------------------*/
 void InitializeVideo()
 {
-    int w = GetAtariScreenWidth();
+    //paulo
+    //int w = Screen_WIDTH *  scaleFactorFloat;;
+    int w = GetAtariScreenWidth();  // Back to visible width
     int h = Screen_HEIGHT;
 
     SDL_ShowCursor(SDL_ENABLE); // show mouse cursor
@@ -4380,6 +4396,7 @@ void HandleScreenChange(int requested_w, int requested_h)
             if (scaleFactorFloat < 1.0)
                 scaleFactorFloat = 1.0;
         }
+        //paulo new_w = Screen_WIDTH * scaleFactorFloat;  // Use full 384 pixel width
         new_w = GetAtariScreenWidth() * scaleFactorFloat;
         new_h = Screen_HEIGHT * scaleFactorFloat;
         Log_print("Setting Screen: %dx%d %f",new_w,new_h,scaleFactorFloat);
@@ -4387,7 +4404,10 @@ void HandleScreenChange(int requested_w, int requested_h)
         SDL_SetWindowSize(MainWindow, new_w, new_h);
         current_w = new_w;
         current_h = new_h;
-        screen_x_offset = 0;
+        //paulo Set offsets to 0 - the 384-pixel texture already has the content centered
+        //pauloscreen_x_offset = 0;
+        // Offset to center the 336-pixel visible area of the 384-pixel buffer
+        screen_x_offset = 0 ;  // Show pixels 24-360 of the 384-pixel buffer
         screen_y_offset = 0;
         }
     // Make sure the full display is shown and clear
@@ -5717,9 +5737,11 @@ int SDL_main(int argc, char **argv)
 				Casette_Frame();
             SDL_DrawMousePointer();
             POKEY_Frame();
-			SDL_Sound_Update();
+            if (speed_limit == 1) {
+                SDL_Sound_Update();
+                Atari800_Sync();
+            }
             Atari800_nframes++;
-            Atari800_Sync();
             CountFPS();
 			if (speed_limit == 0 || (speed_limit == 1 && deltatime <= 1.0/Atari800_FPS_PAL)) {
 				if (Atari800Time() >= last_time + 1.0/60.0) {
@@ -5914,23 +5936,29 @@ void Devices_H_Init(void)
 int Devices_enable_d_patch = 1; /* Mac device patch enable flag */
 
 /* Mac-specific flash memory functions for legacy support */
+/* Commented out - defined in memory.c
 UBYTE MEMORY_FlashGetByte(UWORD addr)
 {
-    /* Flash memory read - delegated to standard memory system */
+    // Flash memory read - delegated to standard memory system
     return MEMORY_GetByte(addr);
 }
+*/
 
+/* Commented out - defined in memory.c
 void MEMORY_FlashPutByte(UWORD addr, UBYTE byte)
 {
-    /* Flash memory write - delegated to standard memory system */
+    // Flash memory write - delegated to standard memory system
     MEMORY_PutByte(addr, byte);
 }
+*/
 
 /* Additional legacy flash memory support */
+/* Commented out - provided by memory.c
 void MEMORY_SetFlashRoutines(UBYTE (*get)(UWORD), void (*put)(UWORD, UBYTE))
 {
-    /* Flash routine setup - handled internally by new core */
+    // Flash routine setup - handled internally by new core
 }
+*/
 
 /* MONITOR system stubs for Mac GUI compatibility */
 int MONITOR_assemblerMode = 0;
@@ -5977,22 +6005,26 @@ void SIDE2_SDX_Switch_Change(int state) {}
 int SIDE2_Save_Rom(char *filename) { return FALSE; }
 
 /* ULTIMATE 1MB cartridge system stubs */
-int ULTIMATE_enabled = 0;
-int ULTIMATE_have_rom = 0;
+/* These variables are already defined in ultimate1mb.c: */
+/* int ULTIMATE_enabled = 0; */
+/* int ULTIMATE_have_rom = 0; */
 
-/* ULTIMATE filename variables - these need to be defined */
+/* ULTIMATE filename variables - these need to be defined here as they're used by Mac GUI */
+/* Commented out - defined in ultimate1mb.c
 char ultimate_nvram_filename[FILENAME_MAX] = "";
 char ultimate_rom_filename[FILENAME_MAX] = "";
+*/
 
-/* ULTIMATE function implementations with correct signatures */
+/* These functions are provided by ultimate1mb.c:
 int ULTIMATE_Change_Rom(char *filename, int new) { return FALSE; }
 UBYTE ULTIMATE_D1GetByte(UWORD addr, int no_side_effects) { return 0xFF; }
 void ULTIMATE_D1PutByte(UWORD addr, UBYTE byte) {}
 int ULTIMATE_D1ffPutByte(UBYTE byte) { return FALSE; }
 UBYTE ULTIMATE_D6D7GetByte(UWORD addr, int no_side_effects) { return 0xFF; }
 void ULTIMATE_D6D7PutByte(UWORD addr, UBYTE byte) {}
-int ULTIMATE_Flash_Type = 0; /* This is a variable, not a function */
+int ULTIMATE_Flash_Type = 0;
 int ULTIMATE_Save_Rom(char *filename) { return FALSE; }
+*/
 
 /* Screen display functions */
 int Screen_show_capslock = 0;
@@ -6000,13 +6032,30 @@ int Screen_show_hd_sector_counter = 0;
 
 /* UI system stubs - UI_BASIC_driver now provided by ui_basic.c */
 
-/* System ROM functions */
+/* System ROM functions - temporary stubs until sysrom.c linking is fixed */
+/* Commented out - provided by sysrom.c
 int SYSROM_FindType(void) { return 0; }
+void SYSROM_ChooseROMs(int no_builtin_basic, int random_fill) {}
+int SYSROM_FindInDir(const char *directory, int only_if_not_set) { return TRUE; }
+int SYSROM_Initialise(int *argc, char *argv[]) { return TRUE; }
+int SYSROM_LoadImage(const char *filename, UBYTE *buffer, int expected_size) { 
+    // Critical: return TRUE to allow booting
+    return TRUE; 
+}
+int SYSROM_ReadConfig(char *string, char *ptr) { return TRUE; }
+void SYSROM_SetDefaults(void) {}
+int SYSROM_SetPath(char const *filename, int num, ...) { 
+    return 0; // SYSROM_OK
+}
+void SYSROM_WriteConfig(FILE *fp) {}
+*/
 
 /* Monitor symbol table support */
+/* Commented out - defined in monitor.c
 int symtable_builtin_enable = 1;
 int symtable_user_size = 0;
 void *symtable_user = NULL;
+*/
 
 /* Monitor utility functions */
 void add_user_label(char *name, UWORD addr) {}
@@ -6032,6 +6081,7 @@ typedef struct {
 } symtable_rec;
 
 /* Built-in symbol tables for monitor/debugger */
+/* Commented out - defined in monitor.c
 const symtable_rec symtable_builtin[] = {
     {"RTCLOK", 0x0012},
     {"COLPM0", 0xD012},
@@ -6046,6 +6096,7 @@ const symtable_rec symtable_builtin_5200[] = {
     {"GTIA", 0xC000},
     {NULL, 0}
 };
+*/
 
 /* Monitor GUI helper functions */
 int get_hex_gui(char *string, UWORD *result)
@@ -6110,22 +6161,70 @@ int get_val_gui(char *string, UWORD *result)
 
 /* Additional missing symbols for Mac compatibility */
 
-/* Cartridge BountyBob support stubs */
-UBYTE CARTRIDGE_BountyBob1[256];
-UBYTE CARTRIDGE_BountyBob2[256];
+/* Cartridge BountyBob support - functions defined in cartridge.c */
 
 /* Device system stubs - variable already defined earlier in file */
 /* Devices_H_Init function is already defined at line 5883 */
 
 /* Additional MONITOR system functions - removed duplicate symbols */
+int MONITOR_BBRK_on = FALSE;
+UWORD MONITOR_BPC = 0;
+void MONITOR_Exit(void) {}
+void MONITOR_PreloadLabelFile(const char *filename) {}
+
+/* SIDE2 cartridge support stubs */
+int SIDE2_D5GetByte(UWORD addr, int no_side_effects) { return -1; }
+void SIDE2_D5PutByte(UWORD addr, UBYTE byte) {}
+void SIDE2_Exit(void) {}
+int SIDE2_Initialise(int *argc, char *argv[]) { return TRUE; }
+void SIDE2_Set_Cart_Enables(int a, int b) {}
+
+/* UI system stubs for Mac */
+int UI_Initialise(int *argc, char *argv[])
+{
+    /* UI initialization handled by Mac-specific code */
+    return TRUE;
+}
+
+int UI_show_hidden_files = FALSE;
+
+/* Sound system stubs */
+Sound_setup_t Sound_out = {
+    44100,  /* freq */
+    1,      /* channels */
+    16,     /* sample_size */
+    TRUE    /* buffer_frames */
+};
+
+int Sound_enabled = TRUE;
+
+Sound_setup_t Sound_desired = {
+    44100,  /* freq */
+    1,      /* channels */
+    16,     /* sample_size */
+    TRUE    /* buffer_frames */
+};
+
+void Sound_Update(void) {}
+void Sound_WriteConfig(FILE *fp) {}
+double Sound_AdjustSpeed(void) { return 1.0; }
+void Sound_Continue(void) {}
+void Sound_Exit(void) {}
+void Sound_Pause(void) {}
+int Sound_ReadConfig(char *string, char *ptr) { return TRUE; }
+int Sound_Setup(void) { return TRUE; }
 
 /* Additional ULTIMATE cartridge functions */
+/* Commented out - defined in ultimate1mb.c
 UBYTE ULTIMATE_D3GetByte(UWORD addr, int no_side_effects)
 {
-    return 0xFF; /* Return default value for unimplemented hardware */
+    return 0xFF;
 }
+*/
 
+/* Commented out - defined in ultimate1mb.c
 void ULTIMATE_D3PutByte(UWORD addr, UBYTE byte)
 {
-    /* ULTIMATE D3 write - no action needed for stub */
+    // ULTIMATE D3 write - no action needed for stub
 }
+*/

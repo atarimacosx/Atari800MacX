@@ -1189,6 +1189,9 @@ UBYTE MEMORY_HwGetByte(UWORD addr, int no_side_effects)
 
 void MEMORY_HwPutByte(UWORD addr, UBYTE byte)
 {
+	if (addr == 0x02E0 || addr == 0x02E1 || addr == 0x0200 || addr == 0x0201) {
+		Log_print("MEMORY_HwPutByte: addr=%04X, byte=%02X, PC=%04X", addr, byte, CPU_regPC);
+	}
 	switch (addr & 0xff00) {
 	case 0x4f00:
 	case 0x8f00:

@@ -25,8 +25,8 @@
 
 static UBYTE ultimate_rom[0x80000];
 #ifdef ATARI800MACX
-char ultimate_rom_filename[FILENAME_MAX] = "/Users/markg/Atari800MacX/Altirra-3.20/ultimate.rom";
-char ultimate_nvram_filename[FILENAME_MAX] = "/Users/markg/Atari800MacX/Altirra-3.20/ultimate.nvram";
+char ultimate_rom_filename[FILENAME_MAX] = "";
+char ultimate_nvram_filename[FILENAME_MAX] = "";
 #else
 static char ultimate_rom_filename[FILENAME_MAX] = Util_FILENAME_NOT_SET;
 #endif
@@ -422,7 +422,7 @@ static void Set_SDX_Enabled(int enabled) {
         if (CARTRIDGE_main.type == CARTRIDGE_NONE)
             CARTRIDGE_Insert_Ultimate_1MB();
         else {
-            CARTRDIGE_Switch_To_Main();
+            CARTRIDGE_Switch_To_Main();
         }
         MEMORY_SetFlashRoutines(ULTIMATE_Flash_Read, ULTIMATE_Flash_Write);
         MEMORY_SetFlash(0xa000, 0xbfff);
@@ -431,7 +431,7 @@ static void Set_SDX_Enabled(int enabled) {
     else {
         MEMORY_SetROM(0xa000, 0xbfff);
         if (external_cart_enable)
-            CARTRDIGE_Switch_To_Piggyback(pbi_button_enable);
+            CARTRIDGE_Switch_To_Piggyback(pbi_button_enable);
         else
             MEMORY_CartA0bfDisable();
     }
