@@ -157,6 +157,10 @@
 #include "netsio.h"
 #endif /* NETSIO */
 
+#ifdef MACOSX
+void loadMacPrefs(int firstTime);
+#endif
+
 int Atari800_machine_type = Atari800_MACHINE_XLXE;
 
 int Atari800_builtin_basic = TRUE;
@@ -809,6 +813,10 @@ int Atari800_Initialise(int *argc, char *argv[])
 	}
 
 	*argc = j;
+
+#ifdef MACOSX
+    loadMacPrefs(TRUE);
+#endif
 
 	/* Update machine feature variables. after reading from config file and/or
 	   command-line options. */
