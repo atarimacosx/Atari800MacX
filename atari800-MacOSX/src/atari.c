@@ -125,6 +125,9 @@ int Atari_Help_Key_Pressed();
 #ifdef XEP80_EMULATION
 #include "xep80.h"
 #endif
+#ifdef NETSIO
+#include "netsio.h"
+#endif /* NETSIO */
 
 int machine_switch_type = 7;
 int Atari800_machine_type = Atari800_MACHINE_XLXE;
@@ -199,6 +202,11 @@ void Atari800_Warmstart(void)
 		/* note: POKEY and GTIA have no Reset pin */
 
 	}
+#ifdef NETSIO
+	if (netsio_enabled)
+		netsio_warm_reset();
+#endif /* NETSIO */
+
 	Devices_WarmCold_Start();
 }
 
@@ -254,6 +262,10 @@ void Atari800_Coldstart(void)
 		BIT3_Reset();
 	}
 #endif
+#ifdef NETSIO
+	if(netsio_enabled)
+		netsio_cold_reset();
+#endif /* NETSIO */
 #ifdef PCLINK
     Link_Device_Cold_Reset();
 #endif
@@ -487,6 +499,16 @@ int Atari800_Initialise(int *argc, char *argv[])
 			if (MEMORY_ram_size == 48)
 				MEMORY_ram_size = 52;
 		}
+#ifdef NETSIO
+		else if (strcmp(argv[i], "-netsio") == 0) {
+			/* Disable patched SIO for all devices */
+			ESC_enable_sio_patch = Devices_enable_h_patch = Devices_enable_p_patch = Devices_enable_r_patch = FALSE;
+			if (netsio_init(9997) < 0)
+			{
+				Log_print("netsio: init failed");
+			}
+		}
+#endif /* NETSIO */
 		else {
 			/* parameters that take additional argument follow here */
 			int i_a = (i + 1 < *argc);		/* is argument available? */
@@ -626,6 +648,9 @@ int Atari800_Initialise(int *argc, char *argv[])
 					Log_print("\t-mosaic <n>      Use 400/800 Mosaic memory expansion: <n> k total RAM");
 #ifdef R_IO_DEVICE
 					Log_print("\t-rdevice [<dev>] Enable R: emulation (using serial device <dev>)");
+#endif
+#ifdef NETSIO
+					Log_print("\t-netsio          Enable NetSIO emulation (for FujiNet-PC support)");
 #endif
 					Log_print("\t-v               Show version/release number");
 				}

@@ -80,6 +80,9 @@
 #include "side2.h"
 #include "util.h"
 #include "capslock.h"
+#ifdef NETSIO
+#include "netsio.h"
+#endif
 
 /* Local variables that control the display and sound modes.  They need to be visable externally
    so the preferences and menu manager Objective-C files may access them. */
@@ -347,6 +350,10 @@ void PauseAudio(int pause);
 void CreateWindowCaption(void);
 void ProcessCopySelection(int *first_row, int *last_row, int selectAll);
 void HandleScreenChange(int requested_w, int requested_h);
+
+/* Global variables for delayed FujiNet restart */
+static int fujinet_restart_pending = 0;
+static int fujinet_restart_delay = 0;
 int  GetAtariScreenWidth(void);
 void CalcWindowSize(int *width, int *height);
 void SetWindowAspectRatio(void);
@@ -4774,7 +4781,30 @@ void ProcessMacPrefsChange()
             {
             ESC_UpdatePatches();
 			Devices_UpdatePatches();
+#ifdef NETSIO
+            /* If FujiNet was just enabled, initialize NetSIO and use delayed restart */
+            ATARI800MACX_PREF *prefs = getPrefStorage();
+            printf("DEBUG: Checking FujiNet re-enable: fujiNetEnabled=%d, netsio_enabled=%d\n", 
+                   prefs->fujiNetEnabled, netsio_enabled);
+            if (prefs->fujiNetEnabled && !netsio_enabled) {
+                int port = prefs->fujiNetPort;
+                if (port <= 0 || port > 65535) port = 9997;
+                
+                if (netsio_init(port) == 0) {
+                    printf("DEBUG: FujiNet re-enabled, NetSIO reinitialized on port %d\n", port);
+                    /* Use delayed restart mechanism like startup */
+                    fujinet_restart_pending = 1;
+                    fujinet_restart_delay = 60; /* Wait 60 frames (~1 second) */
+                    printf("DEBUG: Set fujinet_restart_pending=1, delay=60\n");
+                    /* Skip immediate coldstart, let delayed mechanism handle it */
+                    goto skip_coldstart;
+                } else {
+                    printf("DEBUG: FujiNet re-enable failed - netsio_init returned error\n");
+                }
+            }
+#endif
             Atari800_Coldstart();
+            skip_coldstart:
             }
         if (keyboardJoystickChanged)
             Init_SDL_Joykeys();
@@ -5370,6 +5400,28 @@ int SDL_main(int argc, char **argv)
 		SetControlManagerPBIExpansion(2);
 	else
 		SetControlManagerPBIExpansion(0);
+		
+#ifdef NETSIO
+    /* Initialize NetSIO for FujiNet connectivity if enabled in preferences */
+    /* This happens after machine type and SIO patches are properly set by loadMacPrefs() */
+    {
+        ATARI800MACX_PREF *prefs = getPrefStorage();
+        if (prefs->fujiNetEnabled) {
+            int port = prefs->fujiNetPort;
+            if (port <= 0 || port > 65535) port = 9997; // Default port if invalid
+            
+            Log_print("DEBUG: About to call netsio_init on port %d", port);
+            if (netsio_init(port) == 0) {
+                Log_print("DEBUG: netsio_init succeeded, will trigger restart after main loop starts");
+                /* Set flag to trigger restart after main loop starts */
+                fujinet_restart_pending = 1;
+                fujinet_restart_delay = 60; /* Wait 60 frames (~1 second) */
+            } else {
+                Log_print("DEBUG: netsio_init FAILED");
+            }
+        }
+    }
+#endif
 	SetControlManagerArrowKeys(useAtariCursorKeys);
 	PrintOutputControllerSelectPrinter(currPrinter);
     UpdateMediaManagerInfo(); 
@@ -5412,6 +5464,20 @@ int SDL_main(int argc, char **argv)
     }
 
     while (!done) {
+        /* Handle delayed FujiNet restart */
+        if (fujinet_restart_pending && fujinet_restart_delay > 0) {
+            fujinet_restart_delay--;
+            if (fujinet_restart_delay == 10) { /* Debug at 10 frames remaining */
+                Log_print("DEBUG: FujiNet delayed restart countdown: %d frames remaining", fujinet_restart_delay);
+            }
+            if (fujinet_restart_delay == 0) {
+                Log_print("DEBUG: Triggering delayed FujiNet machine initialization");
+                Atari800_InitialiseMachine();
+                fujinet_restart_pending = 0;
+                Log_print("DEBUG: FujiNet delayed machine initialization completed");
+            }
+        }
+        
         /* Handle joysticks and paddles */
         SDL_Atari_PORT(&STICK[0], &STICK[1], &STICK[2], &STICK[3]);
         keycode = SDL_Atari_TRIG(&TRIG_input[0], &TRIG_input[1], &TRIG_input[2], &TRIG_input[3],

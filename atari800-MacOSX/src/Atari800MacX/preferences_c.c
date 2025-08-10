@@ -33,6 +33,9 @@
 #include "ultimate1mb.h"
 #include "side2.h"
 #include "binload.h"
+#ifdef NETSIO
+#include "netsio.h"
+#endif
 
 #define MAX_DIRECTORIES 8
 
@@ -884,6 +887,11 @@ void CalculatePrefsChanged()
     int new_game = 0;
     int new_leds = 0;
     int new_jumper = 0;
+    
+#ifdef NETSIO
+    /* Track previous FujiNet state to detect changes */
+    static int previous_fujinet_enabled = -1; /* -1 = uninitialized */
+#endif
  
     if (WIDTH_MODE != prefs.widthMode)
         displaySizeChanged = TRUE;
@@ -981,10 +989,19 @@ void CalculatePrefsChanged()
         (Devices_enable_d_patch != prefs.enableDPatch) ||
         (Devices_enable_p_patch != prefs.enablePPatch) ||
         (Devices_enable_r_patch != prefs.enableRPatch) ||
-        (CASSETTE_hold_start_on_reboot != prefs.bootFromCassette))
+        (CASSETTE_hold_start_on_reboot != prefs.bootFromCassette)
+#ifdef NETSIO
+        || (previous_fujinet_enabled != prefs.fujiNetEnabled)
+#endif
+        )
         patchFlagsChanged = TRUE;
     else
         patchFlagsChanged = FALSE;
+        
+#ifdef NETSIO
+    /* Update previous FujiNet state */
+    previous_fujinet_enabled = prefs.fujiNetEnabled;
+#endif
         
     if ((SDL_TRIG_1 != keyboardStickIndexToKey[prefs.leftJoyFire]) ||
         (SDL_TRIG_1_B != keyboardStickIndexToKey[prefs.leftJoyAltFire]) ||
@@ -1229,11 +1246,34 @@ int loadMacPrefs(int firstTime)
 	machine_switch_type = prefs.atariSwitchType; 
 	disable_all_basic = prefs.disableAllBasic;
     Atari800_disable_basic = prefs.disableBasic;
+    
+#ifdef NETSIO
+    /* When FujiNet is enabled, disable SIO patches to route all commands through NetSIO */
+    if (prefs.fujiNetEnabled) {
+        ESC_enable_sio_patch = FALSE;
+        Devices_enable_h_patch = FALSE;
+        Devices_enable_d_patch = FALSE; 
+        Devices_enable_p_patch = FALSE;
+        Devices_enable_r_patch = FALSE;
+    } else {
+        /* FujiNet disabled, shutdown NetSIO if running and use normal patch preferences */
+        if (netsio_enabled) {
+            netsio_shutdown();
+        }
+        ESC_enable_sio_patch = prefs.enableSioPatch;
+        Devices_enable_h_patch = prefs.enableHPatch;
+        Devices_enable_d_patch = prefs.enableDPatch;
+        Devices_enable_p_patch = prefs.enablePPatch;
+        Devices_enable_r_patch = prefs.enableRPatch;
+    }
+#else
+    /* NetSIO not compiled in, use normal patch preferences */
     ESC_enable_sio_patch = prefs.enableSioPatch;
     Devices_enable_h_patch = prefs.enableHPatch;
 	Devices_enable_d_patch = prefs.enableDPatch;
     Devices_enable_p_patch = prefs.enablePPatch;
     Devices_enable_r_patch = prefs.enableRPatch;
+#endif
 	RDevice_serial_enabled = prefs.rPatchSerialEnabled;
 	strncpy(RDevice_serial_device, prefs.rPatchSerialPort,FILENAME_MAX);
     portnum = prefs.rPatchPort;

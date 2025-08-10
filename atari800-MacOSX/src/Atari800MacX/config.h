@@ -360,3 +360,5 @@
 #define EMUOS_ALTIRRA       1
 
 #define ATARI800MACX
+
+#define NETSIO

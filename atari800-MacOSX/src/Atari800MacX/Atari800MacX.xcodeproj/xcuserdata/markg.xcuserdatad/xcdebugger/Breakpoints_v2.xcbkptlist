@@ -48,7 +48,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "6209"
             endingLineNumber = "6209"
-            landmarkName = "-loadConfigurationMenu:"
+            landmarkName = "-saveConfigurationUI:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

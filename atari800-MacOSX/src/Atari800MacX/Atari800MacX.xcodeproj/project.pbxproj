@@ -70,6 +70,8 @@
 		2D2EB0080DEE1F9D00271295 /* votrax.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D2EB0060DEE1F9D00271295 /* votrax.h */; };
 		2D32203B25885D4500CF099D /* vec.c in Sources */ = {isa = PBXBuildFile; fileRef = 2D32203925885D4500CF099D /* vec.c */; };
 		2D32203C25885D4500CF099D /* vec.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D32203A25885D4500CF099D /* vec.h */; };
+		2D36F96A2E4844070007EDF5 /* netsio.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D36F9682E4844070007EDF5 /* netsio.h */; };
+		2D36F96B2E4844070007EDF5 /* netsio.c in Sources */ = {isa = PBXBuildFile; fileRef = 2D36F9692E4844070007EDF5 /* netsio.c */; };
 		2D3A8F7C0CB3087200A18A29 /* xep80.c in Sources */ = {isa = PBXBuildFile; fileRef = 2D3A8F7A0CB3087200A18A29 /* xep80.c */; };
 		2D3A8F7D0CB3087200A18A29 /* xep80.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D3A8F7B0CB3087200A18A29 /* xep80.h */; };
 		2D3CDF6B25196803002CF9DB /* img_vhd.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D3CDF6925196803002CF9DB /* img_vhd.h */; };
@@ -464,6 +466,8 @@
 		2D35913B08DDE9F10041824D /* SectorEditorWindow.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = SectorEditorWindow.nib; sourceTree = "<group>"; };
 		2D35920108DE2E760041824D /* SectorEditorAsciiFieldCell.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SectorEditorAsciiFieldCell.h; sourceTree = SOURCE_ROOT; };
 		2D35920208DE2E760041824D /* SectorEditorAsciiFieldCell.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SectorEditorAsciiFieldCell.m; sourceTree = SOURCE_ROOT; };
+		2D36F9682E4844070007EDF5 /* netsio.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = netsio.h; path = ../netsio.h; sourceTree = SOURCE_ROOT; };
+		2D36F9692E4844070007EDF5 /* netsio.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = netsio.c; path = ../netsio.c; sourceTree = SOURCE_ROOT; };
 		2D3A8F7A0CB3087200A18A29 /* xep80.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = xep80.c; path = ../xep80.c; sourceTree = SOURCE_ROOT; };
 		2D3A8F7B0CB3087200A18A29 /* xep80.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = xep80.h; path = ../xep80.h; sourceTree = SOURCE_ROOT; };
 		2D3CDF6925196803002CF9DB /* img_vhd.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = img_vhd.h; path = ../img_vhd.h; sourceTree = "<group>"; };
@@ -987,6 +991,8 @@
 				2D446239084EBDA40080C448 /* mac_screen.c */,
 				2D3D18A7052BD6E600A8C8B4 /* mzpokeysnd.c */,
 				2D3D18A8052BD6E600A8C8B4 /* mzpokeysnd.h */,
+				2D36F9682E4844070007EDF5 /* netsio.h */,
+				2D36F9692E4844070007EDF5 /* netsio.c */,
 				2D2EAFEE0DEE1E8100271295 /* pbi.c */,
 				2D2EAFEF0DEE1E8100271295 /* pbi.h */,
 				2D17D96D0F537D860027F526 /* pbi_bb.c */,
@@ -1275,6 +1281,7 @@
 				2DB0A0590F52413B007879C7 /* ui_basic.h in Headers */,
 				2DE6EB8024CE197000A55386 /* altirraos_800.h in Headers */,
 				2D5F5947256070D600903877 /* eeprom.h in Headers */,
+				2D36F96A2E4844070007EDF5 /* netsio.h in Headers */,
 				2D17D9760F537D860027F526 /* pbi_bb.h in Headers */,
 				2D17D9780F537D860027F526 /* pbi_mio.h in Headers */,
 				2D17D97A0F537D860027F526 /* pbi_scsi.h in Headers */,
@@ -1555,6 +1562,7 @@
 				2D09D06A250939B200B73A8D /* ide.c in Sources */,
 				2D013C8E10718EF8009D2E84 /* BreakpointDataSource.m in Sources */,
 				2D176A551072894F009D5644 /* BreakpointTableView.m in Sources */,
+				2D36F96B2E4844070007EDF5 /* netsio.c in Sources */,
 				2D176BB010729BD4009D5644 /* BreakpointEditorDataSource.m in Sources */,
 				2D43886F1076CDD900FE40D9 /* StackDataSource.m in Sources */,
 				2D4389341076D9D000FE40D9 /* WatchDataSource.m in Sources */,
