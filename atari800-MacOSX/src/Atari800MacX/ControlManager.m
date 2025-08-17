@@ -81,6 +81,7 @@ extern int MONITOR_break_run_to_here;
 extern int FULLSCREEN_MACOS;
 extern int ULTIMATE_enabled;
 extern int SIDE2_enabled;
+extern int netsio_enabled;
 
 /* Functions which provide an interface for C code to call this object's shared Instance functions */
 void SetControlManagerLimit(int limit) {
@@ -117,6 +118,10 @@ void SetControlManagerArrowKeys(int keys) {
 
 int ControlManagerFatalError() {
     return([[ControlManager sharedInstance] fatalError]);
+}
+
+void ControlManagerWaitingNetsio() {
+    return([[ControlManager sharedInstance] waitingNetsio]);
 }
 
 void ControlManagerDualError(char *error1, char *error2) {
@@ -250,8 +255,10 @@ static int monitorRunFirstTime = 1;
 			}
             [top retain];
             }
-	[[errorTextField window] setExcludedFromWindowsMenu:YES];
-	[[errorTextField window] setMenu:nil];
+    [[waitingTextField window] setExcludedFromWindowsMenu:YES];
+    [[waitingTextField window] setMenu:nil];
+    [[errorTextField window] setExcludedFromWindowsMenu:YES];
+    [[errorTextField window] setMenu:nil];
 	[[monitorInputField window] setExcludedFromWindowsMenu:YES];
 	[[monitorInputField window] setMenu:nil];
 	[[messageOutputView window] setExcludedFromWindowsMenu:NO];
@@ -750,11 +757,40 @@ static int monitorRunFirstTime = 1;
  *  error2 - This method displays the non fatal error dialogue box that has
  *           two lines of error code.
  *-----------------------------------------------------------------------------*/
-- (void)error2:(char *)error1:(char *)error2;
+- (void)error2:(char *)error1:(char *)error2
 {
 	[dualErrorTextField1 setStringValue:[NSString stringWithCString:error1 encoding:NSUTF8StringEncoding]];
 	[dualErrorTextField2 setStringValue:[NSString stringWithCString:error2 encoding:NSASCIIStringEncoding]];
     [NSApp runModalForWindow:[dualErrorTextField1 window]];
+}
+
+/*------------------------------------------------------------------------------
+ *  waitingNetsio - This method displays the waiting NetSIO dialogue box.
+ *-----------------------------------------------------------------------------*/
+- (void)waitingNetsio
+{
+    netsioTimer =
+        [NSTimer scheduledTimerWithTimeInterval:0.5
+                 target:self
+                 selector:@selector(waitNetsioTimeout:)
+                 userInfo:nil
+                 repeats:YES];
+    [netsioTimer retain];
+    [[NSRunLoop currentRunLoop] addTimer:netsioTimer
+                                forMode:NSModalPanelRunLoopMode];
+    [NSApp runModalForWindow:[waitingTextField window]];
+}
+
+- (void)waitNetsioTimeout:(NSTimer*)timer
+{
+    if (netsio_enabled)
+    {
+        [netsioTimer invalidate];
+        [netsioTimer release];
+        netsioTimer = nil;
+        [NSApp stopModal];
+        [[waitingTextField window] close];
+    }
 }
 
 /*------------------------------------------------------------------------------
@@ -833,6 +869,19 @@ static int monitorRunFirstTime = 1;
  *-----------------------------------------------------------------------------*/
 - (IBAction)errorOK:(id)sender
 {
+    [NSApp stopModal];
+    [[sender window] close];
+}
+
+/*------------------------------------------------------------------------------
+ *  waitingCancel - This method handles the cancel button from the waiting
+ *     dialogue.
+ *-----------------------------------------------------------------------------*/
+- (IBAction)waitingCancel:(id)sender
+{
+    [netsioTimer invalidate];
+    [netsioTimer release];
+    netsioTimer = nil;
     [NSApp stopModal];
     [[sender window] close];
 }

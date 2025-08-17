@@ -83,6 +83,7 @@
 #ifdef NETSIO
 #include "netsio.h"
 #endif
+extern void ControlManagerWaitingNetsio();
 
 /* Local variables that control the display and sound modes.  They need to be visable externally
    so the preferences and menu manager Objective-C files may access them. */
@@ -4783,14 +4784,15 @@ void ProcessMacPrefsChange()
                 
                 if (netsio_init(fujinet_port) == 0) {
                     Log_print("DEBUG: netsio_init succeeded");
-                    netsio_wait();
+                    if (!netsio_enabled)
+                        ControlManagerWaitingNetsio();
                 } else {
-                      Log_print("DEBUG: netsio_init FAILED");
-                  }
+                    Log_print("DEBUG: netsio_init FAILED");
+                }
             }
 #endif
             Atari800_Coldstart();
-            }
+        }
         if (keyboardJoystickChanged)
             Init_SDL_Joykeys();
         if (hardDiskChanged)
@@ -5396,7 +5398,8 @@ int SDL_main(int argc, char **argv)
             Log_print("DEBUG: About to call netsio_init on port %d", fujinet_port);
             if (netsio_init(fujinet_port) == 0) {
                 Log_print("DEBUG: netsio_init succeeded");
-                netsio_wait();
+                if (!netsio_enabled)
+                    ControlManagerWaitingNetsio();
           } else {
                 Log_print("DEBUG: netsio_init FAILED");
             }

@@ -60,6 +60,7 @@
 	NSMutableArray *foundMemoryLocations;
 	int foundMemoryIndex;
 	int memorySearchLength;
+    NSTimer *netsioTimer;
     IBOutlet id coldResetItem;
     IBOutlet id limitItem;
     IBOutlet id disableBasicItem;
@@ -70,6 +71,7 @@
     IBOutlet id pauseItem;
     IBOutlet id saveStateItem;
     IBOutlet id warmResetItem;
+    IBOutlet id waitingTextField;
     IBOutlet id errorTextField;
     IBOutlet id normalErrorTextField;
     IBOutlet id dualErrorTextField1;
@@ -146,6 +148,8 @@
 - (int)fatalError;
 - (void)error:(NSString *)errorString;
 - (void)error2:(char *)error1:(char *)error2;
+- (void)waitingNetsio;
+- (void)waitNetsioTimeout:(NSTimer*)timer;
 - (IBAction)runPreferencesSelected:(id)sender;
 - (IBAction)ejectCartridgeSelected:(id)sender;
 - (IBAction)ejectDiskSelected:(id)sender;
@@ -154,6 +158,7 @@
 - (IBAction)monitorSelected:(id)sender;
 - (IBAction)quitSelected:(id)sender;
 - (IBAction)errorOK:(id)sender;
+- (IBAction)waitingCancel:(id)sender;
 - (IBAction)changeMachineType:(id)sender;
 - (IBAction)changePBIExpansion:(id)sender;
 - (IBAction)changeArrowKeys:(id)sender;
