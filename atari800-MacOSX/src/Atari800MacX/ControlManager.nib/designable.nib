@@ -460,7 +460,7 @@
                                                                         </textFieldCell>
                                                                         <tableColumnResizingMask key="resizingMask" resizeWithTable="YES"/>
                                                                     </tableColumn>
-                                                                    <tableColumn identifier="ASCII" editable="NO" width="104" minWidth="10" maxWidth="3.4028234663852886e+38" id="397">
+                                                                    <tableColumn identifier="ASCII" editable="NO" width="75" minWidth="10" maxWidth="3.4028234663852886e+38" id="397">
                                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="center" title="ASCII">
                                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                             <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
@@ -618,7 +618,7 @@
                                                                         </textFieldCell>
                                                                         <tableColumnResizingMask key="resizingMask" resizeWithTable="YES"/>
                                                                     </tableColumn>
-                                                                    <tableColumn identifier="VAL" width="38" minWidth="10" maxWidth="3.4028234663852886e+38" id="2156">
+                                                                    <tableColumn identifier="VAL" width="10" minWidth="10" maxWidth="3.4028234663852886e+38" id="2156">
                                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Value">
                                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                             <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
@@ -665,7 +665,7 @@
                                                                 <tableViewGridLines key="gridStyleMask" horizontal="YES"/>
                                                                 <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                                                 <tableColumns>
-                                                                    <tableColumn editable="NO" width="174" minWidth="40" maxWidth="1000" id="2175">
+                                                                    <tableColumn editable="NO" width="145" minWidth="40" maxWidth="1000" id="2175">
                                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left">
                                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                             <color key="backgroundColor" white="0.33333299" alpha="1" colorSpace="calibratedWhite"/>
@@ -757,7 +757,7 @@
                                                                         </buttonCell>
                                                                         <tableColumnResizingMask key="resizingMask" resizeWithTable="YES"/>
                                                                     </tableColumn>
-                                                                    <tableColumn identifier="BRK" editable="NO" width="421" minWidth="10" maxWidth="3.4028234663852886e+38" id="1132">
+                                                                    <tableColumn identifier="BRK" editable="NO" width="392" minWidth="10" maxWidth="3.4028234663852886e+38" id="1132">
                                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Breakpoint Conditions">
                                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                             <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
@@ -1320,7 +1320,7 @@
                                                     <imageCell key="dataCell" controlSize="small" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="881"/>
                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES"/>
                                                 </tableColumn>
-                                                <tableColumn identifier="CODE" editable="NO" width="259" minWidth="10" maxWidth="3.4028234663852886e+38" id="818">
+                                                <tableColumn identifier="CODE" editable="NO" width="230" minWidth="10" maxWidth="3.4028234663852886e+38" id="818">
                                                     <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left">
                                                         <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                         <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
@@ -1938,7 +1938,7 @@ DQ
                                             </textFieldCell>
                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                         </tableColumn>
-                                        <tableColumn editable="NO" width="37" minWidth="10" maxWidth="3.4028234663852886e+38" id="1567">
+                                        <tableColumn editable="NO" width="10" minWidth="10" maxWidth="3.4028234663852886e+38" id="1567">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left">
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
