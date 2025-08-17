@@ -115,6 +115,8 @@ int GRAB_MOUSE = 0;
 int WIDTH_MODE;  /* Width mode, and the constants that define it */
 int current_w;
 int current_h;
+int fujinet_enabled = FALSE;
+int fujinet_port = 0;
 
 int mediaStatusWindowOpen;
 int functionKeysWindowOpen;
@@ -351,9 +353,6 @@ void CreateWindowCaption(void);
 void ProcessCopySelection(int *first_row, int *last_row, int selectAll);
 void HandleScreenChange(int requested_w, int requested_h);
 
-/* Global variables for delayed FujiNet restart */
-static int fujinet_restart_pending = 0;
-static int fujinet_restart_delay = 0;
 int  GetAtariScreenWidth(void);
 void CalcWindowSize(int *width, int *height);
 void SetWindowAspectRatio(void);
@@ -749,7 +748,7 @@ void Sound_Update(void)
 	}
 	if (dsp_write_pos < dsp_read_pos) {
 		/* should not occur */
-		printf("Error: dsp_write_pos < dsp_read_pos\n");
+		Log_print("Error: dsp_write_pos < dsp_read_pos\n");
 	}
 	while (dsp_read_pos > dsp_buffer_bytes) {
 		dsp_write_pos -= dsp_buffer_bytes;
@@ -1205,7 +1204,6 @@ void SoundSetup()
 		sound_enabled = FALSE;
 		return;
 	}
-	//printf("obtained %d\n",obtained.freq);
 		
 #ifdef SYNCHRONIZED_SOUND
 	{
@@ -1215,7 +1213,6 @@ void SoundSetup()
 		int dsp_buffer_samps = frag_samps*DSP_BUFFER_FRAGS +specified_delay_samps;
 		int bytes_per_sample = (POKEYSND_stereo_enabled ? 2 : 1)*((sound_bits == 16) ? 2:1);
 		dsp_buffer_bytes = desired.channels*dsp_buffer_samps*(sound_bits == 8 ? 1 : 2);
-		//printf("dsp_buffer_bytes = %d\n",dsp_buffer_bytes);
 		dsp_read_pos = 0;
 		dsp_write_pos = (specified_delay_samps+frag_samps)*bytes_per_sample;
 		avg_gap = 0.0;
@@ -2737,7 +2734,6 @@ void checkForNewJoysticks(void) {
 *-----------------------------------------------------------------------------*/
 void Reinit_Joysticks(void)
 {
-	printf("Reiniting joystics....\n");
     reloadMacJoyPrefs();
 	Init_Joysticks(NULL,NULL);
 }
@@ -4782,29 +4778,18 @@ void ProcessMacPrefsChange()
             ESC_UpdatePatches();
 			Devices_UpdatePatches();
 #ifdef NETSIO
-            /* If FujiNet was just enabled, initialize NetSIO and use delayed restart */
-            ATARI800MACX_PREF *prefs = getPrefStorage();
-            printf("DEBUG: Checking FujiNet re-enable: fujiNetEnabled=%d, netsio_enabled=%d\n", 
-                   prefs->fujiNetEnabled, netsio_enabled);
-            if (prefs->fujiNetEnabled && !netsio_enabled) {
-                int port = prefs->fujiNetPort;
-                if (port <= 0 || port > 65535) port = 9997;
+            if (fujinet_enabled && !netsio_enabled) {
+                if (fujinet_port <= 0 || fujinet_port > 65535) fujinet_port = 9997;
                 
-                if (netsio_init(port) == 0) {
-                    printf("DEBUG: FujiNet re-enabled, NetSIO reinitialized on port %d\n", port);
-                    /* Use delayed restart mechanism like startup */
-                    fujinet_restart_pending = 1;
-                    fujinet_restart_delay = 60; /* Wait 60 frames (~1 second) */
-                    printf("DEBUG: Set fujinet_restart_pending=1, delay=60\n");
-                    /* Skip immediate coldstart, let delayed mechanism handle it */
-                    goto skip_coldstart;
+                if (netsio_init(fujinet_port) == 0) {
+                    Log_print("DEBUG: netsio_init succeeded");
+                    netsio_wait();
                 } else {
-                    printf("DEBUG: FujiNet re-enable failed - netsio_init returned error\n");
-                }
+                      Log_print("DEBUG: netsio_init FAILED");
+                  }
             }
 #endif
             Atari800_Coldstart();
-            skip_coldstart:
             }
         if (keyboardJoystickChanged)
             Init_SDL_Joykeys();
@@ -5405,18 +5390,14 @@ int SDL_main(int argc, char **argv)
     /* Initialize NetSIO for FujiNet connectivity if enabled in preferences */
     /* This happens after machine type and SIO patches are properly set by loadMacPrefs() */
     {
-        ATARI800MACX_PREF *prefs = getPrefStorage();
-        if (prefs->fujiNetEnabled) {
-            int port = prefs->fujiNetPort;
-            if (port <= 0 || port > 65535) port = 9997; // Default port if invalid
+        if (fujinet_enabled) {
+            if (fujinet_port <= 0 || fujinet_port > 65535) fujinet_port = 9997; // Default port if invalid
             
-            Log_print("DEBUG: About to call netsio_init on port %d", port);
-            if (netsio_init(port) == 0) {
-                Log_print("DEBUG: netsio_init succeeded, will trigger restart after main loop starts");
-                /* Set flag to trigger restart after main loop starts */
-                fujinet_restart_pending = 1;
-                fujinet_restart_delay = 60; /* Wait 60 frames (~1 second) */
-            } else {
+            Log_print("DEBUG: About to call netsio_init on port %d", fujinet_port);
+            if (netsio_init(fujinet_port) == 0) {
+                Log_print("DEBUG: netsio_init succeeded");
+                netsio_wait();
+          } else {
                 Log_print("DEBUG: netsio_init FAILED");
             }
         }
@@ -5463,21 +5444,7 @@ int SDL_main(int argc, char **argv)
         pasteState = PASTE_START;
     }
 
-    while (!done) {
-        /* Handle delayed FujiNet restart */
-        if (fujinet_restart_pending && fujinet_restart_delay > 0) {
-            fujinet_restart_delay--;
-            if (fujinet_restart_delay == 10) { /* Debug at 10 frames remaining */
-                Log_print("DEBUG: FujiNet delayed restart countdown: %d frames remaining", fujinet_restart_delay);
-            }
-            if (fujinet_restart_delay == 0) {
-                Log_print("DEBUG: Triggering delayed FujiNet machine initialization");
-                Atari800_InitialiseMachine();
-                fujinet_restart_pending = 0;
-                Log_print("DEBUG: FujiNet delayed machine initialization completed");
-            }
-        }
-        
+    while (!done) {        
         /* Handle joysticks and paddles */
         SDL_Atari_PORT(&STICK[0], &STICK[1], &STICK[2], &STICK[3]);
         keycode = SDL_Atari_TRIG(&TRIG_input[0], &TRIG_input[1], &TRIG_input[2], &TRIG_input[3],

@@ -61,6 +61,11 @@ extern int fds0[2];
 /* Returns 0 on success, non-zero on error. */
 int netsio_init(uint16_t port);
 
+#ifdef MACOSX
+/* Wait for netsio to be enabled */
+void netsio_wait(void);
+#endif
+
 /* Shutdown NetSIO, join the thread, close socket. */
 void netsio_shutdown(void);
 

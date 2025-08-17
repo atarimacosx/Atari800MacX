@@ -41,6 +41,9 @@
 #endif
 
 int ESC_enable_sio_patch = TRUE;
+#ifdef MACOSX
+extern int fujinet_enabled;
+#endif
 
 /* Now we check address of every escape code, to make sure that the patch
    has been set by the emulator and is not a CIM in Atari program.
@@ -166,7 +169,11 @@ void ESC_Run(UBYTE esc_code)
 void ESC_PatchOS(void)
 {
 	int patched = Devices_PatchOS();
+#ifdef MACOSX
+    if (ESC_enable_sio_patch && !fujinet_enabled) {
+#else
 	if (ESC_enable_sio_patch) {
+#endif
 		UWORD addr_l;
 		UWORD addr_s;
 		UBYTE check_s_0;

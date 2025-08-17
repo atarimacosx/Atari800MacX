@@ -501,8 +501,6 @@ int Atari800_Initialise(int *argc, char *argv[])
 		}
 #ifdef NETSIO
 		else if (strcmp(argv[i], "-netsio") == 0) {
-			/* Disable patched SIO for all devices */
-			ESC_enable_sio_patch = Devices_enable_h_patch = Devices_enable_p_patch = Devices_enable_r_patch = FALSE;
 			if (netsio_init(9997) < 0)
 			{
 				Log_print("netsio: init failed");
