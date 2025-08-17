@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="16097" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="23727" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment version="101202" identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="16097"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="23727"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="NSApplication">
@@ -899,11 +899,6 @@ DQ
                                     <action selector="disableBasic:" target="524" id="724"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="XEGS Keyboard Attached" id="Sdp-iv-Asq">
-                                <connections>
-                                    <action selector="changeXEGSKeyboard:" target="524" id="eo6-VI-qi7"/>
-                                </connections>
-                            </menuItem>
                             <menuItem isSeparatorItem="YES" id="467">
                                 <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                             </menuItem>
@@ -940,6 +935,11 @@ DQ
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="cx85Enable:" target="524" id="1007"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="XEGS Keyboard Attached" id="Sdp-iv-Asq">
+                                <connections>
+                                    <action selector="changeXEGSKeyboard:" target="524" id="eo6-VI-qi7"/>
                                 </connections>
                             </menuItem>
                             <menuItem title="Arrow Keys" id="1045">

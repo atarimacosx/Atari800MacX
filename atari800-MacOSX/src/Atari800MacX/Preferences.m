@@ -1001,7 +1001,10 @@ static Preferences *sharedInstance = nil;
 	else
 		[fujiNetEnabledButton setState:NSOffState];
 	[fujiNetPortField setStringValue:[displayedValues objectForKey:FujiNetPort] ?: @"9997"];
-	[fujiNetStatusField setStringValue:@"Not Connected"];
+    if (netsio_enabled)
+        [fujiNetStatusField setStringValue:@"Connected"];
+    else
+        [fujiNetStatusField setStringValue:@"Not Connected"];
     [af80RomFileField setStringValue:[displayedValues objectForKey:AF80RomFile]];
     [af80CharsetRomFileField setStringValue:[displayedValues objectForKey:AF80CharsetFile]];
     [bit3RomFileField setStringValue:[displayedValues objectForKey:Bit3RomFile]];
