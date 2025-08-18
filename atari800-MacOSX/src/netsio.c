@@ -5,7 +5,6 @@
 * queues complete packets to emulator
 *
 */
-#include "config.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -13,9 +12,6 @@
 #include <errno.h>
 #include <stdint.h>
 #include <pthread.h>
-#ifdef MACOSX
-#include <dispatch/dispatch.h>
-#endif
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/ioctl.h>
@@ -53,10 +49,6 @@ int fds0[2];
 static int sockfd = -1;
 static struct sockaddr_storage fujinet_addr;
 static socklen_t fujinet_addr_len = sizeof(fujinet_addr);
-
-#ifdef MACOSX
-dispatch_semaphore_t netsio_sem = 0;
-#endif
 
 /* Thread declaration */
 static void *fujinet_rx_thread(void *arg);
@@ -217,7 +209,6 @@ static uint16_t netsio_port = 9997;
 *   - spawn the thread
 */
 int netsio_init(uint16_t port) {
-    static int first_time = 1;
     struct sockaddr_in addr;
     pthread_t rx_thread;
     int broadcast = 1;
@@ -225,14 +216,6 @@ int netsio_init(uint16_t port) {
     /* Store the configured port */
     netsio_port = port;
 
-#ifdef MACOSX
-    /* Initialize the semaphore for netsio */
-    if (first_time) {
-        netsio_sem = dispatch_semaphore_create(0); // init with value of 0
-        first_time = 0;
-    }
-#endif
-    
     /* create emulator <-> netsio FIFOs */
     if (pipe(fds0) < 0)
     {
@@ -525,12 +508,6 @@ void netsio_test_cmd(void)
     netsio_cmd_off_sync(); /* Turn off CMD */
 }
 
-#ifdef MACOSX
-void netsio_wait(void) {
-    dispatch_semaphore_wait(netsio_sem, DISPATCH_TIME_FOREVER);
-}
-#endif
-
 /* Thread: receive from FujiNet socket (one packet == one command) */
 static void *fujinet_rx_thread(void *arg) {
     uint8_t buf[4096];
@@ -621,9 +598,6 @@ static void *fujinet_rx_thread(void *arg) {
 #endif
                 netsio_enabled = 1;
                 Log_print("NetSIO: *** DEVICE_CONNECTED received - netsio_enabled = %d ***", netsio_enabled);
-#ifdef MACOSX
-                dispatch_semaphore_signal(netsio_sem);
-#endif
                 break;
             }
 
