@@ -167,6 +167,7 @@ int requestLoadState = 0;
 int requestLimitChange = 0;
 int requestArtifChange = 0;
 int requestDisableBasicChange = 0;
+int requestEnableNetsioChange = 0;
 int requestKeyjoyEnableChange = 0;
 int requestCX85EnableChange = 0;
 int requestXEGSKeyboardChange = 0;
@@ -292,6 +293,7 @@ extern int EnableDisplayManager80ColMode(int machineType, int xep80Enabled, int 
 extern void SetDisplayManagerXEP80Autoswitch(int autoswitchOn);
 extern void SetControlManagerLimit(int limit);
 extern void SetControlManagerDisableBasic(int mode, int disableBasic);
+extern void SetControlManagerEnableNetsio(int enableNetsio);
 extern void SetControlManagerKeyjoyEnable(int keyjoyEnable);
 extern void SetControlManagerCX85Enable(int cx85enabled);
 extern void SetControlManagerXEGSKeyboard(int attached);
@@ -4485,7 +4487,29 @@ void ProcessMacMenus()
          Atari800_disable_basic = 1 - Atari800_disable_basic;
          requestDisableBasicChange = 0;
          SetControlManagerDisableBasic(Atari800_machine_type,  Atari800_disable_basic);
-		 Atari800_Coldstart();
+         Atari800_Coldstart();
+         }
+    if (requestEnableNetsioChange) {
+         fujinet_enabled = 1 - fujinet_enabled;
+         requestEnableNetsioChange = 0;
+         SetControlManagerEnableNetsio(fujinet_enabled);
+         if (fujinet_enabled && !netsio_enabled) {
+            if (fujinet_port <= 0 || fujinet_port > 65535) fujinet_port = 9997;
+            
+            if (netsio_init(fujinet_port) == 0) {
+                Log_print("DEBUG: netsio_init succeeded");
+                if (!netsio_enabled)
+                    ControlManagerWaitingNetsio();
+            } else {
+                Log_print("DEBUG: netsio_init FAILED");
+            }
+         } else if (!fujinet_enabled) {
+             if (netsio_enabled) {
+                 netsio_shutdown();
+             }
+         }
+
+         Atari800_Coldstart();
          }
     if (requestKeyjoyEnableChange) {
          keyjoyEnable = !keyjoyEnable;
@@ -4551,7 +4575,8 @@ void ProcessMacMenus()
 		requestMachineTypeChange = 0;
 		SetControlManagerMachineType(Atari800_machine_type, MEMORY_ram_size);
         SetControlManagerDisableBasic(Atari800_machine_type,  Atari800_disable_basic);
-		UpdateMediaManagerInfo();
+        SetControlManagerEnableNetsio(fujinet_enabled);
+        UpdateMediaManagerInfo();
 		}
 	if (requestPBIExpansionChange) {
 		if (requestPBIExpansionChange == 1) {
@@ -4875,6 +4900,7 @@ void ProcessMacPrefsChange()
 	MediaManager80ColMode(XEP80_enabled, AF80_enabled, BIT3_enabled, PLATFORM_80col);
     real_deltatime = deltatime;
 	SetControlManagerDisableBasic(Atari800_machine_type, Atari800_disable_basic);
+    SetControlManagerEnableNetsio(fujinet_enabled);
 	SetControlManagerKeyjoyEnable(keyjoyEnable);
     SetControlManagerCX85Enable(INPUT_cx85);
     SetControlManagerXEGSKeyboard(!Atari800_keyboard_detached);
@@ -5377,6 +5403,7 @@ int SDL_main(int argc, char **argv)
     real_deltatime = deltatime;
     SetControlManagerLimit(speed_limit);
 	SetControlManagerDisableBasic(Atari800_machine_type, Atari800_disable_basic);
+    SetControlManagerEnableNetsio(fujinet_enabled);
 	SetControlManagerKeyjoyEnable(keyjoyEnable);
 	SetControlManagerCX85Enable(INPUT_cx85);
     SetControlManagerXEGSKeyboard(!Atari800_keyboard_detached);

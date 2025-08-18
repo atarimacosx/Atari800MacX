@@ -234,6 +234,7 @@ typedef struct ATARI800MACX_PREFSAVE {
                 int side2SDXMode;
                 char ultimate1MBFlashFileName[FILENAME_MAX];
                 char ultimate1MBNVRAMFileName[FILENAME_MAX];
+                int fujiNetEnabled;
 } ATARI800MACX_PREFSAVE;
 
 extern int clearCurrentMedia;

@@ -896,7 +896,12 @@ DQ
                             </menuItem>
                             <menuItem title="Disable Basic" id="722">
                                 <connections>
-                                    <action selector="disableBasic:" target="524" id="724"/>
+                                    <action selector="enableNetsio:" target="524" id="ld6-sX-L7d"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Enable NetSIO" id="Kqe-4x-PYW">
+                                <connections>
+                                    <action selector="enableNetsio:" target="524" id="1iH-0y-IxZ"/>
                                 </connections>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="467">
@@ -1114,6 +1119,7 @@ DQ
                 <outlet property="ctrlArrowKeysItem" destination="1047" id="1055"/>
                 <outlet property="cx85EnableItem" destination="1006" id="1008"/>
                 <outlet property="disableBasicItem" destination="722" id="723"/>
+                <outlet property="enableNetsioItem" destination="Kqe-4x-PYW" id="TnQ-Jy-l1w"/>
                 <outlet property="keyjoyEnableItem" destination="825" id="827"/>
                 <outlet property="limitItem" destination="449" id="532"/>
                 <outlet property="loadStateItem" destination="469" id="536"/>

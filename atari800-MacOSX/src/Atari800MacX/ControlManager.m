@@ -46,6 +46,7 @@ extern int requestSaveState;
 extern int requestLoadState;
 extern int requestLimitChange;
 extern int requestDisableBasicChange;
+extern int requestEnableNetsioChange;
 extern int requestKeyjoyEnableChange;
 extern int requestCX85EnableChange;
 extern int requestXEGSKeyboardChange;
@@ -90,6 +91,10 @@ void SetControlManagerLimit(int limit) {
     
 void SetControlManagerDisableBasic(int mode, int disableBasic) {
     [[ControlManager sharedInstance] setDisableBasicMenu:(mode):(disableBasic)];
+    }
+    
+void SetControlManagerEnableNetsio(int enableNetsio) {
+    [[ControlManager sharedInstance] setEnableNetsioMenu:(enableNetsio)];
     }
     
 void SetControlManagerCX85Enable(int cx85Enable) {
@@ -414,7 +419,7 @@ static int monitorRunFirstTime = 1;
 }
 
 /*------------------------------------------------------------------------------
-*  setDisableBasicMenu - This method is used to set the menu check state for the 
+*  setDisableBasicMenu - This method is used to set the menu check state for the
 *     Disable Basic menu item.
 *-----------------------------------------------------------------------------*/
 - (void)setDisableBasicMenu:(int)mode:(int)disableBasic
@@ -442,8 +447,20 @@ static int monitorRunFirstTime = 1;
             [disableBasicItem setTarget:nil];
             break;
     }
-		
+        
     [[MediaManager sharedInstance] setDisableBasicButton:mode:disableBasic];
+}
+
+/*------------------------------------------------------------------------------
+*  setEnableNetsioMenu - This method is used to set the menu check state for the
+*     Enable Netsio menu item.
+*-----------------------------------------------------------------------------*/
+- (void)setEnableNetsioMenu:(int)enableNetsio
+{
+    if (enableNetsio)
+        [enableNetsioItem setState:NSOnState];
+    else
+        [enableNetsioItem setState:NSOffState];
 }
 
 /*------------------------------------------------------------------------------
@@ -632,6 +649,14 @@ static int monitorRunFirstTime = 1;
 - (IBAction)disableBasic:(id)sender
 {
     requestDisableBasicChange = 1;
+}
+
+/*------------------------------------------------------------------------------
+*  enableNetsio - This method handles the enable Netsio menu selection.
+*-----------------------------------------------------------------------------*/
+- (IBAction)enableNetsio:(id)sender
+{
+    requestEnableNetsioChange = 1;
 }
 
 /*------------------------------------------------------------------------------

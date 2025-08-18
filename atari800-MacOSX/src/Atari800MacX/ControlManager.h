@@ -64,6 +64,7 @@
     IBOutlet id coldResetItem;
     IBOutlet id limitItem;
     IBOutlet id disableBasicItem;
+    IBOutlet id enableNetsioItem;
     IBOutlet id xegsKeyboardItem;
     IBOutlet id cx85EnableItem;
     IBOutlet id keyjoyEnableItem;
@@ -128,6 +129,7 @@
 + (ControlManager *)sharedInstance;
 - (void)setLimitMenu:(int)limit;
 - (void)setDisableBasicMenu:(int)mode:(int)disableBasic;
+- (void)setEnableNetsioMenu:(int)mode:(int)enableNetsio;
 - (void)setKeyjoyEnableMenu:(int)keyjoyEnable;
 - (void)setCX85EnableMenu:(int)cx85Enable;
 - (void)setXEGSKeyboardMenu:(int)attached;
@@ -136,6 +138,7 @@
 - (IBAction)coldReset:(id)sender;
 - (IBAction)limit:(id)sender;
 - (IBAction)disableBasic:(id)sender;
+- (IBAction)enableNetsio:(id)sender;
 - (IBAction)changeXEGSKeyboard:(id)sender;
 - (IBAction)keyjoyEnable:(id)sender;
 - (IBAction)cx85Enable:(id)sender;

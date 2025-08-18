@@ -315,6 +315,7 @@ void savePrefs() {
 	prefssave.mediaStatusDisplayed = mediaStatusWindowOpen;
 	prefssave.functionKeysDisplayed = functionKeysWindowOpen;
 	prefssave.disableBasic = Atari800_disable_basic;
+    prefssave.fujiNetEnabled = fujinet_enabled;
 	prefssave.bootFromCassette = CASSETTE_hold_start;
 	prefssave.enableSioPatch = ESC_enable_sio_patch;
 	prefssave.enableHPatch = Devices_enable_h_patch;
@@ -1243,26 +1244,6 @@ int loadMacPrefs(int firstTime)
     fujinet_enabled = prefs.fujiNetEnabled;
     fujinet_port = prefs.fujiNetPort;
     
-#if 0
-    /* When FujiNet is enabled, disable SIO patches to route all commands through NetSIO */
-    if (prefs.fujiNetEnabled) {
-        ESC_enable_sio_patch = FALSE;
-        Devices_enable_h_patch = FALSE;
-        Devices_enable_d_patch = FALSE; 
-        Devices_enable_p_patch = FALSE;
-        Devices_enable_r_patch = FALSE;
-    } else {
-        /* FujiNet disabled, shutdown NetSIO if running and use normal patch preferences */
-        if (netsio_enabled) {
-            netsio_shutdown();
-        }
-        ESC_enable_sio_patch = prefs.enableSioPatch;
-        Devices_enable_h_patch = prefs.enableHPatch;
-        Devices_enable_d_patch = prefs.enableDPatch;
-        Devices_enable_p_patch = prefs.enablePPatch;
-        Devices_enable_r_patch = prefs.enableRPatch;
-    }
-#else
     if (!fujinet_enabled) {
         if (netsio_enabled) {
             netsio_shutdown();
@@ -1274,7 +1255,6 @@ int loadMacPrefs(int firstTime)
 	Devices_enable_d_patch = prefs.enableDPatch;
     Devices_enable_p_patch = prefs.enablePPatch;
     Devices_enable_r_patch = prefs.enableRPatch;
-#endif
 #endif
 	RDevice_serial_enabled = prefs.rPatchSerialEnabled;
 	strncpy(RDevice_serial_device, prefs.rPatchSerialPort,FILENAME_MAX);

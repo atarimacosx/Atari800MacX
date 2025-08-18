@@ -4214,6 +4214,7 @@ static Preferences *sharedInstance = nil;
     [displayedValues setObject:prefssave->mediaStatusDisplayed ? yes : no forKey:MediaStatusDisplayed];
     [displayedValues setObject:prefssave->functionKeysDisplayed ? yes : no forKey:FunctionKeysDisplayed];
     [displayedValues setObject:prefssave->disableBasic ? yes : no forKey:DisableBasic];
+    [displayedValues setObject:prefssave->fujiNetEnabled ? yes : no forKey:FujiNetEnabled];
     [displayedValues setObject:prefssave->keyjoyEnable ? yes : no forKey:KeyjoyEnable];
     [displayedValues setObject:prefssave->cx85Enable ? yes : no forKey:CX85Enabled];
     [displayedValues setObject:prefssave->bootFromCassette ? yes : no forKey:BootFromCassette];
@@ -4330,7 +4331,7 @@ static Preferences *sharedInstance = nil;
 		}
     [displayedValues setObject:prefssave->enableStereo ? yes : no forKey:EnableStereo];
 
-	[displayedValues setObject:([curValues objectForKey:FujiNetEnabled] && [[curValues objectForKey:FujiNetEnabled] boolValue]) ? yes : no forKey:FujiNetEnabled];
+	[displayedValues setObject:prefssave->fujiNetEnabled ? yes : no forKey:FujiNetEnabled];
 	[displayedValues setObject:[curValues objectForKey:FujiNetPort] ?: @"9997" forKey:FujiNetPort];
 	[displayedValues setObject:prefssave->blackBoxEnabled ? yes : no forKey:BlackBoxEnabled];
 	[displayedValues setObject:prefssave->mioEnabled ? yes : no forKey:MioEnabled];
