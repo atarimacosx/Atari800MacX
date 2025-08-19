@@ -966,8 +966,8 @@ void CalculatePrefsChanged()
             (MEMORY_ram_size != new_ram_size) ||
             ((MEMORY_axlon_num_banks > 0) != new_axlon) ||
             ((MEMORY_mosaic_num_banks > 0) != new_mosaic) ||
-            ((MEMORY_axlon_num_banks - 1) != prefs.axlonBankMask) ||
-            ((MEMORY_mosaic_num_banks - 1) != prefs.mosaicMaxBank) ||
+            ((MEMORY_axlon_num_banks > 0) && ((MEMORY_axlon_num_banks - 1) != prefs.axlonBankMask)) ||
+            ((MEMORY_mosaic_num_banks > 0) && ((MEMORY_mosaic_num_banks - 1) != prefs.mosaicMaxBank)) ||
             (Atari800_builtin_basic != new_basic) ||
             (Atari800_builtin_game != new_game) ||
             (Atari800_keyboard_leds != new_leds) ||
