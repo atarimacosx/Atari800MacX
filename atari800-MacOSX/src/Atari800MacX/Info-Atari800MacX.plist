@@ -159,7 +159,7 @@
 	<key>CFBundleVersion</key>
 	<string>6.1.0 Beta 1</string>
 	<key>NSHumanReadableCopyright</key>
-	<string>Copyright © 2002-2021 Mark Grebe</string>
+	<string>Copyright © 2002-2025 Mark Grebe</string>
 	<key>NSMainNibFile</key>
 	<string>SDLMain</string>
 	<key>NSPrincipalClass</key>
