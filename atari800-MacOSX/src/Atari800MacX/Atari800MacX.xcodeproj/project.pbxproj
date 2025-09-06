@@ -373,13 +373,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		2DC4F4C2105F2EA500F80EE9 /* CopyFiles */ = {
+		2DC4F4C2105F2EA500F80EE9 /* Copy Files */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = ../../docs;
 			dstSubfolderSpec = 7;
 			files = (
 			);
+			name = "Copy Files";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -1336,7 +1337,7 @@
 				2DAEDBC609B69AED005FF181 /* Frameworks */,
 				2DAEDBCB09B69AED005FF181 /* CopyFiles */,
 				2DC4F4AB105F2E7800F80EE9 /* CopyFiles */,
-				2DC4F4C2105F2EA500F80EE9 /* CopyFiles */,
+				2DC4F4C2105F2EA500F80EE9 /* Copy Files */,
 				2D0CA96824B16A250089AC88 /* CopyFiles */,
 			);
 			buildRules = (
