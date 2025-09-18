@@ -1167,15 +1167,15 @@ int loadMacPrefs(int firstTime)
                        &mosaic_enabled, &ULTIMATE_enabled,
                        &Atari800_builtin_basic, &Atari800_builtin_game,
                        &Atari800_keyboard_leds, &Atari800_jumper_present);
+    PREFS_axlon_num_banks = prefs.axlonBankMask + 1;
     if (axlon_enabled) {
         MEMORY_axlon_num_banks = prefs.axlonBankMask + 1;
-        PREFS_axlon_num_banks = MEMORY_axlon_num_banks;
         }
     else
         MEMORY_axlon_num_banks = 0;
+    PREFS_mosaic_num_banks = prefs.mosaicMaxBank + 1;
     if (mosaic_enabled) {
         MEMORY_mosaic_num_banks = prefs.mosaicMaxBank + 1;
-        PREFS_mosaic_num_banks = MEMORY_mosaic_num_banks;
     }
     else
         MEMORY_mosaic_num_banks = 0;
