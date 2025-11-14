@@ -98,35 +98,115 @@ extern int SIDE2_enabled;
 
 /* Arrays which define the cartridge types for each size */
 static int CART2KTYPES[] = {CARTRIDGE_STD_2};
-static int CART4KTYPES[] = {CARTRIDGE_BLIZZARD_4, CARTRIDGE_STD_4, CARTRIDGE_RIGHT_4};
-static int CART8KTYPES[] = {CARTRIDGE_STD_8, CARTRIDGE_5200_8, CARTRIDGE_RIGHT_8,
-                            CARTRIDGE_PHOENIX_8, CARTRIDGE_OSS_8, CARTRIDGE_LOW_BANK_8};
-static int CART16KTYPES[] = {CARTRIDGE_STD_16, CARTRIDGE_OSS_034M_16, CARTRIDGE_5200_EE_16,
-                             CARTRIDGE_OSS_M091_16, CARTRIDGE_5200_NS_16, CARTRIDGE_MEGA_16,
-                             CARTRIDGE_BLIZZARD_16, CARTRIDGE_OSS_043M_16};
-static int CART32KTYPES[] = {CARTRIDGE_5200_32, CARTRIDGE_DB_32, CARTRIDGE_XEGS_32, 
-                             CARTRIDGE_WILL_32, CARTRIDGE_MEGA_32, CARTRIDGE_SWXEGS_32,
-                             CARTRIDGE_AST_32, CARTRIDGE_ULTRACART_32, CARTRIDGE_BLIZZARD_32,
-                             CARTRIDGE_ADAWLIAH_32};
-static int CART40KTYPES[] = {CARTRIDGE_5200_40, CARTRIDGE_BBSB_40};
-static int CART64KTYPES[] = {CARTRIDGE_WILL_64, CARTRIDGE_EXP_64, CARTRIDGE_DIAMOND_64,
-                             CARTRIDGE_SDX_64, CARTRIDGE_XEGS_07_64, CARTRIDGE_MEGA_64,
-                             CARTRIDGE_SWXEGS_64, CARTRIDGE_ATRAX_SDX_64,
-                             CARTRIDGE_TURBOSOFT_64, CARTRIDGE_XEGS_8F_64,
-                             CARTRIDGE_ADAWLIAH_64};
-static int CART128KTYPES[] = {CARTRIDGE_XEGS_128, CARTRIDGE_ATRAX_128, CARTRIDGE_MEGA_128,
-                              CARTRIDGE_SWXEGS_128, CARTRIDGE_ATMAX_128, CARTRIDGE_SDX_128,
-                              CARTRIDGE_ATRAX_SDX_128, CARTRIDGE_TURBOSOFT_128, CARTRIDGE_SIC_128,
-                              CARTRIDGE_ATRAX_128};
-static int CART256KTYPES[] = {CARTRIDGE_XEGS_256, CARTRIDGE_MEGA_256, CARTRIDGE_SWXEGS_256,
-                              CARTRIDGE_SIC_256};
-static int CART512KTYPES[] = {CARTRIDGE_XEGS_512, CARTRIDGE_MEGA_512, CARTRIDGE_SWXEGS_512,
-                              CARTRIDGE_SIC_512};
-static int CART1024KTYPES[] = {CARTRIDGE_XEGS_1024, CARTRIDGE_MEGA_1024, CARTRIDGE_SWXEGS_1024,
-                               CARTRIDGE_ATMAX_1024};
-static int CART2048KTYPES[] = {CARTRIDGE_MEGAMAX_2048, CARTRIDGE_MEGA_2048};
-static int CART4096KTYPES[] = {CARTRIDGE_MEGA_4096};
-static int CART32MTYPES[] = {CARTRIDGE_THECART_32M};
+static int CART4KTYPES[] = {CARTRIDGE_BLIZZARD_4,
+                            CARTRIDGE_STD_4,
+                            CARTRIDGE_RIGHT_4};
+static int CART8KTYPES[] = {CARTRIDGE_STD_8,
+                            CARTRIDGE_5200_8,
+                            CARTRIDGE_RIGHT_8,
+                            CARTRIDGE_PHOENIX_8,
+                            CARTRIDGE_OSS_8,
+                            CARTRIDGE_LOW_BANK_8,
+                            CARTRIDGE_MIO_DIAG_8,
+                            CARTRIDGE_TELELINK2,
+                            CARTRIDGE_XEMULTI_8,
+                            CARTRIDGE_JACART_8};
+static int CART16KTYPES[] = {CARTRIDGE_STD_16,
+                             CARTRIDGE_OSS_034M_16,
+                             CARTRIDGE_5200_EE_16,
+                             CARTRIDGE_OSS_M091_16,
+                             CARTRIDGE_5200_NS_16,
+                             CARTRIDGE_MEGA_16,
+                             CARTRIDGE_BLIZZARD_16,
+                             CARTRIDGE_OSS_043M_16,
+                             CARTRIDGE_WILL_16,
+                             CARTRIDGE_PRONTO,
+                             CARTRIDGE_XEMULTI_16,
+                             CARTRIDGE_JACART_16};
+static int CART32KTYPES[] = {CARTRIDGE_5200_32,
+                             CARTRIDGE_DB_32,
+                             CARTRIDGE_XEGS_32,
+                             CARTRIDGE_WILL_32,
+                             CARTRIDGE_MEGA_32,
+                             CARTRIDGE_SWXEGS_32,
+                             CARTRIDGE_AST_32,
+                             CARTRIDGE_ULTRACART_32,
+                             CARTRIDGE_BLIZZARD_32,
+                             CARTRIDGE_ADAWLIAH_32,
+                             CARTRIDGE_COS32,
+                             CARTRIDGE_XEGS_32,
+                             CARTRIDGE_SIDICAR_32,
+                             CARTRIDGE_JACART_32};
+static int CART40KTYPES[] = {CARTRIDGE_5200_40,
+                             CARTRIDGE_BBSB_40,
+                             CARTRIDGE_5200_40_ALT};
+static int CART64KTYPES[] = {CARTRIDGE_WILL_64,
+                             CARTRIDGE_EXP_64,
+                             CARTRIDGE_DIAMOND_64,
+                             CARTRIDGE_SDX_64,
+                             CARTRIDGE_XEGS_07_64,
+                             CARTRIDGE_MEGA_64,
+                             CARTRIDGE_SWXEGS_64,
+                             CARTRIDGE_ATRAX_SDX_64,
+                             CARTRIDGE_TURBOSOFT_64,
+                             CARTRIDGE_XEGS_8F_64,
+                             CARTRIDGE_ADAWLIAH_64,
+                             CARTRIDGE_5200_SUPER_64,
+                             CARTRIDGE_JRC64_LIN,
+                             CARTRIDGE_MDDOS,
+                             CARTRIDGE_XEMULTI_64,
+                             CARTRIDGE_RAMCART_64,
+                             CARTRIDGE_JACART_64,
+                             CARTRIDGE_JRC64_INT};
+static int CART128KTYPES[] = {CARTRIDGE_XEGS_128,
+                              CARTRIDGE_ATRAX_128,
+                              CARTRIDGE_MEGA_128,
+                              CARTRIDGE_SWXEGS_128,
+                              CARTRIDGE_ATMAX_128, CARTRIDGE_SDX_128,
+                              CARTRIDGE_ATRAX_SDX_128,
+                              CARTRIDGE_TURBOSOFT_128,
+                              CARTRIDGE_SIC_128,
+                              CARTRIDGE_ATRAX_128,
+                              CARTRIDGE_5200_SUPER_128,
+                              CARTRIDGE_XEMULTI_128,
+                              CARTRIDGE_RAMCART_128,
+                              CARTRIDGE_JACART_128};
+static int CART256KTYPES[] = {CARTRIDGE_XEGS_256,
+                              CARTRIDGE_MEGA_256,
+                              CARTRIDGE_SWXEGS_256,
+                              CARTRIDGE_SIC_256,
+                              CARTRIDGE_5200_SUPER_256,
+                              CARTRIDGE_XEMULTI_256,
+                              CARTRIDGE_DOUBLE_RAMCART_256,
+                              CARTRIDGE_JACART_256};
+static int CART512KTYPES[] = {CARTRIDGE_XEGS_512,
+                              CARTRIDGE_MEGA_512,
+                              CARTRIDGE_SWXEGS_512,
+                              CARTRIDGE_SIC_512,
+                              CARTRIDGE_5200_SUPER_512,
+                              CARTRIDGE_CORINA_512_512_8,
+                              CARTRIDGE_XEMULTI_512,
+                              CARTRIDGE_JACART_512,
+                              CARTRIDGE_DCART};
+static int CART1024KTYPES[] = {CARTRIDGE_XEGS_1024,
+                               CARTRIDGE_MEGA_1024,
+                               CARTRIDGE_SWXEGS_1024,
+                               CARTRIDGE_ATMAX_OLD_1024,
+                               CARTRIDGE_ATMAX_NEW_1024,
+                               CARTRIDGE_SICPLUS_1024,
+                               CARTRIDGE_CORINA_1024_8,
+                               CARTRIDGE_XEMULTI_1024,
+                               CARTRIDGE_RAMCART_1M,
+                               CARTRIDGE_JACART_1024};
+static int CART2048KTYPES[] = {CARTRIDGE_MEGAMAX_2048,
+                               CARTRIDGE_MEGA_2048,
+                               CARTRIDGE_RAMCART_2M};
+static int CART4096KTYPES[] = {CARTRIDGE_MEGA_4096,
+                               CARTRIDGE_RAMCART_4M};
+static int CART8MTYPES[] = {CARTRIDGE_RAMCART_8M};
+static int CART16MTYPES[] = {CARTRIDGE_RAMCART_16M};
+static int CART32MTYPES[] = {CARTRIDGE_THECART_32M,
+                             CARTRIDGE_RAMCART_32M};
 static int CART64MTYPES[] = {CARTRIDGE_THECART_64M};
 static int CART128MTYPES[] = {CARTRIDGE_THECART_128M};
 
@@ -281,8 +361,10 @@ NSImage *disketteImage;
     [[cart2048KMatrix window] setMenu:nil];
     [[cart4096KMatrix window] setExcludedFromWindowsMenu:YES];
     [[cart4096KMatrix window] setMenu:nil];
-    [[cart32MMatrix window] setExcludedFromWindowsMenu:YES];
-    [[cart32MMatrix window] setMenu:nil];
+    [[cart8MMatrix window] setExcludedFromWindowsMenu:YES];
+    [[cart8MMatrix window] setMenu:nil];
+    [[cart16MMatrix window] setExcludedFromWindowsMenu:YES];
+    [[cart16MMatrix window] setMenu:nil];
     [[cart64MMatrix window] setExcludedFromWindowsMenu:YES];
     [[cart64MMatrix window] setMenu:nil];
     [[cart128MMatrix window] setExcludedFromWindowsMenu:YES];
@@ -824,6 +906,12 @@ NSImage *disketteImage;
         case 4096:
             theWindow = [cart4096KMatrix window];
             break;
+        case 8192:
+            theWindow = [cart8MMatrix window];
+            break;
+        case 16384:
+            theWindow = [cart16MMatrix window];
+            break;
         case 32768:
             theWindow = [cart32MMatrix window];
             break;
@@ -888,6 +976,12 @@ NSImage *disketteImage;
             break;
         case 4096:
             cartType = CART4096KTYPES[[[cart4096KMatrix selectedCell] tag]];
+            break;
+        case 8192:
+            cartType = CART8MTYPES[[[cart8MMatrix selectedCell] tag]];
+            break;
+        case 16384:
+            cartType = CART16MTYPES[[[cart16MMatrix selectedCell] tag]];
             break;
         case 32768:
             cartType = CART32MTYPES[[[cart32MMatrix selectedCell] tag]];

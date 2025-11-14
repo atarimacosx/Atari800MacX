@@ -401,7 +401,7 @@ static void Set_SDX_Bank(UBYTE bank) {
 
     cart_bank_offset = offset;
     if (SDX_enable)
-        MEMORY_CopyROM(0xa000, 0xbfff, ultimate_rom + cart_bank_offset);
+        MEMORY_CopyFromCart(0xa000, 0xbfff, ultimate_rom + cart_bank_offset);
 }
 
 static void Set_SDX_Enabled(int enabled) {
@@ -417,7 +417,7 @@ static void Set_SDX_Enabled(int enabled) {
         }
         MEMORY_SetFlashRoutines(ULTIMATE_Flash_Read, ULTIMATE_Flash_Write);
         MEMORY_SetFlash(0xa000, 0xbfff);
-        MEMORY_CopyROM(0xa000, 0xbfff, ultimate_rom + cart_bank_offset);
+        MEMORY_CopyFromCart(0xa000, 0xbfff, ultimate_rom + cart_bank_offset);
     }
     else {
         MEMORY_SetROM(0xa000, 0xbfff);

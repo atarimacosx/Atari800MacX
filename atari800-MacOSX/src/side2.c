@@ -447,7 +447,7 @@ static void Update_Memory_Layers_Cart(void) {
         MEMORY_CartA0bfEnable();
         MEMORY_SetFlashRoutines(SIDE2_Flash_Read, SIDE2_Flash_Write);
         MEMORY_SetFlash(0xa000, 0xbfff);
-        MEMORY_CopyROM(0xa000, 0xbfff, side2_rom + Bank_Offset);
+        MEMORY_CopyFromCart(0xa000, 0xbfff, side2_rom + Bank_Offset);
     } else {
         //MEMORY_SetROM(0xa000, 0xbfff);
         MEMORY_CartA0bfDisable();
@@ -455,7 +455,7 @@ static void Update_Memory_Layers_Cart(void) {
     
     if (flashReadRight) {
         MEMORY_Cart809fEnable();
-        MEMORY_CopyROM(0x8000, 0xbfff, side2_rom + Bank_Offset2);
+        MEMORY_CopyFromCart(0x8000, 0xbfff, side2_rom + Bank_Offset2);
     } else {
         MEMORY_Cart809fDisable();
     }

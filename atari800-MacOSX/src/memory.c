@@ -515,6 +515,10 @@ void MEMORY_StateRead(UBYTE SaveVerbose, UBYTE StateVersion)
 						MEMORY_readmap[i] = CARTRIDGE_BountyBob2GetByte;
 						MEMORY_writemap[i] = CARTRIDGE_BountyBob2PutByte;
 					}
+					else if (i == 0xbf) {
+						MEMORY_readmap[i] = CARTRIDGE_5200SuperCartGetByte;
+						MEMORY_writemap[i] = CARTRIDGE_5200SuperCartPutByte;
+					}
 					/* else something's wrong, so we keep current values */
 				}
 				else {
@@ -1108,15 +1112,14 @@ UBYTE MEMORY_HwGetByte(UWORD addr, int no_side_effects)
 	switch (addr & 0xff00) {
 	case 0x4f00:
 	case 0x8f00:
-		if (!no_side_effects)
-			CARTRIDGE_BountyBob1(addr);
-		byte = 0;
+		byte = CARTRIDGE_BountyBob1GetByte(addr, no_side_effects);
 		break;
 	case 0x5f00:
 	case 0x9f00:
-		if (!no_side_effects)
-			CARTRIDGE_BountyBob2(addr);
-		byte = 0;
+		byte = CARTRIDGE_BountyBob2GetByte(addr, no_side_effects);
+		break;
+	case 0xbf00:
+		byte = CARTRIDGE_5200SuperCartGetByte(addr, no_side_effects);
 		break;
 	case 0xd000:				/* GTIA */
 	case 0xc000:				/* GTIA - 5200 */
@@ -1192,11 +1195,14 @@ void MEMORY_HwPutByte(UWORD addr, UBYTE byte)
 	switch (addr & 0xff00) {
 	case 0x4f00:
 	case 0x8f00:
-		CARTRIDGE_BountyBob1(addr);
+		CARTRIDGE_BountyBob1PutByte(addr, byte);
 		break;
 	case 0x5f00:
 	case 0x9f00:
-		CARTRIDGE_BountyBob2(addr);
+		CARTRIDGE_BountyBob2PutByte(addr, byte);
+		break;
+	case 0xbf00:
+		CARTRIDGE_5200SuperCartPutByte(addr, byte);
 		break;
 	case 0xd000:				/* GTIA */
 	case 0xc000:				/* GTIA - 5200 */

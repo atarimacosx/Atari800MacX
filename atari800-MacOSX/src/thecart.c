@@ -593,7 +593,7 @@ static void Update_Cart_Banks() {
 
         MEMORY_CartA0bfEnable();
         if (!(CartBank & 0x10000)) {
-            MEMORY_CopyROM(base, end, bankData);
+            MEMORY_CopyFromCart(base, end, bankData);
         } else {
             MEMORY_SetFlashRoutines(THECART_Ram_Read, THECART_Ram_Write);
             MEMORY_SetFlash(base, end);
@@ -629,7 +629,7 @@ static void Update_Cart_Banks() {
         unsigned char *bankData = CartImage + offset;
 
         if (!(CartBank & 0x10000)) {
-            MEMORY_CopyROM(base, end, bankData);
+            MEMORY_CopyFromCart(base, end, bankData);
         } else {
             MEMORY_SetFlashRoutines(THECART_Ram_Read, THECART_Ram_Write);
             MEMORY_SetFlash(base, end);

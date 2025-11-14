@@ -96,6 +96,8 @@
     IBOutlet id cart1024KMatrix;
     IBOutlet id cart2048KMatrix;
     IBOutlet id cart4096KMatrix;
+    IBOutlet id cart8MMatrix;
+    IBOutlet id cart16MMatrix;
     IBOutlet id cart32MMatrix;
     IBOutlet id cart64MMatrix;
     IBOutlet id cart128MMatrix;

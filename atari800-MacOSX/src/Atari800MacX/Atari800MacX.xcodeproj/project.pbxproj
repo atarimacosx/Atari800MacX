@@ -70,6 +70,8 @@
 		2D2EB0080DEE1F9D00271295 /* votrax.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D2EB0060DEE1F9D00271295 /* votrax.h */; };
 		2D32203B25885D4500CF099D /* vec.c in Sources */ = {isa = PBXBuildFile; fileRef = 2D32203925885D4500CF099D /* vec.c */; };
 		2D32203C25885D4500CF099D /* vec.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D32203A25885D4500CF099D /* vec.h */; };
+		2D35D8D32EBCFB82002346F8 /* cartridge_info.c in Sources */ = {isa = PBXBuildFile; fileRef = 2D35D8D22EBCFB82002346F8 /* cartridge_info.c */; };
+		2D35D8D42EBCFB82002346F8 /* cartridge_info.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D35D8D12EBCFB82002346F8 /* cartridge_info.h */; };
 		2D36F96A2E4844070007EDF5 /* netsio.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D36F9682E4844070007EDF5 /* netsio.h */; };
 		2D36F96B2E4844070007EDF5 /* netsio.c in Sources */ = {isa = PBXBuildFile; fileRef = 2D36F9692E4844070007EDF5 /* netsio.c */; };
 		2D3A8F7C0CB3087200A18A29 /* xep80.c in Sources */ = {isa = PBXBuildFile; fileRef = 2D3A8F7A0CB3087200A18A29 /* xep80.c */; };
@@ -467,6 +469,8 @@
 		2D35913B08DDE9F10041824D /* SectorEditorWindow.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = SectorEditorWindow.nib; sourceTree = "<group>"; };
 		2D35920108DE2E760041824D /* SectorEditorAsciiFieldCell.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SectorEditorAsciiFieldCell.h; sourceTree = SOURCE_ROOT; };
 		2D35920208DE2E760041824D /* SectorEditorAsciiFieldCell.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SectorEditorAsciiFieldCell.m; sourceTree = SOURCE_ROOT; };
+		2D35D8D12EBCFB82002346F8 /* cartridge_info.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = cartridge_info.h; path = ../cartridge_info.h; sourceTree = SOURCE_ROOT; };
+		2D35D8D22EBCFB82002346F8 /* cartridge_info.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = cartridge_info.c; path = ../cartridge_info.c; sourceTree = SOURCE_ROOT; };
 		2D36F9682E4844070007EDF5 /* netsio.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = netsio.h; path = ../netsio.h; sourceTree = SOURCE_ROOT; };
 		2D36F9692E4844070007EDF5 /* netsio.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = netsio.c; path = ../netsio.c; sourceTree = SOURCE_ROOT; };
 		2D3A8F7A0CB3087200A18A29 /* xep80.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = xep80.c; path = ../xep80.c; sourceTree = SOURCE_ROOT; };
@@ -939,6 +943,8 @@
 				2D05560124C3E7690026DE9C /* bit3.c */,
 				2D05560224C3E7690026DE9C /* bit3.h */,
 				F5558353030EF4CD01A8C8B4 /* cartridge.h */,
+				2D35D8D12EBCFB82002346F8 /* cartridge_info.h */,
+				2D35D8D22EBCFB82002346F8 /* cartridge_info.c */,
 				F5558354030EF4CD01A8C8B4 /* cartridge.c */,
 				2D17D9830F538B710027F526 /* cfg.h */,
 				2D66DBF60F538D0200F882D6 /* cfg.c */,
@@ -1246,6 +1252,7 @@
 				2DAEDB2309B69AED005FF181 /* PrinterView.h in Headers */,
 				2DAEDB2409B69AED005FF181 /* EpsonFX80Simulator.h in Headers */,
 				2D3CDF6B25196803002CF9DB /* img_vhd.h in Headers */,
+				2D35D8D42EBCFB82002346F8 /* cartridge_info.h in Headers */,
 				2DAEDB2509B69AED005FF181 /* PrintProtocol.h in Headers */,
 				2DAEDB2609B69AED005FF181 /* PrintableString.h in Headers */,
 				2DAEDB2709B69AED005FF181 /* PrintableGraphics.h in Headers */,
@@ -1561,6 +1568,7 @@
 				2DE6EB8524CE6BCB00A55386 /* img_tape.c in Sources */,
 				2D587363106A8415002428EF /* ByteTextField.m in Sources */,
 				2D587369106A85EA002428EF /* WordTextField.m in Sources */,
+				2D35D8D32EBCFB82002346F8 /* cartridge_info.c in Sources */,
 				2DC223D4106B04A20096626C /* DisasmDataSource.m in Sources */,
 				2D27A625106BE2BF002AAAE7 /* DisasmTableView.m in Sources */,
 				2DE2D3AC106F04A90049A8A1 /* BreakpointsController.m in Sources */,
