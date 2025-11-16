@@ -17,23 +17,32 @@
 
 #include <stdint.h>
 
-enum FlashType {
-	Flash_TypeAm29F010,	// AMD 128K x 8-bit
-	Flash_TypeAm29F010B,	// AMD 128K x 8-bit
-	Flash_TypeAm29F040,	// AMD 512K x 8-bit
-	Flash_TypeAm29F040B,	// AMD 512K x 8-bit
-	Flash_TypeAm29F016D,	// AMD 2M x 8-bit
-	Flash_TypeAm29F032B,	// AMD 4M x 8-bit
-	Flash_TypeAT29C010A,	// Atmel 128K x 8-bit
-	Flash_TypeAT29C040,	// Atmel 512K x 8-bit
-	Flash_TypeSST39SF040,// SST 512K x 8-bit
-	Flash_TypeA29040,	// Amic 512K x 8-bit
-	Flash_TypeS29GL01P,	// Spansion 128M x 8-bit, 90nm (byte mode)
-	Flash_TypeS29GL512P,	// Spansion 64M x 8-bit, 90nm (byte mode)
-	Flash_TypeS29GL256P,	// Spansion 32M x 8-bit, 90nm (byte mode)
-	Flash_TypeBM29F040,	// BRIGHT 512K x 8-bit
-	Flash_TypeM29F010B, 	// STMicroelectronics 128K x 8-bit (then Numonyx, now Micron)
-	Flash_TypeHY29F040A,	// Hynix HY29F040A 512K x 8-bit
+enum Flash_Type {
+    Flash_TypeAm29F010,    // AMD 128K x 8-bit
+    Flash_TypeAm29F010B,    // AMD 128K x 8-bit
+    Flash_TypeAm29F002BT,// AMD 256K x 8-bit, top boot block
+    Flash_TypeAm29F040,    // AMD 512K x 8-bit
+    Flash_TypeAm29F040B,    // AMD 512K x 8-bit
+    Flash_TypeAm29F016D,    // AMD 2M x 8-bit
+    Flash_TypeAm29F032B,    // AMD 4M x 8-bit
+    Flash_TypeAT29C010A,    // Atmel 128K x 8-bit
+    Flash_TypeAT29C040,    // Atmel 512K x 8-bit
+    Flash_TypeSST39SF010,// SST/Microchip 128K x 8-bit (4K sectors)
+    Flash_TypeSST39SF020,// SST/Microchip 256K x 8-bit (4K sectors)
+    Flash_TypeSST39SF040,// SST/Microchip 512K x 8-bit (4K sectors)
+    Flash_TypeA29040,    // Amic 512K x 8-bit
+    Flash_TypeS29GL01P,    // Spansion 128M x 8-bit, 90nm (byte mode)
+    Flash_TypeS29GL512P,    // Spansion 64M x 8-bit, 90nm (byte mode)
+    Flash_TypeS29GL256P,    // Spansion 32M x 8-bit, 90nm (byte mode)
+    Flash_TypeBM29F040,    // BRIGHT 512K x 8-bit
+    Flash_TypeM29F010B,     // STMicroelectronics 128K x 8-bit (then Numonyx, now Micron)
+    Flash_TypeHY29F040A,    // Hynix HY29F040A 512K x 8-bit
+    Flash_TypeM29W800DT,    // Numonyx 1M x 8-bit, top device
+    Flash_TypeMX29LV640DT,// Macronyx 1M x 8-bit, top device
+    Flash_TypeMX29F001T,    // Macronyx 128K x 8-bit, top boot sector
+    Flash_TypeMX29F002T,    // Macronyx 256K x 8-bit, top boot sector
+    Flash_TypeMX29F002B,    // Macronyx 256K x 8-bit, bottom boot sector
+    Flash_TypeMX29F040,    // Macronyx 512K x 8-bit
 };
 
 enum ReadMode {
