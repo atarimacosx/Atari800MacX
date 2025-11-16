@@ -293,7 +293,7 @@ int Flash_Debug_Read_Byte(FlashEmu *flash, uint32_t address, uint8_t *data) {
                             break;
                     }
                 } else if (address8 < sizeof(IDData))
-                    *data = IDData[address];
+                    *data = IDData[address8];
                 else
                     *data = 0xFF;
             } else switch(address & 0xFF) {
@@ -754,55 +754,8 @@ int Flash_Write_Byte(FlashEmu *flash, uint32_t address, uint8_t value) {
 
             } else if (value == 0x30) {
                 // sector erase
-                switch(flash->FlashType) {
-                    case Flash_TypeAm29F010:
-                    case Flash_TypeAm29F010B:
-                    case Flash_TypeM29F010B:
-                        address &= 0x1C000;
-                        memset(flash->Memory + address, 0xFF, 0x4000);
-                        printf("Erasing sector $%05X-%05X\n", address, address + 0x3FFF);
-                        break;
-                    case Flash_TypeAm29F040:
-                    case Flash_TypeAm29F040B:
-                    case Flash_TypeA29040:
-                    case Flash_TypeBM29F040:
-                    case Flash_TypeHY29F040A:
-                        address &= 0x70000;
-                        memset(flash->Memory + address, 0xFF, 0x10000);
-                        printf("Erasing sector $%05X-%05X\n", address, address + 0xFFFF);
-                        break;
-                    case Flash_TypeSST39SF040:
-                        address &= 0x7F000;
-                        memset(flash->Memory + address, 0xFF, 0x1000);
-                        printf("Erasing sector $%05X-%05X\n", address, address + 0xFFF);
-                        break;
-                    case Flash_TypeAm29F016D:
-                        address &= 0x1F0000;
-                        memset(flash->Memory + address, 0xFF, 0x10000);
-                        printf("Erasing sector $%06X-%06X\n", address, address + 0xFFFF);
-                        break;
-                    case Flash_TypeAm29F032B:
-                        address &= 0x3F0000;
-                        memset(flash->Memory + address, 0xFF, 0x10000);
-                        printf("Erasing sector $%06X-%06X\n", address, address + 0xFFFF);
-                        break;
-                    case Flash_TypeS29GL01P:
-                        address &= 0x7FF0000;
-                        memset(flash->Memory + address, 0xFF, 0x20000);
-                        printf("Erasing sector $%07X-%07X\n", address, address + 0x1FFFF);
-                        break;
-                    case Flash_TypeS29GL512P:
-                        address &= 0x3FF0000;
-                        memset(flash->Memory + address, 0xFF, 0x20000);
-                        printf("Erasing sector $%07X-%07X\n", address, address + 0x1FFFF);
-                        break;
-                    case Flash_TypeS29GL256P:
-                        address &= 0x1FF0000;
-                        memset(flash->Memory + address, 0xFF, 0x20000);
-                        printf("Erasing sector $%07X-%07X\n", address, address + 0x1FFFF);
-                        break;
-                }
-
+				SectorErase(flash, address);
+				
                 flash->WriteActivity = TRUE;
                 flash->Dirty = TRUE;
 
