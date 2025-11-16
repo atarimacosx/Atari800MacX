@@ -81,6 +81,7 @@
 #include <errno.h>
 #include <unistd.h>
 #include <sys/stat.h>
+#include "memory.h"
 
 #ifdef DEBUG
 #define DBG_APRINT(x) Log_print(x)
