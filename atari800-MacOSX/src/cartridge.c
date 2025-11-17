@@ -304,10 +304,11 @@ static void set_bank_SIDICAR(int mask, int old_state)
    enables/disables the cartridge pointed to by *active_cart. */
 static void SwitchBank(int old_state)
 {
-	/* All bank-switched cartridges besides two BBSB's are included in
-	   this switch. The BBSB cartridges are not bank-switched by
-	   access to page $D5, but in CARTRIDGE_BountyBob1() and
-	   CARTRIDGE_BountyBob2(), so they need not be processed here. */
+	/* All bank-switched cartridges besides two BBSB's and TheCart
+       are included in this switch. The BBSB cartridges are not
+       bank-switched by access to page $D5, but in
+       CARTRIDGE_BountyBob1() and CARTRIDGE_BountyBob2(), so they
+       need not be processed here. */
 	switch (active_cart->type) {
 	case CARTRIDGE_OSS_034M_16:
 	case CARTRIDGE_OSS_043M_16:
@@ -412,15 +413,6 @@ static void SwitchBank(int old_state)
 		break;
 	case CARTRIDGE_MEGA_4096:
 		set_bank_MEGA_4096();
-		break;
-	case CARTRIDGE_THECART_128M:
-		set_bank_A0BF(0x4000, 0x3fff);
-		break;
-	case CARTRIDGE_THECART_32M:
-		set_bank_A0BF(0x4000, 0x0fff);
-		break;
-	case CARTRIDGE_THECART_64M:
-		set_bank_A0BF(0x4000, 0x1fff);
 		break;
 	case CARTRIDGE_RAMCART_64:
 		set_bank_RAMCART(0x00018, old_state);
@@ -1629,7 +1621,7 @@ static void InitCartridge(CARTRIDGE_image_t *cart)
     if ((cart->type == CARTRIDGE_THECART_32M) ||
         (cart->type == CARTRIDGE_THECART_64M) ||
         (cart->type == CARTRIDGE_THECART_128M))
-            THECART_Init(cart->image, cart->size);
+            THECART_Init(cart->type, cart->image, cart->size);
 #endif
 	PreprocessCart(cart);
 	ResetCartState(cart);
@@ -1722,6 +1714,10 @@ static void RemoveCart(CARTRIDGE_image_t *cart)
         SIDE2_enabled = FALSE;
     }
 #endif
+    if ((cart->type == CARTRIDGE_THECART_32M) ||
+        (cart->type == CARTRIDGE_THECART_64M) ||
+        (cart->type == CARTRIDGE_THECART_128M))
+        THECART_Shutdown();
 	if (cart->type != CARTRIDGE_NONE) {
 		cart->type = CARTRIDGE_NONE;
 		if (cart == active_cart)

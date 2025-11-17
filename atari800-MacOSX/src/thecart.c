@@ -2,14 +2,16 @@
    Emulation of The!Cart cartridges for the Atari
    Macintosh OS X SDL port of Atari800
    Mark Grebe <atarimacosx@gmail.com>
-   Copyright (C) 2020 Mark Grebe
+   Copyright (C) 2020-2025 Mark Grebe
 
    Ported and Adapted from Altirra
-   Copyright (C) 2008-2009 Avery Lee
+   Copyright (C) 2008-2011 Avery Lee
 */
 
 #include "atari.h"
+#include "cartridge.h"
 #include "eeprom.h"
+#include "flash.h"
 #include "memory.h"
 #include "string.h"
 #include "thecart.h"
@@ -27,11 +29,20 @@ static unsigned char *CartImage;
 static UBYTE CARTRAM[524288];
 static int CartSize;
 static int CartSizeMask;
+static FlashEmu *flash;
+static int   CartBankWriteEnable = FALSE;
+static int   CartBank2WriteEnable = FALSE;
+static uint32_t Bank1_Base;
+static uint32_t Bank1_Offset;
+static uint32_t Bank2_Base;
+static uint32_t Bank2_Offset;
 
 static void  UpdateTheCart(void);
 static void  UpdateTheCartBanking(void);
 static void  Set_Cart_Banks(int bank, int bank2);
 static void  Update_Cart_Banks(void);
+static UBYTE THECART_Flash_Read(UWORD addr);
+static void  THECART_Flash_Write(UWORD addr, UBYTE value);
 static UBYTE THECART_Ram_Read(UWORD addr);
 static void  THECART_Ram_Write(UWORD addr, UBYTE value);
 
@@ -50,18 +61,31 @@ enum TheCartBankMode TheCartBankMode;
 UWORD Read_Unaligned_LEU16(const void *p) { return *(UWORD *)p; }
 void  Write_Unaligned_LEU16(void *p, UWORD v) { *(UWORD *)p = v; }
 
-void THECART_Init(unsigned char *image, int size) {
+void THECART_Init(int type, unsigned char *image, int size) {
     CartImage = image;
     CartSize = size << 10;
     CartSizeMask = CartSize - 1;
+    switch(type) {
+        case CARTRIDGE_THECART_32M:
+            flash = Flash_Init(image, Flash_TypeS29GL256P);
+            break;
+        case CARTRIDGE_THECART_64M:
+            flash = Flash_Init(image, Flash_TypeS29GL512P);
+            break;
+        case CARTRIDGE_THECART_128M:
+            flash = Flash_Init(image, Flash_TypeS29GL01P);
+            break;
+    }
+
     EEPROM_Init();
 }
 
-void THECART_Cold_Reset() {
-    CartBank = 0;
-    CartBank2 = -1;
-    Update_Cart_Banks();
+void THECART_Shutdown(void)
+{
+    Flash_Shutdown(flash);
+}
 
+void THECART_Cold_Reset() {
     static const UBYTE TheCartInitData[]={
         0x00,
         0x00,
@@ -73,7 +97,16 @@ void THECART_Cold_Reset() {
         0x00,
         0x82,    // /CS high, SI high, SCK low
     };
+    CartBank = 0;
+    CartBank2 = -1;
 
+    CartBankWriteEnable = FALSE;
+    CartBank2WriteEnable = FALSE;
+    Bank1_Base = 0;
+    Bank1_Offset = 0;
+    Bank2_Base = 0;
+    Bank2_Offset = 0;
+    
     memcpy(TheCartRegs, TheCartInitData, sizeof(TheCartRegs));
     TheCartConfigLock = FALSE;
     TheCartSICEnables = 0x40;        // Axxx only
@@ -81,7 +114,8 @@ void THECART_Cold_Reset() {
 
     UpdateTheCartBanking();
     UpdateTheCart();
-    
+    Update_Cart_Banks();
+
     EEPROM_Cold_Reset();
 }
 
@@ -577,6 +611,7 @@ static void Set_Cart_Banks(int bank, int bank2) {
 
 static void Update_Cart_Banks() {
     if (CartBank < 0) {
+        Bank1_Base = 0;
         MEMORY_CartA0bfDisable();
     } else {
         UWORD base = 0xA000;
@@ -591,10 +626,17 @@ static void Update_Cart_Banks() {
         ULONG offset = (((ULONG) CartBank << 13) & CartSizeMask);
         unsigned char *bankData = CartImage + offset;
 
+        Bank1_Base = base;
+        Bank1_Offset = offset;
+
+        CartBankWriteEnable = TheCartRegs[7] & 0x01;
+        
         MEMORY_CartA0bfEnable();
         if (!(CartBank & 0x10000)) {
+            MEMORY_SetFlashRoutines(THECART_Flash_Read, THECART_Flash_Write);
+            MEMORY_SetFlash(base, end);
             MEMORY_CopyFromCart(base, end, bankData);
-        } else {
+      } else {
             MEMORY_SetFlashRoutines(THECART_Ram_Read, THECART_Ram_Write);
             MEMORY_SetFlash(base, end);
         }
@@ -602,6 +644,7 @@ static void Update_Cart_Banks() {
 
     if (CartBank2 < 0) {
         MEMORY_Cart809fDisable();
+        Bank2_Base = 0;
     } else {
         UWORD base = 0x8000;
         UWORD size = 0x2000;
@@ -624,11 +667,39 @@ static void Update_Cart_Banks() {
         } else {
             MEMORY_Cart809fEnable();
         }
+        
         UWORD end = (base + size) - 1;
         ULONG offset = (((bank2 << 13) + extraOffset) & CartSizeMask);
         unsigned char *bankData = CartImage + offset;
 
+        Bank2_Base = base;
+        Bank2_Offset = offset;
+        
+        // if we are in a 16K mode, we must use the primary bank's read-only flag
+        uint8_t roBit = 0x04;
+
+        switch(TheCartBankMode) {
+            default:
+            case TheCartBankMode_Disabled:
+            case TheCartBankMode_8K:
+            case TheCartBankMode_Flexi:
+                // use secondary bank R/O bit (bit 2)
+                break;
+
+            case TheCartBankMode_16K:
+            case TheCartBankMode_8KFixed_8K:
+            case TheCartBankMode_OSS:
+            case TheCartBankMode_SIC:
+                // use primary bank R/O bit (bit 0)
+                roBit = 0x01;
+                break;
+        }
+
+        CartBank2WriteEnable = (TheCartRegs[7] & roBit);
+
         if (!(CartBank & 0x10000)) {
+            MEMORY_SetFlashRoutines(THECART_Flash_Read, THECART_Flash_Write);
+            MEMORY_SetFlash(base, end);
             MEMORY_CopyFromCart(base, end, bankData);
         } else {
             MEMORY_SetFlashRoutines(THECART_Ram_Read, THECART_Ram_Write);
@@ -637,19 +708,66 @@ static void Update_Cart_Banks() {
     }
 }
 
-UBYTE THECART_Ram_Read(UWORD addr) {
-    if (addr >= 0xa000) {
-        return CARTRAM[((CartBank << 13) & 0x7ffff) + (addr - 0xA000)];
-    } else {
-        return CARTRAM[((CartBank2 << 13) & 0x7ffff) + (addr - 0x8000)];
+static uint32_t Calc_Full_Address(UWORD addr, int * writeEnable)
+{
+    uint32_t fullAddr = 0;
+    uint32_t base;
+    uint32_t offset;
+
+    if (Bank1_Base == 0xB000 && addr >= 0xB000) {
+        base = 0xB000;
+        offset = Bank1_Offset;
+        if (writeEnable)
+            *writeEnable = CartBankWriteEnable;
+    }
+    else if (Bank2_Base == 0xA000 && addr >= 0xA000 && addr < 0xB000) {
+        base = 0xA000;
+        offset = Bank2_Offset;
+        if (writeEnable)
+            *writeEnable = CartBank2WriteEnable;
+    }
+    else if (Bank1_Base == 0xA000 && addr > 0xA000) {
+        base = 0xA000;
+        offset = Bank1_Offset;
+        if (writeEnable)
+            *writeEnable = CartBankWriteEnable;
+    }
+    else {
+        base = 0x8000;
+        offset = Bank2_Offset;
+        if (writeEnable)
+            *writeEnable = CartBank2WriteEnable;
+    }
+
+    fullAddr = offset + (addr - base);
+    
+    return fullAddr;
+}
+
+static UBYTE THECART_Flash_Read(UWORD addr) {
+    uint8_t value;
+    Flash_Read_Byte(flash, Calc_Full_Address(addr, NULL), &value);
+    uint8_t value2 = MEMORY_mem[addr];
+    printf("%d %d %d %d\n",Bank1_Base, Bank1_Offset, Bank2_Base, Bank2_Offset);
+    if (value != value2) {
+        printf("%d %d \n", value, value2);
+    }
+    return value; //MEMORY_mem[addr];
+}
+
+static void THECART_Flash_Write(UWORD addr, UBYTE value) {
+    int writeEnable;
+    uint32_t fullAddr = Calc_Full_Address(addr, &writeEnable);
+    
+    if (writeEnable) {
+        Flash_Write_Byte(flash, fullAddr, value);
     }
 }
 
-void THECART_Ram_Write(UWORD addr, UBYTE value) {
-    if (addr >= 0xa000) {
-        CARTRAM[((CartBank << 13) & 0x7ffff) + (addr - 0xA000)] = value;
-    } else {
-        CARTRAM[((CartBank2 << 13) & 0x7ffff) + (addr - 0x8000)] = value;
-    }
+static UBYTE THECART_Ram_Read(UWORD addr) {
+    return CARTRAM[Calc_Full_Address(addr, NULL)];
+}
 
+static void THECART_Ram_Write(UWORD addr, UBYTE value) {
+    CARTRAM[Calc_Full_Address(addr, NULL)] = value;
 }
