@@ -21,7 +21,7 @@
 #include <string.h>
 
 #undef FLASH_DEBUG
-#ifndef FLASH_DEBUG
+#ifdef FLASH_DEBUG
 #define printf(fmt, ...) (0)
 #endif
 

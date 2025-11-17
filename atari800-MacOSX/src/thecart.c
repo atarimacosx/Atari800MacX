@@ -747,12 +747,8 @@ static uint32_t Calc_Full_Address(UWORD addr, int * writeEnable)
 static UBYTE THECART_Flash_Read(UWORD addr) {
     uint8_t value;
     Flash_Read_Byte(flash, Calc_Full_Address(addr, NULL), &value);
-    uint8_t value2 = MEMORY_mem[addr];
-    printf("%d %d %d %d\n",Bank1_Base, Bank1_Offset, Bank2_Base, Bank2_Offset);
-    if (value != value2) {
-        printf("%d %d \n", value, value2);
-    }
-    return value; //MEMORY_mem[addr];
+
+    return value;
 }
 
 static void THECART_Flash_Write(UWORD addr, UBYTE value) {
