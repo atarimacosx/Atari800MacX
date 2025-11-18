@@ -54,6 +54,7 @@
 #include "side2.h"
 #endif
 #include "thecart.h"
+#include "maxflash.h"
 #endif
 #include "log.h"
 
@@ -456,22 +457,6 @@ static void SwitchBank(int old_state)
 	case CARTRIDGE_JACART_64:
 		set_bank_A0BF(0x80, 0x07);
 		break;	
-	case CARTRIDGE_JACART_128:
-		set_bank_A0BF(0x80, 0x0f);
-		break;	
-	case CARTRIDGE_JACART_256:
-		set_bank_A0BF(0x80, 0x1f);
-		break;	
-	case CARTRIDGE_JACART_512:
-		set_bank_A0BF(0x80, 0x3f);
-		break;	
-	case CARTRIDGE_JACART_1024:
-		set_bank_A0BF(0x80, 0x7f);
-		break;
-	case CARTRIDGE_DCART:
-		set_bank_A0BF(0x80, 0x3f);
-		MEMORY_CopyFromCart(0xd500, 0xd5ff, active_cart->image + (active_cart->state & 0x3f) * 0x2000 + 0x1500);
-		break;			
 	}
 #if DEBUG
 	if (old_state != active_cart->state)
@@ -1091,6 +1076,15 @@ static UBYTE GetByte(CARTRIDGE_image_t *cart, UWORD addr, int no_side_effects)
 	case CARTRIDGE_THECART_32M:
 	case CARTRIDGE_THECART_64M:
         return THECART_Read_Byte(addr);
+    case CARTRIDGE_ATMAX_128:
+    case CARTRIDGE_ATMAX_OLD_1024:
+    case CARTRIDGE_ATMAX_NEW_1024:
+    case CARTRIDGE_JACART_128:
+    case CARTRIDGE_JACART_256:
+    case CARTRIDGE_JACART_512:
+    case CARTRIDGE_JACART_1024:
+    case CARTRIDGE_DCART:
+            return MAXFLASH_Read_Byte(addr);
 	case CARTRIDGE_RAMCART_32M:
 	case CARTRIDGE_RAMCART_16M:
 	case CARTRIDGE_RAMCART_8M:
@@ -1113,9 +1107,6 @@ static UBYTE GetByte(CARTRIDGE_image_t *cart, UWORD addr, int no_side_effects)
 	/*case CARTRIDGE_RAMCART_128:
 	case CARTRIDGE_RAMCART_64:
 		return cart->state | 0x00e0;*/
-	case CARTRIDGE_DCART:
-			return cart->image[((cart->state & 0x3f)*0x2000)+0x1500+(addr & 0xff)];
-		break;
 	}
 	return 0xff;
 }
@@ -1198,8 +1189,18 @@ static void PutByte(CARTRIDGE_image_t *cart, UWORD addr, UBYTE byte)
 	case CARTRIDGE_THECART_128M:
 	case CARTRIDGE_THECART_32M:
 	case CARTRIDGE_THECART_64M:
-            THECART_Write_Byte(addr, byte);
-            return;
+        THECART_Write_Byte(addr, byte);
+        return;
+    case CARTRIDGE_ATMAX_128:
+    case CARTRIDGE_ATMAX_OLD_1024:
+    case CARTRIDGE_ATMAX_NEW_1024:
+    case CARTRIDGE_JACART_128:
+    case CARTRIDGE_JACART_256:
+    case CARTRIDGE_JACART_512:
+    case CARTRIDGE_JACART_1024:
+    case CARTRIDGE_DCART:
+        MAXFLASH_Write_Byte(addr, byte);
+        return;
 	case CARTRIDGE_RAMCART_64:
 		if (!(old_state & 0x0004)) /* lock bit not set */
 			new_state = (old_state & 0x7f000) | (byte & 0x1f);
@@ -1248,9 +1249,6 @@ static void PutByte(CARTRIDGE_image_t *cart, UWORD addr, UBYTE byte)
 		   a simplified decoder built based on the use of the /CCTL signal is used. */
 		if (/*(addr == 0xd5ff) &&*/ !(byte & 0x80))
 			new_state = byte & 0x13;
-		break;
-	case CARTRIDGE_DCART:
-			new_state = addr;
 		break;
 	default:
 		/* Check types switchable by access to page D5. */
@@ -1463,9 +1461,6 @@ static void ResetCartState(CARTRIDGE_image_t *cart)
 	case CARTRIDGE_OSS_034M_16:
 		cart->state = 1;
 		break;
-	case CARTRIDGE_ATMAX_OLD_1024:
-		cart->state = 0x7f;
-		break;
 	case CARTRIDGE_AST_32:
 		/* A special value of 0x10000 indicates the cartridge is
 		   enabled and the current bank is 0. */
@@ -1479,6 +1474,16 @@ static void ResetCartState(CARTRIDGE_image_t *cart)
     case CARTRIDGE_THECART_64M:
     case CARTRIDGE_THECART_128M:
         THECART_Cold_Reset();
+        break;
+    case CARTRIDGE_ATMAX_128:
+    case CARTRIDGE_ATMAX_OLD_1024:
+    case CARTRIDGE_ATMAX_NEW_1024:
+    case CARTRIDGE_JACART_128:
+    case CARTRIDGE_JACART_256:
+    case CARTRIDGE_JACART_512:
+    case CARTRIDGE_JACART_1024:
+    case CARTRIDGE_DCART:
+        MAXFLASH_Cold_Reset();
         break;
 #endif
 	default:
@@ -1622,6 +1627,15 @@ static void InitCartridge(CARTRIDGE_image_t *cart)
         (cart->type == CARTRIDGE_THECART_64M) ||
         (cart->type == CARTRIDGE_THECART_128M))
             THECART_Init(cart->type, cart->image, cart->size);
+    if ((cart->type == CARTRIDGE_ATMAX_128) ||
+        (cart->type == CARTRIDGE_ATMAX_OLD_1024) ||
+        (cart->type == CARTRIDGE_ATMAX_NEW_1024) ||
+        (cart->type == CARTRIDGE_JACART_128) ||
+        (cart->type == CARTRIDGE_JACART_256) ||
+        (cart->type == CARTRIDGE_JACART_512) ||
+        (cart->type == CARTRIDGE_JACART_1024) ||
+        (cart->type == CARTRIDGE_DCART))
+            MAXFLASH_Init(cart->type, cart->image, cart->size);
 #endif
 	PreprocessCart(cart);
 	ResetCartState(cart);
