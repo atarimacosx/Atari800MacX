@@ -46,11 +46,11 @@ void MAXFLASH_Init(int type, unsigned char *image, int size)
             break;
         case CARTRIDGE_ATMAX_OLD_1024:
             flash = Flash_Init(image, Flash_TypeBM29F040);
-            flash2 = NULL;
+            flash2 = Flash_Init(image, Flash_TypeBM29F040);
             break;
         case CARTRIDGE_ATMAX_NEW_1024:
             flash = Flash_Init(image, Flash_TypeBM29F040);
-            flash2 = NULL;
+            flash2 = Flash_Init(image, Flash_TypeBM29F040);
             break;
         case CARTRIDGE_JACART_128:
             flash = Flash_Init(image, Flash_TypeSST39SF010);
@@ -106,9 +106,7 @@ UBYTE MAXFLASH_Read_Byte(UWORD address)
                 }
             }
             return -1;
-        case CARTRIDGE_ATMAX_OLD_1024:
-        case CARTRIDGE_ATMAX_NEW_1024:
-        case CARTRIDGE_JACART_128:
+       case CARTRIDGE_JACART_128:
             SetCartBank(address & 0x80 ? -1 : (UBYTE)address & 0x0F);
             return -1;
         case CARTRIDGE_JACART_256:
@@ -117,6 +115,8 @@ UBYTE MAXFLASH_Read_Byte(UWORD address)
         case CARTRIDGE_JACART_512:
             SetCartBank(address & 0x80 ? -1 : (UBYTE)address & 0x3F);
             return -1;
+        case CARTRIDGE_ATMAX_OLD_1024:
+        case CARTRIDGE_ATMAX_NEW_1024:
         case CARTRIDGE_JACART_1024:
             SetCartBank(address & 0x80 ? -1 : (UBYTE)address & 0x7F);
             return -1;
@@ -125,8 +125,9 @@ UBYTE MAXFLASH_Read_Byte(UWORD address)
             flashOffset = address - 0xD500 + 0x1500 + ((uint32_t)(CartMiniBank & 0x3F) << 13);
             Flash_Read_Byte(flash, flashOffset, &value);
             return value;
+        default:
+            return -1;
     }
-    return 0;
 }
 
 void  MAXFLASH_Write_Byte(UWORD address, UBYTE value)
@@ -142,8 +143,6 @@ void  MAXFLASH_Write_Byte(UWORD address, UBYTE value)
                 }
             }
             break;
-        case CARTRIDGE_ATMAX_OLD_1024:
-        case CARTRIDGE_ATMAX_NEW_1024:
         case CARTRIDGE_JACART_128:
             SetCartBank(address & 0x80 ? -1 : (UBYTE)address & 0x0F);
             return;
@@ -153,6 +152,8 @@ void  MAXFLASH_Write_Byte(UWORD address, UBYTE value)
         case CARTRIDGE_JACART_512:
             SetCartBank(address & 0x80 ? -1 : (UBYTE)address & 0x7F);
             return;
+        case CARTRIDGE_ATMAX_OLD_1024:
+        case CARTRIDGE_ATMAX_NEW_1024:
         case CARTRIDGE_JACART_1024:
             SetCartBank(address & 0x80 ? -1 : (UBYTE)address & 0x7F);
             return;
