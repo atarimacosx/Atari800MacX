@@ -357,12 +357,9 @@ static void SwitchBank(int old_state)
 		set_bank_809F(0xfe000, old_state);
 		break;
 	case CARTRIDGE_ATRAX_DEC_128:
-	case CARTRIDGE_ATMAX_OLD_1024:
 	case CARTRIDGE_ATRAX_128:
-	case CARTRIDGE_ATMAX_NEW_1024:
 		set_bank_A0BF(0x80, 0x7f);
 		break;
-	case CARTRIDGE_ATMAX_128:
 	case CARTRIDGE_TURBOSOFT_64:
 	case CARTRIDGE_TURBOSOFT_128:
 		set_bank_A0BF(0x10, 0x0f);
@@ -610,8 +607,6 @@ static void MapActiveCart(void)
 		case CARTRIDGE_SDX_64:
 		case CARTRIDGE_ATRAX_DEC_128:
 		case CARTRIDGE_WILL_32:
-		case CARTRIDGE_ATMAX_128:
-		case CARTRIDGE_ATMAX_OLD_1024:
 		case CARTRIDGE_SDX_128:
 		case CARTRIDGE_ATRAX_SDX_64:
 		case CARTRIDGE_ATRAX_SDX_128:
@@ -622,16 +617,10 @@ static void MapActiveCart(void)
 		case CARTRIDGE_ATRAX_128:
 		case CARTRIDGE_ADAWLIAH_32:
 		case CARTRIDGE_ADAWLIAH_64:
-		case CARTRIDGE_ATMAX_NEW_1024:
 		case CARTRIDGE_JACART_8:
 		case CARTRIDGE_JACART_16:
 		case CARTRIDGE_JACART_32:
 		case CARTRIDGE_JACART_64:
-		case CARTRIDGE_JACART_128:
-		case CARTRIDGE_JACART_256:
-		case CARTRIDGE_JACART_512:
-		case CARTRIDGE_JACART_1024:
-		case CARTRIDGE_DCART:	
 			MEMORY_Cart809fDisable();
 			break;
 		case CARTRIDGE_DB_32:
@@ -769,6 +758,15 @@ static void MapActiveCart(void)
         case CARTRIDGE_THECART_32M:
         case CARTRIDGE_THECART_64M:
         case CARTRIDGE_THECART_128M:
+            return;
+        case CARTRIDGE_ATMAX_128:
+        case CARTRIDGE_ATMAX_OLD_1024:
+        case CARTRIDGE_ATMAX_NEW_1024:
+        case CARTRIDGE_JACART_128:
+        case CARTRIDGE_JACART_256:
+        case CARTRIDGE_JACART_512:
+        case CARTRIDGE_JACART_1024:
+        case CARTRIDGE_DCART:
             return;
         case CARTRIDGE_ULTIMATE_1MB:
             MEMORY_Cart809fDisable();
@@ -977,28 +975,13 @@ static int access_D5(CARTRIDGE_image_t *cart, UWORD addr, int *state)
 		/* Disable the cart. */
 		new_state = 1;
 		break;
-	case CARTRIDGE_ATMAX_128:
-		/* Only react to access to $D50x/$D51x. */
-		if ((addr & 0xe0) != 0)
-			return FALSE;
-		/* fall through */
 	case CARTRIDGE_TURBOSOFT_128:
 		new_state = addr & 0x1f;
 		break;
 	case CARTRIDGE_TURBOSOFT_64:
 		new_state = addr & 0x17;
 		break;
-	case CARTRIDGE_ATMAX_OLD_1024:
 	case CARTRIDGE_MEGAMAX_2048:
-	case CARTRIDGE_ATMAX_NEW_1024:	
-	case CARTRIDGE_JACART_8:
-	case CARTRIDGE_JACART_16:
-	case CARTRIDGE_JACART_32:
-	case CARTRIDGE_JACART_64:
-	case CARTRIDGE_JACART_128:
-	case CARTRIDGE_JACART_256:
-	case CARTRIDGE_JACART_512:
-	case CARTRIDGE_JACART_1024:
 		new_state = addr;
 		break;
 	case CARTRIDGE_OSS_8:
@@ -1627,7 +1610,7 @@ static void InitCartridge(CARTRIDGE_image_t *cart)
         (cart->type == CARTRIDGE_THECART_64M) ||
         (cart->type == CARTRIDGE_THECART_128M))
             THECART_Init(cart->type, cart->image, cart->size);
-    if ((cart->type == CARTRIDGE_ATMAX_128) ||
+    else if ((cart->type == CARTRIDGE_ATMAX_128) ||
         (cart->type == CARTRIDGE_ATMAX_OLD_1024) ||
         (cart->type == CARTRIDGE_ATMAX_NEW_1024) ||
         (cart->type == CARTRIDGE_JACART_128) ||
