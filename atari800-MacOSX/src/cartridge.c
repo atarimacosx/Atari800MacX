@@ -1022,6 +1022,10 @@ static int access_D5(CARTRIDGE_image_t *cart, UWORD addr, int *state)
 /* Processes bankswitching of CART when reading from a $D5xx address ADDR. */
 static UBYTE GetByte(CARTRIDGE_image_t *cart, UWORD addr, int no_side_effects)
 {
+    /* Determine returned byte value. */
+    switch (cart->type) {
+    }
+    
 	int old_state = cart->state;
 	int new_state = old_state;
 
@@ -1067,7 +1071,7 @@ static UBYTE GetByte(CARTRIDGE_image_t *cart, UWORD addr, int no_side_effects)
     case CARTRIDGE_JACART_512:
     case CARTRIDGE_JACART_1024:
     case CARTRIDGE_DCART:
-            return MAXFLASH_Read_Byte(addr);
+        return MAXFLASH_Read_Byte(addr);
 	case CARTRIDGE_RAMCART_32M:
 	case CARTRIDGE_RAMCART_16M:
 	case CARTRIDGE_RAMCART_8M:

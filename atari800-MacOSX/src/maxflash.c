@@ -45,12 +45,12 @@ void MAXFLASH_Init(int type, unsigned char *image, int size)
             flash2 = NULL;
             break;
         case CARTRIDGE_ATMAX_OLD_1024:
-            flash = Flash_Init(image, Flash_TypeBM29F040);
-            flash2 = Flash_Init(image, Flash_TypeBM29F040);
+            flash = Flash_Init(image, Flash_TypeAm29F040B);
+            flash2 = Flash_Init(image + 0x80000, Flash_TypeAm29F040B);
             break;
         case CARTRIDGE_ATMAX_NEW_1024:
-            flash = Flash_Init(image, Flash_TypeBM29F040);
-            flash2 = Flash_Init(image, Flash_TypeBM29F040);
+            flash = Flash_Init(image, Flash_TypeAm29F040B);
+            flash2 = Flash_Init(image + 0x80000, Flash_TypeAm29F040B);
             break;
         case CARTRIDGE_JACART_128:
             flash = Flash_Init(image, Flash_TypeSST39SF010);
@@ -70,6 +70,7 @@ void MAXFLASH_Init(int type, unsigned char *image, int size)
             break;
         case CARTRIDGE_DCART:
             flash = Flash_Init(image, Flash_TypeSST39SF040);
+            flash2 = NULL;
     }
 }
 
