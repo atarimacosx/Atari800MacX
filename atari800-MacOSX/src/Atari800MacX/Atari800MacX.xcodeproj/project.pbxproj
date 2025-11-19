@@ -102,6 +102,8 @@
 		2D6A0BEF251C225F0062B581 /* img_disk.c in Sources */ = {isa = PBXBuildFile; fileRef = 2D6A0BED251C225F0062B581 /* img_disk.c */; };
 		2D6F8B502ECB8C9000E6238A /* maxflash.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D6F8B4E2ECB8C9000E6238A /* maxflash.h */; };
 		2D6F8B512ECB8C9000E6238A /* maxflash.c in Sources */ = {isa = PBXBuildFile; fileRef = 2D6F8B4F2ECB8C9000E6238A /* maxflash.c */; };
+		2D6F8B542ECD3E4E00E6238A /* sic.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D6F8B522ECD3E4E00E6238A /* sic.h */; };
+		2D6F8B552ECD3E4E00E6238A /* sic.c in Sources */ = {isa = PBXBuildFile; fileRef = 2D6F8B532ECD3E4E00E6238A /* sic.c */; };
 		2D70069D0F55F9F80092DA70 /* mac_monitor.c in Sources */ = {isa = PBXBuildFile; fileRef = 2D70069C0F55F9F80092DA70 /* mac_monitor.c */; };
 		2D76730B21EA791E00D99B0E /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2D76730A21EA791E00D99B0E /* Media.xcassets */; };
 		2D76730E21EA7F9A00D99B0E /* atari810off.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D76730C21EA7F9A00D99B0E /* atari810off.png */; };
@@ -522,6 +524,8 @@
 		2D6A0BED251C225F0062B581 /* img_disk.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = img_disk.c; path = ../img_disk.c; sourceTree = "<group>"; };
 		2D6F8B4E2ECB8C9000E6238A /* maxflash.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = maxflash.h; path = ../maxflash.h; sourceTree = SOURCE_ROOT; };
 		2D6F8B4F2ECB8C9000E6238A /* maxflash.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = maxflash.c; path = ../maxflash.c; sourceTree = SOURCE_ROOT; };
+		2D6F8B522ECD3E4E00E6238A /* sic.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = sic.h; path = ../sic.h; sourceTree = SOURCE_ROOT; };
+		2D6F8B532ECD3E4E00E6238A /* sic.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = sic.c; path = ../sic.c; sourceTree = SOURCE_ROOT; };
 		2D70069C0F55F9F80092DA70 /* mac_monitor.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = mac_monitor.c; sourceTree = SOURCE_ROOT; };
 		2D76730A21EA791E00D99B0E /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
 		2D76730C21EA7F9A00D99B0E /* atari810off.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = atari810off.png; sourceTree = "<group>"; };
@@ -1000,10 +1004,10 @@
 				2D446222084EBC440080C448 /* mac_diskled.h */,
 				2D70069C0F55F9F80092DA70 /* mac_monitor.c */,
 				2D446239084EBDA40080C448 /* mac_screen.c */,
-				2D3D18A7052BD6E600A8C8B4 /* mzpokeysnd.c */,
-				2D3D18A8052BD6E600A8C8B4 /* mzpokeysnd.h */,
 				2D6F8B4E2ECB8C9000E6238A /* maxflash.h */,
 				2D6F8B4F2ECB8C9000E6238A /* maxflash.c */,
+				2D3D18A7052BD6E600A8C8B4 /* mzpokeysnd.c */,
+				2D3D18A8052BD6E600A8C8B4 /* mzpokeysnd.h */,
 				2D36F9682E4844070007EDF5 /* netsio.h */,
 				2D36F9692E4844070007EDF5 /* netsio.c */,
 				2D2EAFEE0DEE1E8100271295 /* pbi.c */,
@@ -1033,6 +1037,8 @@
 				2D10A79709B0E209001F913C /* rdevice.h */,
 				2D63725724F73FB600905B2E /* rtcds1305.c */,
 				2D63725924F741D900905B2E /* rtcds1305.h */,
+				2D6F8B522ECD3E4E00E6238A /* sic.h */,
+				2D6F8B532ECD3E4E00E6238A /* sic.c */,
 				2DE7FC5A250DCC01000C2DAD /* side2.c */,
 				2DE7FC59250DCC01000C2DAD /* side2.h */,
 				F5558359030EF4CD01A8C8B4 /* sio.h */,
@@ -1330,6 +1336,7 @@
 				2D0BA11A107D6EF000DEF450 /* LabelDataSource.h in Headers */,
 				2D0BA125107D724600DEF450 /* Label.h in Headers */,
 				2D0325CF10853FC200983A3E /* PiaDataSource.h in Headers */,
+				2D6F8B542ECD3E4E00E6238A /* sic.h in Headers */,
 				2D0325F610854BEB00983A3E /* RegDataSource.h in Headers */,
 				2D0326961085649200983A3E /* AnticDataSource.h in Headers */,
 				2D0326B91085684F00983A3E /* GtiaDataSource.h in Headers */,
@@ -1570,6 +1577,7 @@
 				2D6F8B512ECB8C9000E6238A /* maxflash.c in Sources */,
 				2D14CDFF0FFEEEDF00E60EAA /* copydata.c in Sources */,
 				2D037E361001124F0045DB8E /* PastePanel.m in Sources */,
+				2D6F8B552ECD3E4E00E6238A /* sic.c in Sources */,
 				2DC051B4106962C600B9657B /* MemoryEditorAsciiFieldCell.m in Sources */,
 				2DC051B6106962C600B9657B /* MemoryEditorByteFieldCell.m in Sources */,
 				2DC051B8106962C600B9657B /* MemoryEditorDataSource.m in Sources */,

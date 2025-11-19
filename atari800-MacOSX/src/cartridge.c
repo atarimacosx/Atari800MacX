@@ -55,6 +55,7 @@
 #endif
 #include "thecart.h"
 #include "maxflash.h"
+#include "sic.h"
 #endif
 #include "log.h"
 
@@ -1051,9 +1052,6 @@ static UBYTE GetByte(CARTRIDGE_image_t *cart, UWORD addr, int no_side_effects)
 		/* cart->state contains address of current bank, therefore it
 		   divides by 0x100. */
 		return cart->image[(cart->state & 0xff00) | (addr & 0xff)];
-	case CARTRIDGE_SIC_512:
-	case CARTRIDGE_SIC_256:
-	case CARTRIDGE_SIC_128:
 	case CARTRIDGE_MEGA_4096:
 		/* Only react to access to $D50x/$D51x. */
 		if ((addr & 0xe0) == 0x00)
@@ -1072,6 +1070,11 @@ static UBYTE GetByte(CARTRIDGE_image_t *cart, UWORD addr, int no_side_effects)
     case CARTRIDGE_JACART_1024:
     case CARTRIDGE_DCART:
         return MAXFLASH_Read_Byte(addr);
+    case CARTRIDGE_SIC_128:
+    case CARTRIDGE_SIC_256:
+    case CARTRIDGE_SIC_512:
+    case CARTRIDGE_SICPLUS_1024:
+        return SIC_Read_Byte(addr);
 	case CARTRIDGE_RAMCART_32M:
 	case CARTRIDGE_RAMCART_16M:
 	case CARTRIDGE_RAMCART_8M:
@@ -1165,9 +1168,6 @@ static void PutByte(CARTRIDGE_image_t *cart, UWORD addr, UBYTE byte)
 		/* State contains address of current bank. */
 		new_state = (old_state + 0x100) & 0x7fff;
 		break;
-	case CARTRIDGE_SIC_512:
-	case CARTRIDGE_SIC_256:
-	case CARTRIDGE_SIC_128:
 	case CARTRIDGE_MEGA_4096:
 		/* Only react to access to $D50x/$D51x. */
 		if ((addr & 0xe0) == 0x00)
@@ -1187,6 +1187,12 @@ static void PutByte(CARTRIDGE_image_t *cart, UWORD addr, UBYTE byte)
     case CARTRIDGE_JACART_1024:
     case CARTRIDGE_DCART:
         MAXFLASH_Write_Byte(addr, byte);
+        return;
+    case CARTRIDGE_SIC_128:
+    case CARTRIDGE_SIC_256:
+    case CARTRIDGE_SIC_512:
+    case CARTRIDGE_SICPLUS_1024:
+        SIC_Write_Byte(addr, byte);
         return;
 	case CARTRIDGE_RAMCART_64:
 		if (!(old_state & 0x0004)) /* lock bit not set */
@@ -1472,6 +1478,12 @@ static void ResetCartState(CARTRIDGE_image_t *cart)
     case CARTRIDGE_DCART:
         MAXFLASH_Cold_Reset();
         break;
+    case CARTRIDGE_SIC_128:
+    case CARTRIDGE_SIC_256:
+    case CARTRIDGE_SIC_512:
+    case CARTRIDGE_SICPLUS_1024:
+        SIC_Cold_Reset();
+        break;
 #endif
 	default:
 		cart->state = 0;
@@ -1623,6 +1635,11 @@ static void InitCartridge(CARTRIDGE_image_t *cart)
         (cart->type == CARTRIDGE_JACART_1024) ||
         (cart->type == CARTRIDGE_DCART))
             MAXFLASH_Init(cart->type, cart->image, cart->size);
+    else if ((cart->type == CARTRIDGE_SIC_128) ||
+        (cart->type == CARTRIDGE_SIC_256) ||
+        (cart->type == CARTRIDGE_SIC_512) ||
+        (cart->type == CARTRIDGE_SICPLUS_1024))
+            SIC_Init(cart->type, cart->image, cart->size);
 #endif
 	PreprocessCart(cart);
 	ResetCartState(cart);
