@@ -632,7 +632,7 @@ static void Update_Cart_Banks() {
         CartBankWriteEnable = TheCartRegs[7] & 0x01;
         
         MEMORY_CartA0bfEnable();
-        if (!(CartBank & 0x10000)) {
+        if (!(TheCartRegs[7] & 0x02)) {
             MEMORY_SetFlashRoutines(THECART_Flash_Read, THECART_Flash_Write);
             MEMORY_SetFlash(base, end);
             MEMORY_CopyFromCart(base, end, bankData);
@@ -677,6 +677,7 @@ static void Update_Cart_Banks() {
         
         // if we are in a 16K mode, we must use the primary bank's read-only flag
         uint8_t roBit = 0x04;
+        uint8_t ramBit = 0x08;
 
         switch(TheCartBankMode) {
             default:
@@ -692,12 +693,13 @@ static void Update_Cart_Banks() {
             case TheCartBankMode_SIC:
                 // use primary bank R/O bit (bit 0)
                 roBit = 0x01;
+                ramBit = 0x02;
                 break;
         }
 
         CartBank2WriteEnable = (TheCartRegs[7] & roBit);
 
-        if (!(CartBank & 0x10000)) {
+        if (!(TheCartRegs[7] & ramBitw)) {
             MEMORY_SetFlashRoutines(THECART_Flash_Read, THECART_Flash_Write);
             MEMORY_SetFlash(base, end);
             MEMORY_CopyFromCart(base, end, bankData);
