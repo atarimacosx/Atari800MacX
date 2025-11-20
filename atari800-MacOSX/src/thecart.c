@@ -699,7 +699,7 @@ static void Update_Cart_Banks() {
 
         CartBank2WriteEnable = (TheCartRegs[7] & roBit);
 
-        if (!(TheCartRegs[7] & ramBitw)) {
+        if (!(TheCartRegs[7] & ramBit)) {
             MEMORY_SetFlashRoutines(THECART_Flash_Read, THECART_Flash_Write);
             MEMORY_SetFlash(base, end);
             MEMORY_CopyFromCart(base, end, bankData);
