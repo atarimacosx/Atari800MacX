@@ -317,7 +317,7 @@ int SIO_Mount(int diskno, const char *filename, int b_open_readonly)
 
 		sectorsize[diskno - 1] = (header.secsizehi << 8) + header.secsizelo;
 #ifdef MACOSX
-		if (sectorsize[diskno - 1] != 128 && sectorsize[diskno - 1] != 256 && sectorsize[diskno - 1] != 512) {
+		if (sectorsize[diskno - 1] != 128 && sectorsize[diskno - 1] != 256 && sectorsize[diskno - 1] != 512 && sectorsize[diskno - 1] != 8192) {
 #else
 		if (sectorsize[diskno - 1] != 128 && sectorsize[diskno - 1] != 256) {
 #endif
@@ -362,8 +362,11 @@ int SIO_Mount(int diskno, const char *filename, int b_open_readonly)
 			sectorcount[diskno - 1] >>= 1;
 		}
 #ifdef MACOSX
-		else if (sectorsize[diskno - 1] == 512) {
-			sectorcount[diskno - 1] >>= 2;
+        else if (sectorsize[diskno - 1] == 512) {
+            sectorcount[diskno - 1] >>= 2;
+        }
+        else if (sectorsize[diskno - 1] == 8192) {
+            sectorcount[diskno - 1] >>= 6;
 		}
 #endif
 	}
@@ -696,6 +699,9 @@ int SIO_ReadSector(int unit, int sector, UBYTE *buffer)
 	int size;
 	if (BINLOAD_start_binloading)
 		return BINLOAD_LoaderStart(buffer);
+
+    if (SIO_format_sectorsize[unit] == 8192)
+        sector = sector - 32768;
 
 	io_success[unit] = -1;
 	if (SIO_drive_status[unit] == SIO_OFF)
