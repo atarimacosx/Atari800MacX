@@ -535,7 +535,7 @@ static void UpdateTheCartBanking() {
 
 static void UpdateTheCart() {
     // compute primary bank
-    UWORD bank1 = -1;
+    int32_t bank1 = -1;
 
     if (TheCartRegs[2] & 0x01) {        // check if enabled
         bank1 = Read_Unaligned_LEU16(TheCartRegs + 0) & 0x3FFF;
@@ -545,7 +545,7 @@ static void UpdateTheCart() {
     }
 
     // compute secondary bank
-    UWORD bank2 = -1;
+    int32_t bank2 = -1;
 
     if (TheCartRegs[5] & 0x01) {        // check if enabled
         bank2 = Read_Unaligned_LEU16(TheCartRegs + 3) & 0x3FFF;
@@ -630,7 +630,7 @@ static void Update_Cart_Banks() {
         Bank1_Offset = offset;
 
         CartBankWriteEnable = TheCartRegs[7] & 0x01;
-        
+
         MEMORY_CartA0bfEnable();
         if (!(TheCartRegs[7] & 0x02)) {
             MEMORY_SetFlashRoutines(THECART_Flash_Read, THECART_Flash_Write);
@@ -699,6 +699,7 @@ static void Update_Cart_Banks() {
 
         CartBank2WriteEnable = (TheCartRegs[7] & roBit);
 
+
         if (!(TheCartRegs[7] & ramBit)) {
             MEMORY_SetFlashRoutines(THECART_Flash_Read, THECART_Flash_Write);
             MEMORY_SetFlash(base, end);
@@ -728,7 +729,7 @@ static uint32_t Calc_Full_Address(UWORD addr, int * writeEnable)
         if (writeEnable)
             *writeEnable = CartBank2WriteEnable;
     }
-    else if (Bank1_Base == 0xA000 && addr > 0xA000) {
+    else if (Bank1_Base == 0xA000 && addr >= 0xA000) {
         base = 0xA000;
         offset = Bank1_Offset;
         if (writeEnable)
