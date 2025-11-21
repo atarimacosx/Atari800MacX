@@ -56,6 +56,7 @@
 #include "thecart.h"
 #include "maxflash.h"
 #include "sic.h"
+#include "megacart.h"
 #endif
 #include "log.h"
 
@@ -231,20 +232,6 @@ static void set_bank_SIC(int n)
 	}
 }
 
-/* MEGA_4096 */
-static void set_bank_MEGA_4096(void)
-{
-	if (active_cart->state == 0xff) {
-		MEMORY_Cart809fDisable();
-		MEMORY_CartA0bfDisable();
-	}
-	else {
-		MEMORY_Cart809fEnable();
-		MEMORY_CartA0bfEnable();
-		MEMORY_CopyFromCart(0x8000, 0xbfff, active_cart->image + active_cart->state * 0x4000);
-	}
-}
-
 /* Ram-Cart */
 static void set_bank_RAMCART(int mask, int old_state)
 {
@@ -409,9 +396,6 @@ static void SwitchBank(int old_state)
 		break;
 	case CARTRIDGE_SIC_512:
 		set_bank_SIC(0x1f);
-		break;
-	case CARTRIDGE_MEGA_4096:
-		set_bank_MEGA_4096();
 		break;
 	case CARTRIDGE_RAMCART_64:
 		set_bank_RAMCART(0x00018, old_state);
@@ -1052,11 +1036,6 @@ static UBYTE GetByte(CARTRIDGE_image_t *cart, UWORD addr, int no_side_effects)
 		/* cart->state contains address of current bank, therefore it
 		   divides by 0x100. */
 		return cart->image[(cart->state & 0xff00) | (addr & 0xff)];
-	case CARTRIDGE_MEGA_4096:
-		/* Only react to access to $D50x/$D51x. */
-		if ((addr & 0xe0) == 0x00)
-			return cart->state;
-		break;
 	case CARTRIDGE_THECART_128M:
 	case CARTRIDGE_THECART_32M:
 	case CARTRIDGE_THECART_64M:
@@ -1070,6 +1049,16 @@ static UBYTE GetByte(CARTRIDGE_image_t *cart, UWORD addr, int no_side_effects)
     case CARTRIDGE_JACART_1024:
     case CARTRIDGE_DCART:
         return MAXFLASH_Read_Byte(addr);
+    case CARTRIDGE_MEGA_16:
+    case CARTRIDGE_MEGA_32:
+    case CARTRIDGE_MEGA_64:
+    case CARTRIDGE_MEGA_128:
+    case CARTRIDGE_MEGA_256:
+    case CARTRIDGE_MEGA_512:
+    case CARTRIDGE_MEGA_1024:
+    case CARTRIDGE_MEGA_2048:
+    case CARTRIDGE_MEGA_4096:
+        return MEGACART_Read_Byte(addr);
     case CARTRIDGE_SIC_128:
     case CARTRIDGE_SIC_256:
     case CARTRIDGE_SIC_512:
@@ -1132,46 +1121,29 @@ static void PutByte(CARTRIDGE_image_t *cart, UWORD addr, UBYTE byte)
 	case CARTRIDGE_XEGS_1024:
 		new_state = byte & 0x7f;
 		break;
-	case CARTRIDGE_MEGA_16:
-		new_state = byte & 0x80;
-		break;
-	case CARTRIDGE_MEGA_32:
-		new_state = byte & 0x81;
-		break;
-	case CARTRIDGE_MEGA_64:
 	case CARTRIDGE_SWXEGS_32:
 		new_state = byte & 0x83;
 		break;
-	case CARTRIDGE_MEGA_128:
 	case CARTRIDGE_SWXEGS_64:
 		new_state = byte & 0x87;
 		break;
-	case CARTRIDGE_MEGA_256:
 	case CARTRIDGE_SWXEGS_128:
 	case CARTRIDGE_ATRAX_DEC_128:
 	case CARTRIDGE_ATRAX_128:
 		new_state = byte & 0x8f;
 		break;
-	case CARTRIDGE_MEGA_512:
 	case CARTRIDGE_SWXEGS_256:
 		new_state = byte & 0x9f;
 		break;
-	case CARTRIDGE_MEGA_1024:
 	case CARTRIDGE_SWXEGS_512:
 		new_state = byte & 0xbf;
 		break;
-	case CARTRIDGE_MEGA_2048:
 	case CARTRIDGE_SWXEGS_1024:
 		new_state = byte;
 		break;
 	case CARTRIDGE_AST_32:
 		/* State contains address of current bank. */
 		new_state = (old_state + 0x100) & 0x7fff;
-		break;
-	case CARTRIDGE_MEGA_4096:
-		/* Only react to access to $D50x/$D51x. */
-		if ((addr & 0xe0) == 0x00)
-			new_state = byte;
 		break;
 	case CARTRIDGE_THECART_128M:
 	case CARTRIDGE_THECART_32M:
@@ -1194,6 +1166,16 @@ static void PutByte(CARTRIDGE_image_t *cart, UWORD addr, UBYTE byte)
     case CARTRIDGE_SICPLUS_1024:
         SIC_Write_Byte(addr, byte);
         return;
+    case CARTRIDGE_MEGA_16:
+    case CARTRIDGE_MEGA_32:
+    case CARTRIDGE_MEGA_64:
+    case CARTRIDGE_MEGA_128:
+    case CARTRIDGE_MEGA_256:
+    case CARTRIDGE_MEGA_512:
+    case CARTRIDGE_MEGA_1024:
+    case CARTRIDGE_MEGA_2048:
+    case CARTRIDGE_MEGA_4096:
+        return MEGACART_Write_Byte(addr, byte);
 	case CARTRIDGE_RAMCART_64:
 		if (!(old_state & 0x0004)) /* lock bit not set */
 			new_state = (old_state & 0x7f000) | (byte & 0x1f);
@@ -1459,9 +1441,6 @@ static void ResetCartState(CARTRIDGE_image_t *cart)
 		   enabled and the current bank is 0. */
 		cart->state = 0x10000;
 		break;
-	case CARTRIDGE_MEGA_4096:
-		cart->state = 254;
-		break;
 #ifdef ATARI800MACX
     case CARTRIDGE_THECART_32M:
     case CARTRIDGE_THECART_64M:
@@ -1478,6 +1457,16 @@ static void ResetCartState(CARTRIDGE_image_t *cart)
     case CARTRIDGE_DCART:
         MAXFLASH_Cold_Reset();
         break;
+    case CARTRIDGE_MEGA_16:
+    case CARTRIDGE_MEGA_32:
+    case CARTRIDGE_MEGA_64:
+    case CARTRIDGE_MEGA_128:
+    case CARTRIDGE_MEGA_256:
+    case CARTRIDGE_MEGA_512:
+    case CARTRIDGE_MEGA_1024:
+    case CARTRIDGE_MEGA_2048:
+    case CARTRIDGE_MEGA_4096:
+        return MEGACART_Cold_Reset();
     case CARTRIDGE_SIC_128:
     case CARTRIDGE_SIC_256:
     case CARTRIDGE_SIC_512:
@@ -1625,20 +1614,30 @@ static void InitCartridge(CARTRIDGE_image_t *cart)
     if ((cart->type == CARTRIDGE_THECART_32M) ||
         (cart->type == CARTRIDGE_THECART_64M) ||
         (cart->type == CARTRIDGE_THECART_128M))
-            THECART_Init(cart->type, cart->image, cart->size);
+        THECART_Init(cart->type, cart->image, cart->size);
     else if ((cart->type == CARTRIDGE_ATMAX_128) ||
-        (cart->type == CARTRIDGE_ATMAX_OLD_1024) ||
-        (cart->type == CARTRIDGE_ATMAX_NEW_1024) ||
-        (cart->type == CARTRIDGE_JACART_128) ||
-        (cart->type == CARTRIDGE_JACART_256) ||
-        (cart->type == CARTRIDGE_JACART_512) ||
-        (cart->type == CARTRIDGE_JACART_1024) ||
-        (cart->type == CARTRIDGE_DCART))
-            MAXFLASH_Init(cart->type, cart->image, cart->size);
+             (cart->type == CARTRIDGE_ATMAX_OLD_1024) ||
+             (cart->type == CARTRIDGE_ATMAX_NEW_1024) ||
+             (cart->type == CARTRIDGE_JACART_128) ||
+             (cart->type == CARTRIDGE_JACART_256) ||
+             (cart->type == CARTRIDGE_JACART_512) ||
+             (cart->type == CARTRIDGE_JACART_1024) ||
+             (cart->type == CARTRIDGE_DCART))
+        MAXFLASH_Init(cart->type, cart->image, cart->size);
     else if ((cart->type == CARTRIDGE_SIC_128) ||
-        (cart->type == CARTRIDGE_SIC_256) ||
-        (cart->type == CARTRIDGE_SIC_512) ||
-        (cart->type == CARTRIDGE_SICPLUS_1024))
+             (cart->type == CARTRIDGE_SIC_256) ||
+             (cart->type == CARTRIDGE_SIC_512) ||
+             (cart->type == CARTRIDGE_SICPLUS_1024))
+        SIC_Init(cart->type, cart->image, cart->size);
+    else if ((cart->type == CARTRIDGE_MEGA_16) ||
+             (cart->type == CARTRIDGE_MEGA_32) ||
+             (cart->type == CARTRIDGE_MEGA_64) ||
+             (cart->type == CARTRIDGE_MEGA_128) ||
+             (cart->type == CARTRIDGE_MEGA_256) ||
+             (cart->type == CARTRIDGE_MEGA_512) ||
+             (cart->type == CARTRIDGE_MEGA_1024) ||
+             (cart->type == CARTRIDGE_MEGA_2048) ||
+             (cart->type == CARTRIDGE_MEGA_4096))
             SIC_Init(cart->type, cart->image, cart->size);
 #endif
 	PreprocessCart(cart);

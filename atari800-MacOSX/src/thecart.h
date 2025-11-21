@@ -15,6 +15,7 @@
 
 void  THECART_Init(int type, unsigned char *image, int size);
 void  THECART_Shutdown(void);
+int THECART_IsDirty(void);
 void  THECART_Cold_Reset(void);
 UBYTE THECART_Read_Byte(UWORD address);
 void  THECART_Write_Byte(UWORD address, UBYTE value);

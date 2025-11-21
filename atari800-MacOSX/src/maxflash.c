@@ -25,6 +25,7 @@ static FlashEmu *flash2;
 static int CartBank;
 static int CartMiniBank;
 static int CartWriteEnable = TRUE;
+static int CartDirty = FALSE;
 
 static void SetCartBank(int bank);
 static void SetDCartBank(int bank, int miniBank);
@@ -81,7 +82,12 @@ void  MAXFLASH_Shutdown(void)
         Flash_Shutdown(flash2);
 }
 
-void  MAXFLASH_Cold_Reset(void)
+int MAXFLASH_IsDirty(void)
+{
+    return CartDirty;
+}
+
+void MAXFLASH_Cold_Reset(void)
 {
     if (CartType == CARTRIDGE_ATMAX_OLD_1024)
         CartBank = 127;
@@ -221,6 +227,8 @@ static void MAXFLASH_Flash_Write(UWORD addr, UBYTE value) {
     fullAddr = (CartBank*0x2000 + (addr & 0x1fff)) & (CartSize - 1);
     flashEmu = (fullAddr >= 0x80000 ? flash2 : flash);
     if (CartWriteEnable) {
-        Flash_Write_Byte(flashEmu, fullAddr & 0x7FFFF, value);
+        if (Flash_Write_Byte(flashEmu, fullAddr & 0x7FFFF, value)) {
+            CartDirty = TRUE;
+        }
     }
 }

@@ -61,6 +61,7 @@ static UBYTE cold_reset_flag = 0x80;
 static UBYTE pbi_ram[0x1000];
 static void *rtc;
 static FlashEmu *flash;
+static int rom_dirty = FALSE;
 
 void CreateWindowCaption(void);
 static void Select_PBI_Device(int enable);
@@ -109,6 +110,11 @@ void ULTIMATE_Exit(void)
 {
     CDS1305_Exit(rtc);
     SaveNVRAM();
+}
+
+int ULTIMATE_RomDirty(void)
+{
+    return rom_dirty;
 }
 
 UBYTE ULTIMATE_D1GetByte(UWORD addr, int no_side_effects)
@@ -553,6 +559,9 @@ UBYTE ULTIMATE_Flash_Read(UWORD addr) {
 }
 
 void ULTIMATE_Flash_Write(UWORD addr, UBYTE value) {
-    if (flash_write_enable)
-        Flash_Write_Byte(flash, cart_bank_offset + (addr - 0xA000), value);
+    if (flash_write_enable) {
+        if (Flash_Write_Byte(flash, cart_bank_offset + (addr - 0xA000), value)) {
+            rom_dirty = TRUE;
+        }
+    }
 }

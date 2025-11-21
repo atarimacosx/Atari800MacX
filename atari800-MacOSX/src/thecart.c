@@ -36,6 +36,7 @@ static uint32_t Bank1_Base;
 static uint32_t Bank1_Offset;
 static uint32_t Bank2_Base;
 static uint32_t Bank2_Offset;
+static int CartDirty = FALSE;
 
 static void  UpdateTheCart(void);
 static void  UpdateTheCartBanking(void);
@@ -83,6 +84,11 @@ void THECART_Init(int type, unsigned char *image, int size) {
 void THECART_Shutdown(void)
 {
     Flash_Shutdown(flash);
+}
+
+int THECART_IsDirty(void)
+{
+    return CartDirty;
 }
 
 void THECART_Cold_Reset() {
@@ -759,7 +765,9 @@ static void THECART_Flash_Write(UWORD addr, UBYTE value) {
     uint32_t fullAddr = Calc_Full_Address(addr, &writeEnable);
     
     if (writeEnable) {
-        Flash_Write_Byte(flash, fullAddr, value);
+        if (Flash_Write_Byte(flash, fullAddr, value)) {
+            CartDirty = TRUE;
+        }
     }
 }
 

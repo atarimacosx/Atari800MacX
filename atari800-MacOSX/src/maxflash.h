@@ -13,6 +13,7 @@
 
 void  MAXFLASH_Init(int type, unsigned char *image, int size);
 void  MAXFLASH_Shutdown(void);
+int MAXFLASH_IsDirty(void);
 void  MAXFLASH_Cold_Reset(void);
 UBYTE MAXFLASH_Read_Byte(UWORD address);
 void  MAXFLASH_Write_Byte(UWORD address, UBYTE value);

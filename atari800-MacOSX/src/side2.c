@@ -57,6 +57,7 @@ static ULONG Bank_Offset2 = 0;
 static IDEEmu *ide;
 static void *rtc;
 static FlashEmu *flash;
+static int CartDirty = FALSE;
 
 static void LoadNVRAM();
 static void Reset_Cart_Bank(void);
@@ -131,6 +132,10 @@ int SIDE2_Add_Block_Device(char *filename) {
         Update_IDE_Reset();
     }
     return SIDE2_Block_Device;
+}
+
+int SIDE2_IsDirty(void) {
+    return CartDirty;
 }
 
 int SIDE2_Change_Rom(char *filename, int new) {
@@ -471,5 +476,7 @@ UBYTE SIDE2_Flash_Read(UWORD addr) {
 
 void SIDE2_Flash_Write(UWORD addr, UBYTE value) {
 
-    Flash_Write_Byte(flash, Bank_Offset + (addr - 0xA000), value);
+    if (Flash_Write_Byte(flash, Bank_Offset + (addr - 0xA000), value)) {
+        CartDirty = TRUE;
+    }
 }

@@ -24,7 +24,7 @@ static FlashEmu *flash;
 static FlashEmu *flash2;
 static int CartBank;
 static int CartBankMask;
-static int CartBankWriteEnable = FALSE;
+static int CartDirty = FALSE;
 
 static void SetCartBank(int bank);
 static void UpdateCartBanks();
@@ -69,6 +69,11 @@ void SIC_Shutdown(void)
     Flash_Shutdown(flash);
     if (flash2 != NULL)
         Flash_Shutdown(flash2);
+}
+
+int SIC_IsDirty(void)
+{
+    return CartDirty;
 }
 
 void SIC_Cold_Reset(void)
@@ -186,7 +191,9 @@ static void SIC_Flash_Write(UWORD addr, UBYTE value) {
     if (CartBank & 0x80) {
         fullAddr = (CartBank & CartBankMask) * 0x4000 + (addr & 0x3fff);
         
-        Flash_Write_Byte(flash, fullAddr, value);
+        if (Flash_Write_Byte(flash, fullAddr, value)) {
+            CartDirty = TRUE;
+        }
     }
 }
 
@@ -210,5 +217,7 @@ static void SICPLUS_Flash_Write(UWORD addr, UBYTE value) {
     fullAddr = (CartBank & 0x1f) * 0x4000 + (addr & 0x3fff);
     flashEmu = (CartBank & 0x80 ? flash2 : flash);
     
-    Flash_Write_Byte(flashEmu, fullAddr & 0x7FFFF, value);
+    if (Flash_Write_Byte(flashEmu, fullAddr & 0x7FFFF, value)) {
+        CartDirty = TRUE;
+    }
 }
