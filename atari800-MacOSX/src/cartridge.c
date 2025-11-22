@@ -1936,6 +1936,32 @@ int CARTRIDGE_Insert(const char *filename)
 	return InsertCartridge(filename, &CARTRIDGE_main);
 }
 
+int CARTRIDGE_Insert_Blank(int type)
+{
+    CARTRIDGE_image_t cart;
+    
+    /* remove currently inserted cart */
+    CARTRIDGE_Remove();
+
+    CARTRIDGE_main.type = type;
+    CARTRIDGE_main.size = CARTRIDGES[type].kb;
+    CARTRIDGE_main.image = malloc(cart.size * 1024);
+    if (type == CARTRIDGE_RAMCART_64 ||
+        type == CARTRIDGE_RAMCART_1M ||
+        type == CARTRIDGE_RAMCART_2M ||
+        type == CARTRIDGE_RAMCART_4M ||
+        type == CARTRIDGE_RAMCART_8M ||
+        type == CARTRIDGE_RAMCART_16M ||
+        type == CARTRIDGE_RAMCART_32M)
+        memset(cart.image, 0, cart.size * 1024);
+    else
+        memset(cart.image, 0xFF, cart.size * 1024);
+    strcpy(cart.filename, "Blank");
+    CARTRIDGE_main.raw = TRUE;
+    InitCartridge(&CARTRIDGE_main);
+    return CARTRIDGE_main.size;
+}
+
 #ifdef ATARI800MACX
 int CARTRIDGE_Insert_BASIC(void)
 {

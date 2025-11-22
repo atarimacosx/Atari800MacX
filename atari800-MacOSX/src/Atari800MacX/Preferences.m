@@ -59,6 +59,7 @@ typedef struct CARTRIDGE_image_t {
     int size; /* Size of the image, in kilobytes */
     unsigned char *image;
     char filename[FILENAME_MAX];
+    int raw; /* File contains RAW data (important for writeable cartridges). */
 } CARTRIDGE_image_t;
 
 extern CARTRIDGE_image_t CARTRIDGE_main;

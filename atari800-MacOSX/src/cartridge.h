@@ -99,6 +99,8 @@ int CARTRIDGE_Insert_BASIC(void);
 int CARTRIDGE_Insert_SIDE2(void);
 /* Inserts the Ultimate 1MB cartridge */
 int CARTRIDGE_Insert_Ultimate_1MB(void);
+/* Inserts a Blank Flash cartridge of the specified type */
+int CARTRIDGE_Insert_Blank(int type);
 #endif
 /* Inserts the left cartridge and reboots the system if needed. */
 int CARTRIDGE_InsertAutoReboot(const char *filename);

@@ -547,16 +547,28 @@ NSImage *disketteImage;
         else 
             [removeMenu setTarget:self];
     if (ULTIMATE_enabled) {
-        if (CARTRIDGE_piggyback.type == CARTRIDGE_NONE)
-                [removeCartItem setTarget:nil];
-            else
-                [removeCartItem setTarget:self];
+        if (CARTRIDGE_piggyback.type == CARTRIDGE_NONE) {
+            [removeCartItem setTarget:nil];
+            [saveCartItem setTarget:nil];
+        }
+        else {
+            [removeCartItem setTarget:self];
+            [saveCartItem setTarget:self];
+        }
     } else {
-        if (CARTRIDGE_main.type == CARTRIDGE_NONE)
-                [removeCartItem setTarget:nil];
-            else
-                [removeCartItem setTarget:self];
+        if (CARTRIDGE_main.type == CARTRIDGE_NONE) {
+            [removeCartItem setTarget:nil];
+            [saveCartItem setTarget:nil];
+        }
+        else {
+            [removeCartItem setTarget:self];
+            [saveCartItem setTarget:self];
+        }
     }
+    if (CARTRIDGE_main.type == CARTRIDGE_NONE)
+        [saveCartItem setTarget:nil];
+    else
+        [saveCartItem setTarget:self];
     if (CARTRIDGE_main.type == CARTRIDGE_SDX_64 || CARTRIDGE_main.type == CARTRIDGE_SDX_128 ||
         CARTRIDGE_main.type == CARTRIDGE_ATRAX_SDX_64 || CARTRIDGE_main.type == CARTRIDGE_ATRAX_SDX_128)
         [insertSecondCartItem setTarget:self];
@@ -831,6 +843,144 @@ NSImage *disketteImage;
         Atari800_Coldstart();
         }
     [self updateInfo];
+}
+
+- (IBAction)cartBlankMaxFlash128KInsert:(id)sender
+{
+    CARTRIDGE_Insert_Blank(41);
+    memset(Screen_atari, 0, (Screen_HEIGHT * Screen_WIDTH));
+    Atari_DisplayScreen((UBYTE *) Screen_atari);
+    [self updateInfo];
+}
+
+- (IBAction)cartBlankMaxFlash1MOldInsert:(id)sender;
+{
+    
+}
+
+- (IBAction)cartBlankMaxFlash1MNewInsert:(id)sender;
+{
+    
+}
+
+- (IBAction)cartBlankTheCart32MInsert:(id)sender;
+{
+    
+}
+
+- (IBAction)cartBlankTheCart64MInsert:(id)sender;
+{
+    
+}
+
+- (IBAction)cartBlankTheCart128MInsert:(id)sender;
+{
+    
+}
+
+- (IBAction)cartBlankJAtari128KInsert:(id)sender;
+{
+    
+}
+
+- (IBAction)cartBlankJAtari256KInsert:(id)sender;
+{
+    
+}
+
+- (IBAction)cartBlankJAtari512KInsert:(id)sender;
+{
+    
+}
+
+- (IBAction)cartBlankJAtari1024KInsert:(id)sender;
+{
+    
+}
+
+- (IBAction)cartBlankDCartInsert:(id)sender;
+{
+    
+}
+
+- (IBAction)cartBlankSic128Insert:(id)sender;
+{
+    
+}
+
+- (IBAction)cartBlankSic256Insert:(id)sender;
+{
+    
+}
+
+- (IBAction)cartBlankSic512Insert:(id)sender;
+{
+    
+}
+
+- (IBAction)cartBlankSicPlusInsert:(id)sender;
+{
+    
+}
+
+- (IBAction)cartBlankMegaCart512KInsert:(id)sender;
+{
+    
+}
+
+- (IBAction)cartBlankMegaCart4MInsert:(id)sender;
+{
+    
+}
+
+- (IBAction)cartBlankRamCart64KInsert:(id)sender;
+{
+    
+}
+
+- (IBAction)cartBlankRamCart128KInsert:(id)sender;
+{
+    
+}
+
+- (IBAction)cartBlankRamCart256KInsert:(id)sender;
+{
+    
+}
+
+- (IBAction)cartBlankRamCart1MInsert:(id)sender;
+{
+    
+}
+
+- (IBAction)cartBlankRamCart2MInsert:(id)sender;
+{
+    
+}
+
+- (IBAction)cartBlankRamCart4MInsert:(id)sender;
+{
+    
+}
+
+- (IBAction)cartBlankRamCart8MInsert:(id)sender;
+{
+    
+}
+
+- (IBAction)cartBlankRamCart16MInsert:(id)sender;
+{
+    
+}
+
+- (IBAction)cartBlankRamCart32MInsert:(id)sender;
+{
+    
+}
+
+- (IBAction)cartSave:(id)sender
+{
+    
 }
 
 /*------------------------------------------------------------------------------

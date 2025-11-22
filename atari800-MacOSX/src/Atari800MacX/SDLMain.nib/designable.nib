@@ -330,14 +330,176 @@
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <menu key="submenu" title="Insert Blank Flash/RAM Cartridge" id="OT5-9b-HmS">
                                                 <items>
-                                                    <menuItem title="Insert Blank The!Cart 128MB Cartridge" id="nAN-yQ-Urq">
+                                                    <menuItem title="MaxFlash 128K (1MBit) Cartridge" id="N4S-dE-XyM">
                                                         <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="cartBlankMaxFlash128KInsert:" target="473" id="R8V-a2-EEH"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="MaxFlash 1M (8MBit) Cartridge (older bank = 127)" id="d5K-KG-y1L">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="cartBlankMaxFlash1MOldInsert:" target="473" id="BPW-59-oTp"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="MaxFlash 1M (8MBit) Cartridge (newer bank = 0)" id="cZF-L5-4Pw">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="cartBlankMaxFlash1MNewInsert:" target="473" id="kpp-U6-fqB"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="The!Cart 32MB Cartridge" id="9p4-cv-arR">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="cartBlankTheCart32MInsert:" target="473" id="KBK-G9-0UD"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="The!Cart 64MB Cartridge" id="bhy-Lo-puK">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="cartBlankTheCart64MInsert:" target="473" id="8dj-wP-Mmn"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="The!Cart 128MB Cartridge" id="nAN-yQ-Urq">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="cartBlankTheCart128MInsert:" target="473" id="yXL-19-1kH"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="J(atari) 128KB Cartridge" id="JpV-YU-f7e">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="cartBlankJAtari128KInsert:" target="473" id="ftP-tz-ERG"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="J(atari) 256KB Cartridge" id="sTM-tr-HQF">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="cartBlankJAtari256KInsert:" target="473" id="YSy-Yp-wWW"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="J(atari) 512KB Cartridge" id="Uh7-Yg-vZd">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="cartBlankJAtari512KInsert:" target="473" id="swF-pW-9sf"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="J(atari) 1024KB Cartridge" id="3Dy-1a-HpY">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="cartBlankJAtari1024KInsert:" target="473" id="DTn-Vv-5S6"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="DCart Cartridge" id="VPZ-dG-fiV">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="cartBlankDCartInsert:" target="473" id="vJF-KR-w8Q"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="Sic! 128KB Cartridge" id="s8G-hH-vBe">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="cartBlankSic128Insert:" target="473" id="N1K-HJ-wHZ"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="Sic! 256KB Cartridge" id="4XR-Lg-yyf">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="cartBlankSic256Insert:" target="473" id="iQa-DG-pw9"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="Sic! 512KB Cartridge" id="zhF-pO-4aS">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="cartBlankSic512Insert:" target="473" id="avO-Ek-gge"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="Sic!+ Cartridge" id="fQf-jU-qQC">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="cartBlankSicPlusInsert:" target="473" id="PRb-oN-vO2"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="MegaCart 512KB Cartridge" id="IOx-Xn-dGe">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="cartBlankMegaCart512KInsert:" target="473" id="cdx-Te-Tkf"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="MegaCart 1MB Cartridge" id="HXO-pI-njH">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="cartBlankMegaCart4MInsert:" target="473" id="jU4-5G-7AB"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="MegaCart 4MB Cartridge" id="EmP-WS-eFV">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="cartBlankMegaCart4MInsert:" target="473" id="xz1-e2-qnq"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="Ram-Cart 64KB Cartridge" id="rIN-x3-4Yr">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="cartBlankRamCart64KInsert:" target="473" id="kfu-IQ-pnC"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="Ram-Cart 128KB Cartridge" id="FA5-d8-yAG">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="cartBlankRamCart128KInsert:" target="473" id="vEi-1N-kvn"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="Ram-Cart 256KB Cartridge" id="D8G-hC-XXQ">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="cartBlankRamCart256KInsert:" target="473" id="NZX-sJ-Kcj"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="Ram-Cart 1MB Cartridge" id="pwE-B5-ZYY">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="cartBlankRamCart1MInsert:" target="473" id="1I8-Cg-Op3"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="Ram-Cart 2MB Cartridge" id="jNx-WF-1hb">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="cartBlankRamCart2MInsert:" target="473" id="RuN-FG-lBm"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="Ram-Cart 4MB Cartridge" id="vtu-vR-uq0">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="cartBlankRamCart4MInsert:" target="473" id="gur-4z-qLb"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="Ram-Cart 8MB Cartridge" id="fQd-Oa-m6D">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="cartBlankRamCart8MInsert:" target="473" id="DoL-fd-xKq"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="Ram-Cart 16MB Cartridge" id="jWh-NJ-FwH">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="cartBlankRamCart16MInsert:" target="473" id="NnN-AF-OTw"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="Ram-Cart 32MB Cartridge" id="8HC-WG-fKB">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="cartBlankRamCart32MInsert:" target="473" id="Cwe-xZ-PmV"/>
+                                                        </connections>
                                                     </menuItem>
                                                 </items>
                                             </menu>
                                         </menuItem>
-                                        <menuItem title="Save Flash/RAM Cartridge" id="MHh-gY-e3t">
+                                        <menuItem title="Save Flash/RAM Cartridge..." id="MHh-gY-e3t">
                                             <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="cartSave:" target="473" id="s7L-tJ-zfB"/>
+                                            </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="3BN-4u-3qy">
                                             <modifierMask key="keyEquivalentModifierMask" command="YES"/>
@@ -1074,6 +1236,7 @@ DQ
                 <outlet property="resetPrinterItem" destination="798" id="808"/>
                 <outlet property="resetPrinterMenuItem" destination="798" id="809"/>
                 <outlet property="rewindCassItem" destination="472" id="555"/>
+                <outlet property="saveCartItem" destination="MHh-gY-e3t" id="Lni-S1-9d8"/>
                 <outlet property="saveSIDE2RomItem" destination="QFy-6q-EPo" id="m38-pj-124"/>
                 <outlet property="saveUltimateRomItem" destination="eyc-Pv-07K" id="yxW-Sf-6yJ"/>
                 <outlet property="selectAtari1020Item" destination="794" id="806"/>
