@@ -492,6 +492,12 @@
                                                             <action selector="cartBlankRamCart32MInsert:" target="473" id="Cwe-xZ-PmV"/>
                                                         </connections>
                                                     </menuItem>
+                                                    <menuItem title="SiDiCar 32KB Cartridge" id="nVY-XQ-2UO">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="cartBlankSidiCar32KInsert:" target="473" id="0D5-9H-vZ1"/>
+                                                        </connections>
+                                                    </menuItem>
                                                 </items>
                                             </menu>
                                         </menuItem>

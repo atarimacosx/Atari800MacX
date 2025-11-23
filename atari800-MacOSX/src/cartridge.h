@@ -52,6 +52,7 @@ typedef struct CARTRIDGE_image_t {
 	UBYTE *image;
 	char filename[FILENAME_MAX];
 	int raw; /* File contains RAW data (important for writeable cartridges). */
+    int dirty; /* For Flash or RAM carts, does Cart need to be saved*/
 } CARTRIDGE_image_t;
 
 extern CARTRIDGE_image_t CARTRIDGE_main;

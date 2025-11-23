@@ -190,6 +190,7 @@
 - (IBAction)cartInsert:(id)sender;
 - (IBAction)basicInsert:(id)sender;
 - (IBAction)side2Insert:(id)sender;
+- (void)cartBlankInsert:(int)type;
 - (IBAction)cartBlankMaxFlash128KInsert:(id)sender;
 - (IBAction)cartBlankMaxFlash1MOldInsert:(id)sender;
 - (IBAction)cartBlankMaxFlash1MNewInsert:(id)sender;
@@ -216,6 +217,7 @@
 - (IBAction)cartBlankRamCart8MInsert:(id)sender;
 - (IBAction)cartBlankRamCart16MInsert:(id)sender;
 - (IBAction)cartBlankRamCart32MInsert:(id)sender;
+- (IBAction)cartBlankSidiCar32KInsert:(id)sender;
 - (IBAction)cartSave:(id)sender;
 - (IBAction)cartSecondInsert:(id)sender;
 - (void)cartInsertFile:(NSString *)filename;

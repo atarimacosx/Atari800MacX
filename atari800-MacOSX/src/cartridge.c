@@ -1638,7 +1638,7 @@ static void InitCartridge(CARTRIDGE_image_t *cart)
              (cart->type == CARTRIDGE_MEGA_1024) ||
              (cart->type == CARTRIDGE_MEGA_2048) ||
              (cart->type == CARTRIDGE_MEGA_4096))
-            SIC_Init(cart->type, cart->image, cart->size);
+            MEGACART_Init(cart->type, cart->image, cart->size);
 #endif
 	PreprocessCart(cart);
 	ResetCartState(cart);
@@ -1938,28 +1938,35 @@ int CARTRIDGE_Insert(const char *filename)
 
 int CARTRIDGE_Insert_Blank(int type)
 {
-    CARTRIDGE_image_t cart;
+    CARTRIDGE_image_t *cart = &CARTRIDGE_main;
     
     /* remove currently inserted cart */
     CARTRIDGE_Remove();
 
-    CARTRIDGE_main.type = type;
-    CARTRIDGE_main.size = CARTRIDGES[type].kb;
-    CARTRIDGE_main.image = malloc(cart.size * 1024);
+    cart->type = type;
+    cart->size = CARTRIDGES[type].kb;
+    cart->image = Util_malloc(cart->size * 1024);
     if (type == CARTRIDGE_RAMCART_64 ||
+        type == CARTRIDGE_RAMCART_128 ||
+        type == CARTRIDGE_DOUBLE_RAMCART_256 ||
         type == CARTRIDGE_RAMCART_1M ||
         type == CARTRIDGE_RAMCART_2M ||
         type == CARTRIDGE_RAMCART_4M ||
         type == CARTRIDGE_RAMCART_8M ||
         type == CARTRIDGE_RAMCART_16M ||
-        type == CARTRIDGE_RAMCART_32M)
-        memset(cart.image, 0, cart.size * 1024);
-    else
-        memset(cart.image, 0xFF, cart.size * 1024);
-    strcpy(cart.filename, "Blank");
-    CARTRIDGE_main.raw = TRUE;
-    InitCartridge(&CARTRIDGE_main);
-    return CARTRIDGE_main.size;
+        type == CARTRIDGE_RAMCART_32M) {
+        memset(cart->image, 0, cart->size * 1024);
+    }
+    else {
+        memset(cart->image, 0xFF, cart->size * 1024);
+    }
+    if (type == CARTRIDGE_RAMCART_64) {
+        memset(cart->image + (16*1024-4), 0xFF, 4);
+    }
+    strcpy(cart->filename, "Blank");
+    cart->raw = FALSE;
+    InitCartridge(cart);
+    return cart->size;
 }
 
 #ifdef ATARI800MACX
