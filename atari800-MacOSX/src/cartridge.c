@@ -388,15 +388,6 @@ static void SwitchBank(int old_state)
 	case CARTRIDGE_ADAWLIAH_32:
 		set_bank_A0BF(4, 3);
 		break;
-	case CARTRIDGE_SIC_128:
-		set_bank_SIC(0x07);
-		break;
-	case CARTRIDGE_SIC_256:
-		set_bank_SIC(0x0f);
-		break;
-	case CARTRIDGE_SIC_512:
-		set_bank_SIC(0x1f);
-		break;
 	case CARTRIDGE_RAMCART_64:
 		set_bank_RAMCART(0x00018, old_state);
 		break;
@@ -727,6 +718,7 @@ static void MapActiveCart(void)
 		case CARTRIDGE_SIC_128:
 		case CARTRIDGE_SIC_256:
 		case CARTRIDGE_SIC_512:
+        case CARTRIDGE_SICPLUS_1024:
 		case CARTRIDGE_MEGAMAX_2048:
 		case CARTRIDGE_RAMCART_64:
 		case CARTRIDGE_RAMCART_128:
