@@ -715,10 +715,6 @@ static void MapActiveCart(void)
 		case CARTRIDGE_MEGA_1024:
 		case CARTRIDGE_MEGA_2048:
 		case CARTRIDGE_MEGA_4096:
-		case CARTRIDGE_SIC_128:
-		case CARTRIDGE_SIC_256:
-		case CARTRIDGE_SIC_512:
-        case CARTRIDGE_SICPLUS_1024:
 		case CARTRIDGE_MEGAMAX_2048:
 		case CARTRIDGE_RAMCART_64:
 		case CARTRIDGE_RAMCART_128:
@@ -732,6 +728,11 @@ static void MapActiveCart(void)
 		case CARTRIDGE_SIDICAR_32:
 			break;
 #ifdef ATARI800MACX
+        case CARTRIDGE_SIC_128:
+        case CARTRIDGE_SIC_256:
+        case CARTRIDGE_SIC_512:
+        case CARTRIDGE_SICPLUS_1024:
+            return;
         case CARTRIDGE_THECART_32M:
         case CARTRIDGE_THECART_64M:
         case CARTRIDGE_THECART_128M:
