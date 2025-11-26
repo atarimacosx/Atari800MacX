@@ -29,8 +29,6 @@ static int CartDirty = FALSE;
 
 static void SetCartBank(int bank);
 static void SetDCartBank(int bank, int miniBank);
-static void UpdateCartBanks();
-static void UpdateCartBanks();
 static UBYTE MAXFLASH_Flash_Read(UWORD addr);
 static void MAXFLASH_Flash_Write(UWORD addr, UBYTE value);
 
@@ -82,7 +80,7 @@ void  MAXFLASH_Shutdown(void)
         Flash_Shutdown(flash2);
 }
 
-int MAXFLASH_IsDirty(void)
+int MAXFLASH_Is_Dirty(void)
 {
     return CartDirty;
 }
@@ -94,7 +92,7 @@ void MAXFLASH_Cold_Reset(void)
     else
         CartBank = 0;
     CartMiniBank = 0;
-    UpdateCartBanks();
+    MAXFLASH_Update_Cart_Banks();
 }
 
 UBYTE MAXFLASH_Read_Byte(UWORD address)
@@ -175,7 +173,7 @@ static void SetCartBank(int bank) {
         return;
 
     CartBank = bank;
-    UpdateCartBanks();
+    MAXFLASH_Update_Cart_Banks();
 }
 
 static void SetDCartBank(int bank, int miniBank) {
@@ -184,10 +182,11 @@ static void SetDCartBank(int bank, int miniBank) {
 
     CartMiniBank = miniBank;
     CartBank = bank;
-    UpdateCartBanks();
+    MAXFLASH_Update_Cart_Banks();
 }
 
-static void UpdateCartBanks() {
+void MAXFLASH_Update_Cart_Banks(void)
+{
     UWORD base = 0xA000;
     UWORD end = base + 0x2000 - 1;
     

@@ -27,7 +27,6 @@ static int CartBankMask;
 static int CartDirty = FALSE;
 
 static void SetCartBank(int bank);
-static void UpdateCartBanks();
 static void UpdateCartBanksSic();
 static void UpdateCartBanksSicPlus();
 static UBYTE SIC_Flash_Read(UWORD addr);
@@ -71,7 +70,7 @@ void SIC_Shutdown(void)
         Flash_Shutdown(flash2);
 }
 
-int SIC_IsDirty(void)
+int SIC_Is_Dirty(void)
 {
     return CartDirty;
 }
@@ -79,7 +78,7 @@ int SIC_IsDirty(void)
 void SIC_Cold_Reset(void)
 {
     CartBank = 0;
-    UpdateCartBanks();
+    SIC_Update_Cart_Banks();
 }
 
 UBYTE SIC_Read_Byte(UWORD address)
@@ -121,10 +120,11 @@ static void SetCartBank(int bank) {
         return;
 
     CartBank = bank;
-    UpdateCartBanks();
+    SIC_Update_Cart_Banks();
 }
 
-static void UpdateCartBanks() {
+void SIC_Update_Cart_Banks(void)
+{
     if (CartType == CARTRIDGE_SICPLUS_1024)
         UpdateCartBanksSicPlus();
     else

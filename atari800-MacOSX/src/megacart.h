@@ -13,9 +13,10 @@
 
 void  MEGACART_Init(int type, unsigned char *image, int size);
 void  MEGACART_Shutdown(void);
-int MEGACART_IsDirty(void);
+int MEGACART_Is_Dirty(void);
 void  MEGACART_Cold_Reset(void);
 UBYTE MEGACART_Read_Byte(UWORD address);
 void  MEGACART_Write_Byte(UWORD address, UBYTE value);
+void MEGACART_Update_Cart_Banks(void);
 
 #endif // megacart_h

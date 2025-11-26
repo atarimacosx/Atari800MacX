@@ -14,6 +14,7 @@
 #import "atari.h"
 #import "atrUtil.h"
 #import "atrMount.h"
+#import "cartridge.h"
 #import "MediaManager.h"
 #import "ControlManager.h"
 #import "Preferences.h"
@@ -210,6 +211,8 @@ static int CART32MTYPES[] = {CARTRIDGE_THECART_32M,
 static int CART64MTYPES[] = {CARTRIDGE_THECART_64M};
 static int CART128MTYPES[] = {CARTRIDGE_THECART_128M};
 
+static CARTRIDGE_image_t *dirtyCartridgeToSave;
+
 int showUpperDrives = 0;
 
 /* Functions which provide an interface for C code to call this object's shared Instance functions */
@@ -282,6 +285,10 @@ void MediaManager80ColMode(int xep80Enabled, int af80Enabled, int bit3Enabled, i
 
 int MediaManagerCartSelect(int nKbytes) {
     return([[MediaManager sharedInstance] cartSelect:(nKbytes)]);
+}
+
+int MediaManagerDirtyCartridgeSave(CARTRIDGE_image_t *cart)  {
+    [[MediaManager sharedInstance] dirtyCartridgeSave:cart];
 }
 
 @implementation MediaManager
@@ -2045,6 +2052,47 @@ NSImage *disketteImage;
 {
     [NSApp stopModal];
     [[error2Button window] close];
+}
+
+/*------------------------------------------------------------------------------
+*  dirtyNo - This method handles the No button press from the Dirty Cart window.
+*-----------------------------------------------------------------------------*/
+- (IBAction)dirtyNo:(id)sender;
+{
+    [NSApp stopModal];
+    [[dirtyCartLabel window] close];
+}
+
+/*------------------------------------------------------------------------------
+*  dirtyYes - This method handles the Yes button press from the Dirty Cart window.
+*-----------------------------------------------------------------------------*/
+- (IBAction)dirtyYes:(id)sender;
+{
+    [NSApp stopModal];
+    [[dirtyCartLabel window] close];
+    
+    NSString *filename;
+    char cfilename[FILENAME_MAX+1];
+    
+    filename = [self saveFileInDirectory:[NSString stringWithCString:atari_rom_dir encoding:NSUTF8StringEncoding]:@"car"];
+    
+    if (filename == nil) {
+        return;
+        }
+                
+    [filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
+
+    CARTRIDGE_WriteImage(cfilename, dirtyCartridgeToSave->type, dirtyCartridgeToSave->image, dirtyCartridgeToSave->size, dirtyCartridgeToSave->raw, 0);
+}
+
+/*------------------------------------------------------------------------------
+*  dirtyCartridgeSave - This method handles asking the user to save a dirty
+*   cartridge.
+*-----------------------------------------------------------------------------*/
+- (IBAction)dirtyCartridgeSave:(CARTRIDGE_image_t *)cart;
+{
+    dirtyCartridgeToSave = cart;
+    [NSApp runModalForWindow:[dirtyCartLabel window]];
 }
 
 /*------------------------------------------------------------------------------

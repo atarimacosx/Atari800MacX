@@ -706,15 +706,6 @@ static void MapActiveCart(void)
 					MEMORY_CopyFromCart(i, i + 0xff, active_cart->image + (active_cart->state & 0xffff));
 			}
 			break;
-		case CARTRIDGE_MEGA_16:
-		case CARTRIDGE_MEGA_32:
-		case CARTRIDGE_MEGA_64:
-		case CARTRIDGE_MEGA_128:
-		case CARTRIDGE_MEGA_256:
-		case CARTRIDGE_MEGA_512:
-		case CARTRIDGE_MEGA_1024:
-		case CARTRIDGE_MEGA_2048:
-		case CARTRIDGE_MEGA_4096:
 		case CARTRIDGE_MEGAMAX_2048:
 		case CARTRIDGE_RAMCART_64:
 		case CARTRIDGE_RAMCART_128:
@@ -732,10 +723,12 @@ static void MapActiveCart(void)
         case CARTRIDGE_SIC_256:
         case CARTRIDGE_SIC_512:
         case CARTRIDGE_SICPLUS_1024:
+            SIC_Update_Cart_Banks();
             return;
         case CARTRIDGE_THECART_32M:
         case CARTRIDGE_THECART_64M:
         case CARTRIDGE_THECART_128M:
+            THECART_Update_Cart_Banks();
             return;
         case CARTRIDGE_ATMAX_128:
         case CARTRIDGE_ATMAX_OLD_1024:
@@ -745,6 +738,18 @@ static void MapActiveCart(void)
         case CARTRIDGE_JACART_512:
         case CARTRIDGE_JACART_1024:
         case CARTRIDGE_DCART:
+            MAXFLASH_Update_Cart_Banks();
+            return;
+        case CARTRIDGE_MEGA_16:
+        case CARTRIDGE_MEGA_32:
+        case CARTRIDGE_MEGA_64:
+        case CARTRIDGE_MEGA_128:
+        case CARTRIDGE_MEGA_256:
+        case CARTRIDGE_MEGA_512:
+        case CARTRIDGE_MEGA_1024:
+        case CARTRIDGE_MEGA_2048:
+        case CARTRIDGE_MEGA_4096:
+            MEGACART_Update_Cart_Banks();
             return;
         case CARTRIDGE_ULTIMATE_1MB:
             MEMORY_Cart809fDisable();
@@ -1728,6 +1733,31 @@ static void RemoveCart(CARTRIDGE_image_t *cart)
         (cart->type == CARTRIDGE_THECART_64M) ||
         (cart->type == CARTRIDGE_THECART_128M))
         THECART_Shutdown();
+    if ((cart->type == CARTRIDGE_SIC_128) ||
+        (cart->type == CARTRIDGE_SIC_256) ||
+        (cart->type == CARTRIDGE_SIC_512) ||
+        (cart->type == CARTRIDGE_SICPLUS_1024))
+        SIC_Shutdown();
+    if ((cart->type == CARTRIDGE_ATMAX_128) ||
+        (cart->type == CARTRIDGE_ATMAX_OLD_1024) ||
+        (cart->type == CARTRIDGE_ATMAX_NEW_1024) ||
+        (cart->type == CARTRIDGE_JACART_128) ||
+        (cart->type == CARTRIDGE_JACART_256) ||
+        (cart->type == CARTRIDGE_JACART_512) ||
+        (cart->type == CARTRIDGE_JACART_1024) ||
+        (cart->type == CARTRIDGE_ATMAX_NEW_1024) ||
+        (cart->type == CARTRIDGE_DCART))
+        MAXFLASH_Shutdown();
+    if ((cart->type == CARTRIDGE_MEGA_16) ||
+        (cart->type == CARTRIDGE_MEGA_32) ||
+        (cart->type == CARTRIDGE_MEGA_64) ||
+        (cart->type == CARTRIDGE_MEGA_128) ||
+        (cart->type == CARTRIDGE_MEGA_256) ||
+        (cart->type == CARTRIDGE_MEGA_512) ||
+        (cart->type == CARTRIDGE_MEGA_1024) ||
+        (cart->type == CARTRIDGE_MEGA_2048) ||
+        (cart->type == CARTRIDGE_MEGA_4096))
+        MAXFLASH_Shutdown();
 	if (cart->type != CARTRIDGE_NONE) {
 		cart->type = CARTRIDGE_NONE;
 		if (cart == active_cart)
@@ -1775,6 +1805,7 @@ int CARTRIDGE_ReadImage(const char *filename, CARTRIDGE_image_t *cart)
 	int type;
 	UBYTE header[16];
 
+    cart->dirty = FALSE;
 #ifdef ATARI800MACX
     if (strcmp(filename,CARTRIDGE_SPECIAL_BASIC) == 0) {
         /* alloc memory and copy data */
@@ -1958,6 +1989,7 @@ int CARTRIDGE_Insert_Blank(int type)
     }
     strcpy(cart->filename, "Blank");
     cart->raw = FALSE;
+    cart->dirty = TRUE;
     InitCartridge(cart);
     return cart->size;
 }

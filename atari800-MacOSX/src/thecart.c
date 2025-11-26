@@ -86,7 +86,7 @@ void THECART_Shutdown(void)
     Flash_Shutdown(flash);
 }
 
-int THECART_IsDirty(void)
+int THECART_Is_Dirty(void)
 {
     return CartDirty;
 }
@@ -120,7 +120,7 @@ void THECART_Cold_Reset() {
 
     UpdateTheCartBanking();
     UpdateTheCart();
-    Update_Cart_Banks();
+    THECART_Update_Cart_Banks();
 
     EEPROM_Cold_Reset();
 }
@@ -612,10 +612,11 @@ static void Set_Cart_Banks(int bank, int bank2) {
 
     CartBank = bank;
     CartBank2 = bank2;
-    Update_Cart_Banks();
+    THECART_Update_Cart_Banks();
 }
 
-static void Update_Cart_Banks() {
+void THECART_Update_Cart_Banks()
+{
     if (CartBank < 0) {
         Bank1_Base = 0;
         MEMORY_CartA0bfDisable();

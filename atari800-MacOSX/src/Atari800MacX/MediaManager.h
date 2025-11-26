@@ -10,6 +10,7 @@
 
 */
 
+//#import "cartridge.h"
 #import <Cocoa/Cocoa.h>
 
 @interface MediaManager : NSObject
@@ -44,6 +45,7 @@
     IBOutlet id diskFmtInsertDrivePulldown;
     IBOutlet id diskFmtInsertNewButton;
     IBOutlet id diskFmtMatrix;
+    IBOutlet id dirtyCartLabel;
     IBOutlet id hardDiskFmtCusMBField;
     IBOutlet id hardDiskFmtCusSecField;
     IBOutlet id hardDiskFmtInsertNewButton;
@@ -218,6 +220,9 @@
 - (IBAction)cartBlankRamCart16MInsert:(id)sender;
 - (IBAction)cartBlankRamCart32MInsert:(id)sender;
 - (IBAction)cartBlankSidiCar32KInsert:(id)sender;
+//- (IBAction)dirtyNo:(id)sender;
+//- (IBAction)dirtyYes:(id)sender;
+//- (IBAction)dirtyCartridgeSave:(CARTRIDGE_image_t *)cart;
 - (IBAction)cartSave:(id)sender;
 - (IBAction)cartSecondInsert:(id)sender;
 - (void)cartInsertFile:(NSString *)filename;

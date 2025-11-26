@@ -101,6 +101,7 @@
                 <outlet property="d8DiskImageLockView" destination="1349" id="1358"/>
                 <outlet property="d8DriveStatusPulldown" destination="330" id="368"/>
                 <outlet property="d8SwitchButton" destination="1349" id="1369"/>
+                <outlet property="dirtyCartLabel" destination="pig-hL-ZUm" id="Apk-B1-dWD"/>
                 <outlet property="disBasicButton" destination="1076" id="1082"/>
                 <outlet property="diskFmtCusBytesPulldown" destination="481" id="496"/>
                 <outlet property="diskFmtCusSecField" destination="461" id="495"/>
@@ -3702,6 +3703,59 @@ Gw
                 </subviews>
             </view>
             <point key="canvasLocation" x="-356" y="-2250"/>
+        </window>
+        <window title="Cartridge Contents Changed" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="bya-Xq-7DB" userLabel="DirtyCart">
+            <windowStyleMask key="styleMask" titled="YES"/>
+            <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+            <rect key="contentRect" x="251" y="82" width="352" height="121"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1512" height="944"/>
+            <value key="minSize" type="size" width="81" height="2"/>
+            <view key="contentView" id="vIm-GX-6EX">
+                <rect key="frame" x="0.0" y="0.0" width="352" height="121"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <button tag="32768" imageHugsTitle="YES" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="HXv-bE-pha">
+                        <rect key="frame" x="192" y="13" width="84" height="32"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <buttonCell key="cell" type="push" title="Yes" bezelStyle="rounded" alignment="center" state="on" borderStyle="border" tag="512" inset="2" id="ybY-Uc-g84">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                            <string key="keyEquivalent" base64-UTF8="YES">
+DQ
+</string>
+                        </buttonCell>
+                        <connections>
+                            <action selector="dirtyYes:" target="-2" id="h5I-jy-lMj"/>
+                        </connections>
+                    </button>
+                    <button imageHugsTitle="YES" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="kTQ-2o-poV">
+                        <rect key="frame" x="60" y="13" width="84" height="32"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <buttonCell key="cell" type="push" title="No" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="6tU-TG-DoN">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                            <string key="keyEquivalent" base64-UTF8="YES">
+Gw
+</string>
+                        </buttonCell>
+                        <connections>
+                            <action selector="dirtyNo:" target="-2" id="Yw3-o2-eLK"/>
+                        </connections>
+                    </button>
+                    <textField focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="pig-hL-ZUm">
+                        <rect key="frame" x="25" y="65" width="515" height="32"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" lineBreakMode="clipping" id="uYD-1q-MU7">
+                            <font key="font" metaFont="system"/>
+                            <string key="title">Contents of Flash/RAM Cartridge have changed.
+           Do you want to save the Cartridge?</string>
+                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                </subviews>
+            </view>
+            <point key="canvasLocation" x="-399" y="-2400.5"/>
         </window>
     </objects>
     <resources>

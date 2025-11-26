@@ -13,9 +13,10 @@
 
 void  SIC_Init(int type, unsigned char *image, int size);
 void  SIC_Shutdown(void);
-int SIC_IsDirty(void);
+int SIC_Is_Dirty(void);
 void  SIC_Cold_Reset(void);
 UBYTE SIC_Read_Byte(UWORD address);
 void  SIC_Write_Byte(UWORD address, UBYTE value);
+void SIC_Update_Cart_Banks(void);
 
 #endif /* sic_h */
