@@ -11,12 +11,6 @@
 #ifndef maxflash_h
 #define maxflash_h
 
-void  MAXFLASH_Init(int type, unsigned char *image, int size);
-void  MAXFLASH_Shutdown(void);
-int MAXFLASH_Is_Dirty(void);
-void  MAXFLASH_Cold_Reset(void);
-UBYTE MAXFLASH_Read_Byte(UWORD address);
-void  MAXFLASH_Write_Byte(UWORD address, UBYTE value);
-void MAXFLASH_Update_Cart_Banks(void);
+void MAXFLASH_Init(CARTRIDGE_image_t *cart);
 
 #endif /* maxflash_h */

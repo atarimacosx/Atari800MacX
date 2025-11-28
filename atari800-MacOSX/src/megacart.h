@@ -11,12 +11,6 @@
 #ifndef megacart_h
 #define megacart_h
 
-void  MEGACART_Init(int type, unsigned char *image, int size);
-void  MEGACART_Shutdown(void);
-int MEGACART_Is_Dirty(void);
-void  MEGACART_Cold_Reset(void);
-UBYTE MEGACART_Read_Byte(UWORD address);
-void  MEGACART_Write_Byte(UWORD address, UBYTE value);
-void MEGACART_Update_Cart_Banks(void);
+void MEGACART_Init(CARTRIDGE_image_t *cart);
 
 #endif // megacart_h

@@ -16,8 +16,7 @@
 #include "string.h"
 #include "maxflash.h"
 
-static unsigned char *CartImage;
-static int CartType;
+static CARTRIDGE_image_t *Cart;
 static int CartSize;
 static int CartSizeMask;
 static FlashEmu *flash;
@@ -32,62 +31,78 @@ static void SetDCartBank(int bank, int miniBank);
 static UBYTE MAXFLASH_Flash_Read(UWORD addr);
 static void MAXFLASH_Flash_Write(UWORD addr, UBYTE value);
 
-void MAXFLASH_Init(int type, unsigned char *image, int size)
+static void  MAXFLASH_Shutdown(void);
+static int MAXFLASH_Is_Dirty(void);
+static void  MAXFLASH_Cold_Reset(void);
+static UBYTE MAXFLASH_Read_Byte(UWORD address);
+static void  MAXFLASH_Write_Byte(UWORD address, UBYTE value);
+static void MAXFLASH_Update_Cart_Banks(void);
+
+static CARTRIDGE_funcs_type funcs = {
+    MAXFLASH_Shutdown,
+    MAXFLASH_Is_Dirty,
+    MAXFLASH_Cold_Reset,
+    MAXFLASH_Read_Byte,
+    MAXFLASH_Write_Byte,
+    MAXFLASH_Update_Cart_Banks
+};
+
+void MAXFLASH_Init(CARTRIDGE_image_t *cart)
 {
-    CartImage = image;
-    CartType = type;
-    CartSize = size << 10;
+    Cart = cart;
+    Cart->funcs = &funcs;
+    CartSize = cart->size << 10;
     CartSizeMask = CartSize - 1;
-    switch(type) {
+    switch(Cart->type) {
         case CARTRIDGE_ATMAX_128:
-            flash = Flash_Init(image, Flash_TypeAm29F010);
+            flash = Flash_Init(Cart->image, Flash_TypeAm29F010);
             flash2 = NULL;
             break;
         case CARTRIDGE_ATMAX_OLD_1024:
-            flash = Flash_Init(image, Flash_TypeAm29F040B);
-            flash2 = Flash_Init(image + 0x80000, Flash_TypeAm29F040B);
+            flash = Flash_Init(Cart->image, Flash_TypeAm29F040B);
+            flash2 = Flash_Init(Cart->image + 0x80000, Flash_TypeAm29F040B);
             break;
         case CARTRIDGE_ATMAX_NEW_1024:
-            flash = Flash_Init(image, Flash_TypeAm29F040B);
-            flash2 = Flash_Init(image + 0x80000, Flash_TypeAm29F040B);
+            flash = Flash_Init(Cart->image, Flash_TypeAm29F040B);
+            flash2 = Flash_Init(Cart->image + 0x80000, Flash_TypeAm29F040B);
             break;
         case CARTRIDGE_JACART_128:
-            flash = Flash_Init(image, Flash_TypeSST39SF010);
+            flash = Flash_Init(Cart->image, Flash_TypeSST39SF010);
             flash2 = NULL;
             break;
         case CARTRIDGE_JACART_256:
-            flash = Flash_Init(image, Flash_TypeSST39SF020);
+            flash = Flash_Init(Cart->image, Flash_TypeSST39SF020);
             flash2 = NULL;
             break;
         case CARTRIDGE_JACART_512:
-            flash = Flash_Init(image, Flash_TypeSST39SF040);
+            flash = Flash_Init(Cart->image, Flash_TypeSST39SF040);
             flash2 = NULL;
             break;
         case CARTRIDGE_JACART_1024:
-            flash = Flash_Init(image, Flash_TypeSST39SF040);
-            flash2 = Flash_Init(image + 0x80000, Flash_TypeSST39SF040);
+            flash = Flash_Init(Cart->image, Flash_TypeSST39SF040);
+            flash2 = Flash_Init(Cart->image + 0x80000, Flash_TypeSST39SF040);
             break;
         case CARTRIDGE_DCART:
-            flash = Flash_Init(image, Flash_TypeSST39SF040);
+            flash = Flash_Init(Cart->image, Flash_TypeSST39SF040);
             flash2 = NULL;
     }
 }
 
-void  MAXFLASH_Shutdown(void)
+static void  MAXFLASH_Shutdown(void)
 {
     Flash_Shutdown(flash);
     if (flash2 != NULL)
         Flash_Shutdown(flash2);
 }
 
-int MAXFLASH_Is_Dirty(void)
+static int MAXFLASH_Is_Dirty(void)
 {
-    return CartDirty;
+    return Cart->dirty;
 }
 
-void MAXFLASH_Cold_Reset(void)
+static void MAXFLASH_Cold_Reset(void)
 {
-    if (CartType == CARTRIDGE_ATMAX_OLD_1024)
+    if (Cart->type == CARTRIDGE_ATMAX_OLD_1024)
         CartBank = 127;
     else
         CartBank = 0;
@@ -95,12 +110,12 @@ void MAXFLASH_Cold_Reset(void)
     MAXFLASH_Update_Cart_Banks();
 }
 
-UBYTE MAXFLASH_Read_Byte(UWORD address)
+static UBYTE MAXFLASH_Read_Byte(UWORD address)
 {
     uint32_t flashOffset;
     UBYTE value;
     
-    switch(CartType){
+    switch(Cart->type){
         case CARTRIDGE_ATMAX_128:
             if (address < 0xD520) {
                 if (address < 0xD510) {
@@ -135,9 +150,9 @@ UBYTE MAXFLASH_Read_Byte(UWORD address)
     }
 }
 
-void  MAXFLASH_Write_Byte(UWORD address, UBYTE value)
+static void MAXFLASH_Write_Byte(UWORD address, UBYTE value)
 {
-    switch(CartType){
+    switch(Cart->type){
         case CARTRIDGE_ATMAX_128:
             if (address < 0xD520) {
                 if (address < 0xD510) {
@@ -185,7 +200,7 @@ static void SetDCartBank(int bank, int miniBank) {
     MAXFLASH_Update_Cart_Banks();
 }
 
-void MAXFLASH_Update_Cart_Banks(void)
+static void MAXFLASH_Update_Cart_Banks(void)
 {
     UWORD base = 0xA000;
     UWORD end = base + 0x2000 - 1;
@@ -196,7 +211,7 @@ void MAXFLASH_Update_Cart_Banks(void)
         MEMORY_CartA0bfEnable();
         MEMORY_SetFlashRoutines(MAXFLASH_Flash_Read, MAXFLASH_Flash_Write);
         MEMORY_SetFlash(base, end);
-        MEMORY_CopyFromCart(base, end, CartImage + CartBank*0x2000);
+        MEMORY_CopyFromCart(base, end, Cart->image + CartBank*0x2000);
     }
 }
 
@@ -227,7 +242,7 @@ static void MAXFLASH_Flash_Write(UWORD addr, UBYTE value) {
     flashEmu = (fullAddr >= 0x80000 ? flash2 : flash);
     if (CartWriteEnable) {
         if (Flash_Write_Byte(flashEmu, fullAddr & 0x7FFFF, value)) {
-            CartDirty = TRUE;
+            Cart->dirty = TRUE;
         }
     }
 }

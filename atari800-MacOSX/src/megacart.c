@@ -16,8 +16,7 @@
 #include "string.h"
 #include "megacart.h"
 
-static unsigned char *CartImage;
-static int CartType;
+static CARTRIDGE_image_t *Cart;
 static int CartSize;
 static int CartSizeMask;
 static FlashEmu *flash;
@@ -29,13 +28,29 @@ static void SetCartBank(int bank);
 static UBYTE MEGACART_Flash_Read(UWORD addr);
 static void MEGACART_Flash_Write(UWORD addr, UBYTE value);
 
-void MEGACART_Init(int type, unsigned char *image, int size)
+static void  MEGACART_Shutdown(void);
+static int MEGACART_Is_Dirty(void);
+static void  MEGACART_Cold_Reset(void);
+static UBYTE MEGACART_Read_Byte(UWORD address);
+static void  MEGACART_Write_Byte(UWORD address, UBYTE value);
+static void MEGACART_Update_Cart_Banks(void);
+
+static CARTRIDGE_funcs_type funcs = {
+    MEGACART_Shutdown,
+    MEGACART_Is_Dirty,
+    MEGACART_Cold_Reset,
+    MEGACART_Read_Byte,
+    MEGACART_Write_Byte,
+    MEGACART_Update_Cart_Banks
+};
+
+void MEGACART_Init(CARTRIDGE_image_t *cart)
 {
-    CartImage = image;
-    CartType = type;
-    CartSize = size << 10;
+    Cart = cart;
+    Cart->funcs = &funcs;
+    CartSize = cart->size << 10;
     CartSizeMask = CartSize - 1;
-    switch(type) {
+    switch(Cart->type) {
         case CARTRIDGE_MEGA_16:
         case CARTRIDGE_MEGA_32:
         case CARTRIDGE_MEGA_64:
@@ -46,37 +61,37 @@ void MEGACART_Init(int type, unsigned char *image, int size)
             flash = NULL;
             break;
         case CARTRIDGE_MEGA_512:
-            flash = Flash_Init(image, Flash_TypeAm29F040B);
+            flash = Flash_Init(Cart->image, Flash_TypeAm29F040B);
             break;
         case CARTRIDGE_MEGA_4096:
-            flash = Flash_Init(image, Flash_TypeAm29F032B);
+            flash = Flash_Init(Cart->image, Flash_TypeAm29F032B);
             break;
     }
 }
 
-void MEGACART_Shutdown(void)
+static void MEGACART_Shutdown(void)
 {
     if (flash != NULL)
         Flash_Shutdown(flash);
 }
 
-int MEGACART_Is_Dirty(void)
+static int MEGACART_Is_Dirty(void)
 {
     return CartDirty;
 }
 
-void MEGACART_Cold_Reset(void)
+static void MEGACART_Cold_Reset(void)
 {
-    if (CartType == CARTRIDGE_MEGA_4096)
+    if (Cart->type == CARTRIDGE_MEGA_4096)
         CartBank = 254;
     else
         CartBank = 0;
     MEGACART_Update_Cart_Banks();
 }
 
-UBYTE MEGACART_Read_Byte(UWORD address)
+static UBYTE MEGACART_Read_Byte(UWORD address)
 {
-    switch(CartType){
+    switch(Cart->type){
         case CARTRIDGE_MEGA_16:
         case CARTRIDGE_MEGA_32:
         case CARTRIDGE_MEGA_64:
@@ -93,9 +108,9 @@ UBYTE MEGACART_Read_Byte(UWORD address)
     }
 }
 
-void MEGACART_Write_Byte(UWORD address, UBYTE value)
+static void MEGACART_Write_Byte(UWORD address, UBYTE value)
 {
-    switch(CartType){
+    switch(Cart->type){
         case CARTRIDGE_MEGA_16:
             SetCartBank(value & 0x80 ? -1 : value & 0x0);
             return;
@@ -136,7 +151,7 @@ static void SetCartBank(int bank) {
     MEGACART_Update_Cart_Banks();
 }
 
-void MEGACART_Update_Cart_Banks(void)
+static void MEGACART_Update_Cart_Banks(void)
 {
     UWORD base = 0x8000;
     UWORD end = base + 0x4000 - 1;
@@ -145,11 +160,11 @@ void MEGACART_Update_Cart_Banks(void)
         MEMORY_CartA0bfDisable();
     } else {
         MEMORY_CartA0bfEnable();
-        if (CartType == CARTRIDGE_MEGA_512 || CartType == CARTRIDGE_MEGA_4096) {
+        if (Cart->type == CARTRIDGE_MEGA_512 || Cart->type == CARTRIDGE_MEGA_4096) {
             MEMORY_SetFlashRoutines(MEGACART_Flash_Read, MEGACART_Flash_Write);
             MEMORY_SetFlash(base, end);
         }
-        MEMORY_CopyFromCart(base, end, CartImage + CartBank*0x4000);
+        MEMORY_CopyFromCart(base, end, Cart->image + CartBank*0x4000);
     }
 }
 
@@ -176,6 +191,6 @@ static void MEGACART_Flash_Write(UWORD addr, UBYTE value) {
     fullAddr = (CartBank*0x4000 + (addr & 0x3fff)) & (CartSize - 1);
 
     if (Flash_Write_Byte(flash, fullAddr, value)) {
-        CartDirty = TRUE;
+        Cart->dirty = TRUE;
     };
 }

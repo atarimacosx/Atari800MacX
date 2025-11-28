@@ -53,14 +53,25 @@ extern EPSON_PREF prefsEpson;
 extern ATASCII_PREF prefsAtascii;
 extern int diskDriveSound;
 extern int FULLSCREEN_MACOS;
+
+typedef struct CARTRIDGE_funcs_type {
+    void (*shutdown)(void);
+    int (*is_dirty)(void);
+    void (*cold_reset)(void);
+    uint8_t (*read_byte)(uint16_t address);
+    void (*write_byte)(uint16_t address, uint8_t value);
+    void (*map)(void);
+} CARTRIDGE_funcs_type;
+
 typedef struct CARTRIDGE_image_t {
     int type;
     int state; /* Cartridge's state, such as selected bank or switch on/off. */
-    int size; /* Size of the image, in kilobytes */
-    unsigned char *image;
+    int size; /* Size of the image, in kilobytes. */
+    uint8_t *image;
     char filename[FILENAME_MAX];
     int raw; /* File contains RAW data (important for writeable cartridges). */
-    int dirty; /* For Flash or RAM carts, does Cart need to be saved*/
+    int blank; /* Blank cartridge that has never been saved */
+    CARTRIDGE_funcs_type funcs; /* Cart specific functions */
 } CARTRIDGE_image_t;
 
 extern CARTRIDGE_image_t CARTRIDGE_main;

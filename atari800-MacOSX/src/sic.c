@@ -16,8 +16,7 @@
 #include "string.h"
 #include "sic.h"
 
-static unsigned char *CartImage;
-static int CartType;
+static CARTRIDGE_image_t *Cart;
 static int CartSize;
 static int CartSizeMask;
 static FlashEmu *flash;
@@ -34,56 +33,72 @@ static void SIC_Flash_Write(UWORD addr, UBYTE value);
 static UBYTE SICPLUS_Flash_Read(UWORD addr);
 static void SICPLUS_Flash_Write(UWORD addr, UBYTE value);
 
-void SIC_Init(int type, unsigned char *image, int size)
+static void  SIC_Shutdown(void);
+static int SIC_Is_Dirty(void);
+static void  SIC_Cold_Reset(void);
+static UBYTE SIC_Read_Byte(UWORD address);
+static void  SIC_Write_Byte(UWORD address, UBYTE value);
+static void SIC_Update_Cart_Banks(void);
+
+static CARTRIDGE_funcs_type funcs = {
+    SIC_Shutdown,
+    SIC_Is_Dirty,
+    SIC_Cold_Reset,
+    SIC_Read_Byte,
+    SIC_Write_Byte,
+    SIC_Update_Cart_Banks
+};
+
+void SIC_Init(CARTRIDGE_image_t *cart)
 {
-    CartImage = image;
-    CartType = type;
-    CartSize = size << 10;
+    Cart = cart;
+    Cart->funcs = &funcs;
+    CartSize = cart->size << 10;
     CartSizeMask = CartSize - 1;
-    switch(type) {
+    switch(cart->type) {
         case CARTRIDGE_SIC_128:
-            flash = Flash_Init(image, Flash_TypeAm29F010B);
+            flash = Flash_Init(Cart->image, Flash_TypeAm29F010B);
             flash2 = NULL;
             CartBankMask = 0x7;
             break;
         case CARTRIDGE_SIC_256:
-            flash = Flash_Init(image, Flash_TypeAm29F002BT);
+            flash = Flash_Init(Cart->image, Flash_TypeAm29F002BT);
             flash2 = NULL;
             CartBankMask = 0xF;
             break;
         case CARTRIDGE_SIC_512:
-            flash = Flash_Init(image, Flash_TypeAm29F040B);
+            flash = Flash_Init(Cart->image, Flash_TypeAm29F040B);
             flash2 = NULL;
             CartBankMask = 0x1F;
             break;
         case CARTRIDGE_SICPLUS_1024:
-            flash = Flash_Init(image, Flash_TypeAm29F040B);
-            flash2 = Flash_Init(image + 0x80000, Flash_TypeAm29F040B);
+            flash = Flash_Init(Cart->image, Flash_TypeAm29F040B);
+            flash2 = Flash_Init(Cart->image + 0x80000, Flash_TypeAm29F040B);
             break;
     }
 }
 
-void SIC_Shutdown(void)
+static void SIC_Shutdown(void)
 {
     Flash_Shutdown(flash);
     if (flash2 != NULL)
         Flash_Shutdown(flash2);
 }
 
-int SIC_Is_Dirty(void)
+static int SIC_Is_Dirty(void)
 {
-    return CartDirty;
+    return Cart->dirty;
 }
 
-void SIC_Cold_Reset(void)
+static void SIC_Cold_Reset(void)
 {
     CartBank = 0;
     SIC_Update_Cart_Banks();
 }
 
-UBYTE SIC_Read_Byte(UWORD address)
+static UBYTE SIC_Read_Byte(UWORD address)
 {
-    switch(CartType){
+    switch(Cart->type){
         case CARTRIDGE_SIC_128:
         case CARTRIDGE_SIC_256:
         case CARTRIDGE_SIC_512:
@@ -99,9 +114,9 @@ UBYTE SIC_Read_Byte(UWORD address)
     }
 }
 
-void  SIC_Write_Byte(UWORD address, UBYTE value)
+static void SIC_Write_Byte(UWORD address, UBYTE value)
 {
-    switch(CartType){
+    switch(Cart->type){
         case CARTRIDGE_SIC_128:
         case CARTRIDGE_SIC_256:
         case CARTRIDGE_SIC_512:
@@ -123,9 +138,9 @@ static void SetCartBank(int bank) {
     SIC_Update_Cart_Banks();
 }
 
-void SIC_Update_Cart_Banks(void)
+static void SIC_Update_Cart_Banks(void)
 {
-    if (CartType == CARTRIDGE_SICPLUS_1024)
+    if (Cart->type == CARTRIDGE_SICPLUS_1024)
         UpdateCartBanksSicPlus();
     else
         UpdateCartBanksSic();
@@ -139,7 +154,7 @@ static void UpdateCartBanksSic() {
         MEMORY_SetFlash(0x8000, 0x9FFF);
         MEMORY_SetFlashRoutines(SIC_Flash_Read, SIC_Flash_Write);
         MEMORY_CopyFromCart(0x8000, 0x9FFF,
-                            CartImage + (CartBank & CartBankMask) * 0x4000);
+                            Cart->image + (CartBank & CartBankMask) * 0x4000);
     }
     if (CartBank & 0x40)
         MEMORY_CartA0bfDisable();
@@ -148,7 +163,7 @@ static void UpdateCartBanksSic() {
         MEMORY_SetFlash(0xA000, 0xBFFF);
         MEMORY_SetFlashRoutines(SIC_Flash_Read, SIC_Flash_Write);
         MEMORY_CopyFromCart(0xA000, 0xBFFF,
-                            CartImage + (CartBank & CartBankMask) * 0x4000 + 0x2000);
+                            Cart->image + (CartBank & CartBankMask) * 0x4000 + 0x2000);
     }
 }
 
@@ -161,7 +176,7 @@ static void UpdateCartBanksSicPlus() {
         MEMORY_SetFlash(0x8000, 0x9FFF);
         MEMORY_SetFlashRoutines(SICPLUS_Flash_Read, SICPLUS_Flash_Write);
         MEMORY_CopyFromCart(0x8000, 0x9FFF,
-                            CartImage + (CartBank & CartBankMask) * 0x4000 + upperBankAddr);
+                            Cart->image + (CartBank & CartBankMask) * 0x4000 + upperBankAddr);
     }
     if (CartBank & 0x40)
         MEMORY_CartA0bfDisable();
@@ -170,7 +185,7 @@ static void UpdateCartBanksSicPlus() {
         MEMORY_SetFlash(0xA000, 0xBFFF);
         MEMORY_SetFlashRoutines(SICPLUS_Flash_Read, SICPLUS_Flash_Write);
         MEMORY_CopyFromCart(0xA000, 0xBFFF,
-                            CartImage + (CartBank & CartBankMask) * 0x4000 + 0x2000 + upperBankAddr);
+                            Cart->image + (CartBank & CartBankMask) * 0x4000 + 0x2000 + upperBankAddr);
     }
 }
 
@@ -192,7 +207,7 @@ static void SIC_Flash_Write(UWORD addr, UBYTE value) {
         fullAddr = (CartBank & CartBankMask) * 0x4000 + (addr & 0x3fff);
         
         if (Flash_Write_Byte(flash, fullAddr, value)) {
-            CartDirty = TRUE;
+            Cart->dirty = TRUE;
         }
     }
 }
@@ -218,6 +233,6 @@ static void SICPLUS_Flash_Write(UWORD addr, UBYTE value) {
     flashEmu = (CartBank & 0x80 ? flash2 : flash);
     
     if (Flash_Write_Byte(flashEmu, fullAddr & 0x7FFFF, value)) {
-        CartDirty = TRUE;
+        Cart->dirty = TRUE;
     }
 }
