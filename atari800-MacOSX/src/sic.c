@@ -26,8 +26,8 @@ static int CartBankMask;
 static int CartDirty = FALSE;
 
 static void SetCartBank(int bank);
-static void UpdateCartBanksSic();
-static void UpdateCartBanksSicPlus();
+static void Map_Cart_Sic();
+static void Map_Cart_SicPlus();
 static UBYTE SIC_Flash_Read(UWORD addr);
 static void SIC_Flash_Write(UWORD addr, UBYTE value);
 static UBYTE SICPLUS_Flash_Read(UWORD addr);
@@ -38,7 +38,7 @@ static int SIC_Is_Dirty(void);
 static void  SIC_Cold_Reset(void);
 static UBYTE SIC_Read_Byte(UWORD address);
 static void  SIC_Write_Byte(UWORD address, UBYTE value);
-static void SIC_Update_Cart_Banks(void);
+static void SIC_Map_Cart(void);
 
 static CARTRIDGE_funcs_type funcs = {
     SIC_Shutdown,
@@ -46,7 +46,7 @@ static CARTRIDGE_funcs_type funcs = {
     SIC_Cold_Reset,
     SIC_Read_Byte,
     SIC_Write_Byte,
-    SIC_Update_Cart_Banks
+    SIC_Map_Cart
 };
 
 void SIC_Init(CARTRIDGE_image_t *cart)
@@ -93,7 +93,6 @@ static int SIC_Is_Dirty(void)
 static void SIC_Cold_Reset(void)
 {
     CartBank = 0;
-    SIC_Update_Cart_Banks();
 }
 
 static UBYTE SIC_Read_Byte(UWORD address)
@@ -135,18 +134,17 @@ static void SetCartBank(int bank) {
         return;
 
     CartBank = bank;
-    SIC_Update_Cart_Banks();
 }
 
-static void SIC_Update_Cart_Banks(void)
+static void SIC_Map_Cart(void)
 {
     if (Cart->type == CARTRIDGE_SICPLUS_1024)
-        UpdateCartBanksSicPlus();
+        Map_Cart_SicPlus();
     else
-        UpdateCartBanksSic();
+        Map_Cart_Sic();
 }
 
-static void UpdateCartBanksSic() {
+static void Map_Cart_Sic() {
     if (!(CartBank & 0x20))
         MEMORY_Cart809fDisable();
     else {
@@ -167,7 +165,7 @@ static void UpdateCartBanksSic() {
     }
 }
 
-static void UpdateCartBanksSicPlus() {
+static void Map_Cart_SicPlus() {
     uint32_t upperBankAddr = (CartBank & 0x80 ? 512*1024 : 0);
     if (!(CartBank & 0x20))
         MEMORY_Cart809fDisable();

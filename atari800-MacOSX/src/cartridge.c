@@ -971,7 +971,17 @@ static UBYTE GetByte(CARTRIDGE_image_t *cart, UWORD addr, int no_side_effects)
 	if (cart->type > CARTRIDGE_NONE)
 		Log_print("Cart %i read: %04x", cart == &CARTRIDGE_piggyback, addr);
 #endif
-	/* Set the cartridge's new state. */
+    if (cart->funcs != NULL) {
+        UBYTE value;
+        
+        value = cart->funcs->read_byte(addr);
+        if (cart == active_cart) {
+            cart->funcs->map();
+        }
+        return value;
+    }
+
+    /* Set the cartridge's new state. */
 	/* Check types switchable by access to page D5. */
 	if (!no_side_effects && access_D5(cart, addr, &new_state)) {
 		/* Cartridge supports bankswitching and reacted to the given
@@ -983,9 +993,6 @@ static UBYTE GetByte(CARTRIDGE_image_t *cart, UWORD addr, int no_side_effects)
 		}
 	}
 
-    if (cart->funcs != NULL) {
-        return cart->funcs->read_byte(addr);
-    }
 	/* Determine returned byte value. */
 	switch (cart->type) {
 	case CARTRIDGE_AST_32:
@@ -1023,6 +1030,9 @@ static void PutByte(CARTRIDGE_image_t *cart, UWORD addr, UBYTE byte)
 {
     if (cart->funcs != NULL) {
         cart->funcs->write_byte(addr, byte);
+        if (cart == active_cart) {
+            cart->funcs->map();
+        }
         return;
     }
 
@@ -1608,6 +1618,7 @@ static void RemoveCart(CARTRIDGE_image_t *cart)
     }
 #endif
 	if (cart->type != CARTRIDGE_NONE) {
+        cart->funcs = NULL;
 		cart->type = CARTRIDGE_NONE;
 		if (cart == active_cart)
 			MapActiveCart();
@@ -1936,7 +1947,8 @@ void CARTRIDGE_RemoveAutoReboot(void)
 
 void CARTRIDGE_Remove_Second(void)
 {
-	RemoveCart(&CARTRIDGE_piggyback);
+    active_cart = &CARTRIDGE_main;
+    RemoveCart(&CARTRIDGE_piggyback);
 }
 
 int CARTRIDGE_ReadConfig(char *string, char *ptr)

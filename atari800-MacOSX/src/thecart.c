@@ -51,7 +51,7 @@ static int THECART_Is_Dirty(void);
 static void  THECART_Cold_Reset(void);
 static UBYTE THECART_Read_Byte(UWORD address);
 static void  THECART_Write_Byte(UWORD address, UBYTE value);
-static void THECART_Update_Cart_Banks(void);
+static void THECART_Map_Cart(void);
 static UWORD Read_Unaligned_LEU16(const void *p) { return *(UWORD *)p; }
 static void  Write_Unaligned_LEU16(void *p, UWORD v) { *(UWORD *)p = v; }
 
@@ -61,7 +61,7 @@ static CARTRIDGE_funcs_type funcs = {
     THECART_Cold_Reset,
     THECART_Read_Byte,
     THECART_Write_Byte,
-    THECART_Update_Cart_Banks
+    THECART_Map_Cart
 };
 
 enum TheCartBankMode {
@@ -135,7 +135,6 @@ static void THECART_Cold_Reset() {
 
     UpdateTheCartBanking();
     UpdateTheCart();
-    THECART_Update_Cart_Banks();
 
     EEPROM_Cold_Reset();
 }
@@ -627,10 +626,10 @@ static void Set_Cart_Banks(int bank, int bank2) {
 
     CartBank = bank;
     CartBank2 = bank2;
-    THECART_Update_Cart_Banks();
+    //THECART_Map_Cart();
 }
 
-static void THECART_Update_Cart_Banks()
+static void THECART_Map_Cart()
 {
     if (CartBank < 0) {
         Bank1_Base = 0;

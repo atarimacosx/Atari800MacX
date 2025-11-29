@@ -33,7 +33,7 @@ static int MEGACART_Is_Dirty(void);
 static void  MEGACART_Cold_Reset(void);
 static UBYTE MEGACART_Read_Byte(UWORD address);
 static void  MEGACART_Write_Byte(UWORD address, UBYTE value);
-static void MEGACART_Update_Cart_Banks(void);
+static void MEGACART_Map_Cart(void);
 
 static CARTRIDGE_funcs_type funcs = {
     MEGACART_Shutdown,
@@ -41,7 +41,7 @@ static CARTRIDGE_funcs_type funcs = {
     MEGACART_Cold_Reset,
     MEGACART_Read_Byte,
     MEGACART_Write_Byte,
-    MEGACART_Update_Cart_Banks
+    MEGACART_Map_Cart
 };
 
 void MEGACART_Init(CARTRIDGE_image_t *cart)
@@ -86,7 +86,6 @@ static void MEGACART_Cold_Reset(void)
         CartBank = 254;
     else
         CartBank = 0;
-    MEGACART_Update_Cart_Banks();
 }
 
 static UBYTE MEGACART_Read_Byte(UWORD address)
@@ -148,10 +147,9 @@ static void SetCartBank(int bank) {
         return;
 
     CartBank = bank;
-    MEGACART_Update_Cart_Banks();
 }
 
-static void MEGACART_Update_Cart_Banks(void)
+static void MEGACART_Map_Cart(void)
 {
     UWORD base = 0x8000;
     UWORD end = base + 0x4000 - 1;
