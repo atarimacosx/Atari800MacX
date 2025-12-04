@@ -62,6 +62,8 @@
 
 /* #define DEBUG 1 */
 
+extern int MediaManagerDirtyCartridgeSave(CARTRIDGE_image_t *cart);
+
 int CARTRIDGE_autoreboot = TRUE;
 
 static int CartIsFor5200(int type)
@@ -1598,6 +1600,9 @@ int CARTRIDGE_WriteImage(char *filename, int type, UBYTE *image, int size, int r
 
 static void RemoveCart(CARTRIDGE_image_t *cart)
 {
+    if (cart->dirty || cart->blank)
+        MediaManagerDirtyCartridgeSave(cart);
+    
     if (cart->funcs != NULL) {
         cart->funcs->shutdown();
     }

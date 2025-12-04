@@ -24,7 +24,6 @@ static FlashEmu *flash2;
 static int CartBank;
 static int CartMiniBank;
 static int CartWriteEnable = TRUE;
-static int CartDirty = FALSE;
 
 static void SetCartBank(int bank);
 static void SetDCartBank(int bank, int miniBank);
@@ -51,6 +50,7 @@ void MAXFLASH_Init(CARTRIDGE_image_t *cart)
 {
     Cart = cart;
     Cart->funcs = &funcs;
+    Cart->dirty = FALSE;
     CartSize = cart->size << 10;
     CartSizeMask = CartSize - 1;
     switch(Cart->type) {

@@ -23,7 +23,6 @@ static FlashEmu *flash;
 static FlashEmu *flash2;
 static int CartBank;
 static int CartBankMask;
-static int CartDirty = FALSE;
 
 static void SetCartBank(int bank);
 static void Map_Cart_Sic();
@@ -53,6 +52,7 @@ void SIC_Init(CARTRIDGE_image_t *cart)
 {
     Cart = cart;
     Cart->funcs = &funcs;
+    Cart->dirty = FALSE;
     CartSize = cart->size << 10;
     CartSizeMask = CartSize - 1;
     switch(cart->type) {

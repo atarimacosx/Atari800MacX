@@ -36,7 +36,6 @@ static uint32_t Bank1_Base;
 static uint32_t Bank1_Offset;
 static uint32_t Bank2_Base;
 static uint32_t Bank2_Offset;
-static int CartDirty = FALSE;
 
 static void  UpdateTheCart(void);
 static void  UpdateTheCartBanking(void);
@@ -79,6 +78,7 @@ enum TheCartBankMode TheCartBankMode;
 void THECART_Init(CARTRIDGE_image_t *cart) {
     Cart = cart;
     Cart->funcs = &funcs;
+    Cart->dirty = FALSE;
     CartSize = cart->size << 10;
     CartSizeMask = CartSize - 1;
     switch(Cart->type) {
@@ -103,7 +103,7 @@ static void THECART_Shutdown(void)
 
 static int THECART_Is_Dirty(void)
 {
-    return CartDirty;
+    return Cart->dirty;
 }
 
 static void THECART_Cold_Reset() {

@@ -824,6 +824,9 @@ int Atari800_Exit(int run_monitor)
             ULTIMATE_Exit();
         if (SIDE2_enabled)
             SIDE2_Exit();
+        
+        if (CARTRIDGE_main.type != CARTRIDGE_NONE)
+            CARTRIDGE_Remove();        
 	}
 	return restart;
 }

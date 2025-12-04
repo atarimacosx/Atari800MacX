@@ -22,7 +22,6 @@ static int CartSizeMask;
 static FlashEmu *flash;
 static FlashEmu *flash2;
 static int CartBank;
-static int CartDirty = FALSE;
 
 static void SetCartBank(int bank);
 static UBYTE MEGACART_Flash_Read(UWORD addr);
@@ -48,6 +47,7 @@ void MEGACART_Init(CARTRIDGE_image_t *cart)
 {
     Cart = cart;
     Cart->funcs = &funcs;
+    Cart->dirty = FALSE;
     CartSize = cart->size << 10;
     CartSizeMask = CartSize - 1;
     switch(Cart->type) {
@@ -77,7 +77,7 @@ static void MEGACART_Shutdown(void)
 
 static int MEGACART_Is_Dirty(void)
 {
-    return CartDirty;
+    return Cart->dirty;
 }
 
 static void MEGACART_Cold_Reset(void)
