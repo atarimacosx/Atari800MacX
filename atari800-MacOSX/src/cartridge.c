@@ -1842,23 +1842,7 @@ int CARTRIDGE_Insert_Blank(int type)
     cart->type = type;
     cart->size = CARTRIDGES[type].kb;
     cart->image = Util_malloc(cart->size * 1024);
-    if (type == CARTRIDGE_RAMCART_64 ||
-        type == CARTRIDGE_RAMCART_128 ||
-        type == CARTRIDGE_DOUBLE_RAMCART_256 ||
-        type == CARTRIDGE_RAMCART_1M ||
-        type == CARTRIDGE_RAMCART_2M ||
-        type == CARTRIDGE_RAMCART_4M ||
-        type == CARTRIDGE_RAMCART_8M ||
-        type == CARTRIDGE_RAMCART_16M ||
-        type == CARTRIDGE_RAMCART_32M) {
-        memset(cart->image, 0, cart->size * 1024);
-    }
-    else {
-        memset(cart->image, 0xFF, cart->size * 1024);
-    }
-    if (type == CARTRIDGE_RAMCART_64) {
-        memset(cart->image + (16*1024-4), 0xFF, 4);
-    }
+    memset(cart->image, 0xFF, cart->size * 1024);
     strcpy(cart->filename, "Blank");
     cart->raw = FALSE;
     cart->blank = TRUE;

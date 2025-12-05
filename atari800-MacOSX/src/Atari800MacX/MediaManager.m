@@ -2102,12 +2102,12 @@ NSImage *disketteImage;
 *-----------------------------------------------------------------------------*/
 - (IBAction)dirtyYes:(id)sender;
 {
-    [NSApp stopModal];
-    [[dirtyCartLabel window] close];
-    
     NSString *filename;
     char cfilename[FILENAME_MAX+1];
     
+    [NSApp stopModal];
+    [[dirtyCartLabel window] close];
+
     filename = [self saveFileInDirectoryFilename:[NSString stringWithCString:atari_diskset_dir encoding:NSUTF8StringEncoding]:@"car":
                 [NSString stringWithCString:dirtyCartridgeToSave->filename encoding:NSUTF8StringEncoding]];
 
