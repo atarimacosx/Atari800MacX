@@ -40,6 +40,7 @@
 #import "side2.h"
 #import "ultimate1mb.h"
 #import <sys/stat.h>
+#import <string.h>
 #import <unistd.h>
 
 /* Definition of Mac native keycodes for characters used as menu shortcuts the 
@@ -728,6 +729,23 @@ NSImage *disketteImage;
     }
 
 /*------------------------------------------------------------------------------
+*  saveFileInDirectoryFilename - This allows the user to chose a filename to save in from
+*     the specified directory.
+*-----------------------------------------------------------------------------*/
+- (NSString *) saveFileInDirectoryFilename:(NSString *)directory:(NSString *)type:(NSString *)fname {
+    NSSavePanel *savePanel = nil;
+
+    savePanel = [NSSavePanel savePanel];
+
+    [savePanel setAllowedFileTypes:[NSArray arrayWithObject:type]];
+
+    if ([savePanel runModalForDirectory: directory file:fname] == NSModalResponseOK)
+        return([[savePanel URL] path]);
+    else
+        return nil;
+    }
+
+/*------------------------------------------------------------------------------
 *  cancelDisk - This method handles the cancel button from the disk image
 *     creation window.
 *-----------------------------------------------------------------------------*/
@@ -1007,15 +1025,25 @@ NSImage *disketteImage;
     CARTRIDGE_image_t *cart = &CARTRIDGE_main;
     NSString *filename;
     char cfilename[FILENAME_MAX+1];
-
-    filename = [self saveFileInDirectory:[NSString stringWithCString:atari_diskset_dir encoding:NSUTF8StringEncoding]:@"car"];
+    char *suggested_filename;
     
+    if (suggested_filename = strrchr(cart->filename, '/'))
+        ++suggested_filename;
+    else
+        suggested_filename = cart->filename;
+
+    filename = [self saveFileInDirectoryFilename:[NSString stringWithCString:atari_diskset_dir encoding:NSUTF8StringEncoding]:@"car":
+                [NSString stringWithCString:suggested_filename encoding:NSUTF8StringEncoding]];
+
     if (filename == nil)
         return;
                     
     [filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
 
-    CARTRIDGE_WriteImage(cfilename, cart->type, cart->image, cart->size, cart->raw, 0);
+    CARTRIDGE_WriteImage(cfilename, cart->type, cart->image, cart->size << 10, cart->raw, 0);
+
+    cart->blank = FALSE;
+    cart->dirty = FALSE;
 }
 
 /*------------------------------------------------------------------------------
@@ -2080,15 +2108,19 @@ NSImage *disketteImage;
     NSString *filename;
     char cfilename[FILENAME_MAX+1];
     
-    filename = [self saveFileInDirectory:[NSString stringWithCString:atari_rom_dir encoding:NSUTF8StringEncoding]:@"car"];
-    
+    filename = [self saveFileInDirectoryFilename:[NSString stringWithCString:atari_diskset_dir encoding:NSUTF8StringEncoding]:@"car":
+                [NSString stringWithCString:dirtyCartridgeToSave->filename encoding:NSUTF8StringEncoding]];
+
     if (filename == nil) {
         return;
         }
                 
     [filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
 
-    CARTRIDGE_WriteImage(cfilename, dirtyCartridgeToSave->type, dirtyCartridgeToSave->image, dirtyCartridgeToSave->size, dirtyCartridgeToSave->raw, 0);
+    CARTRIDGE_WriteImage(cfilename, dirtyCartridgeToSave->type, dirtyCartridgeToSave->image, dirtyCartridgeToSave->size << 10, dirtyCartridgeToSave->raw, 0);
+
+    dirtyCartridgeToSave->blank = FALSE;
+    dirtyCartridgeToSave->dirty = FALSE;
 }
 
 /*------------------------------------------------------------------------------

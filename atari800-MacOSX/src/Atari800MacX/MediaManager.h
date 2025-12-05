@@ -187,6 +187,7 @@
 - (NSString *) browseFileInDirectory:(NSString *)directory;
 - (NSString *) browseFileTypeInDirectory:(NSString *)directory:(NSArray *) filetypes;
 - (NSString *) saveFileInDirectory:(NSString *)directory:(NSString *)type;
+- (NSString *) saveFileInDirectoryFilename:(NSString *)directory:(NSString *)type:(NSString *)fname;
 - (IBAction)cancelDisk:(id)sender;
 - (IBAction)cancelHardDisk:(id)sender;
 - (IBAction)cartInsert:(id)sender;

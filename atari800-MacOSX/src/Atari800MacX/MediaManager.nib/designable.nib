@@ -3743,19 +3743,28 @@ Gw
                         </connections>
                     </button>
                     <textField focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="pig-hL-ZUm">
-                        <rect key="frame" x="25" y="65" width="515" height="32"/>
+                        <rect key="frame" x="-82" y="85" width="516" height="16"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <textFieldCell key="cell" lineBreakMode="clipping" id="uYD-1q-MU7">
+                        <textFieldCell key="cell" lineBreakMode="clipping" alignment="center" title="Contents of Flash/RAM Cartridge have changed. " id="uYD-1q-MU7">
                             <font key="font" metaFont="system"/>
-                            <string key="title">Contents of Flash/RAM Cartridge have changed.
-           Do you want to save the Cartridge?</string>
+                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Wed-2a-a7C">
+                        <rect key="frame" x="-82" y="45" width="516" height="32"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" lineBreakMode="clipping" alignment="center" id="x72-yS-SnZ">
+                            <font key="font" metaFont="system"/>
+                            <string key="title">Do you want to save the Cartridge?
+</string>
                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
                 </subviews>
             </view>
-            <point key="canvasLocation" x="-399" y="-2400.5"/>
+            <point key="canvasLocation" x="-406" y="-2431.5"/>
         </window>
     </objects>
     <resources>
