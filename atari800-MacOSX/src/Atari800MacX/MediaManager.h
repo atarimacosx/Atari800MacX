@@ -221,9 +221,8 @@
 - (IBAction)cartBlankRamCart16MInsert:(id)sender;
 - (IBAction)cartBlankRamCart32MInsert:(id)sender;
 - (IBAction)cartBlankSidiCar32KInsert:(id)sender;
-//- (IBAction)dirtyNo:(id)sender;
-//- (IBAction)dirtyYes:(id)sender;
-//- (IBAction)dirtyCartridgeSave:(CARTRIDGE_image_t *)cart;
+- (IBAction)dirtyNo:(id)sender;
+- (IBAction)dirtyYes:(id)sender;
 - (IBAction)cartSave:(id)sender;
 - (IBAction)cartSecondInsert:(id)sender;
 - (void)cartInsertFile:(NSString *)filename;
