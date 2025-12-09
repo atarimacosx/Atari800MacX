@@ -1606,6 +1606,7 @@ static void RemoveCart(CARTRIDGE_image_t *cart)
     if (cart->funcs != NULL) {
         cart->funcs->shutdown();
     }
+
 	if (cart->image != NULL) {
 		switch (cart->type) {
 		case CARTRIDGE_RAMCART_64:
@@ -1623,6 +1624,8 @@ static void RemoveCart(CARTRIDGE_image_t *cart)
 
 		free(cart->image);
 		cart->image = NULL;
+        cart->blank = FALSE;
+        cart->dirty = FALSE;
 	}
 #ifdef ATARI800MACX
     if (cart->type == CARTRIDGE_SIDE2) {

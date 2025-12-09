@@ -573,10 +573,6 @@ NSImage *disketteImage;
             [saveCartItem setTarget:self];
         }
     }
-    if (CARTRIDGE_main.type == CARTRIDGE_NONE)
-        [saveCartItem setTarget:nil];
-    else
-        [saveCartItem setTarget:self];
     if (CARTRIDGE_main.type == CARTRIDGE_SDX_64 || CARTRIDGE_main.type == CARTRIDGE_SDX_128 ||
         CARTRIDGE_main.type == CARTRIDGE_ATRAX_SDX_64 || CARTRIDGE_main.type == CARTRIDGE_ATRAX_SDX_128)
         [insertSecondCartItem setTarget:self];

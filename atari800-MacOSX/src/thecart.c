@@ -33,8 +33,10 @@ static FlashEmu *flash;
 static int   CartBankWriteEnable = FALSE;
 static int   CartBank2WriteEnable = FALSE;
 static uint32_t Bank1_Base;
+static uint32_t Bank1_End;
 static uint32_t Bank1_Offset;
 static uint32_t Bank2_Base;
+static uint32_t Bank2_End;
 static uint32_t Bank2_Offset;
 
 static void  UpdateTheCart(void);
@@ -124,6 +126,7 @@ static void THECART_Cold_Reset() {
     CartBankWriteEnable = FALSE;
     CartBank2WriteEnable = FALSE;
     Bank1_Base = 0;
+    Bank1_End = 0;
     Bank1_Offset = 0;
     Bank2_Base = 0;
     Bank2_Offset = 0;
@@ -621,9 +624,6 @@ static void UpdateTheCart() {
 }
 
 static void Set_Cart_Banks(int bank, int bank2) {
-    if (CartBank == bank && CartBank2 == bank2)
-        return;
-
     CartBank = bank;
     CartBank2 = bank2;
     //THECART_Map_Cart();
@@ -633,6 +633,7 @@ static void THECART_Map_Cart()
 {
     if (CartBank < 0) {
         Bank1_Base = 0;
+        Bank1_End = 0;
         MEMORY_CartA0bfDisable();
     } else {
         UWORD base = 0xA000;
@@ -648,6 +649,7 @@ static void THECART_Map_Cart()
         unsigned char *bankData = Cart->image + offset;
 
         Bank1_Base = base;
+        Bank1_End = end;
         Bank1_Offset = offset;
 
         CartBankWriteEnable = TheCartRegs[7] & 0x01;
@@ -657,19 +659,20 @@ static void THECART_Map_Cart()
             MEMORY_SetFlashRoutines(THECART_Flash_Read, THECART_Flash_Write);
             MEMORY_SetFlash(base, end);
             MEMORY_CopyFromCart(base, end, bankData);
-      } else {
+        } else {
             MEMORY_SetFlashRoutines(THECART_Ram_Read, THECART_Ram_Write);
             MEMORY_SetFlash(base, end);
         }
     }
 
     if (CartBank2 < 0) {
-        MEMORY_Cart809fDisable();
         Bank2_Base = 0;
+        Bank2_End = 0;
+        MEMORY_Cart809fDisable();
     } else {
         UWORD base = 0x8000;
         UWORD size = 0x2000;
-        UWORD extraOffset = 0;
+        ULONG extraOffset = 0;
         ULONG bank2 = CartBank2;
 
         // adjust for 4K banking
@@ -690,10 +693,11 @@ static void THECART_Map_Cart()
         }
         
         UWORD end = (base + size) - 1;
-        ULONG offset = (((bank2 << 13) + extraOffset) & CartSizeMask);
+        ULONG offset = ((((ULONG) bank2 << 13) + extraOffset) & CartSizeMask);
         unsigned char *bankData = Cart->image + offset;
 
         Bank2_Base = base;
+        Bank2_End = end;
         Bank2_Offset = offset;
         
         // if we are in a 16K mode, we must use the primary bank's read-only flag
@@ -720,7 +724,6 @@ static void THECART_Map_Cart()
 
         CartBank2WriteEnable = (TheCartRegs[7] & roBit);
 
-
         if (!(TheCartRegs[7] & ramBit)) {
             MEMORY_SetFlashRoutines(THECART_Flash_Read, THECART_Flash_Write);
             MEMORY_SetFlash(base, end);
@@ -738,33 +741,20 @@ static uint32_t Calc_Full_Address(UWORD addr, int * writeEnable)
     uint32_t base;
     uint32_t offset;
 
-    if (Bank1_Base == 0xB000 && addr >= 0xB000) {
-        base = 0xB000;
-        offset = Bank1_Offset;
-        if (writeEnable)
-            *writeEnable = CartBankWriteEnable;
-    }
-    else if (Bank2_Base == 0xA000 && addr >= 0xA000 && addr < 0xB000) {
-        base = 0xA000;
-        offset = Bank2_Offset;
-        if (writeEnable)
-            *writeEnable = CartBank2WriteEnable;
-    }
-    else if (Bank1_Base == 0xA000 && addr >= 0xA000) {
-        base = 0xA000;
+    if (Bank1_Base != 0 && addr >= Bank1_Base && addr <= Bank1_End) {
+        base = Bank1_Base;
         offset = Bank1_Offset;
         if (writeEnable)
             *writeEnable = CartBankWriteEnable;
     }
     else {
-        base = 0x8000;
+        base = Bank2_Base;
         offset = Bank2_Offset;
         if (writeEnable)
             *writeEnable = CartBank2WriteEnable;
     }
-
     fullAddr = offset + (addr - base);
-    
+
     return fullAddr;
 }
 
