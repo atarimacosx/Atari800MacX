@@ -561,7 +561,10 @@ NSImage *disketteImage;
         }
         else {
             [removeCartItem setTarget:self];
-            [saveCartItem setTarget:self];
+            if (CARTRIDGE_piggyback.dirty || CARTRIDGE_piggyback.blank)
+                [saveCartItem setTarget:self];
+            else
+                [saveCartItem setTarget:nil];
         }
     } else {
         if (CARTRIDGE_main.type == CARTRIDGE_NONE) {
@@ -570,7 +573,10 @@ NSImage *disketteImage;
         }
         else {
             [removeCartItem setTarget:self];
-            [saveCartItem setTarget:self];
+            if (CARTRIDGE_main.dirty || CARTRIDGE_main.blank)
+                [saveCartItem setTarget:self];
+            else
+                [saveCartItem setTarget:nil];
         }
     }
     if (CARTRIDGE_main.type == CARTRIDGE_SDX_64 || CARTRIDGE_main.type == CARTRIDGE_SDX_128 ||
