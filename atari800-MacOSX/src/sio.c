@@ -704,9 +704,6 @@ int SIO_ReadSector(int unit, int sector, UBYTE *buffer)
 	if (BINLOAD_start_binloading)
 		return BINLOAD_LoaderStart(buffer);
 
-    if (SIO_format_sectorsize[unit] == 8192)
-        sector = sector - 32768;
-
 	io_success[unit] = -1;
 	if (SIO_drive_status[unit] == SIO_OFF)
 		return 0;
