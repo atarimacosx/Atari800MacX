@@ -107,8 +107,8 @@ int ULTIMATE_Initialise(int *argc, char *argv[])
 
 void ULTIMATE_Exit(void)
 {
-    CDS1305_Exit(rtc);
     SaveNVRAM();
+    CDS1305_Exit(rtc);
 }
 
 UBYTE ULTIMATE_D1GetByte(UWORD addr, int no_side_effects)
