@@ -108,8 +108,8 @@ int ULTIMATE_Initialise(int *argc, char *argv[])
 
 void ULTIMATE_Exit(void)
 {
-    CDS1305_Exit(rtc);
     SaveNVRAM();
+    CDS1305_Exit(rtc);
 }
 
 int ULTIMATE_RomDirty(void)
