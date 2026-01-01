@@ -340,7 +340,7 @@ static void SwitchBank(int old_state)
 	case CARTRIDGE_ADAWLIAH_64:
 		set_bank_A0BF(8, 7);
 		break;
-#ifndef ATARI800MACX
+#ifdef ATARI800MACX
     case CARTRIDGE_WILL_32:
         set_bank_A0BF(8, 3);
     case CARTRIDGE_WILL_16:
