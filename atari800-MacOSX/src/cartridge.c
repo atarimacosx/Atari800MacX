@@ -340,7 +340,7 @@ static void SwitchBank(int old_state)
 	case CARTRIDGE_ADAWLIAH_64:
 		set_bank_A0BF(8, 7);
 		break;
-#ifdef ATARI800MACX
+#ifndef ATARI800MACX
     case CARTRIDGE_WILL_32:
         set_bank_A0BF(8, 3);
     case CARTRIDGE_WILL_16:
@@ -671,7 +671,6 @@ static void MapActiveCart(void)
 #ifndef ATARI800MACX
 		case CARTRIDGE_ATMAX_128:
 		case CARTRIDGE_ATMAX_OLD_1024:
-
 #endif
 		case CARTRIDGE_SDX_128:
 		case CARTRIDGE_ATRAX_SDX_64:
@@ -1212,7 +1211,7 @@ static UBYTE GetByte(CARTRIDGE_image_t *cart, UWORD addr, int no_side_effects)
 /* Processes bankswitching of CART when writing to a $D5xx address ADDR. */
 static void PutByte(CARTRIDGE_image_t *cart, UWORD addr, UBYTE byte)
 {
-#ifndef ATARI800MACX
+#ifdef ATARI800MACX
     if (cart->funcs != NULL) {
         cart->funcs->write_byte(addr, byte);
         if (cart == active_cart) {
