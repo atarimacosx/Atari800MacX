@@ -62,7 +62,9 @@
 
 /* #define DEBUG 1 */
 
+#ifdef ATARI800MACX
 extern int MediaManagerDirtyCartridgeSave(CARTRIDGE_image_t *cart);
+#endif
 
 int CARTRIDGE_autoreboot = TRUE;
 
@@ -93,9 +95,13 @@ static int CartIsPassthrough(int type)
 	       type == CARTRIDGE_ATRAX_SDX_64 || type == CARTRIDGE_ATRAX_SDX_128;
 }
 
-CARTRIDGE_image_t CARTRIDGE_main = { CARTRIDGE_NONE, 0, 0, NULL, "" }; /* Left/Right cartridge */
-CARTRIDGE_image_t CARTRIDGE_piggyback = { CARTRIDGE_NONE, 0, 0, NULL, "" }; /* Pass through cartridge for SpartaDOSX */
-
+#ifdef ATARI800MACX
+CARTRIDGE_image_t CARTRIDGE_main = { CARTRIDGE_NONE, 0, 0, NULL, "", TRUE, FALSE, FALSE, NULL }; /* Left/Right cartridge */
+CARTRIDGE_image_t CARTRIDGE_piggyback = { CARTRIDGE_NONE, 0, 0, NULL, "", TRUE, FALSE, FALSE, NULL }; /* Pass through cartridge for SpartaDOSX */
+#else
+CARTRIDGE_image_t CARTRIDGE_main = { CARTRIDGE_NONE, 0, 0, NULL, "", TRUE }; /* Left/Right cartridge */
+CARTRIDGE_image_t CARTRIDGE_piggyback = { CARTRIDGE_NONE, 0, 0, NULL, "", TRUE }; /* Pass through cartridge for SpartaDOSX */
+#endif
 /* The currently active cartridge in the left slot - normally points to
    CARTRIDGE_main but can be switched to CARTRIDGE_piggyback if the main
    cartridge is a SpartaDOS X. */
@@ -216,7 +222,39 @@ static void set_bank_SDX_128(void)
 			active_cart->image + ((active_cart->state & 7) + ((active_cart->state & 0x10) >> 1)) * 0x2000);
 	}
 }
+#ifndef ATARI800MACX
+static void set_bank_SIC(int n)
+{
+	if (!(active_cart->state & 0x20))
+		MEMORY_Cart809fDisable();
+	else {
+		MEMORY_Cart809fEnable();
+		MEMORY_CopyFromCart(0x8000, 0x9fff,
+			active_cart->image + (active_cart->state & n) * 0x4000);
+	}
+	if (active_cart->state & 0x40)
+		MEMORY_CartA0bfDisable();
+	else {
+		MEMORY_CartA0bfEnable();
+		MEMORY_CopyFromCart(0xa000, 0xbfff,
+			active_cart->image + (active_cart->state & n) * 0x4000 + 0x2000);
+	}
+}
 
+/* MEGA_4096 */
+static void set_bank_MEGA_4096(void)
+{
+	if (active_cart->state == 0xff) {
+		MEMORY_Cart809fDisable();
+		MEMORY_CartA0bfDisable();
+	}
+	else {
+		MEMORY_Cart809fEnable();
+		MEMORY_CartA0bfEnable();
+		MEMORY_CopyFromCart(0x8000, 0xbfff, active_cart->image + active_cart->state * 0x4000);
+	}
+}
+#endif
 /* Ram-Cart */
 static void set_bank_RAMCART(int mask, int old_state)
 {
@@ -278,11 +316,10 @@ static void set_bank_SIDICAR(int mask, int old_state)
    enables/disables the cartridge pointed to by *active_cart. */
 static void SwitchBank(int old_state)
 {
-	/* All bank-switched cartridges besides two BBSB's and TheCart
-       are included in this switch. The BBSB cartridges are not
-       bank-switched by access to page $D5, but in
-       CARTRIDGE_BountyBob1() and CARTRIDGE_BountyBob2(), so they
-       need not be processed here. */
+	/* All bank-switched cartridges besides two BBSB's are included in
+	   this switch. The BBSB cartridges are not bank-switched by
+	   access to page $D5, but in CARTRIDGE_BountyBob1() and
+	   CARTRIDGE_BountyBob2(), so they need not be processed here. */
 	switch (active_cart->type) {
 	case CARTRIDGE_OSS_034M_16:
 	case CARTRIDGE_OSS_043M_16:
@@ -296,14 +333,19 @@ static void SwitchBank(int old_state)
 	case CARTRIDGE_EXP_64:
 	case CARTRIDGE_DIAMOND_64:
 	case CARTRIDGE_SDX_64:
+#ifndef ATARI800MACX
+	case CARTRIDGE_WILL_32:
+#endif
 	case CARTRIDGE_ATRAX_SDX_64:
 	case CARTRIDGE_ADAWLIAH_64:
 		set_bank_A0BF(8, 7);
 		break;
+#ifdef ATARI800MACX
     case CARTRIDGE_WILL_32:
         set_bank_A0BF(8, 3);
     case CARTRIDGE_WILL_16:
         set_bank_A0BF(8, 1);
+#endif
 	case CARTRIDGE_DB_32:
 	case CARTRIDGE_XEGS_32:
 	case CARTRIDGE_SWXEGS_32:
@@ -333,9 +375,18 @@ static void SwitchBank(int old_state)
 		set_bank_809F(0xfe000, old_state);
 		break;
 	case CARTRIDGE_ATRAX_DEC_128:
+#ifndef ATARI800MACX
+	case CARTRIDGE_ATMAX_OLD_1024:
+#endif
 	case CARTRIDGE_ATRAX_128:
+#ifndef ATARI800MACX
+	case CARTRIDGE_ATMAX_NEW_1024:
+#endif
 		set_bank_A0BF(0x80, 0x7f);
 		break;
+#ifndef ATARI800MACX
+	case CARTRIDGE_ATMAX_128:
+#endif
 	case CARTRIDGE_TURBOSOFT_64:
 	case CARTRIDGE_TURBOSOFT_128:
 		set_bank_A0BF(0x10, 0x0f);
@@ -376,6 +427,29 @@ static void SwitchBank(int old_state)
 	case CARTRIDGE_ADAWLIAH_32:
 		set_bank_A0BF(4, 3);
 		break;
+#ifndef ATARI800MACX
+	case CARTRIDGE_SIC_128:
+		set_bank_SIC(0x07);
+		break;
+	case CARTRIDGE_SIC_256:
+		set_bank_SIC(0x0f);
+		break;
+	case CARTRIDGE_SIC_512:
+		set_bank_SIC(0x1f);
+		break;
+	case CARTRIDGE_MEGA_4096:
+		set_bank_MEGA_4096();
+		break;
+	case CARTRIDGE_THECART_128M:
+		set_bank_A0BF(0x4000, 0x3fff);
+		break;
+	case CARTRIDGE_THECART_32M:
+		set_bank_A0BF(0x4000, 0x0fff);
+		break;
+	case CARTRIDGE_THECART_64M:
+		set_bank_A0BF(0x4000, 0x1fff);
+		break;
+#endif
 	case CARTRIDGE_RAMCART_64:
 		set_bank_RAMCART(0x00018, old_state);
 		break;
@@ -417,7 +491,24 @@ static void SwitchBank(int old_state)
 		break;	
 	case CARTRIDGE_JACART_64:
 		set_bank_A0BF(0x80, 0x07);
+		break;
+#ifndef ATARI800MACX
+		set_bank_A0BF(0x80, 0x0f);
 		break;	
+	case CARTRIDGE_JACART_256:
+		set_bank_A0BF(0x80, 0x1f);
+		break;	
+	case CARTRIDGE_JACART_512:
+		set_bank_A0BF(0x80, 0x3f);
+		break;	
+	case CARTRIDGE_JACART_1024:
+		set_bank_A0BF(0x80, 0x7f);
+		break;
+	case CARTRIDGE_DCART:
+		set_bank_A0BF(0x80, 0x3f);
+		MEMORY_CopyFromCart(0xd500, 0xd5ff, active_cart->image + (active_cart->state & 0x3f) * 0x2000 + 0x1500);
+		break;			
+#endif
 	}
 #if DEBUG
 	if (old_state != active_cart->state)
@@ -513,10 +604,12 @@ static void MapActiveCart(void)
 		}
 	}
 	else { /* Atari800_machine_type != Atari800_MACHINE_5200 */
+#ifdef ATARI800MACX
         if (active_cart->funcs != NULL) {
             active_cart->funcs->map();
             return;
         }
+#endif
 		switch (active_cart->type) {
 		case CARTRIDGE_STD_2:
 			MEMORY_Cart809fDisable();
@@ -575,6 +668,11 @@ static void MapActiveCart(void)
 		case CARTRIDGE_SDX_64:
 		case CARTRIDGE_ATRAX_DEC_128:
 		case CARTRIDGE_WILL_32:
+#ifndef ATARI800MACX
+		case CARTRIDGE_ATMAX_128:
+		case CARTRIDGE_ATMAX_OLD_1024:
+
+#endif
 		case CARTRIDGE_SDX_128:
 		case CARTRIDGE_ATRAX_SDX_64:
 		case CARTRIDGE_ATRAX_SDX_128:
@@ -582,14 +680,29 @@ static void MapActiveCart(void)
 		case CARTRIDGE_TURBOSOFT_128:
 		case CARTRIDGE_ULTRACART_32:
 		case CARTRIDGE_BLIZZARD_32:
+#ifndef ATARI800MACX
+		case CARTRIDGE_THECART_128M:
+		case CARTRIDGE_THECART_32M:
+		case CARTRIDGE_THECART_64M:
+#endif
 		case CARTRIDGE_ATRAX_128:
 		case CARTRIDGE_ADAWLIAH_32:
 		case CARTRIDGE_ADAWLIAH_64:
+
+#ifdef ATARI800MACX
         case CARTRIDGE_WILL_16:
+#endif
 		case CARTRIDGE_JACART_8:
 		case CARTRIDGE_JACART_16:
 		case CARTRIDGE_JACART_32:
 		case CARTRIDGE_JACART_64:
+#ifndef ATARI800MACX
+		case CARTRIDGE_JACART_128:
+		case CARTRIDGE_JACART_256:
+		case CARTRIDGE_JACART_512:
+		case CARTRIDGE_JACART_1024:
+		case CARTRIDGE_DCART:	
+#endif
 			MEMORY_Cart809fDisable();
 			break;
 		case CARTRIDGE_DB_32:
@@ -699,6 +812,20 @@ static void MapActiveCart(void)
 					MEMORY_CopyFromCart(i, i + 0xff, active_cart->image + (active_cart->state & 0xffff));
 			}
 			break;
+#ifndef ATARI800MACX
+		case CARTRIDGE_MEGA_16:
+		case CARTRIDGE_MEGA_32:
+		case CARTRIDGE_MEGA_64:
+		case CARTRIDGE_MEGA_128:
+		case CARTRIDGE_MEGA_256:
+		case CARTRIDGE_MEGA_512:
+		case CARTRIDGE_MEGA_1024:
+		case CARTRIDGE_MEGA_2048:
+		case CARTRIDGE_MEGA_4096:
+		case CARTRIDGE_SIC_128:
+		case CARTRIDGE_SIC_256:
+		case CARTRIDGE_SIC_512:
+#endif
 		case CARTRIDGE_MEGAMAX_2048:
 		case CARTRIDGE_RAMCART_64:
 		case CARTRIDGE_RAMCART_128:
@@ -837,9 +964,11 @@ static int access_D5(CARTRIDGE_image_t *cart, UWORD addr, int *state)
     case CARTRIDGE_WILL_32:
         new_state = addr & 0x0b;
         break;
+#ifdef ATARI800MACX		
     case CARTRIDGE_WILL_16:
         new_state = addr & 0x09;
         break;
+#endif
 	case CARTRIDGE_EXP_64:
 		/* Only react to access to $D57x. */
 		if ((addr & 0xf0) != 0x70)
@@ -922,13 +1051,34 @@ static int access_D5(CARTRIDGE_image_t *cart, UWORD addr, int *state)
 		/* Disable the cart. */
 		new_state = 1;
 		break;
+#ifdef ATARI800MACX
+	case CARTRIDGE_ATMAX_128:
+		/* Only react to access to $D50x/$D51x. */
+		if ((addr & 0xe0) != 0)
+			return FALSE;
+		/* fall through */
+#endif
 	case CARTRIDGE_TURBOSOFT_128:
 		new_state = addr & 0x1f;
 		break;
 	case CARTRIDGE_TURBOSOFT_64:
 		new_state = addr & 0x17;
 		break;
+#ifndef ATARI800MACX
+	case CARTRIDGE_ATMAX_OLD_1024:
+#endif
 	case CARTRIDGE_MEGAMAX_2048:
+#ifndef ATARI800MACX
+	case CARTRIDGE_ATMAX_NEW_1024:	
+	case CARTRIDGE_JACART_8:
+	case CARTRIDGE_JACART_16:
+	case CARTRIDGE_JACART_32:
+	case CARTRIDGE_JACART_64:
+	case CARTRIDGE_JACART_128:
+	case CARTRIDGE_JACART_256:
+	case CARTRIDGE_JACART_512:
+	case CARTRIDGE_JACART_1024:
+#endif
 		new_state = addr;
 		break;
 	case CARTRIDGE_OSS_8:
@@ -969,10 +1119,6 @@ static int access_D5(CARTRIDGE_image_t *cart, UWORD addr, int *state)
 /* Processes bankswitching of CART when reading from a $D5xx address ADDR. */
 static UBYTE GetByte(CARTRIDGE_image_t *cart, UWORD addr, int no_side_effects)
 {
-    /* Determine returned byte value. */
-    switch (cart->type) {
-    }
-    
 	int old_state = cart->state;
 	int new_state = old_state;
 
@@ -980,6 +1126,7 @@ static UBYTE GetByte(CARTRIDGE_image_t *cart, UWORD addr, int no_side_effects)
 	if (cart->type > CARTRIDGE_NONE)
 		Log_print("Cart %i read: %04x", cart == &CARTRIDGE_piggyback, addr);
 #endif
+#ifdef ATARI800MACX
     if (cart->funcs != NULL) {
         UBYTE value;
         
@@ -989,6 +1136,7 @@ static UBYTE GetByte(CARTRIDGE_image_t *cart, UWORD addr, int no_side_effects)
         }
         return value;
     }
+#endif
 
     /* Set the cartridge's new state. */
 	/* Check types switchable by access to page D5. */
@@ -1008,6 +1156,28 @@ static UBYTE GetByte(CARTRIDGE_image_t *cart, UWORD addr, int no_side_effects)
 		/* cart->state contains address of current bank, therefore it
 		   divides by 0x100. */
 		return cart->image[(cart->state & 0xff00) | (addr & 0xff)];
+#ifndef ATARI800MACX
+	case CARTRIDGE_SIC_512:
+	case CARTRIDGE_SIC_256:
+	case CARTRIDGE_SIC_128:
+	case CARTRIDGE_MEGA_4096:
+		/* Only react to access to $D50x/$D51x. */
+		if ((addr & 0xe0) == 0x00)
+			return cart->state;
+		break;
+	case CARTRIDGE_THECART_128M:
+	case CARTRIDGE_THECART_32M:
+	case CARTRIDGE_THECART_64M:
+		switch (addr) {
+		case 0xd5a0:
+			return cart->state & 0x00ff;
+		case 0xd5a1:
+			return (cart->state & 0x3f00) >> 8;
+		case 0xd5a2:
+			return (~cart->state & 0x4000) >> 14;
+		}
+		break;
+#endif
 	case CARTRIDGE_RAMCART_32M:
 	case CARTRIDGE_RAMCART_16M:
 	case CARTRIDGE_RAMCART_8M:
@@ -1030,6 +1200,11 @@ static UBYTE GetByte(CARTRIDGE_image_t *cart, UWORD addr, int no_side_effects)
 	/*case CARTRIDGE_RAMCART_128:
 	case CARTRIDGE_RAMCART_64:
 		return cart->state | 0x00e0;*/
+#ifndef ATARI800MACX
+	case CARTRIDGE_DCART:
+			return cart->image[((cart->state & 0x3f)*0x2000)+0x1500+(addr & 0xff)];
+		break;
+#endif
 	}
 	return 0xff;
 }
@@ -1037,6 +1212,7 @@ static UBYTE GetByte(CARTRIDGE_image_t *cart, UWORD addr, int no_side_effects)
 /* Processes bankswitching of CART when writing to a $D5xx address ADDR. */
 static void PutByte(CARTRIDGE_image_t *cart, UWORD addr, UBYTE byte)
 {
+#ifndef ATARI800MACX
     if (cart->funcs != NULL) {
         cart->funcs->write_byte(addr, byte);
         if (cart == active_cart) {
@@ -1044,6 +1220,7 @@ static void PutByte(CARTRIDGE_image_t *cart, UWORD addr, UBYTE byte)
         }
         return;
     }
+#endif
 
     int old_state = cart->state;
 	int new_state = old_state;
@@ -1073,23 +1250,47 @@ static void PutByte(CARTRIDGE_image_t *cart, UWORD addr, UBYTE byte)
 	case CARTRIDGE_XEGS_1024:
 		new_state = byte & 0x7f;
 		break;
+#ifndef ATARI800MACX
+	case CARTRIDGE_MEGA_16:
+		new_state = byte & 0x80;
+		break;
+	case CARTRIDGE_MEGA_32:
+		new_state = byte & 0x81;
+		break;
+	case CARTRIDGE_MEGA_64:
+#endif
 	case CARTRIDGE_SWXEGS_32:
 		new_state = byte & 0x83;
 		break;
+#ifndef ATARI800MACX
+	case CARTRIDGE_MEGA_128:
+#endif
 	case CARTRIDGE_SWXEGS_64:
 		new_state = byte & 0x87;
 		break;
+#ifndef ATARI800MACX
+	case CARTRIDGE_MEGA_256:
+#endif
 	case CARTRIDGE_SWXEGS_128:
 	case CARTRIDGE_ATRAX_DEC_128:
 	case CARTRIDGE_ATRAX_128:
 		new_state = byte & 0x8f;
 		break;
+#ifndef ATARI800MACX
+	case CARTRIDGE_MEGA_512:
+#endif
 	case CARTRIDGE_SWXEGS_256:
 		new_state = byte & 0x9f;
 		break;
+#ifndef ATARI800MACX
+	case CARTRIDGE_MEGA_1024:
+#endif
 	case CARTRIDGE_SWXEGS_512:
 		new_state = byte & 0xbf;
 		break;
+#ifndef ATARI800MACX
+	case CARTRIDGE_MEGA_2048:
+#endif
 	case CARTRIDGE_SWXEGS_1024:
 		new_state = byte;
 		break;
@@ -1097,6 +1298,30 @@ static void PutByte(CARTRIDGE_image_t *cart, UWORD addr, UBYTE byte)
 		/* State contains address of current bank. */
 		new_state = (old_state + 0x100) & 0x7fff;
 		break;
+#ifndef ATARI800MACX
+	case CARTRIDGE_SIC_512:
+	case CARTRIDGE_SIC_256:
+	case CARTRIDGE_SIC_128:
+	case CARTRIDGE_MEGA_4096:
+		/* Only react to access to $D50x/$D51x. */
+		if ((addr & 0xe0) == 0x00)
+			new_state = byte;
+		break;
+	case CARTRIDGE_THECART_128M:
+	case CARTRIDGE_THECART_32M:
+	case CARTRIDGE_THECART_64M:
+		switch (addr) {
+		case 0xd5a0:
+			new_state = (old_state & 0x3f00) | byte;
+			break;
+		case 0xd5a1:
+			new_state = (old_state & 0x00ff) | ((byte & 0x3f) << 8);
+			break;
+		case 0xd5a2:
+			new_state = (old_state & 0x3fff) | ((~byte & 0x01) << 14);
+			break;
+		}
+#endif
 	case CARTRIDGE_RAMCART_64:
 		if (!(old_state & 0x0004)) /* lock bit not set */
 			new_state = (old_state & 0x7f000) | (byte & 0x1f);
@@ -1146,6 +1371,11 @@ static void PutByte(CARTRIDGE_image_t *cart, UWORD addr, UBYTE byte)
 		if (/*(addr == 0xd5ff) &&*/ !(byte & 0x80))
 			new_state = byte & 0x13;
 		break;
+#ifndef ATARI800MACX
+	case CARTRIDGE_DCART:
+			new_state = addr;
+		break;
+#endif
 	default:
 		/* Check types switchable by access to page D5. */
 		if (!access_D5(cart, addr, &new_state))
@@ -1353,19 +1583,31 @@ void CARTRIDGE_5200SuperCartPutByte(UWORD addr, UBYTE value)
 
 static void ResetCartState(CARTRIDGE_image_t *cart)
 {
+#ifdef ATARI800MACX
     if (active_cart->funcs != NULL) {
         active_cart->funcs->cold_reset();
         return;
     }
+#endif
 	switch (cart->type) {
 	case CARTRIDGE_OSS_034M_16:
 		cart->state = 1;
 		break;
+#ifndef ATARI800MACX
+	case CARTRIDGE_ATMAX_OLD_1024:
+		cart->state = 0x7f;
+		break;
+#endif
 	case CARTRIDGE_AST_32:
 		/* A special value of 0x10000 indicates the cartridge is
 		   enabled and the current bank is 0. */
 		cart->state = 0x10000;
 		break;
+#ifndef ATARI800MACX
+	case CARTRIDGE_MEGA_4096:
+		cart->state = 254;
+		break;
+#endif
 	default:
 		cart->state = 0;
 	}
@@ -1502,7 +1744,7 @@ static void PreprocessCart(CARTRIDGE_image_t *cart)
    or CARTRIDGE_Insert_Second and CARTRIDGE_SetType. */
 static void InitCartridge(CARTRIDGE_image_t *cart)
 {
-#ifdef ATARI800MACX
+ #ifdef ATARI800MACX
     if ((cart->type == CARTRIDGE_THECART_32M) ||
         (cart->type == CARTRIDGE_THECART_64M) ||
         (cart->type == CARTRIDGE_THECART_128M))
@@ -1600,12 +1842,14 @@ int CARTRIDGE_WriteImage(char *filename, int type, UBYTE *image, int size, int r
 
 static void RemoveCart(CARTRIDGE_image_t *cart)
 {
+#ifdef ATARI800MACX
     if (cart->dirty || cart->blank)
         MediaManagerDirtyCartridgeSave(cart);
     
     if (cart->funcs != NULL) {
         cart->funcs->shutdown();
     }
+#endif
 
 	if (cart->image != NULL) {
 		switch (cart->type) {
@@ -1624,8 +1868,10 @@ static void RemoveCart(CARTRIDGE_image_t *cart)
 
 		free(cart->image);
 		cart->image = NULL;
+#ifdef ATARI800MACX
         cart->blank = FALSE;
         cart->dirty = FALSE;
+#endif
 	}
 #ifdef ATARI800MACX
     if (cart->type == CARTRIDGE_SIDE2) {
@@ -1633,7 +1879,9 @@ static void RemoveCart(CARTRIDGE_image_t *cart)
     }
 #endif
 	if (cart->type != CARTRIDGE_NONE) {
+#ifdef ATARI800MACX
         cart->funcs = NULL;
+#endif
 		cart->type = CARTRIDGE_NONE;
 		if (cart == active_cart)
 			MapActiveCart();
@@ -1680,8 +1928,8 @@ int CARTRIDGE_ReadImage(const char *filename, CARTRIDGE_image_t *cart)
 	int type;
 	UBYTE header[16];
 
-    cart->blank = FALSE;
 #ifdef ATARI800MACX
+    cart->blank = FALSE;
     if (strcmp(filename,CARTRIDGE_SPECIAL_BASIC) == 0) {
         /* alloc memory and copy data */
         len = 0x2000;
@@ -1835,6 +2083,7 @@ int CARTRIDGE_Insert(const char *filename)
 	return InsertCartridge(filename, &CARTRIDGE_main);
 }
 
+#ifdef ATARI800MACX
 int CARTRIDGE_Insert_Blank(int type)
 {
     CARTRIDGE_image_t *cart = &CARTRIDGE_main;
@@ -1853,7 +2102,6 @@ int CARTRIDGE_Insert_Blank(int type)
     return cart->size;
 }
 
-#ifdef ATARI800MACX
 int CARTRIDGE_Insert_BASIC(void)
 {
     /* remove currently inserted cart */
@@ -1921,6 +2169,7 @@ int CARTRIDGE_Insert_Second(const char *filename)
     return InsertCartridge(filename, &CARTRIDGE_piggyback);
 }
 
+#ifdef ATARI800MACX
 int CARTRIDGE_Insert_SecondAutoReboot(const char *filename)
 {
     int result;
@@ -1930,6 +2179,7 @@ int CARTRIDGE_Insert_SecondAutoReboot(const char *filename)
     AutoReboot();
     return result;
 }
+#endif
 
 void CARTRIDGE_Remove(void)
 {
@@ -1946,7 +2196,9 @@ void CARTRIDGE_RemoveAutoReboot(void)
 
 void CARTRIDGE_Remove_Second(void)
 {
+#ifdef ATARI800MACX
     active_cart = &CARTRIDGE_main;
+#endif
     RemoveCart(&CARTRIDGE_piggyback);
 }
 
@@ -2118,7 +2370,7 @@ void CARTRIDGE_StateRead(UBYTE version)
 	int saved_type = CARTRIDGE_NONE;
 	char filename[FILENAME_MAX];
 
-	/* Read the cart type from the file.  If there is no cart type, becaused we have
+	/* Read the cart type from the file.  If there is no cart type, because we have
 	   reached the end of the file, this will just default to CART_NONE */
 	StateSav_ReadINT(&saved_type, 1);
 	if (saved_type != CARTRIDGE_NONE) {

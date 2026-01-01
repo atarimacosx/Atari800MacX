@@ -10,6 +10,8 @@
    cartridge - in this case system will never autoreboot.) */
 extern int CARTRIDGE_autoreboot;
 
+#ifdef ATARI800MACX
+
 typedef struct CARTRIDGE_funcs_type {
     void (*shutdown)(void);
     int (*is_dirty)(void);
@@ -18,6 +20,7 @@ typedef struct CARTRIDGE_funcs_type {
     void (*write_byte)(UWORD address, UBYTE value);
     void (*map)(void);
 } CARTRIDGE_funcs_type;
+#endif
 
 /*
  * Ram-Cart state flag bits meaning:
@@ -61,9 +64,11 @@ typedef struct CARTRIDGE_image_t {
 	UBYTE *image;
 	char filename[FILENAME_MAX];
 	int raw; /* File contains RAW data (important for writeable cartridges). */
+#ifdef ATARI800MACX
     int dirty; /* For Flash or RAM carts, does Cart need to be saved */
     int blank; /* Blank cartridge that has never been saved */
     CARTRIDGE_funcs_type *funcs; /* Cart specific functions */
+#endif
 } CARTRIDGE_image_t;
 
 extern CARTRIDGE_image_t CARTRIDGE_main;
