@@ -299,6 +299,7 @@ static NSDictionary *defaultValues() {
                 [NSNumber numberWithBool:NO], ShowFPS,
                 [NSNumber numberWithBool:NO], OnlyIntegralScaling,
                 [NSNumber numberWithBool:NO], FixAspectFullscreen,
+                [NSNumber numberWithBool:YES], VsyncEnabled,
                 [NSNumber numberWithBool:YES], LedStatus,
                 [NSNumber numberWithBool:YES], LedSector,
                 [NSNumber numberWithBool:YES], LedStatusMedia,
@@ -882,6 +883,7 @@ static Preferences *sharedInstance = nil;
     [fpsButton setState:[[displayedValues objectForKey:ShowFPS] boolValue] ? NSOnState : NSOffState];
     [onlyIntegralScalingButton setState:[[displayedValues objectForKey:OnlyIntegralScaling] boolValue] ? NSOnState : NSOffState];
     [fixAspectFullscreenButton setState:[[displayedValues objectForKey:FixAspectFullscreen] boolValue] ? NSOnState : NSOffState];
+    [vsyncEnabledButton setState:[[displayedValues objectForKey:VsyncEnabled] boolValue] ? NSOnState : NSOffState];
     [ledStatusButton setState:[[displayedValues objectForKey:LedStatus] boolValue] ? NSOnState : NSOffState];
     [ledSectorButton setState:[[displayedValues objectForKey:LedSector] boolValue] ? NSOnState : NSOffState];
     [ledHDSectorButton setState:[[displayedValues objectForKey:LedHDSector] boolValue] ? NSOnState : NSOffState];
@@ -1812,6 +1814,10 @@ static Preferences *sharedInstance = nil;
         [displayedValues setObject:yes forKey:FixAspectFullscreen];
     else
         [displayedValues setObject:no forKey:FixAspectFullscreen];
+    if ([vsyncEnabledButton state] == NSOnState)
+        [displayedValues setObject:yes forKey:VsyncEnabled];
+    else
+        [displayedValues setObject:no forKey:VsyncEnabled];
     if ([ledSectorButton state] == NSOnState)
         [displayedValues setObject:yes forKey:LedSector];
     else
@@ -3847,6 +3853,7 @@ static Preferences *sharedInstance = nil;
     prefs->showFPS = [[curValues objectForKey:ShowFPS] intValue];
     prefs->onlyIntegralScaling = [[curValues objectForKey:OnlyIntegralScaling] intValue];
     prefs->fixAspectFullscreen = [[curValues objectForKey:FixAspectFullscreen] intValue];
+    prefs->vsyncEnabled = [[curValues objectForKey:VsyncEnabled] intValue];
     prefs->ledStatus = [[curValues objectForKey:LedStatus] intValue];
     prefs->ledSector = [[curValues objectForKey:LedSector] intValue];
     prefs->ledHDSector = [[curValues objectForKey:LedHDSector] intValue];
@@ -4191,6 +4198,7 @@ static Preferences *sharedInstance = nil;
             break;
 		}
     [displayedValues setObject:prefssave->showFPS ? yes : no forKey:ShowFPS];
+    [displayedValues setObject:prefssave->vsyncEnabled ? yes : no forKey:VsyncEnabled];
     [displayedValues setObject:prefssave->ledStatus ? yes : no forKey:LedStatus];
     [displayedValues setObject:prefssave->ledSector ? yes : no forKey:LedSector];
     [displayedValues setObject:prefssave->speedLimit ? yes : no forKey:SpeedLimit];
@@ -5318,6 +5326,7 @@ static Preferences *sharedInstance = nil;
     getBoolDefault(ShowFPS);
     getBoolDefault(OnlyIntegralScaling);
     getBoolDefault(FixAspectFullscreen);
+    getBoolDefault(VsyncEnabled);
     getBoolDefault(LedStatus);
     getBoolDefault(LedSector);
     getBoolDefault(LedHDSector);
@@ -5631,6 +5640,7 @@ static Preferences *sharedInstance = nil;
     setBoolDefault(ShowFPS);
     setBoolDefault(OnlyIntegralScaling);
     setBoolDefault(FixAspectFullscreen);
+    setBoolDefault(VsyncEnabled);
     setBoolDefault(LedStatus);
     setBoolDefault(LedSector);
     setBoolDefault(LedHDSector);
@@ -5925,6 +5935,7 @@ static Preferences *sharedInstance = nil;
     setConfig(ShowFPS);
     setConfig(OnlyIntegralScaling);
     setConfig(FixAspectFullscreen);
+    setConfig(VsyncEnabled);
     setConfig(LedStatus);
     setConfig(LedSector);
     setConfig(LedHDSector);
@@ -6317,6 +6328,7 @@ static Preferences *sharedInstance = nil;
     getConfig(ShowFPS);
     getConfig(OnlyIntegralScaling);
     getConfig(FixAspectFullscreen);
+    getConfig(VsyncEnabled);
     getConfig(LedStatus);
     getConfig(LedSector);
     getConfig(LedHDSector);

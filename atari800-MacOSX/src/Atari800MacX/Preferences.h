@@ -34,6 +34,7 @@
 #define PaletteFile @"PaletteFile"
 #define OnlyIntegralScaling @"OnlyIntegralScaling"
 #define FixAspectFullscreen @"FixAspectFullscreen"
+#define VsyncEnabled @"VsyncEnabled"
 #define ShowFPS @"ShowFPS"
 #define LedStatus @"LedStatus"
 #define LedSector @"LedSector"
@@ -461,6 +462,7 @@
     IBOutlet id enableMultijoyButton;
     IBOutlet id tvModeMatrix;
     IBOutlet id fixAspectFullscreenButton;
+    IBOutlet id vsyncEnabledButton;
     IBOutlet id onlyIntegralScalingButton;
     IBOutlet id widthModeMatrix;
     IBOutlet id whiteLevelField;
