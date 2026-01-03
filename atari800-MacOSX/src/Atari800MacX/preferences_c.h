@@ -29,6 +29,7 @@ typedef struct ATARI800MACX_PREF {
                 int showFPS;
                 int onlyIntegralScaling;
                 int fixAspectFullscreen;
+                int vsyncEnabled;
 				int ledStatus;
                 int ledSector;
                 int ledHDSector;
@@ -196,6 +197,7 @@ typedef struct ATARI800MACX_PREFSAVE {
                 int widthMode; 
 				int scaleMode;
                 int showFPS;
+                int vsyncEnabled;
 				int ledStatus;
 				int ledSector;
                 int speedLimit; 

@@ -22,6 +22,7 @@ extern int Screen_show_atari_speed;
 extern int requestFullScreenChange;
 extern int request80ColChange;
 extern int requestFpsChange;
+extern int requestVsyncChange;
 extern int requestScaleModeChange;
 extern int requestGrabMouse;
 extern int requestScreenshot;
@@ -40,6 +41,10 @@ void SetDisplayManagerWidthMode(int widthMode) {
 
 void SetDisplayManagerFps(int fpsOn) {
     [[DisplayManager sharedInstance] setFpsMenu:(fpsOn)];
+    }
+
+void SetDisplayManagerVsyncEnabled(int vsyncEnabled) {
+    [[DisplayManager sharedInstance] setVsyncMenu:(vsyncEnabled)];
     }
 
 void SetDisplayManagerScaleMode(int scaleMode) {
@@ -145,6 +150,18 @@ static DisplayManager *sharedInstance = nil;
         [displayFpsItem setState:NSOnState];
     else
         [displayFpsItem setState:NSOffState];
+}
+
+/*------------------------------------------------------------------------------
+*  setVsyncMenu - This method is used to set/clear the enabled check for the
+*     Verticle Sync menu item.
+*-----------------------------------------------------------------------------*/
+- (void)setVsyncMenu:(int)vsyncEnabled
+{
+    if (vsyncEnabled)
+        [vsyncEnabledItem setState:NSOnState];
+    else
+        [vsyncEnabledItem setState:NSOffState];
 }
 
 /*------------------------------------------------------------------------------
@@ -403,12 +420,21 @@ static DisplayManager *sharedInstance = nil;
 }
 
 /*------------------------------------------------------------------------------
-*  displayFps - This method handles the display frames per second menu 
+*  displayFps - This method handles the display frames per second menu
 *     selection.
 *-----------------------------------------------------------------------------*/
 - (IBAction)displayFps:(id)sender
 {
     requestFpsChange = 1;
+}
+
+/*------------------------------------------------------------------------------
+*  displayVsync - This method handles the display vsync menu
+*     selection.
+*-----------------------------------------------------------------------------*/
+- (IBAction)displayVsync:(id)sender
+{
+    requestVsyncChange = 1;
 }
 
 /*------------------------------------------------------------------------------

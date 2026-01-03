@@ -830,6 +830,12 @@ DQ
                             <menuItem isSeparatorItem="YES" id="cim-gf-ecb">
                                 <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                             </menuItem>
+                            <menuItem title="Verticle Sync Enabled" id="2C3-e4-PLL">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="displayVsync:" target="498" id="u8z-I0-0ZA"/>
+                                </connections>
+                            </menuItem>
                             <menuItem title="Show Frames Per Second" keyEquivalent="k" id="544">
                                 <connections>
                                     <action selector="displayFps:" target="498" id="545"/>
@@ -1277,6 +1283,7 @@ DQ
                 <outlet property="scaleModeNormalItem" destination="711" id="716"/>
                 <outlet property="scaleModeScanlineItem" destination="714" id="717"/>
                 <outlet property="selectAllMenu" destination="619" id="mEm-QG-G1b"/>
+                <outlet property="vsyncEnabledItem" destination="2C3-e4-PLL" id="cpO-bq-S6f"/>
                 <outlet property="widthModeDefaultItem" destination="695" id="706"/>
                 <outlet property="widthModeFullItem" destination="696" id="707"/>
                 <outlet property="widthModeNarrowItem" destination="692" id="705"/>

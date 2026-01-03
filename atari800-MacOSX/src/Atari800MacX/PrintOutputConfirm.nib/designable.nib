@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="24412" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment version="101400" identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14460.31"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="24412"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="VIIPrintOutputController"/>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
-        <customObject id="-3" userLabel="Application"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <customObject id="80" userLabel="PrintOutputController" customClass="PrintOutputController">
             <connections>
                 <outlet property="mResetConfirmButton" destination="141" id="146"/>
@@ -18,13 +18,13 @@
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="221" y="433" width="386" height="122"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1280" height="1002"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1512" height="944"/>
             <value key="minSize" type="size" width="81" height="2"/>
             <view key="contentView" id="138">
                 <rect key="frame" x="0.0" y="0.0" width="386" height="122"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <textField verticalHuggingPriority="750" id="140">
+                    <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="140">
                         <rect key="frame" x="98" y="61" width="274" height="35"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="center" id="149">
@@ -36,7 +36,7 @@ Continue?
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <button verticalHuggingPriority="750" imageHugsTitle="YES" id="141">
+                    <button imageHugsTitle="YES" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="141">
                         <rect key="frame" x="246" y="12" width="84" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="Yes" bezelStyle="rounded" alignment="center" state="on" borderStyle="border" inset="2" id="150">
@@ -50,12 +50,12 @@ DQ
                             <action selector="resetConfirmYes:" target="80" id="144"/>
                         </connections>
                     </button>
-                    <imageView id="139">
+                    <imageView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="139">
                         <rect key="frame" x="15" y="45" width="75" height="58"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="Fuji" id="148"/>
                     </imageView>
-                    <button verticalHuggingPriority="750" imageHugsTitle="YES" id="142">
+                    <button imageHugsTitle="YES" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="142">
                         <rect key="frame" x="130" y="12" width="82" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="No" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="151">
@@ -71,6 +71,7 @@ Gw
                     </button>
                 </subviews>
             </view>
+            <point key="canvasLocation" x="139" y="144"/>
         </window>
     </objects>
     <resources>

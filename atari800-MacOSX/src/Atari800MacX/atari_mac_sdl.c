@@ -127,6 +127,7 @@ int PLATFORM_80col = 0;
 int useAtariCursorKeys = 1;
 int onlyIntegralScaling = FALSE;
 int fixAspectFullscreen = FALSE;
+int vsyncEnabled = TRUE;
 #define USE_ATARI_CURSOR_CTRL_ARROW 0
 #define USE_ATARI_CURSOR_ARROW_ONLY 1
 #define USE_ATARI_CURSOR_FX         2
@@ -177,6 +178,7 @@ int requestSoundEnabledChange = 0;
 int requestSoundStereoChange = 0;
 int requestSoundRecordingChange = 0;
 int requestFpsChange = 0;
+int requestVsyncChange = 0;
 int requestPrefsChange = 0;
 int requestScaleModeChange = 0;
 int requestPauseEmulator = 0;
@@ -229,6 +231,7 @@ extern int xep80EnabledChanged;
 extern int xep80ColorsChanged;
 extern int configurationChanged;
 extern int fullscreenOptsChanged;
+extern int vsyncOptsChanged;
 extern int ultimateRomChanged;
 extern int side2RomChanged;
 extern int side2CFChanged;
@@ -285,6 +288,7 @@ extern int  PasteManagerStartupPasteEnabled(void);
 extern void PasteManagerUpdateEscapeCopyMenu(void);
 extern void SetDisplayManagerWidthMode(int widthMode);
 extern void SetDisplayManagerFps(int fpsOn);
+extern void SetDisplayManagerVsyncEnabled(int vsyncEnabled);
 extern void SetDisplayManagerScaleMode(int scaleMode);
 extern void SetDisplayManagerArtifactMode(int scaleMode);
 extern void SetDisplayManagerGrabMouse(int mouseOn);
@@ -339,7 +343,7 @@ extern void reloadMacJoyPrefs();
 extern int PreferencesTypeFromIndex(int index, int *ver4type, int *ver5type);
 extern void PreferencesSaveConfiguration();
 extern void PreferencesLoadConfiguration();
-	
+
 /* Externs used for initialization */
 extern void init_bb();
 extern void init_mio();
@@ -355,6 +359,7 @@ void PauseAudio(int pause);
 void CreateWindowCaption(void);
 void ProcessCopySelection(int *first_row, int *last_row, int selectAll);
 void HandleScreenChange(int requested_w, int requested_h);
+void HandleVsyncChange();
 
 int  GetAtariScreenWidth(void);
 void CalcWindowSize(int *width, int *height);
@@ -845,6 +850,7 @@ void InitializeWindow(int w, int h)
     current_w = w;
     current_h = h;
     SDL_SetHint(SDL_HINT_RENDER_DRIVER, "metal");
+    SDL_SetHint(SDL_HINT_RENDER_VSYNC, vsyncEnabled ? "1" : "0");
     renderer = SDL_CreateRenderer(MainWindow, -1, 0);
     SetRenderScale();
     
@@ -1048,7 +1054,7 @@ void SwitchScaleMode(int scaleMode)
 }
 
 /*------------------------------------------------------------------------------
-*  SwitchShowFps - Called by user interface to switch between showing and not 
+*  SwitchShowFps - Called by user interface to switch between showing and not
 *    showing Frame per second speed for the emulator in windowed mode.
 *-----------------------------------------------------------------------------*/
 void SwitchShowFps()
@@ -1057,6 +1063,16 @@ void SwitchShowFps()
     if (!Screen_show_atari_speed)
         SDL_SetWindowTitle(MainWindow, windowCaption);
     SetDisplayManagerFps(Screen_show_atari_speed);
+}
+
+/*------------------------------------------------------------------------------
+*  SwitchVsync - Called by user interface to switch between vsync and not
+*-----------------------------------------------------------------------------*/
+void SwitchVsync()
+{
+    vsyncEnabled = 1 - vsyncEnabled;
+    SetDisplayManagerVsyncEnabled(vsyncEnabled);
+    HandleVsyncChange();
 }
 
 /*------------------------------------------------------------------------------
@@ -4328,6 +4344,7 @@ void HandleScreenChange(int requested_w, int requested_h)
            it, and I don't know why.  I think it's a Metal or libSDL
            issue */
         SDL_DestroyRenderer(renderer);
+        SDL_SetHint(SDL_HINT_RENDER_VSYNC, vsyncEnabled ? "1" : "0");
         renderer = SDL_CreateRenderer(MainWindow, -1, 0);
         if (!fixAspectFullscreen) {
             scaleFactorRenderX = (double) requested_w /
@@ -4406,6 +4423,11 @@ void HandleScreenChange(int requested_w, int requested_h)
     SDL_RenderPresent(renderer);
 }
 
+void HandleVsyncChange()
+{
+    HandleScreenChange(current_w, current_h);
+}
+
 /*------------------------------------------------------------------------------
 *  ProcessMacMenus - Handle requested changes do to menu operations in the
 *      Objective-C Cocoa code.
@@ -4440,6 +4462,10 @@ void ProcessMacMenus()
     if (requestFpsChange) {
         SwitchShowFps();
         requestFpsChange = 0;
+        }
+    if (requestVsyncChange) {
+        SwitchVsync();
+        requestVsyncChange = 0;
         }
     if (requestScaleModeChange) {
         SwitchScaleMode(requestScaleModeChange-1);
@@ -4859,6 +4885,10 @@ void ProcessMacPrefsChange()
         if (fullscreenOptsChanged && FULLSCREEN_MACOS) {
             HandleScreenChange(current_w, current_h);
         }
+        if (vsyncOptsChanged) {
+            SetDisplayManagerVsyncEnabled(vsyncEnabled);
+            HandleVsyncChange();
+        }
         if (ultimateRomChanged) {
             int loaded;
             loaded = ULTIMATE_Change_Rom(ultimate_rom_filename, FALSE);
@@ -4893,6 +4923,7 @@ void ProcessMacPrefsChange()
     SetSoundManagerRecording(SndSave_IsSoundFileOpen());
     SetDisplayManagerWidthMode(WIDTH_MODE);
     SetDisplayManagerFps(Screen_show_atari_speed);
+    SetDisplayManagerVsyncEnabled(vsyncEnabled);
     SetDisplayManagerScaleMode(SCALE_MODE);
 	SetDisplayManagerArtifactMode(ANTIC_artif_mode);
 	SetDisplayManager80ColMode(XEP80_enabled, XEP80_port, AF80_enabled, BIT3_enabled, PLATFORM_80col);
@@ -5395,6 +5426,7 @@ int SDL_main(int argc, char **argv)
     SetSoundManagerRecording(SndSave_IsSoundFileOpen());
     SetDisplayManagerWidthMode(WIDTH_MODE);
     SetDisplayManagerFps(Screen_show_atari_speed);
+    SetDisplayManagerVsyncEnabled(vsyncEnabled);
     SetDisplayManagerScaleMode(SCALE_MODE);
 	SetDisplayManagerArtifactMode(ANTIC_artif_mode);
 	SetDisplayManager80ColMode(XEP80_enabled, XEP80_port, AF80_enabled, BIT3_enabled, PLATFORM_80col);

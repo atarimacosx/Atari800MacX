@@ -57,6 +57,7 @@ extern int PLATFORM_80col;
 extern int SCALE_MODE;
 extern int onlyIntegralScaling;
 extern int fixAspectFullscreen;
+extern int vsyncEnabled;
 extern int scaleFactor;
 extern double scaleFactorFloat;
 extern int WIDTH_MODE;
@@ -207,6 +208,7 @@ int configurationChanged;
 int mioChanged;
 int bbChanged;
 int fullscreenOptsChanged;
+int vsyncOptsChanged;
 int ultimateRomChanged;
 int side2RomChanged;
 int side2CFChanged;
@@ -300,6 +302,7 @@ void savePrefs() {
     prefssave.widthMode = WIDTH_MODE;
 	prefssave.scaleMode = SCALE_MODE;
     prefssave.showFPS = Screen_show_atari_speed;
+    prefssave.vsyncEnabled = vsyncEnabled;
 	prefssave.ledStatus = Screen_show_disk_led;
 	prefssave.ledSector = Screen_show_sector_counter;
     prefssave.speedLimit = speed_limit; 
@@ -1120,6 +1123,11 @@ else
         fullscreenOptsChanged = TRUE;
     else
         fullscreenOptsChanged = FALSE;
+    
+    if (vsyncEnabled != prefs.vsyncEnabled)
+        vsyncOptsChanged = TRUE;
+    else
+        vsyncOptsChanged = FALSE;
 }
 
 int loadMacPrefs(int firstTime)
@@ -1137,6 +1145,7 @@ int loadMacPrefs(int firstTime)
     Screen_show_atari_speed = prefs.showFPS;
     onlyIntegralScaling = prefs.onlyIntegralScaling;
     fixAspectFullscreen = prefs.fixAspectFullscreen;
+    vsyncEnabled = prefs.vsyncEnabled;
 	Screen_show_disk_led = prefs.ledStatus;
     Screen_show_sector_counter = prefs.ledSector;
     Screen_show_1200_leds = prefs.ledFKeys;
