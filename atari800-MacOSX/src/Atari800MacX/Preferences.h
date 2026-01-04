@@ -34,7 +34,7 @@
 #define PaletteFile @"PaletteFile"
 #define OnlyIntegralScaling @"OnlyIntegralScaling"
 #define FixAspectFullscreen @"FixAspectFullscreen"
-#define VsyncEnabled @"VsyncEnabled"
+#define VsyncDisabled @"VsyncDisabled"
 #define ShowFPS @"ShowFPS"
 #define LedStatus @"LedStatus"
 #define LedSector @"LedSector"
