@@ -1420,9 +1420,8 @@ UBYTE CARTRIDGE_GetByte(UWORD addr, int no_side_effects)
 #endif
 #ifdef ULTIMATE_1MB
     if (ULTIMATE_enabled) {
-        int byte = ULTIMATE_D5GetByte(addr, no_side_effects);
-        if (byte != -1)
-            return byte;
+        return ULTIMATE_D5GetByte(addr, no_side_effects) &
+            GetByte(&CARTRIDGE_piggyback, addr, no_side_effects);
     }
 #endif
 #endif
@@ -1466,7 +1465,8 @@ void CARTRIDGE_PutByte(UWORD addr, UBYTE byte)
 #ifdef ULTIMATE_1MB
     if (ULTIMATE_enabled) {
         ULTIMATE_D5PutByte(addr, byte);
-    } else 
+        PutByte(&CARTRIDGE_piggyback, addr, byte);
+    } else
 #endif
 #endif
 	PutByte(&CARTRIDGE_main, addr, byte);
@@ -1583,8 +1583,8 @@ void CARTRIDGE_5200SuperCartPutByte(UWORD addr, UBYTE value)
 static void ResetCartState(CARTRIDGE_image_t *cart)
 {
 #ifdef ATARI800MACX
-    if (active_cart->funcs != NULL) {
-        active_cart->funcs->cold_reset();
+    if (cart->funcs != NULL) {
+        cart->funcs->cold_reset();
         return;
     }
 #endif
@@ -1999,7 +1999,7 @@ int CARTRIDGE_ReadImage(const char *filename, CARTRIDGE_image_t *cart)
 				}
 			}
 		if (cart->type != CARTRIDGE_NONE) {
-			/*InitCartridge(cart);*/
+			InitCartridge(cart);
 			return 0;	/* ok */
 		}
 		free(cart->image);
@@ -2043,7 +2043,7 @@ int CARTRIDGE_ReadImage(const char *filename, CARTRIDGE_image_t *cart)
 				header[11];
 			cart->type = type;
 			result = checksum == CARTRIDGE_Checksum(cart->image, len) ? 0 : CARTRIDGE_BAD_CHECKSUM;
-			/*InitCartridge(cart);*/
+			InitCartridge(cart);
 			return result;
 		}
 	}

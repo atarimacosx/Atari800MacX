@@ -218,7 +218,7 @@ static void THECART_Write_Byte(UWORD address, UBYTE value) {
 
                 case 3:
                 case 4:
-                     // accessing the secondary bank registers also enables the secondary window
+                    // accessing the secondary bank registers also enables the secondary window
                     if (!TheCartRegs[5]) {
                         TheCartRegs[5] = 1;
                         forceUpdate = TRUE;
@@ -632,6 +632,7 @@ static void Set_Cart_Banks(int bank, int bank2) {
 
 static void THECART_Map_Cart()
 {
+    printf("Map TheCart %d %d\n", CartBank, CartBank2);
     if (CartBank < 0) {
         Bank1_Base = 0;
         Bank1_End = 0;
@@ -762,6 +763,7 @@ static uint32_t Calc_Full_Address(UWORD addr, int * writeEnable)
 static UBYTE THECART_Flash_Read(UWORD addr) {
     uint8_t value;
     Flash_Read_Byte(flash, Calc_Full_Address(addr, NULL), &value);
+    printf("Read TheCart %04x %02x\n", addr, value);
 
     return value;
 }
