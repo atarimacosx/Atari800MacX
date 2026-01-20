@@ -18,6 +18,29 @@ Release History<br>
   </tbody>
 </table>
 
+<br>Version 6.2.0 Beta 1 Release 10-20-2025<br>&nbsp;
+&nbsp;Features Added/Changed:<br>
+<ul>
+    <li>libSDL2 upgrade from verion 2.0.14 to 2.30.11.</li>
+    <li>Support of many new cartridge file types for 6.2:</li>
+    <ul>
+            <li>See <a href="https://github.com/atari800/atari800/blob/master/DOC/cart.txt">https://github.com/atari800/atari800/blob/master/DOC/cart.txt</a> for descriptions of .car file types.</li>
+            <li>5200 Cart types ported from atari800: CARTRIDGE_5200_40_ALT, CARTRIDGE_5200_SUPER_64, CARTRIDGE_5200_SUPER_128, CARTRIDGE_5200_SUPER_256, CARTRIDGE_5200_SUPER_512</li>            </ui>
+            <li>400/800/XL/XE Cart types ported from atari800: CARTRIDGE_RAMCART_64, CARTRIDGE_RAMCART_128, CARTRIDGE_DOUBLE_RAMCART_256, CARTRIDGE_RAMCART_1M, CARTRIDGE_RAMCART_2M, CARTRIDGE_RAMCART_4M, CARTRIDGE_RAMCART_8M, CARTRIDGE_RAMCART_16M, CARTRIDGE_RAMCART_32M, CARTRIDGE_SIDICAR, CARTRIDGE_SIDICAR_32, CARTRIDGE_WILL_32, CARTRIDGE_WILL_16, CARTRIDGE_JACART_8, CARTRIDGE_JACART_16, CARTRIDGE_JACART_32, CARTRIDGE_JACART_64</li>
+            <li>400/800/XL/XE Flash Cart types ported from Altirra: CARTRIDGE_THECART_32M, CARTRIDGE_THECART_64M, CARTRIDGE_THECART_128M, CARTRIDGE_ATMAX_128, CARTRIDGE_ATMAX_OLD_1024, CARTRIDGE_ATMAX_NEW_1024, CARTRIDGE_JACART_128, CARTRIDGE_JACART_256, CARTRIDGE_JACART_512, CARTRIDGE_JACART_1024, CARTRIDGE_DCART, CARTRIDGE_SIC_128, CARTRIDGE_SIC_256, CARTRIDGE_SIC_512, CARTRIDGE_SICPLUS_1024, CARTRIDGE_MEGA_16, CARTRIDGE_MEGA_32, CARTRIDGE_MEGA_64, CARTRIDGE_MEGA_128, CARTRIDGE_MEGA_256, CARTRIDGE_MEGA_512, CARTRIDGE_MEGA_1024, CARTRIDGE_MEGA_2048, CARTRIDGE_MEGA_4096</li>
+            <li>For the Flash and RAM carts above, the user can insert a blank cartridge. (Media Menu, Handle Special Cartridge SubMenu, Insert Blank Flash/Ram Cartridge SubMenu)</li>
+            <li>For the RAM carts above, contents are automatically saved to file when cartridge is removed or emulator quits.</li>
+            <li>For the Flash carts above, the cartridges can be programmed in system with the emulator.  The user can save the programmed cartride back to a .car file. (Media Menu, Handle Special Cartridge SubMenu, Save Flash/Ram Cartridge SubMenu).</li>
+            <li>For the Flash carts above, if the cartridge is removed or emulator quit, if the cartridge has changed, the user will be prompted to save the changes.</li>
+    </ul>
+</ul>
+&nbsp;&nbsp; Bugs Fixed:<br>
+<ul>
+<li>Fixed issue - Correct Cartridge Drag and Drop for Ultimate1B mode
+    that allows you to insert a cartridge by dragging it to the Dock
+    Icon, Atari Screen, or the Media Manager cartridge section.</li>
+</ul>
+
 <br>Version 6.1.0 Release 10-19-2025<br>&nbsp;
 &nbsp;Features Added/Changed:<br>
 <ul>
