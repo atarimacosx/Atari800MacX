@@ -58,6 +58,8 @@ extern int SCALE_MODE;
 extern int onlyIntegralScaling;
 extern int fixAspectFullscreen;
 extern int vsyncEnabled;
+extern int linearFilterEnabled;
+extern int pixelAspectEnabled;
 extern int scaleFactor;
 extern double scaleFactorFloat;
 extern int WIDTH_MODE;
@@ -209,6 +211,8 @@ int mioChanged;
 int bbChanged;
 int fullscreenOptsChanged;
 int vsyncOptsChanged;
+int linearFilterOptsChanged;
+int pixelAspectOptsChanged;
 int ultimateRomChanged;
 int side2RomChanged;
 int side2CFChanged;
@@ -303,6 +307,8 @@ void savePrefs() {
 	prefssave.scaleMode = SCALE_MODE;
     prefssave.showFPS = Screen_show_atari_speed;
     prefssave.vsyncEnabled = vsyncEnabled;
+    prefssave.linearFilterEnabled = linearFilterEnabled;
+    prefssave.pixelAspectEnabled = pixelAspectEnabled;
 	prefssave.ledStatus = Screen_show_disk_led;
 	prefssave.ledSector = Screen_show_sector_counter;
     prefssave.speedLimit = speed_limit; 
@@ -1128,6 +1134,16 @@ else
         vsyncOptsChanged = TRUE;
     else
         vsyncOptsChanged = FALSE;
+
+    if (linearFilterEnabled != prefs.linearFilterEnabled)
+        linearFilterOptsChanged = TRUE;
+    else
+        linearFilterOptsChanged = FALSE;
+
+    if (pixelAspectEnabled != prefs.pixelAspectEnabled)
+        pixelAspectOptsChanged = TRUE;
+    else
+        pixelAspectOptsChanged = FALSE;
 }
 
 int loadMacPrefs(int firstTime)
@@ -1146,6 +1162,8 @@ int loadMacPrefs(int firstTime)
     onlyIntegralScaling = prefs.onlyIntegralScaling;
     fixAspectFullscreen = prefs.fixAspectFullscreen;
     vsyncEnabled = prefs.vsyncEnabled;
+    linearFilterEnabled = prefs.linearFilterEnabled;
+    pixelAspectEnabled = prefs.pixelAspectEnabled;
 	Screen_show_disk_led = prefs.ledStatus;
     Screen_show_sector_counter = prefs.ledSector;
     Screen_show_1200_leds = prefs.ledFKeys;

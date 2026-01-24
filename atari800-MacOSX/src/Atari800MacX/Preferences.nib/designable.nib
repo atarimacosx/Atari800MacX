@@ -220,6 +220,7 @@
                 <outlet property="leftJoyUpLeftPulldown" destination="2019" id="2723"/>
                 <outlet property="leftJoyUpPulldown" destination="1254" id="2722"/>
                 <outlet property="leftJoyUpRightPulldown" destination="2112" id="3542"/>
+                <outlet property="linearFilterEnabledButton" destination="6Tn-9e-eyP" id="1vX-ph-JeL"/>
                 <outlet property="mioRomFileField" destination="5k8-SK-Qgi" id="0r5-Pt-jGm"/>
                 <outlet property="mioScsiDiskFileField" destination="fE2-p8-iyx" id="hZk-X2-Z7o"/>
                 <outlet property="mosaicMemSizePulldown" destination="7120" id="8366"/>
@@ -269,6 +270,7 @@
                 <outlet property="pcLinkTranslate2Button" destination="Prk-O2-eA5" id="jT0-5J-Ent"/>
                 <outlet property="pcLinkTranslate3Button" destination="uiy-Ya-9iQ" id="IBC-89-oSP"/>
                 <outlet property="pcLinkTranslate4Button" destination="kwv-ki-qzu" id="QoX-hv-1DR"/>
+                <outlet property="pixelAspectEnabledButton" destination="9UP-OJ-z0e" id="HOP-bM-1wS"/>
                 <outlet property="prefTabView" destination="261" id="470"/>
                 <outlet property="printCommandField" destination="4082" id="4155"/>
                 <outlet property="printDirField" destination="4231" id="4233"/>
@@ -396,7 +398,7 @@ DQ
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <box fixedFrame="YES" title="TV Mode" translatesAutoresizingMaskIntoConstraints="NO" id="294">
-                                            <rect key="frame" x="389" y="315" width="162" height="66"/>
+                                            <rect key="frame" x="389" y="323" width="162" height="66"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <view key="contentView" id="eLy-96-aMw">
                                                 <rect key="frame" x="4" y="5" width="154" height="44"/>
@@ -433,7 +435,7 @@ DQ
                                             <font key="titleFont" metaFont="system"/>
                                         </box>
                                         <box fixedFrame="YES" title="Artifacting Mode" translatesAutoresizingMaskIntoConstraints="NO" id="299">
-                                            <rect key="frame" x="553" y="315" width="163" height="65"/>
+                                            <rect key="frame" x="553" y="323" width="163" height="65"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <view key="contentView" id="dv0-cw-UUX">
                                                 <rect key="frame" x="4" y="5" width="155" height="43"/>
@@ -734,7 +736,7 @@ DQ
                                             <font key="titleFont" metaFont="system"/>
                                         </box>
                                         <button imageHugsTitle="YES" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="775">
-                                            <rect key="frame" x="406" y="190" width="279" height="18"/>
+                                            <rect key="frame" x="406" y="179" width="279" height="18"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <buttonCell key="cell" type="check" title="Show Frames Per Second in Window Title" bezelStyle="regularSquare" imagePosition="leading" alignment="left" inset="2" id="12918">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -745,7 +747,7 @@ DQ
                                             </connections>
                                         </button>
                                         <box fixedFrame="YES" title="Refresh Ratio" translatesAutoresizingMaskIntoConstraints="NO" id="318">
-                                            <rect key="frame" x="389" y="222" width="327" height="66"/>
+                                            <rect key="frame" x="389" y="256" width="327" height="66"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <view key="contentView" id="rxO-zh-gA3">
                                                 <rect key="frame" x="4" y="5" width="319" height="44"/>
@@ -905,7 +907,7 @@ DQ
                                             <font key="titleFont" metaFont="system"/>
                                         </box>
                                         <button imageHugsTitle="YES" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="hRd-Pp-1WM">
-                                            <rect key="frame" x="406" y="210" width="213" height="18"/>
+                                            <rect key="frame" x="406" y="237" width="213" height="18"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <buttonCell key="cell" type="check" title="Verticle Sync Enabled" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="bVc-IV-a9n">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -913,6 +915,28 @@ DQ
                                             </buttonCell>
                                             <connections>
                                                 <action selector="miscChanged:" target="-2" id="Ssk-pC-3Uf"/>
+                                            </connections>
+                                        </button>
+                                        <button imageHugsTitle="YES" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6Tn-9e-eyP">
+                                            <rect key="frame" x="406" y="218" width="219" height="18"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <buttonCell key="cell" type="check" title="Linear Smoothing FIlter Enabled" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="zK7-H5-1ia">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <action selector="miscChanged:" target="-2" id="D0c-U6-dW6"/>
+                                            </connections>
+                                        </button>
+                                        <button imageHugsTitle="YES" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9UP-OJ-z0e">
+                                            <rect key="frame" x="406" y="198" width="242" height="18"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <buttonCell key="cell" type="check" title="Realistic Pixel Aspect Ratio Enabled" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="5nj-pp-qat">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <action selector="miscChanged:" target="-2" id="z5i-sE-TAg"/>
                                             </connections>
                                         </button>
                                     </subviews>

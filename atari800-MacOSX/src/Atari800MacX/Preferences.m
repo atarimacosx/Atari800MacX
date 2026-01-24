@@ -313,6 +313,8 @@ static NSDictionary *defaultValues() {
                 [NSNumber numberWithBool:NO], OnlyIntegralScaling,
                 [NSNumber numberWithBool:NO], FixAspectFullscreen,
                 [NSNumber numberWithBool:NO], VsyncDisabled,
+                [NSNumber numberWithBool:YES], LinearFilterEnabled,
+                [NSNumber numberWithBool:YES], PixelAspectEnabled,
                 [NSNumber numberWithBool:YES], LedStatus,
                 [NSNumber numberWithBool:YES], LedSector,
                 [NSNumber numberWithBool:YES], LedStatusMedia,
@@ -897,6 +899,8 @@ static Preferences *sharedInstance = nil;
     [onlyIntegralScalingButton setState:[[displayedValues objectForKey:OnlyIntegralScaling] boolValue] ? NSOnState : NSOffState];
     [fixAspectFullscreenButton setState:[[displayedValues objectForKey:FixAspectFullscreen] boolValue] ? NSOnState : NSOffState];
     [vsyncEnabledButton setState:[[displayedValues objectForKey:VsyncDisabled] boolValue] ? NSOffState : NSOnState];
+    [linearFilterEnabledButton setState:[[displayedValues objectForKey:LinearFilterEnabled] boolValue] ? NSOnState : NSOffState];
+    [pixelAspectEnabledButton setState:[[displayedValues objectForKey:PixelAspectEnabled] boolValue] ? NSOnState : NSOffState];
     [ledStatusButton setState:[[displayedValues objectForKey:LedStatus] boolValue] ? NSOnState : NSOffState];
     [ledSectorButton setState:[[displayedValues objectForKey:LedSector] boolValue] ? NSOnState : NSOffState];
     [ledHDSectorButton setState:[[displayedValues objectForKey:LedHDSector] boolValue] ? NSOnState : NSOffState];
@@ -1831,6 +1835,14 @@ static Preferences *sharedInstance = nil;
         [displayedValues setObject:no forKey:VsyncDisabled];
     else
         [displayedValues setObject:yes forKey:VsyncDisabled];
+    if ([linearFilterEnabledButton state] == NSOnState)
+        [displayedValues setObject:yes forKey:LinearFilterEnabled];
+    else
+        [displayedValues setObject:no forKey:LinearFilterEnabled];
+    if ([pixelAspectEnabledButton state] == NSOnState)
+        [displayedValues setObject:yes forKey:PixelAspectEnabled];
+    else
+        [displayedValues setObject:no forKey:PixelAspectEnabled];
     if ([ledSectorButton state] == NSOnState)
         [displayedValues setObject:yes forKey:LedSector];
     else
@@ -3867,6 +3879,8 @@ static Preferences *sharedInstance = nil;
     prefs->onlyIntegralScaling = [[curValues objectForKey:OnlyIntegralScaling] intValue];
     prefs->fixAspectFullscreen = [[curValues objectForKey:FixAspectFullscreen] intValue];
     prefs->vsyncEnabled = 1 - [[curValues objectForKey:VsyncDisabled] intValue];
+    prefs->linearFilterEnabled = [[curValues objectForKey:LinearFilterEnabled] intValue];
+    prefs->pixelAspectEnabled = [[curValues objectForKey:PixelAspectEnabled] intValue];
     prefs->ledStatus = [[curValues objectForKey:LedStatus] intValue];
     prefs->ledSector = [[curValues objectForKey:LedSector] intValue];
     prefs->ledHDSector = [[curValues objectForKey:LedHDSector] intValue];
@@ -4212,6 +4226,8 @@ static Preferences *sharedInstance = nil;
 		}
     [displayedValues setObject:prefssave->showFPS ? yes : no forKey:ShowFPS];
     [displayedValues setObject:prefssave->vsyncEnabled ? no : yes forKey:VsyncDisabled];
+    [displayedValues setObject:prefssave->linearFilterEnabled ? yes : no forKey:LinearFilterEnabled];
+    [displayedValues setObject:prefssave->pixelAspectEnabled ? yes : no forKey:PixelAspectEnabled];
     [displayedValues setObject:prefssave->ledStatus ? yes : no forKey:LedStatus];
     [displayedValues setObject:prefssave->ledSector ? yes : no forKey:LedSector];
     [displayedValues setObject:prefssave->speedLimit ? yes : no forKey:SpeedLimit];
@@ -5340,6 +5356,8 @@ static Preferences *sharedInstance = nil;
     getBoolDefault(OnlyIntegralScaling);
     getBoolDefault(FixAspectFullscreen);
     getBoolDefault(VsyncDisabled);
+    getBoolDefault(LinearFilterEnabled);
+    getBoolDefault(PixelAspectEnabled);
     getBoolDefault(LedStatus);
     getBoolDefault(LedSector);
     getBoolDefault(LedHDSector);
@@ -5654,6 +5672,8 @@ static Preferences *sharedInstance = nil;
     setBoolDefault(OnlyIntegralScaling);
     setBoolDefault(FixAspectFullscreen);
     setBoolDefault(VsyncDisabled);
+    setBoolDefault(LinearFilterEnabled);
+    setBoolDefault(PixelAspectEnabled);
     setBoolDefault(LedStatus);
     setBoolDefault(LedSector);
     setBoolDefault(LedHDSector);
@@ -5949,6 +5969,8 @@ static Preferences *sharedInstance = nil;
     setConfig(OnlyIntegralScaling);
     setConfig(FixAspectFullscreen);
     setConfig(VsyncDisabled);
+    setConfig(LinearFilterEnabled);
+    setConfig(PixelAspectEnabled);
     setConfig(LedStatus);
     setConfig(LedSector);
     setConfig(LedHDSector);
@@ -6342,6 +6364,8 @@ static Preferences *sharedInstance = nil;
     getConfig(OnlyIntegralScaling);
     getConfig(FixAspectFullscreen);
     getConfig(VsyncDisabled);
+    getConfig(LinearFilterEnabled);
+    getConfig(PixelAspectEnabled);
     getConfig(LedStatus);
     getConfig(LedSector);
     getConfig(LedHDSector);

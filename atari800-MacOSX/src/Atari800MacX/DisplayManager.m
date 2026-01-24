@@ -23,6 +23,8 @@ extern int requestFullScreenChange;
 extern int request80ColChange;
 extern int requestFpsChange;
 extern int requestVsyncChange;
+extern int requestLinearFilterChange;
+extern int requestPixelAspectChange;
 extern int requestScaleModeChange;
 extern int requestGrabMouse;
 extern int requestScreenshot;
@@ -45,6 +47,14 @@ void SetDisplayManagerFps(int fpsOn) {
 
 void SetDisplayManagerVsyncEnabled(int vsyncEnabled) {
     [[DisplayManager sharedInstance] setVsyncMenu:(vsyncEnabled)];
+    }
+
+void SetDisplayManagerLinearFilterEnabled(int linearFilterEnabled) {
+    [[DisplayManager sharedInstance] setLinearFilterMenu:(linearFilterEnabled)];
+    }
+
+void SetDisplayManagerPixelAspectEnabled(int pixelAspectEnabled) {
+    [[DisplayManager sharedInstance] setPixelAspectMenu:(pixelAspectEnabled)];
     }
 
 void SetDisplayManagerScaleMode(int scaleMode) {
@@ -162,6 +172,30 @@ static DisplayManager *sharedInstance = nil;
         [vsyncEnabledItem setState:NSOnState];
     else
         [vsyncEnabledItem setState:NSOffState];
+}
+
+/*------------------------------------------------------------------------------
+*  setLinearFilterMenu - This method is used to set/clear the enabled check for the
+*     Linear Filter menu item.
+*-----------------------------------------------------------------------------*/
+- (void)setLinearFilterMenu:(int)linearFilterEnabled
+{
+    if (linearFilterEnabled)
+        [linearFilterEnabledItem setState:NSOnState];
+    else
+        [linearFilterEnabledItem setState:NSOffState];
+}
+
+/*------------------------------------------------------------------------------
+*  setPixelAspectMenu - This method is used to set/clear the enabled check for the
+*     Realistic Pixel Aspect menu item.
+*-----------------------------------------------------------------------------*/
+- (void)setPixelAspectMenu:(int)pixelAspectEnabled
+{
+    if (pixelAspectEnabled)
+        [pixelAspectEnabledItem setState:NSOnState];
+    else
+        [pixelAspectEnabledItem setState:NSOffState];
 }
 
 /*------------------------------------------------------------------------------
@@ -435,6 +469,24 @@ static DisplayManager *sharedInstance = nil;
 - (IBAction)displayVsync:(id)sender
 {
     requestVsyncChange = 1;
+}
+
+/*------------------------------------------------------------------------------
+*  displayLinearFilter - This method handles the display linear filter menu
+*     selection.
+*-----------------------------------------------------------------------------*/
+- (IBAction)displayLinearFilter:(id)sender
+{
+    requestLinearFilterChange = 1;
+}
+
+/*------------------------------------------------------------------------------
+*  displayPixelAspect - This method handles the display pixel aspect menu
+*     selection.
+*-----------------------------------------------------------------------------*/
+- (IBAction)displayPixelAspect:(id)sender
+{
+    requestPixelAspectChange = 1;
 }
 
 /*------------------------------------------------------------------------------
