@@ -703,12 +703,10 @@ double PLATFORM_AdjustSpeed(void)
 	gap_too_large = ((snddelay+sndspread)*dsprate*bytes_per_sample)/1000;
 	if (avg_gap < gap_too_small) {
 		double speed = 0.95;
-//		printf("small %f %f %d %d %d %d\n",avg_gap,gap_too_small,snddelay,dsprate,bytes_per_sample,sound_bits);
 		return speed;
 	}
 	if (avg_gap > gap_too_large) {
 		double speed = 1.05;
-//		printf("large %f %f %d %d %d %d\n",avg_gap,gap_too_large,snddelay,dsprate,bytes_per_sample,sound_bits);
 		return speed;
 	}
 	return 1.0;
@@ -1014,7 +1012,6 @@ static void Switch80Col(void)
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
     SDL_RenderPresent(renderer);
-    printf("h1\n");
     HandleScreenChange(current_w, current_h, 0, 1);
     full_display = FULL_DISPLAY_COUNT;
     Atari_DisplayScreen((UBYTE *) Screen_atari);
@@ -1124,7 +1121,6 @@ void SwitchWidth(int width)
         Atari800WindowAspectSet(w, h);
         SDL_SetWindowSize(MainWindow, w, h);
     }
-    printf("h2\n");
     HandleScreenChange(w, h, 0, 0);
     full_display = FULL_DISPLAY_COUNT;
     Atari_DisplayScreen((UBYTE *) Screen_atari);
@@ -1617,8 +1613,6 @@ int Atari_Keyboard_International(void)
                     break;
                 case SDL_WINDOWEVENT:
                     if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
-                        printf("h3\n");
-                        printf("Resize %d %d\n", event.window.data1, event.window.data2);
                         HandleScreenChange(event.window.data1, event.window.data2, 0, 1);
                     }
                 case SDL_TEXTINPUT:
@@ -4373,43 +4367,31 @@ void HandleScreenChange(int requested_w, int requested_h, int new_renderer, int 
             scaleFactorRenderX = (double) requested_w /
                                  (double) GetDisplayScreenWidth();
             scaleFactorRenderY = (double) requested_h /
-                                 (double) GetDisplayScreenHeight();
+                                 ((double) GetDisplayScreenHeight());
             SDL_RenderSetScale(renderer, scaleFactorRenderX,
-                               scaleFactorRenderY*pixelAspectRatio);
+                               scaleFactorRenderY);
             screen_x_offset = 0;
             screen_y_offset = 0;
             }
         else if (onlyIntegralScaling) {
-            double thisXScaleFactor;
-            double thisYScaleFactor;
-            
-            thisYScaleFactor = trunc((double) requested_h /
-                                     (double) GetDisplayScreenHeight());
-            if (thisYScaleFactor < 1.0)
-                thisYScaleFactor = 1.0;
-            thisXScaleFactor = ((double) GetAtariScreenWidth() /
-                    (double) GetDisplayScreenWidth()) * thisYScaleFactor;
-            scaleFactorRenderX = thisXScaleFactor;
-            scaleFactorRenderY = thisYScaleFactor;
-            SDL_RenderSetScale(renderer, thisXScaleFactor, thisYScaleFactor*pixelAspectRatio);
+            scaleFactorRenderY = trunc(((double) requested_h /
+                                     (double) GetDisplayScreenHeight())*pixelAspectRatio);
+            if (scaleFactorRenderY < 1.0)
+                scaleFactorRenderY = 1.0;
+            scaleFactorRenderX = scaleFactorRenderY / pixelAspectRatio;
+            SDL_RenderSetScale(renderer, scaleFactorRenderX, scaleFactorRenderY);
             screen_x_offset = ((double)((requested_w -
-                                       ((int)(GetDisplayScreenWidth()* thisXScaleFactor)))/2))/thisXScaleFactor;;
+                                       ((int)(GetDisplayScreenWidth()* scaleFactorRenderX)))/2))/scaleFactorRenderX;;
             screen_y_offset = ((double)((requested_h -
-                                         ((int)(GetDisplayScreenHeight()* thisYScaleFactor)))/2))/thisYScaleFactor*pixelAspectRatio;
+                                         ((int)(GetDisplayScreenHeight()* scaleFactorRenderY)))/2))/scaleFactorRenderY*pixelAspectRatio;
         }
-        else {
-            double thisXScaleFactor;
-            double thisYScaleFactor;
-            
-            thisYScaleFactor = (double) GetDisplayScreenHeight() /
-                               (double) Screen_HEIGHT*pixelAspectRatio;
-            thisXScaleFactor = ((double) GetAtariScreenWidth() /
-                    (double) GetDisplayScreenWidth()) * thisYScaleFactor;
-            scaleFactorRenderX = thisXScaleFactor;
-            scaleFactorRenderY = thisYScaleFactor;
-            SDL_RenderSetScale(renderer, thisXScaleFactor, thisYScaleFactor);
+        else {  // Keep Aspect Ratio for Fullscreen
+            scaleFactorRenderY = (double) requested_h /
+                               ((double) GetDisplayScreenHeight()*pixelAspectRatio);
+            scaleFactorRenderX = scaleFactorRenderY / pixelAspectRatio;
+            SDL_RenderSetScale(renderer, scaleFactorRenderX, scaleFactorRenderY);
             screen_x_offset = ((double)((requested_w -
-                                       ((int)(GetDisplayScreenWidth()* thisXScaleFactor)))/2))/thisXScaleFactor;;
+                                       ((int)(GetDisplayScreenWidth()* scaleFactorRenderX)))/2))/scaleFactorRenderX;;
             screen_y_offset = 0;
         }
         current_w = requested_w;
@@ -4433,7 +4415,6 @@ void HandleScreenChange(int requested_w, int requested_h, int new_renderer, int 
                                 (double) GetAtariScreenWidth());
         }
         Log_print("Reqeusted Sreeen: %dx%d %f ",requested_w, requested_h, scaleFactorFloat);
-        printf("Reqeusted Sreeen: %dx%d %f \n",requested_w, requested_h, scaleFactorFloat);
         if (onlyIntegralScaling) {
             scaleFactorFloat = trunc(scaleFactorFloat+0.4);
             if (scaleFactorFloat < 1.0)
@@ -4442,7 +4423,6 @@ void HandleScreenChange(int requested_w, int requested_h, int new_renderer, int 
         new_w = GetAtariScreenWidth() * scaleFactorFloat;
         new_h = Screen_HEIGHT * scaleFactorFloat * pixelAspectRatio;
         Log_print("Setting Screen: %dx%d %f",new_w,new_h,scaleFactorFloat);
-        printf("Setting Screen: %dx%d %f\n",new_w,new_h,scaleFactorFloat);
         SetRenderScale();
         Atari800WindowAspectSet(new_w, new_h);
         SDL_SetWindowSize(MainWindow, new_w, new_h);
@@ -4464,7 +4444,6 @@ void HandleScreenChange(int requested_w, int requested_h, int new_renderer, int 
 
 void HandleDisplayOptionsChange()
 {
-    printf("h4\n");
     HandleScreenChange(current_w, current_h, 1, 0);
 }
 
@@ -4931,7 +4910,6 @@ void ProcessMacPrefsChange()
             Atari800_Coldstart();
 		}
         if (fullscreenOptsChanged && FULLSCREEN_MACOS) {
-            printf("h5\n");
             HandleScreenChange(current_w, current_h, 0, 1);
         }
         if (vsyncOptsChanged) {
