@@ -850,7 +850,7 @@ static void MapActiveCart(void)
 #endif
 		default:
 			MEMORY_Cart809fDisable();
-			if (!Atari800_builtin_basic
+			if (Atari800_builtin_basic
 			&& (!Atari800_disable_basic || BINLOAD_loading_basic) && MEMORY_have_basic) {
 				MEMORY_CartA0bfEnable();
 				MEMORY_CopyFromCart(0xa000, 0xbfff, MEMORY_basic);
