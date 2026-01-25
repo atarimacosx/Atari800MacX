@@ -975,33 +975,27 @@ int GetDisplayScreenHeight(void)
     return height;
 }
 
+double GetDisplayScreenPixelAspect(void)
+{
+    if (PLATFORM_80col) {
+        return 1.0;
+    } else {
+        return pixelAspectRatio;
+    }
+}
+
 void CalcWindowSize(int *width, int *height)
 {
     int sWidth = GetAtariScreenWidth();
     
     *width = (double) sWidth * scaleFactorFloat;
     *height = (double) Screen_HEIGHT * scaleFactorFloat * pixelAspectRatio;
-    
-//    *width *= 8;
-//    *width /= 8;
-//    *height *= 8;
-//    *height /= 8;
 }
 
 static void SetRenderScale(void)
 {
-    if (PLATFORM_80col) {
-        scaleFactorRenderX = ((double) GetAtariScreenWidth() /
-                              (double) GetDisplayScreenWidth() ) *
-                              scaleFactorFloat;
-        scaleFactorRenderY = ((double) Screen_HEIGHT /
-                              (double) GetDisplayScreenHeight() ) *
-                              scaleFactorFloat;
-    }
-    else {
-        scaleFactorRenderX = scaleFactorFloat;
-        scaleFactorRenderY = scaleFactorFloat*pixelAspectRatio;
-    }
+    scaleFactorRenderX = scaleFactorFloat;
+    scaleFactorRenderY = scaleFactorFloat*GetDisplayScreenPixelAspect();
     SDL_RenderSetScale(renderer,
                        scaleFactorRenderX,
                        scaleFactorRenderY);
@@ -1012,7 +1006,7 @@ static void Switch80Col(void)
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
     SDL_RenderPresent(renderer);
-    HandleScreenChange(current_w, current_h, 0, 1);
+    HandleScreenChange(current_w, current_h, 0, 0);
     full_display = FULL_DISPLAY_COUNT;
     Atari_DisplayScreen((UBYTE *) Screen_atari);
     CreateWindowCaption();
@@ -4375,7 +4369,7 @@ void HandleScreenChange(int requested_w, int requested_h, int new_renderer, int 
             }
         else if (onlyIntegralScaling) {
             scaleFactorRenderY = trunc(((double) requested_h /
-                                     (double) GetDisplayScreenHeight())*pixelAspectRatio);
+                                     (double) GetDisplayScreenHeight())*GetDisplayScreenPixelAspect());
             if (scaleFactorRenderY < 1.0)
                 scaleFactorRenderY = 1.0;
             scaleFactorRenderX = scaleFactorRenderY / pixelAspectRatio;
@@ -4383,12 +4377,13 @@ void HandleScreenChange(int requested_w, int requested_h, int new_renderer, int 
             screen_x_offset = ((double)((requested_w -
                                        ((int)(GetDisplayScreenWidth()* scaleFactorRenderX)))/2))/scaleFactorRenderX;;
             screen_y_offset = ((double)((requested_h -
-                                         ((int)(GetDisplayScreenHeight()* scaleFactorRenderY)))/2))/scaleFactorRenderY*pixelAspectRatio;
+                                         ((int)(GetDisplayScreenHeight()* scaleFactorRenderY)))/2))/scaleFactorRenderY*GetDisplayScreenPixelAspect();
         }
         else {  // Keep Aspect Ratio for Fullscreen
             scaleFactorRenderY = (double) requested_h /
-                               ((double) GetDisplayScreenHeight()*pixelAspectRatio);
-            scaleFactorRenderX = scaleFactorRenderY / pixelAspectRatio;
+                               ((double) GetDisplayScreenHeight()*GetDisplayScreenPixelAspect());
+            scaleFactorRenderX = scaleFactorRenderY / GetDisplayScreenPixelAspect();
+            scaleFactorRenderX = scaleFactorRenderY / GetDisplayScreenPixelAspect();
             SDL_RenderSetScale(renderer, scaleFactorRenderX, scaleFactorRenderY);
             screen_x_offset = ((double)((requested_w -
                                        ((int)(GetDisplayScreenWidth()* scaleFactorRenderX)))/2))/scaleFactorRenderX;;
@@ -4408,11 +4403,11 @@ void HandleScreenChange(int requested_w, int requested_h, int new_renderer, int 
         }
         if (keep_width) {
             scaleFactorFloat = (((double) requested_h) /
-                                 pixelAspectRatio) /
-                                (double) Screen_HEIGHT;
+                                GetDisplayScreenPixelAspect()) /
+                                (double) GetDisplayScreenHeight();
         } else {
             scaleFactorFloat = ((double) requested_w /
-                                (double) GetAtariScreenWidth());
+                                (double) GetDisplayScreenWidth());
         }
         Log_print("Reqeusted Sreeen: %dx%d %f ",requested_w, requested_h, scaleFactorFloat);
         if (onlyIntegralScaling) {
@@ -4420,8 +4415,8 @@ void HandleScreenChange(int requested_w, int requested_h, int new_renderer, int 
             if (scaleFactorFloat < 1.0)
                 scaleFactorFloat = 1.0;
         }
-        new_w = GetAtariScreenWidth() * scaleFactorFloat;
-        new_h = Screen_HEIGHT * scaleFactorFloat * pixelAspectRatio;
+        new_w = GetDisplayScreenWidth() * scaleFactorFloat;
+        new_h = GetDisplayScreenHeight() * scaleFactorFloat * GetDisplayScreenPixelAspect();
         Log_print("Setting Screen: %dx%d %f",new_w,new_h,scaleFactorFloat);
         SetRenderScale();
         Atari800WindowAspectSet(new_w, new_h);
