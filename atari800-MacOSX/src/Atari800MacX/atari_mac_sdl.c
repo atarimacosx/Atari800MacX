@@ -146,6 +146,10 @@ int pixelAspectEnabled = FALSE;
 #define SCREEN_WIDTH_DEFAULT  (Screen_WIDTH - 2 * 24)
 #define SCREEN_WIDTH_FULL     (Screen_WIDTH)
 
+#define KEEP_HEIGHT 0
+#define KEEP_WIDTH  1
+#define KEEP_BOTH   2
+
 /* Local variables that control the speed of emulation */
 int speed_limit = 1;
 double emulationSpeed = 1.0;
@@ -368,7 +372,7 @@ void SoundSetup(void);
 void PauseAudio(int pause);
 void CreateWindowCaption(void);
 void ProcessCopySelection(int *first_row, int *last_row, int selectAll);
-void HandleScreenChange(int requested_w, int requested_h, int new_renderer, int keep_width);
+void HandleScreenChange(int requested_w, int requested_h, int new_renderer, int keep);
 void HandleDisplayOptionsChange();
 void HandleLinearFilterChange();
 void HandlePixelAspectChange();
@@ -1006,7 +1010,7 @@ static void Switch80Col(void)
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
     SDL_RenderPresent(renderer);
-    HandleScreenChange(current_w, current_h, 0, 0);
+    HandleScreenChange(current_w, current_h, 0, KEEP_BOTH);
     full_display = FULL_DISPLAY_COUNT;
     Atari_DisplayScreen((UBYTE *) Screen_atari);
     CreateWindowCaption();
@@ -1115,7 +1119,7 @@ void SwitchWidth(int width)
         Atari800WindowAspectSet(w, h);
         SDL_SetWindowSize(MainWindow, w, h);
     }
-    HandleScreenChange(w, h, 0, 0);
+    HandleScreenChange(w, h, 0, KEEP_HEIGHT);
     full_display = FULL_DISPLAY_COUNT;
     Atari_DisplayScreen((UBYTE *) Screen_atari);
 	SetDisplayManagerWidthMode(width);
@@ -1607,7 +1611,7 @@ int Atari_Keyboard_International(void)
                     break;
                 case SDL_WINDOWEVENT:
                     if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
-                        HandleScreenChange(event.window.data1, event.window.data2, 0, 1);
+                        HandleScreenChange(event.window.data1, event.window.data2, 0, KEEP_WIDTH);
                     }
                 case SDL_TEXTINPUT:
                     kbhits = (Uint8 *) SDL_GetKeyboardState(NULL);
@@ -4341,9 +4345,8 @@ void CountFPS()
         }
 }
 
-void HandleScreenChange(int requested_w, int requested_h, int new_renderer, int keep_width)
+void HandleScreenChange(int requested_w, int requested_h, int new_renderer, int keep)
 {
-    //int wasFullscreen = FULLSCREEN_MACOS;
     FULLSCREEN_MACOS = Atari800WindowIsFullscreen();
     if (FULLSCREEN_MACOS) {
         Log_print("Setting FullSreeen: %dx%d ",requested_w, requested_h);
@@ -4401,13 +4404,36 @@ void HandleScreenChange(int requested_w, int requested_h, int new_renderer, int 
             SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, linearFilterEnabled ? "1" : "0");
             renderer = SDL_CreateRenderer(MainWindow, -1, 0);
         }
-        if (keep_width) {
-            scaleFactorFloat = (((double) requested_h) /
-                                GetDisplayScreenPixelAspect()) /
-                                (double) GetDisplayScreenHeight();
-        } else {
-            scaleFactorFloat = ((double) requested_w /
-                                (double) GetDisplayScreenWidth());
+        switch(keep) {
+            case KEEP_WIDTH:
+                scaleFactorFloat = (((double) requested_h) /
+                                    GetDisplayScreenPixelAspect()) /
+                                    (double) GetDisplayScreenHeight();
+                scaleFactorRenderX = scaleFactorFloat;
+                scaleFactorRenderY = scaleFactorFloat*GetDisplayScreenPixelAspect();
+                new_w = GetDisplayScreenWidth() * scaleFactorFloat;
+                new_h = GetDisplayScreenHeight() * scaleFactorFloat *
+                        GetDisplayScreenPixelAspect();
+                break;
+            case KEEP_HEIGHT:
+                scaleFactorFloat = ((double) requested_w /
+                                    (double) GetDisplayScreenWidth());
+                scaleFactorRenderX = scaleFactorFloat;
+                scaleFactorRenderY =  scaleFactorFloat*GetDisplayScreenPixelAspect();
+                new_w = GetDisplayScreenWidth() * scaleFactorFloat;
+                new_h = GetDisplayScreenHeight() * scaleFactorFloat *         GetDisplayScreenPixelAspect();
+                break;
+            case KEEP_BOTH:
+                scaleFactorRenderX = ((double) requested_w /
+                                      (double) GetDisplayScreenWidth());
+                scaleFactorRenderY = (((double) requested_h) /
+                                      GetDisplayScreenPixelAspect()) /
+                                      (double) GetDisplayScreenHeight() *
+                                      GetDisplayScreenPixelAspect();
+                scaleFactorFloat = scaleFactorRenderX;
+                new_w = GetDisplayScreenWidth() * scaleFactorRenderX;
+                new_h = GetDisplayScreenHeight() * scaleFactorRenderY;
+                break;
         }
         Log_print("Reqeusted Sreeen: %dx%d %f ",requested_w, requested_h, scaleFactorFloat);
         if (onlyIntegralScaling) {
@@ -4415,10 +4441,10 @@ void HandleScreenChange(int requested_w, int requested_h, int new_renderer, int 
             if (scaleFactorFloat < 1.0)
                 scaleFactorFloat = 1.0;
         }
-        new_w = GetDisplayScreenWidth() * scaleFactorFloat;
-        new_h = GetDisplayScreenHeight() * scaleFactorFloat * GetDisplayScreenPixelAspect();
         Log_print("Setting Screen: %dx%d %f",new_w,new_h,scaleFactorFloat);
-        SetRenderScale();
+        SDL_RenderSetScale(renderer,
+                           scaleFactorRenderX,
+                           scaleFactorRenderY);
         Atari800WindowAspectSet(new_w, new_h);
         SDL_SetWindowSize(MainWindow, new_w, new_h);
         current_w = new_w;
@@ -4439,7 +4465,7 @@ void HandleScreenChange(int requested_w, int requested_h, int new_renderer, int 
 
 void HandleDisplayOptionsChange()
 {
-    HandleScreenChange(current_w, current_h, 1, 0);
+    HandleScreenChange(current_w, current_h, 1, KEEP_WIDTH);
 }
 
 /*------------------------------------------------------------------------------
@@ -4905,7 +4931,7 @@ void ProcessMacPrefsChange()
             Atari800_Coldstart();
 		}
         if (fullscreenOptsChanged && FULLSCREEN_MACOS) {
-            HandleScreenChange(current_w, current_h, 0, 1);
+            HandleScreenChange(current_w, current_h, 0, KEEP_HEIGHT);
         }
         if (vsyncOptsChanged) {
             SetDisplayManagerVsyncEnabled(vsyncEnabled);
