@@ -1611,7 +1611,10 @@ int Atari_Keyboard_International(void)
                     break;
                 case SDL_WINDOWEVENT:
                     if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
-                        HandleScreenChange(event.window.data1, event.window.data2, 0, KEEP_WIDTH);
+                        if (PLATFORM_80col)
+                            HandleScreenChange(event.window.data1, event.window.data2, 0, KEEP_BOTH);
+                        else
+                            HandleScreenChange(event.window.data1, event.window.data2, 0, KEEP_WIDTH);
                     }
                 case SDL_TEXTINPUT:
                     kbhits = (Uint8 *) SDL_GetKeyboardState(NULL);
@@ -4383,14 +4386,28 @@ void HandleScreenChange(int requested_w, int requested_h, int new_renderer, int 
                                          ((int)(GetDisplayScreenHeight()* scaleFactorRenderY)))/2))/scaleFactorRenderY*GetDisplayScreenPixelAspect();
         }
         else {  // Keep Aspect Ratio for Fullscreen
-            scaleFactorRenderY = (double) requested_h /
-                               ((double) GetDisplayScreenHeight()*GetDisplayScreenPixelAspect());
-            scaleFactorRenderX = scaleFactorRenderY / GetDisplayScreenPixelAspect();
-            scaleFactorRenderX = scaleFactorRenderY / GetDisplayScreenPixelAspect();
-            SDL_RenderSetScale(renderer, scaleFactorRenderX, scaleFactorRenderY);
-            screen_x_offset = ((double)((requested_w -
-                                       ((int)(GetDisplayScreenWidth()* scaleFactorRenderX)))/2))/scaleFactorRenderX;;
-            screen_y_offset = 0;
+            if (PLATFORM_80col) {
+                /* Calculate screen size/offset for Main Atari Screen */
+                scaleFactorRenderY = (double) requested_h /
+                                   ((double) Screen_HEIGHT*pixelAspectRatio);
+                scaleFactorRenderX = scaleFactorRenderY / pixelAspectRatio;
+                screen_x_offset = ((double)((requested_w -
+                                           ((int)(GetAtariScreenWidth()* scaleFactorRenderX)))/2))/scaleFactorRenderX;
+                screen_y_offset = 0;
+                /* Now scale 80 Col display */
+                scaleFactorRenderY = (double) requested_h / (double) GetDisplayScreenHeight();
+                scaleFactorRenderX = (double) (requested_w - 2 * screen_x_offset) / (double) GetDisplayScreenWidth();
+                SDL_RenderSetScale(renderer, scaleFactorRenderX, scaleFactorRenderY);
+            } else {
+                scaleFactorRenderY = (double) requested_h /
+                                   ((double) GetDisplayScreenHeight()*GetDisplayScreenPixelAspect());
+                scaleFactorRenderX = scaleFactorRenderY / GetDisplayScreenPixelAspect();
+                scaleFactorRenderX = scaleFactorRenderY / GetDisplayScreenPixelAspect();
+                SDL_RenderSetScale(renderer, scaleFactorRenderX, scaleFactorRenderY);
+                screen_x_offset = ((double)((requested_w -
+                                           ((int)(GetDisplayScreenWidth()* scaleFactorRenderX)))/2))/scaleFactorRenderX;;
+                screen_y_offset = 0;
+            }
         }
         current_w = requested_w;
         current_h = requested_h;
