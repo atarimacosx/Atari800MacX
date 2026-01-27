@@ -4374,16 +4374,33 @@ void HandleScreenChange(int requested_w, int requested_h, int new_renderer, int 
             screen_y_offset = 0;
             }
         else if (onlyIntegralScaling) {
-            scaleFactorRenderY = trunc(((double) requested_h /
-                                     (double) GetDisplayScreenHeight())*GetDisplayScreenPixelAspect());
-            if (scaleFactorRenderY < 1.0)
-                scaleFactorRenderY = 1.0;
-            scaleFactorRenderX = scaleFactorRenderY / pixelAspectRatio;
-            SDL_RenderSetScale(renderer, scaleFactorRenderX, scaleFactorRenderY);
-            screen_x_offset = ((double)((requested_w -
-                                       ((int)(GetDisplayScreenWidth()* scaleFactorRenderX)))/2))/scaleFactorRenderX;;
-            screen_y_offset = ((double)((requested_h -
-                                         ((int)(GetDisplayScreenHeight()* scaleFactorRenderY)))/2))/scaleFactorRenderY*GetDisplayScreenPixelAspect();
+            if (PLATFORM_80col) {
+                scaleFactorRenderY = trunc(((double) requested_h /
+                                         (double) Screen_HEIGHT)*pixelAspectRatio);
+                if (scaleFactorRenderY < 1.0)
+                    scaleFactorRenderY = 1.0;
+                scaleFactorRenderX = scaleFactorRenderY / pixelAspectRatio;
+                screen_x_offset = ((double)((requested_w -
+                                           ((int)(Screen_HEIGHT* scaleFactorRenderX)))/2))/scaleFactorRenderX;;
+                screen_y_offset = ((double)((requested_h -
+                                             ((int)(Screen_HEIGHT* scaleFactorRenderY)))/2))/scaleFactorRenderY*pixelAspectRatio;
+                /* Now scale 80 Col display */
+                scaleFactorRenderY = (double) (requested_h - 2 * screen_y_offset) / (double) GetDisplayScreenHeight();
+                scaleFactorRenderX = (double) (requested_w - 2 * screen_x_offset) / (double) GetDisplayScreenWidth();
+                SDL_RenderSetScale(renderer, scaleFactorRenderX, scaleFactorRenderY);
+            }
+            else {
+                scaleFactorRenderY = trunc(((double) requested_h /
+                                         (double) GetDisplayScreenHeight())*GetDisplayScreenPixelAspect());
+                if (scaleFactorRenderY < 1.0)
+                    scaleFactorRenderY = 1.0;
+                scaleFactorRenderX = scaleFactorRenderY / pixelAspectRatio;
+                SDL_RenderSetScale(renderer, scaleFactorRenderX, scaleFactorRenderY);
+                screen_x_offset = ((double)((requested_w -
+                                           ((int)(GetDisplayScreenWidth()* scaleFactorRenderX)))/2))/scaleFactorRenderX;;
+                screen_y_offset = ((double)((requested_h -
+                                             ((int)(GetDisplayScreenHeight()* scaleFactorRenderY)))/2))/scaleFactorRenderY*GetDisplayScreenPixelAspect();
+            }
         }
         else {  // Keep Aspect Ratio for Fullscreen
             if (PLATFORM_80col) {
