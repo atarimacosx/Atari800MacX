@@ -1615,7 +1615,7 @@ DQ
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
-                                <buttonCell type="radio" title="J(atari)Cart1024(kB) Cartridge" imagePosition="leading" alignment="left" inset="2" id="ln9-8u-s8n">
+                                <buttonCell type="radio" title="J(atari)Cart512(kB) Cartridge" imagePosition="leading" alignment="left" inset="2" id="ln9-8u-s8n">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
