@@ -177,7 +177,7 @@ static void MAXFLASH_Write_Byte(UWORD address, UBYTE value)
             SetCartBank(address & 0x80 ? -1 : (UBYTE)address & 0x7F);
             return;
         case CARTRIDGE_DCART:
-            SetDCartBank(address & 0x80 ? -1 : (UBYTE)address & 0x7F, (UBYTE)address & 0x7F);
+            SetDCartBank(address & 0x80 ? -1 : (UBYTE)address & 0x1F, (UBYTE)address & 0x1F);
             return;
     }
 }
