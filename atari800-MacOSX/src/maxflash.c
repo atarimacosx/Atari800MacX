@@ -169,7 +169,7 @@ static void MAXFLASH_Write_Byte(UWORD address, UBYTE value)
             SetCartBank(address & 0x80 ? -1 : (UBYTE)address & 0x1F);
             return;
         case CARTRIDGE_JACART_512:
-            SetCartBank(address & 0x80 ? -1 : (UBYTE)address & 0x7F);
+            SetCartBank(address & 0x80 ? -1 : (UBYTE)address & 0x3F);
             return;
         case CARTRIDGE_ATMAX_OLD_1024:
         case CARTRIDGE_ATMAX_NEW_1024:

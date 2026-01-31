@@ -1514,7 +1514,7 @@ DQ
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
-                                <buttonCell type="radio" title="Super Cart 256 KB 5200 Cartridge" imagePosition="leading" alignment="left" inset="2" id="9Ib-1I-x3C">
+                                <buttonCell type="radio" title="Super Cart 256 KB 5200 Cartridge" imagePosition="leading" alignment="left" tag="4" inset="2" id="9Ib-1I-x3C">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
