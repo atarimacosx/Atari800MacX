@@ -999,19 +999,19 @@ DQ
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
-                                <buttonCell type="radio" title="MIO Diagnostics 8KB Cartridge" imagePosition="left" alignment="left" inset="2" id="ZRc-8l-Tk6">
+                                <buttonCell type="radio" title="MIO Diagnostics 8KB Cartridge" imagePosition="left" alignment="left" tag="6" inset="2" id="ZRc-8l-Tk6">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
-                                <buttonCell type="radio" title="Telelink II Cartridge" imagePosition="left" alignment="left" inset="2" id="Vgw-Hg-J28">
+                                <buttonCell type="radio" title="Telelink II Cartridge" imagePosition="left" alignment="left" tag="7" inset="2" id="Vgw-Hg-J28">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
-                                <buttonCell type="radio" title="XE Multicart (8KB) Cartridge" imagePosition="left" alignment="left" inset="2" id="N4L-Q5-8hj">
+                                <buttonCell type="radio" title="XE Multicart (8KB) Cartridge" imagePosition="left" alignment="left" tag="8" inset="2" id="N4L-Q5-8hj">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
-                                <buttonCell type="radio" title="J(Atari)Cart8(kB) Cartridge" imagePosition="left" alignment="left" inset="2" id="yqG-LF-d9z">
+                                <buttonCell type="radio" title="J(Atari)Cart8(kB) Cartridge" imagePosition="left" alignment="left" tag="9" inset="2" id="yqG-LF-d9z">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
@@ -1132,19 +1132,19 @@ Gw
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
-                                <buttonCell type="radio" title="16 KB Williams Cartridge" imagePosition="leading" alignment="left" inset="2" id="aA0-oZ-HG0">
+                                <buttonCell type="radio" title="16 KB Williams Cartridge" imagePosition="leading" alignment="left" tag="8" inset="2" id="aA0-oZ-HG0">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
-                                <buttonCell type="radio" title="Pronto Cartridge" imagePosition="leading" alignment="left" inset="2" id="A6L-yF-LJi">
+                                <buttonCell type="radio" title="Pronto Cartridge" imagePosition="leading" alignment="left" tag="9" inset="2" id="A6L-yF-LJi">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
-                                <buttonCell type="radio" title="XE Multicart (16KB) Cartridge" imagePosition="leading" alignment="left" inset="2" id="NCF-qI-3r7">
+                                <buttonCell type="radio" title="XE Multicart (16KB) Cartridge" imagePosition="leading" alignment="left" tag="10" inset="2" id="NCF-qI-3r7">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
-                                <buttonCell type="radio" title="J(atari)Cart16(kB) Cartridge" imagePosition="leading" alignment="left" inset="2" id="m2C-zh-W6u">
+                                <buttonCell type="radio" title="J(atari)Cart16(kB) Cartridge" imagePosition="leading" alignment="left" tag="11" inset="2" id="m2C-zh-W6u">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
@@ -1231,19 +1231,19 @@ DQ
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
-                                <buttonCell type="radio" title="COS32 Cartridge" imagePosition="leading" alignment="left" inset="2" id="CO9-BF-6Uu">
+                                <buttonCell type="radio" title="COS32 Cartridge" imagePosition="leading" alignment="left" tag="10" inset="2" id="CO9-BF-6Uu">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
-                                <buttonCell type="radio" title="XE Multicart (32KB) Cartridge" imagePosition="leading" alignment="left" inset="2" id="QM1-xb-4Ny">
+                                <buttonCell type="radio" title="XE Multicart (32KB) Cartridge" imagePosition="leading" alignment="left" tag="11" inset="2" id="QM1-xb-4Ny">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
-                                <buttonCell type="radio" title="SiDiCar 32 KB Cartridge" imagePosition="leading" alignment="left" inset="2" id="tAV-HP-iN9">
+                                <buttonCell type="radio" title="SiDiCar 32 KB Cartridge" imagePosition="leading" alignment="left" tag="12" inset="2" id="tAV-HP-iN9">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
-                                <buttonCell type="radio" title="J(atari)Cart32(kB) Cartridge" imagePosition="leading" alignment="left" inset="2" id="hXE-Dk-G33">
+                                <buttonCell type="radio" title="J(atari)Cart32(kB) Cartridge" imagePosition="leading" alignment="left" tag="13" inset="2" id="hXE-Dk-G33">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
@@ -1348,31 +1348,31 @@ DQ
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
-                                <buttonCell type="radio" title="Super Cart 64 KB 5200 Cartridge" imagePosition="leading" alignment="left" inset="2" id="4ao-DK-74e">
+                                <buttonCell type="radio" title="Super Cart 64 KB 5200 Cartridge" imagePosition="leading" alignment="left" tag="11" inset="2" id="4ao-DK-74e">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
-                                <buttonCell type="radio" title="JRC64 Cartridge (linear)" imagePosition="leading" alignment="left" inset="2" id="Vao-wB-hCk">
+                                <buttonCell type="radio" title="JRC64 Cartridge (linear)" imagePosition="leading" alignment="left" tag="12" inset="2" id="Vao-wB-hCk">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
-                                <buttonCell type="radio" title="MDDOS Cartridge" imagePosition="leading" alignment="left" inset="2" id="tyZ-H0-wxn">
+                                <buttonCell type="radio" title="MDDOS Cartridge" imagePosition="leading" alignment="left" tag="13" inset="2" id="tyZ-H0-wxn">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
-                                <buttonCell type="radio" title="XE Multicart (64KB) Cartridge" imagePosition="leading" alignment="left" inset="2" id="BfF-Wc-M4X">
+                                <buttonCell type="radio" title="XE Multicart (64KB) Cartridge" imagePosition="leading" alignment="left" tag="14" inset="2" id="BfF-Wc-M4X">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
-                                <buttonCell type="radio" title="Ram-Cart 64 KB Cartridge" imagePosition="leading" alignment="left" inset="2" id="BNc-nn-tjD">
+                                <buttonCell type="radio" title="Ram-Cart 64 KB Cartridge" imagePosition="leading" alignment="left" tag="15" inset="2" id="BNc-nn-tjD">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
-                                <buttonCell type="radio" title="J(atari)Cart64(kB) Cartridge" imagePosition="leading" alignment="left" inset="2" id="e5O-LX-Lnw">
+                                <buttonCell type="radio" title="J(atari)Cart64(kB) Cartridge" imagePosition="leading" alignment="left" tag="16" inset="2" id="e5O-LX-Lnw">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
-                                <buttonCell type="radio" title="JRC64 Cartridge (interleaved)" imagePosition="leading" alignment="left" inset="2" id="gN2-Bx-Sil">
+                                <buttonCell type="radio" title="JRC64 Cartridge (interleaved)" imagePosition="leading" alignment="left" tag="17" inset="2" id="gN2-Bx-Sil">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
@@ -1518,15 +1518,15 @@ DQ
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
-                                <buttonCell type="radio" title="XE Multicart (256KB) Cartridge" imagePosition="leading" alignment="left" inset="2" id="eej-Am-ES0">
+                                <buttonCell type="radio" title="XE Multicart (256KB) Cartridge" imagePosition="leading" alignment="left" tag="5" inset="2" id="eej-Am-ES0">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
-                                <buttonCell type="radio" title="Double Ram-Cart 256 KB Cartridge" imagePosition="leading" alignment="left" inset="2" id="Kcm-f1-KHs">
+                                <buttonCell type="radio" title="Double Ram-Cart 256 KB Cartridge" imagePosition="leading" alignment="left" tag="6" inset="2" id="Kcm-f1-KHs">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
-                                <buttonCell type="radio" title="J(atari)Cart256(kB) Cartridge" imagePosition="leading" alignment="left" inset="2" id="0Gq-eG-lRb">
+                                <buttonCell type="radio" title="J(atari)Cart256(kB) Cartridge" imagePosition="leading" alignment="left" tag="7" inset="2" id="0Gq-eG-lRb">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
@@ -1603,23 +1603,23 @@ DQ
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
-                                <buttonCell type="radio" title="Super Cart 512 KB 5200 Cartridge" imagePosition="leading" alignment="left" inset="2" id="uiz-zn-RdJ">
+                                <buttonCell type="radio" title="Super Cart 512 KB 5200 Cartridge" imagePosition="leading" alignment="left" tag="4" inset="2" id="uiz-zn-RdJ">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
-                                <buttonCell type="radio" title="Corina 512K + 512K SRAM + 8K EEPROM Cartridge" imagePosition="leading" alignment="left" inset="2" id="MAu-04-Phs">
+                                <buttonCell type="radio" title="Corina 512K + 512K SRAM + 8K EEPROM Cartridge" imagePosition="leading" alignment="left" tag="5" inset="2" id="MAu-04-Phs">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
-                                <buttonCell type="radio" title="XE Multicart (512KB) Cartridge" imagePosition="leading" alignment="left" inset="2" id="MfW-1E-fuB">
+                                <buttonCell type="radio" title="XE Multicart (512KB) Cartridge" imagePosition="leading" alignment="left" tag="6" inset="2" id="MfW-1E-fuB">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
-                                <buttonCell type="radio" title="J(atari)Cart512(kB) Cartridge" imagePosition="leading" alignment="left" inset="2" id="ln9-8u-s8n">
+                                <buttonCell type="radio" title="J(atari)Cart512(kB) Cartridge" imagePosition="leading" alignment="left" tag="7" inset="2" id="ln9-8u-s8n">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
-                                <buttonCell type="radio" title="DCart Cartridge" imagePosition="leading" alignment="left" inset="2" id="1BO-Eo-tzi">
+                                <buttonCell type="radio" title="DCart Cartridge" imagePosition="leading" alignment="left" tag="7" inset="2" id="1BO-Eo-tzi">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
@@ -1696,27 +1696,27 @@ DQ
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
-                                <buttonCell type="radio" title="Atarimax 1MB Flash Cartridge (new)" imagePosition="left" alignment="left" inset="2" id="BxA-oo-rvp">
+                                <buttonCell type="radio" title="Atarimax 1MB Flash Cartridge (new)" imagePosition="left" alignment="left" tag="4" inset="2" id="BxA-oo-rvp">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
-                                <buttonCell type="radio" title="SIC+ 1024 KB Cartridge" imagePosition="left" alignment="left" inset="2" id="D7Z-Rb-pKn">
+                                <buttonCell type="radio" title="SIC+ 1024 KB Cartridge" imagePosition="left" alignment="left" tag="5" inset="2" id="D7Z-Rb-pKn">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
-                                <buttonCell type="radio" title="Corina 1M + 8K EEPROM Cartridge" imagePosition="left" alignment="left" inset="2" id="5fF-wr-9mM">
+                                <buttonCell type="radio" title="Corina 1M + 8K EEPROM Cartridge" imagePosition="left" alignment="left" tag="6" inset="2" id="5fF-wr-9mM">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
-                                <buttonCell type="radio" title="XE Multicart (1024KB) Cartridge" imagePosition="left" alignment="left" inset="2" id="pxi-rt-6bx">
+                                <buttonCell type="radio" title="XE Multicart (1024KB) Cartridge" imagePosition="left" alignment="left" tag="7" inset="2" id="pxi-rt-6bx">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
-                                <buttonCell type="radio" title="Ram-Cart 1 MB Cartridge" imagePosition="left" alignment="left" inset="2" id="yhp-eW-Eyg">
+                                <buttonCell type="radio" title="Ram-Cart 1 MB Cartridge" imagePosition="left" alignment="left" tag="8" inset="2" id="yhp-eW-Eyg">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
-                                <buttonCell type="radio" title="J(atari)Cart1024(kB) Cartridge" imagePosition="left" alignment="left" inset="2" id="Mct-Gp-Zaw">
+                                <buttonCell type="radio" title="J(atari)Cart1024(kB) Cartridge" imagePosition="left" alignment="left" tag="9" inset="2" id="Mct-Gp-Zaw">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
@@ -1898,7 +1898,7 @@ DQ
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
-                                <buttonCell type="radio" title="Ram-Cart 2 MB Cartridge" imagePosition="leading" alignment="left" inset="2" id="SKP-d0-R05">
+                                <buttonCell type="radio" title="Ram-Cart 2 MB Cartridge" imagePosition="leading" alignment="left" tag="2" inset="2" id="SKP-d0-R05">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
@@ -1977,7 +1977,7 @@ Gw
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
-                                <buttonCell type="radio" title="RAM-Cart 4 MB Cartridge" imagePosition="left" alignment="left" inset="2" id="OeG-9v-4DA">
+                                <buttonCell type="radio" title="RAM-Cart 4 MB Cartridge" imagePosition="left" alignment="left" tag="1" inset="2" id="OeG-9v-4DA">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
@@ -3006,19 +3006,19 @@ DQ
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
-                                <buttonCell type="radio" title="Super Cart 128 KB 5200 Cartridge" imagePosition="left" alignment="left" inset="2" id="U8w-sb-m7c">
+                                <buttonCell type="radio" title="Super Cart 128 KB 5200 Cartridge" imagePosition="left" alignment="left" tag="10" inset="2" id="U8w-sb-m7c">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
-                                <buttonCell type="radio" title="XE Multicart (128KB) Cartridge" imagePosition="left" alignment="left" inset="2" id="kep-1i-RYX">
+                                <buttonCell type="radio" title="XE Multicart (128KB) Cartridge" imagePosition="left" alignment="left" tag="11" inset="2" id="kep-1i-RYX">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
-                                <buttonCell type="radio" title="Ram-Cart 128 KB Cartridge" imagePosition="left" alignment="left" inset="2" id="ADh-cS-cdn">
+                                <buttonCell type="radio" title="Ram-Cart 128 KB Cartridge" imagePosition="left" alignment="left" tag="12" inset="2" id="ADh-cS-cdn">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
-                                <buttonCell type="radio" title="J(ateri)Cart128(kB) Cartridge" imagePosition="left" alignment="left" inset="2" id="W3s-8D-J30">
+                                <buttonCell type="radio" title="J(ateri)Cart128(kB) Cartridge" imagePosition="left" alignment="left" tag="13" inset="2" id="W3s-8D-J30">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
@@ -3335,7 +3335,7 @@ DQ
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
-                                <buttonCell type="radio" title="Ram-Cart 32 MB Cartridge" imagePosition="left" alignment="left" inset="2" id="gou-gV-I0R">
+                                <buttonCell type="radio" title="Ram-Cart 32 MB Cartridge" imagePosition="left" alignment="left" tag="1" inset="2" id="gou-gV-I0R">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
