@@ -1793,6 +1793,18 @@ static void InitCartridge(CARTRIDGE_image_t *cart)
 		MapActiveCart();
 }
 
+#ifdef ATARI800MACX
+void CARTRIDGE_InitMainCartridge()
+{
+    InitCartridge(&CARTRIDGE_main);
+}
+
+void CARTRIDGE_InitSecondCartridge()
+{
+    InitCartridge(&CARTRIDGE_piggyback);
+}
+#endif
+
 int CARTRIDGE_WriteImage(char *filename, int type, UBYTE *image, int size, int raw, UBYTE value) {
 	FILE *fp = fopen(filename, "wb");
 	if (fp != NULL) {

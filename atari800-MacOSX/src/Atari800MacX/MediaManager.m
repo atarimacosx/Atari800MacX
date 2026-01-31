@@ -813,12 +813,16 @@ NSImage *disketteImage;
         [filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
         if (ULTIMATE_enabled) {
             cartSize = CARTRIDGE_Insert_Second(cfilename);
-            if (cartSize > 0)
+            if (cartSize > 0) {
                 CARTRIDGE_piggyback.type = [self cartSelect:cartSize];
+                CARTRIDGE_InitSecondCartridge();
+            }
         } else {
             cartSize = CARTRIDGE_Insert(cfilename);
-            if (cartSize > 0)
+            if (cartSize > 0) {
                 CARTRIDGE_main.type = [self cartSelect:cartSize];
+                CARTRIDGE_InitMainCartridge();
+            }
         }
 
         memset(Screen_atari, 0, (Screen_HEIGHT * Screen_WIDTH));
@@ -847,6 +851,7 @@ NSImage *disketteImage;
         cartSize = CARTRIDGE_Insert_Second(cfilename);
         if (cartSize > 0) 
             CARTRIDGE_piggyback.type = [self cartSelect:cartSize];
+            CARTRIDGE_InitSecondCartridge();
         }
     [self updateInfo];
     PauseAudio(0);
@@ -865,12 +870,16 @@ NSImage *disketteImage;
         [filename getCString:cfilename maxLength:FILENAME_MAX encoding:NSUTF8StringEncoding];
         if (ULTIMATE_enabled) {
             cartSize = CARTRIDGE_Insert_Second(cfilename);
-            if (cartSize > 0)
+            if (cartSize > 0) {
                 CARTRIDGE_piggyback.type = [self cartSelect:cartSize];
+                CARTRIDGE_InitSecondCartridge();
+            }
         } else {
             cartSize = CARTRIDGE_Insert(cfilename);
-            if (cartSize > 0)
+            if (cartSize > 0) {
                 CARTRIDGE_main.type = [self cartSelect:cartSize];
+                CARTRIDGE_InitMainCartridge();
+            }
         }
 		memset(Screen_atari, 0, (Screen_HEIGHT * Screen_WIDTH));
 		Atari_DisplayScreen((UBYTE *) Screen_atari);
