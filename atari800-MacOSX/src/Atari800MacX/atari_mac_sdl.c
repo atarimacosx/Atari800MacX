@@ -3170,16 +3170,44 @@ void Atari_DisplayScreen(UBYTE * screen)
     // Add the scanlines if we are in that mode
     if (SCALE_MODE == SCANLINE_SCALE)
         {
+#if 0
         scanlinesTexture = SDL_CreateTexture(renderer,
             SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, MainScreen->w, MainScreen->h);
         SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
-            SDL_SetTextureBlendMode(scanlinesTexture, SDL_BLENDMODE_BLEND);
+        SDL_SetTextureBlendMode(scanlinesTexture, SDL_BLENDMODE_BLEND);
         int alpha = (1.0 - scanlineTransparency) * 255;
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, alpha);
-        for (int i = 0; i < MainScreen->h; i += 2) {
+        for (int i = 0; i < MainScreen->h; i += 4) {
             SDL_RenderDrawLine(renderer, 0, i, MainScreen->w, i);
+            SDL_RenderDrawLine(renderer, 0, i+1, MainScreen->w, i+1);
             }
         SDL_RenderCopy(renderer, scanlinesTexture, NULL, NULL);
+#else
+        int rows = 0;
+        SDL_Rect scanlineRect;
+        float oldScaleX, oldScaleY;
+        scanlinesTexture = SDL_CreateTexture(renderer,
+            SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET,
+            MainScreen->w, MainScreen->h);
+        SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+        SDL_SetTextureBlendMode(scanlinesTexture, SDL_BLENDMODE_BLEND);
+        int alpha = (1.0 - scanlineTransparency) * 255;
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, alpha);
+        
+        SDL_RenderGetScale(renderer, &oldScaleX, &oldScaleY);
+        SDL_RenderSetScale(renderer, scaleFactorFloat, 1);
+
+        for (rows = 0; rows < MainScreen->h; rows ++)
+            {
+            scanlineRect.x = 0;
+            scanlineRect.w = (screen_width*3)/2;
+            scanlineRect.y = rows*scaleFactorFloat+scaleFactorFloat;
+            scanlineRect.h = 1;
+            SDL_RenderFillRect(renderer, &scanlineRect);
+            }
+        SDL_RenderCopy(renderer, scanlinesTexture, NULL, NULL);
+        SDL_RenderSetScale(renderer, oldScaleX, oldScaleY);
+#endif
         }
 
     SDL_RenderPresent(renderer);
