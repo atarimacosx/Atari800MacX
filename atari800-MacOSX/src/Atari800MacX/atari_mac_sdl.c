@@ -111,6 +111,7 @@ int SCALE_MODE;
 double scaleFactor = 3;
 double scaleFactorFloat = 2.0;
 double pixelAspectRatio = 1.0;  /* Pixel Height / Pixel Width*/
+double scanlineTransparency = 0.9;
 double scaleFactorRenderX;
 double scaleFactorRenderY;
 int GRAB_MOUSE = 0;
@@ -3165,31 +3166,26 @@ void Atari_DisplayScreen(UBYTE * screen)
     rect.h = MainScreen->h;
     SDL_RenderClear(renderer);
     SDL_RenderCopy(renderer, texture, NULL, &rect);
-
+    SDL_Texture* scanlinesTexture;
     // Add the scanlines if we are in that mode
     if (SCALE_MODE == SCANLINE_SCALE)
         {
-        int rows = 0;
-        SDL_Rect scanlineRect;
-        float oldScaleX, oldScaleY;
-        
-        SDL_RenderGetScale(renderer, &oldScaleX, &oldScaleY);
-        SDL_RenderSetScale(renderer, scaleFactorFloat, 1);
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-
-        for (rows = 0; rows < MainScreen->h; rows ++)
-            {
-            scanlineRect.x = 0;
-            scanlineRect.w = (screen_width*3)/2;
-            scanlineRect.y = rows*scaleFactorFloat+scaleFactorFloat;
-            scanlineRect.h = 1;
-            SDL_RenderFillRect(renderer, &scanlineRect);
+        scanlinesTexture = SDL_CreateTexture(renderer,
+            SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, MainScreen->w, MainScreen->h);
+        SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+            SDL_SetTextureBlendMode(scanlinesTexture, SDL_BLENDMODE_BLEND);
+        int alpha = (1.0 - scanlineTransparency) * 255;
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, alpha);
+        for (int i = 0; i < MainScreen->h; i += 2) {
+            SDL_RenderDrawLine(renderer, 0, i, MainScreen->w, i);
             }
-        SDL_RenderSetScale(renderer, oldScaleX, oldScaleY);
+        SDL_RenderCopy(renderer, scanlinesTexture, NULL, NULL);
         }
 
     SDL_RenderPresent(renderer);
     SDL_DestroyTexture(texture);
+    if (SCALE_MODE == SCANLINE_SCALE)
+        SDL_DestroyTexture(scanlinesTexture);
 }
 
 // two empty functions, needed by input.c and platform.h
@@ -4443,6 +4439,11 @@ void HandleScreenChange(int requested_w, int requested_h, int new_renderer, int 
                 scaleFactorFloat = (((double) requested_h) /
                                     GetDisplayScreenPixelAspect()) /
                                     (double) GetDisplayScreenHeight();
+                if (onlyIntegralScaling) {
+                    scaleFactorFloat = trunc(scaleFactorFloat+0.4);
+                    if (scaleFactorFloat < 1.0)
+                        scaleFactorFloat = 1.0;
+                }
                 scaleFactorRenderX = scaleFactorFloat;
                 scaleFactorRenderY = scaleFactorFloat*GetDisplayScreenPixelAspect();
                 new_w = GetDisplayScreenWidth() * scaleFactorFloat;
@@ -4452,6 +4453,11 @@ void HandleScreenChange(int requested_w, int requested_h, int new_renderer, int 
             case KEEP_HEIGHT:
                 scaleFactorFloat = ((double) requested_w /
                                     (double) GetDisplayScreenWidth());
+                if (onlyIntegralScaling) {
+                    scaleFactorFloat = trunc(scaleFactorFloat+0.4);
+                    if (scaleFactorFloat < 1.0)
+                        scaleFactorFloat = 1.0;
+                }
                 scaleFactorRenderX = scaleFactorFloat;
                 scaleFactorRenderY =  scaleFactorFloat*GetDisplayScreenPixelAspect();
                 new_w = GetDisplayScreenWidth() * scaleFactorFloat;
@@ -4460,6 +4466,11 @@ void HandleScreenChange(int requested_w, int requested_h, int new_renderer, int 
             case KEEP_BOTH:
                 scaleFactorRenderX = ((double) requested_w /
                                       (double) GetDisplayScreenWidth());
+                if (onlyIntegralScaling) {
+                    scaleFactorRenderX = trunc(scaleFactorRenderX+0.4);
+                    if (scaleFactorRenderX < 1.0)
+                        scaleFactorRenderX = 1.0;
+                }
                 scaleFactorRenderY = (((double) requested_h) /
                                       GetDisplayScreenPixelAspect()) /
                                       (double) GetDisplayScreenHeight() *
@@ -4470,11 +4481,6 @@ void HandleScreenChange(int requested_w, int requested_h, int new_renderer, int 
                 break;
         }
         Log_print("Reqeusted Sreeen: %dx%d %f ",requested_w, requested_h, scaleFactorFloat);
-        if (onlyIntegralScaling) {
-            scaleFactorFloat = trunc(scaleFactorFloat+0.4);
-            if (scaleFactorFloat < 1.0)
-                scaleFactorFloat = 1.0;
-        }
         Log_print("Setting Screen: %dx%d %f",new_w,new_h,scaleFactorFloat);
         SDL_RenderSetScale(renderer,
                            scaleFactorRenderX,

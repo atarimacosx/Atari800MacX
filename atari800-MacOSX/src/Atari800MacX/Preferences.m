@@ -315,6 +315,7 @@ static NSDictionary *defaultValues() {
                 [NSNumber numberWithBool:NO], VsyncDisabled,
                 [NSNumber numberWithBool:YES], LinearFilterEnabled,
                 [NSNumber numberWithBool:YES], PixelAspectEnabled,
+                [NSNumber numberWithDouble:25.0], ScanlineTransparency,
                 [NSNumber numberWithBool:YES], LedStatus,
                 [NSNumber numberWithBool:YES], LedSector,
                 [NSNumber numberWithBool:YES], LedStatusMedia,
@@ -901,6 +902,7 @@ static Preferences *sharedInstance = nil;
     [vsyncEnabledButton setState:[[displayedValues objectForKey:VsyncDisabled] boolValue] ? NSOffState : NSOnState];
     [linearFilterEnabledButton setState:[[displayedValues objectForKey:LinearFilterEnabled] boolValue] ? NSOnState : NSOffState];
     [pixelAspectEnabledButton setState:[[displayedValues objectForKey:PixelAspectEnabled] boolValue] ? NSOnState : NSOffState];
+    [scanlineTransparencySlider setDoubleValue:[[displayedValues objectForKey:ScanlineTransparency] doubleValue]];
     [ledStatusButton setState:[[displayedValues objectForKey:LedStatus] boolValue] ? NSOnState : NSOffState];
     [ledSectorButton setState:[[displayedValues objectForKey:LedSector] boolValue] ? NSOnState : NSOffState];
     [ledHDSectorButton setState:[[displayedValues objectForKey:LedHDSector] boolValue] ? NSOnState : NSOffState];
@@ -1843,6 +1845,8 @@ static Preferences *sharedInstance = nil;
         [displayedValues setObject:yes forKey:PixelAspectEnabled];
     else
         [displayedValues setObject:no forKey:PixelAspectEnabled];
+    [displayedValues setObject:[NSNumber numberWithFloat:[scanlineTransparencySlider doubleValue]]
+        forKey:ScanlineTransparency];
     if ([ledSectorButton state] == NSOnState)
         [displayedValues setObject:yes forKey:LedSector];
     else
@@ -3881,6 +3885,7 @@ static Preferences *sharedInstance = nil;
     prefs->vsyncEnabled = 1 - [[curValues objectForKey:VsyncDisabled] intValue];
     prefs->linearFilterEnabled = [[curValues objectForKey:LinearFilterEnabled] intValue];
     prefs->pixelAspectEnabled = [[curValues objectForKey:PixelAspectEnabled] intValue];
+    prefs->scanlineTransparency = [[curValues objectForKey:ScanlineTransparency] doubleValue];
     prefs->ledStatus = [[curValues objectForKey:LedStatus] intValue];
     prefs->ledSector = [[curValues objectForKey:LedSector] intValue];
     prefs->ledHDSector = [[curValues objectForKey:LedHDSector] intValue];
@@ -4228,6 +4233,7 @@ static Preferences *sharedInstance = nil;
     [displayedValues setObject:prefssave->vsyncEnabled ? no : yes forKey:VsyncDisabled];
     [displayedValues setObject:prefssave->linearFilterEnabled ? yes : no forKey:LinearFilterEnabled];
     [displayedValues setObject:prefssave->pixelAspectEnabled ? yes : no forKey:PixelAspectEnabled];
+    [displayedValues setObject:[NSNumber numberWithDouble:prefssave->scanlineTransparency] forKey:ScanlineTransparency];
     [displayedValues setObject:prefssave->ledStatus ? yes : no forKey:LedStatus];
     [displayedValues setObject:prefssave->ledSector ? yes : no forKey:LedSector];
     [displayedValues setObject:prefssave->speedLimit ? yes : no forKey:SpeedLimit];
@@ -5358,6 +5364,7 @@ static Preferences *sharedInstance = nil;
     getBoolDefault(VsyncDisabled);
     getBoolDefault(LinearFilterEnabled);
     getBoolDefault(PixelAspectEnabled);
+    getFloatDefault(ScanlineTransparency);
     getBoolDefault(LedStatus);
     getBoolDefault(LedSector);
     getBoolDefault(LedHDSector);
@@ -5674,6 +5681,7 @@ static Preferences *sharedInstance = nil;
     setBoolDefault(VsyncDisabled);
     setBoolDefault(LinearFilterEnabled);
     setBoolDefault(PixelAspectEnabled);
+    setFloatDefault(ScanlineTransparency);
     setBoolDefault(LedStatus);
     setBoolDefault(LedSector);
     setBoolDefault(LedHDSector);
@@ -5971,6 +5979,7 @@ static Preferences *sharedInstance = nil;
     setConfig(VsyncDisabled);
     setConfig(LinearFilterEnabled);
     setConfig(PixelAspectEnabled);
+    setConfig(ScanlineTransparency);
     setConfig(LedStatus);
     setConfig(LedSector);
     setConfig(LedHDSector);
@@ -6366,6 +6375,7 @@ static Preferences *sharedInstance = nil;
     getConfig(VsyncDisabled);
     getConfig(LinearFilterEnabled);
     getConfig(PixelAspectEnabled);
+    getConfig(ScanlineTransparency);
     getConfig(LedStatus);
     getConfig(LedSector);
     getConfig(LedHDSector);
