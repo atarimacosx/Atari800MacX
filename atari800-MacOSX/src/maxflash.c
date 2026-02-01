@@ -177,7 +177,7 @@ static void MAXFLASH_Write_Byte(UWORD address, UBYTE value)
             SetCartBank(address & 0x80 ? -1 : (UBYTE)address & 0x7F);
             return;
         case CARTRIDGE_DCART:
-            SetDCartBank(address & 0xBF, address & 0xBF);
+            SetDCartBank(address & 0x80 ? -1 : (UBYTE)address & 0x3F, address & 0x3F);
             return;
     }
 }
@@ -209,9 +209,9 @@ static void MAXFLASH_Map_Cart(void)
         MEMORY_SetFlashRoutines(MAXFLASH_Flash_Read, MAXFLASH_Flash_Write);
         MEMORY_SetFlash(base, end);
         MEMORY_CopyFromCart(base, end, Cart->image + CartBank*0x2000);
-        if (Cart->type == CARTRIDGE_DCART)
-            MEMORY_CopyFromCart(0xD500, 0xd5FF, Cart->image + CartBank*0x2000 + 0X1500);
     }
+    if (Cart->type == CARTRIDGE_DCART)
+        MEMORY_CopyFromCart(0xD500, 0xd5FF, Cart->image + CartMiniBank*0x2000 + 0X1500);
 }
 
 static UBYTE MAXFLASH_Flash_Read(UWORD addr) {
