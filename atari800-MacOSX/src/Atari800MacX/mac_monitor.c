@@ -2389,7 +2389,7 @@ UWORD MONITOR_get_disasm_start(UWORD addr, UWORD target)
 	UWORD currentInstr;
 	char prBuff[256];
 	
-	for(i=0; i<4; ++i) {
+	for(i=0; i<0x40; ++i) {
 		currentInstr = baseAddr;
 		for(;;) {
 			if (currentInstr == target)
