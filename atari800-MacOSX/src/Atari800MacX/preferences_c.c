@@ -1140,7 +1140,8 @@ else
     else
         linearFilterOptsChanged = FALSE;
 
-    if (pixelAspectEnabled != prefs.pixelAspectEnabled)
+    if (pixelAspectEnabled != prefs.pixelAspectEnabled ||
+        Atari800_tv_mode != prefs.tvMode)
         pixelAspectOptsChanged = TRUE;
     else
         pixelAspectOptsChanged = FALSE;

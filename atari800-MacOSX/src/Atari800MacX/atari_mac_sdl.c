@@ -140,7 +140,8 @@ int pixelAspectEnabled = FALSE;
 #define NORMAL_SCALE 0
 #define SCANLINE_SCALE 1
 #define FRAMES_TO_HOLD_KEY 1;
-#define REALISTIC_PIXEL_ASPECT (7.0/6.0)
+#define PAL_REALISTIC_PIXEL_ASPECT (25.0/26.0)
+#define NTSC_REALISTIC_PIXEL_ASPECT (7.0/6.0)
 
 #define SCREEN_WIDTH_SHORT    (Screen_WIDTH - 2 * 24 - 2 * 8)
 #define SCREEN_WIDTH_DEFAULT  (Screen_WIDTH - 2 * 24)
@@ -381,6 +382,7 @@ int  GetAtariScreenWidth(void);
 void CalcWindowSize(int *width, int *height);
 static void SetRenderScale(void);
 void SelectionNormalize(int *startX, int *startY, int *endX, int* endY);
+void SetPixelAspectRatio(void);
 
 // joystick emulation - Future enhancement will allow user to set these in 
 //   Preferences.
@@ -910,11 +912,8 @@ void InitializeVideo()
 
     SDL_ShowCursor(SDL_ENABLE); // show mouse cursor
 
-    if (pixelAspectEnabled)
-        pixelAspectRatio = REALISTIC_PIXEL_ASPECT;
-    else
-        pixelAspectRatio = 1.0;
-
+    SetPixelAspectRatio();
+    
     InitializeWindow(scaleFactorFloat*(double)w, scaleFactorFloat*(double)h*pixelAspectRatio);
 
     SetPalette();
@@ -1073,16 +1072,25 @@ void SwitchLinearFilter()
     HandleDisplayOptionsChange();
 }
 
+void SetPixelAspectRatio(void)
+{
+    if (pixelAspectEnabled) {
+        if (Atari800_tv_mode == Atari800_TV_PAL)
+            pixelAspectRatio = PAL_REALISTIC_PIXEL_ASPECT;
+        else
+            pixelAspectRatio = NTSC_REALISTIC_PIXEL_ASPECT;
+    }
+    else
+        pixelAspectRatio = 1.0;
+}
+
 /*------------------------------------------------------------------------------
 *  SwitchPixelAspect - Called by user interface to switch between pixel aspect and not
 *-----------------------------------------------------------------------------*/
 void SwitchPixelAspect()
 {
     pixelAspectEnabled = 1 - pixelAspectEnabled;
-    if (pixelAspectEnabled)
-        pixelAspectRatio = REALISTIC_PIXEL_ASPECT;
-    else
-        pixelAspectRatio = 1.0;
+    SetPixelAspectRatio();
     SetDisplayManagerPixelAspectEnabled(pixelAspectEnabled);
     HandleDisplayOptionsChange();
 }
@@ -4499,6 +4507,7 @@ void HandleScreenChange(int requested_w, int requested_h, int new_renderer, int 
 
 void HandleDisplayOptionsChange()
 {
+    SetPixelAspectRatio();
     HandleScreenChange(current_w, current_h, 1, KEEP_WIDTH);
 }
 
