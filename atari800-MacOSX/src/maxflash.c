@@ -209,6 +209,8 @@ static void MAXFLASH_Map_Cart(void)
         MEMORY_SetFlashRoutines(MAXFLASH_Flash_Read, MAXFLASH_Flash_Write);
         MEMORY_SetFlash(base, end);
         MEMORY_CopyFromCart(base, end, Cart->image + CartBank*0x2000);
+        if (Cart->type == CARTRIDGE_DCART)
+            MEMORY_CopyFromCart(0xD500, 0xd5FF, Cart->image + CartBank*0x2000 + 0X1500);
     }
 }
 
