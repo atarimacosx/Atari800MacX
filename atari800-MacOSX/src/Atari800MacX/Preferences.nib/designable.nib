@@ -283,6 +283,7 @@
                 <outlet property="saveCurrentMediaButton" destination="4279" id="4281"/>
                 <outlet property="savedStateDirField" destination="386" id="411"/>
                 <outlet property="scaleModeMatrix" destination="3842" id="3848"/>
+                <outlet property="scanlineTransparencySlider" destination="som-vE-n0w" id="LYc-RE-ZyC"/>
                 <outlet property="serioSoundEnableButton" destination="3876" id="3899"/>
                 <outlet property="side2CFFileField" destination="fXW-NQ-3J1" id="5do-4R-E01"/>
                 <outlet property="side2FlashFileField" destination="hjd-La-4JB" id="Ga3-Td-UuS"/>
@@ -731,6 +732,25 @@ DQ
                                                             <action selector="miscChanged:" target="-2" id="3849"/>
                                                         </connections>
                                                     </matrix>
+                                                    <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="som-vE-n0w">
+                                                        <rect key="frame" x="178" y="6" width="129" height="20"/>
+                                                        <autoresizingMask key="autoresizingMask"/>
+                                                        <sliderCell key="cell" controlSize="small" state="on" alignment="left" maxValue="0.90000000000000002" doubleValue="0.730946541376985" tickMarkPosition="above" numberOfTickMarks="10" sliderType="linear" id="SQp-w6-qRm">
+                                                            <font key="font" metaFont="user"/>
+                                                        </sliderCell>
+                                                        <connections>
+                                                            <action selector="miscChanged:" target="-2" id="0ZV-FD-ikF"/>
+                                                        </connections>
+                                                    </slider>
+                                                    <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="V87-K7-4zQ">
+                                                        <rect key="frame" x="173" y="24" width="144" height="22"/>
+                                                        <autoresizingMask key="autoresizingMask"/>
+                                                        <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="Scanline Transparency" id="4Nz-65-PmQ">
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                    </textField>
                                                 </subviews>
                                             </view>
                                             <font key="titleFont" metaFont="system"/>
@@ -1030,7 +1050,7 @@ DQ
                                                     <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4293">
                                                         <rect key="frame" x="137" y="11" width="550" height="18"/>
                                                         <autoresizingMask key="autoresizingMask"/>
-                                                        <sliderCell key="cell" controlSize="small" alignment="left" maxValue="3" doubleValue="1" tickMarkPosition="above" numberOfTickMarks="31" sliderType="linear" id="12894">
+                                                        <sliderCell key="cell" controlSize="small" alignment="left" maxValue="3" doubleValue="0.44857980947955389" tickMarkPosition="above" numberOfTickMarks="31" sliderType="linear" id="12894">
                                                             <font key="font" metaFont="user"/>
                                                         </sliderCell>
                                                         <connections>

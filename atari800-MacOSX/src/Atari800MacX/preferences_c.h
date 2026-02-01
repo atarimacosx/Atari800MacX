@@ -32,6 +32,7 @@ typedef struct ATARI800MACX_PREF {
                 int vsyncEnabled;
                 int linearFilterEnabled;
                 int pixelAspectEnabled;
+                double scanlineTransparency;
 				int ledStatus;
                 int ledSector;
                 int ledHDSector;
@@ -202,6 +203,7 @@ typedef struct ATARI800MACX_PREFSAVE {
                 int vsyncEnabled;
                 int linearFilterEnabled;
                 int pixelAspectEnabled;
+                double scanlineTransparency;
 				int ledStatus;
 				int ledSector;
                 int speedLimit; 
