@@ -1619,7 +1619,7 @@ DQ
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
-                                <buttonCell type="radio" title="DCart Cartridge" imagePosition="leading" alignment="left" tag="7" inset="2" id="1BO-Eo-tzi">
+                                <buttonCell type="radio" title="DCart Cartridge" imagePosition="leading" alignment="left" tag="8" inset="2" id="1BO-Eo-tzi">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
