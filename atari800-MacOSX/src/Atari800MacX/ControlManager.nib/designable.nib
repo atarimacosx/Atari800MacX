@@ -8,6 +8,7 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="ControlManager">
             <connections>
+                <outlet property="breakpointEditorOkButton" destination="1538" id="REn-PN-aIi"/>
                 <outlet property="dualErrorTextField1" destination="3295" id="3303"/>
                 <outlet property="dualErrorTextField2" destination="3301" id="3304"/>
                 <outlet property="errorTextField" destination="43" id="4509"/>
