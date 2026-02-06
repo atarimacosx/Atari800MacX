@@ -24,6 +24,9 @@
     IBOutlet id widthModeDefaultItem;
     IBOutlet id widthModeFullItem;
     IBOutlet id displayFpsItem;
+    IBOutlet id vsyncEnabledItem;
+    IBOutlet id linearFilterEnabledItem;
+    IBOutlet id pixelAspectEnabledItem;
 	IBOutlet id scaleModeNormalItem;
 	IBOutlet id scaleModeScanlineItem;
     IBOutlet id grabMouseItem;
@@ -40,6 +43,9 @@
 - (void)setWidthmodeMenu:(int)widthMode;
 - (void)setGrabmouseMenu:(int)mouseOn;
 - (void)setFpsMenu:(int)fpsOn;
+- (void)setVsyncMenu:(int)vsyncOn;
+- (void)setLinearFilterMenu:(int)linearFilterOn;
+- (void)setPixelAspectMenu:(int)pixelAspectOn;
 - (void)setScaleModeMenu:(int)scaleMode;
 - (void)setArtifactModeMenu:(int)artifactMode;
 - (bool)enable80ColModeMenu:(int)machineType:(int)xep80Enabled:(int)af80Enabled:(int)bit3Enabled;
@@ -54,6 +60,9 @@
 - (IBAction)xep80Mode:(id)sender;
 - (IBAction)grabMouse:(id)sender;
 - (IBAction)displayFps:(id)sender;
+- (IBAction)displayVsync:(id)sender;
+- (IBAction)displayLinearFilter:(id)sender;
+- (IBAction)displayPixelAspect:(id)sender;
 - (IBAction)scaleMode:(id)sender;
 - (IBAction)screenshot:(id)sender;
 - (IBAction)widthMode:(id)sender;

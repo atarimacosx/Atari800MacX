@@ -22,6 +22,9 @@ extern int Screen_show_atari_speed;
 extern int requestFullScreenChange;
 extern int request80ColChange;
 extern int requestFpsChange;
+extern int requestVsyncChange;
+extern int requestLinearFilterChange;
+extern int requestPixelAspectChange;
 extern int requestScaleModeChange;
 extern int requestGrabMouse;
 extern int requestScreenshot;
@@ -40,6 +43,18 @@ void SetDisplayManagerWidthMode(int widthMode) {
 
 void SetDisplayManagerFps(int fpsOn) {
     [[DisplayManager sharedInstance] setFpsMenu:(fpsOn)];
+    }
+
+void SetDisplayManagerVsyncEnabled(int vsyncEnabled) {
+    [[DisplayManager sharedInstance] setVsyncMenu:(vsyncEnabled)];
+    }
+
+void SetDisplayManagerLinearFilterEnabled(int linearFilterEnabled) {
+    [[DisplayManager sharedInstance] setLinearFilterMenu:(linearFilterEnabled)];
+    }
+
+void SetDisplayManagerPixelAspectEnabled(int pixelAspectEnabled) {
+    [[DisplayManager sharedInstance] setPixelAspectMenu:(pixelAspectEnabled)];
     }
 
 void SetDisplayManagerScaleMode(int scaleMode) {
@@ -145,6 +160,42 @@ static DisplayManager *sharedInstance = nil;
         [displayFpsItem setState:NSOnState];
     else
         [displayFpsItem setState:NSOffState];
+}
+
+/*------------------------------------------------------------------------------
+*  setVsyncMenu - This method is used to set/clear the enabled check for the
+*     Verticle Sync menu item.
+*-----------------------------------------------------------------------------*/
+- (void)setVsyncMenu:(int)vsyncEnabled
+{
+    if (vsyncEnabled)
+        [vsyncEnabledItem setState:NSOnState];
+    else
+        [vsyncEnabledItem setState:NSOffState];
+}
+
+/*------------------------------------------------------------------------------
+*  setLinearFilterMenu - This method is used to set/clear the enabled check for the
+*     Linear Filter menu item.
+*-----------------------------------------------------------------------------*/
+- (void)setLinearFilterMenu:(int)linearFilterEnabled
+{
+    if (linearFilterEnabled)
+        [linearFilterEnabledItem setState:NSOnState];
+    else
+        [linearFilterEnabledItem setState:NSOffState];
+}
+
+/*------------------------------------------------------------------------------
+*  setPixelAspectMenu - This method is used to set/clear the enabled check for the
+*     Realistic Pixel Aspect menu item.
+*-----------------------------------------------------------------------------*/
+- (void)setPixelAspectMenu:(int)pixelAspectEnabled
+{
+    if (pixelAspectEnabled)
+        [pixelAspectEnabledItem setState:NSOnState];
+    else
+        [pixelAspectEnabledItem setState:NSOffState];
 }
 
 /*------------------------------------------------------------------------------
@@ -403,12 +454,39 @@ static DisplayManager *sharedInstance = nil;
 }
 
 /*------------------------------------------------------------------------------
-*  displayFps - This method handles the display frames per second menu 
+*  displayFps - This method handles the display frames per second menu
 *     selection.
 *-----------------------------------------------------------------------------*/
 - (IBAction)displayFps:(id)sender
 {
     requestFpsChange = 1;
+}
+
+/*------------------------------------------------------------------------------
+*  displayVsync - This method handles the display vsync menu
+*     selection.
+*-----------------------------------------------------------------------------*/
+- (IBAction)displayVsync:(id)sender
+{
+    requestVsyncChange = 1;
+}
+
+/*------------------------------------------------------------------------------
+*  displayLinearFilter - This method handles the display linear filter menu
+*     selection.
+*-----------------------------------------------------------------------------*/
+- (IBAction)displayLinearFilter:(id)sender
+{
+    requestLinearFilterChange = 1;
+}
+
+/*------------------------------------------------------------------------------
+*  displayPixelAspect - This method handles the display pixel aspect menu
+*     selection.
+*-----------------------------------------------------------------------------*/
+- (IBAction)displayPixelAspect:(id)sender
+{
+    requestPixelAspectChange = 1;
 }
 
 /*------------------------------------------------------------------------------

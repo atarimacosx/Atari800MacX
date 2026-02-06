@@ -492,6 +492,12 @@
                                                             <action selector="cartBlankRamCart32MInsert:" target="473" id="Cwe-xZ-PmV"/>
                                                         </connections>
                                                     </menuItem>
+                                                    <menuItem title="SiDiCar 32KB Cartridge" id="nVY-XQ-2UO">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="cartBlankSidiCar32KInsert:" target="473" id="0D5-9H-vZ1"/>
+                                                        </connections>
+                                                    </menuItem>
                                                 </items>
                                             </menu>
                                         </menuItem>
@@ -824,12 +830,33 @@ DQ
                             <menuItem isSeparatorItem="YES" id="cim-gf-ecb">
                                 <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                             </menuItem>
+                            <menuItem title="Verticle Sync Enabled" id="2C3-e4-PLL">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="displayVsync:" target="498" id="3I1-Xu-jBr"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Linear Smoothing Filter Enabled" id="U8D-BB-cLt">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="displayLinearFilter:" target="498" id="y7G-bf-2rg"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Realistic Pixel Aspect Ratio Enabled" id="wZ3-iL-sGI">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="displayPixelAspect:" target="498" id="UNu-ga-Cp6"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem isSeparatorItem="YES" id="BJ4-Qn-8bf">
+                                <modifierMask key="keyEquivalentModifierMask" command="YES"/>
+                            </menuItem>
                             <menuItem title="Show Frames Per Second" keyEquivalent="k" id="544">
                                 <connections>
                                     <action selector="displayFps:" target="498" id="545"/>
                                 </connections>
                             </menuItem>
-                            <menuItem isSeparatorItem="YES" id="BJ4-Qn-8bf">
+                            <menuItem isSeparatorItem="YES" id="yo0-4Q-xqa">
                                 <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                             </menuItem>
                             <menuItem title="Grab Mouse" keyEquivalent="" id="541">
@@ -1266,11 +1293,14 @@ DQ
                 <outlet property="displayFpsItem" destination="544" id="546"/>
                 <outlet property="fullscreenItem" destination="442" id="539"/>
                 <outlet property="grabMouseItem" destination="541" id="543"/>
+                <outlet property="linearFilterEnabledItem" destination="U8D-BB-cLt" id="1rd-L6-LHc"/>
                 <outlet property="pasteMenu" destination="605" id="FFJ-kN-BCM"/>
+                <outlet property="pixelAspectEnabledItem" destination="wZ3-iL-sGI" id="B35-aF-Ntn"/>
                 <outlet property="revXLXEGTIAItem" destination="831" id="841"/>
                 <outlet property="scaleModeNormalItem" destination="711" id="716"/>
                 <outlet property="scaleModeScanlineItem" destination="714" id="717"/>
                 <outlet property="selectAllMenu" destination="619" id="mEm-QG-G1b"/>
+                <outlet property="vsyncEnabledItem" destination="2C3-e4-PLL" id="LC5-ed-UrG"/>
                 <outlet property="widthModeDefaultItem" destination="695" id="706"/>
                 <outlet property="widthModeFullItem" destination="696" id="707"/>
                 <outlet property="widthModeNarrowItem" destination="692" id="705"/>
