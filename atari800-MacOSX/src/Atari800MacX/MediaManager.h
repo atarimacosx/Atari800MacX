@@ -10,6 +10,7 @@
 
 */
 
+//#import "cartridge.h"
 #import <Cocoa/Cocoa.h>
 
 @interface MediaManager : NSObject
@@ -44,6 +45,7 @@
     IBOutlet id diskFmtInsertDrivePulldown;
     IBOutlet id diskFmtInsertNewButton;
     IBOutlet id diskFmtMatrix;
+    IBOutlet id dirtyCartLabel;
     IBOutlet id hardDiskFmtCusMBField;
     IBOutlet id hardDiskFmtCusSecField;
     IBOutlet id hardDiskFmtInsertNewButton;
@@ -60,6 +62,7 @@
     IBOutlet id removeD8Item;
     IBOutlet id removeCartItem;
     IBOutlet id removeSecondCartItem;
+    IBOutlet id saveCartItem;
     IBOutlet id protectCassItem;
     IBOutlet id recordCassItem;
     IBOutlet id removeCassItem;
@@ -96,6 +99,8 @@
     IBOutlet id cart1024KMatrix;
     IBOutlet id cart2048KMatrix;
     IBOutlet id cart4096KMatrix;
+    IBOutlet id cart8MMatrix;
+    IBOutlet id cart16MMatrix;
     IBOutlet id cart32MMatrix;
     IBOutlet id cart64MMatrix;
     IBOutlet id cart128MMatrix;
@@ -182,11 +187,43 @@
 - (NSString *) browseFileInDirectory:(NSString *)directory;
 - (NSString *) browseFileTypeInDirectory:(NSString *)directory:(NSArray *) filetypes;
 - (NSString *) saveFileInDirectory:(NSString *)directory:(NSString *)type;
+- (NSString *) saveFileInDirectoryFilename:(NSString *)directory:(NSString *)type:(NSString *)fname;
 - (IBAction)cancelDisk:(id)sender;
 - (IBAction)cancelHardDisk:(id)sender;
 - (IBAction)cartInsert:(id)sender;
 - (IBAction)basicInsert:(id)sender;
 - (IBAction)side2Insert:(id)sender;
+- (void)cartBlankInsert:(int)type;
+- (IBAction)cartBlankMaxFlash128KInsert:(id)sender;
+- (IBAction)cartBlankMaxFlash1MOldInsert:(id)sender;
+- (IBAction)cartBlankMaxFlash1MNewInsert:(id)sender;
+- (IBAction)cartBlankTheCart32MInsert:(id)sender;
+- (IBAction)cartBlankTheCart64MInsert:(id)sender;
+- (IBAction)cartBlankTheCart128MInsert:(id)sender;
+- (IBAction)cartBlankJAtari128KInsert:(id)sender;
+- (IBAction)cartBlankJAtari256KInsert:(id)sender;
+- (IBAction)cartBlankJAtari512KInsert:(id)sender;
+- (IBAction)cartBlankJAtari1024KInsert:(id)sender;
+- (IBAction)cartBlankDCartInsert:(id)sender;
+- (IBAction)cartBlankSic128Insert:(id)sender;
+- (IBAction)cartBlankSic256Insert:(id)sender;
+- (IBAction)cartBlankSic512Insert:(id)sender;
+- (IBAction)cartBlankSicPlusInsert:(id)sender;
+- (IBAction)cartBlankMegaCart512KInsert:(id)sender;
+- (IBAction)cartBlankMegaCart4MInsert:(id)sender;
+- (IBAction)cartBlankRamCart64KInsert:(id)sender;
+- (IBAction)cartBlankRamCart128KInsert:(id)sender;
+- (IBAction)cartBlankRamCart256KInsert:(id)sender;
+- (IBAction)cartBlankRamCart1MInsert:(id)sender;
+- (IBAction)cartBlankRamCart2MInsert:(id)sender;
+- (IBAction)cartBlankRamCart4MInsert:(id)sender;
+- (IBAction)cartBlankRamCart8MInsert:(id)sender;
+- (IBAction)cartBlankRamCart16MInsert:(id)sender;
+- (IBAction)cartBlankRamCart32MInsert:(id)sender;
+- (IBAction)cartBlankSidiCar32KInsert:(id)sender;
+- (IBAction)dirtyNo:(id)sender;
+- (IBAction)dirtyYes:(id)sender;
+- (IBAction)cartSave:(id)sender;
 - (IBAction)cartSecondInsert:(id)sender;
 - (void)cartInsertFile:(NSString *)filename;
 - (IBAction)cartRemove:(id)sender;

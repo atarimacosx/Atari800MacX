@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2020 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2025 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -19,28 +19,27 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
-/**
- *  \file SDL_syswm.h
+/* WIKI CATEGORY: SYSWM */
+
+/*
+ * # CategorySYSWM
  *
- *  Include file for SDL custom system window manager hooks.
+ * Include file for SDL custom system window manager hooks.
+ *
+ * Your application has access to a special type of event SDL_SYSWMEVENT,
+ * which contains window-manager specific information and arrives whenever
+ * an unhandled window event occurs.  This event is ignored by default, but
+ * you can enable it with SDL_EventState().
  */
 
 #ifndef SDL_syswm_h_
 #define SDL_syswm_h_
 
-#include "SDL_stdinc.h"
-#include "SDL_error.h"
-#include "SDL_video.h"
-#include "SDL_version.h"
+#include <SDL2/SDL_stdinc.h>
+#include <SDL2/SDL_error.h>
+#include <SDL2/SDL_video.h>
+#include <SDL2/SDL_version.h>
 
-/**
- *  \brief SDL_syswm.h
- *
- *  Your application has access to a special type of event ::SDL_SYSWMEVENT,
- *  which contains window-manager specific information and arrives whenever
- *  an unhandled window event occurs.  This event is ignored by default, but
- *  you can enable it with SDL_EventState().
- */
 struct SDL_SysWMinfo;
 
 #if !defined(SDL_PROTOTYPES_ONLY)
@@ -98,13 +97,17 @@ typedef struct _UIViewController UIViewController;
 typedef Uint32 GLuint;
 #endif
 
+#if defined(SDL_VIDEO_VULKAN) || defined(SDL_VIDEO_METAL)
+#define SDL_METALVIEW_TAG 255
+#endif
+
 #if defined(SDL_VIDEO_DRIVER_ANDROID)
 typedef struct ANativeWindow ANativeWindow;
 typedef void *EGLSurface;
 #endif
 
 #if defined(SDL_VIDEO_DRIVER_VIVANTE)
-#include "SDL_egl.h"
+#include <SDL2/SDL_egl.h>
 #endif
 
 #if defined(SDL_VIDEO_DRIVER_OS2)
@@ -113,18 +116,23 @@ typedef void *EGLSurface;
 #endif
 #endif /* SDL_PROTOTYPES_ONLY */
 
+#if defined(SDL_VIDEO_DRIVER_KMSDRM)
+struct gbm_device;
+#endif
 
-#include "begin_code.h"
+
+#include <SDL2/begin_code.h>
 /* Set up for C function definitions, even when using C++ */
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 #if !defined(SDL_PROTOTYPES_ONLY)
+
 /**
- *  These are the various supported windowing subsystems
+ * These are the various supported windowing subsystems
  */
-typedef enum
+typedef enum SDL_SYSWM_TYPE
 {
     SDL_SYSWM_UNKNOWN,
     SDL_SYSWM_WINDOWS,
@@ -138,11 +146,13 @@ typedef enum
     SDL_SYSWM_ANDROID,
     SDL_SYSWM_VIVANTE,
     SDL_SYSWM_OS2,
-    SDL_SYSWM_HAIKU
+    SDL_SYSWM_HAIKU,
+    SDL_SYSWM_KMSDRM,
+    SDL_SYSWM_RISCOS
 } SDL_SYSWM_TYPE;
 
 /**
- *  The custom event structure.
+ * The custom event structure.
  */
 struct SDL_SysWMmsg
 {
@@ -208,10 +218,10 @@ struct SDL_SysWMmsg
 };
 
 /**
- *  The custom window manager information structure.
+ * The custom window manager information structure.
  *
- *  When this structure is returned, it holds information about which
- *  low level system it is using, and will be one of SDL_SYSWM_TYPE.
+ * When this structure is returned, it holds information about which low level
+ * system it is using, and will be one of SDL_SYSWM_TYPE.
  */
 struct SDL_SysWMinfo
 {
@@ -251,8 +261,12 @@ struct SDL_SysWMinfo
 #if defined(SDL_VIDEO_DRIVER_COCOA)
         struct
         {
-#if defined(__OBJC__) && defined(__has_feature) && __has_feature(objc_arc)
+#if defined(__OBJC__) && defined(__has_feature)
+        #if __has_feature(objc_arc)
             NSWindow __unsafe_unretained *window; /**< The Cocoa window */
+        #else
+            NSWindow *window;                     /**< The Cocoa window */
+        #endif
 #else
             NSWindow *window;                     /**< The Cocoa window */
 #endif
@@ -261,8 +275,12 @@ struct SDL_SysWMinfo
 #if defined(SDL_VIDEO_DRIVER_UIKIT)
         struct
         {
-#if defined(__OBJC__) && defined(__has_feature) && __has_feature(objc_arc)
+#if defined(__OBJC__) && defined(__has_feature)
+        #if __has_feature(objc_arc)
             UIWindow __unsafe_unretained *window; /**< The UIKit window */
+        #else
+            UIWindow *window;                     /**< The UIKit window */
+        #endif
 #else
             UIWindow *window;                     /**< The UIKit window */
 #endif
@@ -274,9 +292,14 @@ struct SDL_SysWMinfo
 #if defined(SDL_VIDEO_DRIVER_WAYLAND)
         struct
         {
-            struct wl_display *display;            /**< Wayland display */
-            struct wl_surface *surface;            /**< Wayland surface */
-            struct wl_shell_surface *shell_surface; /**< Wayland shell_surface (window manager handle) */
+            struct wl_display *display;             /**< Wayland display */
+            struct wl_surface *surface;             /**< Wayland surface */
+            void *shell_surface;                    /**< DEPRECATED Wayland shell_surface (window manager handle) */
+            struct wl_egl_window *egl_window;       /**< Wayland EGL window (native window) */
+            struct xdg_surface *xdg_surface;        /**< Wayland xdg surface (window manager handle) */
+            struct xdg_toplevel *xdg_toplevel;      /**< Wayland xdg toplevel role */
+            struct xdg_popup *xdg_popup;            /**< Wayland xdg popup role */
+            struct xdg_positioner *xdg_positioner;  /**< Wayland xdg positioner, for popup */
         } wl;
 #endif
 #if defined(SDL_VIDEO_DRIVER_MIR)  /* no longer available, left for API/ABI compatibility. Remove in 2.1! */
@@ -311,6 +334,15 @@ struct SDL_SysWMinfo
         } vivante;
 #endif
 
+#if defined(SDL_VIDEO_DRIVER_KMSDRM)
+        struct
+        {
+            int dev_index;               /**< Device index (ex: the X in /dev/dri/cardX) */
+            int drm_fd;                  /**< DRM FD (unavailable on Vulkan windows) */
+            struct gbm_device *gbm_dev;  /**< GBM device (unavailable on Vulkan windows) */
+        } kmsdrm;
+#endif
+
         /* Make sure this union is always 64 bytes (8 64-bit pointers). */
         /* Be careful not to overflow this if you add a new target! */
         Uint8 dummy[64];
@@ -321,23 +353,23 @@ struct SDL_SysWMinfo
 
 typedef struct SDL_SysWMinfo SDL_SysWMinfo;
 
-/* Function prototypes */
+
 /**
- *  \brief This function allows access to driver-dependent window information.
+ * Get driver-specific information about a window.
  *
- *  \param window The window about which information is being requested
- *  \param info This structure must be initialized with the SDL version, and is
- *              then filled in with information about the given window.
+ * You must include SDL_syswm.h for the declaration of SDL_SysWMinfo.
  *
- *  \return SDL_TRUE if the function is implemented and the version member of
- *          the \c info struct is valid, SDL_FALSE otherwise.
+ * The caller must initialize the `info` structure's version by using
+ * `SDL_VERSION(&info.version)`, and then this function will fill in the rest
+ * of the structure with information about the given window.
  *
- *  You typically use this function like this:
- *  \code
- *  SDL_SysWMinfo info;
- *  SDL_VERSION(&info.version);
- *  if ( SDL_GetWindowWMInfo(window, &info) ) { ... }
- *  \endcode
+ * \param window the window about which information is being requested.
+ * \param info an SDL_SysWMinfo structure filled in with window information.
+ * \returns SDL_TRUE if the function is implemented and the `version` member
+ *          of the `info` struct is valid, or SDL_FALSE if the information
+ *          could not be retrieved; call SDL_GetError() for more information.
+ *
+ * \since This function is available since SDL 2.0.0.
  */
 extern DECLSPEC SDL_bool SDLCALL SDL_GetWindowWMInfo(SDL_Window * window,
                                                      SDL_SysWMinfo * info);
@@ -347,7 +379,7 @@ extern DECLSPEC SDL_bool SDLCALL SDL_GetWindowWMInfo(SDL_Window * window,
 #ifdef __cplusplus
 }
 #endif
-#include "close_code.h"
+#include <SDL2/close_code.h>
 
 #endif /* SDL_syswm_h_ */
 

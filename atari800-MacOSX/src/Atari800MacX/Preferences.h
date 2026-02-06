@@ -35,6 +35,9 @@
 #define OnlyIntegralScaling @"OnlyIntegralScaling"
 #define FixAspectFullscreen @"FixAspectFullscreen"
 #define VsyncDisabled @"VsyncDisabled"
+#define LinearFilterEnabled @"LinearFilterEnabled"
+#define PixelAspectEnabled @"PixelAspectEnabled"
+#define ScanlineTransparency @"ScanlineTransparency"
 #define ShowFPS @"ShowFPS"
 #define LedStatus @"LedStatus"
 #define LedSector @"LedSector"
@@ -463,6 +466,9 @@
     IBOutlet id tvModeMatrix;
     IBOutlet id fixAspectFullscreenButton;
     IBOutlet id vsyncEnabledButton;
+    IBOutlet id linearFilterEnabledButton;
+    IBOutlet id pixelAspectEnabledButton;
+    IBOutlet id scanlineTransparencySlider;
     IBOutlet id onlyIntegralScalingButton;
     IBOutlet id widthModeMatrix;
     IBOutlet id whiteLevelField;

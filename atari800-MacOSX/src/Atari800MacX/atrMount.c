@@ -154,10 +154,13 @@ int AtrMount(const char *filename, int *dosType,
                 }
             (*info)->atr_sectorcount >>= 1;
             }
-		else if ((*info)->atr_sectorsize == 512) {
+        else if ((*info)->atr_sectorsize == 512) {
             (*info)->atr_sectorcount >>= 2;
-			}
-		
+            }
+        else if ((*info)->atr_sectorsize == 8192) {
+            (*info)->atr_sectorcount >>= 6;
+            }
+
         *dosType = AtrDiskType(*info);
         if (*dosType == -1)
             return ADOS_DISK_READ_ERR;
@@ -664,10 +667,14 @@ static void SizeOfSector(AtrDiskInfo *info, int sector, int *sz, ULONG * ofs)
 	int size;
 	ULONG offset;
 
-	if (info->atr_sectorsize == 512) {
-		size = 512;
-		offset = sizeof(struct AFILE_ATR_Header) + (sector -1) * size;
-	}
+    if (info->atr_sectorsize == 512) {
+        size = 512;
+        offset = sizeof(struct AFILE_ATR_Header) + (sector -1) * size;
+    }
+    else if (info->atr_sectorsize == 8192) {
+        size = 8192;
+        offset = sizeof(struct AFILE_ATR_Header) + (sector -1) * size;
+    }
 	else if (sector < 4) {
 		/* special case for first three sectors in ATR and XFD image */
 		size = 128;

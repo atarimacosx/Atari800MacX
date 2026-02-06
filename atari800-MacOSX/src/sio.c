@@ -317,7 +317,7 @@ int SIO_Mount(int diskno, const char *filename, int b_open_readonly)
 
 		sectorsize[diskno - 1] = (header.secsizehi << 8) + header.secsizelo;
 #ifdef MACOSX
-		if (sectorsize[diskno - 1] != 128 && sectorsize[diskno - 1] != 256 && sectorsize[diskno - 1] != 512) {
+		if (sectorsize[diskno - 1] != 128 && sectorsize[diskno - 1] != 256 && sectorsize[diskno - 1] != 512 && sectorsize[diskno - 1] != 8192) {
 #else
 		if (sectorsize[diskno - 1] != 128 && sectorsize[diskno - 1] != 256) {
 #endif
@@ -362,8 +362,11 @@ int SIO_Mount(int diskno, const char *filename, int b_open_readonly)
 			sectorcount[diskno - 1] >>= 1;
 		}
 #ifdef MACOSX
-		else if (sectorsize[diskno - 1] == 512) {
-			sectorcount[diskno - 1] >>= 2;
+        else if (sectorsize[diskno - 1] == 512) {
+            sectorcount[diskno - 1] >>= 2;
+        }
+        else if (sectorsize[diskno - 1] == 8192) {
+            sectorcount[diskno - 1] >>= 6;
 		}
 #endif
 	}
@@ -652,9 +655,13 @@ void SIO_SizeOfSector(UBYTE unit, int sector, int *sz, ULONG *ofs)
 		}
 #ifdef MACOSX
 	}
-	else if (sectorsize[unit] == 512) {
-		size = 512;
-		offset = header_size + (sector -1) * size;
+    else if (sectorsize[unit] == 512) {
+        size = 512;
+        offset = header_size + (sector -1) * size;
+    }
+    else if (sectorsize[unit] == 8192) {
+        size = 8192;
+        offset = header_size + (sector -1) * size;
 #endif
 	}
 	else if (sector < 4) {
@@ -995,6 +1002,8 @@ int SIO_FormatDisk(int unit, UBYTE *buffer, int sectsize, int sectcount)
 #ifdef MACOSX
 	if (sectsize == 512)
 		bootsectsize = 512;
+    else if (sectsize == 8192)
+        bootsectsize = 8192;
 #endif
 	bootsectcount = sectcount < 3 ? sectcount : 3;
 	/* Umount the file and open it in "wb" mode (it will truncate the file) */
@@ -1062,7 +1071,7 @@ int SIO_WriteStatusBlock(int unit, const UBYTE *buffer)
 	   I'm not sure about this density settings, my XF551
 	   honors only the sector size and ignores the density */
 	size = buffer[6] * 256 + buffer[7];
-	if (size == 128 || size == 256 || size == 512)
+	if (size == 128 || size == 256 || size == 512 || size == 8192)
 		SIO_format_sectorsize[unit] = size;
 #ifdef MACOSX		
 	else if (buffer[5] == 8) {

@@ -57,6 +57,7 @@ static ULONG Bank_Offset2 = 0;
 static IDEEmu *ide;
 static void *rtc;
 static FlashEmu *flash;
+static int CartDirty = FALSE;
 
 static void LoadNVRAM();
 static void Reset_Cart_Bank(void);
@@ -131,6 +132,10 @@ int SIDE2_Add_Block_Device(char *filename) {
         Update_IDE_Reset();
     }
     return SIDE2_Block_Device;
+}
+
+int SIDE2_IsDirty(void) {
+    return CartDirty;
 }
 
 int SIDE2_Change_Rom(char *filename, int new) {
@@ -447,7 +452,7 @@ static void Update_Memory_Layers_Cart(void) {
         MEMORY_CartA0bfEnable();
         MEMORY_SetFlashRoutines(SIDE2_Flash_Read, SIDE2_Flash_Write);
         MEMORY_SetFlash(0xa000, 0xbfff);
-        MEMORY_CopyROM(0xa000, 0xbfff, side2_rom + Bank_Offset);
+        MEMORY_CopyFromCart(0xa000, 0xbfff, side2_rom + Bank_Offset);
     } else {
         //MEMORY_SetROM(0xa000, 0xbfff);
         MEMORY_CartA0bfDisable();
@@ -455,7 +460,7 @@ static void Update_Memory_Layers_Cart(void) {
     
     if (flashReadRight) {
         MEMORY_Cart809fEnable();
-        MEMORY_CopyROM(0x8000, 0xbfff, side2_rom + Bank_Offset2);
+        MEMORY_CopyFromCart(0x8000, 0xbfff, side2_rom + Bank_Offset2);
     } else {
         MEMORY_Cart809fDisable();
     }
@@ -471,5 +476,7 @@ UBYTE SIDE2_Flash_Read(UWORD addr) {
 
 void SIDE2_Flash_Write(UWORD addr, UBYTE value) {
 
-    Flash_Write_Byte(flash, Bank_Offset + (addr - 0xA000), value);
+    if (Flash_Write_Byte(flash, Bank_Offset + (addr - 0xA000), value)) {
+        CartDirty = TRUE;
+    }
 }

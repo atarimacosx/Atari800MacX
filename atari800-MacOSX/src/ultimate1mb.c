@@ -61,6 +61,7 @@ static UBYTE cold_reset_flag = 0x80;
 static UBYTE pbi_ram[0x1000];
 static void *rtc;
 static FlashEmu *flash;
+static int rom_dirty = FALSE;
 
 void CreateWindowCaption(void);
 static void Select_PBI_Device(int enable);
@@ -73,6 +74,7 @@ static void Set_PBI_Bank(UBYTE bank);
 static void Update_Kernel_Bank(void);
 static void LoadNVRAM();
 static void SaveNVRAM();
+static void Update_Cart_Layers();
 
 #ifdef ATARI800MACX
 void init_ultimate(void)
@@ -109,6 +111,11 @@ void ULTIMATE_Exit(void)
 {
     SaveNVRAM();
     CDS1305_Exit(rtc);
+}
+
+int ULTIMATE_RomDirty(void)
+{
+    return rom_dirty;
 }
 
 UBYTE ULTIMATE_D1GetByte(UWORD addr, int no_side_effects)
@@ -267,7 +274,6 @@ void ULTIMATE_D5PutByte(UWORD addr, UBYTE byte)
             Set_SDX_Bank(byte & 63);
             Set_SDX_Enabled(!(byte & 0x80));
 
-            //Update_External_Cart();
             // Pre-control lock, the SDX bank is also used for the
             // BASIC and GAME banks (!).
             if (!config_lock)
@@ -346,6 +352,8 @@ void ULTIMATE_WarmStart(void)
     Set_PBI_Bank(0);
 
     Set_SDX_Module_Enabled(TRUE);
+
+    Update_Cart_Layers();
 }
 
 void ULTIMATE_LoadRoms(void)
@@ -401,14 +409,10 @@ static void Set_SDX_Bank(UBYTE bank) {
 
     cart_bank_offset = offset;
     if (SDX_enable)
-        MEMORY_CopyROM(0xa000, 0xbfff, ultimate_rom + cart_bank_offset);
+        MEMORY_CopyFromCart(0xa000, 0xbfff, ultimate_rom + cart_bank_offset);
 }
 
-static void Set_SDX_Enabled(int enabled) {
-    if (SDX_enable == enabled)
-        return;
-
-    SDX_enable = enabled;
+static void Update_Cart_Layers(void) {
     if (SDX_enable) {
         if (CARTRIDGE_main.type == CARTRIDGE_NONE)
             CARTRIDGE_Insert_Ultimate_1MB();
@@ -417,7 +421,7 @@ static void Set_SDX_Enabled(int enabled) {
         }
         MEMORY_SetFlashRoutines(ULTIMATE_Flash_Read, ULTIMATE_Flash_Write);
         MEMORY_SetFlash(0xa000, 0xbfff);
-        MEMORY_CopyROM(0xa000, 0xbfff, ultimate_rom + cart_bank_offset);
+        MEMORY_CopyFromCart(0xa000, 0xbfff, ultimate_rom + cart_bank_offset);
     }
     else {
         MEMORY_SetROM(0xa000, 0xbfff);
@@ -428,18 +432,28 @@ static void Set_SDX_Enabled(int enabled) {
     }
 }
 
+static void Set_SDX_Enabled(int enabled) {
+    if (SDX_enable == enabled)
+        return;
+
+    SDX_enable = enabled;
+    
+    Update_Cart_Layers();
+}
+
 static void Set_SDX_Module_Enabled(int enabled) {
     if (SDX_module_enable == enabled)
         return;
 
-    if (enabled) {
-        Set_SDX_Enabled(TRUE);
-    } else {
-        external_cart_enable = TRUE;
+    SDX_module_enable = enabled;
+    
+    if (!enabled) {
         Set_SDX_Bank(0);
         Set_SDX_Enabled(FALSE);
+        external_cart_enable = TRUE;
     }
 
+    Update_Cart_Layers();
 }
 
 static void Set_Kernel_Bank(UBYTE bank)
@@ -466,7 +480,6 @@ static void Update_Kernel_Bank(void)
     if (MEMORY_selftest_enabled)
         memcpy(MEMORY_mem + 0x5000, ultimate_rom + kernelbase + 0x1000, 0x800);
     memcpy(MEMORY_basic, ultimate_rom + basicbase, 0x2000);
-
 
     memcpy(MEMORY_xegame, ultimate_rom + gamebase, 0x2000);
 }
@@ -553,6 +566,9 @@ UBYTE ULTIMATE_Flash_Read(UWORD addr) {
 }
 
 void ULTIMATE_Flash_Write(UWORD addr, UBYTE value) {
-    if (flash_write_enable)
-        Flash_Write_Byte(flash, cart_bank_offset + (addr - 0xA000), value);
+    if (flash_write_enable) {
+        if (Flash_Write_Byte(flash, cart_bank_offset + (addr - 0xA000), value)) {
+            rom_dirty = TRUE;
+        }
+    }
 }

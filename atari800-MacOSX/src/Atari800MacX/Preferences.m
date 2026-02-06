@@ -53,12 +53,25 @@ extern EPSON_PREF prefsEpson;
 extern ATASCII_PREF prefsAtascii;
 extern int diskDriveSound;
 extern int FULLSCREEN_MACOS;
+
+typedef struct CARTRIDGE_funcs_type {
+    void (*shutdown)(void);
+    int (*is_dirty)(void);
+    void (*cold_reset)(void);
+    uint8_t (*read_byte)(uint16_t address);
+    void (*write_byte)(uint16_t address, uint8_t value);
+    void (*map)(void);
+} CARTRIDGE_funcs_type;
+
 typedef struct CARTRIDGE_image_t {
     int type;
     int state; /* Cartridge's state, such as selected bank or switch on/off. */
-    int size; /* Size of the image, in kilobytes */
-    unsigned char *image;
+    int size; /* Size of the image, in kilobytes. */
+    uint8_t *image;
     char filename[FILENAME_MAX];
+    int raw; /* File contains RAW data (important for writeable cartridges). */
+    int blank; /* Blank cartridge that has never been saved */
+    CARTRIDGE_funcs_type funcs; /* Cart specific functions */
 } CARTRIDGE_image_t;
 
 extern CARTRIDGE_image_t CARTRIDGE_main;
@@ -300,6 +313,9 @@ static NSDictionary *defaultValues() {
                 [NSNumber numberWithBool:NO], OnlyIntegralScaling,
                 [NSNumber numberWithBool:NO], FixAspectFullscreen,
                 [NSNumber numberWithBool:NO], VsyncDisabled,
+                [NSNumber numberWithBool:YES], LinearFilterEnabled,
+                [NSNumber numberWithBool:YES], PixelAspectEnabled,
+                [NSNumber numberWithDouble:25.0], ScanlineTransparency,
                 [NSNumber numberWithBool:YES], LedStatus,
                 [NSNumber numberWithBool:YES], LedSector,
                 [NSNumber numberWithBool:YES], LedStatusMedia,
@@ -884,6 +900,9 @@ static Preferences *sharedInstance = nil;
     [onlyIntegralScalingButton setState:[[displayedValues objectForKey:OnlyIntegralScaling] boolValue] ? NSOnState : NSOffState];
     [fixAspectFullscreenButton setState:[[displayedValues objectForKey:FixAspectFullscreen] boolValue] ? NSOnState : NSOffState];
     [vsyncEnabledButton setState:[[displayedValues objectForKey:VsyncDisabled] boolValue] ? NSOffState : NSOnState];
+    [linearFilterEnabledButton setState:[[displayedValues objectForKey:LinearFilterEnabled] boolValue] ? NSOnState : NSOffState];
+    [pixelAspectEnabledButton setState:[[displayedValues objectForKey:PixelAspectEnabled] boolValue] ? NSOnState : NSOffState];
+    [scanlineTransparencySlider setDoubleValue:[[displayedValues objectForKey:ScanlineTransparency] doubleValue]];
     [ledStatusButton setState:[[displayedValues objectForKey:LedStatus] boolValue] ? NSOnState : NSOffState];
     [ledSectorButton setState:[[displayedValues objectForKey:LedSector] boolValue] ? NSOnState : NSOffState];
     [ledHDSectorButton setState:[[displayedValues objectForKey:LedHDSector] boolValue] ? NSOnState : NSOffState];
@@ -1818,6 +1837,16 @@ static Preferences *sharedInstance = nil;
         [displayedValues setObject:no forKey:VsyncDisabled];
     else
         [displayedValues setObject:yes forKey:VsyncDisabled];
+    if ([linearFilterEnabledButton state] == NSOnState)
+        [displayedValues setObject:yes forKey:LinearFilterEnabled];
+    else
+        [displayedValues setObject:no forKey:LinearFilterEnabled];
+    if ([pixelAspectEnabledButton state] == NSOnState)
+        [displayedValues setObject:yes forKey:PixelAspectEnabled];
+    else
+        [displayedValues setObject:no forKey:PixelAspectEnabled];
+    [displayedValues setObject:[NSNumber numberWithFloat:[scanlineTransparencySlider doubleValue]]
+        forKey:ScanlineTransparency];
     if ([ledSectorButton state] == NSOnState)
         [displayedValues setObject:yes forKey:LedSector];
     else
@@ -3854,6 +3883,9 @@ static Preferences *sharedInstance = nil;
     prefs->onlyIntegralScaling = [[curValues objectForKey:OnlyIntegralScaling] intValue];
     prefs->fixAspectFullscreen = [[curValues objectForKey:FixAspectFullscreen] intValue];
     prefs->vsyncEnabled = 1 - [[curValues objectForKey:VsyncDisabled] intValue];
+    prefs->linearFilterEnabled = [[curValues objectForKey:LinearFilterEnabled] intValue];
+    prefs->pixelAspectEnabled = [[curValues objectForKey:PixelAspectEnabled] intValue];
+    prefs->scanlineTransparency = [[curValues objectForKey:ScanlineTransparency] doubleValue];
     prefs->ledStatus = [[curValues objectForKey:LedStatus] intValue];
     prefs->ledSector = [[curValues objectForKey:LedSector] intValue];
     prefs->ledHDSector = [[curValues objectForKey:LedHDSector] intValue];
@@ -4199,6 +4231,9 @@ static Preferences *sharedInstance = nil;
 		}
     [displayedValues setObject:prefssave->showFPS ? yes : no forKey:ShowFPS];
     [displayedValues setObject:prefssave->vsyncEnabled ? no : yes forKey:VsyncDisabled];
+    [displayedValues setObject:prefssave->linearFilterEnabled ? yes : no forKey:LinearFilterEnabled];
+    [displayedValues setObject:prefssave->pixelAspectEnabled ? yes : no forKey:PixelAspectEnabled];
+    [displayedValues setObject:[NSNumber numberWithDouble:prefssave->scanlineTransparency] forKey:ScanlineTransparency];
     [displayedValues setObject:prefssave->ledStatus ? yes : no forKey:LedStatus];
     [displayedValues setObject:prefssave->ledSector ? yes : no forKey:LedSector];
     [displayedValues setObject:prefssave->speedLimit ? yes : no forKey:SpeedLimit];
@@ -5327,6 +5362,9 @@ static Preferences *sharedInstance = nil;
     getBoolDefault(OnlyIntegralScaling);
     getBoolDefault(FixAspectFullscreen);
     getBoolDefault(VsyncDisabled);
+    getBoolDefault(LinearFilterEnabled);
+    getBoolDefault(PixelAspectEnabled);
+    getFloatDefault(ScanlineTransparency);
     getBoolDefault(LedStatus);
     getBoolDefault(LedSector);
     getBoolDefault(LedHDSector);
@@ -5641,6 +5679,9 @@ static Preferences *sharedInstance = nil;
     setBoolDefault(OnlyIntegralScaling);
     setBoolDefault(FixAspectFullscreen);
     setBoolDefault(VsyncDisabled);
+    setBoolDefault(LinearFilterEnabled);
+    setBoolDefault(PixelAspectEnabled);
+    setFloatDefault(ScanlineTransparency);
     setBoolDefault(LedStatus);
     setBoolDefault(LedSector);
     setBoolDefault(LedHDSector);
@@ -5936,6 +5977,9 @@ static Preferences *sharedInstance = nil;
     setConfig(OnlyIntegralScaling);
     setConfig(FixAspectFullscreen);
     setConfig(VsyncDisabled);
+    setConfig(LinearFilterEnabled);
+    setConfig(PixelAspectEnabled);
+    setConfig(ScanlineTransparency);
     setConfig(LedStatus);
     setConfig(LedSector);
     setConfig(LedHDSector);
@@ -6329,6 +6373,9 @@ static Preferences *sharedInstance = nil;
     getConfig(OnlyIntegralScaling);
     getConfig(FixAspectFullscreen);
     getConfig(VsyncDisabled);
+    getConfig(LinearFilterEnabled);
+    getConfig(PixelAspectEnabled);
+    getConfig(ScanlineTransparency);
     getConfig(LedStatus);
     getConfig(LedSector);
     getConfig(LedHDSector);

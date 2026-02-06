@@ -2388,12 +2388,28 @@ UWORD MONITOR_get_disasm_start(UWORD addr, UWORD target)
 	UWORD baseAddr = addr;
 	UWORD currentInstr;
 	char prBuff[256];
+    static UWORD lastBaseAddr = 0;
+    static UWORD lastTarget = 0;
+
+    // If the last instruction was the one before us, just return
+    // the last base address, unless it's too far back now.
+    if ((lastTarget != 0) && (target > lastTarget)
+        && ((target - lastTarget) <= 3)) {
+        // As long as it's less than 0x60 from the target,
+        // return the last base, otherwise start a new search.
+        if (target - lastBaseAddr < 0x60) {
+            lastTarget = target;
+            return lastBaseAddr;
+        }
+    }
 	
-	for(i=0; i<4; ++i) {
+	for(i=0; i<0x40; ++i) {
 		currentInstr = baseAddr;
 		for(;;) {
-			if (currentInstr == target)
-				return baseAddr;
+            if (currentInstr == target) {
+                lastBaseAddr = baseAddr;
+                return baseAddr;
+            }
 
 #ifdef MACOSX_MON_ENHANCEMENTS			
 			currentInstr = show_instruction_string(prBuff, currentInstr, 31);
@@ -2410,6 +2426,8 @@ UWORD MONITOR_get_disasm_start(UWORD addr, UWORD target)
 			break;
 	}
 	
+    lastTarget = target;
+    lastBaseAddr = baseAddr;
 	return baseAddr;
 }
 

@@ -1741,6 +1741,7 @@ static int monitorRunFirstTime = 1;
 - (IBAction)okBreakpointEditor:(id)sender
 {
     [NSApp stopModalWithCode:1];
+    [[monitorBreakpointEditorTableView window] makeFirstResponder:breakpointEditorOkButton];
     [[monitorBreakpointEditorTableView window] close];
 }
 
