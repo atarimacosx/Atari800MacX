@@ -155,8 +155,10 @@ static void MEGACART_Map_Cart(void)
     UWORD end = base + 0x4000 - 1;
     
     if (CartBank < 0) {
+        MEMORY_Cart809fDisable();
         MEMORY_CartA0bfDisable();
     } else {
+        MEMORY_Cart809fEnable();
         MEMORY_CartA0bfEnable();
         if (Cart->type == CARTRIDGE_MEGA_512 || Cart->type == CARTRIDGE_MEGA_4096) {
             MEMORY_SetFlashRoutines(MEGACART_Flash_Read, MEGACART_Flash_Write);
