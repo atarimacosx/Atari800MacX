@@ -1748,6 +1748,11 @@ void SIO_PutByte(int byte)
 	{
 		/* For disk devices D1:-D8:, check if local disk should take priority */
 		int use_local = 0;
+        
+        /* Check for PCLINK Local */
+        if (CommandFrame[0] == 0x6f && PCLink_Enabled) {
+            use_local = 1;
+        }
 		
 		/* Check device ID from command frame */
 		if (TransferStatus == SIO_CommandFrame && CommandIndex == 0) {
