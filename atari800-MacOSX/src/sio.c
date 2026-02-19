@@ -1750,8 +1750,18 @@ void SIO_PutByte(int byte)
 		int use_local = 0;
         
         /* Check for PCLINK Local */
-        if (CommandFrame[0] == 0x6f && PCLink_Enabled) {
-            use_local = 1;
+        if (PCLink_Enabled) {
+            if (TransferStatus == SIO_CommandFrame && CommandIndex == 0) {
+                if (byte == 0x6F) {
+                    use_local = 1;
+                }
+            }
+            else if (TransferStatus == SIO_CommandFrame && CommandIndex > 0 && CommandFrame[0] == 0x6F) {
+                use_local = 1;
+            }
+            else if (TransferStatus == SIO_WriteFrame && TransferDest == 0x6F) {
+                use_local = 1;
+            }
         }
 		
 		/* Check device ID from command frame */
@@ -1766,16 +1776,28 @@ void SIO_PutByte(int byte)
 					use_local = 1;
 				}
 			}
-		} else if (CommandIndex > 0 && CommandFrame[0] >= 0x31 && CommandFrame[0] <= 0x38) {
-			/* Subsequent bytes - check saved device ID */
-			int drive = CommandFrame[0] - 0x31;
-			if (drive >= 0 && drive < SIO_MAX_DRIVES && 
-			    SIO_drive_status[drive] != SIO_OFF && 
-			    SIO_drive_status[drive] != SIO_NO_DISK) {
-				/* Local disk is mounted and ready */
-				use_local = 1;
-			}
+        } else if (TransferStatus == SIO_CommandFrame && CommandIndex > 0 && CommandFrame[0] >= 0x31 && CommandFrame[0] <= 0x38) {
+            /* Subsequent bytes - check saved device ID */
+            int drive = CommandFrame[0] - 0x31;
+            if (drive >= 0 && drive < SIO_MAX_DRIVES &&
+                SIO_drive_status[drive] != SIO_OFF &&
+                SIO_drive_status[drive] != SIO_NO_DISK) {
+                /* Local disk is mounted and ready */
+                use_local = 1;
+            }
+        } else if (TransferStatus == SIO_WriteFrame && CommandFrame[0] >= 0x31 && CommandFrame[0] <= 0x38) {
+            /* Subsequent bytes - check saved device ID */
+            int drive = CommandFrame[0] - 0x31;
+            if (drive >= 0 && drive < SIO_MAX_DRIVES &&
+                SIO_drive_status[drive] != SIO_OFF &&
+                SIO_drive_status[drive] != SIO_NO_DISK) {
+                /* Local disk is mounted and ready */
+                use_local = 1;
+            }
 		}
+        
+        if (byte == 8)
+            use_local = 1;
 		
 		if (!use_local) {
 			NetSIO_PutByte(byte);
@@ -1903,7 +1925,7 @@ int NetSIO_GetByte(void)
 		else
 		{
 #ifdef DEBUG
-			Log_print("NetSIO_GetByte: unexpected byte %02x", b);
+			Log_print("NetSIO_GetByte: unexpected byte %02x\n", b);
 #endif
 			TransferStatus = SIO_NoFrame;
 		}
@@ -1962,10 +1984,16 @@ int SIO_GetByte(void)
 		/* For disk devices D1:-D8:, check if local disk should take priority */
 		int use_local = 0;
 		
-		/* Check if we have a valid command for a disk device */
+        /* Check for PCLINK Local */
+        if (TransferDest == 0x6f && PCLink_Enabled) {
+            /* PC Link local is active and its a PCLink command */
+            use_local = 1;
+        }
+
+        /* Check if we have a valid command for a disk device */
 		if (CommandFrame[0] >= 0x31 && CommandFrame[0] <= 0x38) {
 			int drive = CommandFrame[0] - 0x31;
-			if (drive >= 0 && drive < SIO_MAX_DRIVES && 
+			if (drive >= 0 && drive < SIO_MAX_DRIVES &&
 			    SIO_drive_status[drive] != SIO_OFF && 
 			    SIO_drive_status[drive] != SIO_NO_DISK) {
 				/* Local disk is mounted and ready */
