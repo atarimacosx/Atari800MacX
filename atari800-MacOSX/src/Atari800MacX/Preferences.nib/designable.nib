@@ -398,611 +398,567 @@ DQ
                                     <rect key="frame" x="10" y="33" width="791" height="390"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <tabView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="71L-4o-Gew">
-                                            <rect key="frame" x="1" y="-1" width="775" height="387"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <font key="font" metaFont="system"/>
-                                            <tabViewItems>
-                                                <tabViewItem label="Size" identifier="" id="OPh-vx-CsM">
-                                                    <view key="view" id="v2Z-VI-M0I">
-                                                        <rect key="frame" x="10" y="33" width="755" height="341"/>
-                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                        <subviews>
-                                                            <box fixedFrame="YES" title="Display Width" translatesAutoresizingMaskIntoConstraints="NO" id="283">
-                                                                <rect key="frame" x="217" y="180" width="327" height="88"/>
-                                                                <autoresizingMask key="autoresizingMask"/>
-                                                                <view key="contentView" id="3N8-uw-QBS">
-                                                                    <rect key="frame" x="4" y="5" width="319" height="66"/>
-                                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                                    <subviews>
-                                                                        <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="270">
-                                                                            <rect key="frame" x="12" y="4" width="178" height="61"/>
-                                                                            <autoresizingMask key="autoresizingMask"/>
-                                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                                            <size key="cellSize" width="178" height="19"/>
-                                                                            <size key="intercellSpacing" width="4" height="2"/>
-                                                                            <buttonCell key="prototype" type="radio" title="Radio" imagePosition="leading" alignment="left" inset="2" id="13269">
-                                                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                                                <font key="font" metaFont="system"/>
-                                                                            </buttonCell>
-                                                                            <cells>
-                                                                                <column>
-                                                                                    <buttonCell type="radio" title="Narrow Width (320x240)" bezelStyle="regularSquare" imagePosition="leading" alignment="left" state="on" inset="2" id="274">
-                                                                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                                                        <font key="font" metaFont="system"/>
-                                                                                    </buttonCell>
-                                                                                    <buttonCell type="radio" title="Default Width (336x240)" bezelStyle="regularSquare" imagePosition="leading" alignment="left" tag="1" inset="2" id="275">
-                                                                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                                                        <font key="font" metaFont="system"/>
-                                                                                    </buttonCell>
-                                                                                    <buttonCell type="radio" title="Full Width (384x240)" bezelStyle="regularSquare" imagePosition="leading" alignment="left" tag="2" inset="2" id="276">
-                                                                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                                                        <font key="font" metaFont="system"/>
-                                                                                    </buttonCell>
-                                                                                </column>
-                                                                            </cells>
-                                                                            <connections>
-                                                                                <action selector="miscChanged:" target="-2" id="288"/>
-                                                                            </connections>
-                                                                        </matrix>
-                                                                    </subviews>
-                                                                </view>
-                                                                <font key="titleFont" metaFont="system"/>
-                                                            </box>
-                                                            <button imageHugsTitle="YES" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="whR-aJ-xh2">
-                                                                <rect key="frame" x="218" y="142" width="283" height="18"/>
-                                                                <autoresizingMask key="autoresizingMask"/>
-                                                                <buttonCell key="cell" type="check" title="Always Use Integral Window Scaling Factor" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="2lL-Gy-DpS">
+                                        <box fixedFrame="YES" title="TV Mode" translatesAutoresizingMaskIntoConstraints="NO" id="294">
+                                            <rect key="frame" x="389" y="323" width="162" height="66"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <view key="contentView" id="eLy-96-aMw">
+                                                <rect key="frame" x="4" y="5" width="154" height="44"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <subviews>
+                                                    <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="296">
+                                                        <rect key="frame" x="12" y="4" width="106" height="38"/>
+                                                        <autoresizingMask key="autoresizingMask"/>
+                                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                        <size key="cellSize" width="106" height="18"/>
+                                                        <size key="intercellSpacing" width="4" height="2"/>
+                                                        <buttonCell key="prototype" type="radio" title="Radio" imagePosition="leading" alignment="left" inset="2" id="13272">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                        <cells>
+                                                            <column>
+                                                                <buttonCell type="radio" title="NTSC (60 Hz)" bezelStyle="regularSquare" imagePosition="leading" alignment="left" state="on" inset="2" id="297">
                                                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                                     <font key="font" metaFont="system"/>
                                                                 </buttonCell>
-                                                                <connections>
-                                                                    <action selector="miscChanged:" target="-2" id="vMZ-9I-dGS"/>
-                                                                </connections>
-                                                            </button>
-                                                            <button imageHugsTitle="YES" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="K2x-NJ-Gcm">
-                                                                <rect key="frame" x="218" y="102" width="213" height="18"/>
-                                                                <autoresizingMask key="autoresizingMask"/>
-                                                                <buttonCell key="cell" type="check" title="Keep Aspect Ratio in Fullscreen" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="ujC-Mu-l7v">
+                                                                <buttonCell type="radio" title="PAL (50 Hz)" bezelStyle="regularSquare" imagePosition="leading" alignment="left" tag="1" inset="2" id="298">
                                                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                                     <font key="font" metaFont="system"/>
                                                                 </buttonCell>
-                                                                <connections>
-                                                                    <action selector="miscChanged:" target="-2" id="sEn-l6-N7x"/>
-                                                                </connections>
-                                                            </button>
-                                                            <button imageHugsTitle="YES" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9UP-OJ-z0e">
-                                                                <rect key="frame" x="218" y="62" width="242" height="18"/>
-                                                                <autoresizingMask key="autoresizingMask"/>
-                                                                <buttonCell key="cell" type="check" title="Realistic Pixel Aspect Ratio Enabled" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="5nj-pp-qat">
+                                                            </column>
+                                                        </cells>
+                                                        <connections>
+                                                            <action selector="miscChanged:" target="-2" id="314"/>
+                                                        </connections>
+                                                    </matrix>
+                                                </subviews>
+                                            </view>
+                                            <font key="titleFont" metaFont="system"/>
+                                        </box>
+                                        <box fixedFrame="YES" title="Artifacting Mode" translatesAutoresizingMaskIntoConstraints="NO" id="299">
+                                            <rect key="frame" x="553" y="323" width="163" height="65"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <view key="contentView" id="dv0-cw-UUX">
+                                                <rect key="frame" x="4" y="5" width="155" height="43"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <subviews>
+                                                    <popUpButton imageHugsTitle="YES" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="310">
+                                                        <rect key="frame" x="9" y="20" width="128" height="26"/>
+                                                        <autoresizingMask key="autoresizingMask"/>
+                                                        <popUpButtonCell key="cell" type="push" title="None" bezelStyle="rounded" alignment="left" lineBreakMode="clipping" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="307" id="12913">
+                                                            <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                                                            <font key="font" metaFont="message"/>
+                                                            <menu key="menu" title="OtherViews" id="311">
+                                                                <items>
+                                                                    <menuItem title="None" state="on" id="307"/>
+                                                                    <menuItem title="Reverse XL/XE GTIA" tag="1" id="309"/>
+                                                                    <menuItem title="XL/XE GTIA" tag="2" id="308"/>
+                                                                    <menuItem title="400/800 GTIA" tag="3" id="312"/>
+                                                                    <menuItem title="400/800 CTIA" tag="4" id="313"/>
+                                                                </items>
+                                                            </menu>
+                                                        </popUpButtonCell>
+                                                        <connections>
+                                                            <action selector="miscChanged:" target="-2" id="316"/>
+                                                        </connections>
+                                                    </popUpButton>
+                                                    <button imageHugsTitle="YES" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4276">
+                                                        <rect key="frame" x="10" y="3" width="147" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask"/>
+                                                        <buttonCell key="cell" type="check" title="Use New Artifacting" bezelStyle="regularSquare" imagePosition="leading" alignment="left" inset="2" id="12914">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                        <connections>
+                                                            <action selector="miscChanged:" target="-2" id="4278"/>
+                                                        </connections>
+                                                    </button>
+                                                </subviews>
+                                            </view>
+                                            <font key="titleFont" metaFont="system"/>
+                                        </box>
+                                        <box fixedFrame="YES" title="Color Palette" translatesAutoresizingMaskIntoConstraints="NO" id="784">
+                                            <rect key="frame" x="43" y="5" width="327" height="153"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <view key="contentView" id="17C-6T-StZ">
+                                                <rect key="frame" x="4" y="5" width="319" height="131"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <subviews>
+                                                    <button imageHugsTitle="YES" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="787">
+                                                        <rect key="frame" x="8" y="-1" width="100" height="32"/>
+                                                        <autoresizingMask key="autoresizingMask"/>
+                                                        <buttonCell key="cell" type="push" title="Choose..." bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="12920">
+                                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                        <connections>
+                                                            <action selector="browsePalette:" target="-2" id="789"/>
+                                                        </connections>
+                                                    </button>
+                                                    <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="786">
+                                                        <rect key="frame" x="11" y="31" width="295" height="30"/>
+                                                        <autoresizingMask key="autoresizingMask"/>
+                                                        <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="12919">
+                                                            <font key="font" metaFont="message" size="11"/>
+                                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                    </textField>
+                                                    <button imageHugsTitle="YES" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="790">
+                                                        <rect key="frame" x="12" y="63" width="170" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask"/>
+                                                        <buttonCell key="cell" type="check" title="Use Palette from file:" bezelStyle="regularSquare" imagePosition="leading" alignment="left" inset="2" id="12921">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                        <connections>
+                                                            <action selector="miscChanged:" target="-2" id="792"/>
+                                                        </connections>
+                                                    </button>
+                                                    <textField focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="794">
+                                                        <rect key="frame" x="14" y="107" width="41" height="22"/>
+                                                        <autoresizingMask key="autoresizingMask"/>
+                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="12922">
+                                                            <numberFormatter key="formatter" formatterBehavior="10_0" positiveFormat="0" negativeFormat="-0" localizesFormat="NO" hasThousandSeparators="NO" thousandSeparator="," id="813">
+                                                                <attributedString key="attributedStringForNil"/>
+                                                                <attributedString key="attributedStringForNotANumber">
+                                                                    <fragment content="NaN"/>
+                                                                </attributedString>
+                                                                <attributedString key="attributedStringForZero">
+                                                                    <fragment content="0"/>
+                                                                </attributedString>
+                                                                <decimal key="minimum" value="0"/>
+                                                                <decimal key="maximum" value="255"/>
+                                                            </numberFormatter>
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                        <connections>
+                                                            <action selector="miscChanged:" target="-2" id="809"/>
+                                                        </connections>
+                                                    </textField>
+                                                    <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="795">
+                                                        <rect key="frame" x="60" y="109" width="79" height="17"/>
+                                                        <autoresizingMask key="autoresizingMask"/>
+                                                        <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="Black Level" id="12923">
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                    </textField>
+                                                    <textField focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="796">
+                                                        <rect key="frame" x="165" y="106" width="41" height="22"/>
+                                                        <autoresizingMask key="autoresizingMask"/>
+                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="12924">
+                                                            <numberFormatter key="formatter" formatterBehavior="10_0" positiveFormat="0" negativeFormat="-0" localizesFormat="NO" hasThousandSeparators="NO" thousandSeparator="," id="815">
+                                                                <attributedString key="attributedStringForNil"/>
+                                                                <attributedString key="attributedStringForNotANumber">
+                                                                    <fragment content="NaN"/>
+                                                                </attributedString>
+                                                                <attributedString key="attributedStringForZero">
+                                                                    <fragment content="0"/>
+                                                                </attributedString>
+                                                                <decimal key="minimum" value="0"/>
+                                                                <decimal key="maximum" value="255"/>
+                                                            </numberFormatter>
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                        <connections>
+                                                            <action selector="miscChanged:" target="-2" id="811"/>
+                                                        </connections>
+                                                    </textField>
+                                                    <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="797">
+                                                        <rect key="frame" x="211" y="108" width="79" height="17"/>
+                                                        <autoresizingMask key="autoresizingMask"/>
+                                                        <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="White Level" id="12925">
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                    </textField>
+                                                    <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="798">
+                                                        <rect key="frame" x="60" y="86" width="79" height="17"/>
+                                                        <autoresizingMask key="autoresizingMask"/>
+                                                        <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="Intensity" id="12926">
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                    </textField>
+                                                    <textField focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="799">
+                                                        <rect key="frame" x="14" y="84" width="41" height="22"/>
+                                                        <autoresizingMask key="autoresizingMask"/>
+                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="12927">
+                                                            <numberFormatter key="formatter" formatterBehavior="10_0" positiveFormat="0" negativeFormat="-0" localizesFormat="NO" hasThousandSeparators="NO" thousandSeparator="," id="814">
+                                                                <attributedString key="attributedStringForNil"/>
+                                                                <attributedString key="attributedStringForNotANumber">
+                                                                    <fragment content="NaN"/>
+                                                                </attributedString>
+                                                                <attributedString key="attributedStringForZero">
+                                                                    <fragment content="0"/>
+                                                                </attributedString>
+                                                                <decimal key="minimum" value="0"/>
+                                                                <decimal key="maximum" value="255"/>
+                                                            </numberFormatter>
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                        <connections>
+                                                            <action selector="miscChanged:" target="-2" id="810"/>
+                                                        </connections>
+                                                    </textField>
+                                                    <textField focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="800">
+                                                        <rect key="frame" x="165" y="83" width="41" height="22"/>
+                                                        <autoresizingMask key="autoresizingMask"/>
+                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="12928">
+                                                            <numberFormatter key="formatter" formatterBehavior="10_0" positiveFormat="0" negativeFormat="-0" localizesFormat="NO" hasThousandSeparators="NO" thousandSeparator="," id="816">
+                                                                <attributedString key="attributedStringForNil"/>
+                                                                <attributedString key="attributedStringForNotANumber">
+                                                                    <fragment content="NaN"/>
+                                                                </attributedString>
+                                                                <attributedString key="attributedStringForZero">
+                                                                    <fragment content="0"/>
+                                                                </attributedString>
+                                                                <decimal key="minimum" value="0"/>
+                                                                <decimal key="maximum" value="255"/>
+                                                            </numberFormatter>
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                        <connections>
+                                                            <action selector="miscChanged:" target="-2" id="812"/>
+                                                        </connections>
+                                                    </textField>
+                                                    <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="801">
+                                                        <rect key="frame" x="211" y="85" width="79" height="17"/>
+                                                        <autoresizingMask key="autoresizingMask"/>
+                                                        <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="Color Shift" id="12929">
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                    </textField>
+                                                    <button imageHugsTitle="YES" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="802">
+                                                        <rect key="frame" x="163" y="7" width="135" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask"/>
+                                                        <buttonCell key="cell" type="check" title="Adjust File Palette" bezelStyle="regularSquare" imagePosition="leading" alignment="left" inset="2" id="12930">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                        <connections>
+                                                            <action selector="miscChanged:" target="-2" id="808"/>
+                                                        </connections>
+                                                    </button>
+                                                </subviews>
+                                            </view>
+                                            <font key="titleFont" metaFont="system"/>
+                                        </box>
+                                        <box fixedFrame="YES" title="Display Width" translatesAutoresizingMaskIntoConstraints="NO" id="283">
+                                            <rect key="frame" x="43" y="292" width="327" height="88"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <view key="contentView" id="3N8-uw-QBS">
+                                                <rect key="frame" x="4" y="5" width="319" height="66"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <subviews>
+                                                    <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="270">
+                                                        <rect key="frame" x="12" y="4" width="178" height="61"/>
+                                                        <autoresizingMask key="autoresizingMask"/>
+                                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                        <size key="cellSize" width="178" height="19"/>
+                                                        <size key="intercellSpacing" width="4" height="2"/>
+                                                        <buttonCell key="prototype" type="radio" title="Radio" imagePosition="leading" alignment="left" inset="2" id="13269">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                        <cells>
+                                                            <column>
+                                                                <buttonCell type="radio" title="Narrow Width (320x240)" bezelStyle="regularSquare" imagePosition="leading" alignment="left" state="on" inset="2" id="274">
                                                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                                     <font key="font" metaFont="system"/>
                                                                 </buttonCell>
-                                                                <connections>
-                                                                    <action selector="miscChanged:" target="-2" id="z5i-sE-TAg"/>
-                                                                </connections>
-                                                            </button>
-                                                        </subviews>
-                                                    </view>
-                                                </tabViewItem>
-                                                <tabViewItem label="Colors" identifier="" id="HIK-73-yim">
-                                                    <view key="view" id="1KR-xI-P4c">
-                                                        <rect key="frame" x="10" y="33" width="755" height="341"/>
-                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                        <subviews>
-                                                            <box fixedFrame="YES" title="Color Palette" translatesAutoresizingMaskIntoConstraints="NO" id="784">
-                                                                <rect key="frame" x="12" y="80" width="327" height="153"/>
-                                                                <autoresizingMask key="autoresizingMask"/>
-                                                                <view key="contentView" id="17C-6T-StZ">
-                                                                    <rect key="frame" x="4" y="5" width="319" height="131"/>
-                                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                                    <subviews>
-                                                                        <button imageHugsTitle="YES" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="787">
-                                                                            <rect key="frame" x="8" y="-1" width="100" height="32"/>
-                                                                            <autoresizingMask key="autoresizingMask"/>
-                                                                            <buttonCell key="cell" type="push" title="Choose..." bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="12920">
-                                                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                                                                <font key="font" metaFont="system"/>
-                                                                            </buttonCell>
-                                                                            <connections>
-                                                                                <action selector="browsePalette:" target="-2" id="789"/>
-                                                                            </connections>
-                                                                        </button>
-                                                                        <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="786">
-                                                                            <rect key="frame" x="11" y="31" width="295" height="30"/>
-                                                                            <autoresizingMask key="autoresizingMask"/>
-                                                                            <textFieldCell key="cell" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="12919">
-                                                                                <font key="font" metaFont="message" size="11"/>
-                                                                                <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                                                                                <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                                                            </textFieldCell>
-                                                                        </textField>
-                                                                        <button imageHugsTitle="YES" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="790">
-                                                                            <rect key="frame" x="12" y="63" width="170" height="18"/>
-                                                                            <autoresizingMask key="autoresizingMask"/>
-                                                                            <buttonCell key="cell" type="check" title="Use Palette from file:" bezelStyle="regularSquare" imagePosition="leading" alignment="left" inset="2" id="12921">
-                                                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                                                <font key="font" metaFont="system"/>
-                                                                            </buttonCell>
-                                                                            <connections>
-                                                                                <action selector="miscChanged:" target="-2" id="792"/>
-                                                                            </connections>
-                                                                        </button>
-                                                                        <textField focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="794">
-                                                                            <rect key="frame" x="14" y="107" width="41" height="22"/>
-                                                                            <autoresizingMask key="autoresizingMask"/>
-                                                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="12922">
-                                                                                <numberFormatter key="formatter" formatterBehavior="10_0" positiveFormat="0" negativeFormat="-0" localizesFormat="NO" hasThousandSeparators="NO" thousandSeparator="," id="813">
-                                                                                    <attributedString key="attributedStringForNil"/>
-                                                                                    <attributedString key="attributedStringForNotANumber">
-                                                                                        <fragment content="NaN"/>
-                                                                                    </attributedString>
-                                                                                    <attributedString key="attributedStringForZero">
-                                                                                        <fragment content="0"/>
-                                                                                    </attributedString>
-                                                                                    <decimal key="minimum" value="0"/>
-                                                                                    <decimal key="maximum" value="255"/>
-                                                                                </numberFormatter>
-                                                                                <font key="font" metaFont="system"/>
-                                                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                                                <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                                                            </textFieldCell>
-                                                                            <connections>
-                                                                                <action selector="miscChanged:" target="-2" id="809"/>
-                                                                            </connections>
-                                                                        </textField>
-                                                                        <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="795">
-                                                                            <rect key="frame" x="60" y="109" width="79" height="17"/>
-                                                                            <autoresizingMask key="autoresizingMask"/>
-                                                                            <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="Black Level" id="12923">
-                                                                                <font key="font" metaFont="system"/>
-                                                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                                            </textFieldCell>
-                                                                        </textField>
-                                                                        <textField focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="796">
-                                                                            <rect key="frame" x="165" y="106" width="41" height="22"/>
-                                                                            <autoresizingMask key="autoresizingMask"/>
-                                                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="12924">
-                                                                                <numberFormatter key="formatter" formatterBehavior="10_0" positiveFormat="0" negativeFormat="-0" localizesFormat="NO" hasThousandSeparators="NO" thousandSeparator="," id="815">
-                                                                                    <attributedString key="attributedStringForNil"/>
-                                                                                    <attributedString key="attributedStringForNotANumber">
-                                                                                        <fragment content="NaN"/>
-                                                                                    </attributedString>
-                                                                                    <attributedString key="attributedStringForZero">
-                                                                                        <fragment content="0"/>
-                                                                                    </attributedString>
-                                                                                    <decimal key="minimum" value="0"/>
-                                                                                    <decimal key="maximum" value="255"/>
-                                                                                </numberFormatter>
-                                                                                <font key="font" metaFont="system"/>
-                                                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                                                <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                                                            </textFieldCell>
-                                                                            <connections>
-                                                                                <action selector="miscChanged:" target="-2" id="811"/>
-                                                                            </connections>
-                                                                        </textField>
-                                                                        <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="797">
-                                                                            <rect key="frame" x="211" y="108" width="79" height="17"/>
-                                                                            <autoresizingMask key="autoresizingMask"/>
-                                                                            <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="White Level" id="12925">
-                                                                                <font key="font" metaFont="system"/>
-                                                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                                            </textFieldCell>
-                                                                        </textField>
-                                                                        <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="798">
-                                                                            <rect key="frame" x="60" y="86" width="79" height="17"/>
-                                                                            <autoresizingMask key="autoresizingMask"/>
-                                                                            <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="Intensity" id="12926">
-                                                                                <font key="font" metaFont="system"/>
-                                                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                                            </textFieldCell>
-                                                                        </textField>
-                                                                        <textField focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="799">
-                                                                            <rect key="frame" x="14" y="84" width="41" height="22"/>
-                                                                            <autoresizingMask key="autoresizingMask"/>
-                                                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="12927">
-                                                                                <numberFormatter key="formatter" formatterBehavior="10_0" positiveFormat="0" negativeFormat="-0" localizesFormat="NO" hasThousandSeparators="NO" thousandSeparator="," id="814">
-                                                                                    <attributedString key="attributedStringForNil"/>
-                                                                                    <attributedString key="attributedStringForNotANumber">
-                                                                                        <fragment content="NaN"/>
-                                                                                    </attributedString>
-                                                                                    <attributedString key="attributedStringForZero">
-                                                                                        <fragment content="0"/>
-                                                                                    </attributedString>
-                                                                                    <decimal key="minimum" value="0"/>
-                                                                                    <decimal key="maximum" value="255"/>
-                                                                                </numberFormatter>
-                                                                                <font key="font" metaFont="system"/>
-                                                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                                                <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                                                            </textFieldCell>
-                                                                            <connections>
-                                                                                <action selector="miscChanged:" target="-2" id="810"/>
-                                                                            </connections>
-                                                                        </textField>
-                                                                        <textField focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="800">
-                                                                            <rect key="frame" x="165" y="83" width="41" height="22"/>
-                                                                            <autoresizingMask key="autoresizingMask"/>
-                                                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="12928">
-                                                                                <numberFormatter key="formatter" formatterBehavior="10_0" positiveFormat="0" negativeFormat="-0" localizesFormat="NO" hasThousandSeparators="NO" thousandSeparator="," id="816">
-                                                                                    <attributedString key="attributedStringForNil"/>
-                                                                                    <attributedString key="attributedStringForNotANumber">
-                                                                                        <fragment content="NaN"/>
-                                                                                    </attributedString>
-                                                                                    <attributedString key="attributedStringForZero">
-                                                                                        <fragment content="0"/>
-                                                                                    </attributedString>
-                                                                                    <decimal key="minimum" value="0"/>
-                                                                                    <decimal key="maximum" value="255"/>
-                                                                                </numberFormatter>
-                                                                                <font key="font" metaFont="system"/>
-                                                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                                                <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                                                            </textFieldCell>
-                                                                            <connections>
-                                                                                <action selector="miscChanged:" target="-2" id="812"/>
-                                                                            </connections>
-                                                                        </textField>
-                                                                        <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="801">
-                                                                            <rect key="frame" x="211" y="85" width="79" height="17"/>
-                                                                            <autoresizingMask key="autoresizingMask"/>
-                                                                            <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="Color Shift" id="12929">
-                                                                                <font key="font" metaFont="system"/>
-                                                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                                            </textFieldCell>
-                                                                        </textField>
-                                                                        <button imageHugsTitle="YES" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="802">
-                                                                            <rect key="frame" x="163" y="7" width="135" height="18"/>
-                                                                            <autoresizingMask key="autoresizingMask"/>
-                                                                            <buttonCell key="cell" type="check" title="Adjust File Palette" bezelStyle="regularSquare" imagePosition="leading" alignment="left" inset="2" id="12930">
-                                                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                                                <font key="font" metaFont="system"/>
-                                                                            </buttonCell>
-                                                                            <connections>
-                                                                                <action selector="miscChanged:" target="-2" id="808"/>
-                                                                            </connections>
-                                                                        </button>
-                                                                    </subviews>
-                                                                </view>
-                                                                <font key="titleFont" metaFont="system"/>
-                                                            </box>
-                                                            <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="NvT-fM-xdr" customClass="CustomImageView">
-                                                                <rect key="frame" x="401" y="151" width="149" height="144"/>
-                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                                <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="XKD-Ea-90f"/>
-                                                            </imageView>
-                                                        </subviews>
-                                                    </view>
-                                                </tabViewItem>
-                                                <tabViewItem label="Features" identifier="" id="GNj-z2-MHy">
-                                                    <view key="view" id="oMP-dh-HYd">
-                                                        <rect key="frame" x="10" y="33" width="755" height="341"/>
-                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                        <subviews>
-                                                            <box fixedFrame="YES" title="Scanlines" translatesAutoresizingMaskIntoConstraints="NO" id="281">
-                                                                <rect key="frame" x="14" y="136" width="327" height="74"/>
-                                                                <autoresizingMask key="autoresizingMask"/>
-                                                                <view key="contentView" id="JGY-kK-Scg">
-                                                                    <rect key="frame" x="4" y="5" width="319" height="52"/>
-                                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                                    <subviews>
-                                                                        <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3842">
-                                                                            <rect key="frame" x="9" y="8" width="146" height="38"/>
-                                                                            <autoresizingMask key="autoresizingMask"/>
-                                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                                            <size key="cellSize" width="146" height="18"/>
-                                                                            <size key="intercellSpacing" width="4" height="2"/>
-                                                                            <buttonCell key="prototype" type="radio" title="Radio" imagePosition="leading" alignment="left" inset="2" id="13268">
-                                                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                                                <font key="font" metaFont="system"/>
-                                                                            </buttonCell>
-                                                                            <cells>
-                                                                                <column>
-                                                                                    <buttonCell type="radio" title="Without Scanlines" bezelStyle="regularSquare" imagePosition="leading" alignment="left" state="on" inset="2" id="3845">
-                                                                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                                                        <font key="font" metaFont="system"/>
-                                                                                    </buttonCell>
-                                                                                    <buttonCell type="radio" title="With Scanlines" bezelStyle="regularSquare" imagePosition="leading" alignment="left" tag="1" inset="2" id="3846">
-                                                                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                                                        <font key="font" metaFont="system"/>
-                                                                                    </buttonCell>
-                                                                                </column>
-                                                                            </cells>
-                                                                            <connections>
-                                                                                <action selector="miscChanged:" target="-2" id="3849"/>
-                                                                            </connections>
-                                                                        </matrix>
-                                                                        <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="som-vE-n0w">
-                                                                            <rect key="frame" x="178" y="6" width="129" height="20"/>
-                                                                            <autoresizingMask key="autoresizingMask"/>
-                                                                            <sliderCell key="cell" controlSize="small" state="on" alignment="left" maxValue="0.90000000000000002" doubleValue="0.730946541376985" tickMarkPosition="above" numberOfTickMarks="10" sliderType="linear" id="SQp-w6-qRm">
-                                                                                <font key="font" metaFont="user"/>
-                                                                            </sliderCell>
-                                                                            <connections>
-                                                                                <action selector="miscChanged:" target="-2" id="0ZV-FD-ikF"/>
-                                                                            </connections>
-                                                                        </slider>
-                                                                        <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="V87-K7-4zQ">
-                                                                            <rect key="frame" x="173" y="24" width="144" height="22"/>
-                                                                            <autoresizingMask key="autoresizingMask"/>
-                                                                            <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="Scanline Transparency" id="4Nz-65-PmQ">
-                                                                                <font key="font" metaFont="system"/>
-                                                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                                            </textFieldCell>
-                                                                        </textField>
-                                                                    </subviews>
-                                                                </view>
-                                                                <font key="titleFont" metaFont="system"/>
-                                                            </box>
-                                                            <button imageHugsTitle="YES" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="hRd-Pp-1WM">
-                                                                <rect key="frame" x="16" y="99" width="213" height="18"/>
-                                                                <autoresizingMask key="autoresizingMask"/>
-                                                                <buttonCell key="cell" type="check" title="Verticle Sync Enabled" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="bVc-IV-a9n">
+                                                                <buttonCell type="radio" title="Default Width (336x240)" bezelStyle="regularSquare" imagePosition="leading" alignment="left" tag="1" inset="2" id="275">
                                                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                                     <font key="font" metaFont="system"/>
                                                                 </buttonCell>
-                                                                <connections>
-                                                                    <action selector="miscChanged:" target="-2" id="Ssk-pC-3Uf"/>
-                                                                </connections>
-                                                            </button>
-                                                            <button imageHugsTitle="YES" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6Tn-9e-eyP">
-                                                                <rect key="frame" x="16" y="63" width="219" height="18"/>
-                                                                <autoresizingMask key="autoresizingMask"/>
-                                                                <buttonCell key="cell" type="check" title="Linear Smoothing FIlter Enabled" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="zK7-H5-1ia">
+                                                                <buttonCell type="radio" title="Full Width (384x240)" bezelStyle="regularSquare" imagePosition="leading" alignment="left" tag="2" inset="2" id="276">
                                                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                                     <font key="font" metaFont="system"/>
                                                                 </buttonCell>
-                                                                <connections>
-                                                                    <action selector="miscChanged:" target="-2" id="D0c-U6-dW6"/>
-                                                                </connections>
-                                                            </button>
-                                                            <box fixedFrame="YES" title="Refresh Ratio" translatesAutoresizingMaskIntoConstraints="NO" id="318">
-                                                                <rect key="frame" x="14" y="225" width="327" height="66"/>
-                                                                <autoresizingMask key="autoresizingMask"/>
-                                                                <view key="contentView" id="rxO-zh-gA3">
-                                                                    <rect key="frame" x="4" y="5" width="319" height="44"/>
-                                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                                    <subviews>
-                                                                        <popUpButton imageHugsTitle="YES" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="320">
-                                                                            <rect key="frame" x="130" y="19" width="128" height="26"/>
-                                                                            <autoresizingMask key="autoresizingMask"/>
-                                                                            <popUpButtonCell key="cell" type="push" title="1 Frame" bezelStyle="rounded" alignment="left" lineBreakMode="clipping" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="321" id="12915">
-                                                                                <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                                                                <font key="font" metaFont="message"/>
-                                                                                <menu key="menu" title="OtherViews" id="324">
-                                                                                    <items>
-                                                                                        <menuItem title="1 Frame" state="on" id="321"/>
-                                                                                        <menuItem title="2 Frames" id="322"/>
-                                                                                        <menuItem title="3 Frames" id="323"/>
-                                                                                        <menuItem title="4 Frames" id="325"/>
-                                                                                    </items>
-                                                                                </menu>
-                                                                            </popUpButtonCell>
-                                                                            <connections>
-                                                                                <action selector="miscChanged:" target="-2" id="328"/>
-                                                                            </connections>
-                                                                        </popUpButton>
-                                                                        <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="327">
-                                                                            <rect key="frame" x="12" y="25" width="114" height="17"/>
-                                                                            <autoresizingMask key="autoresizingMask"/>
-                                                                            <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="Draw once every" id="12916">
-                                                                                <font key="font" metaFont="system"/>
-                                                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                                            </textFieldCell>
-                                                                        </textField>
-                                                                        <button imageHugsTitle="YES" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4243">
-                                                                            <rect key="frame" x="13" y="3" width="288" height="18"/>
-                                                                            <autoresizingMask key="autoresizingMask"/>
-                                                                            <buttonCell key="cell" type="check" title="Collisions in Skipped Frames" bezelStyle="regularSquare" imagePosition="leading" alignment="left" inset="2" id="12917">
-                                                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                                                <font key="font" metaFont="system"/>
-                                                                            </buttonCell>
-                                                                            <connections>
-                                                                                <action selector="miscChanged:" target="-2" id="4245"/>
-                                                                            </connections>
-                                                                        </button>
-                                                                    </subviews>
-                                                                </view>
-                                                                <font key="titleFont" metaFont="system"/>
-                                                            </box>
-                                                            <box fixedFrame="YES" title="TV Mode" translatesAutoresizingMaskIntoConstraints="NO" id="294">
-                                                                <rect key="frame" x="419" y="225" width="324" height="66"/>
-                                                                <autoresizingMask key="autoresizingMask"/>
-                                                                <view key="contentView" id="eLy-96-aMw">
-                                                                    <rect key="frame" x="4" y="5" width="316" height="44"/>
-                                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                                    <subviews>
-                                                                        <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="296">
-                                                                            <rect key="frame" x="12" y="4" width="106" height="38"/>
-                                                                            <autoresizingMask key="autoresizingMask"/>
-                                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                                            <size key="cellSize" width="106" height="18"/>
-                                                                            <size key="intercellSpacing" width="4" height="2"/>
-                                                                            <buttonCell key="prototype" type="radio" title="Radio" imagePosition="leading" alignment="left" inset="2" id="13272">
-                                                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                                                <font key="font" metaFont="system"/>
-                                                                            </buttonCell>
-                                                                            <cells>
-                                                                                <column>
-                                                                                    <buttonCell type="radio" title="NTSC (60 Hz)" bezelStyle="regularSquare" imagePosition="leading" alignment="left" state="on" inset="2" id="297">
-                                                                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                                                        <font key="font" metaFont="system"/>
-                                                                                    </buttonCell>
-                                                                                    <buttonCell type="radio" title="PAL (50 Hz)" bezelStyle="regularSquare" imagePosition="leading" alignment="left" tag="1" inset="2" id="298">
-                                                                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                                                        <font key="font" metaFont="system"/>
-                                                                                    </buttonCell>
-                                                                                </column>
-                                                                            </cells>
-                                                                            <connections>
-                                                                                <action selector="miscChanged:" target="-2" id="314"/>
-                                                                            </connections>
-                                                                        </matrix>
-                                                                    </subviews>
-                                                                </view>
-                                                                <font key="titleFont" metaFont="system"/>
-                                                            </box>
-                                                            <box fixedFrame="YES" title="Artifacting Mode" translatesAutoresizingMaskIntoConstraints="NO" id="299">
-                                                                <rect key="frame" x="419" y="136" width="324" height="65"/>
-                                                                <autoresizingMask key="autoresizingMask"/>
-                                                                <view key="contentView" id="dv0-cw-UUX">
-                                                                    <rect key="frame" x="4" y="5" width="316" height="43"/>
-                                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                                    <subviews>
-                                                                        <popUpButton imageHugsTitle="YES" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="310">
-                                                                            <rect key="frame" x="9" y="20" width="128" height="26"/>
-                                                                            <autoresizingMask key="autoresizingMask"/>
-                                                                            <popUpButtonCell key="cell" type="push" title="None" bezelStyle="rounded" alignment="left" lineBreakMode="clipping" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="307" id="12913">
-                                                                                <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                                                                <font key="font" metaFont="message"/>
-                                                                                <menu key="menu" title="OtherViews" id="311">
-                                                                                    <items>
-                                                                                        <menuItem title="None" state="on" id="307"/>
-                                                                                        <menuItem title="Reverse XL/XE GTIA" tag="1" id="309"/>
-                                                                                        <menuItem title="XL/XE GTIA" tag="2" id="308"/>
-                                                                                        <menuItem title="400/800 GTIA" tag="3" id="312"/>
-                                                                                        <menuItem title="400/800 CTIA" tag="4" id="313"/>
-                                                                                    </items>
-                                                                                </menu>
-                                                                            </popUpButtonCell>
-                                                                            <connections>
-                                                                                <action selector="miscChanged:" target="-2" id="316"/>
-                                                                            </connections>
-                                                                        </popUpButton>
-                                                                        <button imageHugsTitle="YES" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4276">
-                                                                            <rect key="frame" x="10" y="3" width="147" height="18"/>
-                                                                            <autoresizingMask key="autoresizingMask"/>
-                                                                            <buttonCell key="cell" type="check" title="Use New Artifacting" bezelStyle="regularSquare" imagePosition="leading" alignment="left" inset="2" id="12914">
-                                                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                                                <font key="font" metaFont="system"/>
-                                                                            </buttonCell>
-                                                                            <connections>
-                                                                                <action selector="miscChanged:" target="-2" id="4278"/>
-                                                                            </connections>
-                                                                        </button>
-                                                                    </subviews>
-                                                                </view>
-                                                                <font key="titleFont" metaFont="system"/>
-                                                            </box>
-                                                        </subviews>
-                                                    </view>
-                                                </tabViewItem>
-                                                <tabViewItem label="Status Indicators" identifier="" id="tXP-9Z-PLV">
-                                                    <view key="view" id="TyR-BU-9w6">
-                                                        <rect key="frame" x="10" y="33" width="755" height="341"/>
-                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                        <subviews>
-                                                            <box fixedFrame="YES" title="LEDs/Status Indicators" translatesAutoresizingMaskIntoConstraints="NO" id="3860">
-                                                                <rect key="frame" x="214" y="62" width="327" height="168"/>
-                                                                <autoresizingMask key="autoresizingMask"/>
-                                                                <view key="contentView" id="j5j-NJ-9Sj">
-                                                                    <rect key="frame" x="4" y="5" width="319" height="146"/>
-                                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                                    <subviews>
-                                                                        <button imageHugsTitle="YES" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3863">
-                                                                            <rect key="frame" x="14" y="125" width="239" height="18"/>
-                                                                            <autoresizingMask key="autoresizingMask"/>
-                                                                            <buttonCell key="cell" type="check" title="Display Status LED on Atari Screen" bezelStyle="regularSquare" imagePosition="leading" alignment="left" inset="2" id="12931">
-                                                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                                                <font key="font" metaFont="system"/>
-                                                                            </buttonCell>
-                                                                            <connections>
-                                                                                <action selector="miscChanged:" target="-2" id="3867"/>
-                                                                            </connections>
-                                                                        </button>
-                                                                        <button imageHugsTitle="YES" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3864">
-                                                                            <rect key="frame" x="34" y="106" width="266" height="18"/>
-                                                                            <autoresizingMask key="autoresizingMask"/>
-                                                                            <buttonCell key="cell" type="check" title="Display Sector Number on Atari Screen" bezelStyle="regularSquare" imagePosition="leading" alignment="left" inset="2" id="12932">
-                                                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                                                <font key="font" metaFont="system"/>
-                                                                            </buttonCell>
-                                                                            <connections>
-                                                                                <action selector="miscChanged:" target="-2" id="3868"/>
-                                                                            </connections>
-                                                                        </button>
-                                                                        <button imageHugsTitle="YES" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3914">
-                                                                            <rect key="frame" x="35" y="68" width="277" height="18"/>
-                                                                            <autoresizingMask key="autoresizingMask"/>
-                                                                            <buttonCell key="cell" type="check" title="Display Sector Number in Media Window" bezelStyle="regularSquare" imagePosition="leading" alignment="left" inset="2" id="12933">
-                                                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                                                <font key="font" metaFont="system"/>
-                                                                            </buttonCell>
-                                                                            <connections>
-                                                                                <action selector="miscChanged:" target="-2" id="3919"/>
-                                                                            </connections>
-                                                                        </button>
-                                                                        <button imageHugsTitle="YES" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3915">
-                                                                            <rect key="frame" x="14" y="88" width="250" height="18"/>
-                                                                            <autoresizingMask key="autoresizingMask"/>
-                                                                            <buttonCell key="cell" type="check" title="Display Status LED in Media Window" bezelStyle="regularSquare" imagePosition="leading" alignment="left" inset="2" id="12934">
-                                                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                                                <font key="font" metaFont="system"/>
-                                                                            </buttonCell>
-                                                                            <connections>
-                                                                                <action selector="miscChanged:" target="-2" id="3918"/>
-                                                                            </connections>
-                                                                        </button>
-                                                                        <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Fr3-Su-Zp0">
-                                                                            <rect key="frame" x="14" y="26" width="258" height="18"/>
-                                                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                                            <buttonCell key="cell" type="check" title="Show Hard Disk Sector on Atari Screen" bezelStyle="regularSquare" imagePosition="left" inset="2" id="ozW-J1-2qa">
-                                                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                                                <font key="font" metaFont="system"/>
-                                                                            </buttonCell>
-                                                                            <connections>
-                                                                                <action selector="miscChanged:" target="-2" id="zmH-0a-X9l"/>
-                                                                            </connections>
-                                                                        </button>
-                                                                        <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9yX-aZ-eEW">
-                                                                            <rect key="frame" x="14" y="46" width="236" height="18"/>
-                                                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                                            <buttonCell key="cell" type="check" title="Show 1200XL LEDs on Atari Screen" bezelStyle="regularSquare" imagePosition="left" inset="2" id="cZC-gL-VKZ">
-                                                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                                                <font key="font" metaFont="system"/>
-                                                                            </buttonCell>
-                                                                            <connections>
-                                                                                <action selector="miscChanged:" target="-2" id="7d5-o8-PTT"/>
-                                                                            </connections>
-                                                                        </button>
-                                                                        <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="iCL-Aa-vuI">
-                                                                            <rect key="frame" x="14" y="6" width="272" height="18"/>
-                                                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                                            <buttonCell key="cell" type="check" title="Show CapsLock indicator on Atari Screen" bezelStyle="regularSquare" imagePosition="left" inset="2" id="IgS-f8-yN2">
-                                                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                                                <font key="font" metaFont="system"/>
-                                                                            </buttonCell>
-                                                                            <connections>
-                                                                                <action selector="miscChanged:" target="-2" id="4fo-xs-Mgq"/>
-                                                                            </connections>
-                                                                        </button>
-                                                                    </subviews>
-                                                                </view>
-                                                                <font key="titleFont" metaFont="system"/>
-                                                            </box>
-                                                            <button imageHugsTitle="YES" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="775">
-                                                                <rect key="frame" x="228" y="251" width="279" height="18"/>
-                                                                <autoresizingMask key="autoresizingMask"/>
-                                                                <buttonCell key="cell" type="check" title="Show Frames Per Second in Window Title" bezelStyle="regularSquare" imagePosition="leading" alignment="left" inset="2" id="12918">
+                                                            </column>
+                                                        </cells>
+                                                        <connections>
+                                                            <action selector="miscChanged:" target="-2" id="288"/>
+                                                        </connections>
+                                                    </matrix>
+                                                </subviews>
+                                            </view>
+                                            <font key="titleFont" metaFont="system"/>
+                                        </box>
+                                        <box fixedFrame="YES" title="Scale Mode" translatesAutoresizingMaskIntoConstraints="NO" id="281">
+                                            <rect key="frame" x="45" y="214" width="325" height="74"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <view key="contentView" id="JGY-kK-Scg">
+                                                <rect key="frame" x="4" y="5" width="317" height="52"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <subviews>
+                                                    <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3842">
+                                                        <rect key="frame" x="9" y="8" width="146" height="38"/>
+                                                        <autoresizingMask key="autoresizingMask"/>
+                                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                        <size key="cellSize" width="146" height="18"/>
+                                                        <size key="intercellSpacing" width="4" height="2"/>
+                                                        <buttonCell key="prototype" type="radio" title="Radio" imagePosition="leading" alignment="left" inset="2" id="13268">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                        <cells>
+                                                            <column>
+                                                                <buttonCell type="radio" title="Normal" bezelStyle="regularSquare" imagePosition="leading" alignment="left" state="on" inset="2" id="3845">
                                                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                                     <font key="font" metaFont="system"/>
                                                                 </buttonCell>
-                                                                <connections>
-                                                                    <action selector="miscChanged:" target="-2" id="776"/>
-                                                                </connections>
-                                                            </button>
-                                                        </subviews>
-                                                    </view>
-                                                </tabViewItem>
-                                            </tabViewItems>
-                                        </tabView>
+                                                                <buttonCell type="radio" title="With Scanlines" bezelStyle="regularSquare" imagePosition="leading" alignment="left" tag="1" inset="2" id="3846">
+                                                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                                    <font key="font" metaFont="system"/>
+                                                                </buttonCell>
+                                                            </column>
+                                                        </cells>
+                                                        <connections>
+                                                            <action selector="miscChanged:" target="-2" id="3849"/>
+                                                        </connections>
+                                                    </matrix>
+                                                    <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="som-vE-n0w">
+                                                        <rect key="frame" x="178" y="6" width="129" height="20"/>
+                                                        <autoresizingMask key="autoresizingMask"/>
+                                                        <sliderCell key="cell" controlSize="small" state="on" alignment="left" maxValue="0.90000000000000002" doubleValue="0.730946541376985" tickMarkPosition="above" numberOfTickMarks="10" sliderType="linear" id="SQp-w6-qRm">
+                                                            <font key="font" metaFont="user"/>
+                                                        </sliderCell>
+                                                        <connections>
+                                                            <action selector="miscChanged:" target="-2" id="0ZV-FD-ikF"/>
+                                                        </connections>
+                                                    </slider>
+                                                    <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="V87-K7-4zQ">
+                                                        <rect key="frame" x="173" y="24" width="144" height="22"/>
+                                                        <autoresizingMask key="autoresizingMask"/>
+                                                        <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="Scanline Transparency" id="4Nz-65-PmQ">
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                    </textField>
+                                                </subviews>
+                                            </view>
+                                            <font key="titleFont" metaFont="system"/>
+                                        </box>
+                                        <button imageHugsTitle="YES" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="775">
+                                            <rect key="frame" x="406" y="179" width="279" height="18"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <buttonCell key="cell" type="check" title="Show Frames Per Second in Window Title" bezelStyle="regularSquare" imagePosition="leading" alignment="left" inset="2" id="12918">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <action selector="miscChanged:" target="-2" id="776"/>
+                                            </connections>
+                                        </button>
+                                        <box fixedFrame="YES" title="Refresh Ratio" translatesAutoresizingMaskIntoConstraints="NO" id="318">
+                                            <rect key="frame" x="389" y="256" width="327" height="66"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <view key="contentView" id="rxO-zh-gA3">
+                                                <rect key="frame" x="4" y="5" width="319" height="44"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <subviews>
+                                                    <popUpButton imageHugsTitle="YES" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="320">
+                                                        <rect key="frame" x="130" y="19" width="128" height="26"/>
+                                                        <autoresizingMask key="autoresizingMask"/>
+                                                        <popUpButtonCell key="cell" type="push" title="1 Frame" bezelStyle="rounded" alignment="left" lineBreakMode="clipping" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="321" id="12915">
+                                                            <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                                                            <font key="font" metaFont="message"/>
+                                                            <menu key="menu" title="OtherViews" id="324">
+                                                                <items>
+                                                                    <menuItem title="1 Frame" state="on" id="321"/>
+                                                                    <menuItem title="2 Frames" id="322"/>
+                                                                    <menuItem title="3 Frames" id="323"/>
+                                                                    <menuItem title="4 Frames" id="325"/>
+                                                                </items>
+                                                            </menu>
+                                                        </popUpButtonCell>
+                                                        <connections>
+                                                            <action selector="miscChanged:" target="-2" id="328"/>
+                                                        </connections>
+                                                    </popUpButton>
+                                                    <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="327">
+                                                        <rect key="frame" x="12" y="25" width="114" height="17"/>
+                                                        <autoresizingMask key="autoresizingMask"/>
+                                                        <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="Draw once every" id="12916">
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                    </textField>
+                                                    <button imageHugsTitle="YES" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4243">
+                                                        <rect key="frame" x="13" y="3" width="288" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask"/>
+                                                        <buttonCell key="cell" type="check" title="Collisions in Skipped Frames" bezelStyle="regularSquare" imagePosition="leading" alignment="left" inset="2" id="12917">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                        <connections>
+                                                            <action selector="miscChanged:" target="-2" id="4245"/>
+                                                        </connections>
+                                                    </button>
+                                                </subviews>
+                                            </view>
+                                            <font key="titleFont" metaFont="system"/>
+                                        </box>
+                                        <button imageHugsTitle="YES" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="whR-aJ-xh2">
+                                            <rect key="frame" x="58" y="191" width="283" height="18"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <buttonCell key="cell" type="check" title="Always Use Integral Window Scaling Factor" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="2lL-Gy-DpS">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <action selector="miscChanged:" target="-2" id="vMZ-9I-dGS"/>
+                                            </connections>
+                                        </button>
+                                        <button imageHugsTitle="YES" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="K2x-NJ-Gcm">
+                                            <rect key="frame" x="58" y="167" width="213" height="18"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <buttonCell key="cell" type="check" title="Keep Aspect Ratio in Fullscreen" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="ujC-Mu-l7v">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <action selector="miscChanged:" target="-2" id="sEn-l6-N7x"/>
+                                            </connections>
+                                        </button>
+                                        <box fixedFrame="YES" title="LEDs/Status Indicators" translatesAutoresizingMaskIntoConstraints="NO" id="3860">
+                                            <rect key="frame" x="389" y="5" width="327" height="168"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <view key="contentView" id="j5j-NJ-9Sj">
+                                                <rect key="frame" x="4" y="5" width="319" height="146"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <subviews>
+                                                    <button imageHugsTitle="YES" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3863">
+                                                        <rect key="frame" x="14" y="125" width="239" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask"/>
+                                                        <buttonCell key="cell" type="check" title="Display Status LED on Atari Screen" bezelStyle="regularSquare" imagePosition="leading" alignment="left" inset="2" id="12931">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                        <connections>
+                                                            <action selector="miscChanged:" target="-2" id="3867"/>
+                                                        </connections>
+                                                    </button>
+                                                    <button imageHugsTitle="YES" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3864">
+                                                        <rect key="frame" x="34" y="106" width="266" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask"/>
+                                                        <buttonCell key="cell" type="check" title="Display Sector Number on Atari Screen" bezelStyle="regularSquare" imagePosition="leading" alignment="left" inset="2" id="12932">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                        <connections>
+                                                            <action selector="miscChanged:" target="-2" id="3868"/>
+                                                        </connections>
+                                                    </button>
+                                                    <button imageHugsTitle="YES" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3914">
+                                                        <rect key="frame" x="35" y="68" width="277" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask"/>
+                                                        <buttonCell key="cell" type="check" title="Display Sector Number in Media Window" bezelStyle="regularSquare" imagePosition="leading" alignment="left" inset="2" id="12933">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                        <connections>
+                                                            <action selector="miscChanged:" target="-2" id="3919"/>
+                                                        </connections>
+                                                    </button>
+                                                    <button imageHugsTitle="YES" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3915">
+                                                        <rect key="frame" x="14" y="88" width="250" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask"/>
+                                                        <buttonCell key="cell" type="check" title="Display Status LED in Media Window" bezelStyle="regularSquare" imagePosition="leading" alignment="left" inset="2" id="12934">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                        <connections>
+                                                            <action selector="miscChanged:" target="-2" id="3918"/>
+                                                        </connections>
+                                                    </button>
+                                                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Fr3-Su-Zp0">
+                                                        <rect key="frame" x="14" y="26" width="258" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <buttonCell key="cell" type="check" title="Show Hard Disk Sector on Atari Screen" bezelStyle="regularSquare" imagePosition="left" inset="2" id="ozW-J1-2qa">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                        <connections>
+                                                            <action selector="miscChanged:" target="-2" id="zmH-0a-X9l"/>
+                                                        </connections>
+                                                    </button>
+                                                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9yX-aZ-eEW">
+                                                        <rect key="frame" x="14" y="46" width="236" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <buttonCell key="cell" type="check" title="Show 1200XL LEDs on Atari Screen" bezelStyle="regularSquare" imagePosition="left" inset="2" id="cZC-gL-VKZ">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                        <connections>
+                                                            <action selector="miscChanged:" target="-2" id="7d5-o8-PTT"/>
+                                                        </connections>
+                                                    </button>
+                                                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="iCL-Aa-vuI">
+                                                        <rect key="frame" x="14" y="6" width="272" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <buttonCell key="cell" type="check" title="Show CapsLock indicator on Atari Screen" bezelStyle="regularSquare" imagePosition="left" inset="2" id="IgS-f8-yN2">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                        <connections>
+                                                            <action selector="miscChanged:" target="-2" id="4fo-xs-Mgq"/>
+                                                        </connections>
+                                                    </button>
+                                                </subviews>
+                                            </view>
+                                            <font key="titleFont" metaFont="system"/>
+                                        </box>
+                                        <button imageHugsTitle="YES" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="hRd-Pp-1WM">
+                                            <rect key="frame" x="406" y="237" width="213" height="18"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <buttonCell key="cell" type="check" title="Verticle Sync Enabled" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="bVc-IV-a9n">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <action selector="miscChanged:" target="-2" id="Ssk-pC-3Uf"/>
+                                            </connections>
+                                        </button>
+                                        <button imageHugsTitle="YES" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6Tn-9e-eyP">
+                                            <rect key="frame" x="406" y="218" width="219" height="18"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <buttonCell key="cell" type="check" title="Linear Smoothing FIlter Enabled" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="zK7-H5-1ia">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <action selector="miscChanged:" target="-2" id="D0c-U6-dW6"/>
+                                            </connections>
+                                        </button>
+                                        <button imageHugsTitle="YES" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9UP-OJ-z0e">
+                                            <rect key="frame" x="406" y="198" width="242" height="18"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <buttonCell key="cell" type="check" title="Realistic Pixel Aspect Ratio Enabled" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="5nj-pp-qat">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <action selector="miscChanged:" target="-2" id="z5i-sE-TAg"/>
+                                            </connections>
+                                        </button>
                                     </subviews>
                                 </view>
                             </tabViewItem>
