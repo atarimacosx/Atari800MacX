@@ -1796,9 +1796,6 @@ void SIO_PutByte(int byte)
             }
 		}
         
-        if (byte == 8)
-            use_local = 1;
-		
 		if (!use_local) {
 			NetSIO_PutByte(byte);
 			return;
