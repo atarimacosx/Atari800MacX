@@ -100,6 +100,11 @@ void THECART_Init(CARTRIDGE_image_t *cart) {
 
 static void THECART_Shutdown(void)
 {
+    // Disable the cartrdige and unmap.
+    CartBank = -1;
+    CartBank2 = -1;
+    THECART_Map_Cart();
+
     Flash_Shutdown(flash);
 }
 

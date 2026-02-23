@@ -80,6 +80,10 @@ void SIC_Init(CARTRIDGE_image_t *cart)
 
 static void SIC_Shutdown(void)
 {
+    // Disable the cartrdige and unmap.
+    CartBank = -1;
+    SIC_Map_Cart();
+
     Flash_Shutdown(flash);
     if (flash2 != NULL)
         Flash_Shutdown(flash2);
