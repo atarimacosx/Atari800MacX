@@ -71,6 +71,10 @@ void MEGACART_Init(CARTRIDGE_image_t *cart)
 
 static void MEGACART_Shutdown(void)
 {
+    // Disable the cartrdige and unmap.
+    CartBank = -1;
+    MEGACART_Map_Cart();
+
     if (flash != NULL)
         Flash_Shutdown(flash);
 }

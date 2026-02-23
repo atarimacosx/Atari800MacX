@@ -90,6 +90,10 @@ void MAXFLASH_Init(CARTRIDGE_image_t *cart)
 
 static void  MAXFLASH_Shutdown(void)
 {
+    // Disable the cartrdige and unmap.
+    CartBank = -1;
+    MAXFLASH_Map_Cart();
+    // Shut the Flash emulator down
     Flash_Shutdown(flash);
     if (flash2 != NULL)
         Flash_Shutdown(flash2);
