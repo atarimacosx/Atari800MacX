@@ -179,8 +179,8 @@ static NSMutableArray *printArray;
     // Sheet is up here.
     [NSApp endSheet: [self window]];
     [[self window] orderOut: self];
-	[NSMenu setMenuBarVisible:NO];
-	[NSMenu setMenuBarVisible:YES];
+	//[NSMenu setMenuBarVisible:NO];
+	//[NSMenu setMenuBarVisible:YES];
 	[ourPrinterView release];
 }
 
