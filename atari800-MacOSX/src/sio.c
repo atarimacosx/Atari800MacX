@@ -188,6 +188,7 @@ static int DataIndex = 0;
 static int TransferStatus = SIO_NoFrame;
 #ifdef MACOSX
 static int TransferDest = 0;
+static int TransferToNetsio = 0;
 #endif
 static int ExpectedBytes = 0;
 #ifdef NETSIO
@@ -1602,11 +1603,8 @@ void SIO_SwitchCommandFrame(int onoff)
 {
 	if (onoff)
 	{				/* Enabled */
-#ifdef NETSIO
-		if (netsio_enabled)
-			netsio_cmd_on();
-#endif /* NETSIO */
-		if (TransferStatus != SIO_NoFrame) 
+
+		if (TransferStatus != SIO_NoFrame)
 #ifdef NETSIO
 			/* With NetSIO we do not track end of read frame, SIO_ReadFrame is last status */
 			if (netsio_enabled && TransferStatus != SIO_ReadFrame)
@@ -1620,7 +1618,7 @@ void SIO_SwitchCommandFrame(int onoff)
 	else
 	{
 #ifdef NETSIO
-		if (netsio_enabled)
+		if (netsio_enabled && TransferToNetsio)
 		{
 			if (CommandIndex < ExpectedBytes)
 			{
@@ -1746,36 +1744,32 @@ void SIO_PutByte(int byte)
 #ifdef NETSIO
 	if (netsio_enabled)
 	{
-		/* For disk devices D1:-D8:, check if local disk should take priority */
-		int use_local = 0;
-		
-		/* Check device ID from command frame */
-		if (TransferStatus == SIO_CommandFrame && CommandIndex == 0) {
-			/* First byte is device ID */
-			if (byte >= 0x31 && byte <= 0x38) {
-				int drive = byte - 0x31;
-				if (drive >= 0 && drive < SIO_MAX_DRIVES && 
-				    SIO_drive_status[drive] != SIO_OFF && 
-				    SIO_drive_status[drive] != SIO_NO_DISK) {
-					/* Local disk is mounted and ready */
-					use_local = 1;
-				}
-			}
-		} else if (CommandIndex > 0 && CommandFrame[0] >= 0x31 && CommandFrame[0] <= 0x38) {
-			/* Subsequent bytes - check saved device ID */
-			int drive = CommandFrame[0] - 0x31;
-			if (drive >= 0 && drive < SIO_MAX_DRIVES && 
-			    SIO_drive_status[drive] != SIO_OFF && 
-			    SIO_drive_status[drive] != SIO_NO_DISK) {
-				/* Local disk is mounted and ready */
-				use_local = 1;
-			}
-		}
-		
-		if (!use_local) {
-			NetSIO_PutByte(byte);
-			return;
-		}
+        if (TransferStatus == SIO_CommandFrame && CommandIndex == 0) {
+            if (PCLink_Enabled && byte == 0x6F) {
+                TransferToNetsio = 0;
+            } else if (byte >= 0x31 && byte <= 0x38) {
+                int drive = byte - 0x31;
+                if (drive >= 0 && drive < SIO_MAX_DRIVES &&
+                    SIO_drive_status[drive] != SIO_OFF &&
+                    SIO_drive_status[drive] != SIO_NO_DISK) {
+                    /* Local disk is mounted and ready */
+                    TransferToNetsio = 0;
+                }
+                else
+                    TransferToNetsio = 1;
+            } else {
+                TransferToNetsio = 1;
+            }
+
+            if (TransferToNetsio) {
+                netsio_cmd_on();
+                NetSIO_PutByte(byte);
+                return;
+            }
+        } else if (TransferToNetsio) {
+            NetSIO_PutByte(byte);
+            return;
+        }
 		/* Otherwise continue with local SIO processing */
 	}
 #endif /* NETSIO */
@@ -1940,7 +1934,7 @@ int NetSIO_GetByte(void)
 	Log_print("NetSIO_GetByte_%d: %02x", ts, (int)b);
 #endif
 
-	return (int)b;
+ 	return (int)b;
 }
 #endif /* NETSIO */
 
@@ -1954,21 +1948,7 @@ int SIO_GetByte(void)
 #ifdef NETSIO
 	if (netsio_enabled)
 	{
-		/* For disk devices D1:-D8:, check if local disk should take priority */
-		int use_local = 0;
-		
-		/* Check if we have a valid command for a disk device */
-		if (CommandFrame[0] >= 0x31 && CommandFrame[0] <= 0x38) {
-			int drive = CommandFrame[0] - 0x31;
-			if (drive >= 0 && drive < SIO_MAX_DRIVES && 
-			    SIO_drive_status[drive] != SIO_OFF && 
-			    SIO_drive_status[drive] != SIO_NO_DISK) {
-				/* Local disk is mounted and ready */
-				use_local = 1;
-			}
-		}
-		
-		if (!use_local) {
+		if (TransferToNetsio) {
 			return NetSIO_GetByte();
 		}
 		/* Otherwise continue with local SIO processing */
