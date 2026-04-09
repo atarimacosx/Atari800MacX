@@ -11,7 +11,7 @@
 @interface DiskEditorDataSource : NSObject {
 	AtrDiskInfo *diskinfo;
 	id owner;
-	ADosFileEntry fileList[64];
+	ADosFileEntry fileList[1424];
 	UWORD fileCount;
 	int dosType;
 	int readWrite;
