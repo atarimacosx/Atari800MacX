@@ -603,13 +603,16 @@ static NSDictionary *defaultValues() {
 
 @implementation Preferences
 
-static Preferences *sharedPrefsInstance = nil;
+static Preferences *sharedInstance = nil;
 
 + (Preferences *)sharedInstance {
-    if (sharedPrefsInstance == nil)
-        sharedPrefsInstance = [[self alloc] init];
-
-    return sharedPrefsInstance;
+    Preferences *shared;
+    
+    if (sharedInstance)
+        return sharedInstance;
+    
+    shared = [[self alloc] init];
+    return sharedInstance ? sharedInstance : [[self alloc] init];
 }
 
 /* The next few factory methods are conveniences, working on the shared instance
@@ -704,22 +707,27 @@ static Preferences *sharedPrefsInstance = nil;
 *  Constructor
 *-----------------------------------------------------------------------------*/
 - (id)init {
-    [super init];
-    curValues = [[[self class] preferencesFromDefaults] copyWithZone:[self zone]];
-    origValues = [curValues retain];
-    [self transferValuesToEmulator];
-    [self transferValuesToAtari825];
-    [self transferValuesToAtari1020];
-    [self transferValuesToAtascii];
-    [self transferValuesToEpson];
-    commitPrefs();
-    [self discardDisplayedValues];
-    modems = [NSMutableArray array];
-    [modems retain];
-    [[PasteManager sharedInstance] setEscapeCopy:[[curValues objectForKey:EscapeCopy] boolValue]];
-    [[PasteManager sharedInstance] setStartupPasteEnabled:[[curValues objectForKey:StartupPasteEnable] boolValue]];
-    [[PasteManager sharedInstance] setStartupPasteString:[curValues objectForKey:StartupPasteString]];
-    return self;
+    if (sharedInstance) {
+	[self dealloc];
+    } else {
+        [super init];
+        curValues = [[[self class] preferencesFromDefaults] copyWithZone:[self zone]];
+        origValues = [curValues retain];
+        [self transferValuesToEmulator];
+        [self transferValuesToAtari825];
+        [self transferValuesToAtari1020];
+        [self transferValuesToAtascii];
+        [self transferValuesToEpson];
+        commitPrefs();
+        [self discardDisplayedValues];
+        sharedInstance = self;
+		modems = [NSMutableArray array];
+		[modems retain];
+        [[PasteManager sharedInstance] setEscapeCopy:[[curValues objectForKey:EscapeCopy] boolValue]];
+        [[PasteManager sharedInstance] setStartupPasteEnabled:[[curValues objectForKey:StartupPasteEnable] boolValue]];
+        [[PasteManager sharedInstance] setStartupPasteString:[curValues objectForKey:StartupPasteString]];
+    }
+    return sharedInstance;
 }
 
 /*------------------------------------------------------------------------------
