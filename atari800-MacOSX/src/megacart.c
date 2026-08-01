@@ -161,6 +161,7 @@ static void MEGACART_Map_Cart(void)
     if (CartBank < 0) {
         MEMORY_Cart809fDisable();
         MEMORY_CartA0bfDisable();
+        MEMORY_SetRAM(base,end);
     } else {
         MEMORY_Cart809fEnable();
         MEMORY_CartA0bfEnable();

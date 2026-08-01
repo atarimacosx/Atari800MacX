@@ -149,8 +149,10 @@ static void SIC_Map_Cart(void)
 }
 
 static void Map_Cart_Sic() {
-    if (!(CartBank & 0x20))
+    if (!(CartBank & 0x20)) {
         MEMORY_Cart809fDisable();
+        MEMORY_SetRAM(0x8000, 0x9FFF);
+    }
     else {
         MEMORY_Cart809fEnable();
         MEMORY_SetFlash(0x8000, 0x9FFF);
@@ -158,8 +160,10 @@ static void Map_Cart_Sic() {
         MEMORY_CopyFromCart(0x8000, 0x9FFF,
                             Cart->image + (CartBank & CartBankMask) * 0x4000);
     }
-    if (CartBank & 0x40)
+    if (CartBank & 0x40) {
         MEMORY_CartA0bfDisable();
+        MEMORY_SetRAM(0xA000, 0xBFFF);
+    }
     else {
         MEMORY_CartA0bfEnable();
         MEMORY_SetFlash(0xA000, 0xBFFF);

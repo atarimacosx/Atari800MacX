@@ -208,6 +208,7 @@ static void MAXFLASH_Map_Cart(void)
     
     if (CartBank < 0) {
         MEMORY_CartA0bfDisable();
+        MEMORY_SetRAM(base, end);
     } else {
         MEMORY_CartA0bfEnable();
         MEMORY_SetFlashRoutines(MAXFLASH_Flash_Read, MAXFLASH_Flash_Write);
