@@ -638,6 +638,8 @@ static void Set_Cart_Banks(int bank, int bank2) {
 static void THECART_Map_Cart()
 {
     if (CartBank < 0) {
+        if (Bank1_Base != 0)
+            MEMORY_SetRAM(Bank1_Base, Bank1_End);
         Bank1_Base = 0;
         Bank1_End = 0;
         MEMORY_CartA0bfDisable();
@@ -672,6 +674,8 @@ static void THECART_Map_Cart()
     }
 
     if (CartBank2 < 0) {
+        if (Bank2_Base != 0)
+            MEMORY_SetRAM(Bank2_Base, Bank2_End);
         Bank2_Base = 0;
         Bank2_End = 0;
         MEMORY_Cart809fDisable();
